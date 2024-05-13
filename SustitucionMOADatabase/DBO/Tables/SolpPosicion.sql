@@ -43,6 +43,9 @@
     [NombreProveedor] NVARCHAR(MAX) NULL, 
     [ProveedorFijo] NVARCHAR(50) NULL, 
 	[OrganizacionCompras] NVARCHAR(50) NULL, 
+    [ProveedorAdjudicado_Id] INT NULL, 
+    [RegistroInfoNro] NVARCHAR(50) NULL, 
+    [OrganizacionDeComprasCodigo] NVARCHAR(50) NULL, 
     CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -56,5 +59,7 @@
 	CONSTRAINT [FK_SolpPosicion_TablaSap_GrupoArticulo] FOREIGN KEY (GrupoArticulo_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_TablaSap_Moneda] FOREIGN KEY (Moneda_Id) REFERENCES [TablaSap]([Id]),
 	CONSTRAINT [FK_SolpPosicion_ServicioSolp] FOREIGN KEY (ServicioSolp_Id) REFERENCES [ServicioSolp]([Id]),
-	CONSTRAINT [FK_SolpPosicion_MaterialSolp] FOREIGN KEY (MaterialSolp_Id) REFERENCES [MaterialSolp]([Id])
+	CONSTRAINT [FK_SolpPosicion_MaterialSolp] FOREIGN KEY (MaterialSolp_Id) REFERENCES [MaterialSolp]([Id]),
+	CONSTRAINT [FK_SolpPosicion_Usuario_ProveedorAdjudicado] FOREIGN KEY ([ProveedorAdjudicado_Id]) REFERENCES [dbo].[Usuario] ([Id])
+
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

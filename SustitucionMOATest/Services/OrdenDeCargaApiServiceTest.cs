@@ -76,7 +76,8 @@ namespace SustitucionMOATest.Services
             var result = target.InformarViajeOrdenesDeCargaFason(
                 new SustitucionMOAModel.Dto.OrdenDeCargaFason.IngresosEgresosFasones
                 {
-                    Cantidad = 1,
+                    PesadaTara=1,
+                    PesadaNeto = 1,
                     FasonId = 1,
                     FechaEgreso = DateTime.Now,
                     FechaIngreso = DateTime.Now,
@@ -97,7 +98,8 @@ namespace SustitucionMOATest.Services
             var result = target.InformarViajeOrdenesDeCargaFason(
                 new SustitucionMOAModel.Dto.OrdenDeCargaFason.IngresosEgresosFasones
                 {
-                    Cantidad = 1,
+                    PesadaTara=1,
+                    PesadaNeto = 1,
                     FasonId = 1,
                     FechaEgreso = DateTime.Now,
                     FechaIngreso = DateTime.Now,

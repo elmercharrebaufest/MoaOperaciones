@@ -5,7 +5,6 @@
     <br>
 </section>
 <div class="content-wraper" style="padding-top: 0px !important;">
-    
     <div class="row">
         <div class="col-md-3 col-lg-3">
             <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text"
@@ -39,7 +38,7 @@
             </div>
         </div>
         <spinner></spinner>
-        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px;">
+        <div class="col-sm-12 col-md-12 col-lg-12" style="margin-left: -15px; padding-top: 10px;">
             <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
                 <ng-template pTemplate="header" let-columns class="lista-header">
                     <tr>
@@ -94,7 +93,7 @@
                             Visita técnica obligatoria
 
                         </th>
-                        <th title="Nombre de pedido" class="headerth" (click)="onOrder('CotizacionEstado_Id')" style="width: 90px;">
+                        <th title="Estado de cotización" class="headerth" (click)="onOrder('CotizacionEstado_Id')" style="width: 90px;">
                             Estado cotización
                             <span>
                                 <i [ngClass]="{'fa': true, 'fa-solid fa-sort-up': true, 'arrow': true, 'unselected': columnaOrden === 'CotizacionEstado_Id' && orden == 'DESC'  }"></i>

@@ -245,6 +245,16 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
+          <xsd:element minOccurs="0" name="REGION">
+            <xsd:annotation>
+              <xsd:documentation>Region (State, Province, County)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="3" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
         </xsd:sequence>
       </xsd:complexType>
       <xsd:complexType name="ZMPES6810">
@@ -1069,11 +1079,11 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="CHANGE_ID">
             <xsd:annotation>
-              <xsd:documentation>Base Unit of Measure</xsd:documentation>
+              <xsd:documentation>Change Type (U, I, E, D)</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="3" />
+                <xsd:maxLength value="1" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
@@ -1283,11 +1293,11 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="CHANGE_ID">
             <xsd:annotation>
-              <xsd:documentation>Base Unit of Measure</xsd:documentation>
+              <xsd:documentation>Change Type (U, I, E, D)</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="3" />
+                <xsd:maxLength value="1" />
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>

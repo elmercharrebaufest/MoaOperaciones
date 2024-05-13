@@ -119,8 +119,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     descargarArchivo(archivo): void {
-        if (archivo.id != undefined) {
-            this.service.DescargarArchivo(archivo.id)
+        if (archivo.Id != undefined) {
+            this.service.DescargarArchivo(archivo.Id)
                 .subscribe(
                     (result) => {
                         if (result.logout == true) {

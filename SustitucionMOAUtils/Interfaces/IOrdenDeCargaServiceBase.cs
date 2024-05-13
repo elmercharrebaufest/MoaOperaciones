@@ -19,5 +19,7 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarCuilChoferDigito(string cuilChofer);
         bool ValidarCuitTransporteDigito(string cuitTransporte);
         ProveedorDto ObtenerProveedor(int idProveedor);
+        ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
+        bool ValidarDigitoCuit(string cuit);
     }
 }

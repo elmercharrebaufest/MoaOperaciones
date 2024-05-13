@@ -105,6 +105,7 @@ export class MasivaComponent extends AplicacionCcppBaseComponent implements OnIn
             return null;
         }
         if (response.error) {
+            this.resetearCarga();
             this.mensajeComponent.setErrorMsg(response.error);
             return null;
         }

@@ -2,6 +2,8 @@
 using SustitucionMOAModel.Consultas;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -103,7 +105,7 @@ namespace SustitucionMOARepositorio
         /// </summary>
         /// <returns>Cantidad de entidades agregadas o actualizadas</returns>
         int GuardarCambios();
-
+        
         /// <summary>
         /// Obtener las consultas realizadas por EF
         /// </summary>
@@ -181,6 +183,14 @@ namespace SustitucionMOARepositorio
         /// <param name="pageSize">Tamaño de página.</param>
         /// <param name="navProperties">Expresiones de propiedades de navegación a incluir en la consulta.</param>
         /// <returns>Consulta IQueryable de entidades TEntidad paginadas y ordenadas con propiedades de navegación incluidas.</returns>
-        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;       
+        IQueryable<TEntidad> ListarPaginado<TEntidad>(Expression<Func<TEntidad, bool>> condition, Expression<Func<TEntidad, object>> orderBy, int page, int pageSize, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
+        /// <summary>
+        /// Permite ejecutar cualquier query de manera suelta en la base, recomendable solo para store procedures o casos muy puntuales.
+        /// </summary>
+        /// <typeparam name="TEntidad"></typeparam>
+        /// <param name="query">Query que se quiere ejecutar, se recomienda concatenar los parametros con forma @param1 con nombre acorde</param>
+        /// <param name="parameters">Como se cargan los parametros de la query, con forma @param1</param>
+        /// <returns></returns>
+        DbRawSqlQuery<TEntidad> ExecuteQuery<TEntidad>(string query, SqlParameter parameters = null);
     }
 }

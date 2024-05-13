@@ -125,7 +125,8 @@ namespace SustitucionMOA.Controllers
                     new KeyValuePair<string, string>(EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString(), EstadoAprobacion.PendienteAprobacionCompras.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.RechazadoPorCompras.ToFriendlyString(), EstadoAprobacion.RechazadoPorCompras.ToFriendlyString()),
                     new KeyValuePair<string, string>(EstadoAprobacion.AltaIncompleta.ToFriendlyString(), EstadoAprobacion.AltaIncompleta.ToFriendlyString()),
-                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString())
+                    new KeyValuePair<string, string>(EstadoAprobacion.SinAlta.ToFriendlyString(), EstadoAprobacion.SinAlta.ToFriendlyString()),
+                    new KeyValuePair<string, string>(EstadoAprobacion.AnalisisInterno.ToFriendlyString(), EstadoAprobacion.AnalisisInterno.ToFriendlyString())
                 };
                 List<KeyValuePair<string, string>> estadosFinales = new List<KeyValuePair<string, string>>
                 {
@@ -254,6 +255,53 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = altaEmpresaService.AgregarObservacion(empresaId, observacion, ClaimsPrincipalExtension.GetClaimValue("emails")) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
+        [HttpGet]
+        public JsonResult VerificarExistenciaEmpresa(string cuit)
+        {
+            try
+            {
+                return JsonCustom(new { data = altaEmpresaService.VerificarExistenciaEmpresa(cuit) }) ;
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.MODIFICAR_ESTADO_PROVEEDOR)]
+        public JsonResult ModificarEstadoProveedor(int proveedorId, string nuevoEstado) {
+            try
+            {
+                var emailUsuario = SessionPersister.getUsername();
+                var nuevoEstadoInt = altaEmpresaService.ModificarEstadoProveedor(proveedorId, nuevoEstado, emailUsuario);
+                return JsonCustom(new { data = new { nuevoEstado = nuevoEstadoInt } });
             }
             catch (InfoCustomException e)
             {

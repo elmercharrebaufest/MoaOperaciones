@@ -1,5 +1,4 @@
-﻿
-using System.Linq;
+﻿using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -42,6 +41,8 @@ namespace SustitucionMOAModel.Dto
         public string RazonSocialDestino { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
+        public string DestinoMercaderia { get; set; }
+        public OrdenesDeCargaApiDto() { }
 
         public OrdenesDeCargaApiDto(Entities.OrdenDeCarga ordenFas)
         {
@@ -62,7 +63,7 @@ namespace SustitucionMOAModel.Dto
             Pedido = ordenFas.NumeroPedido;
             DescripcionProducto = ParseNombreProducto(ordenFas.Producto.Nombre);
             CodigoProducto = ordenFas.Producto.CodigoSap;
-            TipoOrden = "FAS";
+            TipoOrden = TipoOrdenes.FAS;
         }
         public OrdenesDeCargaApiDto(Entities.OrdenDeCargaFason ordenFason)
         {
@@ -85,21 +86,64 @@ namespace SustitucionMOAModel.Dto
             CUITCorredor = ordenFason.CorredorId != null ? ordenFason.Corredor.CUIT : null;
             CodigoProducto = ordenFason.Producto.CodigoSap;
             KmARecorrer = ordenFason.KmARecorrer;
-            TipoOrden = "FASON";
+            TipoOrden = TipoOrdenes.FASON;
             FleteMOA = ordenFason.FleteMOA;
             Reventa = ordenFason.Reventa;
             PlantaCodigo = ordenFason.PlantaCodigo;
-            DomicilioTipo =ordenFason.DomicilioTipo;
+            DomicilioTipo = ordenFason.DomicilioTipo;
             DomicilioOrden = ordenFason.DomicilioOrden;
-            DomicilioDescr =ordenFason.DomicilioDescr;
-            Escalable =ordenFason.Escalable;
-            CUITDestinatario =ordenFason.CUITDestinatario;
-            RazonSocialDestinatario =ordenFason.RazonSocialDestinatario;
-            CUITDestino =ordenFason.CUITDestino;
-            RazonSocialDestino =ordenFason.RazonSocialDestino;
-            CUITIntermediarioFlete =ordenFason.CUITIntermediarioFlete;
-            RazonSocialIntermediarioFlete =ordenFason.RazonSocialIntermediarioFlete;
-    }
+            DomicilioDescr = ordenFason.DomicilioDescr;
+            Escalable = ordenFason.Escalable;
+            CUITDestinatario = ordenFason.CUITDestinatario;
+            RazonSocialDestinatario = ordenFason.RazonSocialDestinatario;
+            CUITDestino = ordenFason.CUITDestino;
+            RazonSocialDestino = ordenFason.RazonSocialDestino;
+            CUITIntermediarioFlete = ordenFason.CUITIntermediarioFlete;
+            RazonSocialIntermediarioFlete = ordenFason.RazonSocialIntermediarioFlete;
+            DestinoMercaderia = ordenFason.DestinoMercaderia;
+        }
+
+        public static OrdenesDeCargaApiDto From(Entities.OrdenResiduos ordenResiduo)
+        {
+            
+            return new OrdenesDeCargaApiDto
+            {
+                Id = ordenResiduo.Id,
+                FechaCreacion = ordenResiduo.FechaCreacion.ToString(),
+                //FechaRetiro = ordenResiduo.FechaRetiro.ToString(),
+                //Cantidad = ordenResiduo.Cantidad,
+                PatenteAcoplado = ordenResiduo.PatenteAcoplado,
+                PatenteChasis = ordenResiduo.PatenteChasis,
+                NombreChofer = ordenResiduo.ChoferNombre,
+                CUILChofer = ordenResiduo.ChoferCuil,
+                RazonSocialTransporte = ordenResiduo.TransporteRazonSocial,
+                CUITTransporte = ordenResiduo.TransporteCuit,
+                LocalidadId = ordenResiduo.LocalidadId,
+                LocalidadDescripcion = ordenResiduo.Localidad.Nombre,
+                Observacion = ordenResiduo.Observacion,
+                Cliente = ordenResiduo.Cliente.RazonSocial,
+                DescripcionProducto = new OrdenesDeCargaApiDto().ParseNombreProducto(ordenResiduo.Producto.Nombre),
+                CUITCliente = ordenResiduo.Cliente.CUIT,
+                //CUITCorredor = ordenResiduo.CorredorId != null ? ordenResiduo.Corredor.CUIT : null,
+                CodigoProducto = ordenResiduo.Producto.CodigoSap,
+                //KmARecorrer = ordenResiduo.DistanciaKm.ToString(),
+                TipoOrden = TipoOrdenes.RESIDUOS,
+                //FleteMOA = ordenResiduo.FleteMOA,
+                //Reventa = ordenResiduo.Reventa,
+                PlantaCodigo = ordenResiduo.PlantaCodigo,
+                DomicilioTipo = ordenResiduo.DomicilioTipo,
+                DomicilioOrden = ordenResiduo.DomicilioOrden,
+                DomicilioDescr = ordenResiduo.DomicilioDescr,
+                //Escalable = ordenResiduo.Escalable,
+                //CUITDestinatario = ordenResiduo.CUITDestinatario,
+                //RazonSocialDestinatario = ordenResiduo.RazonSocialDestinatario,
+                //CUITDestino = ordenResiduo.CUITDestino,
+                //RazonSocialDestino = ordenResiduo.RazonSocialDestino,
+                //CUITIntermediarioFlete = ordenResiduo.IntermediarioFleteCuit,
+                //RazonSocialIntermediarioFlete = ordenResiduo.IntermediarioFleteRazonSocial,
+                //DestinoMercaderia = ordenResiduo.DestinoMercaderia,
+            };
+        }
 
         private string ParseNombreProducto(string nombreMaterial)
         {
@@ -114,5 +158,11 @@ namespace SustitucionMOAModel.Dto
                 return "";
             }
         }
+    }
+    public static class TipoOrdenes
+    {
+        public static string FAS = "FAS";
+        public static string FASON = "FASON";
+        public static string RESIDUOS = "RESIDUOS";
     }
 }

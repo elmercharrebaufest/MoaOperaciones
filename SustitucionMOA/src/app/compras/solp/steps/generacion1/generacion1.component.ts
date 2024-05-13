@@ -37,7 +37,9 @@ export class Generacion1Component extends ListBaseComponent  {
     solpPaso1Result: any;
     fechaEntrega: any;
     horaEntrega: any;
+    fechaEditable: boolean;
     hoy: Date = new Date();
+
 
     camposObligatorios: any[] = [
         { campo: 'nombreDePedido', esObligatorio: true},
@@ -60,12 +62,11 @@ export class Generacion1Component extends ListBaseComponent  {
         if (this.model.mail === undefined) {     //if (!this.model.mail || this.model.mail === undefined) {         
             this.model.mail = sessionStorage.getItem("username");
         };
-
         //declaro las validaciones para los campos
         this.formulario = this.formBuilder.group({
             nombreDePedido: new FormControl({value : ""}, Validators.compose([Validators.required])),
             fiscalContrato: new FormControl('', Validators.required),
-            mail: new FormControl('', [Validators.required, Validators.email])
+            mail: ['', [Validators.required, Validators.pattern('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}')]]
         });
         
         this.validadorPasoSolpService.formulario = this.formulario;
@@ -74,25 +75,13 @@ export class Generacion1Component extends ListBaseComponent  {
             this.validadorPasoSolpService.aplicarValidaciones()
         }
         this.model.cargoPasoUno = true;
-    }
-
-  
-    
+    }    
 
     ngOnDestroy()
     {
         super.ngOnDestroy();
         this.onEstCompleto.emit({codigo :EnumPasoSolp.PliegoGeneracion1, esPasoInvalido : this.validadorPasoSolpService.esPasoInvalido()});
     }
-
-    // parsearFecha() {
-    //     this.fechaEntrega = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
-    //     if (this.fechaEntrega != '' && this.fechaEntrega != null && this.horaEntrega != '' && this.horaEntrega != null) {
-    //         var dateParts = this.fechaEntrega.split("-");
-    //         this.model.fechaDeEntregaDeOfertasFecha = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2], this.horaEntrega);
-    //     }
-    // }
-
 
     setTabs() {
         this.setMenuSeccionTab("Generacion1", "Generacion1");
@@ -109,17 +98,23 @@ export class Generacion1Component extends ListBaseComponent  {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined) {
+        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
-
         return true;
-
     }
 
     onBlur(control: string)
     {
         this.validadorPasoSolpService.onBlurDirty(control);
-    }
+    }      
 
+    onAutocompletarResponsable() {
+        if (this.model != undefined && this.model.selectUsuarioFiscal != undefined) {
+            this.model.mail = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.supervisorTrabajo = this.model.selectUsuarioFiscal.CodigoDescripcion;
+            this.model.selectResponsableTrabajo = this.model.usuarioSolicitanteList.
+                find(x => x.CodigoDescripcion === this.model.mail);
+        }
+    }
 }

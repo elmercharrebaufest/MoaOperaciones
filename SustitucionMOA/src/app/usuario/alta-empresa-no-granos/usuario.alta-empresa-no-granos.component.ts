@@ -68,6 +68,8 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
     observacionesParaElProveedor: string = "";
 
+    puedeAltaInterna = this.isAuthorized('ALTA INTERNA NO GRANOS')
+
     ngOnInit() {
         this.securityService.tienePermisoRedirect("ALTA EMPRESA NO GRANOS");
         this.getRubrosOptions();
@@ -250,19 +252,19 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
     calcularFacturacion() {
         const rubro = this.rubros.find(x => x.Id == this.IdRubro);
-        if(rubro.Nombre === 'FLETES')
-        return;
+        if (rubro.Nombre === 'FLETES')
+            return;
 
         if (this.tipoCambiario <= 0)
             this.tipoCambiario = 1;
         let facturacionDolares = this.facturacionAnual / this.tipoCambiario;
 
-        
+
         if (facturacionDolares > 15000) {
             this.nosisObligatorio = true;
             this.RealizarAnalisisNOSIS = true;
         }
-        else{
+        else {
             this.nosisObligatorio = false;
         }
     }
@@ -313,13 +315,13 @@ export class UsuarioAltaEmpresaNoGranosComponent extends BaseComponent implement
 
     esObligatorioFlete() {
         const rubro = this.rubros.find(x => x.Id == this.IdRubro);
-        if(rubro.Nombre === 'FLETES'){
+        if (rubro.Nombre === 'FLETES') {
             this.RealizarAnalisisNOSIS = true;
             this.nosisObligatorio = true;
             this.siperObligatorio = true;
             this.siperDisabled = true;
         }
-        else{
+        else {
             this.RealizarAnalisisNOSIS = false;
             this.nosisObligatorio = false;
             this.siperObligatorio = false;

@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAWS.Interfaces
@@ -49,12 +50,13 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerRegistroInfoConsumerMOA
     {
-        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras);
+        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor);
     }
     public interface IObtenerOrdenDeCompraConsumerMOA
     {
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOC);
+        ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC);
     }
     public interface IObtenerProveedorConsumerMOA
     {
@@ -63,6 +65,10 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerUnidadesDeMedidaAlternativasConsumerMOA
     {
         List<UnidadesDeMedida> Request(List<string> codigosMaterial);
+    }
+    public interface IObtenerPDFOrdenCompraConsumerMOA
+    {
+        byte[] Request(string nroOrdenCompra);
     }
 
     public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA

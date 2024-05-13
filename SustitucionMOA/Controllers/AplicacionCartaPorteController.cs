@@ -105,7 +105,8 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var codigoProveedor = SessionPersister.Proveedor;
-                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor);
+                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor, esCodigoCorredor);
             }
             catch (InfoCustomException ice)
             {
@@ -158,7 +159,8 @@ namespace SustitucionMOA.Controllers
             {
                 var mailUsuario = SessionPersister.getUsername();
                 var codigoProveedor = SessionPersister.Proveedor;
-                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor);
+                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor, esCodigoCorredor);
             }
             catch (InfoCustomException ice)
             {
@@ -170,8 +172,10 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
+                var errorId = Guid.NewGuid();
+                Log.Error($"Error id {errorId}", ex);
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
+                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
             }
             return ContentCustom(response);
         }

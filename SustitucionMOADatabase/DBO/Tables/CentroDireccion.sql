@@ -6,7 +6,9 @@
 	[Numero] [nvarchar](max) NULL,
 	[Cp] [nvarchar](max) NULL,
 	[Pais] [nvarchar](max) NULL,
-CONSTRAINT [PK_dbo.CentroDireccion] PRIMARY KEY CLUSTERED 
+	[RegionSap_Id] INT NULL, 	
+	CONSTRAINT [FK.CentroDireccion_RegionSap_RegionSAP_Id] FOREIGN KEY ([RegionSAP_Id]) REFERENCES [RegionSap]([Id]),
+    CONSTRAINT [PK_dbo.CentroDireccion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

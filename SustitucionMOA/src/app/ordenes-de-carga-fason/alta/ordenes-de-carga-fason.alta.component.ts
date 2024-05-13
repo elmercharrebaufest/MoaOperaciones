@@ -21,7 +21,7 @@ import { debounceTime, finalize } from 'rxjs/operators';
 import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
-import { MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Checkbox } from 'primeng/checkbox';
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 
@@ -118,6 +118,7 @@ export class OrdenesDeCargaFasonAltaComponent
     validarCNRTSubscription?: Subscription;
     subscriptions = new Subscription();
     escalableCNRT?: boolean;
+    errorAlValidarEscalable = false;
 
     get noPuedeEditarCuitsTerceros() {
         return this.ordenDeCargaFason.Id && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.Entregada;
@@ -198,6 +199,10 @@ export class OrdenesDeCargaFasonAltaComponent
         }
         if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
             this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
+            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
             return false;
         }
         if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
@@ -952,7 +957,6 @@ export class OrdenesDeCargaFasonAltaComponent
     get patenteChasisValido() {
         return this.ordenDeCargaFason.PatenteChasis && this.ordenDeCargaFason.PatenteChasis.trim().length >= 6
     }
-
     displayModalEscalable = false;
     decidioEscalable = false;
 
@@ -969,9 +973,13 @@ export class OrdenesDeCargaFasonAltaComponent
             .subscribe(res => {
                 this.validando.Escalable = false;
                 const validezCNRTResponse = this.manejarErroresApiResponse(res)
-                if (!validezCNRTResponse) {
-                    this.setValorEscalable()
-                } else {
+                this.errorAlValidarEscalable = !!(res.error || res.info);
+                if (this.errorAlValidarEscalable || !validezCNRTResponse)
+                    return;
+                if (!validezCNRTResponse.ExisteCamion) {
+                    this.msgService.add(MSG_ALERTA_CAMION_NO_EXISTE);
+                }
+                else {
                     this.escalableCNRT = validezCNRTResponse.EsCamionEscalable;
                     if (!this.escalableCNRT && this.ordenDeCargaFason.Escalable) {
                         this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
@@ -984,6 +992,7 @@ export class OrdenesDeCargaFasonAltaComponent
     validarEscalable() {
         if (!this.ordenDeCargaFason.Escalable)
             return;
+
         if (!this.escalableCNRT && this.escalableCNRT !== undefined) {
             this.msgService.add(MSG_ALERTA_NO_ESCALABLE);
             this.setValorEscalable()

@@ -28,6 +28,11 @@ namespace SustitucionMOAModel.Dto
         public string TipoDocCompras { get; set; }
         public int? Usuario_Id { get; set; }
         public string TipoSolp { get; set; }
+        public decimal MontoBruto { get; set; }
+        public string EstadoLiberacionCodigo { get; set; }
+        public int? UsuarioCompras_Id { get; set; }
+        public string UsuarioComprasSAP { get; set; }
+        public string OrganizacionDeComprasCodigo { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento
@@ -44,17 +49,25 @@ namespace SustitucionMOAModel.Dto
 
     public class OrdenDeCompraSAPPosicion
     {
-        //POITEM
         //POACCOUNT
         //POADDRDELIVERY
         public OrdenDeCompraSAPPosicionDireccionDeEntrega DireccionDeEntrega { get; set; }
-        public string Indice { get; set; }
+        public string Indice { get; set; } //PO_ITEM
+        public string IndiceSolp { get; set; } //PREQ_ITEM
         public int NumeroItemOC { get { return int.Parse(Indice); } }
+        public string RegistroInfo { get; set; }
+        public string NroSolp { get; set; }
+        public DateTime? PlazoDeOferta { get; set; }
     }
 
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega
     {
         //POADDRDELIVERY
+        public string RegionSap { get; set; }
+        public int? Id { get; set; }
+        public string CodigoSap { get; set; }
+        public string Descripcion { get; set; }
+        public string PaisSap { get; set; }
     }
 
     public class ErrorOC

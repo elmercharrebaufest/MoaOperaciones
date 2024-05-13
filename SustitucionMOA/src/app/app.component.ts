@@ -42,6 +42,7 @@ export class AppComponent implements OnDestroy {
     disabledAgreement: boolean = true;
 
     aboutScreen: boolean;
+    path: string;
 
     salir() {
         this.navService.navegarSeccion('/compras');
@@ -62,11 +63,11 @@ export class AppComponent implements OnDestroy {
 
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
-        const path = this.location.path();
-        if (path === '/ticket-pesada') {
+        this.path = this.location.path();
+        if (this.path === '/ticket-pesada') {
             this.navService.navegarSeccion("ticket-pesada");
-        } else if (path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
-            this.navService.navegarSeccion(path);
+        } else if (this.path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
+            this.navService.navegarSeccion(this.path);
         }
         else {
             this.validarLoginAzure();
@@ -117,6 +118,7 @@ export class AppComponent implements OnDestroy {
         sessionStorage.setItem("apikey", result.apikey);
         sessionStorage.setItem("cuit", result.cuit)
         sessionStorage.setItem("proveedorId", result.proveedorId)
+        sessionStorage.setItem("usuarioId", result.usuarioId)
 
         this.sessionDataService.setNombre(result.nombre);
         this.sessionDataService.setUsername(result.username);
@@ -129,11 +131,12 @@ export class AppComponent implements OnDestroy {
         this.sessionDataService.setApikey(result.apikey);
         this.sessionDataService.setCuit(result.cuit);
         this.sessionDataService.setProveedorId(result.proveedorId);
+        this.sessionDataService.setUsuarioId(result.usuarioId);
 
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
-        this.navService.navegarSeccion(result.redirectURL);
-
+        this.redirigir(result);
+        
         if (result.aceptoTyC != true) {
             document.getElementById("openModalaceptoTyCModal").click();
         }
@@ -161,4 +164,17 @@ export class AppComponent implements OnDestroy {
         if (this.aceptarTyCSub)
             this.aceptarTyCSub.unsubscribe();
     }
+
+    redirigir(result: any){
+        if(this.path === '/consulta/mis-consultas'){
+            setTimeout
+            (
+            () =>
+            {  this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
+           
+        }else{
+            this.navService.navegarSeccion(result.redirectURL);
+        }
+    }
+
 }

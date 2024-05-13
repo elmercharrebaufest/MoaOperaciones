@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.DetalleCteWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -169,7 +169,7 @@ namespace SustitucionMOAWS.DetalleCteWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -203,6 +203,10 @@ namespace SustitucionMOAWS.DetalleCteWebServiceMOA {
         private decimal pRECIO_NETOField;
         
         private bool pRECIO_NETOFieldSpecified;
+        
+        private decimal pORCPARCIALField;
+        
+        private bool pORCPARCIALFieldSpecified;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -369,6 +373,30 @@ namespace SustitucionMOAWS.DetalleCteWebServiceMOA {
             set {
                 this.pRECIO_NETOFieldSpecified = value;
                 this.RaisePropertyChanged("PRECIO_NETOSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=8)]
+        public decimal PORCPARCIAL {
+            get {
+                return this.pORCPARCIALField;
+            }
+            set {
+                this.pORCPARCIALField = value;
+                this.RaisePropertyChanged("PORCPARCIAL");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool PORCPARCIALSpecified {
+            get {
+                return this.pORCPARCIALFieldSpecified;
+            }
+            set {
+                this.pORCPARCIALFieldSpecified = value;
+                this.RaisePropertyChanged("PORCPARCIALSpecified");
             }
         }
         

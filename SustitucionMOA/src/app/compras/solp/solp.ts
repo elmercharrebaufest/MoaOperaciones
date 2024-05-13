@@ -28,13 +28,13 @@ export class Solp extends CommonResponse {
     public fechaDeEntregaDeOfertasHora: Date;
     public horaEntrega: Date;
     public fechaEntrega: Date;
-   
+
     //paso 2
     public visitaDeObra: boolean;
-    public supervisorSector: string[] = [];
+    public supervisorSector: string [] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
-    public supervisorTrabajo: string[] = [];
+    public supervisorTrabajo: string;
     public obradores: boolean;
     public descripcionTecnica: boolean;
     public modoElevacion: boolean;
@@ -43,7 +43,6 @@ export class Solp extends CommonResponse {
     public tecnicoSeguridad: boolean;
     public grillaPersonal: boolean;
     public fabricacionTallerExterno: boolean;
-
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
     public visitaDeObraMasiva: boolean;
@@ -70,15 +69,21 @@ export class Solp extends CommonResponse {
     public ordenDeCompra: string;
     public codigoProveedorSap: string;
     public RazonSocialSap: string;
-    public validarTrabajoHecho: boolean;
+    public validacionCheck: boolean = true;
     public validarAdicional: boolean;
     public mensajeCotizacion: string;
     public archivosCotizacionesNuevos: Array<File>;
-    public archivosCotizaciones: Array<ArchivoModel>
+    public archivosCotizaciones: Array<ArchivoModel>;
+    public liberadoresSap: any[] = [];
+    public condEspProveedorAsignado: boolean;
+    public editarCondicionesEspeciales: boolean = true;
+    public thServicioPermanente: boolean;
+    public thAjustePolinomica: boolean;
+    public thProveedorDirecto: boolean;
 
     //inicio Cabecera == paso 5
-    public selectClaseDocumento: any
-    public selectTipoPosicion: any
+    public selectClaseDocumento: any;
+    public selectTipoPosicion: any;
     public posiciones: SolpPosicion[];
     public posicionActual: SolpPosicion;
     public pasoCompletado: number;
@@ -88,7 +93,9 @@ export class Solp extends CommonResponse {
     proveedorRazonSocialAdicional: string;
     deshabilitarAdicional: boolean;
     ordenDeCompraOriginal: string;
-
+    usuarioSolicitanteList?: any[];
+    selectUsuarioFiscal?: any;
+    selectResponsableTrabajo?: any;
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -111,6 +118,8 @@ export class Solp extends CommonResponse {
     public direccionCentroPorDefecto: any;
     public monedaPorDefecto: any;
     public imputacionPorDefecto: any;
+    public grupoDeComprasPorDefecto: any;
+    public grupoDeArticuloPorDefecto: any;
     public enviarSap: boolean;
     public Finalizar: boolean;
 
@@ -131,11 +140,10 @@ export class Solp extends CommonResponse {
         super();
 
         let fechaLimiteFecha = new Date();
-
-        this.tipoSolpSap = EnumTipoSolpSap.Web;       
+        this.tipoSolpSap = EnumTipoSolpSap.Web;
         this.estadoPasos = "0,0,0,0,0";
         this.jornadaLaboralDias = setupJornadaLaboralDias();
-        this.horaEntrega = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.horaEntrega = new Date(1, 1, 1, 12, 0, 0, 0);
         this.fechaLimiteFecha = this.sumarDias(fechaLimiteFecha, 6);
         this.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
         this.visitaDeObraFecha = new Date();
@@ -162,7 +170,7 @@ export class Solp extends CommonResponse {
             this.tipoSolpSap = solp.TipoSolpSap || '';
             this.vincularAPliego = (this.tipoSolpSap == EnumTipoSolpSap.Mantenimiento || this.tipoSolpSap == EnumTipoSolpSap.SAP);
             this.titulo = this.vincularAPliego ? "Vincular pliego" : solp.TipoSolp.Codigo;
-            this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp  : "";
+            this.tituloNroSolp = solp.NroSolp ? "| SOLP #" + solp.NroSolp : "";
             this.nroSolp = solp.NroSolp || 0;
             this.nombreDePedido = solp.NombreDeObra || '';
             this.fiscalContrato = solp.FiscalContrato || '';
@@ -179,8 +187,8 @@ export class Solp extends CommonResponse {
 
             //this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
             this.emailLinkToken = solp.EmailLinkToken;
-            this.selectTipoPosicion =  solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
-            ;
+            this.selectTipoPosicion = solp.TipoPosicion && solp.TipoPosicion.Codigo || ''
+                ;
 
 
             // Paso 2
@@ -207,7 +215,7 @@ export class Solp extends CommonResponse {
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
-            } 
+            }
             this.observacionesGeneracion = solp.ObservacionesGeneracion;
 
             // Paso 3
@@ -240,18 +248,24 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
-            this.proveedorAsignado_Id = solp.ProveedorAsignadoId;
+            this.proveedorAsignado_Id = solp.ProveedorAsignado_Id;
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
+            this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;
             this.ordenDeCompra = solp.NroOrdenDeCompraAdicional;
             this.ordenDeCompraOriginal = solp.NroOrdenDeCompraAdicional;
             this.proveedorIdAdicional = solp.ProveedorIdAdicional;
             this.proveedorRazonSocialAdicional = solp.ProveedorRazonSocialAdicional
             this.deshabilitarAdicional = solp.DeshabilitarAdicional;
             this.monedaOC = solp.MonedaOC;
-            
+            this.liberadoresSap = solp.LiberadoresSapSolp;
+            this.editarCondicionesEspeciales = solp.EditarCondicionesEspeciales;
+            this.thAjustePolinomica = solp.THAjustePolinomica;
+            this.thProveedorDirecto = solp.THProveedorDirecto;
+            this.thServicioPermanente = solp.THServicioPermanente;
+
             //pop up finalizar
             this.revisadoPor = solp.RevisadoPor || '';
 
@@ -264,9 +278,9 @@ export class Solp extends CommonResponse {
 
             if (solp.Posiciones && solp.Posiciones.length > 0) {
                 let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];
-                
+
                 this.posiciones = [];
-                
+
                 this.agregarNuevaPosicion(null as SolpPosicion);
 
                 let posActual = this.posicionActual;
@@ -309,13 +323,13 @@ export class Solp extends CommonResponse {
 
                     posActual.valorImputacion = x.TipoImputacionValor;
                     posActual.cuentaMayor = x.CuentaMayor;
-                    posActual.provedorFijo                      = x.ProveedorFijo,
-                    posActual.nombreProveedor                   = x.NombreProveedor,
-                    posActual.numeroContratoSuperior            = x.NumeroContratoSuperior,
-                    posActual.numeroPosicionContratoSuperior    = x.NumeroPosicionContratoSuperior,
-                    posActual.orgCompras                        = x.OrganizacionCompras,
+                    posActual.provedorFijo = x.ProveedorFijo,
+                        posActual.nombreProveedor = x.NombreProveedor,
+                        posActual.numeroContratoSuperior = x.NumeroContratoSuperior,
+                        posActual.numeroPosicionContratoSuperior = x.NumeroPosicionContratoSuperior,
+                        posActual.orgCompras = x.OrganizacionCompras,
 
-                    posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
+                        posActual.proveedoresValidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'VALIDO').map(p => p.RazonSocial);
                     posActual.proveedoresNoSugeridos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'NOSUGERIDO').map(p => p.RazonSocial);
                     posActual.proveedoresInvalidos = x.Proveedores.filter(p => p.TipoFiltroProveedorSolp.Codigo == 'INVALIDO').map(p => p.RazonSocial);
 
@@ -355,7 +369,7 @@ export class Solp extends CommonResponse {
                 this.setearPosicionPorDefecto();
                 this.tituloSolp();
             }
-            
+
         } else {
             this.posiciones = [];
             this.fechaEntrega = new Date();
@@ -364,34 +378,30 @@ export class Solp extends CommonResponse {
         }
     }
 
-    nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any) {
-        let numeroPosicion = this.posiciones.length + 1;        
-        return new SolpPosicion(numeroPosicion, 
-            this.fiscalContrato, 
-            this.fechaEntrega, 
-            posicion, 
-            centro, 
-            direccionCentro,
-            moneda,
+    nuevaPosicion(posicion: any, centro: any, direccionCentro: any, moneda: any, grupoDeCompras: any, grupoDeArticulo: any) {
+        let numeroPosicion = this.posiciones.length + 1;
+        return new SolpPosicion(numeroPosicion,
+            this.fiscalContrato,
+            this.fechaEntrega,
+            posicion,
+            centro, direccionCentro,
+            moneda, grupoDeCompras, grupoDeArticulo,
             this.selectTipoPosicion
         );
     }
 
     agregarNuevaPosicion(posicion: SolpPosicion) {
         this.posiciones = [...this.posiciones,
-                            this.nuevaPosicion(posicion, 
-                                this.centroPorDefecto, 
-                                this.direccionCentroPorDefecto,
-                                this.monedaPorDefecto)];
+        this.nuevaPosicion(posicion, this.centroPorDefecto, this.direccionCentroPorDefecto, this.monedaPorDefecto, this.grupoDeComprasPorDefecto, this.grupoDeArticuloPorDefecto)];
         this.posicionActual = this.posiciones[this.posiciones.length - 1];
         this._ultimaPosicion = this.posicionActual;
     }
 
-    agregarNuevaPosicionDesdeContratoMarco(posicion: SolpPosicion){
+    agregarNuevaPosicionDesdeContratoMarco(posicion: SolpPosicion) {
         if (posicion != null) {
             this.posiciones = [...this.posiciones, posicion];
             this.posicionActual = this.posiciones[this.posiciones.length - 1];
-            this._ultimaPosicion = this.posicionActual;        
+            this._ultimaPosicion = this.posicionActual;
         }
     }
 
@@ -454,7 +464,7 @@ export class Solp extends CommonResponse {
             if (isNaN(valorTotal)) {
                 valorTotal = 0;
             }
-            this.valorTotalPorMoneda.push({moneda, valorTotal} as ValorTotalPorMoneda);
+            this.valorTotalPorMoneda.push({ moneda, valorTotal } as ValorTotalPorMoneda);
         });
     }
 
@@ -487,7 +497,7 @@ export class Solp extends CommonResponse {
     }
 
     public getDateFromAspNetFormat(date: string): number {
-        if (date){
+        if (date) {
             const re = /-?\d+/;
             const m = re.exec(date);
             return parseInt(m[0], 10);

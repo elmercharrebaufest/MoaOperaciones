@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgbAlert } from '@ng-bootstrap/ng-bootstrap';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
@@ -20,14 +19,9 @@ import { ComprasService } from '../../compras.service';
 })
 export class CircularComponent implements OnInit, OnChanges {
 
-
-    @Input()
-    displayCircular: boolean;
+    @Input() displayCircular: boolean;
     @Input('locale') es: any;
-
-    @Input()
-    public peticion: PeticionDeOfertaDto;
-
+    @Input() public peticion: PeticionDeOfertaDto;
     @Input() solicitante: boolean;
 
     fechaDeEntrega: Date
@@ -36,6 +30,7 @@ export class CircularComponent implements OnInit, OnChanges {
 
     public circular: CircularDto;
     @Output() cerrarCircularEmitter = new EventEmitter();
+    @Output() onCloseModalEmitter = new EventEmitter();
     archivos = new Array<File>()
     val1: string = "No";
     val2: string;
@@ -64,28 +59,23 @@ export class CircularComponent implements OnInit, OnChanges {
         } else {
             if (this.peticion != null) {
                 if (this.peticion.TipoPosicionCodigo == "SERVICIO") {
-                    if(this.peticion.RevisionFinalizada){
+                    if (this.peticion.RevisionFinalizada) {
                         this.selectedProv = this.peticion.Usuarios
                             .filter(x => x.PropuestaTecnicaAprobada)
                             .map(x => x.UsuarioId);
-
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
-
-                    } else {
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                     }
+                    // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
+                    this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                 } else {
                     this.selectedProv = this.peticion.Usuarios
-                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1 
-                            && (this.peticion.RespetaMateriales == true 
-                            || (this.peticion.RespetaMateriales == false 
-                            && (this.peticion.RevisionFinalizada && x.PropuestaTecnicaAprobada))))
-                        .map(x => x.UsuarioId);      
+                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1
+                            && (this.peticion.RespetaMateriales == true
+                                || (this.peticion.RespetaMateriales == false
+                                    && (this.peticion.RevisionFinalizada && x.PropuestaTecnicaAprobada))))
+                        .map(x => x.UsuarioId);
 
-                        // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                        this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));                    
+                    // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
+                    this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                 }
             }
         }
@@ -103,34 +93,33 @@ export class CircularComponent implements OnInit, OnChanges {
             clear: 'Borrar'
         }
 
-        this.plazoDeOfertaHora = new Date(1, 1, 1, 10, 0, 0, 0);
+        this.plazoDeOfertaHora = new Date(1, 1, 1, 12, 0, 0, 0);
     }
 
     autocompletarFechaDeEntrega() {
         if (this.peticion != null && this.peticion.FechaEntregaFormateado != "") {
-          // Separar la fecha en sus componentes (año, mes, día)
-          const parts = this.peticion.FechaEntregaFormateado.split('-');
-          if (parts.length === 3) {
-            const year = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1; // Los meses en JavaScript van de 0 a 11
-            const day = parseInt(parts[2], 10);
-      
-            // Crear una nueva fecha con los componentes
-            const date = new Date(year, month, day);
-      
-            // La variable 'date' ahora contiene la fecha deseada
-            this.fechaDeEntrega = date;
-          } else {
-            console.error('El formato de la fecha no es válido');
-          }
+            // Separar la fecha en sus componentes (año, mes, día)
+            const parts = this.peticion.FechaEntregaFormateado.split('-');
+            if (parts.length === 3) {
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1; // Los meses en JavaScript van de 0 a 11
+                const day = parseInt(parts[2], 10);
+
+                // Crear una nueva fecha con los componentes
+                const date = new Date(year, month, day);
+
+                // La variable 'date' ahora contiene la fecha deseada
+                this.fechaDeEntrega = date;
+            } else {
+                console.error('El formato de la fecha no es válido');
+            }
         }
-      }
-      
+    }
 
     onCerrarCircular() {
         this.visualizarAlert = false;
         this.iniciarModalCircular();
-        this.cerrarCircularEmitter.next();
+        this.onCloseModalEmitter.next();
     }
 
     grabarCircular() {
@@ -188,8 +177,9 @@ export class CircularComponent implements OnInit, OnChanges {
         }
     }
 
-    eliminarArchivo(archivo: any) {
+    eliminarArchivoCircular(archivo: any) {
         this.confirmationService.confirm({
+            key: "eliminarArchivoCircular",
             message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 this.eliminarAdjuntoNuevo(archivo);
@@ -289,14 +279,16 @@ export class CircularComponent implements OnInit, OnChanges {
         this.eliminarTodosLosArchivos();
     }
 
-    salir() {
-        this.onCerrarCircular();
+    salirCircular() {
+        this.visualizarAlert = false;
+        this.iniciarModalCircular();
+        this.cerrarCircularEmitter.next();
         this.displayOkCircular = false;
     }
 
     validarCircular() {
         if (this.Observacion == "" || this.Observacion == undefined) {
-            this.error = "El campo Observacion es obligatorio";
+            this.error = "El campo Observaciones es obligatorio";
             return this.visualizarAlert = true;
         }
         if ((this.fechaDeEntrega == null || this.fechaDeEntrega == undefined) && this.visualizarFechas) {

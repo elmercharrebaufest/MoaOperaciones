@@ -44,7 +44,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('myCalendar', undefined)
-    private calendar: any;
     nroSolp: string = "";
     nroPo: string = "";
     nombrePedido: string = "";
@@ -72,6 +71,30 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     fechaDesde: string = null;
     fechaHasta: string = null;
     rangeDates: Date[];
+    filtrosProveedor: {
+        nroSolp: string;
+        nroPo: string;
+        nombrePedido: string;
+        usuarios: string[];
+        estadoLicitacion: number | null;
+        estadoCotizacion: number | null;
+        fechaDesde: string;
+        fechaHasta: string;
+        pageIndex: number;
+    } = {
+            nroSolp: "",
+            nroPo: "",
+            nombrePedido: "",
+            usuarios: [],
+            estadoLicitacion: null,
+            estadoCotizacion: null,
+            fechaDesde: null,
+            fechaHasta: null,
+            pageIndex: 1
+        };
+
+    esProveedor: boolean = true;
+
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -82,6 +105,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.recuperarFiltros();
         this.getListarPO();
         this.listarPO();
     }
@@ -107,7 +131,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-
+                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                     this.spinnerComponent.hideIt()
                 },
@@ -143,14 +167,20 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
+        this.filtrosProveedor = {
+            ...this.filtrosProveedor,
+            pageIndex: this.pageIndex
+        };
+        sessionStorage.setItem('filtrosProveedor', JSON.stringify(this.filtrosProveedor));
         this.listarPO();
     }
+
 
     verLegajo(item) {
         this.blockUI.start('Cargando...')
         this.itemSelected = item;
         this.itemSelected.Usuarios[0].CircularSinLeer = false;
-        this.service.verLegajo(item.Id, item.Usuarios[0].Id)
+        this.service.verLegajo(item.Id, item.Usuarios[0].Id, this.esProveedor)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -360,8 +390,17 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     onBuscar() {
+        this.pageIndex = 1;
+        this.filtrosProveedor.nroSolp = this.nroSolp;
+        this.filtrosProveedor.nroPo = this.nroPo;
+        this.filtrosProveedor.nombrePedido = this.nombrePedido;
+        this.filtrosProveedor.estadoLicitacion = this.selectEstadoLicitacion;
+        this.filtrosProveedor.estadoCotizacion = this.selectEstadoCotizacion;
+        this.filtrosProveedor.fechaDesde = this.fechaDesde;
+        this.filtrosProveedor.fechaHasta = this.fechaHasta;
         this.spinnerComponent.showIt();
         this.service.getListarPOProveedor(1, 10, "", "", this.nroSolp, this.nroPo, this.nombrePedido, this.selectEstadoLicitacion, this.selectEstadoCotizacion, this.fechaDesde, this.fechaHasta);
+        sessionStorage.setItem('filtrosProveedor', JSON.stringify(this.filtrosProveedor));
     }
 
     returnToTodaysDate() {
@@ -376,11 +415,32 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaDesde = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            this.fechaHasta = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaHasta = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            if (this.rangeDates[1]) {
-                this.calendar.overlayVisible = false;
+        }
+    }
+
+    recuperarFiltros() {
+        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosProveedor'));
+        if (filtrosGuardados) {
+            this.nroSolp = filtrosGuardados.nroSolp;
+            this.nroPo = filtrosGuardados.nroPo;
+            this.nombrePedido = filtrosGuardados.nombrePedido;
+            this.selectEstadoLicitacion = filtrosGuardados.estadoLicitacion;
+            this.selectEstadoCotizacion = filtrosGuardados.estadoCotizacion;
+            this.fechaDesde = filtrosGuardados.fechaDesde;
+            this.fechaHasta = filtrosGuardados.fechaHasta;
+            this.pageIndex = filtrosGuardados.pageIndex;
+            if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
+                const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de d�a incorrecto por la zona horaria local
+                if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
+                    const [year2, month2, day2] = this.fechaHasta.split('-').map(Number);
+                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
+                } else {
+                    this.rangeDates = [new Date(year, month - 1, day)];
+                }
             }
         }
     }

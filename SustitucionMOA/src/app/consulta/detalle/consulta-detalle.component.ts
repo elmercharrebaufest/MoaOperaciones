@@ -29,6 +29,7 @@ import {
 } from "ngx-file-drop";
 import { DomSanitizer } from '@angular/platform-browser';
 import { AngularEditorModule, AngularEditorConfig, AngularEditorComponent } from "@kolkov/angular-editor";
+import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from "../../common/configs/angularEditor.configs";
 
 declare var $: any;
 
@@ -114,7 +115,6 @@ export class DetalleConsultaComponent extends BaseComponent {
     estadoId: number;
     categoriaId: number;
     MostrarDatosAdicionales: boolean = false;
-
     listaArchivos: Array<File> = new Array<File>();
 
     tieneSubcategorias: boolean = false;
@@ -124,44 +124,17 @@ export class DetalleConsultaComponent extends BaseComponent {
     file: any;
     fecha: any;
     hora: any;
-    username = sessionStorage.getItem("userName");
+    username = sessionStorage.getItem("username");
     detalle: string = "";
     esInterno = this.isAuthorized("CONSULTA ABM");
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
+    cuitUsuarioSesion: string = sessionStorage.getItem("cuit");
+
     datosExtra = [];
 
     htmlContent: string;
 
-    config: AngularEditorConfig = {
-        editable: true,
-        spellcheck: true,
-        height: "auto",
-        minHeight: "100px",
-        maxHeight: "200px",
-        width: "530px",
-        minWidth: "530px",
-        translate: "yes",
-        enableToolbar: true,
-        showToolbar: true,
-        defaultParagraphSeparator: "",
-        defaultFontName: "Arial",
-        defaultFontSize: "5",
-        fonts: [
-            { class: "arial", name: "Arial" },
-            { class: "times-new-roman", name: "Times New Roman" },
-            { class: "calibri", name: "Calibri" },
-            { class: "comic-sans-ms", name: "Comic Sans MS" },
-        ],
-        customClasses: [
-            {
-                name: "Quitar enlace",
-                class: "quote",
-            },
-        ],
-        uploadUrl: "v1/image",
-        sanitize: true,
-        toolbarPosition: "top",
-    };
+    config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("CONTACTO MAIL");
@@ -176,7 +149,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.jqueryOnInit();
         this.getCombos();
-        this.getDetalleConsulta();
     }
 
     ngAfterViewInit(): void {
@@ -234,12 +206,9 @@ export class DetalleConsultaComponent extends BaseComponent {
         $formInput.val(null);
     }
 
-    comentarioPropio(comentario) {
-        return (
-            (this.consulta.UsuarioId == comentario.UsuarioId &&
-                this.consulta.UsuarioId == this.consulta.UsuarioActualId) ||
-            (this.consulta.UsuarioId != comentario.UsuarioId && this.esInterno)
-        );
+    comentarioPropio(comentario: Comentario): boolean {
+        return (this.esInterno && comentario.CreadorInterno) ||
+            !this.esInterno && !comentario.CreadorInterno;
     }
 
     actualizarCombos() {
@@ -418,15 +387,20 @@ export class DetalleConsultaComponent extends BaseComponent {
                 NewLine: true,
             },
             {
-                Nombre: "N° Orden", 
+                Nombre: "N° Orden",
                 Value: this.consulta.OrdenId,
                 NewLine: false
             },
             {
-                Nombre: "Patente Chasis", 
+                Nombre: "Patente Chasis",
                 Value: this.consulta.PatenteChasis,
                 NewLine: false
             },
+            {
+                Nombre: "Rubro",
+                Value: this.consulta.Rubro,
+                NewLine: true
+            }
         ];
     }
 
@@ -653,6 +627,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                             this.tieneSubcategorias = true;
                         }*/
                         this.causasConsulta = result.causas;
+                        this.getDetalleConsulta();
                     }
                 },
                 (error) => {
@@ -698,7 +673,6 @@ export class DetalleConsultaComponent extends BaseComponent {
                             return x;
                         });
                         this.consulta = result;
-                       
                         this.setDatosExtra();
                         if (this.consulta.EstadoConsulta.Code == "INI" && this.esInterno) {
                             this.cambiarEstadoPorCode("GES");
@@ -717,10 +691,12 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.consulta.Fecha = new Date(
                             this.getDateFromAspNetFormat(this.consulta.Fecha)
                         );
+
                         this.estadoId = result.EstadoConsultaId;
                         this.categoriaId = result.CategoriaId;
                         this.subcategoriaId = result.SubCategoriaId;
                         this.subcategoriasInicial();
+
 
                         try {
                             setTimeout(() => {
@@ -777,41 +753,12 @@ export class DetalleConsultaComponent extends BaseComponent {
         let divToolBar = document.getElementsByClassName(
             "angular-editor-toolbar"
         )[0];
-        let toolBars = divToolBar.childNodes;
+        const subscript = $("#subscript-");
+        const superscript = $("#superscript-");
 
-        if (toolBars.length === 14) {
-            let toolBar0 = toolBars[0];
-            let toolBar2 = toolBars[2];
-            let toolBar3 = toolBars[3];
-            let toolBar4 = toolBars[4];
-            let toolBar5 = toolBars[5];
-            let toolBar6 = toolBars[6];
-            let toolBar7 = toolBars[7];
-            let toolBar8 = toolBars[8];
-            let toolBar9 = toolBars[9];
-            let toolBar10 = toolBars[10];
-            let toolBar11 = toolBars[11];
-            let toolBar13 = toolBars[13];
-
-            divToolBar.removeChild(toolBar0);
-            divToolBar.removeChild(toolBar2);
-            divToolBar.removeChild(toolBar3);
-            divToolBar.removeChild(toolBar4);
-            divToolBar.removeChild(toolBar5);
-            divToolBar.removeChild(toolBar6); 
-            divToolBar.removeChild(toolBar7);
-            divToolBar.removeChild(toolBar8);
-            divToolBar.removeChild(toolBar9);
-            divToolBar.removeChild(toolBar10);
-            divToolBar.removeChild(toolBar11);
-            divToolBar.removeChild(toolBar13);
-        }
-
-        $("#subscript-").hide();
-        $("#superscript-").hide();
-
-        $(".angular-editor-textarea").css("font-size", "large");
-        $(".angular-editor-button").css("font-size", "large");
+        const editorTextArea = $(".angular-editor-textarea");
+        const editorButton = $(".angular-editor-button");
+        eliminarBotonesExtraEditor(divToolBar, subscript, superscript, editorTextArea, editorButton)
     }
 
     subcategoriasInicial() {
@@ -869,5 +816,33 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     borrarArchivo(i: number) {
         this.listaArchivos.splice(i, 1);
+    }
+
+    reabrirConsulta(): void {
+        this.mensajeComponent.setMsgsEmpty();
+        this.subscription = this.service
+            .reabrirConsulta(this.consultaId)
+            .subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(
+                            "La consulta se reabrió correctamente."
+                        );
+                        this.getDetalleConsulta();
+                    }
+                },
+                (error) => {
+                    this.spinnerModal.hideIt();
+                }
+            );
     }
 }

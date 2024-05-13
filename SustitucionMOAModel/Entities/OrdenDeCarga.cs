@@ -111,11 +111,6 @@ namespace SustitucionMOAModel.Entities
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
 
-        public bool TieneMultiplesContratos
-        {
-            get { return !string.IsNullOrEmpty(ContratosRespuesta); }
-        }
-
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
             return CodigoVerificacionSap == ResponseConverter.GetCodigoControlCarga(controlCargaRes);
@@ -156,6 +151,10 @@ namespace SustitucionMOAModel.Entities
                 return $"No se pudo generar la entrega. No existe {msgDestinatario}{slash}{msgDestino}.";
             }
         }
+        public string ObtenerKeyHashPatentes()
+        {
+            return $"{PatenteAcoplado}.{ChasisAcoplado}";
+        }
 
         /// <summary>
         /// Actualiza la Orden según su estado interno
@@ -163,7 +162,7 @@ namespace SustitucionMOAModel.Entities
         /// <returns>Log del cambio de estado</returns>
         public string ActualizarEstado()
         {
-            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}. " +
+            var logCambioEstado = $"Actualizar estado Orden de carga {Id}. Estado inicial:{Estado.ToFriendlyString()}. " +
                 $"CodigoVerificacionSap:{CodigoVerificacionSap}, ContratoSAP:{ContratoSAP}, ContratoSinCantidadPendiente:{ContratoSinCantidadPendiente}, " +
                 $"NumeroPedido:{NumeroPedido}, InformadaSAP:{InformadaSAP}, TransporteExiste:{TransporteExiste}, AprobadoCredito:{AprobadoCredito}, FechaEntregaGenerada:{FechaEntregaGenerada}." +
                 $"EsFacturaAnticipada:{EsFacturaAnticipada}, SinSeleccionarFactura:{SinSeleccionarFactura}";
@@ -221,7 +220,7 @@ namespace SustitucionMOAModel.Entities
                     }
                 }
             }
-            logCambioEstado += $" Estado final:{EstadoOrdenDeCargaExtensions.ToFriendlyString(Estado)}";
+            logCambioEstado += $" Estado final:{Estado.ToFriendlyString()}";
             return logCambioEstado;
         }
 
@@ -324,9 +323,5 @@ namespace SustitucionMOAModel.Entities
         {
             return new OrdenDeCargaEditarDto(this);
         }
-        //public TipoContratoFAS TipoContratoFAS()
-        //{
-        //    return TipoContratoFASParser.Parse(TipoContrato);
-        //}
     }
 }

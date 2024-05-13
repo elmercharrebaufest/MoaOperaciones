@@ -183,21 +183,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.model.posicionActual.setTabPosicion();
         }
 
-        this.setCombos();
+        this.listarContratosAsociados();
     }
 
     public setCombos(): void {
-        //Obtengo todas las opciones de los autocomplete
         if (this.combos != undefined) {
             this.claseDocumento = this.combos.ClaseDocumento;
             this.centroEntrega = this.combos.Centro;
             this.monedaCompras = this.combos.Moneda;
             this.tipoPosicion = this.combos.TipoPosicion;
             this.tipoImputacion = this.combos.TipoImputacion;
-            this.unidades = this.combos.Unidades;
             if (this.model.posiciones.length > 0) {
                 this.model.posiciones.forEach(posicion => {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
+                    posicion.unidadesAlternativas = posicion.unidadesAlternativas ? posicion.unidadesAlternativas :
+                        posicion.codigoServicio ? this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap) : this.combos.Unidades;
                 });
             }
         }
@@ -208,9 +208,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     ngOnChanges() {
-
         this.setTabs();
-        this.setCombos();
 
         //Hace que clase documento no use la primera opcion como predeterminada
         var clase = this.claseDocumento != undefined ? this.claseDocumento[0] : null;
@@ -561,7 +559,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             case 'MONEDA COMPRAS':
                 this.monedaCompras = this.combos.Moneda.filter(x => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;
-            case 'UNIDAD MEDIDA':
+            case 'UNIDAD MEDIDA': //al parecer no entra nunca
                 this.unidades = this.combos.Unidades.filter(x => x.Descripcion.toLowerCase().includes(event.query.toLowerCase()));
                 break;
             default:
@@ -922,23 +920,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
+        this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap);
         this.autocompletarCamposMaterial(posicion);
 
         this.endEditCell(dt);
-
-
     }
 
     onSelectTarea(posicion: SolpPosicion, dt) {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
-
+        this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap);
         this.autocompletarCamposMaterial(posicion);
         this.endEditCell(dt);
 
         this.listarContratosAsociados()
-
     }
 
     autocompletarCamposMaterial(posicion: SolpPosicion) {
@@ -971,6 +967,11 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var grupoArticuloAux = this.combos.GrupoArticulo.find(x => x.Descripcion == posicion.codigoServicio.GrupoArticulo.Descripcion);
         if (grupoArticuloAux) {
             posicion.selectArticuloCompras = grupoArticuloAux;
+        }
+
+        var grupoComprasAux = this.combos.GrupoCompras.find(x => x.Descripcion == posicion.codigoServicio.GrupoCompras.Descripcion);
+        if (grupoComprasAux) {
+            posicion.selectGrupoCompras = grupoComprasAux;
         }
         //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
         if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
@@ -1089,14 +1090,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let centro = this.combos.Centro.find(x => x.Codigo == pos.centro);
                 let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == centro.CodigoSap);
                 let moneda = this.combos.Moneda.find(x => x.Codigo == contratoMarco.claveMoneda);
+                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
+                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
 
                 let servicioMaterialObj = {
                     Codigo: pos.numeroMaterial,
+                    CodigoSap: pos.numeroMaterial,
                     Descripcion: pos.textoMaterialOServicio,
                     UnidadMedidaBase: pos.unidadMedida
                 };
 
-                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda);
+                let newPos = this.model.nuevaPosicion(null, centro, direccionCentro, moneda, grupoComprasSeleccionadoObj, grupoArticuloSeleccionadoObj);
 
                 newPos.codigoServicio = servicioMaterialObj;
                 newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
@@ -1124,12 +1128,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                     newPos.selectAlmacenEntrega = almacenSeleccionadoObj;
                 }
 
-                let grupoArticuloSeleccionadoObj = this.combos.GrupoArticulo.find(x => x.Codigo == pos.grupoArticuloMateriales);
                 if (grupoArticuloSeleccionadoObj) {
                     newPos.selectArticuloCompras = grupoArticuloSeleccionadoObj;
                 }
 
-                let grupoComprasSeleccionadoObj = this.combos.GrupoCompras.find(x => x.Codigo == contratoMarco.grupoCompras);
                 if (grupoComprasSeleccionadoObj) {
                     newPos.selectGrupoCompras = grupoComprasSeleccionadoObj;
                 }
@@ -1164,8 +1166,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                this.agregarPosicion();
-
+                
+                newPos.unidadesAlternativas = newPos.codigoServicio ? this.listarUnidadesDeMedida(newPos.codigoServicio.CodigoSap) : this.combos.Unidades;
+                
             });
             this.model.calcularValorTotalPorMoneda();
         }
@@ -1202,6 +1205,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     clearCode(posicion) {
         if (posicion.tareaSubcontratar != null) {
             posicion.codigoServicio = null;
+        }
+        if (posicion.codigoServicio == null) {
+            posicion.unidadesAlternativas = this.combos.Unidades;
         }
     }
 
@@ -1330,5 +1336,32 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         this.model.posiciones.forEach(element => {
             element.setTabPosicion();
         });
+    }
+
+    listarUnidadesDeMedida(materialCodigo: string) {
+        try {
+            this.subscription = this.service.listarUnidadesDeMedida(materialCodigo).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        if (result) {
+                            this.model.posiciones.find(x => x.codigoServicio != undefined && x.codigoServicio.CodigoSap == materialCodigo).unidadesAlternativas = result.data;
+                        }
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
+        return false;
     }
 }

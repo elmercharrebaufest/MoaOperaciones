@@ -29,5 +29,17 @@ namespace SustitucionMOAModel.Dto
         public string CentroComprasCodigo { get; set; }
         public string MaterialTextoAmpliado { get; set; }
         public string FechaEntregaServicioFormateado { get; set; }
+        public DateTime? PlazoDeEntrega { get; set; }
+        public bool Eliminado { get; set; }
+        public int UnidadId { get; set; }
+        public List<TablaSapDto> UnidadesDeMedida { get; set; }
+        public string UnidadCodigo { get; set; }
+        public TablaSapDto UnidadMedida { get; set; }
+        public OrdenDeCompraSAPPosicionDireccionDeEntrega DireccionDeEntrega { get; set; }
+        public bool EntregaFinal { get; set; }
+        public TablaSapDto Moneda { get; set; }
+        public string RegionCodigo { get; set; }
+        public int? RegionId { get; set; }
+        public string PaisSap { get; set; }
     }
 }

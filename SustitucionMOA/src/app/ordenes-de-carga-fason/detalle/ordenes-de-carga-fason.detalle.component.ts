@@ -89,8 +89,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
         this.botones.verificarTransporte = this.esAdmin && !this.ordenDeCargaFason.TransporteExiste;
 
-        this.botones.editar = this.esAdmin ||
-            (this.esCliente && this.estadosPermitenEdicion.includes(this.ordenDeCargaFason.Estado));
+        this.botones.editar = this.estadosPermitenEdicion.includes(this.ordenDeCargaFason.Estado);
 
         this.botones.aprobarRechazarAnulacion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada;
 

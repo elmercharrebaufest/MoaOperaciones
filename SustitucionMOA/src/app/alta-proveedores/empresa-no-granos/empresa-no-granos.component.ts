@@ -1,9 +1,8 @@
-import { Component, ViewChild } from "@angular/core";
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
-import { Router, ActivatedRoute, Params } from "@angular/router";
+import { ActivatedRoute, Params } from "@angular/router";
 import { ListBaseComponent } from "../../common/base-components/list-base-component";
 import { Archivo } from "../../common/models/archivo";
-import { InformeComercial } from "../../common/models/informeComercial";
 import { Material } from "../../common/models/material";
 import { NuevoAcopio } from "../../common/models/nuevoAcopio";
 import { NuevoProduccion } from "../../common/models/nuevoProduccion";
@@ -15,12 +14,10 @@ import { SessionDataService } from "../../common/services/SessionDataService";
 import { MensajeComponent } from "../../common/view-child/mensaje/mensaje.component";
 import { SpinnerSmallComponent } from "../../common/view-child/spinner-small/spinner-small.component";
 import { EmpresaNoGranosService } from "./empresa-no-granos.service";
-import { ContactoComercial } from "../../common/models/contactoComercial";
 import { RelacionConEmpleados } from "../../common/models//RelacionConEmpleados";
 import { RelacionConFuncionarios } from "../../common/models/relacionConFuncionarios";
-import { forEach } from "@angular/router/src/utils/collection";
-import { CartaPresentacion } from "../../common/models/cartaPresentacion";
-import * as $ from 'jquery';
+import { ConfirmDeactivateService } from "../../common/security/canDeactive-guard";
+import { forkJoin } from "rxjs";
 
 @Component({
     selector: "app-empresa-no-granos",
@@ -79,7 +76,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
     CBUNoGranos: string = "";
     esUsuarioCompras: boolean = false;
     ingresoAPlanta: boolean = false;
-    siperObligatorio: boolean = false; 
+    siperObligatorio: boolean = false;
+    declaracionVinculosObligatorio: boolean = false;
 
     esGuardarYNotificar: boolean = false;
     Comentarios: string = "";
@@ -93,7 +91,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         protected sessionDataService: SessionDataService,
         protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService,
-        protected modalService: ModalService
+        protected modalService: ModalService,
+        protected confirmDeactivateService: ConfirmDeactivateService
     ) {
         super(
             service,
@@ -105,6 +104,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         );
         this.mensajeComponent = new MensajeComponent();
     }
+    @ViewChild("mainDiv")
+    protected mainDiv: ElementRef<HTMLDivElement>;
 
     @ViewChild("msjEmpresaGranos")
     protected mensajeComponent: MensajeComponent;
@@ -138,9 +139,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         this.checkPermisos();
         this.navService.setSeccionList([]);
 
-        this.obtenerArchivosSubidos();
-        this.cargarSolicitudUsuario();
-        this.obtenerInfoProveedor();
+        this.obtenerDatos();
 
 
         //Si no tiene firmado el codigo de conducta, significa que necesitamos que lo haga el proveedor. Por lo tanto, solo permitimos que guarde los archivos y datos de IVA, IIBB y Cbu
@@ -198,22 +197,29 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             );
     }
 
-    obtenerInfoProveedor() {
-        this.subscription = this.service
+    get $obtenerInfoProveedor() {
+        return this.service
             .obtenerInfoProveedor(this.proveedorId)
+    };
+
+    obtenerInfoProveedor() {
+        this.$obtenerInfoProveedor
             .subscribe(
-                (result) => {
-                    //this.CBUSISA = result.ProveedorCBU;
-                    //this.estadoSISA = result.EstadoSISA;
-                    this.proveedorCUIT = result.ProveedorCUIT;
-                    this.razonSocial = result.RazonSocial;
-                    this.ingresoAPlanta = result.IngresoAPlanta;
-                    this.siperObligatorio = result.SiperObligatorio;
-                },
+                (result) => this.handlerArchivosSubidos(result),
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+    }
+
+    handlerInfoProveedor(result: any) {
+        //this.CBUSISA = result.ProveedorCBU;
+        //this.estadoSISA = result.EstadoSISA;
+        this.proveedorCUIT = result.ProveedorCUIT;
+        this.razonSocial = result.RazonSocial;
+        this.ingresoAPlanta = result.IngresoAPlanta;
+        this.siperObligatorio = result.SiperObligatorio;
+        this.declaracionVinculosObligatorio = result.DeclaracionVinculosObligatorio;
     }
 
     descargarArchivo(archivo: Archivo) {
@@ -225,7 +231,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         let fileKey: string = archivo.FileKey;
 
         this.subscription = this.service
-            .descargarArchivoSubido(fileKey, archivoID)
+            .descargarArchivoSubido(fileKey, archivoID, this.proveedorId)
             .subscribe(
                 (result) => {
                     this.spinnerSmallComponent.hideIt();
@@ -318,23 +324,22 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             );
     }
 
-    obtenerArchivosSubidos() {
-        this.subscription = this.service
-            .obtenerArchivosSubidos("", this.proveedorId)
-            .subscribe(
-                (result) => {
-                    this.listaArchivos = new Array();
+    get $obtenerArchivosSubidos() {
+        return this.service
+            .obtenerArchivosSubidos("", this.proveedorId);
+    }
 
-                    result.forEach((element) => {
-                        let archivo = new Archivo();
-                        archivo = element;
-                        this.listaArchivos.push(archivo);
-                    });
-                },
+    obtenerArchivosSubidos() {
+        this.$obtenerArchivosSubidos
+            .subscribe(
+                (result) => this.handlerArchivosSubidos(result),
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+    }
+    handlerArchivosSubidos(result) {
+        this.listaArchivos = result
     }
 
     buscarArchivoPorFileKey(fileKey: string) {
@@ -346,6 +351,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             this.spinnerModal.hideIt();
             return;
         }
+        this.validarDesactivacionRuta(true)
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
@@ -360,6 +366,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             Comentarios: this.Comentarios
         };
 
+        this.mainDiv.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         this.subscription = this.service
             .enviarSolicitud(datos, this.esGuardarYNotificar, this.proveedorId)
             .subscribe(
@@ -449,9 +456,8 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
             this.mensajeComponent.setErrorMsg("Debe completar el CBU");
             return true;
         }
-    
-        if(!this.esGuardarYNotificar)
-        {
+
+        if (!this.esGuardarYNotificar) {
             if (this.relacionConEmpleadosChecked == null) {
                 this.mensajeComponent.setErrorMsg(
                     "Debe completar V\u00EDnculos a declarar con Empleados de Molinos agro S.A."
@@ -566,7 +572,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
                 );
                 return true;
             }
-        } 
+        }
 
         return false;
     }
@@ -588,69 +594,73 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         }
     }
 
+    get $cargarSolicitudUsuario() {
+        return this.service.cargarSolicitudUsuario("", this.proveedorId)
+    }
+
     cargarSolicitudUsuario() {
-        this.subscription = this.service.cargarSolicitudUsuario("", this.proveedorId).subscribe(
-            (result) => {
-
-                this.CBUNoGranos = result.CBU;
-
-                this.IdSituacionIVA = result.IdSituacionIVA;
-                if (this.IdSituacionIVA > 0 && this.IdSituacionIVA != null) {
-                    document
-                        .getElementById("IdSituacionIVA" + this.IdSituacionIVA.toString())
-                        .setAttribute("checked", "true");
-                }
-
-                this.IdIngresoBruto = result.IdIngresoBruto;
-                if (this.IdIngresoBruto > 0 && this.IdIngresoBruto != null) {
-                    document
-                        .getElementById("IdIngresoBruto" + this.IdIngresoBruto.toString())
-                        .setAttribute("checked", "true");
-                }
-                
-                if (result.VinculoConEmpleadosDeMolinos != null) {
-                    console.log("Entramos")
-                    this.codigoConductaVisto = true;
-                    this.codigoDeConducta = true;
-
-                    this.relacionConEmpleadosChecked =
-                        result.VinculoConEmpleadosDeMolinos;
-                    if (result.VinculoConEmpleadosDeMolinos) {
-                        document
-                            .getElementById("radioEmpleadosSi")
-                            .setAttribute("checked", "true");
-                    } else {
-                        document
-                            .getElementById("radioEmpleadosNo")
-                            .setAttribute("checked", "true");
-                    }
-
-                    this.relacionConFuncionariosChecked =
-                        result.VinculoConFuncionariosPublicos;
-                    if (result.VinculoConFuncionariosPublicos) {
-                        document
-                            .getElementById("radioFuncionariosSi")
-                            .setAttribute("checked", "true");
-                    } else {
-                        document
-                            .getElementById("radioFuncionariosNo")
-                            .setAttribute("checked", "true");
-                    }
-
-                    this.empleados = result.Empleados;
-                    this.funcionarios = result.Funcionarios;
-                }
-
-
-                if (this.esUsuarioCompras && !this.codigoDeConducta)
-                {
-                    this.esGuardarYNotificar = true;
-                }
-            },
+        this.$cargarSolicitudUsuario.subscribe(
+            (result) => this.handlerCargarSolicitudUsuario(result),
             (error) => {
                 this.mensajeComponent.setErrorMsg(error.message);
             }
         );
+    }
+
+    handlerCargarSolicitudUsuario(result: any) {
+        this.CBUNoGranos = result.CBU;
+
+        this.IdSituacionIVA = result.IdSituacionIVA;
+        if (this.IdSituacionIVA > 0 && this.IdSituacionIVA != null) {
+            document
+                .getElementById("IdSituacionIVA" + this.IdSituacionIVA.toString())
+                .setAttribute("checked", "true");
+        }
+
+        this.IdIngresoBruto = result.IdIngresoBruto;
+        if (this.IdIngresoBruto > 0 && this.IdIngresoBruto != null) {
+            document
+                .getElementById("IdIngresoBruto" + this.IdIngresoBruto.toString())
+                .setAttribute("checked", "true");
+        }
+
+        if (result.VinculoConEmpleadosDeMolinos != null) {
+            console.log("Entramos")
+            this.codigoConductaVisto = true;
+            this.codigoDeConducta = true;
+
+            this.relacionConEmpleadosChecked =
+                result.VinculoConEmpleadosDeMolinos;
+            if (result.VinculoConEmpleadosDeMolinos) {
+                document
+                    .getElementById("radioEmpleadosSi")
+                    .setAttribute("checked", "true");
+            } else {
+                document
+                    .getElementById("radioEmpleadosNo")
+                    .setAttribute("checked", "true");
+            }
+
+            this.relacionConFuncionariosChecked =
+                result.VinculoConFuncionariosPublicos;
+            if (result.VinculoConFuncionariosPublicos) {
+                document
+                    .getElementById("radioFuncionariosSi")
+                    .setAttribute("checked", "true");
+            } else {
+                document
+                    .getElementById("radioFuncionariosNo")
+                    .setAttribute("checked", "true");
+            }
+
+            this.empleados = result.Empleados;
+            this.funcionarios = result.Funcionarios;
+        }
+
+
+        if (this.esUsuarioCompras && !this.codigoDeConducta) {
+            this.esGuardarYNotificar = true;
+        }
     }
 
     sitIVACheck(id: number) {
@@ -665,7 +675,7 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         document
             .getElementById("openModalNotificacion")
             .click();
-        
+
         if (this.esUsuarioCompras) {
             this.navService.navegarSeccion(
                 "altas"
@@ -673,5 +683,44 @@ export class EmpresaNoGranosComponent extends ListBaseComponent {
         } else {
             this.navService.navegarSeccion("/estado-solicitud");
         }
+    }
+    obtenerDatos() {
+        forkJoin([
+            this.$obtenerInfoProveedor,
+            this.$obtenerArchivosSubidos,
+            this.$cargarSolicitudUsuario
+        ]).subscribe(([resultInfo, resultArchivos, resultCargarSolicitudUsuario]) => {
+            this.handlerInfoProveedor(resultInfo)
+            this.handlerArchivosSubidos(resultArchivos)
+            this.handlerCargarSolicitudUsuario(resultCargarSolicitudUsuario)
+            const formularioValido = !this.validar();
+            this.mensajeComponent.setMsgsEmpty();
+            this.validarDesactivacionRuta(formularioValido);
+        }, (error) => {
+            this.mensajeComponent.setErrorMsg(error.message);
+        })
+    }
+    archivoEstaCargado(fileKey: string): boolean {
+        return !!this.listaArchivos.find(archivo => archivo.FileKey === fileKey);
+    }
+    validarArchivos(): boolean {
+        const ingresoAPlantaValid = !this.ingresoAPlanta ||
+            (this.archivoEstaCargado('protocoloSanitarioCovid') && this.archivoEstaCargado('notaSiniestralidadART'))
+
+        const declaracionVinculosValid = !this.declaracionVinculosObligatorio || this.archivoEstaCargado('declaracionVinculosAltaInterna');
+        const siperObligatorioValid = !this.siperObligatorio || this.archivoEstaCargado('SIPER');
+        const CM05Valid = this.IdIngresoBruto != 2 || this.archivoEstaCargado('formularioCM05');
+        const incripcionCIIBBValid = (this.IdIngresoBruto != 2 && this.IdIngresoBruto != 1) || this.archivoEstaCargado('incripcionIIBB')
+
+
+        return ingresoAPlantaValid && declaracionVinculosValid && siperObligatorioValid
+            && CM05Valid && incripcionCIIBBValid && this.archivoEstaCargado('constanciaCUIT');
+    }
+
+    validarDesactivacionRuta(formularioValido: boolean) {
+        const archivosValidos = this.validarArchivos();
+
+        this.confirmDeactivateService
+            .setState(formularioValido && archivosValidos)
     }
 }

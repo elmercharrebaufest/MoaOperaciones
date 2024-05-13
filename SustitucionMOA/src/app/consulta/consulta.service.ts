@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
-import { Comentario } from './consulta';
+import { Comentario, Destinatario } from './consulta';
 import { map } from 'rxjs/operators';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
@@ -55,11 +55,23 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/CombosConsultaInterna', { params: params, headers: this.headers });
     }
 
-    public getDestinatarios(ordenId: number): Observable<any> {
+    public getDestinatariosFas(ordenId: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('ordenId', ordenId.toString());
         return this.http
-            .get('/api/consulta/GetDestinatariosConsulta', { params: params, headers: this.headers });
+            .get('/api/consulta/GetDestinatariosConsultaFas', { params: params, headers: this.headers });
+    }
+
+    public getDestinatarios(proveedorId: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('proveedorId', proveedorId.toString());
+        return this.http
+            .get('/api/consulta/GetDestinatario', { params: params, headers: this.headers });
+    }
+
+    public getVendedoresUsuario(): Observable<any> {
+        return this.http
+            .get('/api/consulta/GetVendedoresUsuario', { headers: this.headers });
     }
 
     public listarConsultas(): Observable<any> {
@@ -132,6 +144,14 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/ActualizarEstado', payload, { headers: this.headersPost });
     }
 
+    public reabrirConsulta(consultaId: number) {
+        var payload = new FormData();
+        payload.append('consultaId', consultaId.toString());
+
+        return this.http
+            .post('/api/consulta/ReabrirConsulta', payload, { headers: this.headersPost });
+    }
+
     DescargarArchivo(archivoId: number): Observable<any> {
         let headers = new HttpHeaders();
         headers = headers.append("Content-Type", "application/json");
@@ -195,9 +215,10 @@ export class ConsultaService extends BaseService {
             .post('/api/consulta/AnularConsulta', payload, { headers: this.headersPost })
     }
 
-    public AgregarConsultaInterna(consulta: object, comentario: Comentario, archivo: any = null) {
+    public AgregarConsultaInterna(consulta: object, comentario: Comentario, destinatarios: Destinatario[], archivo: any = null) {
         let consultaJson = JSON.stringify(consulta);
         let comentarioJson = JSON.stringify(comentario);
+        let destinatariosJson = JSON.stringify(destinatarios);
         var payload = new FormData();
 
         if (archivo != null) {
@@ -209,6 +230,7 @@ export class ConsultaService extends BaseService {
 
         payload.append('consultaJson', consultaJson);
         payload.append('comentarioJson', comentarioJson);
+        payload.append('destinatariosJson', destinatariosJson);
         payload.append("file", archivo);
 
         return this.http

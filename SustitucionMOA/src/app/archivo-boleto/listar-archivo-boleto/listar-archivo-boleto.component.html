@@ -1,0 +1,126 @@
+<div class="content-wraper">
+    <!-- CONTENT-->
+    <section class="container-fluid clearfix">
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 "><strong>Boletos</strong> </div>
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <!-- Button trigger modal -->
+                <button type="button" pButton icon="pi pi-save" (click)="verModalCargaArchivo= true;"
+                    style="background-color: #075088; float: right; left: -10px; top: 50%;" label="Cargar">
+                </button>
+
+            </div>
+        </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="myRow mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="col-xs-12 col-md-12 search-header">
+                    <title-caps>Refinar resultados</title-caps>
+                </div>
+
+                <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Ver</p>
+                    <filtro-fecha #filtroFecha (ClickEvent)="cargarLista()"></filtro-fecha>
+                </div>
+                <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Nombre archivo:</p>
+                    <div class="styled-select">
+                        <input type="search" class="" placeholder="Ingrese nombre" [value]="" aria-controls="tableModal"
+                            [(ngModel)]="filtroNombreArchivo">
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-sm-6 col-md-15">
+                    <p>Estado:</p>
+                    <div>
+                        <p-multiSelect [options]="opcionesEstado" defaultLabel="Estados" [(ngModel)]="filtroEstados"
+                            selectedItemsLabel="{0} Items seleccionados" appendTo="body">
+                        </p-multiSelect>
+                    </div>
+                </div>
+
+                <div style="float: right; height: 70px;">
+                    <button type="button" pButton icon="fa fa-refresh" (click)="cargarLista()"
+                        style="background-color: #075088; float: right; left: -10px; top: 50%;"></button> &nbsp;
+                </div>
+            </div>
+        </div>
+
+        <!-- End Search-->
+        <!-- Tables-->
+        <div class="row myRow">
+            <div class="clearfix myTables" style="overflow-x:auto;">
+                <mensaje #mensajePrincipal></mensaje>
+                <spinner></spinner>
+                <ng-container *ngIf="listaArchivos && listaArchivos.length != 0">
+                    <table #tabla id="tableModal"
+                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
+                        cellspacing="0" role="grid" aria-describedby="tableModal_info"
+                        style="width: 100%; padding:10px 0; background: white !important;">
+                        <thead>
+                            <tr role="row">
+                                <th>ID</th>
+                                <th>Nombre de archivo</th>
+                                <th>Fecha de carga</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let archivoBoleto of listaArchivos | 
+                customFilter : 'NombreArchivo' : filtroNombreArchivo  | 
+                customFilterEstados : 'NombreEstado' : filtroEstados |
+                paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd" role="row" [class.odd]="!odd">
+                                <td>{{archivoBoleto.Id}}</td>
+                                <td>{{archivoBoleto.NombreArchivo}}</td>
+                                <td>{{archivoBoleto.FechaCarga | date: 'dd/MM/yyyy' }}</td>
+                                <div [pTooltip]="archivoBoleto.NombreEstado"
+                                    class="semaforo {{archivoBoleto.ColorEstado}}">
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <pagination-template #pT="paginationApi" (pageChange)="p = $event">
+                        <div class="dataTables_paginate paging_simple_numbers">
+                            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+                                [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+                                <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                                    *ngIf="pT.getCurrent() !== page.value">{{
+                                    page.label }}</a>
+                                <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                                    }}</a>
+                            </span>
+                            <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
+                                [class.disabled]="pT.isLastPage()">
+                                Siguiente </a>
+                        </div>
+                    </pagination-template>
+                </ng-container>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<p-dialog [(visible)]="verModalCargaArchivo" [draggable]="false" [header]="'Cargar nuevo archivo de Boleto'"
+    [responsive]="true" appendTo="body" [modal]="true" (onHide)="onCierreModal()">
+    <div class="col-xs-12" style="margin-top: 10px;">
+        Archivo:
+        <div class="styled-select">
+            <input type="file" [(ngModel)]="inputArchivo" (change)="setArchivo($event)" accept=".pdf"
+                placeholder="Cargue archivo" />
+        </div>
+    </div>
+
+    <div class="col-xs-12" style="margin-top: 10px; max-width: 500px!important;">
+        <mensaje #mensajeCarga></mensaje>
+    </div>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="subirArchivo()" label="Cargar"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="verModalCargaArchivo = false; archivoASubir= null"
+            label="Cancelar" class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>

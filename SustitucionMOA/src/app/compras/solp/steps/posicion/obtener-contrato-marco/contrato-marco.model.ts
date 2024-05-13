@@ -11,7 +11,7 @@ export class ContratoMarco {
     public finPeriodoValidez: string;
     public posiciones: Array<ContratoMarcoPosicion> = new Array<ContratoMarcoPosicion>();
 
-    constructor(entity: any =  null) {
+    constructor(entity: any = null) {
         if (entity != null) {
             this.numeroDocumentoCompras = entity.NumeroDocumentoCompras;
             this.sociedad = entity.Sociedad;
@@ -43,6 +43,7 @@ export class ContratoMarcoPosicion {
     public almacen: string;
     public cantidadPrevista: number;
     public unidadMedida: string;
+    public unidadesAlternativas: any;
     public importeMonedaBapi: number;
     public tipoPosicionDocumentoCompras: string;
     public tipoImputacionCompras: string;
@@ -67,7 +68,7 @@ export class ContratoMarcoPosicion {
             this.tipoPosicionDocumentoCompras = entity.TipoPosicionDocumentoCompras;
             this.tipoImputacionCompras = entity.TipoImputacionCompras;
             this.numeroPaquete = entity.NumeroPaquete;
-            this.grupoArticuloMateriales = entity.GrupoArticuloMateriales;            
+            this.grupoArticuloMateriales = entity.GrupoArticuloMateriales;
             this.numeroDocumentoCompras = entity.NumeroDocumentoCompras;
             this.subPosiciones = new Array<ContratoMarcoSubposicion>();
             if (entity.SubPosiciones && entity.SubPosiciones.length) {

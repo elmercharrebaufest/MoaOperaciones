@@ -7,6 +7,7 @@ using iTextSharp.text.pdf;
 using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOAModel.Models.WSMapMOA;
@@ -14,10 +15,10 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WSConsumers; 
 
 namespace SustitucionMOAUtils.Services
@@ -25,10 +26,12 @@ namespace SustitucionMOAUtils.Services
     public class CartaPorteService : ICartaPorteService
     {
         readonly IScatoConsumer scatoConsumer;
+        readonly IRepositorio repositorio;
 
-        public CartaPorteService (IScatoConsumer scatoConsumer)
+        public CartaPorteService (IScatoConsumer scatoConsumer, IRepositorio repositorio)
         {
             this.scatoConsumer = scatoConsumer;
+            this.repositorio = repositorio;
         }
 
         public CartaPorteDescargaViewModel GetDescargas(string proveedor, string fechaInicio, string fechaFin)
@@ -42,9 +45,11 @@ namespace SustitucionMOAUtils.Services
                     filtroProducto = new DropdownContent(),
                     filtroVendedor = new DropdownContent(),
                     data = (CartaPorteDescargaWSMOAResponse)new RecepcionesConsumerMOA().request(proveedor, fechas, cartaPorte)
-                }; 
+                };
 
                 ValidarRespuesta(dataView.data);
+
+                SetAccionesDisponiblesParaDiscrepanciaEnCalidad(fechaInicio, dataView.data.cartasPorte);
 
                 try
                 {
@@ -232,13 +237,13 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     PDFResponse pdfExport = PDFExport.ToPDF("Calidad Carta de Porte(" + cartaporteId + ")", new List<string>() { "Característica", "Calado Result.", "Calado Dto.", "Cámara Result.", "Cámara Dto.", "Kg Netos", "Kg Apli" }, data.datosCalidad);
-                    if (pdfExport.pdf == null || pdfExport.pdf.data == null || pdfExport.pdf.data.Count() == 0)
+                    if (pdfExport.Pdf == null || pdfExport.Pdf.data == null || pdfExport.Pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }
 
 
-                    return pdfExport.pdf;
+                    return pdfExport.Pdf;
                 }
                 catch
                 {
@@ -507,6 +512,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<Calidad> GetDetalleCalidades(string ccpp, string codigoProveedor)
+        {
+            var datos = GetDetalle(codigoProveedor, ccpp);
+            return datos.datosCalidad;
+        }
+
         private void ValidarRespuesta(CartaPorteWSMOAResponse data)
         {
             if (data == null)
@@ -724,6 +735,26 @@ namespace SustitucionMOAUtils.Services
         private string FormatearCheckBox(string val)
         {
             return val.ToLowerInvariant() == "true" ? "X" : "";
+        }
+
+        private void SetAccionesDisponiblesParaDiscrepanciaEnCalidad(string fechaInicio, List<CartaPorteDescargaView> listaCartasPorte)
+        {
+            var dateTimeFechaInicio = DataFormatter.StringToDateTime(fechaInicio, "");
+            var consultasDiscrepanciaCalidad = repositorio.Listar<Consulta>(
+                consulta => consulta.FechaCreacion > dateTimeFechaInicio &&
+                consulta.Categoria.Code == "DISCAL"
+                ).Select(consulta=>consulta.Detalle.ComprobanteNo);
+            var configuracionDiasDisponiblesParaDiscrepar = repositorio.Obtener<Configuracion>(c => c.Code == "DiasParaDiscreparCalidadesDescarga");
+
+            var diasParaDiscrepar = configuracionDiasDisponiblesParaDiscrepar != null ? int.Parse(configuracionDiasDisponiblesParaDiscrepar.Value) : -7;
+
+
+            listaCartasPorte.ForEach(ccpp =>
+            {
+                ccpp.SetPuedeDiscreparCalidad(diasParaDiscrepar);
+                ccpp.SetTieneDiscrepanciaEnCalidad(consultasDiscrepanciaCalidad);
+            });
+
         }
     }
 }

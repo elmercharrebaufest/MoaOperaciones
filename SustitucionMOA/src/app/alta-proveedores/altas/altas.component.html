@@ -1,5 +1,6 @@
 <div class="content-wraper">
     <!-- CONTENT-->
+
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
@@ -79,10 +80,24 @@
                     </div>
                 </div>
 
-           
+                <div class="col-xs-12 col-sm-6 col-md-4">
+                    Verificar existencia CUIT:
+                    <div class="styled-select">
+                        <div class="ui-inputgroup">
+                            <input type="text" pInputText placeholder="Ingrese un CUIT" mask="00-00000000-0"
+                                [(ngModel)]="cuitIngresado">
+                            <button style="color: white; background-color: #075088;" pButton type="button"
+                                label="Verificar" (click)="verificarExistenciaEmpresa()"></button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-4 " style="padding-top:2rem">
+                    <button style="color: white;  background-color: #067935;" type="button" pButton icon="fa fa-refresh"
+                        (click)="getEmpresa()"></button>
+                </div>
 
             </div>
-
         </div>
 
         <!-- End Search-->
@@ -249,8 +264,10 @@
                                         <span title="Copiar correo del proveedor" class="fa fa-envelope"
                                             style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
-                                    <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15 && esAdmin" (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
-                                        data-trigger="focus" data-placement="top" title="{{empresa.Mail}}" data-html="true">
+                                    <a id="p{{empresa.Id}}" *ngIf="empresa.EstadoAprobacion == 15 && esAdmin"
+                                        (click)="confirmarBorrarAlta(empresa.Id, empresa.Mail)" data-toggle="popover"
+                                        data-trigger="focus" data-placement="top" title="{{empresa.Mail}}"
+                                        data-html="true">
                                         <span title="Eliminar proveedor del sistema" class="fa fa-trash"
                                             style="font-size: 22px; color: #075088; margin-right: 5px;"></span>
                                     </a>
@@ -354,7 +371,8 @@
             <div class="modal-body" style="padding-top:0;">
 
                 <!-- DETALLE -->
-
+                <mensaje #mensajeModalVer></mensaje>
+                <spinner #spinnerModalVer></spinner>
                 <div class="content-wraper" style="margin-top:0;padding-top:0">
                     <!--ALTA PROVEEDOR GRANOS-->
                     <div class="row myRow firstSection roundedInfo" id="container"
@@ -737,7 +755,7 @@
                                     Presento documentación física:
                                     <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
                                         [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                        (ngModelChange)="onChangeDocumentacionFisica()">
+                                        (ngModelChange)="onChangeDocumentacionFisica()" [disabled]="!esAdmin">
                                 </div>
                             </div>
                         </div>
@@ -799,6 +817,23 @@
                                 </label>
 
                                 <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
+                                    <a (click)="descargarArchivo(archivo)">
+                                        {{archivo.Nombre}}
+                                    </a>
+                                </span>
+                            </div>
+                            <div class="form-group grey" *ngIf="empresaSeleccionada.AltaInterna">
+                                <label>
+                                    Declaración Vínculos
+                                </label>&nbsp;
+                                <label style="color:red;"
+                                    *ngIf="(listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna').length === 0">
+                                    Sin
+                                    Adjuntar
+                                </label>
+
+                                <span
+                                    *ngFor="let archivo of listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna'">
                                     <a (click)="descargarArchivo(archivo)">
                                         {{archivo.Nombre}}
                                     </a>
@@ -1058,7 +1093,8 @@
                                 <div class="col-xs-12 col-sm-12 col-md-6">
                                     <input type="checkbox" style="margin-right: 5px;" id="altaInterna"
                                         class="checkboxMargin" placeholder=""
-                                        [(ngModel)]="empresaSeleccionada.AltaInterna">
+                                        [(ngModel)]="empresaSeleccionada.AltaInterna"
+                                        [disabled]="empresaSeleccionada.AltaInterna  && (listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna').length !== 0">
                                     <label for="altaInterna"> Alta interna</label>
                                 </div>
 
@@ -1107,6 +1143,18 @@
                                 (click)="abrirEditar(empresaSeleccionada.Id)">
                                 Editar Alta
                             </button>
+
+                            <div style="display:flex;gap:1rem;width:fit-content" *ngIf="puedeModificarEstado">
+                                <p-dropdown [options]="descripcionEstadoAlta" [(ngModel)]="nuevoEstadoProveedor"
+                                    [filter]="true">
+                                </p-dropdown>
+                                <button pButton class="ui-button-raised ui-button-success save-btn"
+                                    pTooltip="Modificar Estado"
+                                    *ngIf="empresaSeleccionada.EstadoAprobacionDescripcion != nuevoEstadoProveedor"
+                                    (click)="modificarEstadoProveedor(empresaSeleccionada)"><i
+                                        class="pi pi-save"></i></button>
+
+                            </div>
                         </div>
                     </div>
                     <div class="row" *ngIf="empresaSeleccionada.IdTipoUsuario != 5 && !pantallaEditarAlta">
@@ -1527,9 +1575,20 @@
     </div>
 </div>
 
-<p-confirmDialog #dialogo key="confirmarBorrado" header="Confirmación de borrado de alta" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body" >
+<p-confirmDialog #dialogo key="confirmarBorrado" header="Confirmación de borrado de alta"
+    icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
     <p-footer>
-        <button type="button" pButton  label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
-        <button type="button" pButton  label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+            (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
+<p-confirmDialog #dialogoExisteCuit key="verificarExistenciaCuit" header="Verificar existencia de CUIT"
+    icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+            (click)="dialogoExisteCuit.accept()"></button>
     </p-footer>
 </p-confirmDialog>

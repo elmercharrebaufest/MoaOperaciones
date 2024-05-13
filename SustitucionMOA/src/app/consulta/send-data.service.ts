@@ -4,6 +4,17 @@ import { BaseService } from "../common/services/BaseService";
 export interface DatosLiquidacionObservada {
     Tipo: "Parcial" | "Final";
     NroComprobante: number | string;
+    NroContrato: number | string;
+}
+export interface DatosDisconformidadCalidades {
+    Material?: string;
+    NroContrato?: number | string;
+    NroCCPP: number | string;
+}
+
+export interface DatosCartaPorteConDisconformidadCalidades {
+    NroContrato?: number | string;
+    NroCCPP: number | string;
 }
 
 @Injectable({
@@ -12,7 +23,9 @@ export interface DatosLiquidacionObservada {
 export class SendDataService extends BaseService {
     private data: any;
 
-    private datosLiquidacionObservada?: DatosLiquidacionObservada
+    private datosLiquidacionObservada?: DatosLiquidacionObservada;
+    private datosDisconformidadCalidades?: DatosDisconformidadCalidades;
+    private datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
 
     setData(data: any) {
         this.data = data;
@@ -34,5 +47,25 @@ export class SendDataService extends BaseService {
     }
     limpiarDatosLiquidacionObservados() {
         this.datosLiquidacionObservada = null;
+    }
+
+    setDatosDisconformidadCalidades(datosLiquidacion: DatosDisconformidadCalidades) {
+        this.datosDisconformidadCalidades = datosLiquidacion;
+    }
+    getDatosDisconformidadCalidades(): DatosDisconformidadCalidades | null {
+        return this.datosDisconformidadCalidades;
+    }
+    limpiarDatosDisconformidadCalidades() {
+        this.datosDisconformidadCalidades = null;
+    }
+
+    setDatosCartaPorteConDisconformidadCalidades(datosLiquidacion: DatosCartaPorteConDisconformidadCalidades) {
+        this.datosCartaPorteConDisconformidadCalidades = datosLiquidacion;
+    }
+    getDatosCartaPorteConDisconformidadCalidades(): DatosCartaPorteConDisconformidadCalidades | null {
+        return this.datosCartaPorteConDisconformidadCalidades;
+    }
+    limpiarDatosCartaPorteConDisconformidadCalidades() {
+        this.datosCartaPorteConDisconformidadCalidades = null;
     }
 }

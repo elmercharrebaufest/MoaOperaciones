@@ -2,6 +2,7 @@
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
@@ -88,7 +89,9 @@ namespace SustitucionMOAUtils.Services
                                     || x.EstadoAprobacion == EstadoAprobacion.RechazadoPorCompras
                                     || x.EstadoAprobacion == EstadoAprobacion.AltaIncompleta
                                     || x.EstadoAprobacion == EstadoAprobacion.SinAlta
-                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente)
+                                    || x.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente
+                                    || x.EstadoAprobacion == EstadoAprobacion.AnalisisInterno
+                                    )
                                 && x.HistorialAprobaciones.Count > 0
                                  && IdTiposProveedor.Contains(x.TipoProveedor.Id)
                                 && x.HistorialAprobaciones.OrderByDescending(h => h.Fecha).FirstOrDefault().Fecha >= fechaIncioDateTime 
@@ -292,6 +295,18 @@ namespace SustitucionMOAUtils.Services
                             usuario = new Usuario { Mail = proveedor.Mail, CUITRegistro = proveedor.CUIT, Habilitado = true, TipoUsuario = proveedor.TipoProveedor, Roles = new List<Rol>(), SeccionesVisitadas = "", AceptoTyC = false };
                         }
                         repositorio.Agregar(usuario);
+                    }
+                    if (usuario.Roles == null)
+                    {
+                        usuario.Roles = new List<Rol>();
+                    }
+                    if (usuario.Proveedores == null)
+                    {
+                        usuario.Proveedores = new List<Proveedor>();
+                    }
+                    if (!usuario.TieneProveedor(proveedor.CodigoProveedor))
+                    {
+                        usuario.Proveedores.Add(proveedor);
                     }
                     var rolUsuarioGranos = ObtenerRolPorCodigo("GRAN");
 
@@ -737,6 +752,53 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.ObservacionAgregadaOK;
+        }
+
+        public Resultado VerificarExistenciaEmpresa(string cuit)
+        {
+            var resultado = new Resultado();
+            var proveedor = this.repositorio.Obtener<Proveedor>(p => p.CUIT == cuit);
+
+            if (proveedor == null)
+            {
+                resultado.error = $"No se encontró el cuit : {cuit} en el sistema.";
+            }
+            else
+            {
+                resultado.Mensaje = $"El cuit {cuit} se encuentra registrado en el sistema con Razon Social: {proveedor.RazonSocial}, Codigo de Proveedor: {proveedor.CodigoProveedor}";
+            }
+
+            return resultado;
+        }
+        public int ModificarEstadoProveedor(int proveedorId, string nuevoEstado, string emailUsuario)
+        {
+            var proveedor = this.repositorio.Obtener<Proveedor>(proveedorId);
+
+            if (proveedor == null)
+            {
+                throw new ValidationCustomException("No se encontró el proveedor en el sistema.");
+            }
+
+            var usuario = repositorio.Obtener<Usuario>(u=>u.Mail == emailUsuario);
+            if (!usuario.TienePermiso(PermisoEnum.ModificarEstadoProveedor))
+            {
+                throw new ValidationCustomException("Usuario sin permisos.");
+            }
+            var nuevoEstadoEnum = EstadoAprobacionHelper.FromStr(nuevoEstado);
+            proveedor.EstadoAprobacion = nuevoEstadoEnum;
+
+            var historialAprobacion = new ProveedorHistorialAprobacion { 
+                EstadoAprobacion = nuevoEstadoEnum,
+                Observacion = "Se modifico manualmente el estado",
+                Usuario = usuario,
+                Proveedor = proveedor,
+                Fecha = DateTime.Now
+            };
+
+            repositorio.Agregar<ProveedorHistorialAprobacion>(historialAprobacion);
+            proveedor.HistorialAprobaciones.Add(historialAprobacion);
+            repositorio.GuardarCambios();
+            return (int)nuevoEstadoEnum;
         }
     }
 }

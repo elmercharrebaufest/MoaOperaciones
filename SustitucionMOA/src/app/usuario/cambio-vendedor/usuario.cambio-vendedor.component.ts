@@ -9,6 +9,8 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { ModalService } from './../../common/services/ModalService';
 import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
+import { Proveedor } from '../../common/models/proveedor';
+import { TipoPerfil } from '../../common/enums/TipoPerfil';
 import { ComunicacionesService } from './../../comunicaciones/comunicaciones.service';
 import { DatePipe } from '@angular/common';
 import { UpdateComunicacionService } from './../../common/services/UpdateComunicacionService';
@@ -41,7 +43,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         this.spinnerComponent = new SpinnerComponent();
     }
 
-    data: any;
+    data: Proveedor[];
     orderedByColumn: string = "id";
     orderDirection: number = 1;
     itemsPerPage = 20;
@@ -66,7 +68,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.getVendedores().subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -106,30 +108,40 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         }
     }
 
-    seleccionarVendedor(vendedor: string, descripcion: string) {
+    seleccionarVendedor(vendedor: Proveedor) {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
         this.buscadorService.limpiarBuscador();
         try {
             this.unsubscribe();
-            this.subscription = this.service.seleccionarVendedor(vendedor, descripcion).subscribe(
-                (result: any) => {         
-                    if (result.logout == true) {
+            this.subscription = this.service.seleccionarVendedor(vendedor.Id).subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
                         this.mensajeComponent.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        sessionStorage.setItem("proveedor", result.vendedor);
-                        this.sessionDataService.setProveedor(result.vendedor);
-                        sessionStorage.setItem("nombre", result.descripcion);
-                        this.sessionDataService.setNombre(result.descripcion);
-                        sessionStorage.setItem("noticias", JSON.stringify(result.noticias));
-                        this.sessionDataService.setNoticias(result.noticias);
-                        this.dateConvert();
-                        //llamada a busqueda de notificaciones del proveedor seleccionado
-                        this.updateComunicacionService.updateCommunications(result.vendedor, this.startDate, this.endDate);
+                        sessionStorage.setItem("proveedor", result.CodigoVendedor);
+                        this.sessionDataService.setProveedor(result.CodigoVendedor);
+                        sessionStorage.setItem("nombre", result.Descripcion);
+                        this.sessionDataService.setNombre(result.Descripcion);
+                        sessionStorage.setItem("noticias", JSON.stringify(result.Noticias));
+                        this.sessionDataService.setNoticias(result.Noticias);
+                        sessionStorage.setItem("esCodigoCorredor", result.EsCodigoCorredor + '');
+                        this.sessionDataService.setEsCodigoCorredor(result.EsCodigoCorredor);
+                        sessionStorage.setItem("proveedorId", result.ProveedorId.toString());
+                        this.sessionDataService.setProveedorId(result.ProveedorId.toString());
+                        if (!this.isCorredor() && result.TipoUsuario !== TipoPerfil.Corredor) {
+                            const nuevoTipoUsuario = result.TipoUsuario === TipoPerfil.Cliente ?
+                                TipoPerfil.Cliente : TipoPerfil.Proveedor
+                            sessionStorage.setItem("tipoUsuario", nuevoTipoUsuario);
+                            this.sessionDataService.setTipoUsuario(nuevoTipoUsuario);
+                            //llamada a busqueda de notificaciones del proveedor seleccionado
+                            this.updateComunicacionService.updateCommunications(result.vendedor, this.startDate, this.endDate);
+                        }
                     }
                     //Demora manual para visualizar la tardanza de la busqueda de notificaciones
                     setTimeout(() => {

@@ -205,10 +205,26 @@
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasiva.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasivaFila.sql" />
     <Build Include="DBO\Tables\RegionSap.sql" />
     <None Include="scripts\PostDeployment\RegionSap.sql" />
     <Build Include="DBO\Tables\ChatInternoCompras.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
+    <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
+    <Build Include="DBO\Stored Procedures\VerificarActividadUsuarioID.sql" />
+    <Build Include="DBO\Tables\LiberadorSapTipo.sql" />
+    <Build Include="DBO\Tables\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
+    <None Include="scripts\PostDeployment\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\OrdenResiduos.sql" />
+    <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
+    <Build Include="DBO\Tables\ArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\EstadoArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\Almacen.sql" />
+    <Build Include="DBO\Tables\AlmacenMaterial.sql" />
+    <Build Include="DBO\Tables\MonedaConversion.sql" />
+    <Build Include="DBO\Tables\CotizacionHistorial.sql" />
     <None Include="scripts\Notificaciones\Notificacion.sql" />
     <None Include="scripts\Notificaciones\NotificacionFechaCreacion.sql" />
     <None Include="scripts\Notificaciones\NotificacionPrioridad.sql" />
@@ -246,6 +262,8 @@
     <None Include="DatabaseNewPublishQaBaufest.xml" />
     <None Include="DatabaseNewPublishQaHuenei.xml" />
     <None Include="DatabaseNewPublishQaCompras.xml" />
+    <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
+    <None Include="scripts\PostDeployment\AlmacenMaterial.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

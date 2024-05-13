@@ -15,20 +15,24 @@ namespace SustitucionMOAWS.WebApi
     public class CNRTClient : ICNRTClient
     {
         private static readonly string CNRTBaseAddress = "https://api.cnrt.gob.ar/dut/v1/public/";
-        private readonly HttpClient cliente;
 
-        public CNRTClient()
+        private HttpClient _cliente;
+        private HttpClient Cliente
         {
-            Log.Info("Instancia e inicializa cliente API ScatoRepositorio");
-            this.cliente = new HttpClient { BaseAddress = new Uri(CNRTBaseAddress) };
-            cliente.DefaultRequestHeaders.Accept.Clear();
-            cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            get
+            {
+                if (_cliente == null)
+                {
+                    _cliente = CrearClienteHttp();
+                }
+                return _cliente;
+            }
         }
 
         public EquiposResponse ObtenerEquipos(string patenteChasis, string patenteAcoplado)
         {
             var reqUri = $"equipos?dominios={patenteChasis},{patenteAcoplado}";
-            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var equiposResponse = response.Content.ReadAsAsync<EquiposResponse>().GetAwaiter().GetResult();
@@ -43,6 +47,14 @@ namespace SustitucionMOAWS.WebApi
             {
                 throw new Exception("Error en api CNRT " + response.StatusCode);
             }
+        }
+
+        private HttpClient CrearClienteHttp()
+        {
+            var clienteHttp = new HttpClient { BaseAddress = new Uri(CNRTBaseAddress) };
+            clienteHttp.DefaultRequestHeaders.Accept.Clear();
+            clienteHttp.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            return clienteHttp;
         }
     }
 }

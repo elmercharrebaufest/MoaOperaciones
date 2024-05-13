@@ -22,6 +22,7 @@ namespace SustitucionMOAUtils.Services
         readonly FeriadoService _feriadoService = new FeriadoService();
         readonly IListarPesificacionesConsumer pesificacionesConsumer;
         readonly IRepositorio repositorio;
+        readonly string HORA_CORTE_PESIFICACIONES_CODE = "HoraCortePesificaciones";
 
         public PesificacionService(IListarPesificacionesConsumer pesificacionesConsumer, IRepositorio repositorio)
         {
@@ -34,7 +35,10 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var feriados = _feriadoService.ObtenerFeriados();
-                string horaDeCorte = ConfigurationManager.AppSettings["HoraCortePesificaciones"];
+
+                var horaCorteDb = repositorio.Obtener<Configuracion>(c => c.Code == HORA_CORTE_PESIFICACIONES_CODE);
+
+                string horaDeCorte = horaCorteDb != null ? horaCorteDb.Value : ConfigurationManager.AppSettings[HORA_CORTE_PESIFICACIONES_CODE];
 
                 //Si se paso la hora de corte la fecha minima es manana, caso contrario es hoy
                 TimeSpan ts = TimeSpan.Parse(horaDeCorte);

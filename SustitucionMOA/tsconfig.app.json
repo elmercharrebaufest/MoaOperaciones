@@ -4,13 +4,13 @@
   "compilerOptions": {
     "outDir": "./out-tsc/app",
     "experimentalDecorators": true,
-
     "types": []
   },
   "files": [
     "src/main.ts",
     "src/polyfills.ts",
     "src/app/app.module.ts",
+    "src/app/archivo-boleto/archivo-boleto.module.ts",
     "src/app/carta-porte/carta-porte.module.ts",
     "src/app/contrato/contrato.module.ts",
     "src/app/venta-sustentable/venta-sustentable.module.ts",
@@ -33,6 +33,7 @@
     "src/app/ordenes-de-carga/ordenes-de-carga.module.ts",
     "src/app/reporte-contrato/reporte-contrato.module.ts",
     "src/app/ordenes-de-carga-fason/ordenes-de-carga-fason.module.ts",
+    "src/app/ordenes-residuos/ordenes-residuos.module.ts",   
     "src/app/aplicacion-ccpp/aplicacion-ccpp.module.ts",
     "src/app/notificaciones/notificaciones.module.ts"
   ],

@@ -4,7 +4,7 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>MoaOperacionesQACompras</TargetDatabaseName>
     <DeployScriptFileName>Base de Datos.sql</DeployScriptFileName>
-    <TargetConnectionString>data source=GSLOSQLQA00.molinosagro.ad; User Id=MOAOPQAUSR;Password=Bf575c53dc;initial catalog=MoaOperacionesQACompras;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>data source=APPAGLQA.molinosagro.ad; User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQACompras;Pooling=False</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
     <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
     <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>

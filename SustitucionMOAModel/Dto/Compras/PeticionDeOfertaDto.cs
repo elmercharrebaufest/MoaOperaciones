@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Dto
         public DateTime? FechaEntrega { get; set; }
         public string FechaEntregaFormateado { get; set; }
         public IQueryable<CircularDto> CircularDto { get; set; }
-        public IQueryable<SolpDto> SolpDto { get; set; }
+        public SolpDto SolpDto { get; set; }
         public string NroSolp { get; set; }
         public string NombreDeObra { get; set; } //nombre de pedido
         public string UsuarioCreador { get; set; }
@@ -98,14 +98,15 @@ namespace SustitucionMOAModel.Dto
         public bool? TieneVisitaObraBool { get; set; }
         public bool RevisionFinalizada { get; set; }
         public bool VerBotonVerPrecio { get; set; }
-        public bool ChatSinLeer { get; set; }
         public bool RecotizacionEconomica { get; set; }
         public PeticionDeOfertaRevisionTecnicaDto RevisionTecnica { get; set; }
         public List<PeticionDeOfertaUsuarioAdicionalDto> UsuariosAdicionales { get; set; }
         public bool PideDescripcionTecnica { get; set; }
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
-
+        public bool? TrabajoHecho { get; set; }
+        public IEnumerable<string> NrosSolp { get; set; }
+        public bool TienePosicionesEliminadas { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -117,6 +118,7 @@ namespace SustitucionMOAModel.Dto
         public SolpPosicionDto Posiciones { get; set; }
         public int SolpId { get; set; }
         public SolpPosicionDto PosicionPeticion { get; set; }
+        public bool EstaEliminado { get; set; }
     }
 
     public class PeticionDeOfertaUsarioDto
@@ -147,6 +149,10 @@ namespace SustitucionMOAModel.Dto
         public DateTime? PlazoDeOfertaCircular { get; set; }
         public DateTime? PlazoDeOfertaCierre { get; set; }
         public DateTime? FechaCircular { get; set; }
+        public string CodigoProveedor { get; set; }
+        public string THCategoria { get; set; }
+        public bool? VisibleSolicitante { get; set; }
+        public bool Deshabilitado { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto
@@ -178,12 +184,11 @@ namespace SustitucionMOAModel.Dto
 
         public PeticionDeOfertaUsuarioAdicionalDto(PeticionDeOfertaUsuarioAdicional entidad)
         {
-            this.UsuarioId = entidad.Usuario_Id;
-            this.Id = entidad.Id;
-            this.RazonSocial = entidad.Usuario.ObtenerRazonSocial();
-            this.CUIT = entidad.Usuario.CUITRegistro;
-            this.Mail = entidad.Usuario.Mail;
-
+            UsuarioId = entidad.Usuario_Id;
+            Id = entidad.Id;
+            RazonSocial = entidad.Usuario.ObtenerRazonSocial();
+            CUIT = entidad.Usuario.CUITRegistro;
+            Mail = entidad.Usuario.Mail;
         }
 
         public int UsuarioId { get; set; }
@@ -191,6 +196,5 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public string CUIT { get; set; }
         public string Mail { get; set; }
-
     }
 }

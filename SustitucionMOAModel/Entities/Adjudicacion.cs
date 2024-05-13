@@ -10,7 +10,6 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
-        public int Solp_Id { get; set; }
         public string NumeroOrdenDeCompra { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int UsuarioCreador_Id { get; set; }
@@ -21,12 +20,10 @@ namespace SustitucionMOAModel.Entities
         public string CondicionesDePago { get; set; }
         public string Garantias { get; set; }
         public string Token { get; set; }
+        public int RegionSap_Id { get; set; }
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
-
-        [ForeignKey("Solp_Id")]
-        public virtual Solp Solp { get; set; }
 
         [ForeignKey("Cotizacion_Id")]
         public virtual Cotizacion Cotizacion { get; set; }
@@ -37,5 +34,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
+        
+        [ForeignKey("RegionSap_Id")]
+        public virtual RegionSap RegionSap { get; set; }
     }
 }

@@ -65,8 +65,8 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Hangfire.Core, Version=1.7.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hangfire.Core.1.7.19\lib\net45\Hangfire.Core.dll</HintPath>
+    <Reference Include="Hangfire.Core, Version=1.8.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.Core.1.8.12\lib\net451\Hangfire.Core.dll</HintPath>
     </Reference>
     <Reference Include="Hangfire.Dashboard.Authorization, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Dashboard.Authorization.3.0.1\lib\net45\Hangfire.Dashboard.Authorization.dll</HintPath>
@@ -74,8 +74,8 @@
     <Reference Include="Hangfire.Ninject, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Ninject.1.2.0\lib\net45\Hangfire.Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Hangfire.SqlServer, Version=1.7.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Hangfire.SqlServer.1.7.19\lib\net45\Hangfire.SqlServer.dll</HintPath>
+    <Reference Include="Hangfire.SqlServer, Version=1.8.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Hangfire.SqlServer.1.8.12\lib\net451\Hangfire.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.2.0.246, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.2.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -263,6 +263,9 @@
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\images\icons\add-user.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
@@ -319,32 +322,11 @@
     <Content Include="dist\styles.*.css" />
     <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
-    <Content Include="NEW.PRE.DeployParameters.Debug.xml" />
-    <Content Include="NEW.PRE.DeployParameters.Release.xml" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
     <Content Include="NEW.QACompras.DeployParameters.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QABaufest.DeployParameters.Release.xml" />
     <Content Include="NEW.QABaufest.DeployParameters.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Debug.xml" />
-    <Content Include="NEW.QAHuenei.DeployParameters.Release.xml" />
     <Content Include="NEW.QAHuenei.DeployParameters.xml" />
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Debug.xml" />
-    <Content Include="PRE.DeployParameters.Debug.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.Release.xml">
-      <DependentUpon>PRE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PRE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PREHotFix.DeployParameters.xml" />
-    <Content Include="QAHotFix.DeployParameters.xml" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
@@ -357,6 +339,8 @@
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.css" />
+    <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.css" />
@@ -373,6 +357,8 @@
     <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.html" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.css" />
+    <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.css" />
@@ -399,6 +385,7 @@
     <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
+    <Content Include="src\app\compras\dashboard\dashboard.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
@@ -426,6 +413,8 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
@@ -446,15 +435,9 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
+    <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
-    <Content Include="NOTUSE_UPDATE.DeployParameters.Release.xml">
-      <DependentUpon>NOTUSE_UPDATE.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="NOTUSE_UPDATE.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
     <Content Include="src\app\aduana\informacion-meteorologica\informacion-meteorologica.component.html" />
@@ -837,12 +820,6 @@
     <Content Include="officetohtml\pdfViewer.png" />
     <Content Include="packages.config" />
     <Content Include="parameters.xml" />
-    <Content Include="NOTUSE_STAGING.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="PROD.DeployParameters.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\fonts\fontawesome-webfont.eot" />
@@ -1074,6 +1051,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
+    <Content Include="Template\NuevaConsultaInterna.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1102,18 +1080,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
-    <Content Include="QA.DeployParameters.xml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Debug.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="QA.DeployParameters.Release.xml">
-      <DependentUpon>QA.DeployParameters.xml</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="tsconfig.app.json" />
     <Content Include="tsconfig.spec.json" />
     <Content Include="tslint.json" />
@@ -1141,6 +1107,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Controllers\ArchivoBoletoController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\EntradaServicioController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -1163,6 +1130,7 @@
     <Compile Include="Controllers\DataAgroController.cs" />
     <Compile Include="Controllers\GestionImpuestosController.cs" />
     <Compile Include="Controllers\LocalidadController.cs" />
+    <Compile Include="Controllers\LoggerController.cs" />
     <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
@@ -1173,6 +1141,7 @@
     <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\OrdenDeCargaController.cs" />
     <Compile Include="Controllers\OrdenDeCargaFasonController.cs" />
+    <Compile Include="Controllers\OrdenResiduosController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
@@ -1188,9 +1157,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
+    <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
-    <Compile Include="Jobs\ActualizarLocalidadesJob.cs" />
+    <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
+    <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
+    <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
+    <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
     <Compile Include="Jobs\AltaClienteSAPJob.cs" />
@@ -1218,10 +1191,15 @@
     <Compile Include="Utils\SameSiteCookieManager.cs" />
   </ItemGroup>
   <ItemGroup>
+    <TypeScriptCompile Include="src\app\archivo-boleto\listar-archivo-boleto/listar-archivo-boleto.component.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto.service.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\archivo-boleto\archivo-boleto.module.ts" />
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte-routing.module.ts" />
     <TypeScriptCompile Include="src\app\carta-porte\carta-porte.module.ts" />
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
+    <TypeScriptCompile Include="src\app\common\models\archivo-boleto\archivoBoletoDto.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
@@ -1251,6 +1229,8 @@
     <TypeScriptCompile Include="src\app\compras\compras-routing.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.module.ts" />
     <TypeScriptCompile Include="src\app\compras\compras.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\alta-proveedor\alta-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
@@ -1262,6 +1242,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\posicion-plazo\posicion-plazo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\textos-adjudicar\textos-adjudicar.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
@@ -1278,9 +1259,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.spec.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\dashboard.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.ts" />
@@ -1334,6 +1312,7 @@
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.service.ts" />
+    <TypeScriptCompile Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\crear-consulta\crear-consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\detalle\consulta-detalle.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\mis-consultas\mis-consultas.component.ts" />
@@ -1651,7 +1630,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

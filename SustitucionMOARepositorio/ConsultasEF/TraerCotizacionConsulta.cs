@@ -27,9 +27,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = po.Id,
-                                    Solp_Id = po.PeticionDeOferta.Solp_Id,
-                                    PersonalHoras = po.PeticionDeOferta.Solp.Pliego != null ? po.PeticionDeOferta.Solp.Pliego.TieneGrillaPersonal ?? false : false,
-                                    NroSolp = po.PeticionDeOferta.Solp.NroSolp,
+                                    PersonalHoras = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneGrillaPersonal ?? false : false,
+                                    NrosSolp = po.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp),
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
@@ -38,11 +37,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
-                                    TipoPosicionCodigo = po.PeticionDeOferta.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
+                                    TipoPosicionCodigo = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
                                     PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
-                                    PideDescripcionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDescripcionTecnica == true,
-                                    PideDocumentacionTecnica = po.PeticionDeOferta.Solp.Pliego.TieneDocumentacionTecnica == true,
+                                    PideDescripcionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDescripcionTecnica == true,
+                                    PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -58,14 +57,16 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             Id = pop.Id, //Pos
                                             Codigo = pop.SolpPosicion.MaterialSolp.CodigoSap, //Codigo
                                             Tarea = pop.SolpPosicion.Tarea,
-                                            //TextoSuministro = pop.SolpPosicion.TextoSuministro,
+                                            Modelo = pop.SolpPosicion.Modelo,
+                                            TextoSuministro = pop.SolpPosicion.TextoSuministro,
                                             Cantidad = pop.SolpPosicion.Cantidad,
                                             UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                             UnidadId = pop.SolpPosicion.Unidad_Id,
                                             FechaEntregaServicio = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
-                                            FechaOferta = pop.SolpPosicion.Solp.Pliego_Id != null ? pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
+                                            FechaOferta = pop.SolpPosicion.FechaEntregaServicio,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {
+                                                
                                                 Cantidad = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad.Value : 0,
                                                 UnidadMedidaDescripcion = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Descripcion : "",
                                                 UnidadDeMedida_Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Id : pop.SolpPosicion.Unidad_Id.Value,
@@ -73,11 +74,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 MonedaCodigo = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Moneda != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Moneda.Codigo : "",
                                                 Moneda_Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Moneda_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Moneda_Id.Value : 0,
                                                 Precio = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Precio != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Precio.Value : 0,
-                                                FechaOriginal = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.Solp.Pliego_Id != null ? pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                                                FechaDeEntrega = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.Solp.Pliego_Id != null ? pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                                                FechaDeEntregaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? 
-                                                SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) 
-                                                : pop.SolpPosicion.Solp.Pliego_Id != null ? SqlFunctions.DateName("day", pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega) + "/" + SqlFunctions.DatePart("month", pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega) + "/" + SqlFunctions.DateName("year", pop.SolpPosicion.Solp.Pliego.FechaHoraEntrega) : "",
+                                                FechaOriginal = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
+                                                FechaDeEntrega = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
+                                                FechaDeEntregaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ?
+                                                SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega)
+                                                : SqlFunctions.DateName("day", pop.SolpPosicion.FechaEntregaServicio) + "/" + SqlFunctions.DatePart("month", pop.SolpPosicion.FechaEntregaServicio) + "/" 
+                                                + SqlFunctions.DateName("year", pop.SolpPosicion.FechaEntregaServicio),
                                                 PlazoDeEntrega = 0,
                                                 FechaDeVigencia = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia : (DateTime?)null,
                                                 FechaDeVigenciaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia != null ? SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia) : "",
@@ -89,8 +91,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 },
                                                 UnidadMedida = new TablaSapDto
                                                 {
-                                                    Codigo = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Codigo : "",
-                                                    Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id.Value : 0
+                                                    Codigo = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Codigo : (pop.SolpPosicion.Unidad != null ? pop.SolpPosicion.Unidad.Codigo : ""),
+                                                    Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida_Id.Value : (pop.SolpPosicion.Unidad_Id != null ? pop.SolpPosicion.Unidad_Id.Value : 0),
                                                 },
                                                 NoDisponible = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().NoDisponible : null,
                                                 PrimerPlazoDeOferta = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().PrimerPlazoDeOferta : 0,
@@ -110,138 +112,96 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 UnidadId = subposicion.Unidad_Id,
                                                 Numero = subposicion.Numero,
 
-                                                CotizacionSubPosicionId = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault() == null ? subposicion.Unidad_Id.Value :
-                                                cotizacion.CotizacionPosiciones
-                                                .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Id,
+                                                CotizacionSubPosicionId = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                              cotizacion.CotizacionPosiciones
+                                                              .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id))
+                                                              .FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Id : 0,
 
-                                                CantidadCotizacion = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad == null ?
-                                                0 : cotizacion.CotizacionPosiciones
-                                                .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value,
+                                                CantidadCotizacion = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                              cotizacion.CotizacionPosiciones
+                                                              .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                              ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value : 0,
+                                                                                                
+                                                MonedaCotizacionId = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ? cotizacion.CotizacionPosiciones
+                                                               .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                               ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Id : 0,
 
+                                                MonedaCotizacionDescripcion = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ? cotizacion.CotizacionPosiciones
+                                                               .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                               ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Descripcion : "",
 
-                                                UnidadCotizacionDescripcion = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                subposicion.Unidad.Descripcion : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Descripcion,
-
-                                                UnidadCotizacionId = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                 subposicion.Unidad.Id : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Id,
-
-                                                MonedaCotizacionId = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda == null ?
-                                                0 : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Id,
-                                                MonedaCotizacionDescripcion = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda == null ?
-                                                 "" : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Descripcion,
-                                                MonedaCotizacionCodigo = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda == null ?
-                                                 "" : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Codigo,
+                                                MonedaCotizacionCodigo = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ? cotizacion.CotizacionPosiciones
+                                                               .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                               ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Codigo : "",
 
                                                 MonedaCotizacion = new TablaSapDto
                                                 {
-                                                    Codigo = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda == null ?
-                                                 "" : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Codigo,
-                                                    
-                                                    Id = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda == null ?
-                                                0 : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda_Id??0,
+                                                    Codigo = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                                       cotizacion.CotizacionPosiciones
+                                                                       .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                                       ).FirstOrDefault().CotizacionSubPosiciones
+                                                                       .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda.Codigo : "",
+
+                                                    Id = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                          cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                            && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                                           cotizacion.CotizacionPosiciones
+                                                                           .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                            && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                                           ).FirstOrDefault().CotizacionSubPosiciones
+                                                                           .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Moneda_Id ?? 0 : 0,
 
                                                 },
                                                 UnidadMedidaCotizacion = new TablaSapDto
                                                 {
-                                                    Codigo = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                 "" : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida.Codigo,
-
-                                                    Id = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id == null ?
-                                                 0 : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().UnidadDeMedida_Id??0,
+                                                    Codigo = subposicion.Unidad.Codigo,                                                    
+                                                    Id = subposicion.Unidad.Id,
                                                 },
+                                                UnidadCotizacionDescripcion = subposicion.Unidad.Descripcion,
+                                                UnidadCotizacionId = subposicion.Unidad.Id,
 
-                                                PrecioSubPosicion = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio == null ?
-                                                 0 : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio.Value,
+                                                PrecioSubPosicion = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                                       cotizacion.CotizacionPosiciones
+                                                                       .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                                       ).FirstOrDefault().CotizacionSubPosiciones
+                                                                       .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio ?? 0 : 0,
 
-                                                PrecioTotalSubPosicion = cotizacion == null && cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio == null &&
-                                                 cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad == null ?
-                                                 0 : cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio.Value *
-                                                  cotizacion.CotizacionPosiciones
-                                                 .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
-                                                 && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
-                                                 ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value,
-
-
-                                            }).ToList().OrderBy(x => x.Numero),
+                                                PrecioTotalSubPosicion = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
+                                                                      cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ?
+                                                                       cotizacion.CotizacionPosiciones
+                                                                       .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                                       ).FirstOrDefault().CotizacionSubPosiciones
+                                                                       .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Precio ?? 0 *
+                                                                       cotizacion.CotizacionPosiciones
+                                                                       .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
+                                                        && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
+                                                                       ).FirstOrDefault().CotizacionSubPosiciones
+                                                                       .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad ?? 0 : 0,
+                                            }).ToList().OrderBy(x => x.Numero)
+                                            ,
                                         }
                                     }).ToList().OrderBy(x => x.Posiciones.Indice)
                                 };
@@ -249,9 +209,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var result = resultado.First();
                 return result;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-               throw ex;
+                throw;
             }
         }
     }

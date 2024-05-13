@@ -33,5 +33,6 @@ namespace SustitucionMOAModel.Dto
         public string GrupoDeCompras { get; set; }
         public string OrganizacionDeCompra { get; set; }
         public DateTime FechaVigenciaFormateada { get; set; }
+        public bool EsModificar { get; set; }
     }
 }

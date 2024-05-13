@@ -14,7 +14,7 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IConsultaService
     {
         AgregarConsultaResponseDto AgregarConsulta(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
-        AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files);
+        AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios);
         ComentarioDto AgregarComentario(int consultaId, ComentarioDto comentario, HttpFileCollectionBase files);
         string AgregarAdjuntoComentario(int consultaId, int comentarioId, HttpFileCollectionBase files);
         ConsultaDto ObtenerConsulta(int consultaId);
@@ -34,6 +34,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<MaterialDto> ObtenerMaterial(TablaSeccionMaterial tablaSeccionMaterial);
         string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
         string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false);
+        void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual);
         List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos);
     }
 }

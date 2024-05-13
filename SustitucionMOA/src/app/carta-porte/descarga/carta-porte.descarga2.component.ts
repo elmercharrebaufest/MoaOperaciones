@@ -8,6 +8,7 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import baseParse from 'base64-arraybuffer';
 import { ActivatedRoute } from '@angular/router';
+import { SendDataService } from '../../consulta/send-data.service';
 
 declare var Tiff: any;
 
@@ -21,7 +22,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     tituloArchivo = "ReporteDescargas.xls";
     tituloZip = "FotosCartaPorte.zip";
 
-    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute) {
+    constructor(protected service: CartaPorteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected sendDataService: SendDataService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService, route);
     }
 
@@ -79,7 +80,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.spinnerSmallComponent.showIt();
         this.unsubscribe();
         this.subscription = this.service.descargarFotos(cartaPorteIDStr).subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -114,7 +115,7 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         this.unsubscribe();
         this.subscription = this.service.getFotos(cartaDePorteNumero).subscribe(
 
-            (result:any) => {
+            (result: any) => {
                 this.spinnerSmallComponent.hideIt();
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -153,6 +154,21 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
         let imganenBuffer = baseParse.decode(imagen); //convierto el byte[] aun array buffer
         let archivoTiff = new Tiff({ buffer: imganenBuffer });
         return archivoTiff.toDataURL(); //obtiene un texto plano png del archivo a mostrar
+    }
+    consultaDisconformidadCalidad(informacion) {
+        this.sendDataService.setDatosDisconformidadCalidades({
+            NroCCPP: informacion.cartaPorte,
+            NroContrato: informacion.contrnum,
+            Material: informacion.producto
+        })
+        return this.goToSeccionParam("consulta", "crear-consulta")
+    }
+    navegarAConsultaCalidad(informacion) {
+        this.sendDataService.setDatosCartaPorteConDisconformidadCalidades({
+            NroCCPP: informacion.cartaPorte,
+            NroContrato: informacion.contrnum,
+        })
+        return this.goToSeccionParam("consulta", "mis-consultas")
     }
 }
 

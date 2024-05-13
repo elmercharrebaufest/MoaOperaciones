@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrdenDeCargaApiService : IOrdenDeCargaApiService
     {
-        private readonly List<EstadoOrdenDeCargaFason> _estadosNoPermitidosFason;
+
         private readonly List<EstadoOrdenDeCarga> _estadosNoPermitidosFas;
         private readonly IRepositorio _repositorio;
         public OrdenDeCargaApiService(IRepositorio repositorio)
@@ -23,7 +23,6 @@ namespace SustitucionMOAUtils.Services
                 EstadoOrdenDeCarga.AnuladaPorVencimiento ,
                 EstadoOrdenDeCarga.Entregada ,
             };
-            _estadosNoPermitidosFason = new List<EstadoOrdenDeCargaFason> { EstadoOrdenDeCargaFason.Entregada, EstadoOrdenDeCargaFason.SinEstado };
         }
 
         public ResultadoGenerico InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas)
@@ -47,7 +46,8 @@ namespace SustitucionMOAUtils.Services
 
             orden.Estado = EstadoOrdenDeCargaFason.Entregada;
 
-            orden.CantidadEntregada = ingresosEgresosFasones.Cantidad;
+            orden.PesadaTara = ingresosEgresosFasones.PesadaTara;
+            orden.PesadaNeto = ingresosEgresosFasones.PesadaNeto;
             orden.FechaEgreso = ingresosEgresosFasones.FechaEgreso;
             orden.FechaIngreso = ingresosEgresosFasones.FechaIngreso;
             orden.NroRemito = ingresosEgresosFasones.NroRemito;
@@ -77,7 +77,7 @@ namespace SustitucionMOAUtils.Services
             if (fason)
             {
                 var ordenesFason = _repositorio.Listar<OrdenDeCargaFason>(
-                    x => !_estadosNoPermitidosFason.Contains(x.Estado) &&
+                    x => x.Estado == EstadoOrdenDeCargaFason.Generada &&
                     (x.PatenteChasis == patenteChasis || patenteChasis == "" || patenteChasis == null)).ToList();
                 foreach (var ordenFason in ordenesFason)
                 {

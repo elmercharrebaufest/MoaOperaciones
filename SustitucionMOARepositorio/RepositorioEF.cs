@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Data.SqlClient;
 using System.Linq;
@@ -13,7 +12,8 @@ using System.Linq.Expressions;
 
 namespace SustitucionMOARepositorio
 {
-    public sealed class RepositorioEF : IRepositorio
+    //public sealed class RepositorioEF : IRepositorio
+    public class RepositorioEF : IRepositorio
     {
         private readonly DbContext context;
         private const int SqlFkError = 547;
@@ -313,6 +313,11 @@ namespace SustitucionMOARepositorio
             var tabla = typeof(TEntidad).Name;
             context.Database.ExecuteSqlCommand("TRUNCATE TABLE [" + tabla + "]");
         }
+        public DbRawSqlQuery<TEntidad> ExecuteQuery<TEntidad>(string query, SqlParameter parameters = null)
+        {
+            return context.Database.SqlQuery<TEntidad>(query, parameters);
+        }
+
         private static IQueryable<TProyeccion> ListarProyeccionQueryable<TProyeccion>(IQueryable<TProyeccion> resultadoFinal, string orden, DirOrden direccionOrden, int maxResultados)
         {
 
@@ -377,7 +382,7 @@ namespace SustitucionMOARepositorio
             return code;
         }
 
-        private IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
+        protected IDbSet<TEntidad> Set<TEntidad>() where TEntidad : class
         {
             return context.Set<TEntidad>();
         }

@@ -33,7 +33,7 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar)
+        public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo)
         {
             var fecha = DateTime.Now.ToString("yyyy-MM-dd");
             var nombreArchivoLlamada = string.Concat(fecha, " - llamada agregarRegistro.xml");
@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
             MEWISCALEVAL[] MEWISCALEVALE = new MEWISCALEVAL[] { };
             MEWIEINE MEWIEINEE = new MEWIEINE();
 
-            var registrosSap = DevolverDatosSapRegistro(registrosInfo, esModificar);
+            var registrosSap = DevolverDatosSapRegistro(registrosInfo);
 
             //var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
             //var ms = new MemoryStream();
@@ -86,21 +86,28 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-    
-            if (!File.Exists(rutaArchivoLlamada))
+
+            try
             {
-                FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
-                fileCrear.Directory.Create();
-                File.WriteAllText(fileCrear.FullName, xml);
+                if (!File.Exists(rutaArchivoLlamada))
+                {
+                    FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
+                    fileCrear.Directory.Create();
+                    File.WriteAllText(fileCrear.FullName, xml);
+                }
+                else
+                {
+                    File.AppendAllText(rutaArchivoLlamada, xml);
+                }
             }
-            else
+            catch (Exception)
             {
-                File.AppendAllText(rutaArchivoLlamada, xml);
+                //TODO - revisar por que da error de que no se puede acceder al archivo.
             }
             return respuesta;
         }
 
-        private List<RegistroInfoSAP> DevolverDatosSapRegistro(List<RegistroInfoDto> registros, bool esModificar)
+        private List<RegistroInfoSAP> DevolverDatosSapRegistro(List<RegistroInfoDto> registros)
         {
             var hoy = DateTime.Now.Date;
             var registrosSap = new List<RegistroInfoSAP>();
@@ -125,7 +132,7 @@ namespace SustitucionMOAWS.WSConsumers
                         PURCH_ORG = registro.OrganizacionDeCompra,
                         INFO_TYPE = "0",
                         PUR_GROUP = registro.GrupoDeCompras,
-                        PLANT = registro.Centro,
+                        PLANT = "",
                         CURRENCY = registro.Moneda,
                         MIN_PO_QTY = 0,
                         NRM_PO_QTY = 1,
@@ -149,7 +156,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         PURCH_ORG = "X",
                         INFO_TYPE = "X",
-                        PLANT = "X",
+                        PLANT = "",
                         PUR_GROUP = "X",
                         CURRENCY = "X",
                         MIN_PO_QTY = "X",
@@ -163,9 +170,9 @@ namespace SustitucionMOAWS.WSConsumers
                         PRICE_DATE = "X",       
                         
                     },
-                };
+                };               
 
-                if (esModificar)
+                if (registro.EsModificar)
                 {
                     registroInfoSAP.CONDITION = new List<MEWICONDITION>()
                     {
@@ -176,8 +183,8 @@ namespace SustitucionMOAWS.WSConsumers
                         COND_TYPE = "ZP00",
                         COND_VALUE = registro.Precio,
                         CURRENCY = registro.Moneda,
-                        NUMERATOR = 0,
-                        DENOMINATOR = 0,
+                        NUMERATOR = 1,
+                        DENOMINATOR = 1,
                         BASE_UOM = registro.Unidad,
                         LOWERLIMIT = 0,
                         UPPERLIMIT = 0,
@@ -217,7 +224,7 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IAgregarRegistroInfoConsumerMOA
     {
-        CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo, bool esModificar);
+        CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo);
 
     }
 

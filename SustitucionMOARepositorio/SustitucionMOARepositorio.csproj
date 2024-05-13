@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="ConsultasEF\ObtenerPosicionesMultipleComprasConsulta.cs" />
     <Compile Include="ConsultasEF\TraerCotizacionConsulta.cs" />
     <Compile Include="ConsultasEF\ComparadorOfertasConsulta.cs" />
     <Compile Include="ConsultasEF\ListarSolpPOConsulta.cs" />
@@ -96,6 +97,12 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioOrdenResiduos.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
+    <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\RepositorioOrdenResiduos.cs" />
+    <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202008272151267_Initial.resx">
@@ -104,7 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
   </ItemGroup>

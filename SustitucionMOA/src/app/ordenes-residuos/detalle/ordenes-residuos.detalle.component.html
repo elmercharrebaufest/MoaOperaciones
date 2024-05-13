@@ -1,0 +1,215 @@
+<div class="content-wraper">
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
+            <div class="col-xs-10 col-sm-10">
+                <strong>
+                    Orden de carga Residuos e Insumos #{{ordenResiduos.Id}} - {{esAdmin ? ordenResiduos.Estado.Nombre : ordenResiduos.Estado.NombreExterno}}
+                </strong>
+                <div *ngIf="esAdmin" class="semaforo {{ordenResiduos.Estado.Semaforo}}"></div>
+            </div>
+
+            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+                <button *ngIf="puedeEditar" type="button" id="modalToggleButton"
+                    class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+                    (click)="editarOrdenResiduos()">
+                    Editar
+                </button>
+            </div>
+        </div>
+        
+        <div class="row myRow">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de anulación" [responsive]="true"
+                    appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoSA.reject()"></button>
+                        <button type="button" pButton label="Sí" class="ui-button-success botonModal"
+                            (click)="dialogoSA.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoRSA key="confirmarRSA" header="Confirmación de solicitud de anulación"
+                    [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoRSA.reject()"></button>
+                        <button type="button" pButton label="Sí" class="ui-button-success botonModal"
+                            (click)="dialogoRSA.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
+                    [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoConfirmarAnular.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoConfirmarAnular.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoConfirmarEdicion key="confirmarSolicitudEdicion"
+                    header="Confirmación de edición" [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoConfirmarEdicion.reject()"></button>
+                        <button type="button" pButton label="Sí" class="ui-button-success botonModal"
+                            (click)="dialogoConfirmarEdicion.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+            </div>
+        </div>
+        <div class="mySearch">
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="formulario-campo">
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <title-caps>Informaci&oacute;n</title-caps>
+                    </div>
+                    <div class="row myRow firstSection ">
+                        <div class="squareInfo animate tablaInformacion">
+                            <div class="row myRow">
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Cliente.RazonSocial}}</p>
+                                    </div>
+                                    
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Cliente</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Cliente.CodigoProveedor}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Planta</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Planta.Codigo}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Domicilio</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Domicilio.Descripcion}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Producto</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Producto.Descripcion}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Destino</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Localidad.Nombre}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Almacén</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Almacen.Nombre}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Estado</strong></p>
+                                        <p style="width:100%">{{esAdmin ? ordenResiduos.Estado.Nombre : ordenResiduos.Estado.NombreExterno}}</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Patente chasis</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.PatenteChasis}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Patente acoplado</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.PatenteAcoplado}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Nombre y apellido del chofer</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.NombreChofer}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>CUIL Chofer</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.CUILChofer}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Raz&oacute;n social transporte</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.RazonSocialTransporte}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Cuit transporte</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.CUITTransporte}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Fecha</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.FechaCreacion}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Observaciones</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.Observaciones}}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="myRow px-4" *ngIf="ordenResiduos.Estado.Id == estadoOrdenEntregada">
+                                <div class="clearfix myTables">
+                                    <table #tabla id="tableModal" role="grid" aria-describedby="tableModal_info"
+                                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table"
+                                        style="width: 100%; padding:10px 0; background: white !important;">
+                                        <thead>
+                                            <tr role="row">
+                                                <th>Fecha de salida</th>
+                                                <th>Fecha de ingreso</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td class="fw-normal">{{ordenResiduos.FechaEgreso}}</td>
+                                                <td class="fw-normal">{{ordenResiduos.FechaIngreso}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="formulario">
+                            <div class="containerBotones">
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeVerificarTransporte">
+                                    <input type="button" (click)="verificarTransporte()"
+                                        class="btn-custom btn-add btn-grande" value="Verificar transporte">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeResolverSolicitudAnulacion">
+                                    <input type="button" (click)="confirmarRechazarSolicitudAnulacion(true)"
+                                        class="btn-custom btn-add btn-grande" value="Aprobar anulación">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeResolverSolicitudAnulacion">
+                                    <input type="button" (click)="confirmarRechazarSolicitudAnulacion(false)"
+                                        class="btn-custom btn-add btn-grande" value="Rechazar anulación">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeResolverSolicitudEdicion">
+                                    <input type="button" (click)="confirmarRechazarSolicitudEdicion(true)"
+                                        class="btn-custom btn-add btn-grande" value="Aprobar edición">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeResolverSolicitudEdicion">
+                                    <input type="button" (click)="confirmarRechazarSolicitudEdicion(false)"
+                                        class="btn-custom btn-add btn-grande" value="Rechazar edición">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeSolicitarAnulacion">
+                                    <input type="button" (click)="confirmarSolicitudAnulacion()"
+                                        class="btn-custom btn-remove btn-grande" value="Solicitar anulación">
+                                </div>
+                                <div class="col-xs-5 col-md-3" *ngIf="puedeAnular">
+                                    <input type="button" class="btn-custom btn-remove btn-grande" value="Anular"
+                                        (click)="confirmarAnulacion()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>

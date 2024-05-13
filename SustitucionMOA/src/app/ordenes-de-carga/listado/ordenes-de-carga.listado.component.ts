@@ -230,4 +230,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             },
         );
     }
+    navegarAConsultas() {
+        this.navService.navegarSeccionParam('consulta', 'mis-consultas')
+    }
 }

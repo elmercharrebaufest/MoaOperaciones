@@ -1,6 +1,5 @@
 ﻿using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
@@ -38,18 +37,14 @@ namespace SustitucionMOA.Controllers
             this.repositorio = repositorio;
         }
 
-        public ActionResult GenerarInformeComercial(string informeComercialJson, int proveedorId)
+        public ActionResult GenerarInformeComercial(string informeComercialJson, string mailUsuario, int proveedorId)
         {
             try
             {
                 informeComercialJson = informeComercialJson.Replace("nia", "ña");
                 var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == userMail);
+                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
                 if (proveedorId == 0)
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
@@ -58,7 +53,7 @@ namespace SustitucionMOA.Controllers
 
                 proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
-                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(userMail, proveedorId);
+                var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(mailUsuario, proveedorId);
 
                 if (infoProveedor.ProveedorClasificacion == "Productor")
                 {
@@ -88,14 +83,14 @@ namespace SustitucionMOA.Controllers
 
                 if (informeComercial.NuevosCampos != null)
                 {
-                   /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
-                    {
-                        informeComercial.Materiales.Add(new ParamInformeComercialMaterial
-                        {
-                            MaterialId = nuevosCampos.MaterialId,
-                            Toneladas = nuevosCampos.Toneladas
-                        });
-                    }*/
+                    /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
+                     {
+                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
+                         {
+                             MaterialId = nuevosCampos.MaterialId,
+                             Toneladas = nuevosCampos.Toneladas
+                         });
+                     }*/
 
                     foreach (var nuevosCampos in informeComercial.NuevosCampos.GroupBy(x => x.MaterialId))
                     {
@@ -107,18 +102,18 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, userMail, proveedorId);
+                var FileArray = altaEmpresaService.GenerarInformeComercial(informeComercial, mailUsuario, proveedorId);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = FileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -167,17 +162,17 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, string mailUsuario, int proveedorId)
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
                 if (proveedorId == 0)
                 {
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
+
                 var corredor = usuario.ObtenerCorredor();
 
                 var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
@@ -204,18 +199,18 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, userMail, proveedorId);
+                var FileArray = altaEmpresaService.GenerarCartaDePresentacion(cartaPresentacion, mailUsuario, proveedorId);
 
                 //return File(FileArray, "application/pdf", "Informe Comercial.pdf");
                 PDFResponse result = new PDFResponse
                 {
-                    pdf = new Pdf()
+                    Pdf = new Pdf()
                     {
                         data = FileArray
                     }
                 };
 
-                return JsonCustom(result.pdf);
+                return JsonCustom(result.Pdf);
             }
             catch (InfoCustomException e)
             {
@@ -523,11 +518,11 @@ namespace SustitucionMOA.Controllers
                     var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mail);
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
-                
+
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosProveedores"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip= altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
+                string rutaZip = altaEmpresaService.ObtenerArchivos(mail, proveedorId, path);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 

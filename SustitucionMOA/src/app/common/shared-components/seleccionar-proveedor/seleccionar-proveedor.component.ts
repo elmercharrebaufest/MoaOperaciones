@@ -59,6 +59,10 @@ export class SeleccionarProveedorComponent extends BaseComponent {
 
     @Output() onLocalidadSeleccionada = new EventEmitter<any>();
     @Output() onProveedorSeleccionado = new EventEmitter<any>();
+    @Output() onProveedorPreSeleccionado = new EventEmitter<any>();
+    @Output() onBlur = new EventEmitter<any>();
+    @Output() onFocus = new EventEmitter<any>();
+    @Output() onQuery = new EventEmitter<string>();
 
     @Input() corredorId: number;
     @Input() tipoProveedorId: number;
@@ -66,6 +70,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
     @Input() noEditarCliente: boolean;
 
     selectEvent(item) {
+        this.onProveedorPreSeleccionado.emit(item);
         try {
             // console.log('SeleccionarProveedorComponent::selectEvent::item: ', item);
             this.subscription = this.service.obtenerProveedorPorCodigo(item.idVendedor).subscribe(
@@ -102,6 +107,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
     filterProveedor(event) {
         let filtered: any[] = [];
         let query = event.query;
+        this.onQuery.emit(query)
         for (let i = 0; i < this.data.length; i++) {
             let proveedor = this.data[i];
             if (proveedor.descVendedor.toLowerCase().indexOf(query.toLowerCase()) == 0) {
@@ -160,4 +166,8 @@ export class SeleccionarProveedorComponent extends BaseComponent {
         this.selected = undefined;
     }
 
+    setSelected(item) {
+        this.selected = item;
+        this.selectEvent(item)
+    }
 }

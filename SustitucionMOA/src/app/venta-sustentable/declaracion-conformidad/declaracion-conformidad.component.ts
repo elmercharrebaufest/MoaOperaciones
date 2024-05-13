@@ -43,7 +43,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   razonSocialDeclaracion: string = ""
   hectareasTotales: number = 0;
   totalidadCosecha: number = 1;
-  file: File
+  file: File;
   esCorredor: boolean = false;
   operarComo: number = 1;
 
@@ -61,7 +61,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
   verificarDeclaracion() {
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.verificarDeclaracion(this.proveedorId, this.cosechaId, this.CUITDeclaracion).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -75,6 +75,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
             this.razonSocial = result.RazonSocial;
             this.hectareasTotales = result.HectareasDeclaracionCampoSustentable;
             this.totalidadCosecha = result.OpcionDeclaracionCampoSustentable == 0 ? 1 : 2;
+
             this.abrirModalFirmaDeclaracion()
           }
         }
@@ -93,6 +94,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     }
   }
 
+  sizeArrayArchivoImprimido = null;
+  showModalConfirmacion = false;
+
   imprimir() {
     this.mensajeImpresionComponent.setMsgsEmpty();
 
@@ -110,11 +114,12 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
       this.subscription = this.service
         .generarDeclaracionProveedor(this.proveedorId, this.cosechaId, this.hectareasTotales, this.CUITDeclaracion, this.razonSocialDeclaracion)
         .subscribe(
-          (result:CommonResponse) => {
+          (result: CommonResponse) => {
             if (result.error) {
               this.floatMessage.setErrorMsg(result.error)
             } else {
               var byteArray = new Uint8Array(result.data);
+              this.sizeArrayArchivoImprimido = byteArray.byteLength;
               var blob = new Blob([byteArray], {
                 type: "application/pdf",
               });
@@ -176,7 +181,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
     this.mensajeComponent.setMsgsEmpty();
     this.subscription = this.service.adjuntarDeclaracionFirmada(this.proveedorId, this.cosechaId, this.CUITDeclaracion, this.file).subscribe(
-      (result:any) => {
+      (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
@@ -185,11 +190,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
           this.mensajeComponent.setInfoMsg(result.info);
         } else {
           this.mensajeComponent.setSuccessMsg(result);
+          this.cerrarModal();
+          this.resultadoDeclaracion.emit(true)
 
-          setTimeout(() => {
-            this.cerrarModal();
-            this.resultadoDeclaracion.emit(true)
-          }, 3000);
         }
       },
       error => {
@@ -199,7 +202,7 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
     return false;
   }
 
-  public cargarDatosCopiar(datos: DatosCopiar){
+  public cargarDatosCopiar(datos: DatosCopiar) {
     this.CUITDeclaracion = datos.CUIT;
     this.razonSocialDeclaracion = datos.ProveedorNombre
     this.proveedorId = datos.Proveedor_Id

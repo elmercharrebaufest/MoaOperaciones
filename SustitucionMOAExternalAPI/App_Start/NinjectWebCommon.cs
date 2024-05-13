@@ -11,7 +11,6 @@ namespace SustitucionMOAExternalAPI.App_Start
     using System.Web;
     using System.Web.Http;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-
     using Ninject;
     using Ninject.Web.Common;
     using Ninject.Web.Common.WebHost;
@@ -19,6 +18,8 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAExternalAPI.Handlers;
     using SustitucionMOAExternalAPI.Managers;
     using SustitucionMOARepositorio;
+    using SustitucionMOARepositorio.Repositorios.Interfaces;
+    using SustitucionMOARepositorio.Repositorios;
     using SustitucionMOAUtils.Helpers;
     using SustitucionMOAUtils.Interfaces;
     using SustitucionMOAUtils.Interfaces.Helpers;
@@ -33,6 +34,8 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.ScatoWebService;
     using SustitucionMOAWS.WebApi;
     using SustitucionMOAWS.WSConsumers;
+    using SustitucionMOAWS.GoogleDrive;
+    using SustitucionMOAWS.GoogleDrive.Interfaces;
 
     public static class NinjectWebCommon
     {
@@ -106,7 +109,6 @@ namespace SustitucionMOAExternalAPI.App_Start
 
         private static void RegisterServices(IKernel kernel)
         {
-
             //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
@@ -212,6 +214,8 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IObtenerOrdenDeCompraConsumerMOA>().To(typeof(ObtenerOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerPDFOrdenCompraConsumerMOA>().To(typeof(ObtenerPDFOrdenCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IListarSolpPendientesConsumerMOA>().To(typeof(ListarSolpPendientesConsumerMOA)).InScope(ctx => OperationContext.Current);
 
 
             #endregion
@@ -227,6 +231,13 @@ namespace SustitucionMOAExternalAPI.App_Start
 
             // Azure AD Consumer
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
+            kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
+            kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
+
+            // GoogleDrive
+            kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<ICampoSustentableGoogleDrive>().To(typeof(CampoSustentableGoogleDrive)).InSingletonScope();
 
             //kernel.Bind<IExternalApiService>().To(typeof(ExternalApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
@@ -235,8 +246,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IServicioSuscriptorAccesosConsumer>().To(typeof(ServicioSuscriptorAccesosConsumer)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IOrdenDeCargaApiService>().To(typeof(OrdenDeCargaApiService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAuthenticationManager>().To(typeof(AuthenticationManager)).InSingletonScope();
-        }   
-    
-        
+
+        }
     }
 }

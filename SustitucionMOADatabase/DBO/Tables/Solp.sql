@@ -25,6 +25,10 @@
     [SeEnvioMailLiberacion] BIT NULL, 
     [Urgencia] BIT NULL, 
     [SeEnvioMailAnulacion] BIT NULL, 
+    [CondEspProveedorAsignado] BIT NULL, 
+    [THServicioPermanente] BIT NULL, 
+    [THAjustePolinomica] BIT NULL, 
+    [THProveedorDirecto] BIT NULL, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Solp_dbo.UsuarioCompras_Id] FOREIGN KEY ([UsuarioCompras_Id]) REFERENCES [dbo].[UsuarioCompras] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Solp_Pliego] FOREIGN KEY ([Pliego_Id]) REFERENCES [dbo].[Pliego] ([Id]),
@@ -32,7 +36,8 @@
     CONSTRAINT [FK_Solp_TablaGeneral_TipoSolp] FOREIGN KEY ([TipoSolp_Id]) REFERENCES [dbo].[TablaGeneral] ([Id]),
     CONSTRAINT [FK_Solp_TablaSap_ClaseDocumento] FOREIGN KEY ([ClaseDocumento_Id]) REFERENCES [dbo].[TablaSap] ([Id]),
     CONSTRAINT [FK_Solp_TablaSap_EstadoSolpSap] FOREIGN KEY ([EstadoSolpSap_Id]) REFERENCES [dbo].[TablaSap] ([Id]),
-    CONSTRAINT [FK_Solp_Usuario_ProveedorAsignado] FOREIGN KEY ([ProveedorAsignado_Id]) REFERENCES [dbo].[Usuario] ([Id])
+    CONSTRAINT [FK_Solp_Usuario_ProveedorAsignado] FOREIGN KEY ([ProveedorAsignado_Id]) REFERENCES [dbo].[Usuario] ([Id]),
+
 
 
 );
