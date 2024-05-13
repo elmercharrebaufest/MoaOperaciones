@@ -849,15 +849,19 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var subcategorias = repositorio.Listar<Material>().Where(x => x.TablaSeccionMaterial == tablaSeccionMaterial).OrderBy(c => c.Nombre);
-                return subcategorias.Select(x => new MaterialDto
+                var materiales = repositorio.Listar<Material, MaterialDto>(
+                x => new MaterialDto
                 {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre,
                     CodigoSap = x.CodigoSap,
                     ValidaSisaRuca = x.ValidaSisaRuca
-
-                }).ToList();
+                },
+                x => x.TablaSeccionMaterial == tablaSeccionMaterial && !string.IsNullOrEmpty(x.Nombre))
+                    .OrderBy(c => c.Descripcion)
+                    .ToList();
+            
+                return materiales;
             }
             catch (ValidationCustomException e)
             {
