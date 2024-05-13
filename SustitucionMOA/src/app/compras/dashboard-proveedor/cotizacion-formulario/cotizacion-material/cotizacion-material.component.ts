@@ -63,7 +63,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     ngOnInit() {
         this.getCombos();
-        this.setComboMoneda();
+        this.setCombos();
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
@@ -233,7 +233,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setComboMoneda();
+                        this.setCombos();
                     }
                 },
                 error => {
@@ -248,17 +248,13 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         return false; //<-- Prevent Refresh
     }
 
-    public setComboMoneda(): void {
+    public setCombos(): void {
+        //Obtengo todas las opciones de los autocomplete
         if (this.combos != undefined) {
             this.monedaCompras = this.combos.Moneda;
-            //this.unidades = this.combos.Unidades;
+            this.unidades = this.combos.Unidades;
         }
     }
-
-    public getUnidades(posicionesCompra: any): any[] {
-        return posicionesCompra.Posiciones.UnidadesDeMedida;
-    }
-
 
     public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number) {
         if (cotizacion.Precio > 0 && cotizacion.Cantidad > 0) {
@@ -270,11 +266,11 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
         var respuesta = false;
-        if (cotizacion.Cantidad > 0) {
+        if (cotizacion.Cantidad >= 0) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
 
         }
-        if (!respuesta && cotizacion.UnidadMedida != undefined && cotizacion.UnidadMedida.Id != 0) {
+        if (!respuesta && cotizacion.UnidadMedida != undefined) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id
         }
         return respuesta;
@@ -296,7 +292,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         } else {
             cotizacion.FechaDeEntrega = fechaOriginal;
         }
-        // Calcula la diferencia en milisegundos entre las dos fechas
+         // Calcula la diferencia en milisegundos entre las dos fechas
         const diferenciaEnMilisegundos = fechaNueva.getTime() - fechaOriginal.getTime();
 
         // Convierte la diferencia en días
@@ -340,7 +336,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                 UnidadDeMedidaSubpos: cotizacion.Posiciones.UnidadId,
                 NoDisponible: cotizacion.Posiciones.CotizacionPosicion.NoDisponible,
                 FechaDeVigencia: cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia != undefined ?
-                    cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia : null,
+                cotizacion.Posiciones.CotizacionPosicion.FechaDeVigencia : null,
                 PrimerPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacion.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta : 0,
                 PrimeraCantidad: cotizacion.Posiciones.CotizacionPosicion.PrimeraCantidad != null ? cotizacion.Posiciones.CotizacionPosicion.PrimeraCantidad : 0,
                 SegundoPlazoDeOferta: cotizacion.Posiciones.CotizacionPosicion.SegundoPlazoDeOferta != null ? cotizacion.Posiciones.CotizacionPosicion.SegundoPlazoDeOferta : 0,
@@ -421,8 +417,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         cotizacion.PlazoDeEntrega = null;
         cotizacion.PrecioTotal = null;
         cotizacion.FechaDeVigencia = null;
-        cotizacion.PrimerPlazoDeOferta = null;
-        cotizacion.PrimeraCantidad = null;
+        cotizacion.PrimerPlazoDeOferta  = null;
+        cotizacion.PrimeraCantidad  = null;
         cotizacion.SegundoPlazoDeOferta = null;
         cotizacion.SegundaCantidad = null;
         cotizacion.TercerPlazoDeOferta = null;
@@ -442,19 +438,19 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     validarNumero(event: any) {
-        const inputValue = event.target.value;
+        const inputValue = event.target.value;        
         if (isNaN(inputValue) || inputValue < 0) {
-            event.target.value = 0; // Borra el valor si es negativo
+          event.target.value = 0; // Borra el valor si es negativo
         }
-    }
+      }
 
-    abrirPlazoDeOferta(cotizacionPosicion: CotizacionPosicionDto, cantidad: number) {
+      abrirPlazoDeOferta(cotizacionPosicion: CotizacionPosicionDto, cantidad: number){
         this.displayPlazo = true;
         this.cotizacionPosicion = cotizacionPosicion;
         this.cantidadSolicitada = cantidad;
-    }
+      }
 
-    cerrarPlazo() {
+      cerrarPlazo() {
         this.displayPlazo = false;
     }
 }

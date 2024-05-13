@@ -38,8 +38,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion
         public string documento { get; set; }
         public string ejercicio { get; set; }
         public string detallePago { get; set; }
-        public string fechaDocumento { get; set; }
-        public string solapa { get; set; }
+       
         public decimal Total { get; set; }
         public string TotalStr { get; set; }
 

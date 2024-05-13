@@ -35,5 +35,6 @@ namespace SustitucionMOAUtils.Interfaces
         string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo);
         string ProcesarCM05(HttpFileCollectionBase archivos, string cuitProveedor, int? comentario_Id = null, bool esCargaInterna = false);
         void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual);
+        List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos);
     }
 }

@@ -15,7 +15,7 @@ export interface CotizacionDto {
     ObservacionEconomica: string,
     Revision: number,
     CotizacionEstadoDescripcion: string, 
-    Archivos: ArchivoDto[],
+    Archivos: LegajoDto[],
     ArchivosCotizacion: Archivo[]
     TieneObservacionTecnica: boolean, 
     CotizacionPosiciones: CotizacionPosicionDto[],

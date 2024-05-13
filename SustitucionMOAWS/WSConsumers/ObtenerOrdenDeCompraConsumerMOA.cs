@@ -1,23 +1,35 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
-using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace SustitucionMOAWS.WSConsumers
 {
+    /// <summary>
+    /// Obtener detalle de una Orden de Compra. Consula por numero de Orden de Compra
+    /// </summary>
     public class ObtenerOrdenDeCompraConsumerMOA : IObtenerOrdenDeCompraConsumerMOA
     {
         BAPI_PO_GETDETAIL1PortTypeClient service;
-        private const string COMP_CODE = "MOA";
+        //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
+        /// <summary>
+        /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
+        /// </summary>
+        private string dateTimeFormat = "dd/MM/yyyy";
+
+        /// <summary>
+        /// //MMSN-491 - Ponerle separador de miles a la columna “Monto Total”. - Separador de miles ( , ) coma - Separador decimal ( . ) punto
+        /// </summary>
+        private string currencyFormat = "#,##0.00";
 
         public ObtenerOrdenDeCompraConsumerMOA(IRepositorio repositorio)
         {
@@ -41,14 +53,9 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                BAPIMEPOCOND[] POCOND;
-                BAPIMEPOACCOUNT[] POACCOUNT;
-                BAPIESKLC[] POSRVACCESSVALUES;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
-                var resultado =  mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
-                Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + resultado.ToJson());
-                return resultado;
+                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
             }
             catch (Exception e)
             {
@@ -69,18 +76,16 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                BAPIMEPOCOND[] POCOND;
-                BAPIMEPOACCOUNT[] POACCOUNT;
-                BAPIESKLC[] POSRVACCESSVALUES;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
 
-                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POSRVACCESSVALUES);
+                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
             }
             catch (Exception e)
             {
                 throw e;
             }
         }
+
         public ResultBAPI_PO_GETDETAIL1 ObtenerOrdenDeCompraRFC(string nroOC)
         {
             try
@@ -106,12 +111,11 @@ namespace SustitucionMOAWS.WSConsumers
                 throw e;
             }
         }
-
         private void ObtenerOcSap(
-            string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
-           out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
-           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out BAPIMEPOCOND[] POCOND, out BAPIMEPOACCOUNT[] POACCOUNT, out BAPIESKLC[] POSRVACCESSVALUES
-            )
+           string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
+          out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
+          out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out BAPIMEPOCOND[] POCOND, out BAPIMEPOACCOUNT[] POACCOUNT, out BAPIESKLC[] POSRVACCESSVALUES
+           )
         {
             string ACCOUNT_ASSIGNMENT = "X";
             string DELIVERY_ADDRESS = "X";
@@ -189,9 +193,90 @@ namespace SustitucionMOAWS.WSConsumers
                 out POHEADER);
         }
 
+        private void ObtenerOcSap(
+            string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
+           out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
+           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY
+            )
+        {
+            string ACCOUNT_ASSIGNMENT = "X";
+            string DELIVERY_ADDRESS = "X";
+            string HEADER_TEXT = "X";
+            string INVOICEPLAN = "X";
+            string ITEM_TEXT = "X";
+            string PURCHASEORDER = nroOC;
+            string SERIALNUMBERS = "X";
+            string SERVICES = "X";
+            string VERSION = "X";
 
-        private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIMEPOCOND[] POCOND, BAPIESKLC[] POSRVACCESSVALUES)
+            BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
+            POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
+            BAPIMEPOCOND[] POCOND = new BAPIMEPOCOND[] { };
+            POITEM = new BAPIMEPOITEM[] { };
+            POTEXTHEADER = new BAPIMEPOTEXTHEADER[] { };
+            POTEXTITEM = new BAPIMEPOTEXT[] { };
+            RETURN = new BAPIRET2[] { };
+            POSERVICES = new BAPIESLLC[] { };
+            POHEADER = new BAPIMEPOHEADER { };
+            BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER = new BAPI_INVOICE_PLAN_HEADER[] { };
+            BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS = new BAPIMEDCM_ALLVERSIONS[] { };
+            BAPIPAREX[] EXTENSIONOUT = new BAPIPAREX[] { };
+            BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM = new BAPI_INVOICE_PLAN_ITEM[] { };
+            BAPIMEPOCOMPONENT[] POCOMPONENTS = new BAPIMEPOCOMPONENT[] { };
+            BAPIMEPOCONDHEADER[] POCONDHEADER = new BAPIMEPOCONDHEADER[] { };
+            BAPIEKES[] POCONFIRMATION = new BAPIEKES[] { };
+            BAPIESUCC[] POCONTRACTLIMITS = new BAPIESUCC[] { };
+            BAPIEIPO[] POEXPIMPITEM = new BAPIEIPO[] { };
+            BAPIEKBE[] POHISTORY = new BAPIEKBE[] { };
+            BAPIEKBE_MA[] POHISTORY_MA = new BAPIEKBE_MA[] { };
+            BAPIEKBES[] POHISTORY_TOTALS = new BAPIEKBES[] { };
+            BAPIESUHC[] POLIMITS = new BAPIESUHC[] { };
+            BAPIEKKOP[] POPARTNER = new BAPIEKKOP[] { };
+            POSCHEDULE = new BAPIMEPOSCHEDULE[] { };
+            BAPIMEPOSHIPPEXP[] POSHIPPINGEXP = new BAPIMEPOSHIPPEXP[] { };
+            BAPIESKLC[] POSRVACCESSVALUES = new BAPIESKLC[] { };
+            BAPIMEPOSERIALNO[] SERIALNUMBER = new BAPIMEPOSERIALNO[] { };
+
+            result = service.BAPI_PO_GETDETAIL1(ACCOUNT_ASSIGNMENT,
+                DELIVERY_ADDRESS,
+                HEADER_TEXT,
+                INVOICEPLAN,
+                ITEM_TEXT,
+                PURCHASEORDER,
+                SERIALNUMBERS,
+                SERVICES,
+                VERSION,
+                ref ALLVERSIONS,
+                ref EXTENSIONOUT,
+                ref INVPLANHEADER,
+                ref INVPLANITEM,
+                ref POACCOUNT,
+                ref POADDRDELIVERY,
+                ref POCOMPONENTS,
+                ref POCOND,
+                ref POCONDHEADER,
+                ref POCONFIRMATION,
+                ref POCONTRACTLIMITS,
+                ref POEXPIMPITEM,
+                ref POHISTORY,
+                ref POHISTORY_MA,
+                ref POHISTORY_TOTALS,
+                ref POITEM,
+                ref POLIMITS,
+                ref POPARTNER,
+                ref POSCHEDULE,
+                ref POSERVICES,
+                ref POSHIPPINGEXP,
+                ref POSRVACCESSVALUES,
+                ref POTEXTHEADER,
+                ref POTEXTITEM,
+                ref RETURN,
+                ref SERIALNUMBER,
+                out POHEADER);
+        }
+
+
+        private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER, BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
@@ -207,46 +292,29 @@ namespace SustitucionMOAWS.WSConsumers
                 }
             }
 
-            if (resultado.Error == null)
+            resultado.Cabecera = new OrdenDeCompraSAPCabecera
             {
-                resultado.Cabecera = new OrdenDeCompraSAPCabecera
-                {
-                    OrdenDeCompra = POHEADER.PO_NUMBER,
-                    CodigoProveedor = POHEADER.VENDOR,
-                    UsuarioComprasSAP = POHEADER.CREATED_BY,
-                    Moneda = POHEADER.CURRENCY,
-                    FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-                    FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
-                    OrganizacionDeComprasCodigo = POHEADER.PURCH_ORG
-                };
+                OrdenDeCompra = POHEADER.PO_NUMBER,
+                CodigoProveedor = POHEADER.VENDOR,
+                Moneda = POHEADER.CURRENCY,
+                FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
+            };
 
-                foreach (var pos in POITEM.ToList())
+            foreach (var pos in POITEM.ToList())
+            {
+                resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
+                resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
                 {
-                    resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
-                    var region = POADDRDELIVERY.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
-                    var plazo = POSCHEDULE.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
-                    resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
-                    {
-                        Indice = pos.PO_ITEM,
-                        IndiceSolp = pos.PREQ_ITEM,
-                        RegistroInfo = pos.INFO_REC,
-                        NroSolp = pos.PREQ_NO,
-                        DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
-                        {
-                            RegionSap = region.REGION
-                        },
-                        PlazoDeOferta = !string.IsNullOrEmpty(plazo.DELIVERY_DATE) ?
-                         DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null
-                    });
-                }
+                    Indice = pos.PO_ITEM
+                });
             }
-
             return resultado;
         }
 
 
         private AdjudicacionDto mapAdjudicacionDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIESKLC[] POSRVACCESSVALUES)
+        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
         {
             AdjudicacionDto adjudicacion = new AdjudicacionDto();
             var codigoMateriales = POITEM.Select(a => a.MATERIAL).ToList();
@@ -259,19 +327,13 @@ namespace SustitucionMOAWS.WSConsumers
 
             var monedas = repositorio.Listar<TablaSap>(a => a.Tabla == "Moneda");
             var unidades = repositorio.Listar<TablaSap>(a => a.Tabla == "Unidad");
-            var condicionesDePago = repositorio.Listar<TablaSap>(a => a.Tabla == TablasSap.CondicionesDePago);
-            var condicionesDeImportacion = repositorio.Listar<TablaSap>(a => a.Tabla == TablasSap.CondicionesDeImportacion);
-            var unidadesSAP = repositorio.Listar<UnidadMedidaSap>();
-            List<RegionSap> regiones = repositorio.Listar<RegionSap>(x => x.CodigoPais == "AR").ToList();
-            var nroSolp = POITEM.FirstOrDefault().PREQ_NO;
-            var solp = repositorio.Obtener<Solp, int>(x => x.NroSolp == nroSolp, x => x.Id);
             var servicios = new List<ServicioSolp>();
             if (POITEM.First().ITEM_CAT == "9")
             {
                 var codigoServicios = POSERVICES.Select(a => a.SERVICE).ToList();
                 servicios = repositorio.Listar<ServicioSolp>(x => codigoServicios.Contains(x.Codigo));
             }
-            adjudicacion.Solp_Id = solp;
+
             adjudicacion.Id = 0;
             adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
             adjudicacion.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
@@ -279,7 +341,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
             adjudicacion.CalleEntrega = POADDRDELIVERY.FirstOrDefault()?.STREET;
             adjudicacion.CodigoPostal = POADDRDELIVERY.FirstOrDefault()?.POSTL_COD1;
-            adjudicacion.PrecioFinal = POITEM.Where(a => a.DELETE_IND != "L").Sum(a => a.QUANTITY * a.NET_PRICE);
+            adjudicacion.PrecioFinal = POITEM.Sum(a => a.QUANTITY * a.NET_PRICE);
             adjudicacion.TextoDeCabecera = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F01").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDeEntrega = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F05").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDePago = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F07").Select(a => a.TEXT_LINE));
@@ -287,49 +349,20 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Moneda_Id = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Id;
             adjudicacion.MonedaDescripcion = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Descripcion;
             adjudicacion.FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-            adjudicacion.CondicionDePago = new CondicionDePagoDto
-            {
-                Id = condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Id,
-                Codigo = POHEADER.PMNTTRMS,
-                CodigoDescripcion = POHEADER.PMNTTRMS + " - " + condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Descripcion,
-                Descripcion = condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Descripcion
-            };
 
-            adjudicacion.PagoEn1 = POHEADER.DSCNT1_TO;
-            adjudicacion.PagoEn2 = POHEADER.DSCNT2_TO;
-            adjudicacion.PagoEn3 = POHEADER.DSCNT3_TO;
-            adjudicacion.PagoEn1Porcentaje = POHEADER.DSCT_PCT1;
-            adjudicacion.PagoEn2Porcentaje = POHEADER.DSCT_PCT2;
 
-            adjudicacion.CondicionDeImportacion = new CondicionDeImportacionDto
-            {
-                Codigo = POHEADER.INCOTERMS1,
-                Descripcion = POHEADER.INCOTERMS2,
-                Id = condicionesDeImportacion.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Id
-            };
-
-            adjudicacion.CondicionDeImportacionDescripcion = POHEADER.INCOTERMS2;
             adjudicacion.AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>();
-            foreach (var posicion in POITEM.Where(a => a.DELETE_IND != "L"))
+
+            foreach (var posicion in POITEM)
             {
+
+                
+
                 AdjudicacionPosicionDto pos = new AdjudicacionPosicionDto();
 
-                var region = POADDRDELIVERY.Where(x => x.PO_ITEM == posicion.PO_ITEM).SingleOrDefault();
-
-                pos.DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
-                {
-                    RegionSap = region.REGION,
-                    PaisSap = region.COUNTRY,
-                    Id = regiones.FirstOrDefault(x => x.CodigoSap == region.REGION)?.Id,
-                    CodigoSap = region.REGION,
-                    Descripcion = region.COUNTRY
-                };
-                pos.RegionCodigo = region.REGION;
-                pos.PaisSap = region.COUNTRY;
-                pos.RegionId = regiones.FirstOrDefault(x => x.CodigoSap == region.REGION)?.Id;
                 pos.SolpPosicion_Id = 0;
-                pos.Id = 0;
-                pos.MaterialComprasCodigo = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.CodigoSap : "";
+                pos.Id = 0; //P
+                pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
                 pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.Descripcion : "";
                 pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
@@ -339,27 +372,16 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.Cantidad = posicion.QUANTITY;
                 pos.PrecioUnidad = posicion.NET_PRICE;
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
-                var unidadSap = unidadesSAP.FirstOrDefault(a => a.UM == posicion.PO_UNIT);
-                var unidad = unidades.FirstOrDefault(a => a.Codigo == unidadSap?.Comercial);
-                pos.UnidadId = unidad.Id;
-                pos.UnidadDescripcion = unidad?.Descripcion ?? "";
-                pos.UnidadCodigo = unidad?.CodigoSap ?? "";
+                pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
                 pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
                 pos.CentroComprasCodigo = posicion.PLANT;
-                pos.Eliminado = posicion.DELETE_IND == "L";
-                pos.EntregaFinal = posicion.NO_MORE_GR == "X";
-                pos.Moneda = new TablaSapDto
-                {
-                    Codigo = pos.MonedaCodigo,
-                    Descripcion = pos.MonedaDescripcion
-                };
+
                 try
                 {
                     var fecha = POSCHEDULE.First(a => a.PO_ITEM == posicion.PO_ITEM).DELIVERY_DATE;
                     pos.FechaEntregaServicio = DateTime.ParseExact(fecha, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
-                    pos.FechaEntregaServicioFormateado = fecha;
                 }
                 catch
                 {
@@ -369,7 +391,6 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.PlazoDeOferta = Decimal.ToInt32(posicion.PLAN_DEL);
                 if (POITEM.First().ITEM_CAT == "9")
                 {
-
                     pos.SubposicionesCompras = new List<SolpSubposicionDto>();
                     var SUBPCKG_NO = POSERVICES.First(a => a.PCKG_NO == posicion.PCKG_NO).SUBPCKG_NO;
                     foreach (var subpos in POSERVICES.Where(a => a.PCKG_NO == SUBPCKG_NO))
@@ -380,13 +401,10 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.CodigoSolp = servicios.FirstOrDefault(a => a.Codigo == subpos.SERVICE)?.CodigoSap ?? 0;
                         sub.Cantidad = subpos.QUANTITY;
                         sub.PrecioBruto = subpos.NET_VALUE / subpos.QUANTITY;
-                        var unidadSapsp = unidadesSAP.FirstOrDefault(a => a.Comercial == subpos.BASE_UOM);
-                        var unidadsp = unidades.FirstOrDefault(a => a.Codigo == unidadSapsp?.Comercial);
-                        sub.UnidadComprasDescripcion = unidadsp?.Descripcion ?? "";
+                        sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.MonedaCotizacionCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                         sub.PrecioTotalSubPosicion = subpos.NET_VALUE;
-                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
@@ -403,22 +421,555 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.PrecioTotalSubPosicion = sub.Cantidad ?? 0 * sub.PrecioBruto ?? 0;
-                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
 
                 adjudicacion.AdjudicacionPosiciones.Add(pos);
-                if (adjudicacion.AdjudicacionPosiciones.Count > 0)
-                {
-                    adjudicacion.AdjudicacionPosiciones[0].MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
-                    adjudicacion.AdjudicacionPosiciones[0].MonedaDescripcion = POHEADER.CURRENCY;
-                }
             }
 
             return adjudicacion;
         }
 
+
+
+
+
+
+        /// ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        /// <summary>
+        /// Obtiene Detalle de una Orden de Compra
+        /// Con Posición, item o línea, Entradas de Servicio si las tuviera, Historial de Entradas de Servicio.
+        /// </summary>
+        /// <param name="numeroDeOrdenCompra"></param>
+        /// <returns></returns>
+        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen)
+        {
+            try
+            {
+                BAPIMEPOITEM[] POITEM;
+                BAPIRET2[] RETURN;
+                BAPIMEPOHEADER POHEADER;//
+                BAPIEIKP result;
+                BAPIMEPOTEXTHEADER[] POTEXTHEADER;
+                BAPIMEPOTEXT[] POTEXTITEM;
+                BAPIESLLC[] POSERVICES;
+                BAPIMEPOSCHEDULE[] POSCHEDULE;
+                BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+                BAPIEKBE[] POHISTORY;
+                ObtenerDetalleDeOrdenDeCompraSap(numeroDeOrdenCompra, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POHISTORY);
+
+                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY, centro, almacen);
+
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        /// <summary>
+        /// Mapea Detalle de una Orden de Compra
+        /// </summary>
+        private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
+         BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
+        {
+            DetalleOrdenDeCompraDto detalleOrdenDeCompra = new DetalleOrdenDeCompraDto();
+
+            //Buscar CUIT en tabla de Proveedores con el Codigo de Proveedor.
+            //List<Proveedor> _proveedores = repositorio.Listar<Proveedor>(a => a.CodigoProveedor == POHEADER.VENDOR);
+            //Proveedor _proveedor = _proveedores.FirstOrDefault(p => p.CodigoProveedor == POHEADER.VENDOR);
+            //Como hay codigos de proveedor repetidos.
+            //Proveedor _proveedor = repositorio.Listar<Proveedor>(a => a.CodigoProveedor == POHEADER.VENDOR).FirstOrDefault();
+
+            Proveedor _proveedor = repositorio.Listar<Proveedor>(p =>
+                p.CodigoProveedor == POHEADER.VENDOR &&
+                p.CodigoProveedor.Substring(p.CodigoProveedor.Length - 8) == p.CUIT.Substring(2, 8)
+            ).FirstOrDefault();
+
+            detalleOrdenDeCompra.NumeroOrdenDeCompra = POHEADER.PO_NUMBER;
+            detalleOrdenDeCompra.Proveedor = POHEADER.VENDOR;
+            //detalleOrdenDeCompra.NombreProveedor = POHEADER.
+            detalleOrdenDeCompra.MontoTotal = Math.Round(POITEM.Sum(a => a.QUANTITY * a.NET_PRICE), 4);
+            //MMSN-491 - Ponerle separador de miles a la columna “Monto Total”. - Separador de miles ( , ) coma - Separador decimal ( . ) punto           
+            detalleOrdenDeCompra.MontoTotalString = detalleOrdenDeCompra.MontoTotal.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+
+            ////MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
+            DateTime toFormat = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            detalleOrdenDeCompra.FechaCreacion = toFormat.ToString(dateTimeFormat);
+
+            detalleOrdenDeCompra.UsuarioCreador = POHEADER.CREATED_BY;
+            detalleOrdenDeCompra.Cuit = _proveedor != null ? DataFormatter.CuitConGuion(_proveedor.CUIT) : "-";
+            detalleOrdenDeCompra.Posiciones = new List<PosicionDto>();
+
+            //var centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            //var almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
+            //Obtiene las entradas de servicio de la orden de compra, si las tuviera, para luego asignarlas a las posiciones.
+            List<EntradaServicioDto> ListaDeEntradasDeServicio = new List<EntradaServicioDto>();
+            ListaDeEntradasDeServicio = ObtenerTodasEntradasDeServicio_Nuevo(POSERVICES, POHISTORY);
+
+
+            /// Recorre cada Posicion en busqueda de itemsOC
+            foreach (var posicion in POITEM)
+            {
+                PosicionDto pos = new PosicionDto();
+
+                pos.Id = int.Parse(posicion.PCKG_NO);
+                pos.NumeroPosicion = long.Parse(posicion.PO_ITEM);
+                pos.CodigoMaterial = posicion.MATERIAL?.TrimStart('0');                
+                pos.Descripcion = posicion.SHORT_TEXT;               
+                pos.Cantidad = posicion.QUANTITY;
+                pos.PrecioUnidad = Math.Round(posicion.NET_PRICE, 4);
+
+                if(pos.PrecioUnidad != null)
+                {
+                    decimal notNullValue = (decimal)pos.PrecioUnidad;
+                    pos.PrecioUnidadString = notNullValue.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                pos.PrecioTotal = Math.Round(posicion.QUANTITY * posicion.NET_PRICE, 4);
+                pos.CentroComprasCodigo = posicion.PLANT;
+                pos.UM = posicion.PO_UNIT;
+                pos.GrupoArticulos = posicion.MATL_GROUP;
+                TablaSap centro = centros.FirstOrDefault(a => a.Codigo == posicion.PLANT);
+                TablaSap Almacen = almacenes.FirstOrDefault(a => a.Codigo == posicion.STGE_LOC);
+
+                if (centro == null)
+                {
+                    pos.Centro = posicion.PLANT + "- ";
+                };
+
+                if (centro != null)
+                {
+                    pos.Centro = posicion.PLANT + "-" + centro.Descripcion;
+                };
+
+                if (Almacen == null)
+                {
+                    pos.Almacen = posicion.STGE_LOC + "- ";
+                };
+
+                if (Almacen != null)
+                {
+                    pos.Almacen = posicion.STGE_LOC + "-" + Almacen.Descripcion;
+                };
+
+
+                //pos.Centro = posicion.PLANT;
+                //pos.Almacen = posicion.STGE_LOC;
+
+                pos.NumeroSolp = posicion.PREQ_NO;
+                pos.Contrato = posicion.AGREEMENT;
+                pos.Solicitante = posicion.PREQ_NAME;
+                pos.NoMoreGR = posicion.NO_MORE_GR;
+
+                //pos.MonedaId = posicion.CURRENCY;
+                pos.MonedaDescripcion = POHEADER.CURRENCY_ISO;
+
+                pos.NroOrdenCompra = POHEADER.PO_NUMBER;
+
+                /// Obtine los Items de la position
+                pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos, ListaDeEntradasDeServicio);
+
+                detalleOrdenDeCompra.Posiciones.Add(pos);
+            }
+
+            return detalleOrdenDeCompra;
+        }
+
+        /// <summary>
+        /// Obtener los Items de la position
+        /// </summary>
+        private List<ItemDto> ObtenerItemsdelaPosicion(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, BAPIMEPOHEADER POHEADER,
+                                                        PosicionDto Posicion,
+                                                        List<EntradaServicioDto> ListaDeEntradasDeServicio)
+        {
+            List<ItemDto> itemsDeLaPosicion = new List<ItemDto>();
+            string idPosicionString = Posicion.Id.ToString("D10");
+            var itemsValidos = pOSERVICES.Where(x => x.PCKG_NO == idPosicionString).FirstOrDefault();
+
+            if (itemsValidos == null)
+                return itemsDeLaPosicion;
+
+            var items = pOSERVICES.Where(x => x.PCKG_NO == itemsValidos.SUBPCKG_NO);
+
+            foreach (var item in items)
+            {
+
+                ItemDto itemDto = new ItemDto();
+
+                itemDto.Id = item.PCKG_NO;
+                itemDto.LINE_NO = item.LINE_NO;
+                itemDto.NumeroLinea = int.Parse(item.EXT_LINE);
+                itemDto.Descripcion = item.SHORT_TEXT;
+                itemDto.Cantidad = item.QUANTITY;
+                itemDto.PosicionId = Convert.ToInt32(item.PCKG_NO);
+                itemDto.PrecioBruto = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+                itemDto.ServicioNumero = item.SERVICE != "" ? long.Parse(item.SERVICE) : 0;
+                itemDto.UM = item.BASE_UOM;
+                itemDto.Importe = Math.Round((item.QUANTITY != 0) ? item.NET_VALUE / item.QUANTITY : 0, 4);
+
+                if (itemDto.Importe != null)
+                {
+                    decimal notNullValue = (decimal)itemDto.Importe;
+                    itemDto.ImporteString = notNullValue.ToString(currencyFormat, System.Globalization.CultureInfo.InvariantCulture);
+                }
+
+                //MMSN-460 - Moneda
+                itemDto.Moneda = POHEADER.CURRENCY;
+                //MMSN-460 - Nro de servicio
+                itemDto.ServicioNumero = item.SERVICE != "" ? int.Parse(item.SERVICE) : 0;
+                //MMSN-460 - Porcentaje (inicialización - necesaria para FE)
+                itemDto.Porcentaje = "0"; // si no tiene entradas de servicios asociadas el porcentaje es 0
+                itemDto.CantidadReal = 0; // si no tiene entras de servicios asociadas la cantidad real es = 0
+
+                itemDto.EntradasServicio = ObtenerEntradasDeServicioDelItem_Nuevo(pOSERVICES, pOHISTORY, itemDto.Id, itemDto.LINE_NO, ListaDeEntradasDeServicio);
+
+                if (itemDto.EntradasServicio.Count > 0)
+                {
+                    itemDto = CalcularCampos(itemDto);
+                }
+
+                itemDto.NroOrdenCompra = POHEADER.PO_NUMBER;
+                itemDto.NroPosicion = Posicion.NumeroPosicion.ToString();
+
+                itemsDeLaPosicion.Add(itemDto);
+            }
+
+            return itemsDeLaPosicion;
+        }
+
+
+        /// <summary>
+        /// Obtiene las Entradas de Servicio de la posicion.
+        /// Elimina del listado las que no son de servicios
+        /// </summary>
+        /// <param name="pOSERVICES"></param>
+        /// <param name="pOHISTORY"></param>
+        /// <param name="idDelItem"></param>
+        /// <returns></returns>
+        private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY, string idDelItem, string idDeLinea)
+        {
+            List<EntradaServicioDto> EntradasServicioDelItemOC = new List<EntradaServicioDto>();
+            List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+            List<string> listaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
+
+            /// Recorre las entradas de servicios en busqueda de intems que coincidan con la posicion
+            foreach (var entradaServicioPotencial in entradasDeServicioPotenciales)
+            {
+                EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+                string _nroES = entradaServicioPotencial.MAT_DOC;
+
+                /// Obtiene detalle de una de kas entradas de servicio
+                EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
+                List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(listaDeEntradasDeServicioFacturadas, _nroES);
+
+                // Toma los datos de cada item de la entrada de servicio
+                foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
+                {
+
+                    if (itemES.ItemNumero == idDelItem && itemES.PLN_LINE == idDeLinea)
+                    {
+                        DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
+                        bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+                        entradaServicioDto.Id = int.Parse(itemES.Id);
+                        entradaServicioDto.itemNumero = itemES.ItemNumero;
+                        //entradaServicioDto.TextoBreve = itemES.Descripcion;
+                        entradaServicioDto.Cantidad = itemES.Cantidad;
+                        entradaServicioDto.ESS_PCKG_NO = itemES.PCKG_NO;
+                        entradaServicioDto.ESS_LINE_NO = itemES.LINE_NO;
+                        entradaServicioDto.ESS_EXT_LINE = itemES.EXT_LINE;
+
+                        //MMSN-460 - Informacion de Cabecera p/ FE
+                        entradaServicioDto.Fecha = entradaServicioSAP.Fecha;
+                        entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
+                        entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
+                        entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
+                        entradaServicioDto.ImporteARPUSD = entradaServicioSAP.ImporteARPUSD;
+                        entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+                        entradaServicioDto.TextoBreve = entradaServicioSAP.TextoBreve; //
+                        EntradasServicioDelItemOC.Add(entradaServicioDto);
+                    }
+                }
+            }
+
+            return EntradasServicioDelItemOC;
+        }
+
+        /// <summary>
+        /// MMSN-460: Calculo de Cantidad Real y Porcentaje para ItemDTO
+        /// </summary>
+        /// <param name="itemDto"></param>
+        /// <returns></returns>
+        private ItemDto CalcularCampos(ItemDto itemDto)
+        {
+            bool calcularPorcentaje = false;
+
+            //MMSN-460 - Cantidad Real
+            //Inicializar en 0 si hay elementos en ES
+            if (itemDto.EntradasServicio.Count > 0)
+            {
+                itemDto.CantidadReal = 0;
+                calcularPorcentaje = true;
+            }
+
+            try
+            {
+                //recorrer la lista de Entradas de Servicio, y contabilizar la cantidad
+                foreach (var es in itemDto.EntradasServicio)
+                {
+                    if (es.Cantidad != null)
+                    {
+                        itemDto.CantidadReal = itemDto.CantidadReal + es.Cantidad;
+                    }
+
+                }
+
+                //MMSN-460 - Porcentaje (% del item = cantidadReal x 100 / cantidad)
+                if (itemDto.Cantidad != null && itemDto.Cantidad != 0)
+                {
+                    if (calcularPorcentaje == true && (itemDto.CantidadReal != null && itemDto.CantidadReal != 0))
+                    {
+                        double res = Convert.ToDouble((itemDto.CantidadReal * 100) / itemDto.Cantidad);
+                        itemDto.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
+
+                        if (itemDto.Porcentaje.EndsWith(".00"))
+                        {
+                            var redondeo = Math.Round(res);
+                            itemDto.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                //Evito detener ejecución
+            }
+
+            return itemDto;
+        }
+        private void ObtenerDetalleDeOrdenDeCompraSap(
+            string nroOC, out BAPIMEPOITEM[] POITEM, out BAPIRET2[] RETURN, out BAPIMEPOHEADER POHEADER, out BAPIEIKP result,
+           out BAPIMEPOTEXTHEADER[] POTEXTHEADER, out BAPIMEPOTEXT[] POTEXTITEM, out BAPIESLLC[] POSERVICES, out BAPIMEPOSCHEDULE[] POSCHEDULE,
+           out BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, out BAPIEKBE[] POHISTORY
+            )
+        {
+            string ACCOUNT_ASSIGNMENT = "X";
+            string DELIVERY_ADDRESS = "X";
+            string HEADER_TEXT = "X";
+            string INVOICEPLAN = "X";
+            string ITEM_TEXT = "X";
+            string PURCHASEORDER = nroOC;
+            string SERIALNUMBERS = "X";
+            string SERVICES = "X";
+            string VERSION = "X";
+
+            BAPIMEPOACCOUNT[] POACCOUNT = new BAPIMEPOACCOUNT[] { };
+            POADDRDELIVERY = new BAPIMEPOADDRDELIVERY[] { };
+            BAPIMEPOCOND[] POCOND = new BAPIMEPOCOND[] { };
+            POITEM = new BAPIMEPOITEM[] { };
+            POTEXTHEADER = new BAPIMEPOTEXTHEADER[] { };
+            POTEXTITEM = new BAPIMEPOTEXT[] { };
+            RETURN = new BAPIRET2[] { };
+            POSERVICES = new BAPIESLLC[] { };
+            POHEADER = new BAPIMEPOHEADER { };
+            POHISTORY = new BAPIEKBE[] { };
+            BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER = new BAPI_INVOICE_PLAN_HEADER[] { };
+            BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS = new BAPIMEDCM_ALLVERSIONS[] { };
+            BAPIPAREX[] EXTENSIONOUT = new BAPIPAREX[] { };
+            BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM = new BAPI_INVOICE_PLAN_ITEM[] { };
+            BAPIMEPOCOMPONENT[] POCOMPONENTS = new BAPIMEPOCOMPONENT[] { };
+            BAPIMEPOCONDHEADER[] POCONDHEADER = new BAPIMEPOCONDHEADER[] { };
+            BAPIEKES[] POCONFIRMATION = new BAPIEKES[] { };
+            BAPIESUCC[] POCONTRACTLIMITS = new BAPIESUCC[] { };
+            BAPIEIPO[] POEXPIMPITEM = new BAPIEIPO[] { };
+            //BAPIEKBE[] POHISTORY = new BAPIEKBE[] { };
+            BAPIEKBE_MA[] POHISTORY_MA = new BAPIEKBE_MA[] { };
+            BAPIEKBES[] POHISTORY_TOTALS = new BAPIEKBES[] { };
+            BAPIESUHC[] POLIMITS = new BAPIESUHC[] { };
+            BAPIEKKOP[] POPARTNER = new BAPIEKKOP[] { };
+            POSCHEDULE = new BAPIMEPOSCHEDULE[] { };
+            BAPIMEPOSHIPPEXP[] POSHIPPINGEXP = new BAPIMEPOSHIPPEXP[] { };
+            BAPIESKLC[] POSRVACCESSVALUES = new BAPIESKLC[] { };
+            BAPIMEPOSERIALNO[] SERIALNUMBER = new BAPIMEPOSERIALNO[] { };
+
+            result = service.BAPI_PO_GETDETAIL1(ACCOUNT_ASSIGNMENT,
+                DELIVERY_ADDRESS,
+                HEADER_TEXT,
+                INVOICEPLAN,
+                ITEM_TEXT,
+                PURCHASEORDER,
+                SERIALNUMBERS,
+                SERVICES,
+                VERSION,
+                ref ALLVERSIONS,
+                ref EXTENSIONOUT,
+                ref INVPLANHEADER,
+                ref INVPLANITEM,
+                ref POACCOUNT,
+                ref POADDRDELIVERY,
+                ref POCOMPONENTS,
+                ref POCOND,
+                ref POCONDHEADER,
+                ref POCONFIRMATION,
+                ref POCONTRACTLIMITS,
+                ref POEXPIMPITEM,
+                ref POHISTORY,
+                ref POHISTORY_MA,
+                ref POHISTORY_TOTALS,
+                ref POITEM,
+                ref POLIMITS,
+                ref POPARTNER,
+                ref POSCHEDULE,
+                ref POSERVICES,
+                ref POSHIPPINGEXP,
+                ref POSRVACCESSVALUES,
+                ref POTEXTHEADER,
+                ref POTEXTITEM,
+                ref RETURN,
+                ref SERIALNUMBER,
+                out POHEADER);
+        }
+
+        /// <summary>
+        /// MMSN-480: Devuelve verdadero si la entrada de servicio tiene factura
+        /// </summary>
+        /// <param name="nrosEntradasServicioFacturadas"></param>
+        /// <param name="nroES"></param>
+        /// <returns></returns>
+        public bool EntradaServicioTieneFactura(List<string> nrosEntradasServicioFacturadas, string nroES)
+        {
+            bool entradaServicioFacturada = nrosEntradasServicioFacturadas.Any(x => x == nroES);
+
+            return entradaServicioFacturada;
+        }
+
+        /// <summary>
+        /// MMSN-480: Devuelve verdadero si la fecha actual está dentro del período SAP (Dias del mes actual y mes anterior completo)
+        /// </summary>
+        /// <param name="fechaInicial"></param>
+        /// <param name="fechaActual"></param>
+        /// <returns></returns>
+        public bool DentroPeriodoSAP(DateTime fechaInicial, DateTime fechaActual)
+        {
+            int diferenciaEnMeses = ((fechaActual.Year - fechaInicial.Year) * 12) + fechaActual.Month - fechaInicial.Month;
+
+            return diferenciaEnMeses < 2;
+        }
+
+
+        /// <summary>
+        /// Obtiene detalle de todas las entradas de servicio de una OC
+        /// deja solo las que son útiles para alguno de los items,
+        /// y las guarda en un objeto
+        /// </summary>
+        public List<EntradaServicioDto> ObtenerTodasEntradasDeServicio_Nuevo(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY)
+        {
+            List<EntradaServicioDto> EntradasDeServicioDelItem = new List<EntradaServicioDto>();
+            List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+
+            List<string> ListaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
+
+
+            foreach (var entradaServicioCompleta in entradasDeServicioPotenciales)
+            {              
+                string _nroES = entradaServicioCompleta.MAT_DOC;
+
+                EntradaServicioDto entradaServicioSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicio(_nroES);
+
+                List<ItemEntradaServicioDto> _itemsDeEntradaServicio = entradaServicioSAP.Items;
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(ListaDeEntradasDeServicioFacturadas, _nroES);
+
+                foreach (ItemEntradaServicioDto itemES in _itemsDeEntradaServicio)
+                {
+                    EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+                    DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioSAP.FechaContabilizacion);
+                    bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+                    entradaServicioDto.Id = int.Parse(itemES.Id);
+                    entradaServicioDto.itemNumero = itemES.ItemNumero;
+                    entradaServicioDto.TextoBreve = itemES.Descripcion;
+                    entradaServicioDto.Cantidad = itemES.Cantidad;
+                    entradaServicioDto.ESS_PCKG_NO = itemES.PCKG_NO;
+                    entradaServicioDto.ESS_LINE_NO = itemES.PLN_LINE;
+                    entradaServicioDto.ESS_EXT_LINE = itemES.EXT_LINE;
+                    entradaServicioDto.Fecha = entradaServicioSAP.Fecha; //MMSN-460 - Informacion de Cabecera p/ FE
+                    entradaServicioDto.FechaDocumentoString = entradaServicioSAP.FechaDocumentoString;
+                    entradaServicioDto.FechaContabilizacion = entradaServicioSAP.FechaContabilizacion;
+                    entradaServicioDto.Referencia = entradaServicioSAP.Referencia;
+                    entradaServicioDto.ImporteARPUSD = itemES.ImporteARPUSD;
+                    entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+
+                    EntradasDeServicioDelItem.Add(entradaServicioDto);
+                }
+            }
+
+            return EntradasDeServicioDelItem;
+        }
+
+
+        /// <summary>
+        /// Obtiene las Entradas de Servicio de un Item
+        /// De las entradas de servicios ya parseadas en un objeto
+        /// </summary>
+        private List<EntradaServicioDto> ObtenerEntradasDeServicioDelItem_Nuevo(BAPIESLLC[] pOSERVICES, BAPIEKBE[] pOHISTORY,
+                                                                                    string claveItemOC, string subClaveItemOC,
+                                                                                    List<EntradaServicioDto> ListaDeEntradasDeServicio)
+        {
+            List<EntradaServicioDto> EntradasDeServicioDelItem = new List<EntradaServicioDto>();
+            //List<BAPIEKBE> entradasDeServicioPotenciales = pOHISTORY.Where(x => x.PROCESS_ID == "9" && x.HIST_TYPE == "D").ToList();
+            List<string> ListaDeEntradasDeServicioFacturadas = pOHISTORY
+                .Where(x => (x.HIST_TYPE == "Q" || x.HIST_TYPE == "R") && x.PROCESS_ID == "2")
+                .Select(x => x.REF_DOC)
+                .ToList();
+
+
+            foreach (var entradaServicioCompleta in ListaDeEntradasDeServicio)
+            {
+                string _nroES = entradaServicioCompleta.Id.ToString();
+                EntradaServicioDto entradaServicioDto = new EntradaServicioDto();
+                bool entradaServicioFacturada = EntradaServicioTieneFactura(ListaDeEntradasDeServicioFacturadas, _nroES);
+
+                if (entradaServicioCompleta.itemNumero == claveItemOC && entradaServicioCompleta.ESS_LINE_NO == subClaveItemOC)
+                {
+                    DateTime _fechaContabilizacion = SAPFormatter.GetDateTime(entradaServicioCompleta.FechaContabilizacion);
+                    bool entradaServicioDentroDePeriodoSAP = DentroPeriodoSAP(_fechaContabilizacion, DateTime.Now);
+
+                    entradaServicioDto.Id = entradaServicioCompleta.Id;
+                    entradaServicioDto.itemNumero = entradaServicioCompleta.itemNumero;
+                    entradaServicioDto.TextoBreve = entradaServicioCompleta.TextoBreve;
+                    entradaServicioDto.Cantidad = entradaServicioCompleta.Cantidad;
+                    entradaServicioDto.ESS_PCKG_NO = entradaServicioCompleta.itemNumero;
+                    entradaServicioDto.ESS_LINE_NO = entradaServicioCompleta.ESS_LINE_NO;
+                    entradaServicioDto.ESS_EXT_LINE = entradaServicioCompleta.ESS_EXT_LINE;
+
+                    //MMSN-460 - Informacion de Cabecera p/ FE
+                    entradaServicioDto.Fecha = entradaServicioCompleta.Fecha;
+                    entradaServicioDto.FechaDocumentoString = entradaServicioCompleta.FechaDocumentoString;
+                    entradaServicioDto.FechaContabilizacion = entradaServicioCompleta.FechaContabilizacion;
+                    entradaServicioDto.Referencia = entradaServicioCompleta.Referencia;
+                    entradaServicioDto.ImporteARPUSD = entradaServicioCompleta.ImporteARPUSD;
+                    entradaServicioDto.SePuedeBorrar = !entradaServicioFacturada && entradaServicioDentroDePeriodoSAP;
+
+                    EntradasDeServicioDelItem.Add(entradaServicioDto);
+                }
+            }
+
+            return EntradasDeServicioDelItem;
+        }
+    
+
+    
     }
 
     public class ResultBAPI_PO_GETDETAIL1
@@ -481,4 +1032,5 @@ namespace SustitucionMOAWS.WSConsumers
             return hashCode;
         }
     }
+
 }

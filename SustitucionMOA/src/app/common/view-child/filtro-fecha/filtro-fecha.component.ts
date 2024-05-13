@@ -1,4 +1,4 @@
-﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input } from '@angular/core';
+﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input, ElementRef } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
 declare var $: any;
@@ -16,17 +16,22 @@ export class FiltroFechaComponent implements OnInit {
     @ViewChild(DropdownComponent)
     private dropdownComponent: DropdownComponent;
 
+    @ViewChild('dtp_input1') dtpInput1?: ElementRef;
+    @ViewChild('dtp_input2') dtpInput2?: ElementRef;
+
+    @Input() key: string;
+
     periodo: string;
     fecha_inicio: string;
     fecha_fin: string;
 
     constructor() {
         this.dropdownComponent = new DropdownComponent();
-        this.setPeriodoInitial(sessionStorage.getItem("periodo") ? sessionStorage.getItem("periodo") : "1");
+        this.setPeriodoInitial(this.obtenerPeriodo());
     }
 
     ngOnInit() {
-        this.dropdownComponent.setSelectItem(sessionStorage.getItem("periodo") ? sessionStorage.getItem("periodo") : "1");
+        this.dropdownComponent.setSelectItem(this.obtenerPeriodo());
     }
 
     ngAfterViewInit(): void {
@@ -64,6 +69,25 @@ export class FiltroFechaComponent implements OnInit {
                 maxView: 4
             });
         });
+    }
+
+    /**
+     * Obtiene valor de periodo guardado en el sessionStorage. 
+     * Si al instanciar el componente se definió un atributo 'key'
+     * se utilizará el valor de ese atributo para buscar en el 
+     * sessionStorage sino se buscará por la propiedad default.
+     * 
+     * @returns string Id de la opcíon guardada en la última selección.
+     */
+    obtenerPeriodo(): string {
+        let periodoInicial = sessionStorage.getItem("periodo") ? sessionStorage.getItem("periodo") : "1";
+
+        if (this.key != undefined && sessionStorage.getItem(this.key)) {
+            periodoInicial = sessionStorage.getItem(this.key);
+            this.periodo = periodoInicial;
+        }
+
+        return periodoInicial;
     }
 
     setDropdownOptions(options: Array<DropdownOption>) {
@@ -105,7 +129,7 @@ export class FiltroFechaComponent implements OnInit {
             this.setPeriodo(periodo);
         }
     }
-
+    
     setPeriodo(periodo: string) {
 
         switch (periodo) {
@@ -165,7 +189,10 @@ export class FiltroFechaComponent implements OnInit {
         sessionStorage.setItem("fechaInicio", this.fecha_inicio);
         sessionStorage.setItem("fechaFin", this.fecha_fin);
         this.dropdownComponent.setSelectItem(periodo);
-        sessionStorage.setItem("periodo", periodo);
+        // Si no se definió una clave cuando se llamó al componente filtro-fecha
+        // entonces usar default "periodo"
+        const keyName = this.key != undefined ? this.key : "periodo"
+        sessionStorage.setItem(keyName, periodo);
         this.periodo = periodo;
     }
 

@@ -35,4 +35,8 @@ Post-Deployment Script Template
 :r .\EstadoOrdenResiduos.sql
 :r .\AlmacenMaterial.sql
 
-
+:r ..\Notificaciones\Notificacion.sql
+:r ..\Notificaciones\NotificacionFechaCreacion.sql
+:r ..\Notificaciones\NotificacionPrioridad.sql
+:r ..\Comunicacion\ComunicacionTipo.sql
+:r ..\Comunicacion\TipoRetencion.sql

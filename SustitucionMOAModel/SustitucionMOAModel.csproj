@@ -57,6 +57,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\Compras\ChatComprasDto.cs" />
+    <Compile Include="Dto\EntradaServicioParamsDto.cs" />
+    <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraMocDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateParamsDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateRespuestaDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioDetalleDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\ItemEntradaServicioDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\PosicionDto.cs" />
+    <Compile Include="Dto\OrdenCompraDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
+    <Compile Include="Dto\OrderParamsDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
+    <Compile Include="Dto\OrdenCompraItemDto.cs" />
+    <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
+    <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
+    <Compile Include="Enums\ComunicacionTipoEnum.cs" />
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
     <Compile Include="Consulta\ListaPaginada.cs" />
@@ -104,11 +124,15 @@
     <Compile Include="Dto\AsociarContratoDto.cs" />
     <Compile Include="Dto\Compras\CircularDto.cs" />
     <Compile Include="Dto\Compras\ProveedorComprasDto.cs" />
+    <Compile Include="Dto\ComunicacionDto.cs" />
+    <Compile Include="Dto\ComunicacionListaIdDto.cs" />
     <Compile Include="Dto\DolarMaterialDto.cs" />
-    <Compile Include="Dto\LegajoExternoDto.cs" />
+    <Compile Include="Dto\NotificacionPrioridadDto.cs" />
+    <Compile Include="Dto\NotificacionSinAdjuntosDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
+    <Compile Include="Dto\LegajoExternoDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\FacturaOrdenCarga.cs" />
     <Compile Include="Dto\Compras\CotizacionDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarCamionResponse.cs" />
@@ -205,6 +229,7 @@
     <Compile Include="Dto\TablaEstadoDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
+    <Compile Include="Dto\TipoRetencionDto.cs" />
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
@@ -227,15 +252,18 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Circular.cs" />
     <Compile Include="Entities\CircularPeticionDeOfertaUsuario.cs" />
+    <Compile Include="Entities\Comunicacion.cs" />
     <Compile Include="Entities\Cotizacion.cs" />
     <Compile Include="Entities\CotizacionEstado.cs" />
     <Compile Include="Entities\CotizacionHora.cs" />
     <Compile Include="Entities\CotizacionPosicion.cs" />
     <Compile Include="Entities\CotizacionSubPosicion.cs" />
-    <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\PeticionDeOfertaRevisionTecnica.cs" />
     <Compile Include="Entities\PeticionDeOfertaVisualizacionPrecio.cs" />
     <Compile Include="Entities\PeticionDeOfertaCierre.cs" />
+    <Compile Include="Entities\NotificacionAdjunto.cs" />
+    <Compile Include="Entities\NotificacionLeida.cs" />
+    <Compile Include="Entities\NotificacionPrioridad.cs" />
     <Compile Include="Entities\PeticionDeOfertaSolpPosicion.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaArchivo.cs" />
@@ -243,6 +271,7 @@
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
     <Compile Include="Entities\LiberadorSap.cs" />
+    <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
@@ -338,6 +367,8 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\Raw\ProveedorRaw.cs" />
+    <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
+    <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
     <Compile Include="Models\WebApiMap\CNRT\Dominio.cs" />
     <Compile Include="Models\WebApiMap\CNRT\Equipo.cs" />
@@ -363,7 +394,6 @@
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamiento.cs" />
     <Compile Include="Models\WSMapMOA\Compras\FuenteAprovisionamientoWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ObtenerProveedorWSMOAResponse.cs" />
-    <Compile Include="Models\WSMapMOA\Compras\UnidadesDeMedida.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Orden.cs" />
     <Compile Include="Models\WSMapMOA\Compras\OrdenWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\Material.cs" />
@@ -371,6 +401,7 @@
     <Compile Include="Models\WSMapMOA\Compras\MaterialWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\ServicioWSMOAResponse.cs" />
     <Compile Include="Models\WSMapMOA\Compras\TipoDeCambio.cs" />
+    <Compile Include="Models\WSMapMOA\Compras\UnidadesDeMedida.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\ConsultaVM.cs" />
     <Compile Include="Models\WSMapMOA\ContactoMail\EstadoConsultaVM.cs" />
     <Compile Include="Models\ConsultaTicketPesada.cs" />

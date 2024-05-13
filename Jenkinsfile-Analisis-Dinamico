@@ -1,0 +1,28 @@
+pipeline {
+    agent any
+    environment {
+        WEBHOOK_URL=''
+        TIPO_DE_TAREA='ANALISIS_DINAMICO'
+        JSON_PATH = "${WORKSPACE}/ZAPReport.json"
+        PROJECT_KEY = "Molinos_MoaOperaciones_BE"
+    }
+    stages {    
+        stage('OWASP ZAP Scan') {
+            steps {
+                sh 'mkdir -p htmlreports'
+                sh(script:'docker run --rm -v $(pwd):/zap/wrk/:rw --user root -t ghcr.io/zaproxy/zaproxy:stable zap-full-scan.py -t https://moa.operaciones.huenei.com.ar -r htmlreports/ZAPReport.html -J ZAPReport.json -a -j', returnStatus:true)
+                sh "python3 /var/jenkins_home/scripts/zap-report.py ${BUILD_NUMBER} ${JSON_PATH} ${PROJECT_KEY}"
+                publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'htmlreports', reportFiles: 'ZAPReport.html', reportName: 'ZAPReport', reportTitles: 'ZAPReport', useWrapperFileDirectly: true])
+            }
+        }         
+    }
+    post {
+        always {
+            script {
+                def BUILD_STATUS = currentBuild.result == 'SUCCESS' ? 'SUCCESS' : 'FAILURE'
+                // sh "python3 /var/jenkins_home/scripts/send_notification.py BUILD_NUMBER=${BUILD_NUMBER} JOB_NAME=${JOB_NAME} JOB_URL=${JOB_URL} BUILD_URL=${BUILD_URL} WEBHOOK_URL=${WEBHOOK_URL} BUILD_STATUS=${BUILD_STATUS} TIPO_DE_TAREA=${TIPO_DE_TAREA}"
+            }
+            cleanWs()
+        }
+    }
+}

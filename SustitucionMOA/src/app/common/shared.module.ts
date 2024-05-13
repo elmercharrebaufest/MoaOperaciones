@@ -53,6 +53,8 @@ import { FormatNumericDirective } from './directive/format.numeric.directive';
 import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
 import { CustomFilterEstados } from './pipes/customFilterEstados';
 
+import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
+
 const declaredAndExported = [
     FiltroFechaComponent,
     DropdownComponent,
@@ -89,6 +91,8 @@ const declaredAndExported = [
     FormatNumericDirective,
     CustomTipoProveedorFilter,
     CustomFilterEstados
+    ,
+    CustomDefaultDataPipe
 ];
 @NgModule({
     imports: [CommonModule,
@@ -117,7 +121,8 @@ const declaredAndExported = [
     ],
     declarations: [
         HighlightDirective,
-        ...declaredAndExported
+        ...declaredAndExported,
+        CustomDefaultDataPipe
     ],
     providers: [
         EmailComposeService

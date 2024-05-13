@@ -7,5 +7,7 @@
     [Habilitada] BIT NULL, 
     [Borrada] BIT NULL, 
     [LinkAdjunto] VARCHAR(500) NULL, 
-    [Mensaje] VARCHAR(MAX) NULL
+    [Mensaje] VARCHAR(MAX) NULL, 
+    [Prioridad] INT NULL, 
+    [FechaCreacion] DATETIME NULL
 )
