@@ -140,7 +140,7 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                             sessionStorage.setItem("tipoUsuario", nuevoTipoUsuario);
                             this.sessionDataService.setTipoUsuario(nuevoTipoUsuario);
                             //llamada a busqueda de notificaciones del proveedor seleccionado
-                            this.updateComunicacionService.updateCommunications(result.vendedor, this.startDate, this.endDate);
+                            this.updateComunicacionService.updateCommunications(result.ProveedorId.toString(), this.startDate, this.endDate);
                         }
                     }
                     //Demora manual para visualizar la tardanza de la busqueda de notificaciones

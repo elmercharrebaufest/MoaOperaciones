@@ -5905,7 +5905,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicion.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId));
                 }
 
-                bool tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
+                tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
                 pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId) ||
                 (cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
                  subPosicion.UnidadDeMedidaId == null ||  !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId)))) ?? false;

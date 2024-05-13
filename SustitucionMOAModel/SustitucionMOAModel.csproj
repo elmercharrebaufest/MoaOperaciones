@@ -68,7 +68,6 @@
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDetalleDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenesCompra\PosicionDto.cs" />
-    <Compile Include="Dto\Compras\SolpDtoCopia.cs" />
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />

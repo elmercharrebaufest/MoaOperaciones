@@ -177,8 +177,7 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         PosicionPlazoComponent,
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
-        CrearPoMultipleComponent
-       
+        CrearPoMultipleComponent,
         ListadoDashboardCertificacionDeServiciosComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,

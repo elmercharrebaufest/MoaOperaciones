@@ -531,7 +531,7 @@ namespace SustitucionMOAUtils.Services
                     },
                     EstadoConsultaId = x.EstadoConsulta_Id,
                     Material_Id = x.Detalle.Material_Id,
-                    Material = x.Categoria?.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
+                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
                     EstadoConsulta = new EstadoConsultaDto
                     {
                         Id = x.EstadoConsulta.Id,

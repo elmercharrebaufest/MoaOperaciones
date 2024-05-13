@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -65,6 +65,12 @@ namespace SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA {
         private bool nETWRFieldSpecified;
         
         private string pSTYPField;
+        
+        private decimal bRTWRField;
+        
+        private bool bRTWRFieldSpecified;
+        
+        private string fRGKEField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -267,6 +273,42 @@ namespace SustitucionMOAWS.OrdenesDeCompraParaSolpWebServiceMOA {
             set {
                 this.pSTYPField = value;
                 this.RaisePropertyChanged("PSTYP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public decimal BRTWR {
+            get {
+                return this.bRTWRField;
+            }
+            set {
+                this.bRTWRField = value;
+                this.RaisePropertyChanged("BRTWR");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        public bool BRTWRSpecified {
+            get {
+                return this.bRTWRFieldSpecified;
+            }
+            set {
+                this.bRTWRFieldSpecified = value;
+                this.RaisePropertyChanged("BRTWRSpecified");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=17)]
+        public string FRGKE {
+            get {
+                return this.fRGKEField;
+            }
+            set {
+                this.fRGKEField = value;
+                this.RaisePropertyChanged("FRGKE");
             }
         }
         

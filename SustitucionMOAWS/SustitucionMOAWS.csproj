@@ -3678,7 +3678,7 @@
     <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.svcmap">
+    <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.svcmap"> </None>
     <None Include="Service References\ObtenerOrdenesDeCompraWebServiceMOA\Reference.svcmap">
     </None>
   </ItemGroup>
@@ -3732,7 +3732,7 @@
     <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ObtenerPDFOrdenCompraWebServiceMOA\Reference.svcmap">
+    <None Include="Service References\ObtenerPDFOrdenCompraWebServiceMOA\Reference.svcmap"/>
     <None Include="Service References\BorrarEntradaServicioWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>

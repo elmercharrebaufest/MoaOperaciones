@@ -12,7 +12,8 @@ export interface OrdenDeCompraSAPCabecera {
     Usuario_Id: number,
     Moneda: string,
     FechaCreacion: string,
-    MontoTotal: number
+    MontoTotal: number,
+    UsuarioCompras_Id?: number
 }
 
 // export interface OrdenDeCompraSAPPosicion{
