@@ -32,7 +32,7 @@ namespace SustitucionMOAUtils.Services
             }
             var progreso = ObtenerProgreso(usuario, curso);
 
-            if (progreso == null )
+            if (progreso == null)
             {
                 throw new ValidationCustomException(ERROR_SIN_ACCESO);
             }
@@ -57,16 +57,26 @@ namespace SustitucionMOAUtils.Services
         public List<CursoUsuarioDto> AsignadosAUsuario(string emailUsuario)
         {
             var usuario = UsuarioPorMail(emailUsuario);
-            return usuario.ProgresoCursosAsignados
+            var asignados = usuario.ProgresoCursosAsignados
                     .Select(c => new CursoUsuarioDto(c))
                     .ToList();
+            if (asignados.Count == 0)
+            {
+                throw new InfoCustomException("No tiene cursos asignados.");
+            }
+            return asignados;
         }
 
         public List<CursoDto> Disponibles()
         {
-            return repositorio.Listar<Curso, CursoDto>(
-                    c=> new CursoDto { Id= c.Id, Nombre = c.Nombre }
+            var disponibles = repositorio.Listar<Curso, CursoDto>(
+                    c => new CursoDto { Id = c.Id, Nombre = c.Nombre }
                 );
+            if (disponibles.Count == 0)
+            {
+                throw new InfoCustomException("No hay cursos disponibles.");
+            }
+            return disponibles;
         }
 
         public string ObtenerProgreso(int cursoId, string emailUsuario)
@@ -78,7 +88,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(ERROR_SIN_ACCESO);
             }
-            var progreso = ObtenerProgreso(cursoId,usuario);
+            var progreso = ObtenerProgreso(cursoId, usuario);
 
             if (progreso == null)
             {
@@ -91,9 +101,9 @@ namespace SustitucionMOAUtils.Services
         {
             var usuarios = repositorio.Listar<Usuario>(usuario => asignarReqDto.MailsUsuarios.Contains(usuario.Mail));
             var resultados = new Dictionary<string, bool>();
-            foreach(var usuario in usuarios)
+            foreach (var usuario in usuarios)
             {
-                
+
                 var progresoExistente = ObtenerProgreso(asignarReqDto.CursoId, usuario);
                 var asignado = progresoExistente != null;
                 if (progresoExistente == null)
@@ -101,8 +111,8 @@ namespace SustitucionMOAUtils.Services
                     usuario.ProgresoCursosAsignados.Add(
                         new ProgresoCurso
                         {
-                            Alumno=usuario,
-                            CursoId=asignarReqDto.CursoId,
+                            Alumno = usuario,
+                            CursoId = asignarReqDto.CursoId,
                         });
                     asignado = true;
                 }

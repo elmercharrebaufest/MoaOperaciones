@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { CursosRoutingModule } from './cursos-routing.module';
@@ -11,6 +11,10 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ScormService } from './scorm.service';
 import { CursosService } from './cursos.service';
+import { AsignarCursosComponent } from './acciones/asignar-cursos/asignar-cursos.component';
+import { VerProgresoCursoComponent } from './acciones/ver-progreso-curso/ver-progreso-curso.component';
+import { VerProgresoAlumnosComponent } from './acciones/ver-progreso-alumnos/ver-progreso-alumnos.component';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   imports: [
@@ -20,9 +24,11 @@ import { CursosService } from './cursos.service';
     NgxPaginationModule,
     ButtonModule,
     DropdownModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DialogModule
   ],
-  declarations: [MisCursosComponent, AdministrarCursosComponent],
+  declarations: [MisCursosComponent, AdministrarCursosComponent, AsignarCursosComponent, VerProgresoCursoComponent, VerProgresoAlumnosComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   providers: [ScormService, CursosService]
 })
 export class CursosModule { }

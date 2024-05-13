@@ -1,0 +1,4 @@
+<p-dialog [header]="'Asignar alumnos curso '+ (curso | async)?.NombreCurso" [(visible)]="display" (onHide)="cerrar()">
+  <spinner></spinner>
+  <mensaje #mensaje></mensaje>
+</p-dialog>

@@ -16,10 +16,10 @@ import { FormControl } from '@angular/forms';
 @Component({
     template: ``,
 })
-export class CursosBaseComponent extends BaseComponent {
+export class CursosBaseComponent extends ListBaseComponent {
     nombreFiltro = new FormControl();
     constructor(protected service: CursosService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
-        super(navService, securityService, floatMsgService, modalService);
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
     ngOnInit() {
         this.setTabs();
@@ -29,7 +29,7 @@ export class CursosBaseComponent extends BaseComponent {
         if (this.isAuthorized(Permiso.AdministrarCursos)) {
             listNavegacion = [
                 ...listNavegacion,
-                new Seccion(`/${CURSOS_BASE_PATH}/administrar`, CURSOS_BASE_PATH, 'Administrar Cursos'),
+                new Seccion(`/${CURSOS_BASE_PATH}/administrar-cursos`, CURSOS_BASE_PATH, 'Administrar Cursos'),
             ]
         }
 

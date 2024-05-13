@@ -260,8 +260,11 @@ export class UsuarioService extends BaseService {
     }
 
     desasociarVendedor(usuarioId: number, proveedorId: number) {
-            return this.http
-                .post<any>('/api/usuario/DesasociarVendedor', {usuarioId, proveedorId}, { headers: this.headers });
+        return this.http
+            .post<any>('/api/usuario/DesasociarVendedor', { usuarioId, proveedorId }, { headers: this.headers });
     }
-    
+
+    getMailUsuarios(mail: string): Observable<ApiResponse<string[]>> {
+        return this.http.get(`/api/usuario/GetMailUsuarios?mail=${mail}`)
+    }
 }

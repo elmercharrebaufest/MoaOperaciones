@@ -3,11 +3,11 @@ import { BaseService } from '../common/services/BaseService';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../common/models/response';
-import { CursoDto, CursoUsuarioDto } from '../common/models/cursos/Curso';
+import { AsignarReqDto, CursoDto, CursoUsuarioDto } from '../common/models/cursos/Curso';
 
 @Injectable()
 export class CursosService extends BaseService {
-  private baseUrl = "/api/Cursos";
+  private baseUrl = "/api/Curso";
   constructor(http: HttpClient) {
     super(http)
   }
@@ -18,5 +18,9 @@ export class CursosService extends BaseService {
   disponibles(): Observable<ApiResponse<CursoDto[]>> {
     return this.http.get<ApiResponse<CursoDto[]>>
       (`${this.baseUrl}/Disponibles`)
+  }
+  asignar(req: AsignarReqDto): Observable<ApiResponse<{ [key: string]: boolean }[]>> {
+    return this.http.post
+      (`${this.baseUrl}/Asignar`, req)
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { CmiOption, storageChangeObservable } from '../scorm.service';
-import { CursoUsuarioDto } from '../../common/models/cursos/Curso';
+import { CmiOption, ScormService, storageChangeObservable } from '../scorm.service';
+import { CURSOS_BASE_PATH, CursoUsuarioDto } from '../../common/models/cursos/Curso';
 import { CursosBaseComponent } from '../curso-base.component';
 import { CursosService } from '../cursos.service';
 import { NavService } from '../../common/services/NavService';
@@ -9,6 +9,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-mis-cursos',
@@ -23,10 +24,16 @@ export class MisCursosComponent extends CursosBaseComponent implements OnInit {
     CmiOption.SessionTime,
     CmiOption.SuspendData,
   ]
+  get isVisible(): boolean {
+    return this.cursosDisponibles && !!this.cursosDisponibles.length
+  }
 
+  cursoVerProgreso?: BehaviorSubject<CursoUsuarioDto | null> = new BehaviorSubject(null);
   cursosDisponibles: CursoUsuarioDto[] = []
 
-  constructor(service: CursosService,
+  constructor(
+    private scormService: ScormService,
+    service: CursosService,
     navService: NavService,
     sessionDataService: SessionDataService,
     securityService: SecurityService,
@@ -47,6 +54,12 @@ export class MisCursosComponent extends CursosBaseComponent implements OnInit {
   }
 
   abrirCurso(curso: CursoUsuarioDto) {
-
+    this.scormService.inicializarCurso(curso.AccesoCurso)
+  }
+  setTabs(): void {
+    this.setMenuSeccionTab(CURSOS_BASE_PATH, 'Mis Cursos');
+  }
+  verProgreso(curso: CursoUsuarioDto) {
+    this.cursoVerProgreso.next(curso)
   }
 }

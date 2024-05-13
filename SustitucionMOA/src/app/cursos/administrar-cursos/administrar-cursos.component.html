@@ -28,11 +28,11 @@
 
     <div class="row myRow">
       <div class="clearfix myTables">
-        <mensaje></mensaje>
+        <mensaje #mensaje></mensaje>
         <spinner></spinner>
         <ng-container *ngIf="isVisible">
           <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate "
-            role="grid" aria-describedby="tableModal_info" style="width: 100%;padding: 30px 0">
+            role="grid" aria-describedby="tableModal_info" style="width: 100%">
             <thead>
               <tr role="row">
                 <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
@@ -47,11 +47,9 @@
                   | customFilter:'Nombre':nombreFiltro.value
                   | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                   ;let odd=odd" role="row" [class.odd]="!odd">
-                <td>{{aplicacion.FechaAlta}}</td>
+                <td>{{curso.Nombre}}</td>
                 <td>
-                  <i (click)="eliminarAplicacion(aplicacion)" class="cursor-pointer"
-                    *ngIf="aplicacion.Estado === estadosAplicacionCCPP.Pendiente">
-                  </i>
+                  <i class="pi-user-plus" (click)="asignarAlumnos(curso)"></i>
                 </td>
               </tr>
             </tbody>

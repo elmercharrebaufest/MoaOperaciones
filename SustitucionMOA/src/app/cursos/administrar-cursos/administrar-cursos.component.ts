@@ -6,7 +6,7 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
-import { CursoDto } from '../../common/models/cursos/Curso';
+import { CURSOS_BASE_PATH, CursoDto } from '../../common/models/cursos/Curso';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 
 @Component({
@@ -18,6 +18,9 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
   @ViewChild("mensaje")
   mensajeComponent: MensajeComponent;
 
+  get isVisible(): boolean {
+    return this.cursos && !!this.cursos.length
+  }
   cursos: CursoDto[] = [];
   constructor(service: CursosService,
     navService: NavService,
@@ -35,5 +38,7 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
         this.cursos = cursos;
     })
   }
-
+  setTabs(): void {
+    this.setMenuSeccionTab(CURSOS_BASE_PATH, 'Administrar Cursos');
+  }
 }
