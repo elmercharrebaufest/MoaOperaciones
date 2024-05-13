@@ -3603,7 +3603,8 @@ namespace SustitucionMOAUtils.Services
 
                 //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
                 //Contrato marco          
-                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
+                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
+                IM_PRITEM.DES_VENDOR = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp == null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : "";
                 IM_PRITEM.PURCH_ORG = posicion.OrganizacionDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras
                 IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
                 IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
@@ -6105,8 +6106,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
 
-                if (cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                    && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+                if (ValidarCreacionDeRegistroInfo(cotizacion))
                 {
                     if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
                     {
@@ -6135,6 +6135,13 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        private static bool ValidarCreacionDeRegistroInfo(Cotizacion cotizacion)
+        {
+            return cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
+                                && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES" &&
+                                cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null;
         }
 
         private void CrearRegistroInfo(Cotizacion cotizacion, List<RegistroInfoDto> registros)
