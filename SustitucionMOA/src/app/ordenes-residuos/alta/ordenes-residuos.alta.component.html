@@ -54,30 +54,11 @@
                                 </div>
                             </div>
 
-                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-11">
+                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
                                     Destino mercadería (localidad - provincia):
                                 </div>
-                                <!-- <div class="styled-select">
-                                    <app-dropdown-input
-                                        [options]="listaLocalidades"
-                                        [filterKey]="'Nombre'"
-                                        [valueKey]="'Id'"
-                                        [placeholder]="'Seleccione un destino'"
-                                        [(selected)]="ordenResiduos.Localidad">
-                                        <ng-template let-option>
-                                            <p class="option-label">{{option.Nombre}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
-                                </div> -->
-                                <div class="styled-select">
-                                    <!-- <app-autocomplete-localidad (onLocalidadSeleccionada)="localidadId = $event"
-                                                        [localidad_Id]="campoProveedorE.Localidad_Id">
-                            </app-autocomplete-localidad> -->
-                                    <!-- <app-autocomplete-localidad
-                                        (onLocalidadSeleccionada)="ordenResiduos.Localidad.Id = $event"
-                                        [localidad_Id]="ordenResiduos.Localidad.Id">
-                                    </app-autocomplete-localidad> -->
+                                <div class="styled-select" style="overflow: initial;">
                                     <app-autocomplete-localidad
                                         (onLocalidadSeleccionada)="onLocalidadSeleccionada($event)"
                                         [localidad_Id]="ordenResiduos.Localidad.Id">

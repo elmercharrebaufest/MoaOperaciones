@@ -200,20 +200,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         return filtrados;
     }
 
-    // obtenerLocalidades = () => {
-    //     this.service.getLocalidades().subscribe(
-    //         (resp) => {
-    //             let data = this.manejarErroresApiResponse(resp);
-    //             if (data) {
-    //                 this.listaLocalidades = data;
-    //             }
-    //         },
-    //         (err) => {
-    //             this.mensajeComponent.setErrorMsg(err.message);
-    //         }
-    //     );
-    // }
-
     onLocalidadSeleccionada(idLocalidad: string) {
         if (idLocalidad) {
             this.ordenResiduos.Localidad.Id = Number(idLocalidad);
