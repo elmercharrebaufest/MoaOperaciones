@@ -57,7 +57,6 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
         private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
 
-        private string filePath = "";
 
         private readonly GuardarCotizacion guardarCotizacion = new GuardarCotizacion
         {
@@ -672,7 +671,6 @@ namespace SustitucionMOATest.Services
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
-            filePath = Path.GetFullPath(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
             target = new ComprasService(
                 repositorioMock.Object,
@@ -1527,11 +1525,13 @@ namespace SustitucionMOATest.Services
         {
             var solpDtoLocal = solpDto;
             solpDtoLocal.Id = 1;
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
             file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
-            file1.Setup(d => d.InputStream).Returns(fileStream);
-            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+            byte[] dummyData = new byte[1024];
+            new Random().NextBytes(dummyData);
+            MemoryStream memoryStream = new MemoryStream(dummyData);
+            file1.Setup(d => d.InputStream).Returns(memoryStream);
+            file1.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
 
             var adjuntosMock = new Mock<HttpFileCollectionBase>();
             adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
@@ -1552,11 +1552,13 @@ namespace SustitucionMOATest.Services
         {
             var solpDtoLocal = solpDto;
             solpDtoLocal.Finalizar = true;
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
             file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
-            file1.Setup(d => d.InputStream).Returns(fileStream);
-            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+            byte[] dummyData = new byte[1024];
+            new Random().NextBytes(dummyData);
+            MemoryStream memoryStream = new MemoryStream(dummyData);
+            file1.Setup(d => d.InputStream).Returns(memoryStream);
+            file1.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
 
             var adjuntosMock = new Mock<HttpFileCollectionBase>();
             adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
@@ -1669,11 +1671,13 @@ namespace SustitucionMOATest.Services
         {
             var solpDtoLocal = solpDto;
             solpDtoLocal.Finalizar = true;
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
             file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
-            file1.Setup(d => d.InputStream).Returns(fileStream);
-            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+            byte[] dummyData = new byte[1024];
+            new Random().NextBytes(dummyData);
+            MemoryStream memoryStream = new MemoryStream(dummyData);
+            file1.Setup(d => d.InputStream).Returns(memoryStream);
+            file1.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
 
             repositorioMock.Setup(y => y.Obtener<Solp>(It.IsAny<int>())).Returns(solp);
 
@@ -2294,11 +2298,14 @@ namespace SustitucionMOATest.Services
             var solpLocal = solp;
             solpLocal.EstadoSolpSap = new TablaSap { CodigoSap = "05" };
             solpLocal.NroSolp = "0212303203";
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
             file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
-            file1.Setup(d => d.InputStream).Returns(fileStream);
-            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+            byte[] dummyData = new byte[1024];
+            new Random().NextBytes(dummyData);
+            MemoryStream memoryStream = new MemoryStream(dummyData);
+            file1.Setup(d => d.InputStream).Returns(memoryStream);
+            file1.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
+
             var adjuntosMock = new Mock<HttpFileCollectionBase>();
             adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
 
@@ -2419,11 +2426,13 @@ namespace SustitucionMOATest.Services
                 PeticionDeOferta_Id = 1,
                 FechaCreacion = DateTime.Now,
             };
-            FileStream fileStream = new FileStream(filePath, FileMode.Open);
             Mock<HttpPostedFileBase> file1 = new Mock<HttpPostedFileBase>();
             file1.Setup(d => d.FileName).Returns("LogoBaufest.png");
-            file1.Setup(d => d.InputStream).Returns(fileStream);
-            file1.Setup(d => d.ContentLength).Returns(Convert.ToInt32(fileStream.Length));
+            byte[] dummyData = new byte[1024]; 
+            new Random().NextBytes(dummyData);
+            MemoryStream memoryStream = new MemoryStream(dummyData);
+            file1.Setup(d => d.InputStream).Returns(memoryStream);
+            file1.Setup(d => d.ContentLength).Returns(new Random().Next(1024, 1024));
 
             var adjuntosMock = new Mock<HttpFileCollectionBase>();
             adjuntosMock.Setup(x => x.GetMultiple(It.IsAny<string>())).Returns(new List<HttpPostedFileBase> { file1.Object });
