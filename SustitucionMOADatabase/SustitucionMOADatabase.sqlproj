@@ -143,7 +143,6 @@
     <None Include="scripts\Insert SecuenciaIngresosBrutosCoeficienteUnificado.sql" />
     <Build Include="DBO\Tables\OrdenDeCargaCambiosHistorial.sql" />
     <Build Include="DBO\Tables\ServicioSolp.sql" />
-    <Build Include="DBO\Tables\UsuarioComprasRelacionConUsuarios.sql" />
     <Build Include="DBO\Tables\UsuarioCompras.sql" />
     <None Include="scripts\Insert Rol PermisoPorRol y RolPermisoPorRol GestionCM05.sql" />
     <Build Include="DBO\Stored Procedures\ActualizarIngresosBrutosCoeficienteUnificadoRechazado.sql" />

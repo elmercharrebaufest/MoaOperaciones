@@ -210,7 +210,6 @@
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
-    <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ChatExternoCompras.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
@@ -304,7 +303,6 @@
     <Compile Include="Entities\ServicioSolp.cs" />
     <Compile Include="Entities\TipoImputacionSAP.cs" />
     <Compile Include="Entities\UsuarioCompras.cs" />
-    <Compile Include="Entities\UsuarioComprasRelacionConUsuarios.cs" />
     <Compile Include="Enums\EnumOrigenMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\EnumTipoMovimientoIngresosBrutosCoeficienteUnificado.cs" />
     <Compile Include="Enums\EstadoComprobantesNG.cs" />

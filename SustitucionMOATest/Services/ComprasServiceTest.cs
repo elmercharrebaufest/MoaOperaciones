@@ -1908,7 +1908,7 @@ namespace SustitucionMOATest.Services
 
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(9));
         }
 
         [Test]
@@ -2194,8 +2194,6 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
             .Returns(new List<UsuarioCompras>());
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioComprasRelacionConUsuarios, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-            .Returns(new List<UsuarioComprasRelacionConUsuarios>());
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, PeticionDeOfertaDto>>>(), It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
               .Returns(new List<PeticionDeOfertaDto>() { new PeticionDeOfertaDto { Id = 1, Solp_Id = 1, RegistroInfo = false, UsuarioCreador_Id = 1, FechaCreacion = new DateTime(), Observaciones = "",
               Usuarios = new List<PeticionDeOfertaUsarioDto>() } });
@@ -2210,7 +2208,7 @@ namespace SustitucionMOATest.Services
 
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result, listaPaginada);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Never);
         }
 
         [Test]
@@ -2327,7 +2325,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOfertaSolpPosicion>()), Times.Never); //para el caso donde no se agregó una nueva posición
             repositorioMock.Verify(x => x.Agregar(It.IsAny<CotizacionPosicion>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
 
         [Test]

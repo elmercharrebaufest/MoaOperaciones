@@ -39,7 +39,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
         List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor);
         void ActualizarEstadoSolpBulk();
-        List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
+        List<UsuarioComprasDto> ListarUsuarioCompras();
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
         List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);

@@ -224,7 +224,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = service.ListarUsuarioCompras(ObtenerUsuarioActual()) });
+                return JsonCustom(new { data = service.ListarUsuarioCompras() });
             }
             catch (InfoCustomException e)
             {

@@ -3098,17 +3098,6 @@ BEGIN
 	values('marcelo.mazzola@molinosagro.com.ar','Mazzola Marcelo',1,1);
 END
 
-IF NOT EXISTS (SELECT TOP 1 1 FROM UsuarioComprasRelacionConUsuarios)
-BEGIN
-declare @valor as int =1;
-while @valor<7
-begin
-insert into UsuarioComprasRelacionConUsuarios(Usuario_Id,UsuarioCompras_Id)
-select id,@valor from Usuario;
-set @valor=@valor+1;
-end
-END
-
 update Solp set TipoSolpSap=1 where TipoSolpSap=null;
 
 update SolpSubposicion set Estado=1;

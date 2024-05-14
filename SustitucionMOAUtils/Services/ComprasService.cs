@@ -418,7 +418,6 @@ namespace SustitucionMOAUtils.Services
                     respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP, enviarMailUrgencia);
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
-                    GuardarUsuarioComprasRelacionado(solp);
 
                 }
                 catch (Exception e)
@@ -1033,24 +1032,6 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
-        private void GuardarUsuarioComprasRelacionado(SolpDto solp)
-        {
-            var usuarioComprasRelacionado = repositorio.Obtener<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == solp.UsuarioActual.Id && x.UsuarioCompras_Id == solp.UsuarioCompras.Id);
-            if (usuarioComprasRelacionado == null)
-            {
-                if (solp.UsuarioActual != null && solp.UsuarioCompras != null && solp.UsuarioCompras.Id != null)
-                {
-                    usuarioComprasRelacionado = new UsuarioComprasRelacionConUsuarios()
-                    {
-                        Usuario_Id = solp.UsuarioActual.Id,
-                        UsuarioCompras_Id = (int)solp.UsuarioCompras.Id
-                    };
-                    repositorio.Agregar(usuarioComprasRelacionado);
-                    repositorio.GuardarCambios();
-                }
-            }
-        }
-
         private void ActualizarPosiciones(SolpDto solp, Solp solpEntity)
         {
             if (solp.Posiciones != null)
@@ -1147,27 +1128,10 @@ namespace SustitucionMOAUtils.Services
                 var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
                 var hoy = DateTime.Now.Date;
                 var usuariosCompras = repositorio.Listar<UsuarioCompras>();
-                var usuariosComprasRelacion = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id);
                 Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == usuarioActual.Id);
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLP";
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
-
-
-                UsuarioComprasRelacionConUsuarios usuarioComprasRelacionEntity = null;
-                if (!usuariosComprasRelacion.ToList().Any())
-                {
-                    usuariosCompras.ToList().ForEach(x =>
-                    {
-                        usuarioComprasRelacionEntity = new UsuarioComprasRelacionConUsuarios
-                        {
-                            Usuario_Id = usuarioActual.Id,
-                            UsuarioCompras_Id = x.Id
-                        };
-                        repositorio.Agregar(usuarioComprasRelacionEntity);
-                    });
-                    repositorio.GuardarCambios();
-                }
 
                 Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
 
@@ -1435,7 +1399,7 @@ namespace SustitucionMOAUtils.Services
         public byte[] GenerarSolpPdf(int idSolp)
         {
             var solp = TraerSolpId(idSolp);
-            var usuarioCompras = ListarUsuarioCompras(solp.UsuarioActual);
+            var usuarioCompras = ListarUsuarioCompras();
             var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
@@ -1457,7 +1421,7 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.FECHA_PRESENTACION, Convert.ToDateTime(solp.FechaHoraEntrega).ToString("dd-MM-yyyy"));
             solpValores.Add(SolpTemplateKeys.FECHA_CREACION, solp.FechaCreacion.ToString("dd-MM-yyyy"));
 
-            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].UsuarioCompras.Mail : String.Empty : solp.UsuarioCompras.Mail);
+            solpValores.Add(SolpTemplateKeys.USUARIO_COMPRAS, solp.UsuarioCompras.Mail == null ? usuarioCompras.Any() ? usuarioCompras[0].Mail : String.Empty : solp.UsuarioCompras.Mail);
 
             solpValores.Add(SolpTemplateKeys.REVISADO_POR, solp.RevisadoPor);
 
@@ -2003,7 +1967,8 @@ namespace SustitucionMOAUtils.Services
                 if (esServicio && solp.Posiciones.Select(x => x.Peticiones).Any())
                 {
                     ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (cotizaciones != null && cotizaciones.Count > 0) {
+                    if (cotizaciones != null && cotizaciones.Count > 0)
+                    {
                         if (solp.TrabajoYaHecho != true)
                         {
                             EnviarCircularAutomatico(solp);
@@ -2850,15 +2815,10 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual)
+        public List<UsuarioComprasDto> ListarUsuarioCompras()
         {
-            var usuariosCompras = repositorio.Listar<UsuarioComprasRelacionConUsuarios>(x => x.Usuario_Id == usuarioActual.Id && x.UsuarioCompras.Habilitado)
-                .Select(x => new UsuarioComprasRelacionConUsuariosDto
-                {
-                    Usuario = new UsuarioDto(x.Usuario),
-                    Id = x.Id,
-                    UsuarioCompras = new UsuarioComprasDto(x.UsuarioCompras)
-                });
+            var usuariosCompras = repositorio.Listar<UsuarioCompras>()
+                .Select(x => new UsuarioComprasDto(x));
 
             return usuariosCompras.ToList();
         }
@@ -4169,7 +4129,7 @@ namespace SustitucionMOAUtils.Services
                 var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
                 var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
-                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap || 
+                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
                 if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
@@ -6354,8 +6314,8 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void CompletarCotizacionPosicionYSubposicionNueva(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
-        {           
-            AgregarNuevaCotizacionPosicion(cotizacionDto, cotizacion, info);          
+        {
+            AgregarNuevaCotizacionPosicion(cotizacionDto, cotizacion, info);
         }
 
         private void AgregarNuevaCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
@@ -7073,7 +7033,7 @@ namespace SustitucionMOAUtils.Services
                     ObservacionRecotizacion = "Trabajo ya hecho",
                     Finalizada = true,
                     FechaFinalizacion = DateTime.Now
-            };
+                };
                 peticionEntidad.PlazoDeOferta = DateTime.Now;
                 repositorio.GuardarCambios();
             }
@@ -7875,11 +7835,11 @@ namespace SustitucionMOAUtils.Services
             return chats;
         }
 
-        public void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor) 
+        public void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor)
         {
             var chatProveedor = repositorio.Listar<ChatExternoCompras>(x => x.PeticionDeOfertaUsuario_Id == proveedor.PeticionDeOfertaUsuario_Id && x.PeticionDeOferta_Id == proveedor.PeticionDeOferta_Id);
 
-            if (chatProveedor != null) 
+            if (chatProveedor != null)
             {
                 chatProveedor.ForEach(m => m.Leido = true);
                 repositorio.GuardarCambios();
@@ -7987,7 +7947,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-      
+
 
         public string ExportarChatInternoAtexto(int solpId, string rutaArchivo, int? peticionDeOfertaUsuarioId)
         {
@@ -8004,7 +7964,7 @@ namespace SustitucionMOAUtils.Services
 
                     using (StreamWriter sw = new StreamWriter(txtFilePath))
                     {
-                        var solpNros = string.Join(", ", peticion.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp).Distinct().ToList());    
+                        var solpNros = string.Join(", ", peticion.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp).Distinct().ToList());
                         // Escribir información general del chat
                         sw.WriteLine($"SOLP : {solpNros}");
                         sw.WriteLine($"PO : {peticion.PeticionDeOferta_Id}");
@@ -8019,7 +7979,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                else 
+                else
                 {
                     var solp = repositorio.Obtener<Solp>(solpId);
 
@@ -8066,8 +8026,8 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
-                    return txtFilePath;
-                
+                return txtFilePath;
+
             }
             catch (Exception)
             {
@@ -8513,7 +8473,7 @@ namespace SustitucionMOAUtils.Services
 
                 modificarPedidoSAP.POCOND = new List<BAPIMEPOCOND>();
                 modificarPedidoSAP.POCONDX = new List<BAPIMEPOCONDX>();
-                
+
                 modificarPedidoSAP.POADDRDELIVERY = new List<BAPIMEPOADDRDELIVERY>();
                 modificarPedidoSAP.POSCHEDULE = new List<BAPIMEPOSCHEDULE>();
                 modificarPedidoSAP.POSCHEDULEX = new List<BAPIMEPOSCHEDULX>();
@@ -8523,10 +8483,10 @@ namespace SustitucionMOAUtils.Services
             var resultadoSAP = modificarOrdenDeCompraConsumerMOA.EditarPedidoRequest(modificarPedidoSAP);
             resultadoSAP.Where(a => a.MESSAGE == "No se han modificado datos").ToList().ForEach(a => a.TYPE = "E");
 
-            
-            
-            
-            
+
+
+
+
             //if (modificoMoneda && resultadoSAP.All(a => a.TYPE != "E"))
             //{
             //    ocSap = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraRFC(adjudicacion.NumeroOrdenDeCompra);
