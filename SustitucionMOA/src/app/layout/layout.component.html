@@ -666,7 +666,10 @@
                                     DASHBOARD PROVEEDOR
                                 </a>
                             </div>
-
+                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                                <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
+                                    REPORTE ORDEN DE COMPRA
+                                </a>
                             <div>
                                 <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
                                     CERTIFICACIÓN DE SERVICIOS

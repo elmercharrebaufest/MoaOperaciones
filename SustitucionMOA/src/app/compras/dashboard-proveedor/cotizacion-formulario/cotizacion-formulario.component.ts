@@ -30,7 +30,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild('cotizacionMaterial') cotizacionMaterial: CotizacionMaterialComponent
     @ViewChild('cotizacionServicio') cotizacionServicio: CotizacionServicioComponent
-    peticion: PeticionDeOfertaDto;
+    peticion: PeticionDeOfertaDto = { Id: null, NroSolp: null, PeticionDeOfertaPosicion: null, Cotizacion: null };
     posicionesCompra: PeticionDeOfertaSolpPosicionDto[];
     @Input() esFinalizado: boolean;
     cotizaciones: GuardarCotizacion[];
@@ -191,8 +191,13 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         // this.nroPeticion = result.data.IdEntidad;
+                        if(result.data.Errores && result.data.Errores.length > 0){
+                            this.floatMsgService.setErrorMsg(result.data.Errores[0]);
+                        }else{
+
                         this.displayCotizacionCreada = true;
                     }
+                }
                     this.blockUI.stop();
                 },
                 error => {
@@ -223,6 +228,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         var breakFor = false;
         if (this.peticion.TipoPosicionCodigo == "MATERIALES") {
             var self = this;
+            if (this.peticion.PideDescripcionTecnica) this.peticion.RespetaMateriales = false;
             if (this.peticion.RespetaMateriales == null || this.peticion.RespetaMateriales == undefined) {
                 mensaje = "El campo respeta materiales es obligatorio";
                 return mensaje;
@@ -270,16 +276,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-
-                    if (self.peticion.RespetaMateriales == false) {
-                        if (self.peticion.ObservacionEconomica == "" && ((self.cotizacion.ArchivosNuevos == null
-                            || self.cotizacion.ArchivosNuevos.length == 0 &&
+                    var noTieneArchivo = (self.cotizacion.ArchivosNuevos == null || self.cotizacion.ArchivosNuevos.length == 0 &&                  
                             (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
-                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
+                            || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0));
+                            if (self.peticion.RespetaMateriales == false && self.peticion.ObservacionEconomica == "" && noTieneArchivo) {        
                             mensaje = "Debe adjuntar un archivo o agregar una observación";
                             breakFor = true;
                             return mensaje;
                         }
+                        if (self.peticion.PideDescripcionTecnica && noTieneArchivo) {
+                            mensaje = "Debe adjuntar la documentación solicitada";
+                            breakFor = true;
+                            return mensaje;
+    
                     }
 
                     if (cotizacion.CantidadSubpos != cotizacion.Cantidad ||
@@ -289,7 +298,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                 || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                            mensaje = "Pos. " + cotizacion.Posicion + ": Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos debe adjuntar un archivo.";
+                                        mensaje = "Pos. " + cotizacion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
                             breakFor = true;
                             return mensaje;
                         }
@@ -419,25 +428,25 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false) {
-                        if (self.peticion.ObservacionTecnica == "" && ((self.archivosTecnico == null
-                            || self.archivosTecnico.length == 0 &&
+                    var noTieneArchivoTecnico = self.archivosTecnico == null || self.archivosTecnico.length == 0 &&
                             (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica") == null
-                                || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica").length == 0)))) {
-                            mensaje = "Propuesta Técnica - Debe adjuntar un archivo o agregar una observación";
+                            || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionTecnica").length == 0);
+                            if ((self.peticion.RespetaServicios == false || self.peticion.RespetaMateriales == false) && self.peticion.ObservacionTecnica == "" && noTieneArchivoTecnico) {
+                                mensaje = "Propuesta Técnica - Debe adjuntar documentación o agregar una observación";        
                             breakFor = true;
                             return mensaje;
                         }
+                        if (self.peticion.PideDescripcionTecnica && noTieneArchivoTecnico) {
+                            mensaje = "Propuesta Técnica - Debe adjuntar la documentación solicitada";
+                            breakFor = true;
+                            return mensaje;
+    
                     }
-
-                    if ((subposicion.CantidadSubpos != subposicion.Cantidad ||
-                        subposicion.UnidadDeMedidaSubpos != subposicion.UnidadDeMedidaId) &&
-                        (self.cotizacion.ObservacionEconomica == "" && (self.archivosEconomico == null
-                            || self.archivosEconomico.length == 0 &&
-                            (self.cotizacion.ArchivosTipo == null ||
-                                self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
+                    if ((subposicion.CantidadSubpos != subposicion.Cantidad || subposicion.UnidadDeMedidaSubpos != subposicion.UnidadDeMedidaId) &&
+                    (self.cotizacion.ObservacionEconomica == "" && (self.archivosEconomico == null || self.archivosEconomico.length == 0 &&
+                        (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                 || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                        mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos debe adjuntar un archivo.";
+                                    mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
                         breakFor = true;
                         return mensaje;
                     }

@@ -2,10 +2,13 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
+using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -19,7 +22,7 @@ namespace SustitucionMOAWS.WSConsumers
     public class ObtenerOrdenDeCompraConsumerMOA : IObtenerOrdenDeCompraConsumerMOA
     {
         BAPI_PO_GETDETAIL1PortTypeClient service;
-        //private const string COMP_CODE = "MOA";
+        private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
         /// <summary>
         /// MMSN-491 - Modificar el formato de fecha. DD/MM/AAAA
@@ -53,9 +56,16 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
+                BAPIMEPOCOND[] POCOND;
+                BAPIMEPOACCOUNT[] POACCOUNT;
+                BAPIESKLC[] POSRVACCESSVALUES;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
 
-                return mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
+
+                var resultado = mapOrdenDeCompraSAPDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POCOND, POSRVACCESSVALUES);
+                Log.Info("BAPI_PO_GETDETAIL1PortTypeClient" + resultado.ToJson());
+                return resultado;
+
             }
             catch (Exception e)
             {
@@ -76,9 +86,14 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIESLLC[] POSERVICES;
                 BAPIMEPOSCHEDULE[] POSCHEDULE;
                 BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
-                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY);
+                BAPIMEPOCOND[] POCOND;
+                BAPIMEPOACCOUNT[] POACCOUNT;
+                BAPIESKLC[] POSRVACCESSVALUES;
+                ObtenerOcSap(nroOC, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POCOND, out POACCOUNT, out POSRVACCESSVALUES);
 
-                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY);
+
+                return mapAdjudicacionDto(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POSRVACCESSVALUES);
+
             }
             catch (Exception e)
             {
@@ -276,7 +291,9 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
 
-        private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER, BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
+        private OrdenDeCompraSAPDto mapOrdenDeCompraSAPDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
+ BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIMEPOCOND[] POCOND, BAPIESKLC[] POSRVACCESSVALUES)
+
         {
             OrdenDeCompraSAPDto resultado = new OrdenDeCompraSAPDto();
 
@@ -291,30 +308,49 @@ namespace SustitucionMOAWS.WSConsumers
                     };
                 }
             }
-
-            resultado.Cabecera = new OrdenDeCompraSAPCabecera
+            if (resultado.Error == null)
             {
-                OrdenDeCompra = POHEADER.PO_NUMBER,
-                CodigoProveedor = POHEADER.VENDOR,
-                Moneda = POHEADER.CURRENCY,
-                FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
-                FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString()
-            };
 
-            foreach (var pos in POITEM.ToList())
-            {
-                resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
-                resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
+                    resultado.Cabecera = new OrdenDeCompraSAPCabecera
                 {
-                    Indice = pos.PO_ITEM
-                });
+                    OrdenDeCompra = POHEADER.PO_NUMBER,
+                    CodigoProveedor = POHEADER.VENDOR,
+                    UsuarioComprasSAP = POHEADER.CREATED_BY,
+                    Moneda = POHEADER.CURRENCY,
+                    FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture),
+                    FechaCreacionString = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).ToShortDateString(),
+                    OrganizacionDeComprasCodigo = POHEADER.PURCH_ORG
+                };
+
+                    foreach (var pos in POITEM.ToList())
+                    {
+                        resultado.Cabecera.MontoTotal += pos.NET_PRICE * pos.QUANTITY;
+                        var region = POADDRDELIVERY.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
+                        var plazo = POSCHEDULE.Where(x => x.PO_ITEM == pos.PO_ITEM).SingleOrDefault();
+                        resultado.Posiciones.Add(new OrdenDeCompraSAPPosicion
+                        {
+                            Indice = pos.PO_ITEM,
+                            IndiceSolp = pos.PREQ_ITEM,
+                            RegistroInfo = pos.INFO_REC,
+                            NroSolp = pos.PREQ_NO,
+                            DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
+                            {
+                                RegionSap = region.REGION
+                            },
+                            PlazoDeOferta = !string.IsNullOrEmpty(plazo.DELIVERY_DATE) ?
+                                 DateTime.ParseExact(plazo.DELIVERY_DATE, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture) : (DateTime?)null
+
+                        });
+                    }
             }
+
+
             return resultado;
         }
 
 
         private AdjudicacionDto mapAdjudicacionDto(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-        BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY)
+               BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIESKLC[] POSRVACCESSVALUES)
         {
             AdjudicacionDto adjudicacion = new AdjudicacionDto();
             var codigoMateriales = POITEM.Select(a => a.MATERIAL).ToList();
@@ -327,12 +363,19 @@ namespace SustitucionMOAWS.WSConsumers
 
             var monedas = repositorio.Listar<TablaSap>(a => a.Tabla == "Moneda");
             var unidades = repositorio.Listar<TablaSap>(a => a.Tabla == "Unidad");
+            var condicionesDePago = repositorio.Listar<TablaSap>(a => a.Tabla == TablasSap.CondicionesDePago);
+            var condicionesDeImportacion = repositorio.Listar<TablaSap>(a => a.Tabla == TablasSap.CondicionesDeImportacion);
+            var unidadesSAP = repositorio.Listar<UnidadMedidaSap>();
+            List<RegionSap> regiones = repositorio.Listar<RegionSap>(x => x.CodigoPais == "AR").ToList();
+            var nroSolp = POITEM.FirstOrDefault().PREQ_NO;
+            var solp = repositorio.Obtener<Solp, int>(x => x.NroSolp == nroSolp, x => x.Id);
             var servicios = new List<ServicioSolp>();
             if (POITEM.First().ITEM_CAT == "9")
             {
                 var codigoServicios = POSERVICES.Select(a => a.SERVICE).ToList();
                 servicios = repositorio.Listar<ServicioSolp>(x => codigoServicios.Contains(x.Codigo));
             }
+            adjudicacion.Solp_Id = solp;
 
             adjudicacion.Id = 0;
             adjudicacion.TipoPosicionCodigo = POITEM.First().ITEM_CAT == "9" ? "SERVICIOS" : "MATERIALES";
@@ -341,7 +384,7 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Centro = POADDRDELIVERY.FirstOrDefault()?.NAME;
             adjudicacion.CalleEntrega = POADDRDELIVERY.FirstOrDefault()?.STREET;
             adjudicacion.CodigoPostal = POADDRDELIVERY.FirstOrDefault()?.POSTL_COD1;
-            adjudicacion.PrecioFinal = POITEM.Sum(a => a.QUANTITY * a.NET_PRICE);
+            adjudicacion.PrecioFinal = POITEM.Where(a => a.DELETE_IND != "L").Sum(a => a.QUANTITY * a.NET_PRICE);
             adjudicacion.TextoDeCabecera = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F01").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDeEntrega = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F05").Select(a => a.TEXT_LINE));
             adjudicacion.CondicionesDePago = string.Join(" ", POTEXTHEADER.Where(a => a.TEXT_ID == "F07").Select(a => a.TEXT_LINE));
@@ -349,20 +392,48 @@ namespace SustitucionMOAWS.WSConsumers
             adjudicacion.Moneda_Id = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Id;
             adjudicacion.MonedaDescripcion = monedas.First(a => a.Codigo == POHEADER.CURRENCY).Descripcion;
             adjudicacion.FechaCreacion = DateTime.ParseExact(POHEADER.CREAT_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            adjudicacion.CondicionDePago = new CondicionDePagoDto
+            {
+                Id = condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Id,
+                Codigo = POHEADER.PMNTTRMS,
+                CodigoDescripcion = POHEADER.PMNTTRMS + " - " + condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Descripcion,
+                Descripcion = condicionesDePago.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Descripcion
+            };
+            adjudicacion.PagoEn1 = POHEADER.DSCNT1_TO;
+            adjudicacion.PagoEn2 = POHEADER.DSCNT2_TO;
+            adjudicacion.PagoEn3 = POHEADER.DSCNT3_TO;
+            adjudicacion.PagoEn1Porcentaje = POHEADER.DSCT_PCT1;
+            adjudicacion.PagoEn2Porcentaje = POHEADER.DSCT_PCT2;
+            adjudicacion.CondicionDeImportacion = new CondicionDeImportacionDto
+            {
+                Codigo = POHEADER.INCOTERMS1,
+                Descripcion = POHEADER.INCOTERMS2,
+                Id = condicionesDeImportacion.FirstOrDefault(x => x.CodigoSap == POHEADER.PMNTTRMS)?.Id
+            };
 
-
+            adjudicacion.CondicionDeImportacionDescripcion = POHEADER.INCOTERMS2;
             adjudicacion.AdjudicacionPosiciones = new List<AdjudicacionPosicionDto>();
 
-            foreach (var posicion in POITEM)
+            foreach (var posicion in POITEM.Where(a => a.DELETE_IND != "L"))
             {
-
-                
-
                 AdjudicacionPosicionDto pos = new AdjudicacionPosicionDto();
+                var region = POADDRDELIVERY.Where(x => x.PO_ITEM == posicion.PO_ITEM).SingleOrDefault();
+
+                pos.DireccionDeEntrega = new OrdenDeCompraSAPPosicionDireccionDeEntrega
+                {
+                    RegionSap = region.REGION,
+                    PaisSap = region.COUNTRY,
+                    Id = regiones.FirstOrDefault(x => x.CodigoSap == region.REGION)?.Id,
+                    CodigoSap = region.REGION,
+                    Descripcion = region.COUNTRY
+                };
+                pos.RegionCodigo = region.REGION;
+                pos.PaisSap = region.COUNTRY;
+                pos.RegionId = regiones.FirstOrDefault(x => x.CodigoSap == region.REGION)?.Id;
 
                 pos.SolpPosicion_Id = 0;
-                pos.Id = 0; //P
-                pos.MaterialComprasCodigo = posicion.MATERIAL?.TrimStart('0');
+                pos.Id = 0;
+                pos.MaterialComprasCodigo = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.CodigoSap : "";
                 pos.MaterialComprasDescripcion = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.Descripcion : "";
                 pos.MaterialTextoAmpliado = !string.IsNullOrEmpty(posicion.MATERIAL) ? materiales.Where(x => x.CodigoSap == posicion.MATERIAL).FirstOrDefault()?.TextoAmpliado : "";
                 pos.Indice = int.Parse(posicion.PO_ITEM);
@@ -372,16 +443,31 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.Cantidad = posicion.QUANTITY;
                 pos.PrecioUnidad = posicion.NET_PRICE;
                 pos.MonedaId = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Id;
+                var unidadSap = unidadesSAP.FirstOrDefault(a => a.UM == posicion.PO_UNIT);
+                var unidad = unidades.FirstOrDefault(a => a.Codigo == unidadSap?.Comercial);
+                pos.UnidadId = unidad.Id;
+                pos.UnidadDescripcion = unidad?.Descripcion ?? "";
+                pos.UnidadCodigo = unidad?.CodigoSap ?? "";
                 pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
                 pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
                 pos.CentroComprasCodigo = posicion.PLANT;
+                pos.Eliminado = posicion.DELETE_IND == "L";
+                pos.EntregaFinal = posicion.NO_MORE_GR == "X";
+                pos.Moneda = new TablaSapDto
+                {
+                    Codigo = pos.MonedaCodigo,
+                    Descripcion = pos.MonedaDescripcion
+                };
+
 
                 try
                 {
                     var fecha = POSCHEDULE.First(a => a.PO_ITEM == posicion.PO_ITEM).DELIVERY_DATE;
                     pos.FechaEntregaServicio = DateTime.ParseExact(fecha, "dd.MM.yyyy", System.Globalization.CultureInfo.InvariantCulture);
+                    pos.FechaEntregaServicioFormateado = fecha;
+
                 }
                 catch
                 {
@@ -401,10 +487,13 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.CodigoSolp = servicios.FirstOrDefault(a => a.Codigo == subpos.SERVICE)?.CodigoSap ?? 0;
                         sub.Cantidad = subpos.QUANTITY;
                         sub.PrecioBruto = subpos.NET_VALUE / subpos.QUANTITY;
-                        sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
+                        var unidadSapsp = unidadesSAP.FirstOrDefault(a => a.Comercial == subpos.BASE_UOM);
+                        var unidadsp = unidades.FirstOrDefault(a => a.Codigo == unidadSapsp?.Comercial);
+                        sub.UnidadComprasDescripcion = unidadsp?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.MonedaCotizacionCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                         sub.PrecioTotalSubPosicion = subpos.NET_VALUE;
+                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
@@ -421,11 +510,19 @@ namespace SustitucionMOAWS.WSConsumers
                         sub.UnidadComprasDescripcion = unidades.FirstOrDefault(a => a.Codigo == subpos.BASE_UOM)?.Descripcion ?? "";
                         sub.MonedaCotizacionDescripcion = POHEADER.CURRENCY;
                         sub.PrecioTotalSubPosicion = sub.Cantidad ?? 0 * sub.PrecioBruto ?? 0;
+                        sub.Eliminado = subpos.DELETE_IND == "L";
                         pos.SubposicionesCompras.Add(sub);
                     }
                 }
 
                 adjudicacion.AdjudicacionPosiciones.Add(pos);
+                if (adjudicacion.AdjudicacionPosiciones.Count > 0)
+                {
+                    adjudicacion.AdjudicacionPosiciones[0].MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
+                    adjudicacion.AdjudicacionPosiciones[0].MonedaDescripcion = POHEADER.CURRENCY;
+
+                }
+
             }
 
             return adjudicacion;

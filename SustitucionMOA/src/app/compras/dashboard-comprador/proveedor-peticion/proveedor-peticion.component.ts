@@ -9,7 +9,7 @@ import { ModalService } from '../../../common/services/ModalService';
 import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
-import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
+import { PeticionDeOfertaDto, PeticionDeOfertaUsarioDto, PeticionDeOfertaUsarioAdicionalDto } from '../../../modelos/peticion-de-oferta-model';
 import { ComprasService } from '../../compras.service';
 
 @Component({
@@ -37,6 +37,8 @@ export class ProveedorPeticionComponent implements OnInit {
     proveedoresSeleccionados: any[] = new Array();
     proveedorSeleccionado: any;
     proveedor: PeticionDeOfertaUsarioDto;
+    proveedorAdicional: PeticionDeOfertaUsarioAdicionalDto;
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -129,6 +131,22 @@ export class ProveedorPeticionComponent implements OnInit {
             let proveedoresSelec = this.proveedoresSeleccionados;
             for (let index = 0; index < this.proveedoresSeleccionados.length; index++) {
                 this.proveedor = this.peticion.Usuarios.filter(x => x.Id == proveedoresSelec[index].Id)[0];
+                if (this.proveedor != null && this.proveedor != undefined) {
+                    this.error = "El proveedor " + this.proveedor.RazonSocial + " (" + this.proveedor.CUIT + ") ya se encuentra incluido en la PO";
+                    return this.visualizarAlert = true;
+                }
+            }
+        }
+
+        if (!this.visualizarAlert && event != null && this.peticion != null && this.peticion.UsuariosAdicionales.some(e => e.UsuarioId === event.Id)) {
+            this.error = "Debe seleccionar un proveedor que no este asociado.";
+            this.visualizarAlert = true;
+        }
+
+        if (!this.visualizarAlert && (this.proveedoresSeleccionados != null || this.proveedoresSeleccionados.length > 0) && this.peticion != null) {
+            let proveedoresSelec = this.proveedoresSeleccionados;
+            for (let index = 0; index < this.proveedoresSeleccionados.length; index++) {
+                this.proveedorAdicional = this.peticion.UsuariosAdicionales.filter(x => x.Id == proveedoresSelec[index].Id)[0];
                 if (this.proveedor != null && this.proveedor != undefined) {
                     this.error = "El proveedor " + this.proveedor.RazonSocial + " (" + this.proveedor.CUIT + ") ya se encuentra incluido en la PO";
                     return this.visualizarAlert = true;

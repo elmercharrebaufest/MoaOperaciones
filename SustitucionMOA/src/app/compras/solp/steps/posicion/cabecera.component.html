@@ -245,7 +245,7 @@
                                     </p-cellEditor>
                                 </td>                      
                                 <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word">
-                                    <p-cellEditor>
+                                    <p-cellEditor data-toggle="tooltip" title="40 caracteres como máximo">
                                         <ng-template pTemplate="input" *ngIf="esTipoMaterial">
                                             <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
                                                 [suggestions]="autocompleteServiciosSolp" 
@@ -256,6 +256,7 @@
                                                 [autoHighlight]="true" 
                                                 emptyMessage="" 
                                                 [minLength]="4" 
+                                                [maxlength]="40"
                                                 [forceSelection]="false" 
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
@@ -270,7 +271,9 @@
                                             <input type="text" class="inputGrilla"
                                                 [(ngModel)]="posicion.tareaSubcontratar" 
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
-                                                (blur)="onBlurTarea($event, posicion)">
+                                                (blur)="onBlurTarea($event, posicion)"
+                                                [maxlength]="40"
+                                                data-toggle="tooltip" title="40 caracteres como máximo"> 
                                         </ng-template>
 
                                     <ng-template pTemplate="output" style="text-align: left;">

@@ -19,6 +19,7 @@ export class LegajoExternoComponent implements OnInit {
     visualizarAlert = false;
     adjudicacionId: string;
     token: string;
+    cargarPantalla = false;
 
     constructor(private route: ActivatedRoute, protected service: ComprasService) {
     }
@@ -39,6 +40,7 @@ export class LegajoExternoComponent implements OnInit {
                 (result) => {
                     this.legajo = result.data;
                     this.blockUI.stop();
+                    this.cargarPantalla = true;
                 },
                 (error) => {
                     this.blockUI.stop();
@@ -65,7 +67,7 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (tipoLegajo == "Petición de Oferta") {
+        } else if (tipoLegajo == "Peticiï¿½n de Oferta") {
             this.blockUI.start("Generando...");
             this.service.getPdfPeticionDeOfertaUsuario(archivoId)
                 .subscribe(

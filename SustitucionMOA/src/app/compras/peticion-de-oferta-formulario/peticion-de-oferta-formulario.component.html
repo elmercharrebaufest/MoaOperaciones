@@ -69,7 +69,8 @@
                                     <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.Cantidad | number:'1.2-2'}}</td>
                                     <td *ngIf="esTipoMaterial" class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
-                                    <td class="columna">{{posicionCompra.MonedaComprasDescripcion}}</td>
+                                    <td class="columna">{{posicionCompra.MonedaSolpDescripcion}}</td>
+                                    <!-- <td class="columna">{{posicionCompra.MonedaComprasDescripcion}}</td> -->
                                     <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
                                     <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
                                     <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
