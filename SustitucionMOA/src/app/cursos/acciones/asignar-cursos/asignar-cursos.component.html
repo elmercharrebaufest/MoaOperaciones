@@ -1,4 +1,66 @@
-<p-dialog [header]="'Asignar alumnos curso '+ (curso | async)?.NombreCurso" [(visible)]="display" (onHide)="cerrar()">
-  <spinner></spinner>
+<p-dialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
+  [style]="{width: '350px', minWidth: '200px', maxWidth:'450px', maxHeigh:'550px', overflowY:'auto'}" [minY]="70"
+  [draggable]="false" appendTo="body">
+  <p-header>
+    Asignar alumnos curso <br>
+    {{(curso | async)?.Nombre}}
+  </p-header>
+  <spinner #spinner></spinner>
   <mensaje #mensaje></mensaje>
+
+  <ng-container *ngIf="!resultados;">
+    <div class="pt-4">
+      <span class="ui-float-label">
+        <input id="float-input" type="text" size="30" pInputText [formControl]="controlBuscarUsuarios">
+        <label for="float-input">Filtro Email</label>
+      </span>
+    </div>
+    <div class="overflow-y-auto max-h-150px">
+      <ng-container *ngFor="let opcion of opcionesMail; let first = first;">
+        <ng-container *ngIf="first && !todasOpcionesSeleccionadas">
+          <p class="pt-2">
+            Opciones
+          </p>
+          <hr>
+          <div class="pt-4">
+            <p-checkbox name="opcionMailAAsignar" label="Todos" (onChange)="toggleTodos($event)"></p-checkbox>
+          </div>
+        </ng-container>
+
+        <div class="pt-4" *ngIf="!mailUsuarios.includes(opcion)">
+          <p-checkbox name="opcionMailAAsignar" [label]="opcion" [value]="opcion"
+            [(ngModel)]="mailUsuarios"></p-checkbox>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="overflow-y-auto max-h-150px">
+      <ng-container *ngFor="let opcion of mailUsuarios; let first = first">
+        <hr>
+        <p class="pt-2" *ngIf="first">
+          Seleccionados
+        </p>
+        <div class="pt-4">
+          <p-checkbox name="opcionMailsAsignados" [label]="opcion" [value]="opcion"
+            [(ngModel)]="mailUsuarios"></p-checkbox>
+        </div>
+      </ng-container>
+    </div>
+
+  </ng-container>
+  <div class="w-full overflow-y-auto  max-h-450px" *ngIf="resultados">
+    <ng-container *ngFor="let item of resultados;let last=last">
+      {{item.Mail}} -
+      <i *ngIf="item.Resultado;else rechazado" class="pt-2 pi pi-check-circle" style="color:aquamarine"></i>
+      <ng-template #rechazado>
+        <i class="pt-2 pi pi-times-circle" style="color:coral"></i>
+      </ng-template>
+      <hr *ngIf="!last" />
+    </ng-container>
+  </div>
+
+  <p-footer *ngIf="!resultados">
+    <button [disabled]="!mailUsuarios.length || asignandoUsuarios" type="button" pButton icon="pi pi-save"
+      (click)="asignarUsuarios()" label="Asignar"></button>
+  </p-footer>
 </p-dialog>

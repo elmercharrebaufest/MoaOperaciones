@@ -10,6 +10,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -939,6 +940,12 @@ namespace SustitucionMOAUtils.Services
         }
         #endregion
 
-
+        public List<string> GetMailUsuarios(string mail)
+        {
+            var likeString = $"%{mail}%";
+            return repositorio.Listar<Usuario, string>(
+                u => u.Mail
+                , u => DbFunctions.Like(u.Mail, likeString));
+        }
     }
 }

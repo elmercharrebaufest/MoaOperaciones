@@ -3,7 +3,7 @@ import { BaseService } from '../common/services/BaseService';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiResponse } from '../common/models/response';
-import { AsignarReqDto, CursoDto, CursoUsuarioDto } from '../common/models/cursos/Curso';
+import { ActualizarProgresoReqDto, AsignarAlumnosResDto, AsignarReqDto, CursoDto, CursoUsuarioDto } from '../common/models/cursos/Curso';
 
 @Injectable()
 export class CursosService extends BaseService {
@@ -19,8 +19,17 @@ export class CursosService extends BaseService {
     return this.http.get<ApiResponse<CursoDto[]>>
       (`${this.baseUrl}/Disponibles`)
   }
-  asignar(req: AsignarReqDto): Observable<ApiResponse<{ [key: string]: boolean }[]>> {
+  asignar(req: AsignarReqDto): Observable<ApiResponse<AsignarAlumnosResDto[]>> {
     return this.http.post
       (`${this.baseUrl}/Asignar`, req)
+  }
+  progreso(cursoId: number): Observable<ApiResponse<string>> {
+    return this.http.get(`${this.baseUrl}/Progreso?cursoId=${cursoId}`)
+  }
+
+  actualizarProgreso(progreso: ActualizarProgresoReqDto): Observable<ApiResponse<boolean>> {
+    return this.http.patch
+      (`${this.baseUrl}/ActualizarProgreso`, progreso)
+
   }
 }

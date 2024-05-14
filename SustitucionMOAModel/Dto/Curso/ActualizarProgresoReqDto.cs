@@ -8,5 +8,6 @@ namespace SustitucionMOAModel.Dto.Curso
         public EstadoCursoEnum NuevoEstado { get; set; }
         public string EmailUsuario { get; set; }
         public string DatosProgreso { get; set; }
+        public string TiempoSesion { get; set; }
     }
 }

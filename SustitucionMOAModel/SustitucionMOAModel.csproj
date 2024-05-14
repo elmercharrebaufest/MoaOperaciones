@@ -68,6 +68,7 @@
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
     <Compile Include="Dto\Curso\ActualizarProgresoReqDto.cs" />
+    <Compile Include="Dto\Curso\AsignarAlumnosResDto.cs" />
     <Compile Include="Dto\Curso\AsignarReqDto.cs" />
     <Compile Include="Dto\Curso\CursoDto.cs" />
     <Compile Include="Dto\Curso\CursoUsuarioDto.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
+    <Compile Include="Dto\UsuarioMailDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\Curso.cs" />

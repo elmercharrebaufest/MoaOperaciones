@@ -31,8 +31,8 @@
         <mensaje #mensaje></mensaje>
         <spinner></spinner>
         <ng-container *ngIf="isVisible">
-          <table id="tableModal" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate "
-            role="grid" aria-describedby="tableModal_info" style="width: 100%">
+          <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" id="tableModal"
+            role="grid" style="width: 100%; padding:10px 0; background: white !important;" cellspacing="0">
             <thead>
               <tr role="row">
                 <th class="fw-bold fs-medium" id="fechaRow" tabindex="0" rowspan="1" colspan="1">
@@ -47,10 +47,12 @@
                   | customFilter:'Nombre':nombreFiltro.value
                   | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                   ;let odd=odd" role="row" [class.odd]="!odd">
-                <td>{{curso.Nombre}}</td>
+                <td>{{curso.NombreCurso}}</td>
                 <td>
-                  <i class="pi pi-eye" (click)="verProgreso(curso)"></i>
-                  <i class="pi pi-external-link" (click)="abrirCurso(curso)"></i>
+                  <p-button tooltipPosition="bottom" pTooltip="Ver Progreso" icon="pi pi-eye"
+                    (click)="verProgreso(curso)"></p-button>
+                  <p-button tooltipPosition="bottom" pTooltip="Abrir" icon="pi pi-external-link"
+                    (click)="abrirCurso(curso)"></p-button>
                 </td>
               </tr>
             </tbody>

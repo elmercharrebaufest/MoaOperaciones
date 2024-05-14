@@ -1008,5 +1008,29 @@ namespace SustitucionMOA.Controllers
         }
 
         #endregion
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ADMINISTRAR_CURSOS)]
+        [HttpGet]
+        public ContentResult GetMailUsuarios(string mail)
+        {
+            var response = new SustitucionMOAApiResponse<List<string>>();
+            try
+            {
+                response.Data = _usuarioService.GetMailUsuarios(mail);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }

@@ -34,5 +34,6 @@ Post-Deployment Script Template
 :r .\RegionSap.sql
 :r .\EstadoOrdenResiduos.sql
 :r .\AlmacenMaterial.sql
+:r .\Curso.sql
 
 

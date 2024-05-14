@@ -1,3 +1,5 @@
-<p-dialog [header]="'Progreso Curso '+ (curso | async)?.NombreCurso" [(visible)]="display" (onHide)="cerrar()">
+<p-dialog [header]="'Progreso Curso '+ (curso | async)?.NombreCurso" [(visible)]="display" (onHide)="cerrar()"
+  [modal]="true" [responsive]="true" [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70"
+  [draggable]="false" appendTo="body">
   <spinner></spinner>
 </p-dialog>

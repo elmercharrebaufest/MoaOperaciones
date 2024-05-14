@@ -1,10 +1,10 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
-import { CursoDto } from '../../../common/models/cursos/Curso';
+import { BehaviorSubject, Subscription, pipe } from 'rxjs';
+import { AsignarAlumnosResDto, CursoDto } from '../../../common/models/cursos/Curso';
 import { CursosService } from '../../cursos.service';
 import { FormControl } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, filter, finalize } from 'rxjs/operators';
 import { BaseComponent } from '../../../common/base-components/base-component';
 import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
@@ -12,6 +12,7 @@ import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { SessionDataService } from '../../../common/services/SessionDataService';
+import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 
 @Component({
   selector: 'app-asignar-cursos',
@@ -21,14 +22,17 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 export class AsignarCursosComponent extends BaseComponent implements OnInit {
   @ViewChild("mensaje")
   mensajeComponent: MensajeComponent;
+  @ViewChild("spinner")
+  spinnerComponent: SpinnerComponent;
   @Input()
   curso?: BehaviorSubject<CursoDto | null>;
   display = false;
 
+  asignandoUsuarios = false;
   mailUsuarios: string[] = [];
   opcionesMail: string[] = [];
 
-  resultados?: { [key: string]: boolean }[];
+  resultados?: AsignarAlumnosResDto[];
 
   controlBuscarUsuarios = new FormControl(null);
 
@@ -44,17 +48,27 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
 
   ngOnInit() {
     this.subscriptions.add(
-      this.curso.subscribe(value => this.display = !!value)
+      this.curso.subscribe(value => {
+        this.display = !!value;
+        if (!this.display) {
+          this.restartValues()
+        }
+      })
     )
     this.subscriptions.add(
       this.controlBuscarUsuarios.valueChanges.pipe(
+        filter(mail => mail.length >= 3),
         debounceTime(1000)
       ).subscribe(mail => {
-        this.usuarioService.getMailUsuarios(mail).subscribe(res => {
-          const mails = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent);
-          if (mails)
-            this.opcionesMail = mails;
-        })
+        this.spinnerComponent.showIt();
+        this.mensajeComponent.setMsgsEmpty()
+        this.usuarioService.getMailUsuarios(mail)
+          .pipe(finalize(() => this.spinnerComponent.hideIt()))
+          .subscribe(res => {
+            const mails = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent);
+            if (mails)
+              this.opcionesMail = mails;
+          })
       })
     )
   }
@@ -64,12 +78,40 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
   }
 
   asignarUsuarios() {
+    this.mensajeComponent.setMsgsEmpty();
+    this.spinnerComponent.showIt();
+    this.asignandoUsuarios = true;
     this.service.asignar({
-      CursoId: this.curso.value.CursoId,
+      CursoId: this.curso.value.Id,
       MailsUsuarios: this.mailUsuarios
-    }).subscribe(res => {
-      const resultados = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
-      this.resultados = resultados;
     })
+      .pipe(finalize(() => { this.spinnerComponent.hideIt(); this.asignandoUsuarios = false; }))
+      .subscribe(res => {
+        const resultados = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+        this.resultados = resultados;
+      })
+  }
+  toggleTodos(check: boolean) {
+    if (check) {
+      this.mailUsuarios = [
+        ... this.mailUsuarios,
+        ... this.opcionesMail
+      ]
+    }
+    if (!check) {
+      this.mailUsuarios = this.mailUsuarios.filter(
+        mailSeleccionado => !this.opcionesMail.includes(mailSeleccionado)
+      )
+    }
+  }
+  get todasOpcionesSeleccionadas() {
+    return this.opcionesMail.every(op => this.mailUsuarios.includes(op))
+  }
+  restartValues() {
+    this.mailUsuarios = [];
+    this.opcionesMail = [];
+    this.controlBuscarUsuarios.setValue(null)
+    this.resultados = undefined;
+    this.mensajeComponent.setMsgsEmpty();
   }
 }

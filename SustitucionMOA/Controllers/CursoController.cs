@@ -96,14 +96,14 @@ namespace SustitucionMOA.Controllers
         }
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.REALIZAR_CURSOS)]
         [HttpPatch]
-        public ContentResult ActualizarEstado([WebHttp.FromBody] ActualizarProgresoReqDto actualizarCursoReq)
+        public ContentResult ActualizarProgreso([WebHttp.FromBody] ActualizarProgresoReqDto actualizarCursoReq)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
                 var emailUsuario = SessionPersister.getUsername();
                 actualizarCursoReq.EmailUsuario = emailUsuario;
-                cursoService.ActualizarEstado(actualizarCursoReq);
+                cursoService.ActualizarProgreso(actualizarCursoReq);
                 response.Data = true;
             }
             catch (InfoCustomException ice)
@@ -125,7 +125,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ContentResult Asignar([WebHttp.FromBody] AsignarReqDto asignarReqDto)
         {
-            var response = new SustitucionMOAApiResponse<Dictionary<string, bool>> ();
+            var response = new SustitucionMOAApiResponse<List<AsignarAlumnosResDto>> ();
             try
             {
                 response.Data = cursoService.Asignar(asignarReqDto);

@@ -5,8 +5,8 @@ export interface CursoUsuarioDto {
     EstadoCurso: EstadoCurso
 }
 export interface CursoDto {
-    CursoId: number
-    NombreCurso: string;
+    Id: number
+    Nombre: string;
 }
 
 export enum EstadoCurso {
@@ -25,5 +25,9 @@ export interface ActualizarProgresoReqDto {
     NuevoEstado: EstadoCurso
     EmailUsuario?: string;
     DatosProgreso: string
+    TiempoSesion: string;
+}
+export interface AsignarAlumnosResDto {
+    Resultado: boolean, Mail: string
 }
 export const CURSOS_BASE_PATH = "cursos"

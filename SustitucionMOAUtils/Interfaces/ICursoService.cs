@@ -6,9 +6,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface ICursoService
     {
-        void ActualizarEstado(ActualizarProgresoReqDto actualizarCursoReq);
+        void ActualizarProgreso(ActualizarProgresoReqDto actualizarCursoReq);
         List<CursoUsuarioDto> AsignadosAUsuario(string emailUsuario);
-        Dictionary<string, bool> Asignar(AsignarReqDto asignarReqDto);
+        List<AsignarAlumnosResDto> Asignar(AsignarReqDto asignarReqDto);
         List<CursoDto> Disponibles();
         string ObtenerProgreso(int cursoId, string emailUsuario);
     }

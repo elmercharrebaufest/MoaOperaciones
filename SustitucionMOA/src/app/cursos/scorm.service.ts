@@ -21,7 +21,7 @@ export enum CmiOption {
     Score2004 = "cmi.core.score.raw",
     Score = "cmi.score.raw",
     SuccessStatus = "cmi.success_status",
-    SessionTime = "cmi.session_time",
+    SessionTime = "cmi.core.session_time",
     SuspendData = "cmi.suspend_data",
     LessonStatus = "cmi.core.lesson_status",
 }
@@ -179,9 +179,13 @@ export class ScormService {
         this.initialize()
     }
 
-    inicializarCurso(hrefCurso: string) {
+    /**
+     * Return the course window
+     */
+    inicializarCurso(hrefCurso: string): Window {
         const target = '_blank';
         const windowOpen = window.open(hrefCurso, target, 'popup=yes')
         this.setWindow(windowOpen);
+        return windowOpen;
     }
 }

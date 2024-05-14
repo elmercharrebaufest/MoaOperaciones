@@ -18,7 +18,7 @@ namespace SustitucionMOAUtils.Services
         {
             this.repositorio = repositorio;
         }
-        public void ActualizarEstado(ActualizarProgresoReqDto actualizarCursoReq)
+        public void ActualizarProgreso(ActualizarProgresoReqDto actualizarCursoReq)
         {
             Usuario usuario;
             Curso curso;
@@ -36,22 +36,29 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(ERROR_SIN_ACCESO);
             }
-
+            var fechaActualizacion = DateTime.Now;
             switch (actualizarCursoReq.NuevoEstado)
             {
                 case EstadoCursoEnum.Iniciado:
 
-                    progreso.FechaInicio = DateTime.Now;
+                    progreso.FechaInicio = fechaActualizacion;
+                    progreso.MinutosCursados = 0;
                     break;
                 case EstadoCursoEnum.EnProgreso:
                     progreso.DetalleProgreso = actualizarCursoReq.DatosProgreso;
-                    progreso.FechaUltimoIntento = DateTime.Now;
+                    progreso.FechaUltimoIntento = fechaActualizacion;
                     break;
                 case EstadoCursoEnum.Completado:
+
+                    if (progreso.MinutosCursados < curso.MinimosMinutosCursada)
+                    {
+                        throw new ValidationCustomException("El tiempo de cursada es demasiado corto");
+                    }
                     progreso.DetalleProgreso = actualizarCursoReq.DatosProgreso;
-                    progreso.FechaCompletado = DateTime.Now;
+                    progreso.FechaCompletado = fechaActualizacion;
                     break;
             }
+            repositorio.GuardarCambios();
         }
 
         public List<CursoUsuarioDto> AsignadosAUsuario(string emailUsuario)
@@ -94,33 +101,37 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException(ERROR_SIN_ACCESO);
             }
-
-            return progreso.DetalleProgreso;
+            var detalleProgreso = progreso.DetalleProgreso ?? "";
+            return detalleProgreso.TrimEnd();
         }
-        public Dictionary<string, bool> Asignar(AsignarReqDto asignarReqDto)
+        public List<AsignarAlumnosResDto> Asignar(AsignarReqDto asignarReqDto)
         {
             var usuarios = repositorio.Listar<Usuario>(usuario => asignarReqDto.MailsUsuarios.Contains(usuario.Mail));
-            var resultados = new Dictionary<string, bool>();
+            var resultados = new List<AsignarAlumnosResDto>();
             foreach (var usuario in usuarios)
             {
 
                 var progresoExistente = ObtenerProgreso(asignarReqDto.CursoId, usuario);
                 var asignado = progresoExistente != null;
-                if (progresoExistente == null)
+                try
                 {
-                    usuario.ProgresoCursosAsignados.Add(
-                        new ProgresoCurso
-                        {
-                            Alumno = usuario,
-                            CursoId = asignarReqDto.CursoId,
-                        });
-                    asignado = true;
+                    if (progresoExistente == null)
+                    {
+                        usuario.ProgresoCursosAsignados.Add(
+                            new ProgresoCurso(asignarReqDto.CursoId, usuario));
+                        asignado = true;
+                    }
+                    if (!usuario.TienePermiso(PermisoEnum.RealizarCursos))
+                    {
+                        usuario.Roles.Add(RolAlumno());
+                    }
                 }
-                if (!usuario.TienePermiso(PermisoEnum.RealizarCursos))
+                catch (Exception e)
                 {
-                    usuario.Roles.Add(RolAlumno());
+                    Logger.Log.Error(e);
                 }
-                resultados.Add(usuario.Mail, asignado);
+
+                resultados.Add(new AsignarAlumnosResDto { Mail = usuario.Mail, Resultado = asignado });
             }
             repositorio.GuardarCambios();
             return resultados;
@@ -156,6 +167,10 @@ namespace SustitucionMOAUtils.Services
         }
         private ProgresoCurso ObtenerProgreso(int cursoId, Usuario usuario)
         {
+            if (usuario.ProgresoCursosAsignados == null || usuario.ProgresoCursosAsignados.Count == 0)
+            {
+                return null;
+            }
             return usuario.ProgresoCursosAsignados.First(p => p.CursoId == cursoId);
         }
         private Rol RolAlumno()

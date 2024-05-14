@@ -16,6 +16,7 @@ namespace SustitucionMOAModel.Entities
         public string Nombre { get; set; }
         public DateTime FechaCreacion { get; set; }
         public string Acceso { get; set; }
+        public int MinimosMinutosCursada { get; set; }
 
         [InverseProperty("Curso")]
         public virtual ICollection<ProgresoCurso> ProgresosDelCurso { get; set; }

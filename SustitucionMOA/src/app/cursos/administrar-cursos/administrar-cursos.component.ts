@@ -8,6 +8,8 @@ import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { CURSOS_BASE_PATH, CursoDto } from '../../common/models/cursos/Curso';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
+import { BehaviorSubject } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-administrar-cursos',
@@ -18,6 +20,7 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
   @ViewChild("mensaje")
   mensajeComponent: MensajeComponent;
 
+  cursoAAsignarAlumnos?: BehaviorSubject<CursoDto | null> = new BehaviorSubject(null);
   get isVisible(): boolean {
     return this.cursos && !!this.cursos.length
   }
@@ -32,13 +35,20 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
   }
 
   extraOnInit() {
-    this.service.disponibles().subscribe((res) => {
-      const cursos = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
-      if (cursos)
-        this.cursos = cursos;
-    })
+    this.spinnerComponent.showIt()
+    this.service.disponibles()
+      .pipe(finalize(() => this.spinnerComponent.hideIt()))
+      .subscribe((res) => {
+        const cursos = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+        if (cursos)
+          this.cursos = cursos;
+      })
   }
   setTabs(): void {
     this.setMenuSeccionTab(CURSOS_BASE_PATH, 'Administrar Cursos');
+  }
+
+  asignarAlumnos(curso: CursoDto) {
+    this.cursoAAsignarAlumnos.next(curso)
   }
 }

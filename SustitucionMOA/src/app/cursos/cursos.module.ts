@@ -15,6 +15,9 @@ import { AsignarCursosComponent } from './acciones/asignar-cursos/asignar-cursos
 import { VerProgresoCursoComponent } from './acciones/ver-progreso-curso/ver-progreso-curso.component';
 import { VerProgresoAlumnosComponent } from './acciones/ver-progreso-alumnos/ver-progreso-alumnos.component';
 import { DialogModule } from 'primeng/dialog';
+import { CheckboxModule } from 'primeng/checkbox';
+import { InputTextModule } from 'primeng/inputtext';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   imports: [
@@ -25,7 +28,10 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     DropdownModule,
     ReactiveFormsModule,
-    DialogModule
+    DialogModule,
+    CheckboxModule,
+    InputTextModule,
+    TooltipModule
   ],
   declarations: [MisCursosComponent, AdministrarCursosComponent, AsignarCursosComponent, VerProgresoCursoComponent, VerProgresoAlumnosComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
