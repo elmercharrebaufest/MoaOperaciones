@@ -696,7 +696,7 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < filesEspecificaciones.Count; i++)
             {
                 var file = filesEspecificaciones[i];
-                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
 
                 if (File.Exists(rutaArchivo))
                 {
@@ -719,7 +719,7 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < filesCotizaciones.Count; i++)
             {
                 var file = filesCotizaciones[i];
-                var rutaArchivo = string.Concat(ruta, "/", Path.GetFileName(file.FileName));
+                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
 
                 if (File.Exists(rutaArchivo))
                 {
@@ -748,6 +748,35 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
             return solp;
         }
+
+        private string CrearRutaArchivo(string ruta, ICollection<Archivo> archivos, int numeroIncremental = 0)
+        {
+            string nuevaRuta = ruta;
+
+            if (numeroIncremental != 0)
+            {
+                // Separar la ruta y la extensión del archivo
+                string nombreArchivo = System.IO.Path.GetFileNameWithoutExtension(ruta);
+                string extensionArchivo = System.IO.Path.GetExtension(ruta);
+                string directorioArchivo = System.IO.Path.GetDirectoryName(ruta);
+
+                // Generar la nueva ruta con el número incremental
+                nuevaRuta = $"{directorioArchivo}/{nombreArchivo}({numeroIncremental}){extensionArchivo}";
+            }
+           
+            bool rutaExiste = archivos.Any(archivo => archivo.Ruta == nuevaRuta);
+
+            // Si la ruta ya existe, generar una nueva ruta con el número incremental
+            if (rutaExiste)
+            {
+                // Llamar recursivamente a la función con la nueva ruta y el siguiente número incremental
+                return CrearRutaArchivo(ruta, archivos, numeroIncremental + 1);
+            }
+
+            // Si la ruta no existe, devolver la ruta original
+            return nuevaRuta;
+        }
+
 
         private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
