@@ -1263,7 +1263,7 @@ namespace SustitucionMOAUtils.Services
                               .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
                 PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                 RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
-                TrabajoHecho = solps.TrabajoYaHecho == true
+                TrabajoHecho = solps.TrabajoYaHecho == true,
             }, peti => peti.RegistroInfo != true && peti.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
             return peticiones;
         }
@@ -4168,7 +4168,9 @@ namespace SustitucionMOAUtils.Services
                 var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
                 var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
-                var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento || solp.TipoSolpSap == (int?)TipoSolpSap.Sap || solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
+                var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap || 
+                    solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
                 if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                 {
@@ -4199,7 +4201,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
-                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
+                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
@@ -4825,16 +4828,12 @@ namespace SustitucionMOAUtils.Services
 
             if (esProveedor)
             {
-                var esDeServicioSapMantConPliego = (peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
-                    peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica ||
-                    peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.TipoSolpSap == (int?)TipoSolpSap.Sap) &&
-                    peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO"
-                    && peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.EstadoDocumento.Codigo == "CREADO";
-                var esDeServicioWebConPliego = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO"
-                    && (peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.TipoSolpSap == (int?)TipoSolpSap.Web) &&
-                    peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.TipoSolp.Codigo != "SIN_PLIEGO";
+                var posicion = peticion.Posiciones.FirstOrDefault().SolpPosicion;
+                var esServicio = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO";
 
-                if (esDeServicioWebConPliego || esDeServicioSapMantConPliego)
+                bool casoConPliego = ValidarSolpSiTienePliego(posicion);
+
+                if (esServicio && casoConPliego)
                 {
                     var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
                         peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Id + "&token=" + peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.EmailLinkToken;
@@ -4867,6 +4866,14 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
+        }
+
+        private bool ValidarSolpSiTienePliego(SolpPosicion posicion)
+        {
+            bool tieneCondicionEspecial = posicion.Solp.TrabajoYaHecho == true || posicion.Solp.Urgencia == true || posicion.Solp.Adicional == true || posicion.Solp.CondEspProveedorAsignado == true;
+            var casoConPliego = posicion.Solp.TipoSolp?.Codigo == "CON_PLIEGO" || (posicion.Solp.TipoSolp?.Codigo == "SIN_PLIEGO" &&
+                   posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp) && !tieneCondicionEspecial);
+            return casoConPliego;
         }
 
         public Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
