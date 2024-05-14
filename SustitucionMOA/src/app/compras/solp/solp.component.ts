@@ -533,7 +533,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         if (!mostrarPreview && !guardarPorPaso) {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
-                        // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
@@ -577,11 +576,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 } else {
                                     this.displaySAP = true;
                                 }
-
-                                //TODO aca iria el metodo para el mail
-                                // this.showEmailPopup(esPrimeraFinalizacion, esPosteriorFinalizacion);
-                                // this.sendEmail(emailModel);
-
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
