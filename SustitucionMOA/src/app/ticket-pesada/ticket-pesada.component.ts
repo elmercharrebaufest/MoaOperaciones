@@ -12,7 +12,6 @@ import { SessionDataService } from '../common/services/SessionDataService';
 import { MensajeComponent } from '../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
 import { TicketPesadaService } from './ticket-pesada.service';
-import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-ticket-pesada',
@@ -98,8 +97,6 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
         this.TicketPesada.PatenteCamion = "";
     }
 
-    buscandoDatos = false;
-
     enviar() {
         if (this.hayError()) {
             this.spinnerComponent.hideIt();
@@ -108,13 +105,9 @@ export class TicketPesadaComponent extends BaseComponent implements OnInit {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
         this.unsubscribe();
-        this.buscandoDatos = true;
 
         this.subscription = this.service
             .ObtenerTicketPesada(this.TicketPesada)
-            .pipe(finalize(() =>
-                this.buscandoDatos = false
-            ))
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();

@@ -24,11 +24,11 @@ namespace SustitucionMOAUtils.Services
             {
                 PDFResponse data = new PDFConsumerMOA().request(documento, ejercicio, proveedor, sociedad);
 
-                if (data == null || data.Pdf == null)
+                if (data == null || data.pdf == null)
                 {
                     throw new InfoCustomException(InfoMsg.DocumentoNoExiste);
                 }
-                return data.Pdf;
+                return data.pdf;
             }
             catch (InfoCustomException e)
             {

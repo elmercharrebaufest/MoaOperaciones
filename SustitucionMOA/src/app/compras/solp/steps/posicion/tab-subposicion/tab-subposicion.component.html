@@ -65,7 +65,7 @@
                         </p-cellEditor>
                     </td>
                     <td [pEditableColumn]="posicion" style="word-wrap:break-word;">
-                        <p-cellEditor data-toggle="tooltip" title="40 caracteres como máximo">
+                        <p-cellEditor>
                             <ng-template pTemplate="input">
                                 <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj" 
                                 [suggestions]="autocompleteServiciosSolp" 
@@ -76,7 +76,6 @@
                                     [autoHighlight]="false" 
                                     emptyMessage="" 
                                     [minLength]="2" 
-                                    [maxlength]="40"
                                     [forceSelection]="false" 
                                     (completeMethod)="autocompleteServicioSolp($event)"
                                     (onFocus)="$event.target.select()" 

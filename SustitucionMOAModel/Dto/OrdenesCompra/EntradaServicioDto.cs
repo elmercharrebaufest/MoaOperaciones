@@ -37,6 +37,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
         public bool SePuedeBorrar { get; set; }
 
+        public string TemporalId { get; set; }
+
         public List<ItemEntradaServicioDto> Items { get; set; }
     }
 }

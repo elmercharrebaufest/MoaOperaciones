@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
-import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+
 import { ListBaseComponent } from '../../../../common/base-components/list-base-component'
 import { SessionDataService } from '../../../../common/services/SessionDataService';
 import { SecurityService } from '../../../../common/services/SecurityService';
@@ -12,6 +13,7 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { AltaNuevoProveedor } from '../../../solp-compra';
 import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
 
 declare var $: any;
@@ -26,11 +28,11 @@ export class CotizacionComponent extends ListBaseComponent {
 
     @Input('model')
     protected model: Solp;
+
     @Input('locale')
     protected locale: any;
 
-    @Output() ordenDeCompraSap: OrdenDeCompraSap;
-    @Output() onEstCompleto = new EventEmitter<any>();
+    //validaciones
     formularioCotizacion: FormGroup;
 
     camposObligatorios: any[] = [
@@ -38,17 +40,15 @@ export class CotizacionComponent extends ListBaseComponent {
     ];
 
     proveedorSeleccionado: any;
+
     proveedores: any[] = new Array();
+
     estaFinalizada: boolean;
+    @Output() ordenDeCompraSap: OrdenDeCompraSap;
+
+    @Output() onEstCompleto = new EventEmitter<any>();
     mostrar: boolean;
-    liberadoresJefes: SelectItem[] = [];
-    liberadoresGerentes: SelectItem[] = [];
-    liberadoresDirectores: SelectItem[] = [];
-    selectJefes: number[] = [];
-    selectGerentes: number[] = [];
-    selectDirectores: number[] = [];
-    hoy: Date = new Date();
-    
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
@@ -110,13 +110,7 @@ export class CotizacionComponent extends ListBaseComponent {
             adicional: new FormControl('', Validators.required),
             ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required),
             urgencia: new FormControl('', Validators.required),
-            jefes: new FormControl('', Validators.required),
-            gerentes: new FormControl('', Validators.required),
-            directores: new FormControl('', Validators.required),
-            condEspProveedorAsignado: new FormControl('', Validators.required),
-            servicioPermanente: [{ value: this.model.thServicioPermanente }, []],
-            ajustePolinomica: [{ value: this.model.thAjustePolinomica }, []],
-            proveedorDirecto: [{ value: this.model.thProveedorDirecto }, []],
+
         });
 
         this.validadorPasoSolpService.formulario = this.formularioCotizacion;
@@ -135,7 +129,6 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.ordenDeCompra) {
             this.obtenerOrdenDeCompra();
-            this.habilitarOC();
         } else {
             this.model.ordenDeCompra = "";
         }
@@ -146,11 +139,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.estaFinalizada = false
         }
 
-        this.listarLiberadorSap();
-
-        if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
-            this.onRadioButtonChange("Servicio permanente");
-        }
+        this.validacionTrabajoHecho();
     }
 
     ngOnDestroy() {
@@ -165,9 +154,9 @@ export class CotizacionComponent extends ListBaseComponent {
             if (this.model.archivosCotizacionesNuevos.length > 0) {
                 this.eliminarAdjuntoNuevo(this.model.archivosCotizacionesNuevos[this.model.archivosCotizacionesNuevos.length - 1])
             }
-            this.floatMsgService.setErrorMsg("El archivo adjunto no debe superar los 10Mb");
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");
         }
-        this.validarChecks();
+        this.validacionTrabajoHecho();
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -224,13 +213,13 @@ export class CotizacionComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
         this.model.archivosCotizacionesNuevos.splice(indice, 1)
-        this.validarChecks();
+        this.validacionTrabajoHecho();
     }
 
     eliminarAdjuntoGuardado(archivo): void {
         var indice = this.model.archivosCotizaciones.indexOf(archivo)
         this.model.archivosCotizaciones.splice(indice, 1)
-        this.validarChecks();
+        this.validacionTrabajoHecho();
     }
 
     eliminarArchivo(esAdjuntoNuevo: boolean, archivo: any) {
@@ -243,7 +232,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
             }
         });
-        this.validarChecks();
+        this.validacionTrabajoHecho();
     }
 
     searchProveedor(event) {
@@ -279,28 +268,30 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
-    validarChecks() {
-        this.model.validacionCheck = true;
+    validacionTrabajoHecho() {
+        this.model.validarTrabajoHecho = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
-
-            if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
-                this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
-                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                this.model.validacionCheck = false;
-            }
+        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true) {
 
             if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
                 this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                this.model.validacionCheck = false;
+                this.model.validarTrabajoHecho = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
+            if (this.model.trabajoHecho == true || this.model.adicional == true){
+                if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
+                    this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
+                    this.model.validarTrabajoHecho = false;
+                }
+            }
+
+            if (this.model.trabajoHecho == true && this.model.adicional != true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                    this.model.validacionCheck = false;
+                    this.model.validarTrabajoHecho = false;
                 }
             }
 
@@ -308,56 +299,26 @@ export class CotizacionComponent extends ListBaseComponent {
                 if (!this.model.ordenDeCompra || this.model.ordenDeCompra == "" || typeof this.model.ordenDeCompra === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un número de OC en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                    this.model.validacionCheck = false;
-                }
-            }
-
-            if (this.model.adicional == true) {
-                if (this.model.ordenDeCompra == null || this.model.ordenDeCompra.length < 10) {
-                    this.model.mensajeCotizacion = "Debe ingresar los 10 números de OC en el paso #4";
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                    this.model.validacionCheck = false;
-                }
-            }
-
-            if (this.model.urgencia == true && this.model.trabajoHecho != true && this.selectJefes.length == 0) {
-                this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
-                this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                this.model.validacionCheck = false;
-            }
-
-            if(this.model.trabajoHecho == true){
-                if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
-                    this.model.mensajeCotizacion = "Debe elegir una categoria de trabajo ya hacho en el paso #4";
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
-                    this.model.validacionCheck = false;
+                    this.model.validarTrabajoHecho = false;
                 }
             }
         }
-        return this.model.validacionCheck;
+
+        return this.model.validarTrabajoHecho;
     }
 
     limpiarCheck() {
-        if ((this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) && this.model.editarCondicionesEspeciales && this.model.condEspProveedorAsignado == false) {
-            this.model.proveedorAsignado = "";
-            this.model.proveedorAsignado_Id = null;
-            this.proveedorSeleccionado = null;
-            this.model.thAjustePolinomica = false;
-            this.model.thProveedorDirecto = false;
-            this.model.thServicioPermanente = true;
-        }
-    }
-
-    limpiarCheckProveedorAsignado() {
-        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) && this.model.editarCondicionesEspeciales && this.model.trabajoHecho == false) {
-            this.model.proveedorAsignado = "";
-            this.model.proveedorAsignado_Id = null;
-            this.proveedorSeleccionado = null;
+        if (this.model.trabajoHecho == undefined || this.model.trabajoHecho == false) {
+            if (!this.estaFinalizada) {
+                this.model.proveedorAsignado = "";
+                this.model.proveedorAsignado_Id = null;
+                this.proveedorSeleccionado = null;
+            }
         }
     }
 
     limpiarCheckAdicional() {
-        if (this.model.ordenDeCompra != "" && this.model.editarCondicionesEspeciales) {
+        if (!this.estaFinalizada && this.model.ordenDeCompra != "") {
             this.model.ordenDeCompra = "";
             this.ordenDeCompraSap.Cabecera.RazonSocialProveedor = "";
             this.ordenDeCompraSap.Cabecera.CodigoProveedor = "";
@@ -384,21 +345,13 @@ export class CotizacionComponent extends ListBaseComponent {
                                 this.model.ordenDeCompra = "";
                             } else {
                                 this.ordenDeCompraSap = result.data;
-
-                                if (this.ordenDeCompraSap.Error != null) {
+                                this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
+                                this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
+                                this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
+                                this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
+                                if (this.ordenDeCompraSap.Error) {
                                     this.floatMsgService.setErrorMsg(this.ordenDeCompraSap.Error.Mensaje);
                                     this.limpiarCheckAdicional();
-                                } else {
-                                    this.model.proveedorAsignado_Id = this.ordenDeCompraSap.Cabecera.Usuario_Id;
-                                    this.model.ordenDeCompra = this.ordenDeCompraSap.Cabecera.OrdenDeCompra;
-                                    this.model.proveedorAsignado = this.ordenDeCompraSap.Cabecera.RazonSocialProveedor;
-                                    this.model.monedaOC = this.ordenDeCompraSap.Cabecera.Moneda;
-                                    this.model.usuarioComprasId = this.ordenDeCompraSap.Cabecera.UsuarioCompras_Id;
-
-                                    this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
-                                        ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
-                                        : this.model.usuarioComprasList[0];
-
                                 }
                             }
                         }
@@ -415,97 +368,31 @@ export class CotizacionComponent extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    listarLiberadorSap() {
-        if (this.model.urgencia == true) {
-            try {
-                this.subscription = this.service.listarLiberadorSap().subscribe(
-                    (result: any) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-                            const listaResult = result.data;
-                            //tildo en los select los que son obligatorios:
-                            this.selectJefes = listaResult.filter(g => g.Cargo === 'Jefe' && g.Obligatorio).map(j => j.Id);
-                            this.selectGerentes = listaResult.filter(g => g.Cargo === 'Gerente' && g.Obligatorio).map(g => g.Id);
-                            this.selectDirectores = listaResult.filter(g => g.Cargo === 'Director' && g.Obligatorio).map(d => d.Id);
-                            //los agrego a la solp:
-                            const todosSelect = [...this.selectJefes, ...this.selectGerentes, ...this.selectDirectores];
-                            const nuevos = todosSelect.filter(Id => !this.model.liberadoresSap.some(lib => lib.LiberadorSap_Id === Id)).map(Id => ({ LiberadorSap_Id: Id }));
-                            this.model.liberadoresSap = this.model.liberadoresSap.concat(nuevos);
-                            //cargo los select con todos los liberadores segun su cargo:
-                            this.liberadoresJefes = listaResult.filter(j => j.Cargo === 'Jefe').map(j => ({ label: j.NombreCompleto, value: j.Id, disabled: j.Obligatorio }));
-                            this.liberadoresGerentes = listaResult.filter(g => g.Cargo === 'Gerente').map(g => ({ label: g.NombreCompleto, value: g.Id, disabled: g.Obligatorio }));
-                            this.liberadoresDirectores = listaResult.filter(d => d.Cargo === 'Director').map(d => ({ label: d.NombreCompleto, value: d.Id, disabled: d.Obligatorio }));
-                            //tildo en los select los que ya trae la solp en su atributo liberadoresSap
-                            var liberadoresIds = this.liberadoresJefes.map(x => x.value);
-                            this.selectJefes = this.selectJefes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
-                                .filter(id => !this.selectJefes.includes(id) && liberadoresIds.includes(id)));
-                            liberadoresIds = this.liberadoresGerentes.map(x => x.value);
-                            this.selectGerentes = this.selectGerentes.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
-                                .filter(id => !this.selectGerentes.includes(id) && liberadoresIds.includes(id)));
-                            liberadoresIds = this.liberadoresDirectores.map(x => x.value);
-                            this.selectDirectores = this.selectDirectores.concat(this.model.liberadoresSap.map(lib => lib.LiberadorSap_Id)
-                                .filter(id => !this.selectDirectores.includes(id) && liberadoresIds.includes(id)));
-
-                            this.validarChecks();
-                        }
-                    },
-                    error => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                    });
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                return false;
-            }
-            return false;
+    validarFinalizada() {
+        if (this.estaFinalizada) {
+            return true;
         }
+        return false;
+    }
+    
+
+    validarCondiciones(campoCheck) { //se usaba para asignar el valor a disabled en los checkboxes cuando eran excluyentes
+        if (this.estaFinalizada == true) {
+            return true;
+        }
+        if (this.model.deshabilitarAdicional == true) {
+            return true;
+        }
+        if (this.model.adicional == true && campoCheck == 'trabajoHecho') {
+            return true;
+        }
+        if (this.model.trabajoHecho == true && campoCheck == 'adicional') {
+            return true;
+        }
+        if (this.model.trabajoHecho == true && campoCheck == 'urgencia') {
+            return true;
+        }
+        return false
     }
 
-    onLiberadoresChange(event) {
-        const existingIndex = this.model.liberadoresSap.findIndex(lib => lib.LiberadorSap_Id === event.itemValue);
-        if (existingIndex !== -1) {
-            this.model.liberadoresSap.splice(existingIndex, 1);
-        } else {
-            this.model.liberadoresSap.push({ LiberadorSap_Id: event.itemValue });
-        }
-        this.validarChecks();
-    }
-
-    resetearFecha(): void {
-        if(this.model.trabajoHecho != true || this.model.urgencia != true){
-            if (this.model.fechaEntrega < this.hoy) {          
-              this.model.fechaEntrega = this.hoy;
-            }
-        }
-    }
-
-    onRadioButtonChange(value) {
-        this.model.thServicioPermanente = false;
-        this.model.thAjustePolinomica = false;
-        this.model.thProveedorDirecto = false;
-
-        if(value == "Servicio permanente"){
-            this.model.thServicioPermanente = true;
-        }
-
-        if(value == "Ajuste polinomica"){
-            this.model.thAjustePolinomica = true;
-        }
-
-        if(value == "Proveedor directo"){
-            this.model.thProveedorDirecto = true;
-        }
-    }
-
-    habilitarOC() {
-        if (this.model.editarCondicionesEspeciales == true) {
-            this.formularioCotizacion.controls['ordenDeCompra'].enable();        
-        } else {
-            this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
-    }
-
-};
+}

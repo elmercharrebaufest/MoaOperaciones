@@ -1,0 +1,141 @@
+<div style="z-index: 10;" class="ui-widget-overlay ui-dialog-mask"></div>
+
+<p-dialog id="alta-certificaciones"
+          header="Alta ES - Certificación de servicio"
+          [(visible)]="showModal"
+          [responsive]="true"
+          [style]="{ 'width': '450px', 'height': '400px' }"
+          [maximizable]="true"
+          draggable="true"
+          (onHide)="this.closeModal.emit();">
+
+    <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index">
+        <p-header>
+            <span id="title" class="ui-panel-title">Posicion {{ position.NroPosicion }}</span>
+            <input id="description" pInputText type="text" [(ngModel)]="position.Descripcion" maxlength="40">
+        </p-header>
+
+        <p-table id="items-list"
+                 [value]="position.Items"
+                 dataKey="NumeroLinea"
+                 [paginator]="position.Items.length > 5"
+                 [rows]="5">
+            <!-- TABLE HEADERS-->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th rowspan="2">Txt. Breve</th>
+                    <th rowspan="2">Cant.</th>
+                    <th rowspan="2">UM</th>
+                    <th rowspan="2">Precio Unitario</th>
+                    <th rowspan="2">Monto Total</th>
+                    <th colspan="3" class="anteriores">Anterior</th>
+                    <th colspan="3" class="acertificar">A Certificar</th>
+                    <th colspan="3" class="acumulado">Acumulado</th>
+                </tr>
+                <tr>
+                    <th class="anteriores">Cant.</th>
+                    <th class="anteriores">%</th>
+                    <th class="anteriores">Monto</th>
+
+                    <th class="acertificar">Cant.</th>
+                    <th class="acertificar">%</th>
+                    <th class="acertificar">Monto</th>
+
+                    <th class="acumulado">Cant.</th>
+                    <th class="acumulado">%</th>
+                    <th class="acumulado">Monto</th>
+                </tr>
+            </ng-template>
+            <!-- TABLE HEADERS END-->
+            <!-- TABLE BODY -->
+            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
+                <tr>
+                    <td>{{ rowData.Descripcion | defaultData }}</td>
+                    <td>{{ rowData.Cantidad | defaultData }}</td>
+                    <td>{{ rowData.UM | defaultData }}</td>
+                    <td>{{ rowData.Importe | number:'1.0-2':'es' | defaultData }}</td>
+                    <td class="text-right">{{ rowData.Cantidad * rowData.Importe | number:'1.0-2':'es' }}</td>
+
+                    <!-- Anteriores -->
+                    <!-- * 1  is just to turn it into a number -->
+                    <td>{{ rowData.CantidadReal * 1 | number:'1.0-3':'es' }}</td>
+                    <td>{{ rowData.Porcentaje | number:'1.0-3':'es' }}%</td>
+                    <td class="text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
+
+                    <!-- A certificar -->
+                    <td>{{ rowData.CantidadACertificar | number:'1.0-3':'es' }}</td>
+                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-3':'es' }}%</td>
+                    <td class="text-right">{{ rowData.CantidadACertificar * rowData.Importe  | number:'1.0-2':'es' }}</td>
+
+                    <!-- Acumulado -->
+                    <td>{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3':'es'}}</td>
+                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-3':'es' }}%</td>
+                    <td class="text-right">{{ calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2':'es' }}</td>
+                </tr>
+            </ng-template>
+            <!-- TABLE BODY END -->
+
+            <ng-template pTemplate="footer">
+                <tr class="footer">
+                    <td colspan="8"></td>
+                    <td colspan="2" class="text-right">MONTO TOTAL</td>
+                    <td class="text-right">{{ position.MontoTotalACertificar | number:'1.0-2':'es' }}</td>
+                </tr>
+            </ng-template>
+
+            
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="emptyData" colspan="12">No hay items para mostrar</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <br>
+    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() | number:'1.0-2':'es' }}</strong></div>
+
+    <section class="alta-form">
+        <div class="row fields">
+            <div class="col-md-3">
+                <p>Fecha Documento</p>
+                <p-calendar [(ngModel)]="fechaDocumento"
+                            class="smallCal"
+                            id="fechaDocumento"
+                            dateFormat="yy-mm-dd"
+                            [locale]="es"
+                            [readonlyInput]="true"
+                            [monthNavigator]="true"
+                            [yearNavigator]="true"
+                            [minDate]="fechaDocMin"
+                            [maxDate]="fechaDocMax"
+                            yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
+                            autoZIndex="true"
+                            [showIcon]="true">
+                </p-calendar>
+            </div>
+
+            <div class="col-md-3">
+                <p>Referencia Remito</p>
+                <input type="text"
+                       id="ref"
+                       (keyup)="validarReferenciaRemito($event)"
+                       pattern="[0-9]{4}R[0-9]{8}"
+                       maxlength="13"
+                       [(ngModel)]="referencia">
+                <div class="hint">Formato 4 dígitos + R + 8 dígitos.</div>
+            </div>
+
+            <!--Provisional - hasta implementación MVP2-->
+            <!--<div class="col-md-3">
+              <p for="texto-breve" class="form-label">Aprobador</p>
+              <p-dropdown [options]="['Aprobador 1','Aprobador 2']" [(ngModel)]="aprobador" optionLabel="name" [showClear]="true" placeholder="Seleccionar aprobador..."></p-dropdown>
+            </div>-->
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()">Certificar</button>
+        </div>
+    </section>
+
+</p-dialog>

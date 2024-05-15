@@ -424,7 +424,6 @@
                     <div id="collapseO" class="collapse" aria-labelledby="operar" role="tabpanel">
                         <div class="panel-body">
                             <ng-container *ngIf="isGranosSelected()">
-
                                 <div *ngIf="isAuthorized('ABM APLICACIONES CCPP')">
                                     <a (click)="goToSeccion('/aplicaciones-ccpp')" href="#">
                                         {{
@@ -433,10 +432,6 @@
                                         }}
                                     </a>
                                 </div>
-                                <div *ngIf="isAuthorized('ARCHIVOS BOLETOS')">
-                                    <a (click)="goToSeccion('/archivos-boleto/listar')" href="#">Boletos</a>
-                                </div>
-
                                 <div *ngIf="isAuthorized('ABM CAMPOS SUSTENTABLE')">
                                     <a (click)="goToSeccion('/sustentable/listado-campos')" href="#">
                                         Campo
@@ -473,9 +468,6 @@
                                         Ordenes de carga
                                         fason
                                     </a>
-                                </div>
-                                <div *ngIf="isAuthorized('VER ORDENES DE CARGA RESIDUOS')">
-                                    <a (click)="goToSeccion('/ordenes-residuos/')" href="#">Residuos e Insumos</a>
                                 </div>
                                 <div>
                                     <a (click)="goToSeccion('/reporte-contrato/')" href="#">Reporte de contratos</a>
@@ -666,24 +658,20 @@
                                     DASHBOARD PROVEEDOR
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
-                                <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
-                                    REPORTE ORDEN DE COMPRA
-                                </a>
-                                </div>
-                                    <div>
-                                        <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
-                                            CERTIFICACIÓN DE SERVICIOS
-                                        </a>
-                                    </div>
 
-                                    <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
-                                        <a (click)="goToSeccion('/compras/crear-po-multiple')" href="#">
-                                            PUBLICAR PO MULTIPLE
-                                        </a>
-                                    </div>
-                                </div>
+                            <div>
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS
+                                </a>
                             </div>
+
+                            <div>
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServiciosProveedores')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS PROVEEDOR
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 

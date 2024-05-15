@@ -1,5 +1,4 @@
 import { Archivo } from "../common/models/archivo"
-import { AdjudicacionDto } from "./adjudicacion"
 import { LegajoDto } from "./legajoDto"
 import { PeticionDeOfertaDto } from "./peticion-de-oferta-model"
 
@@ -20,15 +19,7 @@ export interface CotizacionDto {
     TieneObservacionTecnica: boolean, 
     CotizacionPosiciones: CotizacionPosicionDto[],
     TieneAdjuntos: boolean    
-    CotizacionesHoras: CotizacionHoraDto[],
-    Adjudicaciones: AdjudicacionDto[]
-}
-
-export interface ArchivoDto {
-    Id: number,
-    FileKey: string,
-    Nombre: string,
-    Ruta: string   
+    CotizacionesHoras: CotizacionHoraDto[]
 }
 
 export interface CotizacionPosicionDto {

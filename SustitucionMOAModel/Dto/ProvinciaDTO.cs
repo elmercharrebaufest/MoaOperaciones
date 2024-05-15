@@ -3,25 +3,29 @@
 
 namespace SustitucionMOAModel.Dto
 {
-    public class ProvinciaDto
+    public class ProvinciaDTO
     {
+
         public int ProvinciaId { get; set; }
 
         public string Nombre { get; set; }
 
         public int Orden { get; set; }
 
-        public ProvinciaDto() { }
 
-        public ProvinciaDto(Provincia entity)
+        public ProvinciaDTO() { }
+
+        public ProvinciaDTO(Provincia entity)
         {
             if (entity != null)
             {
-                ProvinciaId = entity.ProvinciaId;
-                Nombre = entity.Nombre;
-                Orden = entity.Orden;
+                this.ProvinciaId = entity.ProvinciaId;
+                this.Nombre = entity.Nombre;
+                this.Orden = entity.Orden;
             }
         }
+
+
     }
 
 }

@@ -116,7 +116,6 @@
                 case EstadoOrdenDeCarga.PendienteCompensacion:
                     return "En proceso";
                 case EstadoOrdenDeCarga.Vencida:
-                    return "Vencida";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
                 case EstadoOrdenDeCarga.AnulacionSolicitada:

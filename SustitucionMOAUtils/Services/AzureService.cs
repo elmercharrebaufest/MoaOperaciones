@@ -21,6 +21,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorio repositorio;
         protected readonly IComputerVisionClient visionClient;
         protected readonly CloudBlobClient blobClient;
+        private const string NOMBRE_CONTENEDOR = "liquidaciones";
 
         public AzureService(IRepositorio repositorio)
         {
@@ -54,10 +55,10 @@ namespace SustitucionMOAUtils.Services
             return results.AnalyzeResult.ReadResults.SelectMany(rr => rr.Lines.Select(rrl => rrl.Text)).ToList();
         }
 
-        public async Task SubirArchivoABlobStorageAsync(HttpPostedFileBase archivo, string blobReference, string nombreContenedor)
+        public async Task SubirArchivoABlobStorageAsync(HttpPostedFileBase archivo, string coe)
         {
-            var contenedor = blobClient.GetContainerReference(nombreContenedor);
-            var referenciaArchivo = contenedor.GetBlockBlobReference(blobReference);
+            var contenedor = blobClient.GetContainerReference(NOMBRE_CONTENEDOR);
+            var referenciaArchivo = contenedor.GetBlockBlobReference($"{coe}{Path.GetExtension(archivo.FileName).ToLower()}");
 
             referenciaArchivo.Properties.ContentType = archivo.ContentType;
 

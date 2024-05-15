@@ -28,7 +28,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
     detalles: DetalleReporteContrato[] = null;
     KilosFacturados = 0;
     KilosEntregados = 0;
-    localSubscriptions = new Subscription();
+    subscriptions = new Subscription();
 
     constructor(private route: ActivatedRoute,
         protected service: ReporteContratoService,
@@ -40,7 +40,7 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         protected modalService: ModalService,
         private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-        this.localSubscriptions.add(
+        this.subscriptions.add(
             this.service.getContratoSeleccionado().subscribe(data => {
                 if (data != null && data > '0') {
                     this.getDetalleContrato(data);
@@ -160,6 +160,6 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
         })
     }
     public extraOnDestroy(): void {
-        this.localSubscriptions.unsubscribe()
+        this.subscriptions.unsubscribe()
     }
 }

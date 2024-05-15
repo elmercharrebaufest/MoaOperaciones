@@ -61,6 +61,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     titulos: Array<string> = ["Externo", "Interno", "Contacto"]
 
     usuarioSap: any;
+    suplente: any;
     usuarioModificacionSel: string = '';
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -105,11 +106,6 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         const id:number = usuario.Id;
         this.usuarioModificacionSel = usuario.Mail;
         this.service.setUsuarioModificarDatos(id);
-    }
-    abrirModalVerVendedores(usuario){
-        this.usuarioModificacionSel = usuario.Mail;
-        const id:number = usuario.Id;
-        this.service.setUsuarioVerVendedores(id);
     }
     cerrarModalModificarDatos(event){
         if(event){
@@ -279,19 +275,15 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     abrirModalEditarRoles(usuario: any) {
         this.usuarioSeleccionado = usuario;
         this.usuarioSap = usuario.UsuarioSap;
+        this.suplente = usuario.Suplente;
         this.rolesUsuarioSeleccionado = new Array<Rol>();
-
         this.rolOptions = [];
         this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
-
-        console.log(this.rolesUsuarioSeleccionado)
 
         for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
-
         usuario.Roles = this.obtenerRolesUsuario();
-
 /*
         usuario.Roles.forEach(element => {
             let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
@@ -338,6 +330,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     guardarRolesUsuario() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
+        this.usuarioSeleccionado.Suplente = this.suplente.trim();
         const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
         try {
             this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, this.usuarioSap).subscribe(

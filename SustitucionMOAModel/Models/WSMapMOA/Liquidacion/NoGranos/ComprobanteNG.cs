@@ -20,13 +20,13 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos
 
     public class ComprobanteView : ComprobanteNGLista
     {
-      
+        public string FechaDocumento { get; set; } //BLDAT: corresponde a la fecha de documento del documento // Fecha comprobante
         public DateTime FechaComprobanteDate { get; set; }
-      
-      
-     
-        
-     
+        public string DescripcionTipoDocumento { get; set; } //LTEXT: corresponde a la descripción del tipo de documento
+        public string NumeroLegalDocumento { get; set; } //XBLNR: corresponde al número legal del documento
+        public string TotalMasMoneda { get; set; }
+        public string OrdenDeCompra { get; set; } //EBELN: corresponde a la orden de compra
+        public string CodigoEstadoDocumentoDescripcion { get; set; }
         public decimal ImporteMercaderiaDocumento { get; set; } //NET_AMOUNT: corresponde al importe de la mercadería del documento
         public decimal ImporteImpuestosDocumento { get; set; } //VAT_AMOUNT: corresponde al importe de los impuestos del documento
         public decimal TotalDocumento { get; set; } //GROSS_AMOUNT: corresponde al total del documento

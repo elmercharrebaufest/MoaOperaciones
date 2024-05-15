@@ -5,21 +5,16 @@
     <section class="container-fluid clearfix" *ngIf="data != undefined">
         <!--Title-->
         <div class="row titleSection titleSectionTable">
-            <div style="vertical-align:bottom;"
-                [class]="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad ?
-                    'col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate' :
-                    'col-xs-12 col-sm-12 fixtwobuttons titleSectionTablePart animate'">
-                <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n{{ data.LiquidacionParcialEmitida ? ' Final' : ''}}: <span>Nº {{data.fijacion}}</span></strong> </div>
+            <div class="col-xs-12 col-sm-10 fixtwobuttons titleSectionTablePart animate" style="vertical-align:bottom;">
+                <div style="line-height:0.8; display: inline-block;"> <strong>Proforma de Liquidaci&oacute;n Final: <span>Nº {{data.fijacion}}</span></strong> </div>
             </div>
             <div class="col-xs-12 col-sm-2 titleIconsPart">
                 <spinner-small #smallSpinner></spinner-small>
-                <a (click)="descargarProforma()" href="#" style="text-decoration:none!important"
-                    *ngIf="!this.spinnerSmallComponent.visible && data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
-                        <div class="btnSection animate">Descargar <span class="fa fa-download" aria-hidden="true"></span></div>
+                <a (click)="descargarProforma()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Descargar <span class="fa fa-download" aria-hidden="true"></span></div>
                 </a>
-                <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                    *ngIf="!this.spinnerSmallComponent.visible && data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
-                        <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
+                <a (click)="exportExcel()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerSmallComponent.visible">
+                    <div class="btnSection animate">Exportar <img src="Content/images/buttons/EXPORT.svg"/></div>
                 </a>
                 <!--<a href="#" style="text-decoration:none!important">
                     <div class="btnSection animate print">Imprimir <span class="fa  fa-print"></span></div>
@@ -44,28 +39,37 @@
                             <p class="grey">Precio Neto</p>
                             <p class="grey">{{data.cabecera.precioNetoString}}</p>
                         </div>
-                        <div class="col-xs-12 col-sm-2">
+                        <div class="col-xs-12 col-sm-3">
                             <p class="grey">Kilos Compra</p>
                             <p class="grey">{{data.cabecera.compradosString}}</p>
                         </div>
-                        <div class="col-xs-12 col-sm-2">
+                        <div class="col-xs-12 col-sm-3">
                             <p class="grey">Kilos Recibidos</p>
                             <p class="grey">{{data.cabecera.recibidosString}}</p>
-                        </div>
-                        <div class="col-xs-12 col-sm-2" *ngIf="!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad">
-                            <p class="grey">Pago parcial</p>
-                            <p class="grey">{{data.cabecera.PorcentajePagoParcial}}%</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="alert alert-warning" role="alert" *ngIf="!data.LiquidacionParcialEmitida && data.cabecera.tarifaFlete != 0">
-            Tarifa por flete a descontar: Generar consulta vía web si considera liquidar menos kilos de la cantidad entregada
-        </div>
         <!--factura-->
-        <div id="Pago" class="Pago">
-            <div class="PagoFactura" *ngIf="data.LiquidacionParcialEmitida && !data.FaltanDatosDeCalidad">
+        <div *ngIf="!faltanDatosCalidad" id="Pago" class="Pago">
+            <div class="PagoColumn">
+                <table class="CalidadCCPP" width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td width="100%">
+                            <div>
+                                <p class="grey"><strong>Contrato Molinos</strong></p>
+                                <p> <a class="animate grey" (click)="goToSeccionParam('/contrato/detalle', data.salidas[0].contrato)" href="#">{{data.salidas[0].contrato}}</a></p>
+                            </div>
+                            <div>
+                                <p class="grey">Tipo pago</p>
+                                <p class="grey"><strong>Liq.</strong></p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="PagoFactura">
                 <table class="PagoTable rounded shadow animate" border="0" cellspacing="0" cellpadding="0" style="width: 100%;">
                     <tr class="CalidadCCPPDataCategoria">
                         <th width="40%">&nbsp;</th>
@@ -103,55 +107,7 @@
                 </table>
             </div>
         </div>
-        <div *ngIf="(!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad) && data.cabecera.moneda != 'ARP'">
-            <p class="grey" style="font-size: 22px;"><strong>Pesificaciones</strong></p>
-            <div class="row myRow" *ngIf="data.Pesificaciones && data.Pesificaciones.length > 0">
-                <div class="clearfix myTables">
-                    <table id="tablePesif" *ngIf="data.Pesificaciones"
-                        class="display nowrap dataTable no-footer dtr-inline rounded shadow animate contrato-anulaciones-table"
-                        cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
-                        <thead>
-                            <tr role="row">
-                                <th tabindex="0" rowspan="1" colspan="1">
-                                    Kilos
-                                </th>
-                                <th tabindex="0" rowspan="1" colspan="1">
-                                    Precio
-                                </th>
-                                <th tabindex="0" rowspan="1" colspan="1">
-                                    Fecha de pesificación
-                                </th>
-                                <th tabindex="0" rowspan="1" colspan="1">
-                                    Tipo cambiario
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let pesificacion of data.Pesificaciones 
-                                | paginate: { itemsPerPage:10, currentPage: p } ; let odd = odd"
-                                role="row" [class.odd]="!odd">
-                                <td>
-                                    {{pesificacion.KilosString}}
-                                </td>
-                                <td>
-                                    {{pesificacion.PrecioString}}
-                                </td>
-                                <td>
-                                    {{pesificacion.FechaPesificacion}}
-                                </td>
-                                <td>
-                                    {{pesificacion.TipoCambio}}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div class="alert alert-warning" role="alert" *ngIf="!data.Pesificaciones || data.Pesificaciones.length == 0">
-                No existen pesificaciones
-            </div>
-        </div>
-        <div *ngIf="data.FaltanDatosDeCalidad" class="formulario-input;">
+        <div *ngIf="faltanDatosCalidad" class="formulario-input;">
             <div class="alert alert-warning">
                 <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>
                 Proforma no disponible. Faltan resultados de calidad.

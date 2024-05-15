@@ -53,9 +53,8 @@ namespace SustitucionMOAModel.Entities
         public string ProveedorFijo { get; set; }
         public string OrganizacionCompras { get; set; }
         public string NumeroPedido { get; set; }
-        public int? ProveedorAdjudicado_Id { get; set; }
-        public string RegistroInfoNro { get; set; }
-        public string OrganizacionDeComprasCodigo { get; set; }
+
+
 
 
         public int? CantidadSubposicionesEnSAP { get; set; }
@@ -91,16 +90,12 @@ namespace SustitucionMOAModel.Entities
         public virtual TablaSap TipoImputacionSap { get; set; }
         [ForeignKey("ProvinciaId")]
         public virtual Provincia Provincia { get; set; }
-        [ForeignKey("ProveedorAdjudicado_Id")]
-        public virtual Usuario ProveedorAdjudicado { get; set; }
+
         public virtual ICollection<SolpSubposicion> Subposiciones { get; set; }
         public virtual ICollection<SolpProveedor> Proveedores { get; set; }
 
         [InverseProperty("SolpPosicion")]
         public virtual ICollection<PeticionDeOfertaSolpPosicion> Peticiones { get; set; }
-
-        [InverseProperty("Posicion")]
-        public virtual ICollection<AdjudicacionPosicion> AdjudicacionPosiciones { get; set; }
 
     }
 }

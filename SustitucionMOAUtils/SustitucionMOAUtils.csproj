@@ -55,24 +55,6 @@
     <Reference Include="FluentValidation, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7de548da2fbae0f0, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentValidation.8.6.3\lib\net45\FluentValidation.dll</HintPath>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.42.0\lib\net45\Google.Apis.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.42.0\lib\net45\Google.Apis.Auth.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.42.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.42.0\lib\net45\Google.Apis.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.Drive.v3, Version=1.42.0.1778, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Drive.v3.1.42.0.1778\lib\net45\Google.Apis.Drive.v3.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.42.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.42.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
-    </Reference>
     <Reference Include="Handlebars, Version=2.1.2.0, Culture=neutral, PublicKeyToken=22225d0bf33cd661, processorArchitecture=MSIL">
       <HintPath>..\packages\Handlebars.Net.2.1.2\lib\net452\Handlebars.dll</HintPath>
     </Reference>
@@ -161,12 +143,8 @@
   <ItemGroup>
     <Compile Include="Credentials\CamCredential.cs" />
     <Compile Include="Credentials\DBCredential.cs" />
-    <Compile Include="DesignPattern\Classes\ConsultaActualizacionStrategy.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaContext.cs" />
-    <Compile Include="DesignPattern\Classes\ConsultaFinalStrategy.cs" />
-    <Compile Include="DesignPattern\Classes\ConsultaGeneralStrategy.cs" />
     <Compile Include="DesignPattern\Classes\ConsultaOrdenesStrategy.cs" />
-    <Compile Include="DesignPattern\Classes\ConsultaParcialStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaContext.cs" />
     <Compile Include="Email\DBMethods\DBService.cs" />
@@ -177,7 +155,6 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
-    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\ConsultaCommon.cs" />
     <Compile Include="Helpers\CSV\AplicacionCCPPRecord.cs" />
     <Compile Include="Helpers\CustomImageTagProcessor.cs" />
@@ -185,13 +162,11 @@
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IConsultaCommon.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
-    <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
+    <Compile Include="Interfaces\IEmailCertificationService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
-    <Compile Include="Interfaces\IEmailResiduosService.cs" />
-    <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
-    <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IEntradaServicioService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
@@ -210,7 +185,7 @@
     <Compile Include="Interfaces\IConsultaService.cs" />
     <Compile Include="Interfaces\IAzureService.cs" />
     <Compile Include="Interfaces\ICampoSustentableService.cs" />
-    <Compile Include="Interfaces\IDataAgroApiService.cs" />
+    <Compile Include="Interfaces\ICrearContratoService.cs" />
     <Compile Include="Interfaces\ICuentaCorrienteService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteService.cs" />
     <Compile Include="Interfaces\IEmailFasService.cs" />
@@ -251,14 +226,12 @@
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ComunicacionService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
-    <Compile Include="Services\ArchivoBoletoService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
-    <Compile Include="Services\Email\EmailResiduosService.cs" />
-    <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Services\KgDisponiblesFasService.cs" />
     <Compile Include="Services\OrdenDeCargaServiceBase.cs" />
     <Compile Include="Services\OrdenDeCargaEstadoService.cs" />
@@ -267,7 +240,7 @@
     <Compile Include="Services\ConsultaService.cs" />
     <Compile Include="Services\AzureService.cs" />
     <Compile Include="Services\CampoSustentableService.cs" />
-    <Compile Include="Services\DataAgroApiService.cs" />
+    <Compile Include="Services\CrearContratoService.cs" />
     <Compile Include="Services\EcheqService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\Email\EmailFasService.cs" />
@@ -295,7 +268,6 @@
     <Compile Include="Services\OrdenDeCargaApiService.cs" />
     <Compile Include="Services\OrdenDeCargaFasonService.cs" />
     <Compile Include="Services\OrdenDeCargaService.cs" />
-    <Compile Include="Services\OrdenResiduosService.cs" />
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
@@ -335,7 +307,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
@@ -347,21 +319,12 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="nlog.pre.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="nlog.compras.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="nlog.huenei.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="nlog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

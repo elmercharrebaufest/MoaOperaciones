@@ -5,7 +5,6 @@ import { map, timeoutWith } from "rxjs/operators";
 import { CartaPresentacion } from "../../common/models/cartaPresentacion";
 import { InformeComercial } from "../../common/models/informeComercial";
 import { BaseService } from "./../../common/services/BaseService";
-import { ApiResponse } from "../../common/models/response";
 
 @Injectable()
 export class EmpresaGranosService extends BaseService {
@@ -49,8 +48,8 @@ export class EmpresaGranosService extends BaseService {
 
     generarInformeComercial(
         informeComercial: InformeComercial,
-        mailUsuario: string,
         proveedorId?: number
+
     ): Observable<any> {
         let payload = new FormData();
         payload.append(
@@ -59,7 +58,6 @@ export class EmpresaGranosService extends BaseService {
         );
 
         payload.append("proveedorId", proveedorId.toString());
-        payload.append("mailUsuario", mailUsuario);
 
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarInformeComercial", payload)
@@ -77,8 +75,7 @@ export class EmpresaGranosService extends BaseService {
 
     generarCartaPresentacion(
         cartaPresentacion: CartaPresentacion,
-        mailUsuario: string,
-        proveedorId?: number,
+        proveedorId?: number
     ): Observable<any> {
         let payload = new FormData();
         payload.append(
@@ -86,7 +83,6 @@ export class EmpresaGranosService extends BaseService {
             JSON.stringify(cartaPresentacion)
         );
         payload.append("proveedorId", proveedorId.toString());
-        payload.append("mailUsuario", mailUsuario);
 
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarCartaPresentacion", payload)
@@ -254,7 +250,7 @@ export class EmpresaGranosService extends BaseService {
 
         if (proveedorId)
             params = params.append("proveedorId", proveedorId.toString());
-        else
+        else    
             params = params.append("proveedorId", "0");
 
         return this.http
@@ -264,10 +260,10 @@ export class EmpresaGranosService extends BaseService {
             });
     }
 
-    descargarFormularioNG(empresaId: number): Observable<any> {
-        let payload = new FormData();
+    descargarFormularioNG(empresaId: number) : Observable < any > {
+            let payload = new FormData();           
 
-        payload.append("empresaId", empresaId.toString());
+    payload.append("empresaId", empresaId.toString());
 
         return this.http
             .post("/api/AltaEmpresaNoGranos/DescargarFormularioNG", payload)
@@ -282,7 +278,7 @@ export class EmpresaGranosService extends BaseService {
                 )
             );
     }
-
+    
     public getRubros(): Observable<any> {
         return this.http
             .get('/api/usuario/getRubros', { headers: this.headers });
@@ -293,8 +289,8 @@ export class EmpresaGranosService extends BaseService {
             .get('/api/dataagro/GetTipoCambiario', { headers: this.headers });
     }
 
-    public editarProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any,
-        realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any, servicioPrestado: any,
+    public editarProveedorNoGranos(razonSocial: any, cuit: any, email: any, telefono: any, 
+        realizarAnalisisNOSIS: any, IdRubro: any, condicionDePago: any, servicioPrestado: any, 
         organizacionDeCompra: any, razonDeEleccion: any, facturacionAnual: any, idProveedor: any,
         requiereVerificacionCompras: any, ingresoAPlanta: any, altaInterna: any, siperObligatorio: any) {
 
@@ -316,27 +312,28 @@ export class EmpresaGranosService extends BaseService {
         params = params.append('altaInterna', altaInterna);
         params = params.append('siperObligatorio', siperObligatorio);
 
-        return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { params: params, headers: this.headers });
+        return this.http.get('/api/AltaEmpresaNoGranos/EditarProveedorNoGranos', { params: params, headers: this.headers });  
     }
 
-    public registrarDocumentacionFisica(proveedorId: number, contieneDocumentacionFisica: boolean) {
+    public registrarDocumentacionFisica(proveedorId: number , contieneDocumentacionFisica : boolean)
+    {
         let params = {
-            proveedorId: proveedorId.toString(),
-            contieneDocumentacionFisica: contieneDocumentacionFisica ? 'true' : 'false'
+            proveedorId : proveedorId.toString() ,
+            contieneDocumentacionFisica : contieneDocumentacionFisica ? 'true' : 'false'
         }
 
-        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { params: params, headers: this.headers });
+        return this.http.get('/api/AltaEmpresaNoGranos/RegistrarDocumentacionFisica', { params: params, headers: this.headers }); 
     }
 
-    SolicitudAltaInterna(proveedorId: number, datos: any): Observable<any> {
+    SolicitudAltaInterna( proveedorId: number, datos: any): Observable<any> {
         let datosJson = JSON.stringify(datos);
         var payload = new FormData();
-
+        
         payload.append('datosJson', datosJson);
         payload.append('proveedorId', proveedorId.toString());
 
         return this.http
-            .post("/api/AltaEmpresaGranos/SolicitudAltaInterna", payload, { headers: this.headers })
+            .post("/api/AltaEmpresaGranos/SolicitudAltaInterna",  payload, { headers: this.headers })
             .pipe(
                 timeoutWith(
                     30000,
@@ -347,15 +344,5 @@ export class EmpresaGranosService extends BaseService {
                     )
                 )
             );
-    }
-
-    modificarEstadoProveedor(proveedorId: number, nuevoEstado: string): Observable<ApiResponse<{ nuevoEstado: number }>> {
-        let params = {
-            proveedorId: proveedorId.toString(),
-            nuevoEstado: nuevoEstado
-        }
-
-        return this.http.get<ApiResponse<{ nuevoEstado: number }>>('/api/AltaEmpresa/ModificarEstadoProveedor', { params: params, headers: this.headers });
-
     }
 }

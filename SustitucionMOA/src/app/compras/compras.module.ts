@@ -25,9 +25,6 @@ import { PanelModule } from 'primeng/panel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { QuillModule } from 'ngx-quill'
-import {CardModule} from 'primeng/card';
-import {CarouselModule} from 'primeng/carousel';
-
 
 import { SharedModule } from '../common/shared.module';
 import { ComprasRoutingModule } from './compras-routing.module';
@@ -82,19 +79,20 @@ import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formula
 import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
-import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
-import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
-import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
-import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
-
+import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
+import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones-proveedor/listado-estado-certificaciones-proveedor.component';
+import { ModalAltaEntradaDeServicioProveedorComponent } from "./dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio-proveedor/modal-alta-entrada-de-servicio-proveedor.component";
+import { ButtonModule } from 'primeng/button';
+import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
 
 @NgModule({
     imports: [
+        ButtonModule,
         CommonModule,
         ComprasRoutingModule,
         FormsModule,
@@ -128,9 +126,7 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         TabViewModule,
         NgbAlertModule,
         NgxMaskModule,
-        AccordionModule,
-        CardModule,
-        CarouselModule
+        AccordionModule
     ],
     declarations: [
         SolpComponent,
@@ -174,14 +170,14 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         ReporteOcComponent,
         VisalizarPrecioComponent,
         ChatInternoComponent,
-        PosicionPlazoComponent,
-        EditarOrdenDeCompraComponent,
-        CotizacionHistorialComponent,
-        CrearPoMultipleComponent,
         ListadoDashboardCertificacionDeServiciosComponent,
+        ListadoDashboardCertificacionDeServiciosProveedoresComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
-        ModalAltaEntradaDeServicioComponent
+        CustomDecimalPipe,
+        ListadoEstadoCertificacionesProveedorComponent,
+        ModalAltaEntradaDeServicioComponent,
+        ModalAltaEntradaDeServicioProveedorComponent
     ],
     providers: [
         ComprasService,

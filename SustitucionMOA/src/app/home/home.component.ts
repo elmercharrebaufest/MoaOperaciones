@@ -10,8 +10,6 @@ import { SessionDataService } from './../common/services/SessionDataService';
 import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 import { CarouselNotificacionesComponent } from '../notificaciones/carousel-notificaciones/carousel-notificaciones.component';
-import { Router } from '@angular/router';
-
 @Component({
     selector: 'app-home',
     //template: '<h1>{{titulo}}</h1>'
@@ -20,9 +18,7 @@ import { Router } from '@angular/router';
 })
 export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
 
-    constructor(private service: HomeService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, 
-        protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected router: Router,
-        ) {
+    constructor(private service: HomeService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
         this.checkPermisos();
         this.mensajeComponent = new MensajeComponent();

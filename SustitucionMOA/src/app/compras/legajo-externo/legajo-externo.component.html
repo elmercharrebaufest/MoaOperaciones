@@ -5,17 +5,7 @@
     <title>Legajo de Orden de Compra</title>
 </head>
 <body>
-    <div *ngIf="cargarPantalla && !legajo.ListaLegajos" class="card-horizontal">
-        <div class="card-horizontal-body">
-            <h4><b>No existe un legajo correspondiente a la URL ingresada</b></h4>
-        </div>
-    </div>
-    <div *ngIf="cargarPantalla && legajo.ListaLegajos && legajo.ListaLegajos.length == 0" class="card-horizontal">
-        <div class="card-horizontal-body">
-            <h4><b>Este legajo no contiene documentos.</b></h4>
-        </div>
-    </div>
-    <div *ngIf="cargarPantalla && legajo.ListaLegajos && legajo.ListaLegajos.length > 0">
+    <div *ngIf="legajo.ListaLegajos.length > 0">
         <div class="centrar marginTop">
             <h4><b>Legajo de la Orden de Compra N° {{ legajo.NroOrdenDeCompra }}</b></h4>
         </div>
@@ -44,7 +34,7 @@
                             <td>
                                 <span *ngIf="item.ArchivoId != null">
                                     <img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar"
-                                    (click)="descargarArchivo(item.ArchivoId, item.Tipo)" />
+                                         (click)="descargarArchivo(item.ArchivoId)" />
                                 </span>
                             </td>
                         </tr>

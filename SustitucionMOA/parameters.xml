@@ -13,12 +13,6 @@
                            /@value" />
 	</parameter>
 
-	<parameter name="UrlMisConsultas Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='UrlMisConsultas']
-                           /@value" />
-	</parameter>
-
 	<parameter name="DataAgroURL Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='DataAgroURL']
@@ -210,16 +204,7 @@
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasTo']
                            /@value" />
 	</parameter>
-	<parameter name="EmailAltaTransporteFasonTo Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasTo']
-                           /@value" />
-	</parameter>
-	<parameter name="EmailAltaTransporteFasonCC Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasonCC']
-                           /@value" />
-	</parameter>
+
 	<parameter name="EmailAltaTempranaCuitFasCC Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailAltaTempranaCuitFasCC']
@@ -242,29 +227,7 @@
 							match="/configuration/appSettings/add[@key='EmailKgsMenos15TNFasTo']
                            /@value" />
 	</parameter>
-	
-	<parameter name="EmailConsultaInternaCC Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailConsultaInternaCC']
-                           /@value" />
-	</parameter>
 
-	<parameter name="EmailAltaTransporteResiduosTo Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailAltaTransporteResiduosTo']
-                           /@value" />
-	</parameter>
-	<parameter name="EmailAltaTransporteResiduosCC Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailAltaTransporteResiduosCC']
-                           /@value" />
-	</parameter>
-
-  <parameter name="EmailRerporteSolpTo Config">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailRerporteSolpTo']
-                           /@value" />
-  </parameter>
 
 
 	<parameter name="PasswordSapEnc Config">
@@ -313,37 +276,30 @@
 						match="/configuration/appSettings/add[@key='Url']
                            /@value" />
   </parameter>
-	<parameter name="DriveCampoSustentablesApplicationName Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesApplicationName']
+
+	<parameter name="AzureADTenantId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADTenantId']
                            /@value" />
 	</parameter>
-	<parameter name="DriveCampoSustentablesServiceAccountEmail Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountEmail']
+
+	<parameter name="AzureADAppId Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppId']
                            /@value" />
 	</parameter>
-	<parameter name="DriveCampoSustentablesServiceAccountKey Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesServiceAccountKey']
+
+	<parameter name="AzureADAppSecret Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='AzureADAppSecret']
                            /@value" />
 	</parameter>
-	<parameter name="DriveCampoSustentablesUsuario Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesUsuario']
+  <parameter name="Url Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='Url']
                            /@value" />
-	</parameter>
-	<parameter name="DriveCampoSustentablesInputFolderId Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesInputFolderId']
-                           /@value" />
-	</parameter>
-	<parameter name="DriveCampoSustentablesOutputFolderId Config">
-    	<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='DriveCampoSustentablesOutputFolderId']
-                           /@value" />
-	</parameter>
-	<!--Service Enpoint-->
+  </parameter>
+
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -714,6 +670,18 @@
                            /endpoint[@name='SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE']
                            /@address" />
 	</parameter>
+	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V2']
+                           /@address" />
+	</parameter>
+	<parameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V3 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='SI_MPMF_MOAOP_ORD_CARGA_ENT_V3']
+                           /@address" />
+	</parameter>
 	<parameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/system.serviceModel/client
@@ -829,6 +797,12 @@
                         /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA']
                         /@address" />
 	</parameter>
+	<parameter name="SI_MPMF_MOAOP_MOD_ENTREGA_V2 Service Endpoint Address">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+								match="/configuration/system.serviceModel/client
+                        /endpoint[@name='SI_MPMF_MOAOP_MOD_ENTREGA_V2']
+                        /@address" />
+	</parameter>
 	<parameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 								match="/configuration/system.serviceModel/client
@@ -853,12 +827,6 @@
                     /endpoint[@name='BAPI_PO_CHANGEPortType']
                     /@address" />
   </parameter>
-
- 	<parameter name="EmailOrdenesResiduosVencidas Config">
-		<parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/appSettings/add[@key='EmailOrdenesResiduosVencidas']
-                           /@value" />
-	</parameter>
-
+ 
 </parameters>
 

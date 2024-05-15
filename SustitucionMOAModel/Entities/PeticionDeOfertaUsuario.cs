@@ -22,9 +22,6 @@ namespace SustitucionMOAModel.Entities
         public int? PropuestaTecnicaUsuario_Id { get; set; }
         public string ObservacionNoCumple { get; set; }
 
-        public bool? VisibleSolicitante { get; set; }
-        
-
         [ForeignKey("PeticionDeOferta_Id")]
         public virtual PeticionDeOferta PeticionDeOferta { get; set; }
 

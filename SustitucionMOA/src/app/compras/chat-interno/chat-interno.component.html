@@ -1,6 +1,6 @@
 <p-dialog [(visible)]="displayChatInterno" modal="modal"
           [width]="1000" [draggable]="false" [closable]="true"
-          (onHide)="onCerrarChat()" appendTo="body" positionTop="30"
+          (onHide)="onCerrarPeticion()" appendTo="body" positionTop="30"
           (onShow)="onMostrarDialog()"
          [contentStyle]="{
         'max-height':'800px',
@@ -18,7 +18,7 @@
             <!-- CONTENIDO -->
             <div class="row">
                 <!-- DETALLE DE CONSULTA -->
-                <div class="col-xs-12 col-sm-12 col-md-12">
+                <div class="col-xs-8 col-sm-8 col-md-8">
                     <div #contenedorMensajes class="rounded shadow detalleChat">
                         <!-- Mostrar comentarios -->
                         <ng-container *ngIf="chat?.Mensajes.length > 0; else loader">
@@ -54,28 +54,22 @@
                     </div>
                     <!-- AÑADIR COMENTARIO -->
                     <hr>
-                    <textarea class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario" rows="5"></textarea>
+                    <textarea class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario"></textarea>
     
                     <div class="col-xs-12 col-sm-12 col-md-2">
-                        <button (click)="validar()" class="mx-auto d-block enviarComentario"
-                                href="#" style="text-decoration:none!important">
-                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">
-                                Enviar
+                        <button (click)="validar()"  class="mx-auto d-block enviarComentario"
+                            href="#" style="text-decoration:none!important">
+                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Enviar
                             </div>
-                        </button>
-                        <button (click)="obtenerYExportarChat(chat?.Solp_Id)"
-                                class="mx-auto d-block enviarComentario"
-                                href="#" style="text-decoration:none!important">
-                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Exportar</div>
                         </button>
                     </div>
                 </div>
         
                 <!-- MENÚ LATERAL -->
-                <!--<div class="col-xs-4 col-sm-4 col-md-4">
+                <div class="col-xs-4 col-sm-4 col-md-4">
                     <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 menuLateralConsulta">
                         <div>
-                            <span *ngIf="chat?.Solp_Id != null"><strong>SOLP </strong>#{{chat?.Solp_Id}}</span>
+                            <span *ngIf="chat?.PeticionDeOferta_Id != null"><strong>Petici&oacute;n de oferta </strong>#{{chat?.PeticionDeOferta_Id}}</span>
                         </div>
                         <hr style="margin-top: 10px; margin-bottom: 10px;">
                         <div>
@@ -95,7 +89,7 @@
                                     </ng-container>
                                 </ng-container>    
                                 <div style="margin-top: 107px;">
-                                    <button (click)="obtenerYExportarChat(chat?.Solp_Id)"  
+                                    <button (click)="obtenerYExportarChat(chat?.PeticionDeOferta_Id)"  
                                     class="mx-auto d-block enviarComentario"
                                     href="#" style="text-decoration:none!important">
                                 <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Exportar</div>
@@ -105,7 +99,7 @@
                             </div>
                         </div>                           
                     </div>
-                </div>-->
+                </div>
             </div>
         </div>
 </p-dialog>

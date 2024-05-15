@@ -4,11 +4,112 @@
   padding-right: 1.2rem;
 }
 
-  #solicitudes .filter {
-    width: 50%;
-    margin: 0 auto;
-    font-size: 1.3rem;
-  }
+.usuario-area {
+  display: inline-block;
+}
+
+.usuario-area span {
+  color: blue;
+}
+
+.filtro-oc-input {
+  margin-left: .4em;
+  height: 1.8em;
+  position: relative;
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.boton-enviar-motivo {
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+}
+
+/* FILTERS */
+.filters-row {
+  padding: 4px 8px;
+  border-top: 0.5px solid #959595;
+  border-left: 0.5px solid #959595;
+  border-right: 0.5px solid #959595;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  width: max-content;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filters-row > div + div:before {
+  content: "|";
+  padding: .6em;
+  color: #959595;
+  position: inherit;
+  bottom: .3em;
+  font-size: 1.3em;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown {
+  height: 1.8em;
+  width: 17em !important;
+  position: relative;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown > .ui-dropdown-label {
+  font-size: .9em !important;
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+  padding: .2em .4em;
+  margin-bottom: 0;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown.ui-dropdown-open > .ui-dropdown-panel > .ui-dropdown-items-wrapper > .ui-dropdown-items {
+  font-size: .9em !important;
+}
+
+/* TABLE */
+.container-table {
+  margin-top: 1em;
+}
+
+
+.aprobada{
+  width: 180px;
+  background-color: green;
+  color: white;
+  padding: 5px;
+  height: 35px;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.pendiente-aprobacion{
+  width: 180px;
+  background-color: #ff701a;
+  color: white;
+  padding: 5px;
+  height: 35px;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.rechazada {
+  width: 180px;
+  background-color: #b90d0d;
+  color: white;
+  padding: 5px;
+  height: 35px;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
 
 /* TABLE */
 .emptyData {
@@ -104,3 +205,43 @@
     min-width: 4rem;
   }
 }
+
+ .see-all{
+    color: white;
+    background-color: #1C7CD5;
+    border: none;
+    border-radius: 6px;
+    font-weight: bolder;
+    text-align: center;
+  }
+
+  .see-provider
+  {
+    color: white;
+    background-color: rgb(76, 173, 76);
+    border: none;
+    border-radius: 6px;
+    font-weight: bolder;
+    text-align: center;
+  }
+
+.input-wrapper {
+  position: relative;
+  top: 5px;
+}
+
+.char-limit-message {
+  position: absolute;
+  top: 80px;
+  right: 0;
+  color: gray;
+  font-size: 12px;
+}
+
+.textoLibre{
+  margin-bottom: 20px; 
+  width: 300px; 
+  resize: none; 
+  overflow-wrap: break-word;
+}
+

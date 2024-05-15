@@ -1,7 +1,6 @@
 ﻿import { DatePipe } from "@angular/common";
 import {
     CUSTOM_ELEMENTS_SCHEMA,
-    ErrorHandler,
     NgModule,
     NO_ERRORS_SCHEMA
 } from "@angular/core";
@@ -14,7 +13,6 @@ import { BlockUIModule } from 'ng-block-ui';
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
-import { LoggerModule, NgxLoggerLevel } from "ngx-logger"
 import { MultiSelectModule } from 'primeng/multiselect';
 import { NgxPaginationModule } from "ngx-pagination";
 import { AduanaService } from "./aduana/aduana.service";
@@ -64,16 +62,13 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component';
+import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
 
-
+import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
 import { ToastModule } from "primeng/toast";
 import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/usuario-auditoria-list.component';
-import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
-import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
-import { VerVendedoresComponent } from "./usuario/ver-vendedores/ver-vendedores.component";
 
 import { QuillModule } from "ngx-quill";
 import { ModalNotificacionesComponent } from "./notificaciones/modal-notificaciones/modal-notificaciones.component";
@@ -82,80 +77,69 @@ import { ModalNotificacionesComponent } from "./notificaciones/modal-notificacio
 import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades.component';
 import { AngularEditorModule } from '@kolkov/angular-editor';;
 import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
-import { NotificacionesModule } from "./notificaciones/notificaciones.module";
+import { NotificacionesModule } from "./notificaciones/notificaciones.module";;
+import { AprobacionExternaComponent } from './aprobacion-externa/aprobacion-externa.component'
 
-import { DropdownModule } from 'primeng/dropdown';
-import { ButtonModule } from "primeng/button";
-import { TooltipModule } from "primeng/tooltip";
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxPaginationModule,
-        SelectModule,
-        ModalModule,
-        ReCaptchaModule,
-        SharedModule,
-        LogPesificacionModule,
-        NgxMaskModule.forRoot(),
-        BlockUIModule.forRoot(),
-        LoggerModule.forRoot(
-            {
-                serverLoggingUrl: '/api/Logger/Front',
-                level: NgxLoggerLevel.DEBUG,
-                serverLogLevel: NgxLoggerLevel.ERROR
-            }
-        ),
-        ComprasModule,
-        ConfirmDialogModule,
-        MultiSelectModule,
-        ToastModule,
-        DropdownModule,
-        ButtonModule,
-        TooltipModule,
-        QuillModule,
-        AngularEditorModule,
-        NotificacionesModule
-    ],
-    declarations: [
-        AppComponent,
-        ContactoMailComponent,
-        HomeComponent,
-        HomeNGSComponent,
-        LayoutComponent,
-        NoAutorizadoComponent,
-        UsuarioListComponent,
-        UsuarioAltaEmpresaNoGranosComponent,
-        UsuarioCambioVendedorComponent,
-        VendedorStatusComponent,
-        PesificacionComponent,
-        EmpresaGranosComponent,
-        EmpresaNoGranosComponent,
-        AltasComponent,
-        EstadoSolicitudComponent,
-        //AltaNotificacionesComponent,
-        //ListadoNotificacionesComponent,
-        CarouselNotificacionesComponent,
-        VentaSustentableBaseComponent,
-        FaqComponent,
-        TicketPesadaComponent,
-        ConsultaBaseComponent,
-        VentaSustentableBaseComponent,
-        ApikeyComponent,
-        PesificacionesGuardadasComponent,
-        PesificacionBaseComponent,
-        ModificarDatosComponent,
-        UsuarioAuditoriaListComponent,
-        LegajoExternoComponent,
-        VerVendedoresComponent,
-        ListadoNovedadesComponent,
-        ModalNotificacionesComponent,
-        ComunicacionesComponent
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
+    SelectModule,
+    ModalModule,
+    ReCaptchaModule,
+    SharedModule,
+    LogPesificacionModule,
+    NgxMaskModule.forRoot(),
+    BlockUIModule.forRoot(),
+    ComprasModule,
+    ConfirmDialogModule,
+    MultiSelectModule,
+    ToastModule,
+    QuillModule,
+    AngularEditorModule,
+    NotificacionesModule
+  ],
+  declarations: [
+    AppComponent,
+    ContactoMailComponent,
+    HomeComponent,
+    HomeNGSComponent,
+    LayoutComponent,
+    NoAutorizadoComponent,
+    UsuarioListComponent,
+    UsuarioAltaEmpresaNoGranosComponent,
+    UsuarioCambioVendedorComponent,
+    VendedorStatusComponent,
+    PesificacionComponent,
+    EmpresaGranosComponent,
+    EmpresaNoGranosComponent,
+    AltasComponent,
+    EstadoSolicitudComponent,
+    //AltaNotificacionesComponent,
+    //ListadoNotificacionesComponent,
+    CarouselNotificacionesComponent,
+    VentaSustentableBaseComponent,
+    FaqComponent,
+    TicketPesadaComponent,
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent,
+    ApikeyComponent,
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent,
+    ModificarDatosComponent,
+
+    UsuarioAuditoriaListComponent,
+    ListadoNovedadesComponent,
+    ModalNotificacionesComponent,
+    ComunicacionesComponent,
+    LegajoExternoComponent,
+    AprobacionExternaComponent
     ],
     providers: [
         DatePipe,
@@ -178,7 +162,6 @@ import { TooltipModule } from "primeng/tooltip";
         ConsultaService,
         ConfirmationService,
         ApikeyService,
-        { provide: ErrorHandler, useClass: GlobalErrorHandler }
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

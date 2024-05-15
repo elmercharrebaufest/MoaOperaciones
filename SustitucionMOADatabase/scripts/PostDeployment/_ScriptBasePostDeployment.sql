@@ -31,9 +31,6 @@ Post-Deployment Script Template
 :r .\Estados.sql
 :r .\UnidadMedidaSap.sql
 :r .\UsuariosConRolFleteMOA.sql
-:r .\RegionSap.sql
-:r .\EstadoOrdenResiduos.sql
-:r .\AlmacenMaterial.sql
 
 :r ..\Notificaciones\Notificacion.sql
 :r ..\Notificaciones\NotificacionFechaCreacion.sql

@@ -246,7 +246,11 @@ namespace SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA {
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string ENTRYSHEET;
-        
+
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace = "urn:sap-com:document:sap:rfc:functions", Order = 0)]
+        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public string I_BUDATUM;
+
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
@@ -255,8 +259,9 @@ namespace SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA {
         public SI_MMRFC_BORRAR_HESRequest() {
         }
         
-        public SI_MMRFC_BORRAR_HESRequest(string ENTRYSHEET, SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN) {
+        public SI_MMRFC_BORRAR_HESRequest(string ENTRYSHEET, string I_BUDATUM, SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN) {
             this.ENTRYSHEET = ENTRYSHEET;
+            this.I_BUDATUM = I_BUDATUM;
             this.RETURN = RETURN;
         }
     }
@@ -311,9 +316,10 @@ namespace SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA {
             return base.Channel.SI_MMRFC_BORRAR_HES(request);
         }
         
-        public void SI_MMRFC_BORRAR_HES(string ENTRYSHEET, ref SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN) {
+        public void SI_MMRFC_BORRAR_HES(string ENTRYSHEET, string I_BUDATUM, ref SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN) {
             SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.SI_MMRFC_BORRAR_HESRequest inValue = new SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.SI_MMRFC_BORRAR_HESRequest();
             inValue.ENTRYSHEET = ENTRYSHEET;
+            inValue.I_BUDATUM = I_BUDATUM;
             inValue.RETURN = RETURN;
             SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.SI_MMRFC_BORRAR_HESResponse retVal = ((SustitucionMOAWS.BorrarEntradaServicioNuevoWebServiceMOA.SI_MMRFC_BORRAR_HES)(this)).SI_MMRFC_BORRAR_HES(inValue);
             RETURN = retVal.RETURN;

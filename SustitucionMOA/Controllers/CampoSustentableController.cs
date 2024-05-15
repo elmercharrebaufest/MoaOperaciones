@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
@@ -222,13 +223,13 @@ namespace SustitucionMOA.Controllers
                 var fileArray = campoSustentableService.GenerarDeclaracionProveedor(SessionPersister.User.username, proveedorId, cosechaId, hectareasTotales, CUITDeclaracion, razonSocialDeclaracion);
                 PDFResponse result = new PDFResponse
                 {
-                    Pdf = new Pdf()
+                    pdf = new Pdf()
                     {
                         data = fileArray
                     }
                 };
 
-                return JsonCustom(result.Pdf);
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {
@@ -277,13 +278,13 @@ namespace SustitucionMOA.Controllers
                 var fileArray = campoSustentableService.ImprimirDeclaracion(proveedorId, cosechaId, CUIT);
                 PDFResponse result = new PDFResponse
                 {
-                    Pdf = new Pdf()
+                    pdf = new Pdf()
                     {
                         data = fileArray
                     }
                 };
 
-                return JsonCustom(result.Pdf);
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {
@@ -327,5 +328,6 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
     }
 }

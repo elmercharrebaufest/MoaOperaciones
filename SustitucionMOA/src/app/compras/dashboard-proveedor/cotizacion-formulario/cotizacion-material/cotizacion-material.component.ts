@@ -63,7 +63,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
 
     ngOnInit() {
         this.getCombos();
-        this.setComboMoneda();
+        this.setCombos();
         this.es = {
             firstDayOfWeek: 1,
             dayNames: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"],
@@ -119,8 +119,8 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     }
 
     descargarArchivo(archivo): void {
-        if (archivo.Id != undefined) {
-            this.service.DescargarArchivo(archivo.Id)
+        if (archivo.id != undefined) {
+            this.service.DescargarArchivo(archivo.id)
                 .subscribe(
                     (result) => {
                         if (result.logout == true) {
@@ -233,7 +233,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.combos = result;
-                        this.setComboMoneda();
+                        this.setCombos();
                     }
                 },
                 error => {
@@ -248,16 +248,12 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
         return false; //<-- Prevent Refresh
     }
 
-    public setComboMoneda(): void {
+    public setCombos(): void {
         //Obtengo todas las opciones de los autocomplete
         if (this.combos != undefined) {
             this.monedaCompras = this.combos.Moneda;
-            //this.unidades = this.combos.Unidades;
+            this.unidades = this.combos.Unidades;
         }
-    }
-
-    public getUnidades(posicionesCompra: any): any[] {
-        return posicionesCompra.Posiciones.UnidadesDeMedida;
     }
 
     public calcularValorNeto(cotizacion: CotizacionPosicionDto, peticionId: number) {
@@ -270,11 +266,11 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
     public validarCambios(cotizacion: any, peticionId: number) {
         this.visualizarMensajeDeModificacion = false;
         var respuesta = false;
-        if (cotizacion.Cantidad > 0) {
+        if (cotizacion.Cantidad >= 0) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.Cantidad != cotizacion.Cantidad;
 
         }
-        if (!respuesta && cotizacion.UnidadMedida != undefined && cotizacion.UnidadMedida.Id != 0) {
+        if (!respuesta && cotizacion.UnidadMedida != undefined) {
             respuesta = this.posicionesCompra.filter(x => x.Id == peticionId)[0].Posiciones.UnidadId != cotizacion.UnidadMedida.Id
         }
         return respuesta;

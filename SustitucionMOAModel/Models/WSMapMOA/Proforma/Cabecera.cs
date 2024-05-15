@@ -26,6 +26,5 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Proforma
         public string tarifaFleteString { get; set; }
         public string compradosString { get; set; }
         public string recibidosString { get; set; }
-        public decimal PorcentajePagoParcial { get; set; }
     }
 }

@@ -13,7 +13,6 @@ namespace SustitucionMOAModel.Entities
         public string CodigoSap { get; set; }
         public string Descripcion { get; set; }
         public int? Padre_id { get; set; }
-        public bool? FiltroComprador { get; set; }
 
         [ForeignKey("Padre_id")]
         public TablaSap Padre { get; set; }
@@ -27,7 +26,6 @@ namespace SustitucionMOAModel.Entities
                    CodigoSap == sap.CodigoSap &&
                    Descripcion == sap.Descripcion &&
                    Padre_id == sap.Padre_id &&
-                   FiltroComprador == sap.FiltroComprador &&
                    EqualityComparer<TablaSap>.Default.Equals(Padre, sap.Padre);
         }
 

@@ -45,7 +45,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-6">
                     Rubro proveedor:
                     <div class="styled-select">
-                        <select [(ngModel)]="IdRubro" (change)="esObligatorioFlete()">
+                        <select [(ngModel)]="IdRubro" (change)="esObligatorioFlete()" >
                             <option value="0" selected>Seleccione uno</option>
                             <option *ngFor="let x of rubros" value="{{x.Id}}">{{x.Nombre}}</option>
                         </select>
@@ -100,7 +100,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
                     <input type="checkbox" style="margin-right: 5px;" id="altaInterna" class="checkboxMargin"
-                        placeholder="" [(ngModel)]="altaInterna" [disabled]="!puedeAltaInterna">
+                        placeholder="" [(ngModel)]="altaInterna">
                     <label for="altaInterna"> Alta interna</label>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">

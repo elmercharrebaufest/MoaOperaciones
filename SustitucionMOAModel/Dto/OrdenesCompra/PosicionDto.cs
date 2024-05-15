@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public int CotizacionPosicion_Id { get; set; }
         public decimal Cantidad { get; set; }
         public int SolpPosicion_Id { get; set; }
-       // public List<SolpSubposicionDtoCopia> SubposicionesCompras { get; set; }
+        public List<SolpSubposicionDtoCopia> SubposicionesCompras { get; set; }
         public string CodigoMaterial { get; set; }
         public int? Indice { get; set; }
         public string Descripcion { get; set; }

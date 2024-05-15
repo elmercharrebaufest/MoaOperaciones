@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,21 +34,5 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte
         public DateTime fechaDescargaDate { get; set; }
         public string netoDescontadoString { get; set; }
         public string cg { get; set; }
-
-        private bool tieneDiscrepanciaEnCalidad;
-        public bool TieneDiscrepanciaEnCalidad { get { return tieneDiscrepanciaEnCalidad; } private set { tieneDiscrepanciaEnCalidad = value; } }
-
-        private bool puedeDiscreparCalidad;
-        public bool PuedeDiscreparCalidad { get { return puedeDiscreparCalidad; } private set { puedeDiscreparCalidad = value; } }
-
-        public void SetPuedeDiscreparCalidad (int diasParaDiscrepar){        
-            var hoy = DateTime.Now;
-            var fechaLimite = hoy.AddDays(diasParaDiscrepar).Date;
-            PuedeDiscreparCalidad = fechaDescargaDate != null && fechaLimite <= fechaDescargaDate && fechaDescargaDate <= hoy;
-        }
-        public void SetTieneDiscrepanciaEnCalidad(IEnumerable<string> cartasPorteConDiscrepancia)
-        {
-            TieneDiscrepanciaEnCalidad = cartasPorteConDiscrepancia.Contains(cartaPorte);
-        }
     }
 }

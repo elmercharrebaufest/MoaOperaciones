@@ -127,7 +127,7 @@ p-table#items-list th {
     color: white;
 }
 
-p-table#items-list th.anteriores {
+p-table#items-list th.anterior {
     border-color: white;
     background-color: #F9C834;
     color: #333;
@@ -157,6 +157,11 @@ p-table#items-list th.acumulado {
 :host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:first-child { 
     border-bottom: none;
     border-left: none;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:last-child { 
+    border-bottom: none;
+    border-right: none;
 }
 
 /* Calendar end */
@@ -201,6 +206,17 @@ p-panel#positions-panel #ui-panel-0-label {
 }
 
 /* POSITIONS PANEL END */
+
+/* COLS CONFIG */
+div#col-select {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 1em;
+    padding: .1em .3em;
+    gap: 10px;
+}
+/* END COLS CONFIG */
 
 @media screen and (max-width: 600px) {
   .modal-container {

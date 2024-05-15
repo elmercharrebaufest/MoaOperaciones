@@ -19,12 +19,13 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
+import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
-import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
+import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
 
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
@@ -40,6 +41,8 @@ const appRoutes: Routes = [
     // },
     { path: "ticket-pesada", component: TicketPesadaComponent },
     { path: "verLegajoOrdenDeCompra/:id/:token", component: LegajoExternoComponent },
+    { path: 'aprobacion-externa/approve/:es', component: AprobacionExternaComponent },
+    { path: 'aprobacion-externa/reject/:es', component: AprobacionExternaComponent },
 
     {
         path: "",
@@ -129,7 +132,7 @@ const appRoutes: Routes = [
             },
             { path: "estado-solicitud", component: EstadoSolicitudComponent },
             { path: "alta-empresa-no-granos", component: EmpresaNoGranosComponent },
-            { path: "alta-empresa-no-granos/:id", component: EmpresaNoGranosComponent, canDeactivate: [ConfirmDeactivated] },
+            { path: "alta-empresa-no-granos/:id", component: EmpresaNoGranosComponent },
             { path: "altas", component: AltasComponent },
             {
                 path: "crear-contrato",
@@ -147,10 +150,6 @@ const appRoutes: Routes = [
             {
                 path: "ordenes-de-carga-fason",
                 loadChildren: "./ordenes-de-carga-fason/ordenes-de-carga-fason.module#OrdenesDeCargaFasonModule",
-            },
-            {
-                path: "ordenes-residuos",
-                loadChildren: "./ordenes-residuos/ordenes-residuos.module#OrdenesResiduosModule"
             },
             {
                 path: "reporte-contrato",
@@ -187,16 +186,10 @@ const appRoutes: Routes = [
                 path: "aplicaciones-ccpp",
                 loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule"
             },
-            {
-                path: "archivos-boleto",
-                loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule"
-            },
             { path: "mis-novedades", component: ListadoNovedadesComponent },
-
         ],
     },
     { path: "**", component: HomeComponent },
-
 ];
 
 @NgModule({

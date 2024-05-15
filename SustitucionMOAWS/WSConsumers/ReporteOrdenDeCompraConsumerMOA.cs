@@ -98,7 +98,7 @@ namespace SustitucionMOAWS.WSConsumers
             //}
             //else 
             //{
-                foreach (var item in PO_HEADERS.Where(x=> string.IsNullOrEmpty(x.SUBJ_TO_R)))
+                foreach (var item in PO_HEADERS)
                 {
                     result.Add(new OrdenDeCompraSAPDto
                     {

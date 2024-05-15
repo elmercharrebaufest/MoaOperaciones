@@ -43,6 +43,15 @@ namespace SustitucionMOARepositorio
             //        cs.MapRightKey("Grupo_Codigo");
             //        cs.ToTable("GrupoUsuario");
             //    });
+            modelBuilder.Entity<Usuario>()
+            .HasMany(u => u.Areas)
+            .WithMany(a => a.Usuarios)
+            .Map(m =>
+            {
+                m.ToTable("AreaUsuario");
+                m.MapLeftKey("Usuario_ID");
+                m.MapRightKey("Area_ID");
+            });
         }
 
         private void MapearAssemblyDe<TEntidad>(DbModelBuilder modelBuilder, Predicate<Type> incluir, Predicate<Type> excluir)

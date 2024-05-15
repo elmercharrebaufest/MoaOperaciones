@@ -131,9 +131,10 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-               // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
+                // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
                 Host = EmailConfig.getEmailHost()
             };
+
             return client;
         }
 

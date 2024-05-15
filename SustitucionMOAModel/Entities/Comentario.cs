@@ -29,10 +29,5 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Archivo> Archivos { get; set; }
 
         public virtual ICollection<ComentarioRecordado> ComentarioRecordado { get; set; }
-
-        public object Clone()
-        {
-            return this.MemberwiseClone() as object;
-        }
     }
 }

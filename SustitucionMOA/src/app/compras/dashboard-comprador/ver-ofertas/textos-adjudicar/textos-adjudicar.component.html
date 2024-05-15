@@ -1,44 +1,47 @@
-<p-dialog [(visible)]="displayTextos" modal="modal"
-          [width]="650" [draggable]="false" [closable]="false"
-          appendTo="body" positionTop="30" [height]="450"
-          [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
+<p-dialog [(visible)]="displayTextos" modal="modal" 
+    [width]="650" [draggable]="false" [closable]="false"
+    appendTo="body" positionTop="30"
+    [height]="450"
+    [max] [contentStyle]="{ 
+        'max-height':'450px', 
+        'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
         <b>Racional de Compras</b>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
-        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <p-accordion>
-                <p-accordionTab header="Texto de Cabecera"
-                                style="box-sizing: inherit !important;" [(selected)]="activeTabs[0]">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">         
+            <p-accordion >
+                <p-accordionTab  header="Texto de Cabecera" 
+                 style="box-sizing: inherit !important;"   [(selected)]="activeTabs[0]">
                     <textarea name="cabecera" style="height: 340px; max-height: 500px;" ngDefaultControl [(ngModel)]="adjudicacion.TextoDeCabecera"
-                              placeholder="Ingrese texto..." cols="300"
-                              rows="1"></textarea>
+                        placeholder="Ingrese texto..." cols="300"
+                        rows="1"></textarea>
                 </p-accordionTab>
                 <p-accordionTab header="Condiciones de Entrega"
-                                style="box-sizing: inherit !important;" [(selected)]="activeTabs[1]">
+                 style="box-sizing: inherit !important;"  [(selected)]="activeTabs[1]">
                     <textarea style="height: 340px; max-height: 500px;" name="entrega" ngDefaultControl [(ngModel)]="adjudicacion.CondicionesDeEntrega"
-                              placeholder="Ingrese texto..." cols="300"
-                              rows="1"></textarea>
+                        placeholder="Ingrese texto..." cols="300"
+                        rows="1"></textarea>
                 </p-accordionTab>
-                <p-accordionTab header="Condiciones de Pago"
-                                style="box-sizing: inherit !important;" [(selected)]="activeTabs[2]">
+                <p-accordionTab  header="Condiciones de Pago" 
+                style="box-sizing: inherit !important;"  [(selected)]="activeTabs[2]">
                     <textarea name="pago" style="height: 340px; max-height: 500px;" ngDefaultControl [(ngModel)]="adjudicacion.CondicionesDePago"
-                              placeholder="Ingrese texto..." cols="300"
-                              rows="1"></textarea>
+                        placeholder="Ingrese texto..." cols="300"
+                        rows="1"></textarea>
                 </p-accordionTab>
-                <p-accordionTab header="Garantía"
-                                style="box-sizing: inherit !important;" [(selected)]="activeTabs[3]">
+                <p-accordionTab header="Garantía" 
+                style="box-sizing: inherit !important;"  [(selected)]="activeTabs[3]">
                     <textarea name="garantia" style="height: 340px; max-height: 500px;" ngDefaultControl [(ngModel)]="adjudicacion.Garantias"
-                              placeholder="Ingrese texto..." cols="30"
-                              rows="1"></textarea>
+                        placeholder="Ingrese texto..." cols="30"
+                        rows="1"></textarea>
                 </p-accordionTab>
-            </p-accordion>
-
+            </p-accordion>          
+            
         </section>
     </div>
     <p-footer>
-        <button type="button" class="btn btn-danger" (click)="onCerrarTextos(false)">DESCARTAR CAMBIOS</button>
-        <button type="button" class="btn btn-primary" (click)="onCerrarTextos(true)">ACEPTAR</button>
+        <button type="button" class="btn btn-danger" (click)="onCerrarTextos(true)">CANCELAR</button>
+        <button type="button" class="btn btn-primary" (click)="onCerrarTextos(false)">ACEPTAR</button>
 
     </p-footer>
 </p-dialog>

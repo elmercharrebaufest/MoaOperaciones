@@ -76,26 +76,6 @@ BEGIN
 	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial) VALUES('99709 - PELLET DE GIRASOL INTEGRAL','99709','2')
 END
 
--- Materiales con TablaSeccionMaterial = 3
-
-IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '172789' and TablaSeccionMaterial = 3)
-BEGIN
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
-	VALUES ('172789 - SUELO SELECCIONADO', '172789', 3, 0, 'Suelo selecc.')
-END
-
-IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64194' and TablaSeccionMaterial = 3)
-BEGIN
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
-	VALUES ('64194 - RESIDUOS ORGANICOS', '64194', 3, 1, 'Residuos org.')
-END
-
-IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64196' and TablaSeccionMaterial = 3)
-BEGIN
-	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
-	VALUES ('64196 - RESIDUOS SOLIDOS URBANOS', '64196', 3, 0, 'Resid. sól. urb')
-END
-
 -- Updates
 
 UPDATE Material SET Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' WHERE CodigoSap = '99709'

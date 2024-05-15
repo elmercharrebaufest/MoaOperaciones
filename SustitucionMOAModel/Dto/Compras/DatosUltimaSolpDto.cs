@@ -3,7 +3,6 @@
     public class DatosUltimaSolpDto
     {
         public string FiscalContrato { get; set; }
-        public string EmailFiscalContrato { get; set; }
         public string Telefono { get; set; }
         public TablaSapDto ClaseDocumento { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
