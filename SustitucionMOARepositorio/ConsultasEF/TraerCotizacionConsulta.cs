@@ -45,6 +45,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     PideDescripcionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDescripcionTecnica == true,
                                     PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     EsNuevaCotizacion = cotizacion != null && cotizacion.CotizarNuevaPosicion == true ? true : false,
+                                    CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
+
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
