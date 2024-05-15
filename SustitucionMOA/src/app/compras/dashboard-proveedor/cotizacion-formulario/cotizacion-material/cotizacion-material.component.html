@@ -88,7 +88,7 @@
                             <td pEditableColumn class="columna">
                                 <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
                                      (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
-                            <p-dropdown [options]="unidades" dataKey="Codigo" optionLabel="Descripcion"
+                                     <p-dropdown [options]="getUnidades(posicionesCompra)" dataKey="Codigo" optionLabel="Descripcion"
                                 [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                 [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedida"
                                 placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
@@ -178,7 +178,8 @@
                                 {{ posicionesCompra?.Posiciones?.CotizacionPosicion?.FechaDeEntrega | date:'dd/MM/yy' }}
                             </td>
                             <td class="columna" style="overflow: hidden; height: 25px; text-align: center;">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true}">
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true 
+                                && (posicionesCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionesCompra.Posiciones.CotizacionPosicion.PrimeraCantidad <= 0)}">
                                     <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">
                                         Agregar
                                     </button>
@@ -199,9 +200,20 @@
     <br>
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal">
-            <label>La propuesta técnica de <strong>materiales</strong> respeta las condiciones de pago *</label>
+            <label *ngIf="!peticion.PideDescripcionTecnica; else elseText1">El material <strong>cumple</strong> las especificaciones técnicas solicitadas:</label>
+            <ng-template #elseText1>
+                <label *ngIf="!peticion.PideDocumentacionTecnica; else elseText2">
+                    <strong>Es obligatorio adjuntar una descripción técnica sin valores comerciales.</strong>
+                </label>
+                <ng-template #elseText2>
+                    <label>
+                        <strong>Es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
+                    </label>
+                </ng-template>
+            </ng-template>
         </div>
     </div>
+    <ng-container *ngIf="!peticion.PideDescripcionTecnica">
     <div class="col-md-12">
         <div class="col-md-2" style="width: 10px;">
             <label>Sí</label>
@@ -218,6 +230,7 @@
                    [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
         </div>
     </div>
+    </ng-container>
     <div class="inputCompras">
         <p>
             <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
@@ -226,9 +239,14 @@
         </p>
         <div class="row myRow" style="padding-top: 2px;">
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <label class="labelCompras" for="editorTexto">
-                    <strong style="font-size: 14px;">Adjuntar documentación (opcional)</strong>
+                <label *ngIf="peticion.PideDescripcionTecnica || visualizarMensajeDeModificacion; else elseText" for="editorTexto">
+                    <strong>Adjuntar documentación *</strong>
                 </label>
+                <ng-template #elseText>
+                    <label for="editorTexto">
+                        <strong>Adjuntar documentación </strong>(opcional)
+                    </label>
+                </ng-template>
                 <p-fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}" name="fileUploadPeticionDeOferta"
                               auto="true" multiple="multiple" chooseLabel="Elegir archivo" [showUploadButton]=false
                               [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
@@ -267,9 +285,14 @@
             </div>
             <div class="row myRow">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <label class="labelCompras">
-                        <strong style="font-size: 14px;"> Observaciones (opcional) </strong>
+                    <label *ngIf="visualizarMensajeDeModificacion; else elseObs" for="editorTexto">
+                        <strong>Observaciones *</strong>
                     </label>
+                    <ng-template #elseObs>
+                        <label for="editorTexto">
+                            <strong>Observaciones </strong>(opcional)
+                        </label>
+                    </ng-template>
                     <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionEconomica"
                               placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                 </div>

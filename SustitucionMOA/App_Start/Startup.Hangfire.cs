@@ -14,13 +14,14 @@ namespace SustitucionMOA
         {
             GlobalConfiguration.Configuration.UseSqlServerStorage("HfContexto");
             GlobalConfiguration.Configuration.UseNLogLogProvider();
-            //app.UseHangfireServer();
-            ////app.UseHangfireDashboard("/hangfire");
-            //app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            //{
-            //    Authorization = new[] { new HangFireAuthorizationFilter() }
-            //});
-            //Register();
+            app.UseHangfireServer();
+            //app.UseHangfireDashboard("/hangfire");
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangFireAuthorizationFilter() }
+            });
+            Register();
+
         }
 
         private void Register()

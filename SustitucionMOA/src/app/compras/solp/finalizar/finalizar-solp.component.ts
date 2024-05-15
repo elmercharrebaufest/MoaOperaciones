@@ -41,7 +41,7 @@ export class FinalizarSolpComponent implements OnInit {
 
     onFinalizar() {
         const updatedInfo = {
-            selectUsuarioCompras: this.selectUsuarioCompras,
+            selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
             solpActual: this.solpActual
         };
         this.finalizarEmitter.next(updatedInfo);
