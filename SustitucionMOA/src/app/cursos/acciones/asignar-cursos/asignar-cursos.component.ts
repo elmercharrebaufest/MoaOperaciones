@@ -89,6 +89,7 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
       .subscribe(res => {
         const resultados = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
         this.resultados = resultados;
+        window.dispatchEvent(new Event("resize"));
       })
   }
   toggleTodos(check: boolean) {

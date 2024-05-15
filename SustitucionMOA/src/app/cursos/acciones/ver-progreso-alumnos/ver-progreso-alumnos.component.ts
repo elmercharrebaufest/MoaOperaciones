@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
@@ -41,20 +41,24 @@ export class VerProgresoAlumnosComponent extends BaseComponent implements OnInit
       this.curso.subscribe(value => {
         this.display = !!value;
         if (this.display) {
-          this.buscarProgreso(value)
+          this.buscarProgresos(value)
         }
       })
     )
   }
 
-  buscarProgreso(curso: CursoDto) {
+  buscarProgresos(curso: CursoDto) {
     this.spinnerComponent.showIt()
     this.service.obtenerProgresoAlumnos(curso.Id)
       .pipe(finalize(() => this.spinnerComponent.hideIt()))
       .subscribe(res => {
         const progresos = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent);
-        if (progresos)
+        if (progresos) {
           this.progresos = progresos;
+          setTimeout(() => {
+            window.dispatchEvent(new Event("resize"));
+          }, 0)
+        }
       })
   }
 

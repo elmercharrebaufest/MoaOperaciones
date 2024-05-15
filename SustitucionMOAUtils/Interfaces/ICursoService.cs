@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<AsignarAlumnosResDto> Asignar(AsignarReqDto asignarReqDto);
         List<CursoDto> Disponibles();
         ProgresoResDto ObtenerProgreso(int cursoId, string emailUsuario);
+        ProgresoAlumnoEnCursoDto ObtenerProgresoAlumno(int cursoId, string emailUsuario);
         List<ProgresoAlumnoEnCursoDto> ObtenerProgresoAlumnos(int cursoId);
     }
 }

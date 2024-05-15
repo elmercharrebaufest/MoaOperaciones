@@ -151,6 +151,23 @@ namespace SustitucionMOAUtils.Services
 
             return progresos.Select(grouping => new ProgresoAlumnoEnCursoDto(grouping.First())).ToList();
         }
+
+        public ProgresoAlumnoEnCursoDto ObtenerProgresoAlumno(int cursoId, string emailUsuario)
+        {
+            Curso curso;
+            Usuario usuario;
+            var cursoValido = ValidarAcceso(emailUsuario, cursoId, out usuario, out curso);
+
+            if (!cursoValido)
+            {
+                throw new ValidationCustomException(ERROR_SIN_ACCESO);
+            }
+
+            return curso.ProgresosDelCurso
+                .Where(progreso => progreso.UsuarioId == usuario.Id)
+                .Select(progreso => new ProgresoAlumnoEnCursoDto(progreso))
+                .First();
+        }
         private bool ValidarAcceso(ActualizarProgresoReqDto actualizarProgresoReqDto, out Usuario usuario, out Curso curso)
         {
             return ValidarAcceso(actualizarProgresoReqDto.EmailUsuario, actualizarProgresoReqDto.CursoId, out usuario, out curso);

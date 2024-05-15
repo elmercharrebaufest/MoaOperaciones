@@ -169,5 +169,30 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.REALIZAR_CURSOS)]
+        [HttpGet]
+        public ContentResult ObtenerProgresoAlumno(int cursoId)
+        {
+            var response = new SustitucionMOAApiResponse<ProgresoAlumnoEnCursoDto>();
+            try
+            {
+                var emailUsuario = SessionPersister.getUsername();
+                response.Data = cursoService.ObtenerProgresoAlumno(cursoId, emailUsuario);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }

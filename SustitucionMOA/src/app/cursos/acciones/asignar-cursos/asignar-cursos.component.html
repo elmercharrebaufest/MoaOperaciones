@@ -1,6 +1,6 @@
-<p-dialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
-  [style]="{width: '80%', minWidth: '200px', maxWidth:'700px', minHeight:'550px',maxHeight:'550px',overflowY:'auto' }"
-  [minY]="70" [draggable]="false" appendTo="body">
+<p-dialog #asignarCursosDialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
+  [style]="{width: '100%', minWidth: '450px', maxWidth:'700px', height:'550px',maxHeight:'550px',overflowY:'auto' }"
+  [draggable]="false" appendTo="body">
   <p-header>
     Asignar alumnos curso <br>
     {{(curso | async)?.Nombre}}

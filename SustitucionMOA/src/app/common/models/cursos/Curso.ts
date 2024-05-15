@@ -38,6 +38,7 @@ export interface ProgresoAlumnoEnCursoDto {
     EstadoCurso: EstadoCurso,
     EstadoDescripcion: string,
     MailAlumno: string,
+    FechaIniciado: string,
     FechaUltimoIntento: string,
     FechaCompletado: string,
 }

@@ -1,16 +1,49 @@
 <p-dialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
-  [style]="{width: '80%', minWidth: '200px', maxWidth:'700px', minHeight:'550px', maxHeight:'550px',overflowY:'auto'}"
-  [minY]="70" [draggable]="false" appendTo="body">
+  [style]="{width: '95%', minWidth: '450px', maxWidth:'850px', height:'550px', maxHeight:'550px',overflowY:'auto'}"
+  [draggable]="false" appendTo="body">
   <p-header>
-    Progreso alumnos <br>
-    {{(curso | async)?.Nombre}}
+    <div class="w-full flex justify-content-center">
+      Progreso alumnos <br>
+      {{(curso | async)?.Nombre}}
+    </div>
   </p-header>
-  <spinner #spinner></spinner>
-  <mensaje #mensaje></mensaje>
-  <div class="w-full h-fit max-h-450px overflow-y-auto">
-    <p *ngFor="let progreso of progresos">
-      {{progreso.MailAlumno}} - {{progreso.EstadoDescripcion}}
-    </p>
+  <div class="row myRow w-full h-fit max-h-425px overflow-y-auto">
+    <div class="clearfix myTables">
+      <spinner #spinner></spinner>
+      <mensaje #mensaje></mensaje>
+      <ng-container *ngIf="progresos?.length">
+        <table class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" id="tableModal"
+          role="grid" style="width: 100%; padding:10px 0; background: white !important;" cellspacing="0">
+          <thead>
+            <tr role="row">
+              <th class="fw-bold fs-medium" id="mailReporteAlumnos" tabindex="0" rowspan="1" colspan="1">
+                Mail
+              </th>
+              <th class="fw-bold fs-medium" id="estadolReporteAlumnos" tabindex="0" rowspan="1" colspan="1">
+                Estado
+              </th>
+              <th class="fw-bold fs-medium" id="iniciadoReporteAlumnos" tabindex="0" rowspan="1" colspan="1">
+                Iniciado
+              </th>
+              <th class="fw-bold fs-medium" id="intentoReporteAlumnos" tabindex="0" rowspan="1" colspan="1">
+                Ultimo intento
+              </th>
+              <th class="fw-bold fs-medium" id="comletadoReporteAlumnos" tabindex="0" rowspan="1" colspan="1">
+                Completado
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let progreso of progresos">
+              <td>{{progreso.MailAlumno}}</td>
+              <td>{{progreso.EstadoDescripcion}}</td>
+              <td>{{progreso.FechaIniciado||'---'}}</td>
+              <td>{{progreso.FechaUltimoIntento || '---'}}</td>
+              <td>{{progreso.FechaCompletado || '---'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </ng-container>
+    </div>
   </div>
-
 </p-dialog>

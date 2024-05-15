@@ -35,4 +35,7 @@ export class CursosService extends BaseService {
   obtenerProgresoAlumnos(cursoId: number): Observable<ApiResponse<ProgresoAlumnoEnCursoDto[]>> {
     return this.http.get(`${this.baseUrl}/ObtenerProgresoAlumnos?cursoId=${cursoId}`)
   }
+  obtenerProgresoAlumno(cursoId: number): Observable<ApiResponse<ProgresoAlumnoEnCursoDto>> {
+    return this.http.get(`${this.baseUrl}/ObtenerProgresoAlumno?cursoId=${cursoId}`)
+  }
 }

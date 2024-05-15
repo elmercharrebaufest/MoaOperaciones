@@ -19,8 +19,8 @@ hr {
     margin-bottom: 0px;
 }
 
-.max-h-450px {
-    max-height: 450px;
+.max-h-425px {
+    max-height: 425px;
 }
 
 .w-full {
@@ -29,4 +29,12 @@ hr {
 
 .h-fit {
     height: fit-content;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-content-center {
+    justify-content: center;
 }
