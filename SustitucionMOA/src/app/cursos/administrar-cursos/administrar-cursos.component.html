@@ -49,8 +49,13 @@
                   ;let odd=odd" role="row" [class.odd]="!odd">
                 <td>{{curso.Nombre}}</td>
                 <td>
-                  <p-button tooltipPosition="bottom" pTooltip="Asignar Usuarios" icon="pi pi-user-plus"
-                    (click)="asignarAlumnos(curso)"></p-button>
+                  <div class="contenedor-acciones">
+                    <p-button tooltipPosition="bottom" pTooltip="Asignar Alumnos" icon="pi pi-user-plus"
+                      (click)="asignarAlumnos(curso)"></p-button>
+
+                    <p-button tooltipPosition="bottom" pTooltip="Ver progreso" icon="pi pi-eye"
+                      (click)="verProgresoAlumnos(curso)"></p-button>
+                  </div>
                 </td>
               </tr>
             </tbody>
@@ -76,6 +81,7 @@
   </section>
   <!--End CONTENT-->
 </div>
+<app-ver-progreso-alumnos [curso]="cursoAVerProgreso">
+</app-ver-progreso-alumnos>
 <app-asignar-cursos [curso]="cursoAAsignarAlumnos">
-
 </app-asignar-cursos>

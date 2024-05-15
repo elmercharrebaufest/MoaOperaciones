@@ -3,7 +3,7 @@
 	[Id] INT NOT NULL PRIMARY KEY IDENTITY(1,1),
 	[UsuarioId] INT NOT NULL,
 	[CursoId] INT NOT NULL,
-	[DetalleProgreso] NCHAR(255) NULL, 
+	[DetalleProgreso] VARCHAR(MAX) NULL, 
     [FechaInicio] DATETIME NULL,
 	[FechaUltimoIntento] DATETIME NULL,
 	[FechaCompletado] DATETIME NULL,

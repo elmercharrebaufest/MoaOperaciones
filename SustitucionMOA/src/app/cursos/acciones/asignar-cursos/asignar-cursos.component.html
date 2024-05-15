@@ -1,6 +1,6 @@
 <p-dialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
-  [style]="{width: '350px', minWidth: '200px', maxWidth:'450px', maxHeigh:'550px', overflowY:'auto'}" [minY]="70"
-  [draggable]="false" appendTo="body">
+  [style]="{width: '80%', minWidth: '200px', maxWidth:'700px', minHeight:'550px',maxHeight:'550px',overflowY:'auto' }"
+  [minY]="70" [draggable]="false" appendTo="body">
   <p-header>
     Asignar alumnos curso <br>
     {{(curso | async)?.Nombre}}
@@ -48,7 +48,7 @@
     </div>
 
   </ng-container>
-  <div class="w-full overflow-y-auto  max-h-450px" *ngIf="resultados">
+  <div class="w-full h-fit overflow-y-auto  max-h-450px" *ngIf="resultados">
     <ng-container *ngFor="let item of resultados;let last=last">
       {{item.Mail}} -
       <i *ngIf="item.Resultado;else rechazado" class="pt-2 pi pi-check-circle" style="color:aquamarine"></i>

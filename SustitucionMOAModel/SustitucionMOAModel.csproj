@@ -72,6 +72,8 @@
     <Compile Include="Dto\Curso\AsignarReqDto.cs" />
     <Compile Include="Dto\Curso\CursoDto.cs" />
     <Compile Include="Dto\Curso\CursoUsuarioDto.cs" />
+    <Compile Include="Dto\Curso\ProgresoAlumnoEnCursoDto.cs" />
+    <Compile Include="Dto\Curso\ProgresoResDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />

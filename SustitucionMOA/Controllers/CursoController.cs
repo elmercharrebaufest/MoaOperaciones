@@ -24,7 +24,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ContentResult Progreso(int cursoId)
         {
-            var response = new SustitucionMOAApiResponse<string>();
+            var response = new SustitucionMOAApiResponse<ProgresoResDto>();
             try
             {
                 var emailUsuario = SessionPersister.getUsername();
@@ -129,6 +129,30 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = cursoService.Asignar(asignarReqDto);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ADMINISTRAR_CURSOS)]
+        [HttpGet]
+        public ContentResult ObtenerProgresoAlumnos(int cursoId)
+        {
+            var response = new SustitucionMOAApiResponse<List<ProgresoAlumnoEnCursoDto>>();
+            try
+            {
+                response.Data = cursoService.ObtenerProgresoAlumnos(cursoId);
             }
             catch (InfoCustomException ice)
             {

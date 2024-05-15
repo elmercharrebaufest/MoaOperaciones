@@ -1,3 +1,16 @@
-<p>
-  ver-progreso-alumnos works!
-</p>
+<p-dialog [(visible)]="display" (onHide)="cerrar()" [modal]="true" [responsive]="true"
+  [style]="{width: '80%', minWidth: '200px', maxWidth:'700px', minHeight:'550px', maxHeight:'550px',overflowY:'auto'}"
+  [minY]="70" [draggable]="false" appendTo="body">
+  <p-header>
+    Progreso alumnos <br>
+    {{(curso | async)?.Nombre}}
+  </p-header>
+  <spinner #spinner></spinner>
+  <mensaje #mensaje></mensaje>
+  <div class="w-full h-fit max-h-450px overflow-y-auto">
+    <p *ngFor="let progreso of progresos">
+      {{progreso.MailAlumno}} - {{progreso.EstadoDescripcion}}
+    </p>
+  </div>
+
+</p-dialog>

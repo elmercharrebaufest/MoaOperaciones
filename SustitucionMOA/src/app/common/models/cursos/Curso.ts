@@ -30,4 +30,15 @@ export interface ActualizarProgresoReqDto {
 export interface AsignarAlumnosResDto {
     Resultado: boolean, Mail: string
 }
+export interface ProgresoResDto {
+    TiempoSesion?: string;
+    DetalleProgreso: string;
+}
+export interface ProgresoAlumnoEnCursoDto {
+    EstadoCurso: EstadoCurso,
+    EstadoDescripcion: string,
+    MailAlumno: string,
+    FechaUltimoIntento: string,
+    FechaCompletado: string,
+}
 export const CURSOS_BASE_PATH = "cursos"

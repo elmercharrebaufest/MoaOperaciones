@@ -9,9 +9,7 @@ namespace SustitucionMOAModel.Dto.Curso
             CursoId = progreso.CursoId;
             AccesoCurso = progreso.Curso.Acceso;
             NombreCurso = progreso.Curso.Nombre;
-            EstadoCurso = progreso.FechaCompletado != null ? EstadoCursoEnum.Completado :
-                          progreso.FechaUltimoIntento != null ? EstadoCursoEnum.EnProgreso :
-                          progreso.FechaInicio != null ? EstadoCursoEnum.Iniciado : EstadoCursoEnum.SinIniciar;
+            EstadoCurso = progreso.EstadoEnum();
         }
 
         public int CursoId { get; set; }

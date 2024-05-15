@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto.Curso;
+using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -36,6 +37,13 @@ namespace SustitucionMOAModel.Entities
         {
             Alumno = usuario;
             CursoId = cursoId;
+        }
+
+        public EstadoCursoEnum EstadoEnum()
+        {
+            return FechaCompletado != null ? EstadoCursoEnum.Completado :
+                         FechaUltimoIntento != null ? EstadoCursoEnum.EnProgreso :
+                         FechaInicio != null ? EstadoCursoEnum.Iniciado : EstadoCursoEnum.SinIniciar;
         }
     }
 }

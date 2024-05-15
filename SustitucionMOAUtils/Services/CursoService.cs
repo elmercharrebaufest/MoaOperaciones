@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOAFotmatter;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.Curso;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -45,11 +46,12 @@ namespace SustitucionMOAUtils.Services
                     progreso.MinutosCursados = 0;
                     break;
                 case EstadoCursoEnum.EnProgreso:
+                    progreso.MinutosCursados += string.IsNullOrEmpty(actualizarCursoReq.TiempoSesion) ? 0 : DataFormatter.ParseMinutes(actualizarCursoReq.TiempoSesion);
                     progreso.DetalleProgreso = actualizarCursoReq.DatosProgreso;
                     progreso.FechaUltimoIntento = fechaActualizacion;
                     break;
                 case EstadoCursoEnum.Completado:
-
+                    progreso.MinutosCursados += string.IsNullOrEmpty(actualizarCursoReq.TiempoSesion) ? 0 : DataFormatter.ParseMinutes(actualizarCursoReq.TiempoSesion);
                     if (progreso.MinutosCursados < curso.MinimosMinutosCursada)
                     {
                         throw new ValidationCustomException("El tiempo de cursada es demasiado corto");
@@ -86,7 +88,7 @@ namespace SustitucionMOAUtils.Services
             return disponibles;
         }
 
-        public string ObtenerProgreso(int cursoId, string emailUsuario)
+        public ProgresoResDto ObtenerProgreso(int cursoId, string emailUsuario)
         {
             Usuario usuario;
             Curso curso;
@@ -102,7 +104,11 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException(ERROR_SIN_ACCESO);
             }
             var detalleProgreso = progreso.DetalleProgreso ?? "";
-            return detalleProgreso.TrimEnd();
+            return new ProgresoResDto
+            {
+                DetalleProgreso = detalleProgreso.TrimEnd(),
+                TiempoSesion = progreso.MinutosCursados > 0 ? DataFormatter.FormatMinutes(progreso.MinutosCursados) : "0000:00:00.00"
+            };
         }
         public List<AsignarAlumnosResDto> Asignar(AsignarReqDto asignarReqDto)
         {
@@ -135,6 +141,15 @@ namespace SustitucionMOAUtils.Services
             }
             repositorio.GuardarCambios();
             return resultados;
+        }
+
+        public List<ProgresoAlumnoEnCursoDto> ObtenerProgresoAlumnos(int cursoId)
+        {
+            var curso = ObtenerCurso(cursoId);
+            //Tomamos primer progreso de cada usuario
+            var progresos = curso.ProgresosDelCurso.GroupBy(x => x.UsuarioId);
+
+            return progresos.Select(grouping => new ProgresoAlumnoEnCursoDto(grouping.First())).ToList();
         }
         private bool ValidarAcceso(ActualizarProgresoReqDto actualizarProgresoReqDto, out Usuario usuario, out Curso curso)
         {

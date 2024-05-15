@@ -54,5 +54,42 @@ namespace SustitucionMOAFotmatter
             }
             return cuit.Substring(2, cuit.Length - 3);
         }
+        public static int ParseMinutes(string timeString)
+        {
+            if (string.IsNullOrEmpty(timeString))
+            {
+                throw new ArgumentNullException(nameof(timeString));
+            }
+
+            string[] parts = timeString.Split(':');
+
+            if (parts.Length != 3)
+            {
+                throw new FormatException("Invalid time format. Expected 'hhhh:mm:ss.ms'.");
+            }
+
+            int hours = int.Parse(parts[0]);
+            int minutes = int.Parse(parts[1]);
+            int seconds = int.Parse(parts[2].Split('.')[0]); // Extract seconds before decimal point
+            int milliseconds = int.Parse(parts[2].Split('.')[1]); // Extract milliseconds after decimal point
+
+            return hours * 60 + minutes + seconds / 60 + milliseconds / (60 * 1000);
+        }
+
+        public static string FormatMinutes(int totalMinutes)
+        {
+            if (totalMinutes < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(totalMinutes), "Total minutes cannot be negative.");
+            }
+
+            int hours = totalMinutes / 60;
+            int remainingMinutes = totalMinutes % 60;
+
+            int seconds = remainingMinutes % 60;
+            int milliseconds = (remainingMinutes * 60 * 1000) % 1000; // Calculate milliseconds preserving precision
+
+            return $"{hours:04d}:{remainingMinutes:02d}:{seconds:02d}.{milliseconds:03d}";
+        }
     }
 }

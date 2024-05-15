@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BaseService } from '../common/services/BaseService';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, ObservedValueOf } from 'rxjs';
 import { ApiResponse } from '../common/models/response';
-import { ActualizarProgresoReqDto, AsignarAlumnosResDto, AsignarReqDto, CursoDto, CursoUsuarioDto } from '../common/models/cursos/Curso';
+import { ActualizarProgresoReqDto, AsignarAlumnosResDto, AsignarReqDto, CursoDto, CursoUsuarioDto, ProgresoAlumnoEnCursoDto, ProgresoResDto } from '../common/models/cursos/Curso';
 
 @Injectable()
 export class CursosService extends BaseService {
@@ -23,7 +23,7 @@ export class CursosService extends BaseService {
     return this.http.post
       (`${this.baseUrl}/Asignar`, req)
   }
-  progreso(cursoId: number): Observable<ApiResponse<string>> {
+  progreso(cursoId: number): Observable<ApiResponse<ProgresoResDto>> {
     return this.http.get(`${this.baseUrl}/Progreso?cursoId=${cursoId}`)
   }
 
@@ -31,5 +31,8 @@ export class CursosService extends BaseService {
     return this.http.patch
       (`${this.baseUrl}/ActualizarProgreso`, progreso)
 
+  }
+  obtenerProgresoAlumnos(cursoId: number): Observable<ApiResponse<ProgresoAlumnoEnCursoDto[]>> {
+    return this.http.get(`${this.baseUrl}/ObtenerProgresoAlumnos?cursoId=${cursoId}`)
   }
 }

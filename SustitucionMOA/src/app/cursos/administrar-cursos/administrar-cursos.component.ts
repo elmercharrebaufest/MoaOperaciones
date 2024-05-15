@@ -21,6 +21,7 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
   mensajeComponent: MensajeComponent;
 
   cursoAAsignarAlumnos?: BehaviorSubject<CursoDto | null> = new BehaviorSubject(null);
+  cursoAVerProgreso?: BehaviorSubject<CursoDto | null> = new BehaviorSubject(null);
   get isVisible(): boolean {
     return this.cursos && !!this.cursos.length
   }
@@ -50,5 +51,8 @@ export class AdministrarCursosComponent extends CursosBaseComponent implements O
 
   asignarAlumnos(curso: CursoDto) {
     this.cursoAAsignarAlumnos.next(curso)
+  }
+  verProgresoAlumnos(curso: CursoDto) {
+    this.cursoAVerProgreso.next(curso)
   }
 }

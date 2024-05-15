@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { BehaviorSubject, Subscription, pipe } from 'rxjs';
 import { AsignarAlumnosResDto, CursoDto } from '../../../common/models/cursos/Curso';
 import { CursosService } from '../../cursos.service';
@@ -36,7 +36,7 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
 
   controlBuscarUsuarios = new FormControl(null);
 
-  subscriptions = new Subscription();
+  subscriptionsLocal = new Subscription();
 
   constructor(private service: CursosService, private usuarioService: UsuarioService,
     protected sessionDataService: SessionDataService,
@@ -47,7 +47,7 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.subscriptions.add(
+    this.subscriptionsLocal.add(
       this.curso.subscribe(value => {
         this.display = !!value;
         if (!this.display) {
@@ -55,9 +55,9 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
         }
       })
     )
-    this.subscriptions.add(
+    this.subscriptionsLocal.add(
       this.controlBuscarUsuarios.valueChanges.pipe(
-        filter(mail => mail.length >= 3),
+        filter(mail => mail && mail.length >= 3),
         debounceTime(1000)
       ).subscribe(mail => {
         this.spinnerComponent.showIt();
@@ -113,5 +113,9 @@ export class AsignarCursosComponent extends BaseComponent implements OnInit {
     this.controlBuscarUsuarios.setValue(null)
     this.resultados = undefined;
     this.mensajeComponent.setMsgsEmpty();
+  }
+
+  extraOnDestroy(): void {
+    this.subscriptionsLocal.unsubscribe()
   }
 }
