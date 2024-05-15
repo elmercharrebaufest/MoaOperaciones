@@ -22,6 +22,7 @@ import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Planta } from "../../common/models/ordenes-residuos/planta";
 import { Domicilio } from "../../common/models/ordenes-residuos/domicilio";
 import { EstadoOrdenResiduosEnum } from "../../common/models/ordenes-residuos/estadoOrdenResiduos";
+import { AutocompleteLocalidadComponent } from "../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
 
 
 @Component({
@@ -39,6 +40,8 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
+    @ViewChild(AutocompleteLocalidadComponent)
+    private autocompleteLocalidadComponent: AutocompleteLocalidadComponent;
     
     constructor(
         protected service: OrdenesResiduosService,
@@ -54,7 +57,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     
     listaClientes: Proveedor[] = [];
     listaProductos: Material[];
-    // listaLocalidades: LocalidadDto[] = [];
     listaPlantas: Planta[] = [];
     listaDomicilios: Domicilio[] = [];
 
@@ -70,6 +72,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     validaCPEDG: boolean = false;
     procesandoCampo: Partial<Record<keyof OrdenCargaResiduosDto, boolean>> = {};
     mensajeSuccess: string = "";
+    localidadDescripcion: string = "";
 
     get NoPuedeEditarCuitsTerceros(): boolean {
         return (this.ordenResiduos.Id &&
@@ -86,7 +89,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
 
         this.navService.setSeccionList([]);
         this.obtenerProductos();
-        // this.obtenerLocalidades();
 
         if (ordenId > 0) {
             this.obtenerOrdenDeCargaResiduos(ordenId);
@@ -147,9 +149,9 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (clientes) {
                     this.listaClientes = this.ordenarYFiltrarProveedores(clientes);
                     if (this.ordenResiduos.Cliente) {
+                        this.ordenResiduos.Cliente = this.listaClientes.find((v, i, a) => { return v.Id == this.ordenResiduos.Cliente.Id }) || this.ordenResiduos.Cliente;
                         this.onClienteSeleccionado();
                     }
-                    // ObtenerDestinos??
                 }
                 else {
                     this.listaClientes = [];
@@ -487,6 +489,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (orden) {
                     this.ordenResiduos = orden;
                     this.cargarClientes();
+                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => { return v.Id == this.ordenResiduos.Producto.Id}) || this.ordenResiduos.Producto;
+                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => { return v.Id == this.ordenResiduos.Almacen.Id }) || this.ordenResiduos.Almacen;
+                    this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
+                    this.autocompleteLocalidadComponent.getLocalidadById();
+                    this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
                 }
             },
             (err) => {

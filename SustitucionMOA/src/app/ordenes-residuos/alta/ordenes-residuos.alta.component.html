@@ -58,11 +58,16 @@
                                 <div class="formulario-label">
                                     Destino mercadería (localidad - provincia):
                                 </div>
-                                <div class="styled-select" style="overflow: initial;">
+                                <div *ngIf="!ordenResiduos.Id" class="styled-select" style="overflow: initial;">
                                     <app-autocomplete-localidad
                                         (onLocalidadSeleccionada)="onLocalidadSeleccionada($event)"
                                         [localidad_Id]="ordenResiduos.Localidad.Id">
                                     </app-autocomplete-localidad>
+                                </div>
+                                <div *ngIf="ordenResiduos.Id > 0" class="styled-select">
+                                    <input type="text"
+                                        [(ngModel)]="localidadDescripcion"
+                                        disabled="true">
                                 </div>
                             </div>
 
