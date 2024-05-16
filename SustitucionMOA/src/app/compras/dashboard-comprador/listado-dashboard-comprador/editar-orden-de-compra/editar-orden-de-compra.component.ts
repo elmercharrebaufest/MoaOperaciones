@@ -37,6 +37,9 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
     @Output() cerrarEditarOcEmitter = new EventEmitter();
     @Output() guardarEditarOcEmitter = new EventEmitter<AdjudicacionEdicionDto>();
     displayTextos: boolean;
+    camposDeshabilitados: boolean;
+    monedaDeshabilitada: boolean;
+
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -147,6 +150,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
         if (!this.verificarEliminacionPosiciones()) {
             if (this.ordenDeCompra.AdjudicacionPosiciones != null) {
                 this.ordenDeCompra.AdjudicacionPosiciones[index].Eliminado = true;
+                this.monedaDeshabilitada = true;
             }
         }
     }
@@ -158,6 +162,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
                 this.ordenDeCompra.AdjudicacionPosiciones[index].SubposicionesCompras.forEach(subpo => {                   
                     subpo.Eliminado = true;                   
                 });
+                this.monedaDeshabilitada = true;
             }
         }
     }
@@ -169,6 +174,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
             if (todasSubposicionesEliminadas) {
                 posicion.Eliminado = true;
             }
+            this.monedaDeshabilitada = true;
         }
     }
 
@@ -235,5 +241,16 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
         }
     }
 
+    public onChangeMoneda(ordenDeCompra: any, event) {
+        if(ordenDeCompra.Moneda_Id == event.value.Id){
+            this.camposDeshabilitados = false;
+        } else {
+            this.camposDeshabilitados = true;
+        }
+    }
+
+    public onChangeCampos() {
+        this.monedaDeshabilitada = true;
+    }
 
 }
