@@ -137,6 +137,7 @@ namespace SustitucionMOAWS.WSConsumers
                 entrySheetService.PackageNumber = "0000000002";
                 entrySheetService.LineNumber = contadorDeInstancia.ToString("D10");
                 entrySheetService.ShortText = "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo";
+
                 contadorDeInstancia++;
 
                 xmlBuilder.AppendLine(GenerateEntrySheetServiceXml(entrySheetService));

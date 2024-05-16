@@ -29,7 +29,7 @@ namespace SustitucionMOAModel.Dto
         }
         public string Suplente { get; set; }
 
-       
+
 
         public UsuarioDto(Usuario usuario)
         {
@@ -61,7 +61,8 @@ namespace SustitucionMOAModel.Dto
             Permisos = usuario.ObtenerPermisos();
             RazonSocial = usuario.ObtenerRazonSocial();
             OrganizacionDeCompra = usuario.OrganizacionDeCompra;
-        }
+            Suplente = usuario.Suplente;
+    }
 
         private string ObtenerCodigoProveedor()
         {

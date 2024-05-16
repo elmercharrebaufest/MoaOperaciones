@@ -16,6 +16,7 @@ using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
 using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
+
 namespace SustitucionMOAUtils.Services
 {
     public class UsuarioService : IUsuarioService
@@ -156,7 +157,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA"
+                "FLETE MOA", "ALLES","ADMINCONTMA"
             };
 
             List<string> contacto = new List<string>
@@ -164,7 +165,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -178,9 +179,11 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+
+            usuario.Suplente = suplente;
 
             usuario.RemoverRolesEditables();
 
@@ -252,7 +255,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+                Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == idUsuario);
 
                 var rolesDto = usuario.Roles.Select(x => new RolDropdownDto(x)).ToList();
 
@@ -863,7 +866,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se ha encontrado un usuario para asignar la cuit.");
             }
 
-            if(usuario.Proveedores.Any(p=>p.CUIT == datosAsignar.CuitAAsignar))
+            if (usuario.Proveedores.Any(p => p.CUIT == datosAsignar.CuitAAsignar))
             {
                 throw new InfoCustomException("El usuario ya tiene asignada la cuit solicitada.");
             }

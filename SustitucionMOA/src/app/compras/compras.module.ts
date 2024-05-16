@@ -93,8 +93,14 @@ import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-se
 import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
 
 
+import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
+import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones-proveedor/listado-estado-certificaciones-proveedor.component';
+import { ModalAltaEntradaDeServicioProveedorComponent } from "./dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio-proveedor/modal-alta-entrada-de-servicio-proveedor.component";
+import { ButtonModule } from 'primeng/button';
+import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
 @NgModule({
     imports: [
+        ButtonModule,
         CommonModule,
         ComprasRoutingModule,
         FormsModule,
@@ -179,9 +185,13 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
         ListadoDashboardCertificacionDeServiciosComponent,
+        ListadoDashboardCertificacionDeServiciosProveedoresComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
-        ModalAltaEntradaDeServicioComponent
+        CustomDecimalPipe,
+        ListadoEstadoCertificacionesProveedorComponent,
+        ModalAltaEntradaDeServicioComponent,
+        ModalAltaEntradaDeServicioProveedorComponent
     ],
     providers: [
         ComprasService,

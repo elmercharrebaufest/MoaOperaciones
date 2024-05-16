@@ -1,0 +1,428 @@
+<div id="certificacionesDeServicios" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
+    <!-- HEADER -->
+    <!--section class="container-fluid clearfix"-->
+    <section class="container-fluid clearfix">
+        <div class="row headerTitle">
+            <div class="col-xs-12 col-sm-10">
+                <strong>
+                    Dashboard - Proveedor - Lista de todas las OCs - Certificación de Servicios
+                </strong>
+            </div>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
+            <i id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+            <i id="btn-table" class="fa fa-table" title="Configuracion Columnas" (click)="togglePanel('columns')" [class.i-disabled]="!displayContent"></i>
+        </div>
+    </section>
+
+    <!-- SEARCH PANEL -->
+    <section class="aux-panel" id="search">
+        <div class="aux-panel-header">
+            Refinar resultados
+            <i class="pi pi-times" (click)="togglePanel('search')"></i>
+        </div>
+        <div class="aux-panel-body">
+            <div class="search-filters">
+                <div class="filtro-nro-orden col-md-3">
+                    <p>Número de OC:</p>
+                    <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+                </div>
+                <div class="filtro-fechas col-md-3">
+                    <p>Ver:</p>
+                    <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
+                </div>
+
+                <div class="SearchBtn col-md-3 p-d-flex vertical-align-middle">
+                    <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="recalculando || !displayContent">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COLUMNS CONFIG PANEL -->
+    <section class="aux-panel hidden" id="columns">
+        <div class="aux-panel-header">
+            Ver columnas
+            <i class="pi pi-times" (click)="togglePanel('columns')"></i>
+        </div>
+        <div class="aux-panel-body">
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[0] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[1] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[2] }"></ng-container>
+            <ng-container *ngTemplateOutlet="columnList; context: { $implicit: userTablesConfig[3] }"></ng-container>
+        </div>
+        <ng-template #columnList let-t>
+            <div class="columns-config-container" *ngIf="t">
+                <h4 *ngIf="tieneColumnasOpcionales(t.columns)">{{ t.name }}</h4>
+                <ul>
+                    <li *ngFor="let col of t.columns; index as i">
+                        <label [hidden]="col.required">
+                            <input type="checkbox"
+                                   [id]="col.id+'_'+index"
+                                   [disabled]="col.required"
+                                   [checked]="col.visible"
+                                   [value]="col.id"
+                                   (click)="actualizarConfiguarcionDeTablas(t.name, col.id)" />
+                            {{col.header}}&nbsp;&nbsp;&nbsp;
+                        </label>
+                    </li>
+                </ul>
+            </div>
+        </ng-template>
+    </section>
+
+    <!-- ERROR MESSAGE -->
+    <div class="col-xs-12" *ngIf="isVisibleError()">
+        <div class="alert alert-danger">
+            <i aria-hidden="true" class="fa fa-exclamation-triangle msj-error"></i>{{mensajeError}}
+        </div>
+    </div>
+
+    <spinner *ngIf="!recalculando"></spinner>
+
+    <div class="container-table" *ngIf="displayContent">
+        <!-- FILTERS ROW -->
+        <div class="filters-row">
+            <i class="pi pi-filter"></i>
+            <div class="filtro-saldo">
+                <div>
+                    <input [disabled]="disabledFilter" type="checkbox" [(ngModel)]="ocFilterApplied" tooltip="Saldo pendiente en ordenes de compra" (click)="filtrarElementosSinSaldoACertificar($event.target.checked)">
+                    <label>Saldo pendiente</label>
+                </div>
+            </div>
+            <div class="filtro-solicitante">
+                <p-multiSelect #filtroSolicitantes [disabled]="disabledFilter" id="select-solicitante" appendTo="body" [options]="listadoGeneralSolicitantes" defaultLabel="Solicitantes" [maxSelectedLabels]="1" (onChange)="filtrarPorSolicitantes($event)"></p-multiSelect>
+            </div>
+        </div>
+        <!-- TABLA 1: ORDENES -->
+        <p-table #tabla class="level1"
+                 id="ordenes"
+                 [value]="tablaPO"
+                 [responsive]="true"
+                 dataKey="NumeroOrdenDeCompra"
+                 [columns]="columns"
+                 [paginator]="true"
+                 [alwaysShowPaginator]="false"
+                 [loading]="loading"
+                 [rows]="10"
+                 [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
+                 [autoLayout]="true"
+                 rowExpandMode="single">
+            <!-- TABLE 1 HEADERS -->
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th></th>
+                    <ng-container *ngFor="let col of userTablesConfig[0].columns">
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+
+            <!-- TABLE 1 BODY -->
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+                <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
+                    <td>
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
+                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                        </a>
+                    </td>
+                    <ng-container *ngFor="let col of userTablesConfig[0].columns">
+                        <td *ngIf="col.visible">{{rowData[col.field]}}</td>
+                    </ng-container>
+                </tr>
+            </ng-template>
+
+            <!-- TABLE 1 EMPTY MESSAGE -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('ordenes')">No hay ordenes de compra para mostrar</td>
+                </tr>
+            </ng-template>
+
+            <!-- TABLE 1 ROW EXPANSION: POSICIONES -->
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
+                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
+                    <td [attr.colspan]="cantidadColumnasTabla('ordenes')">
+                        <p-table #tablaPosiciones
+                                 id="posiciones"
+                                 class="level2"
+                                 [value]="rowData.Posiciones"
+                                 dataKey="Id"
+                                 [paginator]="true"
+                                 [alwaysShowPaginator]="false"
+                                 [rows]="40"
+                                 (onRowExpand)="setExpanded(tablaPosiciones)"
+                                 (onRowCollapse)="setExpanded(tablaPosiciones)"
+                                 rowExpandMode="single">
+                            <!-- TABLE 2 HEADERS -->
+                            <ng-template pTemplate="header" *ngIf="rowData.Posiciones && rowData.Posiciones.length > 0">
+                                <tr>
+                                    <th title="Arrow"></th>
+                                    <ng-container *ngFor="let col of userTablesConfig[1].columns">
+                                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                    </ng-container>
+                                </tr>
+                            </ng-template>
+
+                            <!-- TABLE 2 BODY-->
+                            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-posIndex="rowIndex">
+                                <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)" [class.highlighted]="expanded">
+                                    <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
+
+                                        <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
+                                        <td>
+                                            <input *ngIf="hidePositionCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)" />
+
+                                            <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
+                                                <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                            </a>
+                                        </td>
+                                        <ng-container *ngFor="let col of userTablesConfig[1].columns">
+                                            <td *ngIf="col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                        </ng-container>
+                                    </ng-container>
+                                </tr>
+                            </ng-template>
+
+                            <!-- TABLE 2 EMPTY MESSAGE -->
+                            <ng-template pTemplate="emptymessage">
+                                <tr>
+                                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('posiciones')">No hay posiciones de para mostrar</td>
+                                </tr>
+                            </ng-template>
+
+                            <!-- TABLE 2 ROW EXPANSION: ITEMS -->
+                            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-posIndex="rowIndex">
+                                <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))">
+                                    <!-- TABLE 3 -->
+                                    <td [attr.colspan]="cantidadColumnasTabla('posiciones')">
+                                        <!-- Spinner que se muestra mientras se actualizan las entradas de servicio -->
+                                        <div class="msj-actualizando" *ngIf="recalculando">
+                                            <div>Cargando, por favor espere...</div>
+                                            <div class="dot-pulse"></div>
+                                        </div>
+
+                                        <p-table *ngIf="!recalculando"
+                                                 #tablaItems
+                                                 id="items"
+                                                 class="level3"
+                                                 [value]="rowData.Items"
+                                                 dataKey="NumeroLinea"
+                                                 [paginator]="true"
+                                                 [alwaysShowPaginator]="false"
+                                                 [rows]="10"
+                                                 (onRowExpand)="setExpanded(tablaItems)"
+                                                 (onRowCollapse)="setExpanded(tablaItems)"
+                                                 rowExpandMode="single">
+
+                                            <!-- TABLE 3 HEADERS -->
+                                            <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
+                                                <tr>
+                                                    <th>
+                                                        <input *ngIf="hideCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
+                                                    </th>
+                                                    <ng-container *ngFor="let col of userTablesConfig[2].columns">
+                                                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-template>
+
+                                            <!-- TABLE 3 BODY -->
+                                            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
+                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100" [class.highlighted]="expanded">
+                                                    <td>
+                                                        <input type="checkbox"
+                                                               [(ngModel)]="rowData.isSelected"
+                                                               (change)="onCheckboxChange(rowData)"
+                                                               [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 || !hidePositionCheckboxToAll(rowData) ? true : null" />
+                                                        <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
+                                                            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                                        </a>
+                                                    </td>
+
+                                                    <ng-container *ngFor="let col of userTablesConfig[2].columns">
+                                                        <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
+                                                        <td *ngIf="col.type==='string' && col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                                        <!-- Celdas de columas con contenido customizado -->
+                                                        <td *ngIf="col.type==='custom' && col.visible">
+                                                            <input *ngIf="col.id === 'iCantidadACertificar'"
+                                                                   type="text"
+                                                                   name="cantidad"
+                                                                   (keypress)="numbersOnly($event)"
+                                                                   (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
+                                                                   (ngModelChange)="rowData.CantidadACertificar=$event"
+                                                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-3'"
+                                                                   required
+                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
+                                                                   [disabled]="rowData.Porcentaje==100"
+                                                                   [ngClass]="{'input-border-color': !isCantidadDisabled}" />
+
+                                                            <input *ngIf="col.id === 'iPorcentajeACertificar'"
+                                                                   type="text"
+                                                                   name="porcentaje"
+                                                                   (keypress)="numbersOnly($event)"
+                                                                   (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
+                                                                   (ngModelChange)="rowData.PorcentajeACertificar=$event"
+                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-3'"
+                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
+                                                                   required
+                                                                   disabled
+                                                                   [ngClass]="{ 'input-border-color': !isPorcentajeDisabled}" />
+
+                                                            <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje < 100 }">
+                                                                {{ rowData[col.field] | defaultData }}%
+                                                            </span>
+                                                            <span *ngIf="col.id==='iCantidadTotal'">
+                                                                {{ rowData.CantidadReal + rowData.CantidadACertificar }}
+                                                            </span>
+                                                            <span *ngIf="col.id==='iMonto'">
+                                                                {{ rowData.Cantidad * rowData.Importe | number:'1.0-2' }}
+                                                            </span>
+                                                            <span *ngIf="col.id === 'iMontoACertificar'">
+                                                                {{ rowData.CantidadACertificar * rowData.Importe | number:'1.0-2' }}
+                                                            </span>
+
+                                                            <button *ngIf="col.id === 'iAcciones'"
+                                                                    class="btn-refresh"
+                                                                    type="button"
+                                                                    pButton icon="fa fa-refresh"
+                                                                    (click)="habilitarCampoDeValorACertificar(i)"
+                                                                    [disabled]="rowData.CantidadACertificar === 0 || rowData.PorcentajeACertificar === 0">
+                                                            </button>
+                                                        </td>
+                                                    </ng-container>
+                                                </tr>
+                                            </ng-template>
+
+                                            <!-- TABLE 3 EMPTY MESSAGE -->
+                                            <ng-template pTemplate="emptymessage">
+                                                <tr>
+                                                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('posiciones')">No hay servicios para mostrar</td>
+                                                </tr>
+                                            </ng-template>
+
+                                            <!-- TABLE 3 ROW EXPANSION: ENTRADAS DE SERVICIO -->
+                                            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                                                <tr id="entradasServicio" *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100">
+                                                    <td [attr.colspan]="cantidadColumnasTabla('items')">
+                                                        <p-table id="entradasServicio"
+                                                                 class="level4"
+                                                                 [value]="rowData.EntradasServicio"
+                                                                 dataKey="Id">
+                                                            <!-- TABLE 4 HEADERS -->
+                                                            <ng-template pTemplate="header">
+                                                                <tr>
+                                                                    <ng-container *ngFor="let col of userTablesConfig[3].columns">
+                                                                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </ng-template>
+                                                            <!-- TABLE 4 HEADERS END -->
+                                                            <!-- TABLE 4 BODY -->
+                                                            <ng-template pTemplate="body" let-rowData let-item>
+                                                                <tr>
+                                                                    <ng-container *ngFor="let col of userTablesConfig[3].columns">
+                                                                        <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
+                                                                        <td *ngIf="col.type === 'string' && col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                                                        <td *ngIf="col.type === 'custom' && col.visible">
+                                                                            <ng-container *ngIf="col.id==='esAcciones'">
+                                                                                <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
+                                                                                    <i>
+                                                                                        <img src="../../../../../Content/images/icons/trash.svg" alt="trash" class="delete-icon" />
+                                                                                    </i>
+                                                                                </div>
+                                                                                <ng-template #SePuedeBorrar>
+                                                                                    <i>
+                                                                                        <img (click)="deleteES(rowData.Id, rowData.TemporalId, rowData.FechaContabilizacion)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
+                                                                                    </i>
+                                                                                </ng-template>
+                                                                            </ng-container>
+                                                                        </td>
+                                                                    </ng-container>
+                                                                </tr>
+                                                            </ng-template>
+
+                                                            <!-- TABLE 4 EMPTY MESSAGE -->
+                                                            <ng-template pTemplate="emptymessage">
+                                                                <tr>
+                                                                    <td class="emptyData" [attr.colspan]="cantidadColumnasTabla('items')">No hay servicios para mostrar</td>
+                                                                </tr>
+                                                            </ng-template>
+
+                                                        </p-table>
+                                                    </td>
+                                                    <!-- TABLE 4 END -->
+                                                </tr>
+                                            </ng-template>
+                                        </p-table>
+                                    </td>
+                                    <!-- TABLE 3 END -->
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </td>
+                    <!-- TABLE 2 END -->
+                </tr>
+            </ng-template>
+        </p-table>
+        <div class="container-button">
+            <button (click)="openModal()" class="btn btn-certificar" [attr.disabled]="itemSelected.length === 0? true : null">
+                Certificar ES - Ítem
+            </button>
+        </div>
+        <div class="reference-section">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="2">Referencias</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="reference-pending-release"></div>
+                        </td>
+                        <td>&emsp;Orden de compra pendiente de liberacion</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="reference-position-complete"></div>
+                        </td>
+                        <td>&emsp;Posición completa</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="reference-merchandise"></div>
+                        </td>
+                        <td>&emsp;La posición no recibe mas mercaderia</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <!-- POC TABLE END -->
+</div>
+
+
+    <app-modal-alta-entrada-de-servicio-proveedor *ngIf="showModal"
+                                        [showModal]="showModal"
+                                        [itemSelected]="itemSelected"
+                                        [posicionSelected] ="posicionSelected"
+                                        [elementSelected]="elementSelected"
+                                        [itemIdSelected]="itemIdSelected"
+                                        (closeModal)="onCloseModal()"
+                                        (enviarMensajeGrilla)="actualizarGrilla($event)">
+    </app-modal-alta-entrada-de-servicio-proveedor>
+
+
+
+<p-confirmDialog [(visible)]="showDialog"
+                 (closeDialog)="onCloseDialog()"
+                 header="Atención" icon="pi pi-exclamation-circle" width="425"
+                 appendTo="body" acceptLabel="Aceptar" rejectLabel="Cancelar">
+</p-confirmDialog>

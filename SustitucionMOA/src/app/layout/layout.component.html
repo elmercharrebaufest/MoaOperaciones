@@ -670,20 +670,25 @@
                                 <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
                                     REPORTE ORDEN DE COMPRA
                                 </a>
-                                </div>
-                                    <div>
-                                        <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
-                                            CERTIFICACIÓN DE SERVICIOS
-                                        </a>
-                                    </div>
-
-                                    <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
-                                        <a (click)="goToSeccion('/compras/crear-po-multiple')" href="#">
-                                            PUBLICAR PO MULTIPLE
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
+                            <div>
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS
+                                </a>
+                            </div>
+
+                            <div>
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServiciosProveedores')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS PROVEEDOR
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                                <a (click)="goToSeccion('/compras/crear-po-multiple')" href="#">
+                                    PUBLICAR PO MULTIPLE
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 

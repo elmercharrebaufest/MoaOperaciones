@@ -422,6 +422,8 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                         if (this.datosCartaPorteConDisconformidadCalidades)
                             this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
+
+                        this.setfilter();
                     }
                 },
                 (error: HttpErrorResponse) => {

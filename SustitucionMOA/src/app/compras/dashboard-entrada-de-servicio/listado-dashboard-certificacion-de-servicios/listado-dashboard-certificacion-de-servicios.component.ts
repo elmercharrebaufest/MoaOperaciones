@@ -91,6 +91,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     itemIdSelected: any[] = [];
     numeroLineaSelected: Set<string> = new Set();
     itemSelected: any[] = [];
+    posicionSelected: any[] = [];
     elementSelected: any[] = [];
     selectedItemId: number | null = null;
     selectedPosicionId: number | null = null;
@@ -183,7 +184,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         {
             name: 'Entradas',
             columns: [
-                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: true, visible: true },
@@ -426,7 +427,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                       
+
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -442,7 +443,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.spinnerComponent.hideIt();
 
                     this.displayContent = true;
-                    
+
                     // Se buscan las posiciones que están al 100%
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
@@ -464,13 +465,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
-      }
+    }
 
-    isPendingRelease(oc) : boolean{
+    isPendingRelease(oc): boolean {
         return oc.SubjToR != "";
     }
 
-    isNotReceibeMoreMerchandise(posicion) : boolean {
+    isNotReceibeMoreMerchandise(posicion): boolean {
         return posicion.NoMoreGR === "X";
     }
 
@@ -483,17 +484,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
 
-    deleteES(Id: any) {
+    deleteES(Id: any, TempId: any, AccountingDate: any) {
         this.confirmationService.confirm({
             message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
-            accept: () => { this.deleteById(Id); },
+            accept: () => { this.deleteById(Id, TempId, AccountingDate); },
             reject: () => { }
         });
     }
 
-    deleteById(Id) {
+    deleteById(Id, TempId, AccountingDate) {
         this.mensajeComponent.setMsgsEmpty();
-        this.service.deleteById(Id).subscribe((result: any) => {
+        this.service.deleteById(Id, TempId, AccountingDate).subscribe((result: any) => {
             if (result.logout == true) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -507,7 +508,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 this.itemSelected = [];
                 this.itemIdSelected = [];
 
-                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                //this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);asda
+                if (TempId !== null && TempId !== '') {
+                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + TempId);
+                }
+                else {
+                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                }
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
                     let closeBtn = document.getElementsByClassName("alert-success")[0].getElementsByClassName("close")[0] as HTMLElement;
@@ -555,6 +562,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
                 if (itemEncontrado) {
                     this.elementSelected = ordenCompra;
+                    this.posicionSelected = posicion;
                     break;
                 }
             }
@@ -659,7 +667,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe);
+        const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
         item.MontoACertificar = montoActualizado;
     }
 
@@ -1063,14 +1071,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularPorcentaje(oc): any[] {
-         const posicionesCompletas = oc.Posiciones.filter(posicion => {
+        const posicionesCompletas = oc.Posiciones.filter(posicion => {
             this.calcularValoresACertificar(posicion);
 
-        const items = posicion.Items || [];
-        const totalItems = items.length;
-        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
-        
-        return itemsCompletados === totalItems;
+            const items = posicion.Items || [];
+            const totalItems = items.length;
+            const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+
+            return itemsCompletados === totalItems;
 
         });
 
@@ -1089,5 +1097,49 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         } else {
             document.body.style.overflow = 'auto';
         }
+    }
+
+    isARP = false;
+
+    formatCurrency(columnField: string, rowData: any): string {
+        let formattedValue = rowData[columnField];
+
+        if ((rowData.MonedaDescripcion === 'ARP' || rowData.MonedaDescripcion === '$ ')
+            && (columnField === "MontoTotalString" || columnField === "PrecioUnidadString")) {
+            formattedValue = "$ " + formattedValue;
+        }
+
+        return formattedValue;
+    }
+
+
+    calculateAmount(colId: string, rowData: any): string {
+        if (colId === 'iMonto') {
+            const monto = rowData.Cantidad * rowData.Importe;
+            return this.formatAmount(monto, rowData.Moneda);
+        } else if (colId === 'iMontoACertificar') {
+            const montoACertificar = rowData.CantidadACertificar * rowData.Importe;
+            return this.formatAmount(montoACertificar, rowData.Moneda);
+        }
+        return '';
+    }
+
+    formatAmount(monto: number, moneda: string): string {
+        if (moneda === "ARP") {
+            this.isARP = true;
+            return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        } else {
+            this.isARP = false;
+            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        }
+    }
+
+    formatImport(columna: string, valor: any): string {
+
+        if (columna === 'iImporte' && this.isARP) {
+            valor = "$ " + valor;
+        }
+
+        return valor;
     }
 }

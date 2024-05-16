@@ -1,12 +1,17 @@
-﻿using SustitucionMOAAssets;
+﻿using Newtonsoft.Json;
+using Org.BouncyCastle.Ocsp;
+using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -16,16 +21,25 @@ using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Services.Description;
 
 namespace SustitucionMOA.Controllers
 {
     public class EntradaServicioController : BaseController
     {
         private readonly IEntradaServicioService EntradaServicioService;
+        private readonly IUsuarioService usuarioService;
 
-        public EntradaServicioController(IEntradaServicioService entradaServicio)
+        public EntradaServicioController(IEntradaServicioService entradaServicio, IUsuarioService usuarioService)
         {
             this.EntradaServicioService = entradaServicio;
+            this.usuarioService = usuarioService;
+        }
+
+        private UsuarioDto ObtenerUsuarioActual()
+        {
+            string userMail = SessionPersister.getUsername();
+            return usuarioService.GetUsuario(userMail);
         }
 
         //[ValidateInput(false)]
@@ -39,8 +53,8 @@ namespace SustitucionMOA.Controllers
                 //{
                 //    parametros.vendedor = SessionPersister.Proveedor;
                 //}
-
-                List<EntradaServicioCabeceraDto> result =  await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros);
+                UsuarioDto usuarioActual = ObtenerUsuarioActual();
+                List<EntradaServicioCabeceraDto> result = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
 
                 return JsonCustom(new { data = result });
             }
@@ -101,20 +115,119 @@ namespace SustitucionMOA.Controllers
                 //{
                 //    parametros.vendedor = SessionPersister.Proveedor;
                 //}
-
+                //MMSN-601
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
-                foreach (EntradaServicioCreateParamsDto parametro in parametros)
+                foreach(EntradaServicioCreateParamsDto parametro in parametros)
                 {
+                    var validacion = EntradaServicioService.ValidarIngresante(parametro, userMail);
                     var result = new EntradaServicioCreateRespuestaDto();
-                    result = await EntradaServicioService.CrearEntradaServicio(parametro);
+                    if (validacion.Message == "Auto")
+                    {
+                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail);
+                    }
+                    else if (validacion.Message == "Temporal")
+                    {
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail);
+                    }
+                    else
+                    {
+                        result = validacion;
+                    }
                     ret.Add(result);
                 }
+
 
                 return JsonCustom(new { data = ret });
             }
             catch (Exception ex)
             {
                 return JsonCustom(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        public ActionResult RechazarEntradaDeServicio(string json)
+        {
+            try
+            {
+                var motivoRechazo = JsonConvert.DeserializeObject<EmailDetailCertificateDto>(json);
+                var result = EntradaServicioService.RechazarEntradaDeServicio(motivoRechazo);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local)
+        {
+            try
+            {
+                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ReasignarSuplente(string nro_es_local, string suplente)
+        {
+            try
+            {
+                var result = EntradaServicioService.ReasignarSuplente(nro_es_local, suplente);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
 

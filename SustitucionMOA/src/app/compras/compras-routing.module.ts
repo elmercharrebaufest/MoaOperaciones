@@ -14,6 +14,8 @@ import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
+import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones-proveedor/listado-estado-certificaciones-proveedor.component';
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },
@@ -24,7 +26,9 @@ const routes: Routes = [
     { path: "dashboardComprador", component: ListadoDashboardCompradorComponent },
     { path: "dashboardProveedor", component: ListadoDashboardProveedorComponent },
     { path: "listadoEstadoCertificaciones", component: ListadoEstadoCertificacionesComponent },
+    { path: "listadoEstadoCertificacionesProveedor", component: ListadoEstadoCertificacionesProveedorComponent },
     { path: "dashboardCertificacionDeServicios", component: ListadoDashboardCertificacionDeServiciosComponent },
+    { path: "dashboardCertificacionDeServiciosProveedores", component: ListadoDashboardCertificacionDeServiciosProveedoresComponent },
     { path: "peticion-de-oferta-formulario", component: PeticionDeOfertaFormularioComponent },
     { path: "peticion-de-oferta-formulario/:id", component: PeticionDeOfertaFormularioComponent },
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },
@@ -32,7 +36,7 @@ const routes: Routes = [
     { path: "ver-ofertas/:id", component: VerOfertasComponent },
     { path: "reporte-oc", component: ReporteOcComponent },
     { path: "crear-po-multiple", component: CrearPoMultipleComponent }
-    
+
 ];
 
 @NgModule({

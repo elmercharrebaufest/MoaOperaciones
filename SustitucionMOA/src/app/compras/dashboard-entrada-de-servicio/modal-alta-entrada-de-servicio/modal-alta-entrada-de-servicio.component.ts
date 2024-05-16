@@ -4,7 +4,14 @@ import { ConfirmationService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../../usuario/usuario.service';
+import { Calendar } from 'primeng/calendar';
 declare var $: any;
+
+type Column = {
+    name: string;
+    visible: boolean;
+};
 
 @Component({
     selector: 'app-modal-alta-entrada-de-servicio',
@@ -26,6 +33,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     //MMSN-648
     arrCantidad: any[] = new Array();
     entrySheetObjects: any = [];
+    solPed: string = '';
 
     es: any;
     referencia: string = '';
@@ -37,6 +45,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     @Input() itemSelected: any;
     @Input() elementSelected: any;
     @Input() itemIdSelected: string = '';
+    @Input() posicionSelected: any;
     @Output() closeModal = new EventEmitter<void>();
     @Output() closeDialog = new EventEmitter<void>();
 
@@ -48,9 +57,15 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     fechaDocMax: Date;
     fechaContabilizacionMin: Date;
     fechaContabilizacionMax: Date;
+    colConfigName: string = 'columnasAltaCertificaciones';
+    colspanMonto: number = 10;
+    colConfig = [];
+    monthNavStatus: boolean = false;
 
     entrySheetData = {
         "EntrySheetHeader": {
+            "SolPedNumber": "",
+            "MontoTotalACertificar": "",
             "PaqueteNumero": "",
             "Descripcion": "",
             "OrdenCompraNumero": "",
@@ -68,7 +83,12 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     "ExternalLineNumber": "",
                     "Service": "",
                     "Quantity": "",
+                    "ItemQuantity": "",
+                    "UM": "",
+                    "ItemGrossPrice": "",
                     "GrossPrice": "",
+                    "Percentage": "",
+                    "CertificationAmount": "",
                     "ShortText": "",
                     "PlannedPackage": "",
                     "PlannedLine": ""
@@ -76,6 +96,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             ]
         }
     };
+
+    totalMontoCertificar!: number;
 
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService
@@ -94,20 +116,22 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             dateFormat: 'yyyy-mm-dd',
             weekHeader: 'Sem'
         };
+
         this.fechaContabilizacion = new Date();
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
-
+        this.calcularTotalMontoCertificar();
         this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
+        this.colConfig = this.getColumnConfig();
     }
 
     ngAfterViewInit(): void {
-
     }
 
     ngAfterContentInit() {
         this.entrySheetObjects = [];
         this.agruparItemPorPosicion(this.itemSelected);
+        this.applyColumnConfig(this.colConfig);
     }
 
     agruparItemPorPosicion(items) {
@@ -132,15 +156,23 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
 
-    calculateGeneralTotalAmount(): number {
+    calculateGeneralTotalAmount(): string {
         let montoTotalGeneral = 0;
-
+        let moneda: string = ''
+        moneda =  this.itemsAgrupadosPorPosicion[0].Items[0].Moneda; 
+    
         this.itemsAgrupadosPorPosicion.forEach(position => {
             montoTotalGeneral += position.MontoTotalACertificar;
         });
 
-        return montoTotalGeneral;
+        if (moneda === 'ARP') {
+            return `$ ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        } else {
+            return `${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+        }
+    
     }
+    
 
     setRangoFechaDocumento() {
         // Fecha máxima: Fecha actual
@@ -153,7 +185,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         // Fecha máxima: Fecha actual
         this.fechaContabilizacionMax = new Date();
         // Fecha mínima: Primero del mes corriente
-        this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        if (sessionStorage.permisos !== undefined && sessionStorage.permisos.includes('ADMIN CONTABILIZACION MES ANTERIOR')) {
+            this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth() - 1, 1);
+            this.monthNavStatus = true;
+        }
+        else {
+            this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+        }        
     }
 
     dateFormatter(date_Object: Date): string {
@@ -278,6 +316,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
         let PONumber = this.elementSelected !== undefined ? this.elementSelected.NumeroOrdenDeCompra : '';
+        this.solPed = this.posicionSelected !== undefined ? this.posicionSelected.NumeroSolp : '';
         this.entrySheetObjects = [];
 
         if (this.fechaDocumento !== undefined) {
@@ -292,6 +331,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
             const entrySheetHeader = {
+                SolPedNumber: this.solPed,
+                MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion,
                 OrdenCompraNumero: PONumber,
@@ -308,7 +349,12 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 ExternalLineNumber: this.zeroPad(item.NumeroLinea, 10),
                 Service: item.ServicioNumero.toString(),
                 Quantity: this.round(parseFloat(item.CantidadACertificar), 3),
+                ItemQuantity: item.Cantidad,
+                UM: item.UM,
+                ItemGrossPrice: item.ImporteString,
                 GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
+                Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
+                CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO
@@ -339,6 +385,15 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
     }
 
+    calcularTotalMontoCertificar() {
+        let total = 0;
+        for (let item of this.itemSelected) {
+            total += item.MontoACertificar;
+        }
+
+        this.totalMontoCertificar = total;
+    }
+
     /**
      * Calcula el monto certificado anteriormente
      * a la certificacion actual.
@@ -351,5 +406,93 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     //Redondeo de decimales
     round(num: number, decimals: number) {
         return Number(num.toFixed(decimals));
+    }
+
+    calcularPorcentajeAcumulado(rowData: any) : number {
+        let totalPorcentaje = (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1);
+        return Math.min(totalPorcentaje, 100);
+    }
+
+
+    // --------- CONFIGURACION DE COLUMNAS --------- //
+    /**
+     * Obtiene la configuración de columnas guardada en el session storage,
+     * si no existe devuelve una configuración default.
+     * @returns Array de columnas con sus propiedades.
+     */
+    private getColumnConfig(): Column[] {
+        if (sessionStorage.getItem(this.colConfigName) == null) {
+            const defaultColConfig = [{ name: 'anterior', visible: true }, { name: 'acumulado', visible: true }];
+            this.saveColumnConfig(defaultColConfig);
+        }
+        let storedColConfig = sessionStorage.getItem(this.colConfigName);
+        return JSON.parse(storedColConfig);
+    }
+
+    /**
+     * Guarda la configuración en session storage.
+     * @param colConfig
+     */
+    private saveColumnConfig(colConfig: any): void {
+        sessionStorage.setItem(this.colConfigName, JSON.stringify(colConfig));
+    }
+
+    /**
+    *  Actualiza la configuración de columnas.
+    * @param colName
+    * @param visible
+    */
+    private updateColumnConfig(colName: string, visible: boolean): void {
+        this.colConfig = this.colConfig.map(col => {
+            if (col.name === colName) {
+                return { ...col, visible: visible };
+            }
+            return col;
+        });
+    }
+
+    /**
+     * Aplica la configuración de columnas a la tabla de alta
+     * de certificaciones.
+     * @param colConfig
+     */
+    private applyColumnConfig(colConfig: Column[]): void {
+        setTimeout(() => {
+            colConfig.forEach(col => {
+                this.showHideColumn(col.name, col.visible);
+            });
+        }, 50); // Timeout necesario para que aparezca la tabla.
+    }
+
+    /**
+     * Muestra/Oculta una columna.
+     * @param colName Clase de css que identifica a la columna.
+     * @param visible 
+     */
+    private showHideColumn(colName: string, visible: boolean): void {
+        let colGroups = document.getElementsByClassName(colName) as HTMLCollectionOf<HTMLElement>;
+        Array.from(colGroups).forEach(colGroup => {
+            visible ? colGroup.classList.remove('hidden') : colGroup.classList.add('hidden');
+        });
+
+        // Necesario para mantener la estructura de la tabla
+        if (colName === 'anterior') {
+            this.colspanMonto = visible ? 10 : 7;
+        }
+    }
+
+    toggleColumn(event) {
+        let colName = event.target.value;
+        let visible = event.target.checked;
+        this.updateColumnConfig(colName, visible);
+        this.applyColumnConfig(this.colConfig);
+    }
+
+    // --------- FIN CONFIGURACION DE COLUMNAS --------- //
+
+
+
+    ngOnDestroy() {
+        this.saveColumnConfig(this.colConfig);
     }
 }

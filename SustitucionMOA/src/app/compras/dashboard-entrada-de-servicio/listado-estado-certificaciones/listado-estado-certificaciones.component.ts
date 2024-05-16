@@ -1,10 +1,10 @@
-import { Component, Input, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef, ElementRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { Paginator } from 'primeng/paginator';
-import { Subscription } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
@@ -12,29 +12,27 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
-import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ConfirmationService, Message } from 'primeng/api';
+import { EntradaServicio } from '../../../common/models/entradaServicio';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
   templateUrl: './listado-estado-certificaciones.component.html',
   styleUrls: ['./listado-estado-certificaciones.component.css']
 })
-export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
-  
+export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit {
+  //#region Variables 
   protected locale: any;
-
-  @ViewChild("tabla")
-  protected tabla: Table;
-
+  @ViewChild("tabla") protected tabla: Table;
+  @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
+  private destroy$: Subject<void> = new Subject<void>();
   @BlockUI() blockUI: NgBlockUI;
-
-  @ViewChild(SpinnerComponent)
-  protected spinnerComponent: SpinnerComponent;
-
+  @ViewChild(SpinnerComponent) protected spinnerComponent: SpinnerComponent;
   nroSolp: string = "";
-  ordenAscendente: boolean;
-  columnaOrden: string;
+  ordenAscendente: boolean = false;
+  columnaOrden: string = "FechaCreacion";
   fechaInicio =  "";
   length = 0;
   pageSize: number = 10;
@@ -56,98 +54,195 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
   innerWidth: number;
-
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
   }
+  estadoCertificacion: any = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
+  formularioMotivosRechazo: FormGroup | undefined;
+  formularioSuplente: FormGroup | undefined;
+  mostrarMotivosRechazos: boolean = false;
+  mostrarSuplentes: boolean = false;
+  motivos = [
+    { name: 'Servicio no ejecutado/concluido', code: '1' },
+    { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
+    { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
+    { name: 'Falta de presentación de documentación', code: '4' },
+    { name: 'Otros/Observaciones', code: '5' }
+  ];
+  suplentes: any = [
+    { name: 'Carlos Duarte', code: '001' }
+  ];
+  listadoEstadoCertificacion: any = [
+    { name: 'Estado: Aprobadas', code: 'Aprobada' },
+    { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
+    { name: 'Estado: Rechazadas', code: 'Rechazado' }
+  ];
+  listadoAreas: any = [];
+  //Config tabla
+  defaultTablesConfig = [
+    {
+      name: 'Certificaciones',
+      columns: [
+        { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
+        { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
+        { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
+        { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
+        { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
+        { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
+      ]
+    },
+    {
+      name: 'ESDetalle',
+      columns: [
+        { id: 'DPosicion', header: 'N° de Ítem', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DMaterial', header: 'N° de Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DCtdPedido', header: 'Cantidad', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DT', header: 'Monto', field: 'T', type: 'string', sortable: false, required: false, visible: true },
+        //{ id: 'DCantidadReal', header: 'Cantidad Real', field: 'CantidadReal', type: 'string', sortable: false, required: false, visible: true },
+        //{ id: 'DPorcentaje', header: 'PORC. %', field: 'Porcentaje', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DCantidadCertificar', header: 'Cantidad a certificar', field: 'CantidadCertificar', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DPorcentajeCertificar', header: 'Porcentaje a certificar', field: 'PorcentajeCertificar', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DMontoCertificar', header: 'Monto a certificar', field: 'MontoCertificar', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DNumeroRemito', header: 'Nro. Remito', field: 'NumeroRemito', type: 'string', sortable: false, required: false, visible: true }
+      ]
+    }
+  ];
+  userId: any = '';
+  spinnerIcon: string = "";
 
   constructor(protected service: ComprasService, protected navService: NavService,
       protected sessionDataService: SessionDataService, protected securityService: SecurityService,
       protected floatMsgService: FloatMsgService, protected modalService: ModalService,
       protected route: ActivatedRoute, protected router: Router,
-      private location: Location) {
+      private location: Location,
+      private cdr: ChangeDetectorRef,
+      private confirmationService: ConfirmationService) {
       super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
       this.usuario = sessionStorage.getItem("username");
   }
 
-  //#region Variables 
-  tablaPO: any[];
+  tablaPO: any[] = [];
   cols: any[];
   usuario: string;
   vendedor: string;
   allItems : any[];
-  proveedor: string = "";
-  
+  proveedor: string = sessionStorage.getItem("proveedor");
+  msgs: Message[] = [];
+  havePermision: boolean = false;
+
+  observaciones: string = '';
       
   ngOnInit() {
+
+    this.getListarPO(this.proveedor, this.documentoNumero);
+
+    this.formsCreate();
+
     this.innerWidth = window.innerWidth;
 
-      this.getListarPO(this.proveedor, this.documentoNumero);
+    this.navService.setSeccionActive("Estado certificaciones");
 
-      this.navService.setSeccionActive("Estado certificaciones");
-
-      this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+    this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+    
+    let permisos = sessionStorage.getItem("permisos");
+    
+    if(permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES"))
+    {
+      this.havePermision = true;
     }
+  }
 
-    toggleTable(data: any) {
-  
-      const index = this.posicionRow.indexOf(data);
-      if (index === -1) {
-          this.posicionRow.push(data);
-          this.isTableExpanded = !this.isTableExpanded;
-      } else {
-          this.posicionRow.splice(index, 1);
-          this.isTableExpanded = false;
-      }
-  
 
+  showContainerTable(): void {
+    this.spinnerComponent.hideIt();
+    if (this.elementToToggle) {
+      this.elementToToggle.nativeElement.style.display = 'block';
     }
+  }
+
+  hideContainerTable(): void {
+    this.spinnerComponent.showIt();
+    if (this.elementToToggle) {
+      this.elementToToggle.nativeElement.style.display = 'none';
+    }
+  }
+
+  formsCreate(): void {
+    this.formularioMotivosRechazo = new FormGroup({
+      motivo: new FormControl({name: null, code: null}, Validators.required),
+      destinatario: new FormControl(null),
+      detalleCertificacionRechazada: new FormControl(null),
+      resumenLineas: new FormControl(null),
+      motivoRechazo: new FormControl(null),
+      fechaRechazo: new FormControl(null),
+      proveedor: new FormControl(null),
+      numeroCertificacion: new FormControl(null),
+      fechaCertificacion: new FormControl(null),
+      descripcion: new FormControl(null),
+      importe: new FormControl(null),
+      montoTotal: new FormControl(null),
+      detalleServicio: new FormControl(null),
+      observaciones: new FormControl(null)
+    });
+
+    this.formularioSuplente = new FormGroup({
+      suplente: new FormControl(null),
+      nro_es_local: new FormControl(null)
+    });
+  }
+
+  toggleTable(data: any) {
+    const index = this.posicionRow.indexOf(data);
+    if (index === -1) {
+      this.posicionRow.push(data);
+      this.isTableExpanded = !this.isTableExpanded;
+    } else {
+      this.posicionRow.splice(index, 1);
+      this.isTableExpanded = false;
+    }
+  }
   
     toggleEntradaServicio() {
       this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
     }
-  
-    onCheckboxChange(e: any) {
-  
-    }
-  
-  
-    ngOnDestroy(): void {
-        // this.subscripcionPO.unsubscribe();
-    }
 
     getListarPO(proveedor, documentoNumero) {
       this.getFecha();
-      try {
-          this.spinnerComponent.showIt();
-          this.unsubscribe();
-          // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
-          this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, this.documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
-                (result:any) => {
-                  if (result.logout == true) {
-                    this.sessionDataService.logout();
-                  } else if (result.error != undefined && result.error != "") {
-                  } else if (result.info != undefined) {
-                  } else {
-                      this.tablaPO = result.data; 
-                      this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                      this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                      this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                  }
-                  this.spinnerComponent.hideIt()
-                },
-              error => {
-                  this.floatMsgService.setErrorMsg(error.message);
-                  this.spinnerComponent.hideIt()
-              }
-              );
-      } catch (e) {
-        this.floatMsgService.setErrorMsg(e);
-        this.spinnerComponent.hideIt();
-        return false; //<-- Prevent Refresh
-      }
-
+      this.hideContainerTable();
+      this.unsubscribe();
+      this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+        (result:any) => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+          } else if (result.info != undefined) {
+          } else {
+              this.tablaPO = result.data;
+              this.setColumsByUserProfile(this.tablaPO, this.usuario);
+              this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+              this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+              this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+          }
+          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.showContainerTable();
+          return true;
+        }, error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.showContainerTable();
+          return false;
+        }
+      );
       return false; //<-- Prevent Refresh
   }
 
@@ -162,34 +257,249 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent {
     //actualizar
     fechaActual.setMonth(fechaActual.getMonth() - 2);
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-}
+  }
 
   
-    deleteES(item: any) {
-      //TODO: lógica para cuando se especifique el borrado de una ES
-    }
-  
-    handlePageEvent(e: any) {
-        this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;
-        this.getListarPO(this.proveedor, this.documentoNumero);
-    }
+  deleteES(item: any) {
+    //TODO: lógica para cuando se especifique el borrado de una ES
+  }
 
-    onOrder(columna: string) {
-      if (this.columnaOrden != columna) {
-          this.ordenAscendente = false
-      } else {
-          this.ordenAscendente = this.ordenAscendente == false ? true : false;
-      }
-      this.columnaOrden = columna;
-      this.getListarPO(this.proveedor, this.documentoNumero);
+  handlePageEvent(e: any) {
+    this.pageSize = e.rows;
+    this.pageIndex = e.page + 1;
+    this.getListarPO(this.proveedor, this.documentoNumero);
+  }
+
+  onOrder(columna: string) {
+    if (this.columnaOrden != columna) {
+      this.ordenAscendente = false
+    } else {
+      this.ordenAscendente = this.ordenAscendente == false ? true : false;
+    }
+    this.columnaOrden = columna;
+    this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
   toggleRow(rowData: any): void {
-      this.selectedRow = this.selectedRow === rowData ? null : rowData;
+    this.selectedRow = this.selectedRow === rowData ? null : rowData;
   }
 
   isSelectedRow(rowData: any): boolean {
-      return this.selectedRow === rowData;
+    return this.selectedRow === rowData;
+  }
+
+  verMotivosRechazos(rowData: any): void {
+    this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Usuario);
+    this.formularioMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
+    this.formularioMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
+    this.formularioMotivosRechazo.controls['importe'].patchValue(rowData.Importe);
+    this.formularioMotivosRechazo.controls['montoTotal'].patchValue(rowData.MontoTotal);
+    this.formularioMotivosRechazo.controls['detalleServicio'].patchValue(rowData.entradaServicioDetalle);
+    this.formularioMotivosRechazo.controls['numeroCertificacion'].patchValue(rowData.NumeroCertificacion);
+    this.formularioMotivosRechazo.controls['fechaCertificacion'].patchValue(rowData.FechaCreacion);
+    this.mostrarMotivosRechazos = true;
+  }
+
+  filtrarPorEstado(event: any): void {
+    switch (event.value.code) {
+      case 'Aprobada':
+        this.defaultTablesConfig[0].columns.forEach(col => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar'? false : true;
+        });
+        break;
+      case 'Pendiente Aprobación':
+        this.setColumsByUserProfile(this.tablaPO, this.usuario);
+        break;
+      case 'Rechazado':
+        this.defaultTablesConfig[0].columns.forEach(col => {
+          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar'? false : true;
+        });
+        break;
+    }
+    this.tabla.filter(event.value.code, 'Estado', 'contains');
+  }
+
+  filtrarPorArea(event: any): void {
+    let filtrarAreas = [];
+    event.value.forEach((area: any) => {
+      filtrarAreas.push(area);
+    });
+    this.tabla.filter(filtrarAreas, 'UsuarioArea', 'contains');
+  }
+
+  verSuplentes(suplente: string, nro_es_local: string): void {
+    this.formularioSuplente.controls['suplente'].patchValue(suplente);
+    this.formularioSuplente.controls['nro_es_local'].patchValue(nro_es_local);
+    this.mostrarSuplentes = true;
+  }
+
+  reasignar():void {
+    const data = {
+      Suplente: this.formularioSuplente.get('suplente').value,
+      NroEsLocal: this.formularioSuplente.get('nro_es_local').value
+    }
+
+    this.service.reasignarSuplente(data).subscribe(
+      (resp: any) => {
+        this.getListarPO(this.proveedor, this.documentoNumero);
+        this.mostrarSuplentes = false;
+        this.msgs.push({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+      }, error => {
+        console.error('Error al obtener datos:', error);
+        this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+      }
+    )
+  }
+
+  enviarMotivo() {
+    const data = {
+      Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
+      MotivoRechazo: this.formularioMotivosRechazo.get('motivo').value.code === 5 ? this.formularioMotivosRechazo.get('motivo').value.name + ':' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
+      Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
+      NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
+      FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
+      Descripcion: this.formularioMotivosRechazo.get('descripcion').value,
+      Importe: this.formularioMotivosRechazo.get('importe').value,
+      MontoTotal: this.formularioMotivosRechazo.get('montoTotal').value,
+      DetalleServicio: this.formularioMotivosRechazo.get('detalleServicio').value.map((item: any) => ({
+        Descripcion: item.Descripcion,
+        Cantidad: item.Cantidad,
+        UM: item.UM,
+        Porcentaje: item.Porcentaje,
+        Monto: item.Monto
+      }))
+    }
+    this.service.enviarMotivoRechazoES(data).subscribe(
+      (resp: any) => {
+      this.getListarPO(this.proveedor, this.documentoNumero);
+      this.mostrarMotivosRechazos = false;
+      this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+      }, error => {
+        console.error('Error al obtener datos:', error);
+        this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+      }
+    );
+  }
+
+  enviarAprobacion(nro_es_local: string): any {
+    this.confirmationService.confirm({
+      message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
+      header: 'Confirmar Aprobación',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.hideContainerTable();
+        this.service.enviarAprobacionES(nro_es_local).subscribe(
+          resp => {
+            this.msgs = [];
+            let mensajeError: string = "";
+            if (!resp.data) {
+              mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
+              this.msgs.push({severity:'error', summary:'Error', detail: mensajeError});
+            }
+            switch (resp.data.Type) {
+              case "I": {
+                this.getListarPO(this.proveedor, this.documentoNumero);
+                this.msgs.push({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
+                break;
+              }
+              case "S": {
+                this.msgs.push({severity: 'info', summary: '', detail: resp.data.Message});
+                break;
+              }
+              case "E": {
+                mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                  resp.data.Message.startsWith("Contabilice en ") ?
+                  "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
+                this.msgs.push({severity: 'warning', summary: '', detail: mensajeError});
+                break;
+              }
+              default: {
+                this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                break;
+              }
+            }
+          }, error => {
+            this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+            console.error('Error al obtener datos:', error);
+          }
+        );
+        this.showContainerTable();
+      }
+    });
+  }
+
+  isAll: boolean = false;
+
+  SeeAll(){
+    this.isAll = true;
+    this.getListarPO("", this.documentoNumero);
+    
+  }
+
+  SeeForProvider(){
+    this.isAll = false;
+    this.getListarPO(this.proveedor, this.documentoNumero);
+  }
+
+  setColumsByUserProfile(entradasDeServicio: any, user: any): void {
+    const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
+    if(pendienteAprobacion.length > 0){
+      const fai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal === user);
+      if(fai.length > 0){
+        this.userId = "FAI";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' ? false : true;
+        });
+        return;
+      }
+      const ai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal !== user);
+      if(ai.length > 0){
+        this.userId = "AI";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
+        });
+        return;
+      }
+      const fa = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador === user && pa.Ingresante !== user);
+      if(fa.length > 0){
+        this.userId = "FA";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Aprobador' || col.field === 'Usuario' ? false : true;
+        });
+        return;
+      }
+      const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
+      if(fi.length > 0){
+        this.userId = "FI";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
+        });
+        return;
+      }
+      const a = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante !== user && pa.Fiscal !== user);
+      if(a.length > 0){
+        this.userId = "A";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Aprobador' ? false : true;
+        });
+        return;
+      }
+      const i = pendienteAprobacion.filter(pa => pa.Ingresante === user && pa.Aprobador !== user && pa.Fiscal !== user);
+      if(i.length > 0){
+        this.userId = "I";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'Ingresante' ? false : true;
+        });
+        return;
+      }
+      const f = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador !== user && pa.Ingresante !== user);
+      if(f.length > 0){
+        this.userId = "F";
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Usuario' ? false : true;
+        });
+        return;
+      }
+    }
   }
 }

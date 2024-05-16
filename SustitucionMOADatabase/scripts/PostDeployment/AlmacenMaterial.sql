@@ -1,4 +1,5 @@
-﻿DECLARE @ValoresAlmacen as TABLE
+﻿
+DECLARE @ValoresAlmacen as TABLE
 	(CodigoSapMaterial int, IdAlmacen int, NombreAlmacen varchar(50))
 
 INSERT INTO @ValoresAlmacen

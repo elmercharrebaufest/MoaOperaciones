@@ -20,7 +20,6 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
@@ -113,12 +112,12 @@ namespace SustitucionMOA.Controllers
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
-        public ActionResult GuardarRoles(string idRoles, int idUsuario, string usuarioSap)
+        public ActionResult GuardarRoles(string idRoles, int idUsuario, string usuarioSap, string suplente)
         {
             try
             {
                 List<int> rolesList = idRoles.Split(',').Select(int.Parse).ToList();
-                return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario, usuarioSap) });
+                return JsonCustom(new { data = _usuarioService.GuardarRoles(rolesList, idUsuario, usuarioSap, suplente) });
             }
             catch (InfoCustomException e)
             {
@@ -157,6 +156,29 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult ObtenerRolesUsuarioByEmail(string email)
+        {
+            try
+            {
+                var toRet = _usuarioService.GetRolesUsuario(email);
+                return JsonCustom(new { data =  toRet });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
         public ActionResult Deshabilitar(string mailUsuario)
         {
@@ -231,7 +253,7 @@ namespace SustitucionMOA.Controllers
                 {
                     throw new ValidationCustomException("Proveedor incorrecto");
                 }
-                
+
 
                 // get context of the authentication manager
                 var authenticationManager = HttpContext.GetOwinContext().Authentication;
@@ -710,7 +732,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);
+                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);           
                 var result = _usuarioService.GrabarProveedor(proveedor);
                 return JsonCustom(new { data = result });
             }

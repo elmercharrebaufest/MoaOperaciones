@@ -17,7 +17,7 @@ export class UsuarioService extends BaseService {
     private _usuarioRecargarLista = new BehaviorSubject<boolean>(false);
     private _usuarioCargarAuditoria = new BehaviorSubject<number>(0);
     private _usuarioVerVendedores = new BehaviorSubject<number>(0);
-
+    
     setUsuarioCargarAuditoria(value: number) {
         this._usuarioCargarAuditoria.next(value);
     }
@@ -48,11 +48,13 @@ export class UsuarioService extends BaseService {
     guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
         let params: HttpParams = new HttpParams();
 
+        var suplente = usuarioSeleccionado.Suplente;
         var idUsuario = usuarioSeleccionado.Id;
 
         params = params.append('idRoles', idRoles);
         params = params.append('idUsuario', idUsuario);
         params = params.append('usuarioSap', usuarioSap);
+        params = params.append('suplente', suplente);
 
 
         return this.http
@@ -132,6 +134,15 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/ObtenerRolesUsuario', { params: params, headers: this.headers });
     }
 
+    public obtenerRolesUsuarioByEmail(email: string) {
+        let json = {
+            email: email
+        };
+
+        return this.http
+            .post<any>('/api/usuario/ObtenerRolesUsuarioByEmail', json, { headers: this.headers });
+    }
+
     public getRubros(): Observable<any> {
         return this.http
             .get('/api/usuario/getRubros', { headers: this.headers });
@@ -185,13 +196,13 @@ export class UsuarioService extends BaseService {
         params = params.append('cuit', cuit);
 
         return this.http
-            .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { params: params, headers: this.headers });
+             .get('/api/AltaEmpresaNoGranos/GetRazonSocial', { params: params, headers: this.headers });
     }
 
     public altaNuevoProveedorCompras(altaNuevoProveedor: AltaNuevoProveedor) {
         let json = JSON.stringify({
             CUIT: altaNuevoProveedor.CUIT,
-            Mail: altaNuevoProveedor.Mail,
+            Mail: altaNuevoProveedor.Mail,          
             RazonSocial: altaNuevoProveedor.RazonSocial
         });
 
@@ -202,7 +213,7 @@ export class UsuarioService extends BaseService {
             .post<any>('/api/usuario/GrabarProveedor', payload, { headers: this.headers });
     }
 
-
+    
     public validarMailUsuario(usuarioModificacion: any) {
         return this.http
             .post<any>('/api/usuario/ValidarMailUsuario', usuarioModificacion, { headers: this.headers });
@@ -223,17 +234,17 @@ export class UsuarioService extends BaseService {
         return this.http
             .get('/api/usuario/GetProveedorAuditoriaPorUsuario', { params: params, headers: this.headers });
     }
-
+    
     public getTipoUsuario(): Observable<any> {
         return this.http
             .get('/api/usuario/GetTipoUsuario', { headers: this.headers });
     }
-
+    
     public getProvedoresEmail(tipoProveedorId: string, email: string, cuitUsuario: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('email', email);
         params = params.append('tipoProveedorId', tipoProveedorId);
-        params = params.append('cuitUsuario', cuitUsuario);
+        params = params.append('cuitUsuario', cuitUsuario);        
 
         return this.http
             .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
@@ -260,8 +271,8 @@ export class UsuarioService extends BaseService {
     }
 
     desasociarVendedor(usuarioId: number, proveedorId: number) {
-            return this.http
-                .post<any>('/api/usuario/DesasociarVendedor', {usuarioId, proveedorId}, { headers: this.headers });
+        return this.http
+            .post<any>('/api/usuario/DesasociarVendedor', {usuarioId, proveedorId}, { headers: this.headers });
     }
-    
+
 }

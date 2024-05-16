@@ -12,6 +12,9 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
     public class EntrySheetHeaderSection
     {
+        public string SolPedNumber { get; set; } //MMSN-601
+        //MMSN-602
+        public string MontoTotalACertificar { get; set; }
         public string PaqueteNumero { get; set; } // se puede omitir del front
         public string Descripcion { get; set; }
         public string OrdenCompraNumero { get; set; }
@@ -38,7 +41,12 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string ExternalLineNumber { get; set; }
         public string Service { get; set; }
         public string Quantity { get; set; }
+        public string ItemQuantity { get; set; }
+        public string UM { get; set; }
+        public string ItemGrossPrice { get; set; }
         public decimal GrossPrice { get; set; }
+        public string Percentage { get; set; }
+        public string CertificationAmount { get; set; }
         public string ShortText { get; set; }
         public string PlannedPackage { get; set; }
         public string PlannedLine { get; set; }

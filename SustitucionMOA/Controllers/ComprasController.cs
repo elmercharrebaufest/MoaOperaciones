@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -13,6 +14,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -24,7 +26,7 @@ namespace SustitucionMOA.Controllers
 
         public ComprasController(IComprasService comprasService, IUsuarioService usuarioService)
         {
-            service = comprasService;
+            this.service = comprasService;
             this.usuarioService = usuarioService;
         }
 
@@ -180,10 +182,23 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-       
+
+        //[HttpGet]
+        //public ActionResult FiltrarMateriales() {
+        //    try
+        //    {
+        //        return JsonCustom(new { data = service.FiltrarMateriales() });
+        //    }
+        //    catch (Exception)
+        //    {
+
+        //        throw;
+        //    }
+        //}
+
         [HttpGet]
         public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+           bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
             {
@@ -217,7 +232,64 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }   
+        }
+        [HttpGet]
+        public ActionResult ObtenerSolpDeSap()
+        {
+            try
+            {
+                //ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                //{
+                //    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
+                //    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
+                //    CreadoPorUsuarios = new List<string>(),
+                //    NumeroSolp = "0212201893"
+                //};
+                //service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                var desde = new DateTime(2021, 01, 01);
+                var hasta = new DateTime(2022, 12, 01);
+                while (desde < hasta)
+                {
+                    try
+                    {
+                        Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
+                        ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+                        {
+                            FechaDesde = desde,
+                            FechaHasta = desde.AddMonths(3),
+                            CreadoPorUsuarios = new List<string>()
+                        };
+                        service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                        desde = desde.AddMonths(3);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Info($"ObtenerSolpesDesdeSAPJob error");
+                        Log.Error(e);
+                    }
+                }
+                Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
+                return JsonCustom(new { success = true });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
@@ -410,10 +482,10 @@ namespace SustitucionMOA.Controllers
             if (puedeDescargar != SolpDescargaZipPorLink.PuedeDescargar)
             {
                 string errorMsg = puedeDescargar == SolpDescargaZipPorLink.SolpIdNoExiste
-                                                        ? "SOLP no disponible para descarga."
+                                                       ? "SOLP no disponible para descarga."
                                                         : "El token no coincide; no tiene permiso para realizar la descarga.";
 
-                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos)
+                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos) 
                 {
                     errorMsg = "SOLP no disponible para descarga.";
                 }
@@ -660,6 +732,53 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+
+        //TODO: se comenta por que hay un error en el metodo service.ListarSolpComprador al devolver no coincide con el modelo.revisar.
+        //[HttpGet]
+        //public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null)
+        //{
+        //    try
+        //    {
+        //        var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+        //        var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+        //        var usuario_Id = ObtenerUsuarioActual().Id;
+
+
+        //        return JsonCustom(new
+        //        {
+        //            data = service.ListarSolpComprador(usuario_Id,
+        //            paginacion,
+        //            nroSolp,
+        //            !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+        //            !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+        //            !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+        //            !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+        //            false,
+        //            false,
+        //            false,
+        //            false
+        //            )
+        //        });
+        //    }
+        //    catch (InfoCustomException e)
+        //    {
+        //        return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (ValidationCustomException e)
+        //    {
+        //        return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (WSCustomException e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+        //        return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+        //    }
+        //}
 
         [HttpGet]
         public ActionResult ListarPOProveedor(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nroPo = null, string nombrePedido = null,
@@ -1374,7 +1493,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        
         [HttpPost]
         public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
         {
@@ -1727,7 +1846,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
