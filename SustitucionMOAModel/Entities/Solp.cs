@@ -39,10 +39,6 @@ namespace SustitucionMOAModel.Entities
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
 
-
-
-
-
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
         [ForeignKey("UsuarioCreacion_Id")]

@@ -63,6 +63,7 @@
     <Compile Include="Dto\AlmacenDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\FiltroDto.cs" />
     <Compile Include="Dto\HistorialDeFechaDto.cs" />
     <Compile Include="Dto\Compras\ChatsDto.cs" />
     <Compile Include="Dto\Compras\ChatExternoComprasDto.cs" />

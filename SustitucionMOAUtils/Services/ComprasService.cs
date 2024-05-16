@@ -58,6 +58,8 @@ using Image = iTextSharp.text.Image;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using System.Data.Entity.SqlServer;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 
 
 namespace SustitucionMOAUtils.Services
@@ -1386,6 +1388,7 @@ namespace SustitucionMOAUtils.Services
                 if (ordenDeCompraSAPDto.Error == null)
                 {
                     solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
+                    solpDevuelta.ProveedorAsignado_Id = ordenDeCompraSAPDto.Cabecera.Usuario_Id; 
                     solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
                     solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
@@ -9476,30 +9479,89 @@ namespace SustitucionMOAUtils.Services
             return usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "Comprador" : "Solicitante";
         }
 
-        public static class SolpTemplateKeys
+        public ListaPaginada<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto)
         {
-            public const string FECHA_LIBERACION = "FECHA_LIBERACION";
-            public const string FECHA_CREACION = "FECHA_CREACION";
-            public const string NOMBRE_OBRA = "NOMBRE_OBRA";
-            public const string NRO_SOLP = "NRO_SOLP";
-            public const string NRO_PEDIDO = "NRO_PEDIDO";
-            public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
-            public const string TELEFONO = "TELEFONO";
-            public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
-            public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
-            public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
-            public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
-            public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
-            public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
-            public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
-            public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
-            public const string TEXTO_GENERICO = "TEXTO_GENERICO";
-            public const string REVISADO_POR = "REVISADO_POR";
-            public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
-            public const string PAGINAS = "PAGINAS";
-            public const string FECHA_OBRA = "FECHA_OBRA";
-
-
+            try
+            {
+                var filtro = ConvertirAFiltroServiceDto(filtroDto);
+                var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpCondicionEspecialConsulta(filtro));     
+                return todasLasSolp;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
         }
+
+        private FiltroServiceDto ConvertirAFiltroServiceDto(FiltroDto filtro)
+        {
+            return new FiltroServiceDto
+            {
+                Paginacion = new Paginacion(filtro.Columna, filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc,
+                    filtro.Pagina ?? 0, filtro.ItemsPorPagina ?? 0),
+                CodigoProveedor = filtro.CodigoProveedor,
+                NroSolp = filtro.NroSolp,
+                FechaDesde = filtro.FechaDesde,
+                FechaHasta = filtro.FechaHasta,
+                Sap = filtro.Sap ?? false,
+                Mantenimiento = filtro.Mantenimiento ?? false,
+                Web = filtro.Web ?? false,
+                RepoAutomatica = filtro.RepoAutomatica ?? false,
+                ListarPendiente = filtro.ListarPendiente ?? false,
+                ContratoMarco = filtro.ContratoMarco,
+                Usuarios = ConvertirStringAListaInt(filtro.Usuarios),
+                Estados = ConvertirStringAListaInt(filtro.Estados),
+                Centros = ConvertirStringAListaInt(filtro.Centros),
+                GrupoDeCompras = ConvertirStringAListaInt(filtro.GrupoDeCompras),
+                ClaseDocumento = ConvertirStringAListaInt(filtro.ClaseDocumento),
+                TipoImputacion = ConvertirStringAListaString(filtro.TipoImputacion),
+                ValorTipoImputacion = ConvertirStringAListaInt(filtro.ValorTipoImputacion),
+                EsServicio = filtro.EsServicio ?? false,
+                NombrePedido = filtro.NombrePedido?.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0],
+                EstadoLicitacion = filtro.EstadoLicitacion,
+                EstadoCotizacion = filtro.EstadoCotizacion
+            };
+        }
+
+
+        private List<int> ConvertirStringAListaInt(string cadena)
+        {
+            if (string.IsNullOrEmpty(cadena))
+                return new List<int>();
+            return cadena.Split(',').Select(x => int.Parse(x)).ToList();
+        }
+
+        private List<string> ConvertirStringAListaString(string cadena)
+        {
+            if (string.IsNullOrEmpty(cadena))
+                return new List<string>();
+            return cadena.Split(',').ToList();
+        }
+    }
+
+    public static class SolpTemplateKeys
+    {
+        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
+        public const string FECHA_CREACION = "FECHA_CREACION";
+        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
+        public const string NRO_SOLP = "NRO_SOLP";
+        public const string NRO_PEDIDO = "NRO_PEDIDO";
+        public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
+        public const string TELEFONO = "TELEFONO";
+        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
+        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
+        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
+        public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
+        public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
+        public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
+        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
+        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
+        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
+        public const string REVISADO_POR = "REVISADO_POR";
+        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
+        public const string PAGINAS = "PAGINAS";
+        public const string FECHA_OBRA = "FECHA_OBRA";
+
+
     }
 }

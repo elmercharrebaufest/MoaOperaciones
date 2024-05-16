@@ -3,6 +3,8 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -16,6 +18,7 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
+using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
@@ -568,6 +571,95 @@ namespace SustitucionMOATest.Controllers
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecialOk()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            var filtro = new FiltroDto
+            {
+                Columna = "NroSolp"
+            };
+            var solpsDto = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { } }, 1, 10, 5);
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Returns(solpsDto);
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecialOka()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            var filtro = new FiltroDto
+            {
+                Columna = "NroSolp"
+            };
+            var solpsDto = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { } }, 1, 10, 5);
+            var expectedJsonResult = new { data = solpsDto };
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Returns(solpsDto);
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecial_InfoCustomException_ReturnsInfo()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            var expectedInfoMessage = "InfoCustomException message";
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new InfoCustomException(expectedInfoMessage));
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecial_ValidationCustomException_ReturnsValidationError()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            var expectedValidationMessage = "ValidationCustomException message";
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new ValidationCustomException(expectedValidationMessage));
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecial_WSCustomException_ReturnsWSError()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new WSCustomException());
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+        }
+
+        [Test]
+        public void ListarSolpCondicionEspecial_GenericException_ReturnsGenericError()
+        {
+            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
+            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new Exception("Generic exception message"));
+
+            var result = target.ListarSolpCondicionEspecial(filtroJson);
+
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
         }
 
     }
