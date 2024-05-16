@@ -16,7 +16,6 @@
                         </ngb-alert>
                     </p>                   
                     
-                    
                     <div class="row">
                         <div class="col-md-2">
                             <p-dropdown dataKey="Codigo" [options]="monedaCompras" placeholder="Moneda"
@@ -127,7 +126,6 @@
                                                 [autoHighlight]="true" 
                                                 [forceSelection]="true" 
                                                 [disabled]="camposDeshabilitados">
-
                                                 <ng-template let-item pTemplate="selectedItem">
                                                     <span>{{item.value.Descripcion}}</span>
                                                 </ng-template>

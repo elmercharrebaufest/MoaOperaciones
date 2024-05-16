@@ -24,7 +24,7 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
     displayEditarOc: boolean;
 
     @Input()
-    public ordenDeCompra: AdjudicacionEdicionDto;
+    public ordenDeCompra: AdjudicacionEdicionDto = {} as AdjudicacionEdicionDto;
     combos: any;
     monedaCompras: SelectItem[];
     regiones: SelectItem[];
@@ -37,18 +37,17 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
     @Output() cerrarEditarOcEmitter = new EventEmitter();
     @Output() guardarEditarOcEmitter = new EventEmitter<AdjudicacionEdicionDto>();
     displayTextos: boolean;
-    camposDeshabilitados: boolean;
-    monedaDeshabilitada: boolean;
-
+    camposDeshabilitados: boolean = false;
+    monedaDeshabilitada: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
+    
     ngOnChanges(changes: SimpleChanges): void {
         this.getCombos();
-
     }
 
     ngOnInit() {
@@ -67,6 +66,8 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
 
     onCerrarEditarOc() {
         this.mensaje = "";
+        this.camposDeshabilitados = false;
+        this.monedaDeshabilitada = false;
         this.cerrarEditarOcEmitter.next();
     }
 
