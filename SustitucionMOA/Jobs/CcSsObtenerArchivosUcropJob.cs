@@ -33,8 +33,7 @@ namespace SustitucionMOA.Jobs
                 {
                     try
                     {
-                        campoSustentableService.DescargarArchivosDeGoogleDrive(archivoAdescargar);
-
+                        campoSustentableService.DescargarArchivosDeGoogleDrive(archivoAdescargar).Wait();
                     }
                     catch (Exception e)
                     {
