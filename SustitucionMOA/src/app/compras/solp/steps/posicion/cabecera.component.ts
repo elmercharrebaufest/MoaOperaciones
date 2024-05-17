@@ -180,7 +180,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.agregarPosicion();
             this.deshabilitarImputaciones();
         }
-        this.listarContratosAsociados();
+      
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
@@ -203,10 +203,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 });
             }
         }
-        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
-            this.completarDatosUltimaSolp();
-            this.combos.CombosSeteados = true;
-        }
+       
     }
 
     ngOnChanges() {

@@ -35,15 +35,18 @@
                         </div>
                         <div class="col-xs-12 col-sm-10 col-md-12" style="font-size: 15px; margin-bottom: 20px;">
                             <p-panel *ngIf="peticion != null" header="Proveedores asociados a la PO" [toggleable]="true"
-                                [collapsed]="true">
-                                <div id="lista1" >
-                                <ul>
-                                    <div *ngFor="let p of peticion.Usuarios" >
-                                        <li>{{p.RazonSocial }} ({{p.CUIT}}) - {{p.Mail}}</li>
-                                    </div>
-                                </ul>
-                            </div>
-                            </p-panel>
+                                     [collapsed]="true">
+                                <div id="lista1">
+                                    <ul>
+                                        <div *ngFor="let p of peticion.Usuarios">
+                                            <li>{{p.RazonSocial }} ({{p.CUIT}}) - {{p.Mail}}</li>
+                                         </div>
+                                          <div *ngFor="let p of peticion.UsuariosAdicionales">
+                                          <li>{{p.RazonSocial }} ({{p.CUIT}}) - {{p.Mail}}</li>
+                                          </div>
+                                      </ul>
+                                   </div>
+                             </p-panel>
                         </div>
                         <div class="col-xs-12" style="font-size: 20px; margin-bottom: 20px;">
                             <p-table [value]="proveedoresSeleccionados">

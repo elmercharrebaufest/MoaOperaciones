@@ -29,7 +29,7 @@ namespace SustitucionMOAWS.WSConsumers
                 string ENTRYSHEET = nroES;
                 BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN = new BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] { };
 
-                service.SI_MMRFC_BORRAR_HES(nroES, ref RETURN);
+                service.SI_MMRFC_BORRAR_HES(nroES,"", ref RETURN);
 
                 return Map(RETURN);
             }

@@ -116,8 +116,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     pasos: Paso[];
 
-    selectUsuarioCompras: any;
-    usuarioComprasList: any[] = [];
 
     titulo: string = "";
     tituloNroSolp: string = "";
@@ -1066,7 +1064,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
-        this.selectUsuarioCompras = selectUsuarioCompras;
+        
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
         this.cabecera.validarTabCompleto();

@@ -263,16 +263,19 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
+    <Content Include="Content\images\icons\chat.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\editar.svg" />
+    <Content Include="Content\images\icons\gears.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
     <Content Include="Content\images\icons\pdf-download-icon.png" />
     <Content Include="Content\images\icons\pdf-icon.png" />
     <Content Include="Content\images\icons\SAP.svg" />
+    <Content Include="Content\images\icons\scalable-truck.svg" />
     <Content Include="Content\images\icons\trash.svg" />
     <Content Include="Content\images\icons\trashRed.svg" />
     <Content Include="Content\images\icons\trashWhite.svg" />
@@ -402,6 +405,10 @@
     <Content Include="src\app\compras\solp\steps\generacion2\generacion2.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\cabecera.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.css" />
+    <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
@@ -1273,6 +1280,7 @@
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp-compra.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\finalizar\finalizar-solp.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\solp-posicion.ts" />
@@ -1287,6 +1295,13 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion1\generacion1.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\generacion2\generacion2.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\cabecera.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\contrato-marco.model.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.service.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />

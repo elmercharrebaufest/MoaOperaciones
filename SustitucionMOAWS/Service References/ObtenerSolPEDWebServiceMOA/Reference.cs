@@ -878,6 +878,8 @@ namespace SustitucionMOAWS.ObtenerSolPEDWebServiceMOA {
         
         private string rEQ_BLOCKEDField;
         
+        private string nAME1Field;
+        
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
         public string PREQ_NO {
@@ -1631,6 +1633,18 @@ namespace SustitucionMOAWS.ObtenerSolPEDWebServiceMOA {
             set {
                 this.rEQ_BLOCKEDField = value;
                 this.RaisePropertyChanged("REQ_BLOCKED");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=56)]
+        public string NAME1 {
+            get {
+                return this.nAME1Field;
+            }
+            set {
+                this.nAME1Field = value;
+                this.RaisePropertyChanged("NAME1");
             }
         }
         

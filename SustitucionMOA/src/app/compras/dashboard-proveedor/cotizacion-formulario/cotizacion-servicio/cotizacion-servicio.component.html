@@ -37,7 +37,7 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios1" name="respetaServicios"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaServicios" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
@@ -80,9 +80,9 @@
                     </p-fileUpload>
                 </div>
 
-                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
-                    <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
-                             header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                <div *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
+                     class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                    <p-panel header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                         <div class="row myRow">
 
                             <!-- Archivos que ya fueron guardados-->
@@ -394,8 +394,8 @@
                                                 </p-cellEditor>
                                             </td>
                                             <td style="text-align:center">
-                                                <img style="cursor:pointer" src="./Content/images/icons/trashRed.svg"
-                                                     alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
+                                                <img style="cursor: pointer; width: 26px;" src="./Content/images/icons/trashRed.svg"
+                                                     alt="imageAlt" (click)="eliminarRow(index)" />
 
                                             </td>
                                         </tr>
@@ -452,7 +452,7 @@
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
                                         <input type="text" pKeyFilter="num" 
-                                            numeric-format
+                                            numeric
                                             [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" 
                                             placeholder="Días" 
                                             (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
@@ -569,9 +569,7 @@
                 </p-table>
             </div>
         </div>
-        <div *ngIf="visualizarMensajeDeModificacion" class="col-md-12" style="text-align: end;">
-            <label>Por favor, explique en las observaciones por qué modificó la cantidad.</label>
-        </div>
+     
         <br>
         <br>
         <div class="inputCompras">
