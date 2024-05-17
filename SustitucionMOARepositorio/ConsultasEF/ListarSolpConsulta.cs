@@ -97,9 +97,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     TipoSolpSap = x.TipoSolpSap,
                                     Adicional = x.Adicional,
                                     NroOrdenDeCompraAdicional = x.NroOrdenDeCompraAdicional,
-                                    TrabajoYaHecho = x.TrabajoYaHecho,
-                                    Urgencia = x.Urgencia,
-                                    CondEspProveedorAsignado = x.CondEspProveedorAsignado,
+                                    TrabajoYaHecho = x.TrabajoYaHecho == true ? true : false,
+                                    Urgencia = x.Urgencia == true ? true : false,
+                                    CondEspProveedorAsignado = x.CondEspProveedorAsignado == true ? true : false,
                                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoSolp).Any(),
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == x.Id

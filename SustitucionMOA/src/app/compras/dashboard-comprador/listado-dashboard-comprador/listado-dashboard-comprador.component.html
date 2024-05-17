@@ -273,10 +273,10 @@
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
-                                            <tr>
-                                                <td id="agregarProveedor">
-                                                    <div>
-                                                        <span *ngIf="(rowData.Adicional == null && rowData.TrabajoYaHecho == null && rowData.CondEspProveedorAsignado == null)">
+                                            <tr>                                              
+                                                <td id="agregarProveedor">                                                   
+                                                    <div>                                              
+                                                        <span *ngIf="!rowData.Adicional && !rowData.TrabajoYaHecho && !rowData.CondEspProveedorAsignado">
                                                             <img class="pointer" src="./Content/images/icons/add-user.svg" title="Agregar proveedor"
                                                                  (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" style="height: 30px;" />
                                                         </span>
