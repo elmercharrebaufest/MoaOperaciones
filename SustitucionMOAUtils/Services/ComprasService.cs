@@ -962,7 +962,6 @@ namespace SustitucionMOAUtils.Services
             {
 
                 if (peticionPosiciones.Any(pos => pos.SolpPosicion_Id != posicion.Id)){
-                    // Crear nueva posición de la petición de oferta y cotización
                     var peticionPosicionNueva = new PeticionDeOfertaSolpPosicion { PeticionDeOferta_Id = peticionPosiciones.FirstOrDefault().PeticionDeOferta_Id, SolpPosicion_Id = posicion.Id };
                     repositorio.Agregar(peticionPosicionNueva);
                     repositorio.GuardarCambios();
