@@ -164,7 +164,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             name: 'Items',
             columns: [
                 { id: 'iLinea', header: 'N° Línea', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iNroServicio', header: 'N° Servicio', field: 'ServicioNumero', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
