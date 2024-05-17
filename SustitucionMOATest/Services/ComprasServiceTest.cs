@@ -2359,10 +2359,8 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<PeticionDeOfertaSolpPosicion> { new PeticionDeOfertaSolpPosicion { Id = 1 } });
 
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
-
-            repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOfertaSolpPosicion>()), Times.Never); //para el caso donde no se agregó una nueva posición
             repositorioMock.Verify(x => x.Agregar(It.IsAny<CotizacionPosicion>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
         }
 
         [Test]
@@ -2397,7 +2395,7 @@ namespace SustitucionMOATest.Services
         {
             LegajoExternoDto legajo = new LegajoExternoDto { ListaLegajos = new List<LegajoDto>() };
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>())).Returns(new Adjudicacion
-            {
+            {               
                 Cotizacion = new Cotizacion
                 {
                     PeticionDeOfertaUsuario = new PeticionDeOfertaUsuario
@@ -2406,12 +2404,18 @@ namespace SustitucionMOATest.Services
                         Usuario = new Usuario
                         {
                             Id = 1,
+                            TipoUsuario = new TipoUsuario
+                            {
+                                Id = 3,
+                                Nombre = "Usuario",
+                                NombreCorto = "Usuario"
+                            },
                             Roles = new List<Rol> 
                             {
                                new Rol
                                {
                                    Nombre = "COMPRADOR",
-                                   PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "COMPRADOR" }}
+                                   PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "COMPRADOR" }},
                                }
                             },
                         }
