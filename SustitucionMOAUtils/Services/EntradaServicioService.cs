@@ -344,7 +344,7 @@ namespace SustitucionMOAUtils.Services
                 int lastYear = currentMonth == 1 ? currentYear - 1 : currentYear;
 
                 if (FechaContabilizacionToDateTime.Year == lastYear && FechaContabilizacionToDateTime.Month == lastMonth)
-                    fechaContabilizacion = DateTime.UtcNow.ToString("yyyy/MM/dd");
+                    fechaContabilizacion = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
                 result = new BorrarEntradaServicioConsumerMOA().BorrarEntradaServicio(parametros.DocumentoNumero, fechaContabilizacion);
             }
@@ -372,7 +372,7 @@ namespace SustitucionMOAUtils.Services
         {
             //MMSN-601 agregar lógica entrada servicio automatica- temporal, nro solped en parametros.Header.Solp
             //1 - Obtener información asociada a SolPed
-            SolpDto detalleSolPed = new SolpDto();
+            SolpESDto detalleSolPed = new SolpESDto();
             try
             {
                 if (parametros.EntrySheetHeader.SolPedNumber != null)
@@ -397,11 +397,11 @@ namespace SustitucionMOAUtils.Services
             {
                 auto = true;
             } //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
-            //else if (detalleSolPed.SupervisorTrabajo.Count > 0 && userMail == detalleSolPed.SupervisorTrabajo[0])
-            //{
-            //    //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
-            //    auto = true;
-            //}
+            else if (detalleSolPed.SupervisorTrabajo.Count > 0 && userMail == detalleSolPed.SupervisorTrabajo[0])
+            {
+                //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
+                auto = true;
+            }
             else if (detalleSolPed.Posiciones.Count > 0)
             {
                 //2c - Si el solicitante de la SolPed es el mismo que el usuario ingresante
@@ -514,35 +514,35 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-601: Metodo para validar si los valores de detalleSolPed estan vacios 
         /// </summary>
         /// <returns></returns>
-        private bool EmptySolPedValues(SolpDto detalleSolPed)
+        private bool EmptySolPedValues(SolpESDto detalleSolPed)
         {
-            bool result = false;                //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
-            //if (detalleSolPed.FiscalContrato.IsNullOrWhiteSpace())
-            //{
-            //    if (detalleSolPed.SupervisorTrabajo == null || detalleSolPed.SupervisorTrabajo.Count == 0 || (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo[0].IsNullOrWhiteSpace()))
-            //    {
-            //        if (detalleSolPed.Posiciones == null || detalleSolPed.Posiciones.Count == 0)
-            //        {
-            //            result = true;
-            //        }
-            //        else
-            //        {
-            //            bool hasValue = false;
-            //            foreach (var pos in detalleSolPed.Posiciones)
-            //            {
-            //                if (!pos.Solicitante.IsNullOrWhiteSpace())
-            //                {
-            //                    hasValue = true;
-            //                }
+            bool result = false;
+            if (detalleSolPed.FiscalContrato.IsNullOrWhiteSpace())
+            {
+                if (detalleSolPed.SupervisorTrabajo == null || detalleSolPed.SupervisorTrabajo.Count == 0 || (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo[0].IsNullOrWhiteSpace()))
+                {
+                    if (detalleSolPed.Posiciones == null || detalleSolPed.Posiciones.Count == 0)
+                    {
+                        result = true;
+                    }
+                    else
+                    {
+                        bool hasValue = false;
+                        foreach (var pos in detalleSolPed.Posiciones)
+                        {
+                            if (!pos.Solicitante.IsNullOrWhiteSpace())
+                            {
+                                hasValue = true;
+                            }
 
-            //            }
-            //            if (!hasValue)
-            //            {
-            //                result = true;
-            //            }
-            //        }
-            //    }
-            //}
+                        }
+                        if (!hasValue)
+                        {
+                            result = true;
+                        }
+                    }
+                }
+            }
 
             return result;
         }
@@ -629,7 +629,7 @@ namespace SustitucionMOAUtils.Services
             string solPedNumber = parametros.EntrySheetHeader.SolPedNumber;
             if (!string.IsNullOrEmpty(solPedNumber))
             {
-                SolpDto detalleSolPed = new SolpDto();
+                SolpESDto detalleSolPed = new SolpESDto();
                 try
                 {
                     detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
@@ -664,29 +664,29 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }             //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
-                    //else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
-                    //{
-                    //    //Busqueda por Supervisor Trabajo
-                    //    if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
-                    //    {
-                    //        temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
-                    //        var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.SupervisorTrabajo[0]);
-                    //        if (usuario != null)
-                    //        {
-                    //            temp.Suplente = usuario.Suplente;
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
-                    //        var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal.ToUpper());
-                    //        if (usuario != null)
-                    //        {
-                    //            temp.Fiscal_SOLPED = usuario.Mail;
-                    //            temp.Suplente = usuario.Suplente;
-                    //        }
-                    //    }
-                    //}
+                    else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
+                    {
+                        //Busqueda por Supervisor Trabajo
+                        if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
+                        {
+                            temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
+                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.SupervisorTrabajo[0]);
+                            if (usuario != null)
+                            {
+                                temp.Suplente = usuario.Suplente;
+                            }
+                        }
+                        else
+                        {
+                            string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
+                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal.ToUpper());
+                            if (usuario != null)
+                            {
+                                temp.Fiscal_SOLPED = usuario.Mail;
+                                temp.Suplente = usuario.Suplente;
+                            }
+                        }
+                    }
                     else if (detalleSolPed.Posiciones != null && detalleSolPed.Posiciones.Count > 0)
                     {
                         //Busqueda por Solicitante
@@ -700,18 +700,6 @@ namespace SustitucionMOAUtils.Services
                                 {
                                     temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
-                                    // Pendiente Carga temp.Area, ya que se necesitan los datos de MMSN-726
-                                    /*
-                                     * Tentativo - Falta Testear y posible optimización
-                                     *                                     * 
-                                     * var idArea = repositorio.Obtener<Usuario_Area>(x => x.Usuario_ID == usuario.Id);
-                                     * if(idArea != null){
-                                     *  var Area = repositorio.Obtener<Area>(x => x.ID_Area == idArea.Area_ID);
-                                     *  if(Area != null) temp.Area_Fiscal = Area.NombreArea
-                                     *  
-                                     * }
-                                     *   
-                                     */
                                 }
                             }
                         }

@@ -1395,7 +1395,7 @@ namespace SustitucionMOAUtils.Services
             return solpDevuelta;
         }
 
-        public SolpDto TraerSolpPorNumero(string nroSolp)
+        public SolpESDto TraerSolpPorNumero(string nroSolp)
         {
             var includes = new List<Expression<Func<Solp, object>>>();
             includes.Add(u => u.Pliego);
@@ -1428,7 +1428,7 @@ namespace SustitucionMOAUtils.Services
             //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
             //}
 
-            var solpDevuelta = new SolpDto()
+            var solpDevuelta = new SolpESDto()
             {
                 UsuarioActual = solp.UsuarioCreacion != null ? new UsuarioDto(solp.UsuarioCreacion) : new UsuarioDto(),
                 Id = solp.Id,
@@ -1445,9 +1445,9 @@ namespace SustitucionMOAUtils.Services
                 Telefono = solp.Pliego.Telefono,
                 Email = solp.Pliego.Email,
                 FechaHoraEntrega = solp.Pliego.FechaHoraEntrega,
-                //SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
-                //SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
-                VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
+                SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
+                VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraESDto(a)).ToList(),
                 TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
                 TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
                 TieneObradores = solp.Pliego.TieneObradores ?? false,
@@ -1495,7 +1495,7 @@ namespace SustitucionMOAUtils.Services
                 //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
                 //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
 
-                Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
+                Posiciones = solp.Posiciones.Select(p => new SolpPosicionESDto(p)).ToList(),
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
                 EmailLinkToken = solp.EmailLinkToken
