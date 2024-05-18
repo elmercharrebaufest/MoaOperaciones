@@ -84,7 +84,7 @@ export class Generacion1Component extends ListBaseComponent  {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Generacion1", "Generacion1");
+        //this.setMenuSeccionTab("Generacion1", "Generacion1");
     }
 
     mostrarError(nombreCampo: string): boolean {

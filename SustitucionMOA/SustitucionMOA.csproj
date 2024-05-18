@@ -346,8 +346,6 @@
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.css" />
-    <Content Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
@@ -380,8 +378,6 @@
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
-    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.css" />
-    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard\dashboard.component.css" />
@@ -1241,7 +1237,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\filtro-dashboard-comprador\filtro-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />

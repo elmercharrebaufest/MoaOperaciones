@@ -180,7 +180,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.agregarPosicion();
             this.deshabilitarImputaciones();
         }
-      
+
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
@@ -203,7 +203,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 });
             }
         }
-       
     }
 
     ngOnChanges() {
@@ -253,7 +252,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Cabecera", "Cabecera");
+        //this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
 
     validarTipoPosicion(): void {
@@ -277,18 +276,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-    
+
     agregarPosicion() {
-        var ultimaPosicion = this.model.posiciones.length > 0 ? 
-        this.model.posiciones[this.model.posiciones.length - 1] as any : null;
-        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
-        this.setupAlmacenEntregaByCentro();      
+        var ultimaPosicion = this.model.posiciones.length > 0 ?
+            this.model.posiciones[this.model.posiciones.length - 1] as any : null;
+        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);
+        this.setupAlmacenEntregaByCentro();
         this.model.posicionActual.setTabPosicion();
         if (!this.model.nroSolp && !this.combos.CombosSeteados) {
             this.completarDatosUltimaSolp();
             this.combos.CombosSeteados = true;
         }
-
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -1319,7 +1317,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
                     let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
                     this.fillValoresDireccion(direccionCentro);
-
                 }
 
                 if (this.datosUltimaSolp.Almacen != null) {

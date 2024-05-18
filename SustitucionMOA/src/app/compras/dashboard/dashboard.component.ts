@@ -213,15 +213,13 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.listarClaseDocumento();
         this.recuperarFiltros();
         this.listarUsuarioCreadorSolp();
         this.navService.setSeccionList([]);
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
-    }
-
-    ngAfterViewInit(): void {
         this.getCombos();
     }
 

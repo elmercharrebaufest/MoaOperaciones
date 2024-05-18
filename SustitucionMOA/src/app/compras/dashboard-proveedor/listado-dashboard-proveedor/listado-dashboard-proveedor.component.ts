@@ -48,8 +48,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     nroPo: string = "";
     nombrePedido: string = "";
     orden: string;
-    columnaOrden: string = "";
-    columnaNombre: string = "";
+    columnaOrden: string;
     length = 0;
     pageSize: number = 10;
     pageIndex: number = 1;
@@ -105,6 +104,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.recuperarFiltros();
         this.getListarPO();
         this.listarPO();

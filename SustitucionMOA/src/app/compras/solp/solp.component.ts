@@ -1064,7 +1064,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
-        
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
         this.cabecera.validarTabCompleto();

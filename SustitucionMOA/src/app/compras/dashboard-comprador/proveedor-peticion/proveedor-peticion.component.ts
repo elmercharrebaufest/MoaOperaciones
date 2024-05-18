@@ -39,7 +39,6 @@ export class ProveedorPeticionComponent implements OnInit {
     proveedor: PeticionDeOfertaUsarioDto;
     proveedorAdicional: PeticionDeOfertaUsarioAdicionalDto;
 
-
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
@@ -137,6 +136,7 @@ export class ProveedorPeticionComponent implements OnInit {
                 }
             }
         }
+
 
         if (!this.visualizarAlert && event != null && this.peticion != null && this.peticion.UsuariosAdicionales.some(e => e.UsuarioId === event.Id)) {
             this.error = "Debe seleccionar un proveedor que no este asociado.";

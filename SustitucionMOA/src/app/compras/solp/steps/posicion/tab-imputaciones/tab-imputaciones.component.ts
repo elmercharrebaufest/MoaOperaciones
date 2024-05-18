@@ -12,58 +12,58 @@ import { SubPosicionViewModel } from '../tab-subposicion/sub-posicion-view-model
 import { SolpPosicion } from '../../../solp-posicion';
 
 @Component({
-  selector: 'tab-imputaciones',
-  templateUrl: './tab-imputaciones.component.html',
-  styleUrls: ['../../../../compras.component.css']
+    selector: 'tab-imputaciones',
+    templateUrl: './tab-imputaciones.component.html',
+    styleUrls: ['../../../../compras.component.css']
 })
 export class TabImputacionesComponent extends ListBaseComponent {
 
-  @Input('posicion')
-  protected posicion: SolpPosicion;
+    @Input('posicion')
+    protected posicion: SolpPosicion;
 
-  tituloColumnaTipoDeImputacion: string;
-  enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
-  autocomplete: any[];
-  tablaAFiltrar: any;
-  listadoPosicionActual = Array<SubPosicionViewModel>();
-  camposObligatorios: any[];
+    tituloColumnaTipoDeImputacion: string;
+    enumTipoImputacion: typeof EnumTipoImputacion = EnumTipoImputacion;
+    autocomplete: any[];
+    tablaAFiltrar: any;
+    listadoPosicionActual = Array<SubPosicionViewModel>();
+    camposObligatorios: any[];
 
-  constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
-    protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-    protected route: ActivatedRoute, protected router: Router) {
-    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-  }
+    constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        protected route: ActivatedRoute, protected router: Router) {
+        super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    }
 
-  ngOnChanges() {
-    this.actualizarTipoDeImputacion();
-    this.camposObligatorios = [
-      { campo: 'valorImputacion', esObligatorio: typeof this.posicion === "undefined" ? false : this.posicion.esTipoPosicionMaterial ? true : (this.posicion.valorImputacion || this.posicion.cuentaMayor) },
-      { campo: 'cuentaMayor', esObligatorio: typeof this.posicion === "undefined" ? false : this.posicion.esTipoPosicionMaterial ? true : (this.posicion.valorImputacion || this.posicion.cuentaMayor) },
-    ];
+    ngOnChanges() {
+        this.actualizarTipoDeImputacion();
+        this.camposObligatorios = [
+            { campo: 'valorImputacion', esObligatorio: typeof this.posicion === "undefined" ? false : this.posicion.esTipoPosicionMaterial ? true : (this.posicion.valorImputacion || this.posicion.cuentaMayor) },
+            { campo: 'cuentaMayor', esObligatorio: typeof this.posicion === "undefined" ? false : this.posicion.esTipoPosicionMaterial ? true : (this.posicion.valorImputacion || this.posicion.cuentaMayor) },
+        ];
 
-    this.posicion.validateImputaciones();
-  }
+        this.posicion.validateImputaciones();
+    }
 
-  public ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.posicion.validateImputaciones();
-    this.actualizarTipoDeImputacion();
-  }
+    public ngOnDestroy(): void {
+        super.ngOnDestroy();
+        this.posicion.validateImputaciones();
+        this.actualizarTipoDeImputacion();
+    }
 
-  validarConNoNulo(subposicion: any, valor: any, campoAValidar: string){    
-    if(subposicion.tareaSubcontratar === ""){
-        return false
-    }  
-    
-    return valor == null || 
-        ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio) 
-        && valor.toString().length == 0);
-  }
+    validarConNoNulo(subposicion: any, valor: any, campoAValidar: string) {
+        if (subposicion.tareaSubcontratar === "") {
+            return false
+        }
 
-  mostrarValidacion(campoAValidar, vacio){
-    let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-    return (camposVacios != null && (vacio == undefined || vacio == ""));
-  }
+        return valor == null ||
+            ((this.camposObligatorios.find(x => x.campo == campoAValidar).esObligatorio)
+                && valor.toString().length == 0);
+    }
+
+    mostrarValidacion(campoAValidar, vacio) {
+        let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
+        return (camposVacios != null && (vacio == undefined || vacio == ""));
+    }
 
     actualizarTipoDeImputacion(): void {
         if (this.posicion.tipoImputacion) {
@@ -93,36 +93,36 @@ export class TabImputacionesComponent extends ListBaseComponent {
         }
     }
 
-  autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
-    try {
-        let filter = tablaAFiltrar || this.tablaAFiltrar;
-        if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
-            this.autocomplete = [];
-            return;
-        }
-        this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
-            (result: any) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.floatMsgService.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.floatMsgService.setInfoMsg(result.info);
-                } else {
-                    this.autocomplete = soloDescripcion ? result.map(x => x.Descripcion.trim()) : result;
-                }
-            },
-            error => {
-                this.floatMsgService.setErrorMsg(error.message);
-                this.spinnerComponent.hideIt();
+    autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
+        try {
+            let filter = tablaAFiltrar || this.tablaAFiltrar;
+            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
+                this.autocomplete = [];
+                return;
             }
-        );
-    }
-    catch (e) {
-        this.floatMsgService.setErrorMsg(e);
+            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.autocomplete = soloDescripcion ? result.map(x => x.Descripcion.trim()) : result;
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                }
+            );
+        }
+        catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+
         return false; //<-- Prevent Refresh
     }
-
-    return false; //<-- Prevent Refresh
-  }
 }

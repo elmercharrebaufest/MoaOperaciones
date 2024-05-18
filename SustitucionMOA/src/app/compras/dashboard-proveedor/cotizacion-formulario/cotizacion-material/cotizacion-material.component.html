@@ -86,9 +86,9 @@
                                 </p-cellEditor>
                             </td>
                             <td pEditableColumn class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true &&
                                      (posicionesCompra.Posiciones.CotizacionPosicion.UnidadDeMedida_Id <= 0)} ">
-                                     <p-dropdown [options]="getUnidades(posicionesCompra)" dataKey="Codigo" optionLabel="Descripcion"
+                            <p-dropdown [options]="getUnidades(posicionesCompra)" dataKey="Codigo" optionLabel="Descripcion"
                                 [disabled]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible == true"
                                 [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.UnidadMedida"
                                 placeholder="Unidad" [style]="{'width':'170px'}" [dropdown]="true"
@@ -99,7 +99,7 @@
                         </div>
                             </td>
                             <td class="columna">
-                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true && 
+                                <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true &&
                                      (posicionesCompra.Posiciones.CotizacionPosicion.Moneda_Id <= 0)}">
 
                              <p-dropdown
@@ -179,14 +179,14 @@
                             </td>
                             <td class="columna" style="overflow: hidden; height: 25px; text-align: center;">
                                 <div [ngClass]="{'invalido': esFinalizado && posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible != true 
-                                && (posicionesCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionesCompra.Posiciones.CotizacionPosicion.PrimeraCantidad <= 0)}">
+                                    && (posicionesCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta <= 0 || posicionesCompra.Posiciones.CotizacionPosicion.PrimeraCantidad <= 0)}">
                                     <button class="plazoDeOferta btn" style="font-size: 13px;" (click)="abrirPlazoDeOferta(posicionesCompra?.Posiciones?.CotizacionPosicion, posicionesCompra?.Posiciones?.Cantidad)">
                                         Agregar
                                     </button>
-                                   
+
                                 </div>
                             </td>
-                            
+
 
                         </tr>
                     </ng-template>
@@ -198,6 +198,7 @@
         <strong>Por favor, explique en las observaciones por qué modificó la cantidad y/o unidad de medida.</strong>
     </div>
     <br>
+
     <div class="col-md-12 row myRow alinearTitulo margenInput">
         <div class="col-md-12 titulosModal">
             <label *ngIf="!peticion.PideDescripcionTecnica; else elseText1">El material <strong>cumple</strong> las especificaciones técnicas solicitadas:</label>
@@ -214,22 +215,22 @@
         </div>
     </div>
     <ng-container *ngIf="!peticion.PideDescripcionTecnica">
-    <div class="col-md-12">
-        <div class="col-md-2" style="width: 10px;">
-            <label>Sí</label>
+        <div class="col-md-12">
+            <div class="col-md-2" style="width: 10px;">
+                <label>Sí</label>
+            </div>
+            <div class="col-md-2">
+                <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
+            </div>
+            <div class="col-md-2" style="width: 10px;">
+                <label>No</label>
+            </div>
+            <div class="col-md-2">
+                <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
+            </div>
         </div>
-        <div class="col-md-2">
-            <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
-                   [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
-        </div>
-        <div class="col-md-2" style="width: 10px;">
-            <label>No</label>
-        </div>
-        <div class="col-md-2">
-            <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
-                   [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
-        </div>
-    </div>
     </ng-container>
     <div class="inputCompras">
         <p>
