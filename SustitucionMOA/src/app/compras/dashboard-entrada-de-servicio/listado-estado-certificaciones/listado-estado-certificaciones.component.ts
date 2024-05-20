@@ -12,6 +12,7 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
+import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message } from 'primeng/api';
@@ -54,6 +55,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
   innerWidth: number;
+
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
@@ -140,20 +142,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   proveedor: string = sessionStorage.getItem("proveedor");
   msgs: Message[] = [];
   havePermision: boolean = false;
-
+  
   observaciones: string = '';
       
   ngOnInit() {
+    this.innerWidth = window.innerWidth;
 
-    this.getListarPO(this.proveedor, this.documentoNumero);
+      this.getListarPO(this.proveedor, this.documentoNumero);
 
     this.formsCreate();
 
     this.innerWidth = window.innerWidth;
 
-    this.navService.setSeccionActive("Estado certificaciones");
+      this.navService.setSeccionActive("Estado certificaciones");
 
-    this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+      this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
     
     let permisos = sessionStorage.getItem("permisos");
     
@@ -163,7 +166,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
   }
 
-
+    toggleTable(data: any) {
+  
   showContainerTable(): void {
     this.spinnerComponent.hideIt();
     if (this.elementToToggle) {
@@ -203,46 +207,63 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   toggleTable(data: any) {
-    const index = this.posicionRow.indexOf(data);
-    if (index === -1) {
-      this.posicionRow.push(data);
-      this.isTableExpanded = !this.isTableExpanded;
-    } else {
-      this.posicionRow.splice(index, 1);
-      this.isTableExpanded = false;
+      const index = this.posicionRow.indexOf(data);
+      if (index === -1) {
+          this.posicionRow.push(data);
+          this.isTableExpanded = !this.isTableExpanded;
+      } else {
+          this.posicionRow.splice(index, 1);
+          this.isTableExpanded = false;
+      }
+  
+
     }
-  }
   
     toggleEntradaServicio() {
       this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
+    }
+  
+    onCheckboxChange(e: any) {
+  
+    }
+  
+  
+    ngOnDestroy(): void {
+        // this.subscripcionPO.unsubscribe();
     }
 
     getListarPO(proveedor, documentoNumero) {
       this.getFecha();
       this.hideContainerTable();
-      this.unsubscribe();
+          this.unsubscribe();
       this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-        (result:any) => {
-          if (result.logout == true) {
-            this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-          } else if (result.info != undefined) {
-          } else {
-              this.tablaPO = result.data;
+                (result:any) => {
+                  if (result.logout == true) {
+                    this.sessionDataService.logout();
+                  } else if (result.error != undefined && result.error != "") {
+                  } else if (result.info != undefined) {
+                  } else {
+                      this.tablaPO = result.data; 
               this.setColumsByUserProfile(this.tablaPO, this.usuario);
-              this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-              this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-              this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-          }
+                      this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+                      this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                      this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+                  }
           this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
           this.showContainerTable();
           return true;
         }, error => {
-          this.floatMsgService.setErrorMsg(error.message);
+                  this.floatMsgService.setErrorMsg(error.message);
           this.showContainerTable();
           return false;
-        }
-      );
+              }
+              );
+      } catch (e) {
+        this.floatMsgService.setErrorMsg(e);
+        this.spinnerComponent.hideIt();
+        return false; //<-- Prevent Refresh
+      }
+
       return false; //<-- Prevent Refresh
   }
 
@@ -257,35 +278,35 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     //actualizar
     fechaActual.setMonth(fechaActual.getMonth() - 2);
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-  }
+}
 
   
-  deleteES(item: any) {
-    //TODO: lógica para cuando se especifique el borrado de una ES
-  }
-
-  handlePageEvent(e: any) {
-    this.pageSize = e.rows;
-    this.pageIndex = e.page + 1;
-    this.getListarPO(this.proveedor, this.documentoNumero);
-  }
-
-  onOrder(columna: string) {
-    if (this.columnaOrden != columna) {
-      this.ordenAscendente = false
-    } else {
-      this.ordenAscendente = this.ordenAscendente == false ? true : false;
+    deleteES(item: any) {
+      //TODO: lógica para cuando se especifique el borrado de una ES
     }
-    this.columnaOrden = columna;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+  
+    handlePageEvent(e: any) {
+        this.pageSize = e.rows;
+        this.pageIndex = e.page + 1;
+        this.getListarPO(this.proveedor, this.documentoNumero);
+    }
+
+    onOrder(columna: string) {
+      if (this.columnaOrden != columna) {
+          this.ordenAscendente = false
+      } else {
+          this.ordenAscendente = this.ordenAscendente == false ? true : false;
+      }
+      this.columnaOrden = columna;
+      this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
   toggleRow(rowData: any): void {
-    this.selectedRow = this.selectedRow === rowData ? null : rowData;
+      this.selectedRow = this.selectedRow === rowData ? null : rowData;
   }
 
   isSelectedRow(rowData: any): boolean {
-    return this.selectedRow === rowData;
+      return this.selectedRow === rowData;
   }
 
   verMotivosRechazos(rowData: any): void {

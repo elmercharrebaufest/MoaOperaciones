@@ -1,6 +1,7 @@
 import { Adjuntos } from "./adjuntos";
 import { Rol } from "./rol";
 
+
 export class Notificacion {
     public Id: number;
     public Nombre: string;

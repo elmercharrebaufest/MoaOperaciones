@@ -126,6 +126,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
+
     }
 
     ngAfterContentInit() {
@@ -160,7 +161,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         let montoTotalGeneral = 0;
         let moneda: string = ''
         moneda =  this.itemsAgrupadosPorPosicion[0].Items[0].Moneda; 
-    
+
         this.itemsAgrupadosPorPosicion.forEach(position => {
             montoTotalGeneral += position.MontoTotalACertificar;
         });
@@ -169,8 +170,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             return `$ ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
         } else {
             return `${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
-        }
-    
+    }
+
     }
     
 
@@ -190,8 +191,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             this.monthNavStatus = true;
         }
         else {
-            this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        }        
+        this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    }
     }
 
     dateFormatter(date_Object: Date): string {

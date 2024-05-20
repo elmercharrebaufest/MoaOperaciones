@@ -93,7 +93,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
 
     setTabs() {
-        this.setMenuSeccionTab("Cotizacion", "Cotizacion");
+        //this.setMenuSeccionTab("Cotizacion", "Cotizacion");
     }
 
     ngOnInit() {

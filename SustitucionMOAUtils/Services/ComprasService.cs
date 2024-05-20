@@ -2928,6 +2928,24 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        static readonly object _lockObtenerSolpesDesdeSAPJob = new object();
+
+        public void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest)
+        {
+            lock (_lockObtenerSolpesDesdeSAPJob)
+            {
+                try
+                {
+                    ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                }
+            }
+        }
+
+
         public void ActualizarEstadoSolpBulk()
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
@@ -6039,12 +6057,7 @@ namespace SustitucionMOAUtils.Services
                     tieneUnidadDeMedidaNula = cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
                     subPosicion.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId));
                 }
-
-                tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones?.Any(pos =>
-                pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId) ||
-                (cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
-                 subPosicion.UnidadDeMedidaId == null ||  !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId)))) ?? false;
-
+                
                 if (esFinalizado && tieneUnidadDeMedidaNula)
                 {
                     respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");

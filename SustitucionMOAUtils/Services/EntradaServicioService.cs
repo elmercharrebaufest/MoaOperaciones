@@ -121,7 +121,7 @@ namespace SustitucionMOAUtils.Services
             //Obtiene Cabeceras de Entradas de Servicio
             List<EntradaServicioCabeceraDto> EntradasServicioCabecera = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio);
 
-            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
+            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>(); 
 
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
@@ -132,17 +132,17 @@ namespace SustitucionMOAUtils.Services
             // ES APROBADAS
             try
             {
-                foreach (var documento in EntradasServicioCabecera)
-                {
-                    string nroDoc = documento.EntradaServicio.ToString();
+            foreach (var documento in EntradasServicioCabecera)
+            {
+                string nroDoc = documento.EntradaServicio.ToString();
                     int nro_es_sap = int.Parse(nroDoc);
 
                     DateTime fecha = DateTime.Parse(documento.FechaCreacion);
                     string fechaFormateada = fecha.ToString("dd/MM/yyyy");
                     documento.FechaCreacion = fechaFormateada;
 
-                    // Se obtiene detalle de una ES
-                    List<EntradaServicioDetalleDto> entradasServicioDetalleSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
+                // Se obtiene detalle de una ES
+                List<EntradaServicioDetalleDto> entradasServicioDetalleSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
                     documento.entradaServicioDetalle = entradasServicioDetalleSAP;
 
                     documento.Estado = "Aprobada";
@@ -201,7 +201,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    EntradasServicio.Add(documento);
+                EntradasServicio.Add(documento);
 
                 }
             }
@@ -236,7 +236,7 @@ namespace SustitucionMOAUtils.Services
 
                     EntradaServicioDetalleDto detalleEntradaServicioTemp = MapEntradaServicioDetalle(temporal);
                     diccionarioES[nroEsLocal].entradaServicioDetalle.Add(detalleEntradaServicioTemp);
-                }
+            }
 
                 foreach (var kvp in diccionarioES)
                 {
@@ -433,7 +433,7 @@ namespace SustitucionMOAUtils.Services
             {
                 bool empty = EmptySolPedValues(detalleSolPed);
                 if (empty)
-                {
+        {
                     EntradaServicioCreateRespuestaDto emptySolPed = new EntradaServicioCreateRespuestaDto();
                     emptySolPed.Type = "S";
                     emptySolPed.Message = "No se encuentra fiscal en la Sol. Ped. Ingresada. Por favor, verificar con el creador de la misma";

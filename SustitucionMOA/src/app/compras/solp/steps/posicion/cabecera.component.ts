@@ -256,7 +256,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Cabecera", "Cabecera");
+        //this.setMenuSeccionTab("Cabecera", "Cabecera");
     }
 
     validarTipoPosicion(): void {

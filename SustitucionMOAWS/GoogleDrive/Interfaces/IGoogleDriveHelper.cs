@@ -1,6 +1,8 @@
 ﻿using Google.Apis.Drive.v3.Data;
 using System.Collections.Generic;
 using SustitucionMOAWS.GoogleDrive.Models;
+using System.Threading.Tasks;
+using IO=System.IO;
 
 namespace SustitucionMOAWS.GoogleDrive.Interfaces
 {
@@ -11,7 +13,7 @@ namespace SustitucionMOAWS.GoogleDrive.Interfaces
         /// </summary>
         /// <param name="downloadFileRequest"></param>
         /// <exception cref="FileNotFoundException"></exception>
-        void DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest);
+        IO.MemoryStream DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest);
 
         /// <summary>
         /// Return list of files, with the option to filter with a personal query and select specific fields for the files
@@ -45,7 +47,15 @@ namespace SustitucionMOAWS.GoogleDrive.Interfaces
         /// <exception cref="FileNotFoundException"></exception>
         /// <exception cref="Exception"></exception>
         string UploadFile(GoogleDriveFileUploadRequest uploadFileRequest);
-
+        /// <summary>
+        /// Method that allows you to download a file, with the in memory byte[] and parsed into an internal class.
+        /// </summary>
+        /// <param name="downloadFileRequest"></param>
+        /// <returns></returns>
+        /// <exception cref="FileNotFoundException"></exception>
+        /// <exception cref="Exception"></exception>
+        Task<T> DownloadFileAs<T>(GoogleDriveFileDownloadRequest downloadFileRequest);
+        void SaveFile(System.IO.MemoryStream stream, GoogleDriveFileDownloadRequest downloadFileRequest);
     }
     public interface IGoogleDriveHelper: IGoogleDriveHelperUtils
     {

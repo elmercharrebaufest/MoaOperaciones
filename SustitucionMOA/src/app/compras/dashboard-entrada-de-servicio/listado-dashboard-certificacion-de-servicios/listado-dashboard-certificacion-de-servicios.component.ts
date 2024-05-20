@@ -165,7 +165,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             name: 'Items',
             columns: [
                 { id: 'iLinea', header: 'N° Línea', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iNroServicio', header: 'N° Servicio', field: 'ServicioNumero', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
@@ -427,7 +427,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-
+                       
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -443,7 +443,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.spinnerComponent.hideIt();
 
                     this.displayContent = true;
-
+                    
                     // Se buscan las posiciones que están al 100%
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
@@ -465,7 +465,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
-    }
+      }
 
     isPendingRelease(oc): boolean {
         return oc.SubjToR != "";
@@ -513,7 +513,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + TempId);
                 }
                 else {
-                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                 }
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
@@ -1071,14 +1071,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularPorcentaje(oc): any[] {
-        const posicionesCompletas = oc.Posiciones.filter(posicion => {
+         const posicionesCompletas = oc.Posiciones.filter(posicion => {
             this.calcularValoresACertificar(posicion);
 
-            const items = posicion.Items || [];
-            const totalItems = items.length;
-            const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
-
-            return itemsCompletados === totalItems;
+        const items = posicion.Items || [];
+        const totalItems = items.length;
+        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+        
+        return itemsCompletados === totalItems;
 
         });
 

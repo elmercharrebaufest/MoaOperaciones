@@ -176,7 +176,7 @@
                                 <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)" [class.highlighted]="expanded">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
-                                        <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
+                                      <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
                                             <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)" 
                                                    #seleccionarPosicionCheckbox
@@ -272,7 +272,7 @@
                                                                    [ngModel]="rowData.CantidadACertificar | number:'1.0-3'"
                                                                    required
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
-                                                                   [disabled]="rowData.Porcentaje==100"
+                                                                   [disabled]="rowData.Porcentaje==100" 
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}" />
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
@@ -424,15 +424,15 @@
 </div>
 
 
-    <app-modal-alta-entrada-de-servicio *ngIf="showModal"
-                                        [showModal]="showModal"
-                                        [itemSelected]="itemSelected"
+<app-modal-alta-entrada-de-servicio *ngIf="showModal"
+                                    [showModal]="showModal"
+                                    [itemSelected]="itemSelected"
                                         [posicionSelected] ="posicionSelected"
-                                        [elementSelected]="elementSelected"
-                                        [itemIdSelected]="itemIdSelected"
-                                        (closeModal)="onCloseModal()"
-                                        (enviarMensajeGrilla)="actualizarGrilla($event)">
-    </app-modal-alta-entrada-de-servicio>
+                                    [elementSelected]="elementSelected"
+                                    [itemIdSelected]="itemIdSelected"
+                                    (closeModal)="onCloseModal()"
+                                    (enviarMensajeGrilla)="actualizarGrilla($event)">
+</app-modal-alta-entrada-de-servicio>
 
 
 

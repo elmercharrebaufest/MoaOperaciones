@@ -23,6 +23,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<Cosecha> ObtenerCosechas(bool incluirInactivas);
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
         string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
-        void DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
+        Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
     }
 }
