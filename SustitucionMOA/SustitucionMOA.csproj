@@ -440,6 +440,13 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.css" />
+    <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.html" />
+    <Content Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.css" />
+    <Content Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.html" />
+    <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.css" />
+    <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.html" />
+    <Content Include="src\app\vendedor\vendedor_status.component.css" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
@@ -1450,6 +1457,9 @@
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\modificar-datos\modificar-datos.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\ver-vendedores\ver-vendedores.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.spec.ts" />

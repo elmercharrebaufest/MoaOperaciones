@@ -165,8 +165,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.havePermision = true;
     }
   }
-
-    toggleTable(data: any) {
   
   showContainerTable(): void {
     this.spinnerComponent.hideIt();
@@ -263,9 +261,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.spinnerComponent.hideIt();
         return false; //<-- Prevent Refresh
       }
-
-      return false; //<-- Prevent Refresh
-  }
 
   displayContent() {
     return !this.spinnerComponent.visible;
