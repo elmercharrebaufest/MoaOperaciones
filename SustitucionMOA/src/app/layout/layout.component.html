@@ -671,7 +671,7 @@
                                     REPORTE ORDEN DE COMPRA
                                 </a>
                             </div>
-                            <div>
+                            <div  *ngIf="isAuthorized('ABM SOLP')">
                                 <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
                                     CERTIFICACIÓN DE SERVICIOS
                                 </a>
