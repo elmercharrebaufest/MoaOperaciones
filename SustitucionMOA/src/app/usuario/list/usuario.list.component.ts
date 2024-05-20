@@ -338,7 +338,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     guardarRolesUsuario() {
         this.spinnerComponent.showIt();
         this.mensajeComponent.setMsgsEmpty();
-        this.usuarioSeleccionado.Suplente = this.suplente.trim();
+        //this.usuarioSeleccionado.Suplente = this.suplente.trim();
         const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
         try {
             this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, this.usuarioSap).subscribe(
