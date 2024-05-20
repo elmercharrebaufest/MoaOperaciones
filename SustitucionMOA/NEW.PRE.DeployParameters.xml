@@ -179,4 +179,5 @@
 	<setParameter name="SI_MPMF_MOAOP_PENDIENTE_APLICAR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PENDIENTE_APLICAR&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
 	<setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
+	<setParameter name="MailsDisconformidadCalidades Config" value="carina.scasso@molinosagro.com.ar;adalberto.fratini@molinosagro.com.ar;marcelo.valoni@molinosagro.com.ar;Nicolas.Gullini@molinosagro.com.ar;carlos.cortina@molinosagro.com.ar" />
 </parameters>

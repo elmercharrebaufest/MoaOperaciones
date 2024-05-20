@@ -1026,6 +1026,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\RespuestaConsulta.html" />
+    <Content Include="Template\NotificacionConsultaParaInternos.html" />
     <Content Include="Template\Solp.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />

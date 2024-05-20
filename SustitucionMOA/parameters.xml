@@ -859,5 +859,10 @@
                            /@value" />
 	</parameter>
 
+ 	<parameter name="MailsDisconformidadCalidades Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='MailsDisconformidadCalidades']
+                           /@value" />
+	</parameter>
 </parameters>
 

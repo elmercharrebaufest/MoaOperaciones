@@ -818,7 +818,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                     this.mensajeComponent.setErrorMsg(error || info)
                     return;
                 }
-                this.rubrosOptions = data
+                this.rubrosOptions = data;
                 this.nuevoComentario =
                     [
                         'Característica - Calado - Cámara',
@@ -846,5 +846,5 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     validarRubrosSeleccionados() {
         return this.rubrosSelected.every(rubro => !!rubro.discrepanciaCalidad)
-    }
+    } 
 }

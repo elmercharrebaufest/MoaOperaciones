@@ -42,6 +42,8 @@ namespace SustitucionMOAUtils.Services
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
         private static readonly string EMAIL_TEMPLATE = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "RespuestaConsulta.html");
+        private static readonly string EMAIL_TEMPLATE_NOTIFICACION_INTERNA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionConsultaParaInternos.html");
+        private static readonly string DESTINOS_EMAILS_DISCONFORMIDAD = ConfigurationManager.AppSettings["MailsDisconformidadCalidades"];
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
         public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService)
@@ -220,6 +222,10 @@ namespace SustitucionMOAUtils.Services
                         repositorio.GuardarCambios();
                     }
                 }
+            }
+            if (consulta.Categoria.Code == Categorias.DiscrepanciaCalidad)
+            {
+                NotificarInternamenteConsultaDiscrepancia(consulta);
             }
 
             return new AgregarConsultaResponseDto
@@ -411,6 +417,30 @@ namespace SustitucionMOAUtils.Services
             return id;
         }
 
+        private string NotificarInternamenteConsultaDiscrepancia(Consulta consulta)
+        {
+            try
+            {
+                var copia = new List<string>();
+                var destinos = DESTINOS_EMAILS_DISCONFORMIDAD.Split(';').ToList();
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_NOTIFICACION_INTERNA);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
+                string asunto = "Nueva Discrepancia - " + consulta.RazonSocialProveedor + " consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(destinos, asunto, cuerpo, copia, null, null, null);
+
+                consulta.FechaUltimaModificacion = DateTime.Now;
+
+                repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+
+            return "Enviado Correctamente";
+        }
+
         public string RecordarComentario(int consultaId)
         {
             try
@@ -523,7 +553,8 @@ namespace SustitucionMOAUtils.Services
                         Code = x.SubCategoria.Code,
                         Nombre = x.SubCategoria.Nombre,
                         CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto {
+                    } : new SubCategoriaDto
+                    {
                         Id = 0,
                         Code = "",
                         Nombre = "",

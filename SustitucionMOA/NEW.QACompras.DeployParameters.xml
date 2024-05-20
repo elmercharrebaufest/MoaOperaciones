@@ -169,4 +169,5 @@
 
 
 	<setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
+	<setParameter name="MailsDisconformidadCalidades Config" value="moaoperaciones@molinosagro.com.ar" />
 </parameters>
