@@ -3030,5 +3030,19 @@ namespace SustitucionMOATest.Services
         }
 
 
+        [Test]
+        public void AgruparPeticionesDeOfertaOk()
+        {
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+              .Returns(new List<PeticionDeOferta>() { peticionDeOferta});
+
+            target.AgruparPeticionesDeOferta(It.IsAny<int>(), It.IsAny<string>());
+
+            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
+            repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(1));
+        }
+
+
     }
 }

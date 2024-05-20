@@ -9515,6 +9515,43 @@ namespace SustitucionMOAUtils.Services
                 return new List<string>();
             return cadena.Split(',').ToList();
         }
+
+        public Resultado AgruparPeticionesDeOferta(int usuarioId, string ids)
+        {
+            try
+            {
+                var peticionesDeOfertaId = ConvertirStringAListaInt(ids);
+                var resultado = new Resultado();
+                var peticiones = repositorio.Listar<PeticionDeOferta>(pet => peticionesDeOfertaId.Contains(pet.Id));
+
+                var peticion = new PeticionDeOferta
+                {
+                    Observaciones = string.Join(Environment.NewLine, peticiones.Select(peti => peti.Observaciones)),
+                    FechaCreacion = DateTime.Now,
+                    Agrupada = true,
+                    Posiciones = peticiones.SelectMany(x => x.Posiciones).GroupBy(y => y.SolpPosicion_Id).Where(group => group.Count() == 1).SelectMany(group => group).ToList(),
+                    UsuarioCreador_Id = usuarioId,
+                    AdjuntoPliego = peticiones.Any(x => x.Archivos.Any()),
+                    Archivos = peticiones.SelectMany(x => x.Archivos).ToList(),
+                    PlazoDeOferta = peticiones.Select(peti => peti.PlazoDeOferta).OrderBy(f => f).FirstOrDefault(),
+                    Usuarios = peticiones.SelectMany(x => x.Usuarios).GroupBy(y => y.Usuario_Id).Where(group => group.Count() == 1).SelectMany(group => group).ToList(),
+                    UsuariosAdicionales = peticiones.SelectMany(x => x.UsuariosAdicionales).ToList(),
+                };
+
+                repositorio.Agregar(peticion);
+                peticiones.RemoveAll(x => true);
+                repositorio.GuardarCambios();
+
+                resultado.IdEntidad = peticion.Id;
+
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
     }
 
     public static class SolpTemplateKeys

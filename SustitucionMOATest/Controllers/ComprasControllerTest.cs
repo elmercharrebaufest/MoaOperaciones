@@ -587,6 +587,7 @@ namespace SustitucionMOATest.Controllers
             var result = target.ListarSolpCondicionEspecial(filtroJson);
 
             Assert.IsNotNull(result);
+            comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
         [Test]
@@ -606,6 +607,7 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
         [Test]
@@ -620,6 +622,7 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
         [Test]
@@ -634,32 +637,73 @@ namespace SustitucionMOATest.Controllers
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
         [Test]
-        public void ListarSolpCondicionEspecial_WSCustomException_ReturnsWSError()
+        public void AgruparPeticionesDeOfertaOk()
         {
-            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
-            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new WSCustomException());
+            // Arrange
+            var peticionDeOfertaIds = "1,2,3";
+            var usuario = new UsuarioDto { Id = 1 };
+            var expectedResult = new { data = "success" };
 
-            var result = target.ListarSolpCondicionEspecial(filtroJson);
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuario);
+            comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Returns(new Resultado { IdEntidad = 78});
 
+            // Act
+            var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+
+            // Assert
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
+            usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
         }
 
         [Test]
-        public void ListarSolpCondicionEspecial_GenericException_ReturnsGenericError()
+        public void AgruparPeticionesDeOferta_InfoCustomException_ReturnsInfo()
         {
-            var filtroJson = "{\"Columna\":\"NroSolp\",\"Orden\":\"ASC\",\"Pagina\":1,\"ItemsPorPagina\":10}";
-            comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new Exception("Generic exception message"));
+            // Arrange
+            var peticionDeOfertaIds = "1,2,3";
+            var usuario = new UsuarioDto { Id = 1 };
+            var expectedInfoMessage = "InfoCustomException message";
 
-            var result = target.ListarSolpCondicionEspecial(filtroJson);
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuario);
+            comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Throws(new InfoCustomException(expectedInfoMessage));
 
+            // Act
+            var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+
+            // Assert
             Assert.IsNotNull(result);
             var jsonResult = (JsonResult)result;
             Assert.IsNotNull(jsonResult.Data);
+            usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
+        }
+
+        [Test]
+        public void AgruparPeticionesDeOferta_ValidationCustomException_ReturnsValidationError()
+        {
+            // Arrange
+            var peticionDeOfertaIds = "1,2,3";
+            var usuario = new UsuarioDto { Id = 1 };
+            var expectedValidationMessage = "ValidationCustomException message";
+
+            usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuario);
+            comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Throws(new ValidationCustomException(expectedValidationMessage));
+
+            // Act
+            var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+
+            // Assert
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+            usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
+            comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
         }
 
     }
