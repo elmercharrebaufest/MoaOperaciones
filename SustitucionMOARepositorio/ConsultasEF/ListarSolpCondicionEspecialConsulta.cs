@@ -30,7 +30,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
 
                 var resultado = from solp in contexto.Set<Solp>()
-                                where (solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02" && solp.Posiciones.All(x => x.Peticiones.Any()) && solp.TrabajoYaHecho == true || (solp.TrabajoYaHecho == true && solp.Adicional == true) &&
+                                where ((solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02") && solp.Posiciones.All(x => x.Peticiones.Any()) && (solp.TrabajoYaHecho == true || (solp.TrabajoYaHecho == true && solp.Adicional == true)) &&
                                       (!filtro.Centros.Any() || solp.Posiciones.Any(c => filtro.Centros.Contains(c.Centro_Id))) &&
                                       (!filtro.GrupoDeCompras.Any() || solp.Posiciones.Any(gc => filtro.GrupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                                       (filtro.Sap && solp.TipoSolpSap == 3 || filtro.Mantenimiento && solp.TipoSolpSap == 2 || filtro.RepoAutomatica && solp.TipoSolpSap == 4 ||
@@ -45,7 +45,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                       solp.Posiciones.Any(p => p.Subposiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.TipoImputacion_Id)))) &&
                                       filtro.EsServicio ? solp.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") : solp.Posiciones.Any(p => p.TipoPosicion.Codigo != "SERVICIO")
                                       && (!filtro.Agrupada == true || solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.PeticionDeOferta.Agrupada == true)) &&
-                                      solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.SolpPosicion.AdjudicacionPosiciones.Any())) &&
+                                      !solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.SolpPosicion.AdjudicacionPosiciones.Any())) &&
                                       solp.Posiciones.All(posi => string.IsNullOrEmpty(posi.NumeroContratoSuperior)))
                                 select new SolpDto
                                 {

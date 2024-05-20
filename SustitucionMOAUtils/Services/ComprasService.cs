@@ -9496,10 +9496,11 @@ namespace SustitucionMOAUtils.Services
                 EsServicio = filtro.EsServicio ?? false,
                 NombrePedido = filtro.NombrePedido?.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries) ?? new string[0],
                 EstadoLicitacion = filtro.EstadoLicitacion,
-                EstadoCotizacion = filtro.EstadoCotizacion
+                EstadoCotizacion = filtro.EstadoCotizacion,
+                Agrupada = filtro.Agrupada,
+                NroPo = filtro.NroPo
             };
         }
-
 
         private List<int> ConvertirStringAListaInt(string cadena)
         {
@@ -9538,7 +9539,5 @@ namespace SustitucionMOAUtils.Services
         public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
         public const string PAGINAS = "PAGINAS";
         public const string FECHA_OBRA = "FECHA_OBRA";
-
-
     }
 }

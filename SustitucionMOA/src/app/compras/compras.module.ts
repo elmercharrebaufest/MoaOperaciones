@@ -87,6 +87,7 @@ import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dash
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
+import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
 @NgModule({
     imports: [
@@ -173,7 +174,8 @@ import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
-        VisualizarMovimientoComponent
+        VisualizarMovimientoComponent,
+        AgruparPoThComponent
     ],
     providers: [
         ComprasService,
