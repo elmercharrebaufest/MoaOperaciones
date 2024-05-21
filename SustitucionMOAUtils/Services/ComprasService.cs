@@ -8789,7 +8789,7 @@ namespace SustitucionMOAUtils.Services
 
         private void SetNombreDePedido(Solp solp)
         {
-            if (string.IsNullOrEmpty(solp.Pliego.NombreObra) || solp.TipoSolpSap != (int)TipoSolpSap.Web || solp.TipoSolp == null || solp.TipoSolp.Codigo == "SIN_PLIEGO")
+            if (string.IsNullOrEmpty(solp.Pliego?.NombreObra) || solp.TipoSolpSap != (int)TipoSolpSap.Web || solp.TipoSolp == null || solp.TipoSolp.Codigo == "SIN_PLIEGO")
             {
                 string nombre = solp.Posiciones.Count > 2 ? string.Join(" + ", solp.Posiciones.Take(2).Select(x => x.Tarea)) + " + Otros" :
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));
