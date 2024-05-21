@@ -1,4 +1,4 @@
-export interface OrdenDeCompraSap {
+export interface OrdenDeCompraSap{
     Cabecera: OrdenDeCompraSAPCabecera;
     Error: ErrorOC,
     Mensaje: string
@@ -21,7 +21,8 @@ export interface OrdenDeCompraSAPCabecera {
 //     Posiciones:  OrdenDeCompraSAPPosicion();
 // }
 
-export interface ErrorOC {
-    Mensaje: string,
-    Tipo: string,
-}
+export interface ErrorOC
+    {
+        Mensaje: string,
+        Tipo: string,
+    }

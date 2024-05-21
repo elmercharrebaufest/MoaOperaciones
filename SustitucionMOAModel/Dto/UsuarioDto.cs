@@ -17,7 +17,7 @@ namespace SustitucionMOAModel.Dto
 
         public string Tipo { get; set; }
         public List<string> Permisos { get; set; }
-        public bool NuevoUsuario{ get; set; }
+        public bool NuevoUsuario { get; set; }
         public string ApiKey { get; set; }
         public string UsuarioSap { get; set; }
         public string RazonSocial { get; set; }
@@ -27,6 +27,9 @@ namespace SustitucionMOAModel.Dto
         {
             Permisos = new List<string>();
         }
+        public string Suplente { get; set; }
+
+       
 
         public UsuarioDto(Usuario usuario)
         {
@@ -62,7 +65,8 @@ namespace SustitucionMOAModel.Dto
 
         private string ObtenerCodigoProveedor()
         {
-            try {
+            try
+            {
                 //
                 if (string.IsNullOrEmpty(CUIT))
                     return "";
@@ -76,10 +80,11 @@ namespace SustitucionMOAModel.Dto
                     return string.Concat("00", CUIT.Substring(2, 8));
                 }
             }
-            catch {
+            catch
+            {
                 return "CUIT INVALIDO";
             }
-            
+
         }
     }
 }

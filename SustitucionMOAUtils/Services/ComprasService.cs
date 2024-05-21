@@ -1888,6 +1888,59 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
+        /// <summary>
+        /// Método utilizado para retornar los proveedores disponibles en BD - Utilizado en AutoComplete.
+        /// </summary>
+        /// <returns></returns>
+        public List<ProveedorDto> AutocompleteProveedor(string valor)
+        {
+            List<ProveedorDto> lista = new List<ProveedorDto>();
+            //Atributos minimos que seran utilizados en FE, pueden traerse mas de ser necesario (Ver Proveedor/ProveedorDto).
+            //Ver si la busqueda es por Codigo de proveedor o por Razon Social.(tener en cuenta que hay codigos de proveedor que
+            //empiezan con 'C').
+            string entrada = valor;
+            if (entrada.StartsWith("C"))
+            {
+               entrada = entrada.Substring(1);
+            }
+            double i;
+
+            if(double.TryParse(entrada,out i))
+            {
+                //Buscar por código proveedor
+                lista = repositorio.Listar<Proveedor, ProveedorDto>(x =>
+                   new ProveedorDto
+                   {
+                       Id = x.Id,
+                       CUIT = x.CUIT,
+                       RazonSocial = x.RazonSocial,
+                       CodigoProveedor = x.CodigoProveedor,
+                       IdTipoProveedor = x.TipoProveedor.Id
+                   }, e => e.CodigoProveedor.ToString().Contains(valor));
+            }
+            else
+            {
+                //Buscar por Razon Social
+                lista = repositorio.Listar<Proveedor, ProveedorDto>(x =>
+                   new ProveedorDto
+                   {
+                       Id = x.Id,
+                       CUIT = x.CUIT,
+                       RazonSocial = x.RazonSocial,
+                       CodigoProveedor = x.CodigoProveedor,
+                       IdTipoProveedor = x.TipoProveedor.Id
+                   }, e => e.RazonSocial.ToString().Contains(valor));
+            }
+
+            // Filtra los que no cumplen con la forma.
+            lista = lista.Where(p => p.CodigoProveedor.Substring(p.CodigoProveedor.Length - 8) == p.CUIT.Substring(2, 8)).ToList();
+
+            // Filtra los Proveedores que sean Tipo Corredores o Clientes.
+            lista = lista.Where(p => p.IdTipoProveedor != (int)TipoUsuarioEnum.Cliente && p.IdTipoProveedor != (int)TipoUsuarioEnum.Corredor).ToList();
+
+            return lista;
+        }
+
         public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
                                     string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
                                     string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
@@ -6064,7 +6117,7 @@ namespace SustitucionMOAUtils.Services
                     tieneUnidadDeMedidaNula = cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
                     subPosicion.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId));
                 }
-
+                
                 if (esFinalizado && tieneUnidadDeMedidaNula)
                 {
                     respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");

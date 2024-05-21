@@ -21,6 +21,7 @@ namespace SustitucionMOA
                 Authorization = new[] { new HangFireAuthorizationFilter() }
             });
             Register();
+
         }
 
         private void Register()

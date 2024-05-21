@@ -38,6 +38,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
         List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor);
+
+        List<ProveedorDto> AutocompleteProveedor(string valor);
         void ActualizarEstadoSolpBulk();
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
@@ -103,6 +105,8 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado GrabarMensajeChatExterno(ChatExternoComprasDto mensaje);
         ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
         void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor);
+        void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
+
         void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
     }
 }

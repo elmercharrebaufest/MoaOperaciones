@@ -109,6 +109,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.recuperarFiltros();
         this.getListarPO();
         this.listarPO();

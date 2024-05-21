@@ -11,11 +11,14 @@ import { ModalService } from './../../common/services/ModalService';
 import { BuscadorService } from '../../common/shared-components/buscador/buscador.service';
 import { Proveedor } from '../../common/models/proveedor';
 import { TipoPerfil } from '../../common/enums/TipoPerfil';
+import { ComunicacionesService } from './../../comunicaciones/comunicaciones.service';
+import { DatePipe } from '@angular/common';
+import { UpdateComunicacionService } from './../../common/services/UpdateComunicacionService';
 
 @Component({
     selector: 'app-usuario-cambio-vendedor',
     templateUrl: `usuario.cambio-vendedor.component.html`,
-    providers: [UsuarioService]
+    providers: [UsuarioService,ComunicacionesService]
 })
 export class UsuarioCambioVendedorComponent extends BaseComponent implements OnInit {
 
@@ -25,7 +28,16 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    constructor(protected service: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected readonly buscadorService: BuscadorService) {
+    constructor(protected service: UsuarioService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected readonly buscadorService: BuscadorService,
+        protected comunicacionesService: ComunicacionesService,
+        private datePipe: DatePipe,
+        private updateComunicacionService: UpdateComunicacionService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -36,6 +48,8 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
     orderDirection: number = 1;
     itemsPerPage = 20;
     filtroUsuarioVendedor: string = "";
+    startDate: string = "";
+    endDate : string = "";
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Cambio Vendedor');
@@ -125,8 +139,14 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
                                 TipoPerfil.Cliente : TipoPerfil.Proveedor
                             sessionStorage.setItem("tipoUsuario", nuevoTipoUsuario);
                             this.sessionDataService.setTipoUsuario(nuevoTipoUsuario);
+                            //llamada a busqueda de notificaciones del proveedor seleccionado
+                            this.updateComunicacionService.updateCommunications(result.ProveedorId.toString(), this.startDate, this.endDate);
                         }
                     }
+                    //Demora manual para visualizar la tardanza de la busqueda de notificaciones
+                    setTimeout(() => {
+                        this.spinnerComponent.hideIt();
+                    }, 4000);
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
@@ -140,5 +160,27 @@ export class UsuarioCambioVendedorComponent extends BaseComponent implements OnI
         }
 
         return false; //<-- Prevent Refresh
+    }
+
+    dateConvert() {
+        var today = new Date();
+
+        this.endDate = today.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+
+        today.setMonth(today.getMonth() - 2);
+
+        this.startDate = today.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        })
+
+        this.startDate = this.datePipe.transform(this.startDate, 'yyyy-MM-dd');
+        this.endDate = this.datePipe.transform(this.endDate, 'yyyy-MM-dd');
+
     }
 }

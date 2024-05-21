@@ -3,12 +3,12 @@
   <section class="container-fluid clearfix">
     <!--Title-->
     <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 "><strong>Notificaciones</strong> </div>
+      <div class="col-xs-12 col-sm-10 "><strong>Novedades</strong> </div>
       <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-          (click)="goToSeccion('/notificaciones/alta')" id="modalToggleButton">
-          Nueva notificación
+          (click)="goToSeccion('/novedades/alta')" id="modalToggleButton">
+          Nueva novedad
         </button>
 
       </div>
@@ -42,13 +42,11 @@
           style="width: 100%; padding:10px 0; background: white !important;">
           <thead>
             <tr role="row">
-              <th>Id</th>
-              <th>
-                Nombre
-              </th>
-              <th>Fecha inicio</th>
-              <th>Fecha fin</th>
-              <th>Habilitada</th>
+              <th (click)="orderColumnBy('Id')">Id</th>
+              <th (click)="orderColumnBy('Nombre')">Nombre</th>
+              <th (click)="orderColumnBy('FechaInicio')">Fecha inicio</th>
+              <th (click)="orderColumnBy('FechaFin')">Fecha fin</th>
+              <th (click)="orderColumnBy('Habilitada')">Habilitada</th>
               <th></th>
             </tr>
           </thead>
@@ -60,6 +58,8 @@
                                 ; let odd = odd" role="row" [class.odd]="!odd">
               <td>{{notificacion.Id}}</td>
               <td>{{notificacion.Nombre || "-"}}</td>
+              <!-- <td>{{notificacion.FechaInicio}}</td>
+              <td>{{notificacion.FechaFin}}</td> -->
               <td>{{ notificacion.FechaInicio.split(":")[0] }}:00</td>
               <td>{{ notificacion.FechaFin.split(" ")[0] }}</td>
               <td>
@@ -67,7 +67,7 @@
                 <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
               </td>
               <td>
-                <a (click)="goToSeccionParam('/notificaciones/alta', notificacion.Id)" class="cursor"
+                <a (click)="goToSeccionParam('/novedades/alta', notificacion.Id)" class="cursor"
                   role='button'>Editar</a>
                 <br><br>
                 <a *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)" class="cursor"

@@ -102,7 +102,7 @@ export class Generacion2Component extends ListBaseComponent {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Generacion2", "Generacion2");
+        //this.setMenuSeccionTab("Generacion2", "Generacion2");
     }
 
     ngOnInit() {

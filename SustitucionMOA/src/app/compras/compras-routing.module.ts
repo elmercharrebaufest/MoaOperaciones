@@ -1,3 +1,4 @@
+
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { SolpComponent } from './solp/solp.component';
@@ -8,8 +9,11 @@ import { ListadoDashboardProveedorComponent } from './dashboard-proveedor/listad
 import { PeticionDeOfertaFormularioComponent } from './peticion-de-oferta-formulario/peticion-de-oferta-formulario.component';
 import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-formulario.component';
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
+import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },
@@ -19,6 +23,8 @@ const routes: Routes = [
     { path: "dashboard", component: DashboardComponent },
     { path: "dashboardComprador", component: ListadoDashboardCompradorComponent },
     { path: "dashboardProveedor", component: ListadoDashboardProveedorComponent },
+    { path: "listadoEstadoCertificaciones", component: ListadoEstadoCertificacionesComponent },
+    { path: "dashboardCertificacionDeServicios", component: ListadoDashboardCertificacionDeServiciosComponent },
     { path: "peticion-de-oferta-formulario", component: PeticionDeOfertaFormularioComponent },
     { path: "peticion-de-oferta-formulario/:id", component: PeticionDeOfertaFormularioComponent },
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },

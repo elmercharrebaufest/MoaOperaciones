@@ -7,13 +7,16 @@ using System.Collections.Generic;
 using SustitucionMOAWS.GoogleDrive.Models;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using Google.Apis.Http;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Serialization;
 
 namespace SustitucionMOAWS.GoogleDrive
 {
     public sealed class GoogleDriveHelper : IGoogleDriveHelper
     {
         private DriveService DriveService { get; set; }
-        
+
         public void SetCredentials(GoogleDriveHelperGenerator generator)
         {
             var credential = CreateCredentials(generator);
@@ -89,7 +92,7 @@ namespace SustitucionMOAWS.GoogleDrive
 
             try
             {
-                if(uploadFileRequest.Bytes is null) 
+                if (uploadFileRequest.Bytes is null)
                 {
                     using (var stream = new FileStream(uploadFileRequest.FilePath, FileMode.Open))
                     {
@@ -139,7 +142,7 @@ namespace SustitucionMOAWS.GoogleDrive
 
             return fileList;
         }
-        public void DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest)
+        public MemoryStream DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest)
         {
             // Busca el archivo en la carpeta específica
             var query = $"name='{downloadFileRequest.FileName}'";
@@ -159,14 +162,48 @@ namespace SustitucionMOAWS.GoogleDrive
 
             // Descarga el archivo
             var request = DriveService.Files.Get(fileId);
-            using (var stream = new MemoryStream())
-            {
-                request.Download(stream);
+            var stream = new MemoryStream();
+            request.Download(stream);
 
-                // Guarda el archivo descargado localmente
-                using (var fileStream = new FileStream(downloadFileRequest.FilePath, FileMode.Create, FileAccess.Write))
+            if (stream.Length == 0)
+            {
+                throw new ArgumentNullException("Stream when fetching google drive file cannot be null or empty.");
+            }
+
+            // Guarda el archivo descargado localmente si la propiedad esta seteada
+            if (!string.IsNullOrEmpty(downloadFileRequest.FilePath))
+            {
+                SaveFile(stream, downloadFileRequest);
+            }
+            return stream;
+        }
+        public void SaveFile(MemoryStream stream, GoogleDriveFileDownloadRequest downloadFileRequest)
+        {
+            using (var fileStream = new FileStream(downloadFileRequest.FilePath, FileMode.Create, FileAccess.Write))
+            {
+                stream.WriteTo(fileStream);
+            }
+        }
+        public async Task<T>  DownloadFileAs<T>(GoogleDriveFileDownloadRequest downloadFileRequest)
+        {
+            var streamDownload = DownloadFile(downloadFileRequest);
+
+            streamDownload.Seek(0, SeekOrigin.Begin);
+
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
                 {
-                    stream.WriteTo(fileStream);
+                    NamingStrategy = new CamelCaseNamingStrategy() // or PascalCaseNamingStrategy()
+                }
+            };
+            using (var reader = new StreamReader(streamDownload))
+            {
+                string json = await reader.ReadToEndAsync();
+                using (var jsonReader = new JsonTextReader(new StringReader(json)))
+                {
+                    var serializer = JsonSerializer.Create(settings);
+                    return serializer.Deserialize<T>(jsonReader);
                 }
             }
         }

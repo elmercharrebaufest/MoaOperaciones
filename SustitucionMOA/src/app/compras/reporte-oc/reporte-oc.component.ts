@@ -82,6 +82,7 @@ export class ReporteOcComponent extends ListBaseComponent {
                 this.usuarioInterno = true;
             }
         }
+        this.navService.setSeccionList([]);
         this.obtenerReporteOrdenDeCompra();
 
     }

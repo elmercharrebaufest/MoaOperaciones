@@ -88,6 +88,12 @@ import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
 
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
+import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
+import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
+
+
 @NgModule({
     imports: [
         CommonModule,
@@ -173,6 +179,10 @@ import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
+        ListadoDashboardCertificacionDeServiciosComponent,
+        FiltroDashboardCertificacionDeServiciosComponent,
+        ListadoEstadoCertificacionesComponent,
+        ModalAltaEntradaDeServicioComponent
         VisualizarMovimientoComponent
     ],
     providers: [

@@ -64,6 +64,8 @@
     <Folder Include="DBO\Views" />
     <Folder Include="scripts\PreDeployment" />
     <Folder Include="scripts\PostDeployment" />
+    <Folder Include="scripts\Notificaciones" />
+    <Folder Include="scripts\Comunicacion" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -223,6 +225,18 @@
     <Build Include="DBO\Tables\AlmacenMaterial.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
     <Build Include="DBO\Tables\CotizacionHistorial.sql" />
+    <None Include="scripts\Notificaciones\Notificacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionFechaCreacion.sql" />
+    <None Include="scripts\Notificaciones\NotificacionPrioridad.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\Comunicacion.sql" />
+    <Build Include="DBO\Tables\ComunicacionTipo.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\TipoRetencion.sql" />
+    <Build Include="DBO\Tables\NotificacionAdjunto.sql" />
+    <Build Include="DBO\Tables\NotificacionLeida.sql" />
+    <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
+    <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
   </ItemGroup>
   <ItemGroup>
