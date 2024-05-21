@@ -526,11 +526,19 @@ namespace SustitucionMOAUtils.Services
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", cuit);
             var rutaGuardado = string.Concat(rutaCarpeta, "/", nombreArchivo);
 
-            var resultadoProcesadoUcropit= await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
-                new GoogleDriveFileDownloadRequest()
-                    .WithFilePath(rutaGuardado)
-                    .WithFileName(nombreArchivo)
-                );
+            ReporteProcesoUcropit resultadoProcesadoUcropit = null;
+            try
+            {
+                resultadoProcesadoUcropit = await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
+                               new GoogleDriveFileDownloadRequest()
+                                   .WithFilePath(rutaGuardado)
+                                   .WithFileName(nombreArchivo)
+                               );
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
             var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado, };
 
             repositorio.Agregar(nuevoArchivo);
