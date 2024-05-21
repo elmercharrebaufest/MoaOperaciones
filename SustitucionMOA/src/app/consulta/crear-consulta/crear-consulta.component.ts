@@ -146,7 +146,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     nombreDisabled: boolean = false;
 
     setTabs() {
-        this.setMenuSeccionTab("consulta", "crear-consulta");
+        this.setMenuSeccionTab('crear-consulta', 'Nueva Consulta');
     }
 
     ngOnInit() {

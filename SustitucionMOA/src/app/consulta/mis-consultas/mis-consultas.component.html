@@ -421,19 +421,32 @@
 <div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" data-backdrop="false"
     style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog WidhtModalConsultasInterno" role="document">
-        <div class="modal-content">
+    <div class="modal-dialog WidhtModalConsultasInterno" [ngClass]="{
+    'maximized-modal':modalMaximizado
+   }" role="document">
+        <div class="modal-content" [ngClass]="{
+    'maximized-modal-content':modalMaximizado
+   }">
             <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
-                    (click)=resetVariables()>
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <div class="grid gap-4px">
+                    <button type="button" class="modal-btn-end w-3 h-3 rw-btn-close" data-dismiss="modal"
+                        aria-label="Close" (click)=resetVariables()>
+                        <i class="pi pi-times-circle" style="font-size: 0.65em"></i>
+                    </button>
+                    <button type="button" class="modal-btn-end w-3 h-3 btn-action"
+                        (click)="toggleMaximizarModalDetalle()">
+                        <i [ngClass]="'pi '+iconoModalDetalle" style="font-size: 0.65em"></i>
+                    </button>
+                </div>
                 <h4 class="modal-title" id="myModalLabel">
                     {{consultaId}} - {{asunto}}
                 </h4>
             </div>
-            <div class="modal-body" style="padding-top:0;" *ngIf="mostrarDetalle">
-                <consulta-detalle [consultaId]="consultaId"></consulta-detalle>
+            <div class="modal-body" [ngClass]="{
+                'h-90': modalMaximizado
+            }
+            " style="padding-top:0;" *ngIf="mostrarDetalle">
+                <consulta-detalle [modalMaximizado]="modalMaximizado" [consultaId]="consultaId"></consulta-detalle>
             </div>
         </div>
     </div>

@@ -26,6 +26,7 @@ declare var $: any;
 @Component({
     selector: 'mis-consultas',
     templateUrl: `mis-consultas.component.html`,
+    styleUrls: ['mis-consultas.component.css'],
     providers: [{ provide: ConsultaService, useClass: ConsultaService }]
 
 })
@@ -80,6 +81,9 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
 
+    iconoModalDetalle = 'pi-window-maximize';
+    modalMaximizado = false;
+
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
     }
@@ -93,7 +97,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
     setTabs() {
-        this.setMenuSeccionTab("consulta", "mis-consultas");
+        this.setMenuSeccionTab("consulta", "Mis Consultas");
     }
 
     ngAfterViewInit(): void {
@@ -286,15 +290,13 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     openModal(idConsulta, asunto) {
         if (this.mostrarDetalle) {
-            this.resetVariables();
+            return this.resetVariables();
         }
 
-        setTimeout(() => {
-            this.consultaId = idConsulta;
-            this.mostrarDetalle = true;
-            this.asunto = asunto;
-            document.getElementById("openModalHiddenButton").click();
-        }, 500);
+        this.consultaId = idConsulta;
+        this.mostrarDetalle = true;
+        this.asunto = asunto;
+        document.getElementById("openModalHiddenButton").click();
     }
 
     listarConsultas() {
@@ -502,5 +504,9 @@ export class MisConsultasComponent extends ListBaseComponent {
         }
         this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
         this.openModal(consulta.Id, consulta.Asunto)
+    }
+    toggleMaximizarModalDetalle() {
+        this.modalMaximizado = !this.modalMaximizado;
+        this.iconoModalDetalle = this.modalMaximizado ? 'pi-window-minimize' : 'pi-window-maximize'
     }
 }
