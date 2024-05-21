@@ -262,6 +262,7 @@
                                                         <td *ngIf="col.type==='string' && col.visible">{{ rowData[col.field] | defaultData }}</td>
                                                         <!-- Celdas de columas con contenido customizado -->
                                                         <td *ngIf="col.type==='custom' && col.visible">
+                                                            <span *ngIf="col.id === 'iCantidadReal'">{{ rowData[col.field] }}</span>
                                                             <input *ngIf="col.id === 'iCantidadACertificar'"
                                                                    type="text"
                                                                    name="cantidad"
