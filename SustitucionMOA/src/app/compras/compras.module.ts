@@ -182,7 +182,7 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         ListadoDashboardCertificacionDeServiciosComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
-        ModalAltaEntradaDeServicioComponent
+        ModalAltaEntradaDeServicioComponent,
         VisualizarMovimientoComponent
     ],
     providers: [

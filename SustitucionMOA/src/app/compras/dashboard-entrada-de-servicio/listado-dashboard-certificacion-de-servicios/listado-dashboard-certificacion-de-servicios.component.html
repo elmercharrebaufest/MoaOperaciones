@@ -296,10 +296,10 @@
                                                                 {{ rowData.CantidadReal + rowData.CantidadACertificar }}
                                                             </span>
                                                             <span *ngIf="col.id==='iMonto'">
-                                                                {{ rowData.Cantidad * rowData.Importe | number:'1.0-2' }}
+                                                                {{ rowData.Cantidad * rowData.Importe | number:'1.2-2' }}
                                                             </span>
                                                             <span *ngIf="col.id === 'iMontoACertificar'">
-                                                                {{ rowData.CantidadACertificar * rowData.Importe | number:'1.0-2' }}
+                                                                {{ rowData.CantidadACertificar * rowData.Importe | number:'1.2-2' }}
                                                             </span>
 
                                                             <button *ngIf="col.id === 'iAcciones'"
