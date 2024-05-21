@@ -106,7 +106,5 @@ namespace SustitucionMOAUtils.Interfaces
         ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
         void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor);
         void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
-
-        void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
     }
 }
