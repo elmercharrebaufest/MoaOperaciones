@@ -239,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\css\blockui.css" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.svg" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.svg" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.svg" />
     <Content Include="Content\css\fonts\primeicons.svg" />
     <Content Include="Content\css\primeicons.css" />
     <Content Include="Content\css\primeng.min.css" />
@@ -260,9 +263,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
-    <Content Include="Content\images\icons\chat.svg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\images\icons\chat.svg" />
     <Content Include="Content\images\icons\contract.svg" />
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
@@ -271,6 +272,8 @@
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
     <Content Include="Content\images\icons\pay.svg" />
+    <Content Include="Content\images\icons\pdf-download-icon.png" />
+    <Content Include="Content\images\icons\pdf-icon.png" />
     <Content Include="Content\images\icons\SAP.svg" />
     <Content Include="Content\images\icons\scalable-truck.svg" />
     <Content Include="Content\images\icons\trash.svg" />
@@ -316,6 +319,7 @@
     <Content Include="dist\glyphicons-halflings-regular.*.svg" />
     <Content Include="dist\*.js" />
     <Content Include="dist\styles.*.css" />
+    <Content Include="Hue.INT.DeployParameters.xml" />
     <Content Include="Libs\Kendo.DynamicLinq.dll" />
     <Content Include="NEW.PRE.DeployParameters.xml" />
     <Content Include="NEW.PROD.DeployParameters.xml" />
@@ -358,6 +362,14 @@
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\visualizar-precio\visualizar-precio.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\ver-ofertas\visualizar-precio\visualizar-precio.component.html" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.css" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.html" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.css" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.html" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-estado-certificaciones\listado-estado-certificaciones.component.css" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\listado-estado-certificaciones\listado-estado-certificaciones.component.html" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.css" />
+    <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
@@ -402,8 +414,14 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
     <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
     <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
+    <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
+    <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
+    <Content Include="src\app\listado-novedades\listado-novedades.component.html" />
+    <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.css" />
+    <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\detalle\ordenes-de-carga-fason.detalle.component.css" />
@@ -458,6 +476,7 @@
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.ts" />
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\listado\listado.component.ts" />
     <TypeScriptCompile Include="src\app\aplicacion-ccpp\masiva\masiva.component.ts" />
+    <TypeScriptCompile Include="src\app\common\models\entradaServicio.ts" />
     <TypeScriptCompile Include="src\app\common\models\fijacionesAutomaticas.ts" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.css" />
     <Content Include="src\app\common\shared-components\autocomplete-localidad\autocomplete-localidad.component.html" />
@@ -974,12 +993,12 @@
     <Content Include="dist\glyphicons-halflings-regular.*.woff2" />
     <Content Include="dist\*.js.map" />
     <Content Include="dist\web.config" />
+    <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\fonts\Roboto-Regular.ttf" />
-    <Content Include="dist\Content\fonts\Roboto-Regular.ttf" />
     <Content Include="Documentacion\CARGA MASIVA DE CORREDORES.xlsx" />
     <Content Include="Content\css\fonts\primeicons.eot" />
     <Content Include="Content\css\fonts\primeicons.ttf" />
@@ -991,6 +1010,33 @@
     <Content Include="libman.json" />
     <Content Include="Documentacion\TemplateAplicCCPP.csv" />
     <Content Include="Documentacion\TutorialAplicCCPP.docx" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-300.woff2" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-700.woff2" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.eot" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.ttf" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.woff" />
+    <Content Include="Content\css\fonts\open-sans-v15-latin-regular.woff2" />
+    <Content Include="Content\fonts\Roboto-Black.ttf" />
+    <Content Include="Content\fonts\Roboto-BlackItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Bold.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldCondensed.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldCondensedItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-BoldItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Condensed.ttf" />
+    <Content Include="Content\fonts\Roboto-CondensedItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Italic.ttf" />
+    <Content Include="Content\fonts\Roboto-Light.ttf" />
+    <Content Include="Content\fonts\Roboto-LightItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Medium.ttf" />
+    <Content Include="Content\fonts\Roboto-MediumItalic.ttf" />
+    <Content Include="Content\fonts\Roboto-Thin.ttf" />
+    <Content Include="Content\fonts\Roboto-ThinItalic.ttf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -1062,6 +1108,9 @@
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\EntradaServicioController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\ComunicacionController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
     <Compile Include="Controllers\AduanaController.cs" />
     <Compile Include="Controllers\AltaEmpresaController.cs" />
@@ -1150,6 +1199,7 @@
     <TypeScriptCompile Include="src\app\common\directive\numeric.directive.ts" />
     <TypeScriptCompile Include="src\app\common\models\cartaPresentacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\archivo-boleto\archivoBoletoDto.ts" />
+    <TypeScriptCompile Include="src\app\common\models\notificacion.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonRequest.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\listarOrdenDeCargaFasonResponse.ts" />
     <TypeScriptCompile Include="src\app\common\models\ordenes-de-carga-fason\ordenDeCargaFasonDto.ts" />
@@ -1162,7 +1212,9 @@
     <TypeScriptCompile Include="src\app\common\models\RelacionConEmpleados.ts" />
     <TypeScriptCompile Include="src\app\common\models\relacionConFuncionarios.ts" />
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
+    <TypeScriptCompile Include="src\app\common\models\SeleccionarVendedorResponse.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\services\UpdateComunicacionService.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.ts" />
@@ -1195,6 +1247,14 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\ver-ofertas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\ver-ofertas\visualizar-precio\visualizar-precio.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\filtro-dashboard-certificacion-de-servicios\filtro-dashboard-certificacion-de-servicios.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-dashboard-certificacion-de-servicios\listado-dashboard-certificacion-de-servicios.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-estado-certificaciones\listado-estado-certificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\listado-estado-certificaciones\listado-estado-certificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
@@ -1247,6 +1307,14 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.module.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.service.spec.ts" />
+    <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones.service.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta-routing.module.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.component.ts" />
     <TypeScriptCompile Include="src\app\consulta\consulta.module.spec.ts" />
@@ -1289,14 +1357,24 @@
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\proveedor-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
     <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.service.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\listado-notificaciones\listado-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones-routing.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\notificaciones\notificaciones.module.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\notificaciones.service.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.spec.ts" />
     <TypeScriptCompile Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.ts" />
@@ -1568,7 +1646,7 @@
       <Name>SustitucionMOARepositorio</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAUtils\SustitucionMOAUtils.csproj">
-      <Project>{DA180EE1-E819-4216-B0F5-2377A22EA72A}</Project>
+      <Project>{da180ee1-e819-4216-b0f5-2377a22ea72a}</Project>
       <Name>SustitucionMOAUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAValidator\SustitucionMOAValidator.csproj">
@@ -1576,7 +1654,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>

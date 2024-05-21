@@ -38,6 +38,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);
         List<ServicioSolpDto> AutocompleteServicioSolp(string valor);
         List<ServicioSolpDto> AutocompleteCodigoServicioSolp(string valor);
+
+        List<ProveedorDto> AutocompleteProveedor(string valor);
         void ActualizarEstadoSolpBulk();
         List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
@@ -98,5 +100,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<CotizacionHistorialDto> ObtenerHistorial(int id);
         List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
+
+        void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
     }
 }

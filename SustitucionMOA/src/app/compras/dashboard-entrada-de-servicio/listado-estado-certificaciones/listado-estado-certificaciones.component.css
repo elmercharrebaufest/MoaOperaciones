@@ -1,0 +1,106 @@
+#solicitudes {
+  margin: 0;
+  padding-top: 2rem;
+  padding-right: 1.2rem;
+}
+
+  #solicitudes .filter {
+    width: 50%;
+    margin: 0 auto;
+    font-size: 1.3rem;
+  }
+
+/* TABLE */
+.emptyData {
+  text-align: center !important;
+}
+
+::ng-deep #solicitudes .ui-table-wrapper {
+  overflow: auto;
+}
+
+::ng-deep #solicitudes .ui-table table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto;
+}
+
+::ng-deep #solicitudes table th {
+  word-wrap: normal;
+  white-space: nowrap;
+  width: max-content;
+  color: #fff !important;
+  text-align: center;
+}
+
+::ng-deep #solicitudes .ui-table .ui-table-thead > tr > th {
+  padding: 0.3em 1em !important;
+  font-size: 1.3rem;
+}
+
+::ng-deep #solicitudes .ui-table tr {
+  width: max-content;
+}
+
+::ng-deep #solicitudes .level1 th,
+::ng-deep #solicitudes .ui-sortable-column.ui-state-highlight {
+  background-color: #666 !important;
+}
+
+::ng-deep #solicitudes .level2 th {
+  background-color: #075088 !important;
+  font-size: 1.3rem !important;
+}
+
+::ng-deep #solicitudes .level1 tr th:first-child {
+  min-width: 4rem;
+}
+
+::ng-deep #solicitudes table td {
+  text-align: left;
+  white-space: nowrap;
+  font-size: 1.3rem;
+}
+
+  ::ng-deep #solicitudes table td:first-child {
+    max-width: 0;
+  }
+
+::ng-deep #solicitudes .level2 tr td:first-child {
+  width: 8%;
+}
+
+::ng-deep #solicitudes .level1 th:first-child {
+  max-width: 6rem;
+}
+
+::ng-deep #solicitudes i.ui-sortable-column-icon {
+  color: white;
+  font-size: 1.3rem;
+  padding-left: .8rem;
+}
+
+.btn {
+  width: 30px !important;
+  border: none;
+  margin: 0.3rem;
+  transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
+}
+
+  .btn.accept-btn {
+    background-color: #0b880b !important;
+    color: #fff;
+  }
+
+  .btn.reject-btn {
+    background-color: #e33030 !important;
+    color: #fff;
+  }
+
+/* Rules here apply to devices from 1280px and up */
+@media (min-width: 1279px) {
+  ::ng-deep #solicitudes .ui-table tr th:first-child {
+    font-size: 1.3rem !important;
+    min-width: 4rem;
+  }
+}

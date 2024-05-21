@@ -164,12 +164,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.recuperarFiltros();
         this.getListarSolp();
+        this.getCombos();
     }
 
     ngAfterViewInit(): void {
-        this.getCombos();
     }
 
     ngOnDestroy(): void {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOAWS.WSConsumers;
@@ -69,4 +70,12 @@ namespace SustitucionMOAWS.Interfaces
     {
         byte[] Request(string nroOrdenCompra);
     }
+
+    public interface IObtenerEntradaDeServicioPorNumeroConsumerMOA
+    {
+        EntradaServicioDto ObtenerEntradaServicio(string nroES);
+        //BAPIESSR ObtenerEntradaServicio(string nroES);
+    }
+
+
 }

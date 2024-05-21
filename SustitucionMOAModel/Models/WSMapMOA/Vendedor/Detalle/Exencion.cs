@@ -8,6 +8,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle
 {
     public class Exencion
     {
+        public string tipoRetencion { get; set; }
+
         public string proveedor { get; set; }
 
         public string descripcion { get; set; }

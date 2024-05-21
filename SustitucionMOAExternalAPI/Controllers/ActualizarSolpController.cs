@@ -1,6 +1,12 @@
 ﻿using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 
@@ -22,10 +28,9 @@ namespace SustitucionMOAExternalAPI.Controllers
             {
                 Log.ExternalAPIInfo(string.Format("Inicio Se informaron cambios para la SOLP: {0}", nrosolp));
 
-                // Iniciar el proceso de comprasService.ObtenerSolpesDesdeSAPJob de manera asincrónica
                 Task.Run(() =>
                 {
-                    comprasService.ObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
+                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
                     {
                         NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
                         FechaDesde = new DateTime(2010, 01, 01),

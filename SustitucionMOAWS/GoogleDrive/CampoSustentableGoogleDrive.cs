@@ -5,6 +5,7 @@ using System.Configuration;
 using GoogleFile = Google.Apis.Drive.v3.Data.File;
 using System.IO;
 using System;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.GoogleDrive
 {
@@ -75,5 +76,23 @@ namespace SustitucionMOAWS.GoogleDrive
             return Helper.UploadFile(uploadFileRequest);
         }
 
+        public Task<T> DownloadFileAs<T>(GoogleDriveFileDownloadRequest downloadFileRequest)
+        {
+            if (downloadFileRequest.FolderId is null)
+            {
+                downloadFileRequest.WithFolderId(OutputFolderId);
+            }
+            return Helper.DownloadFileAs<T>(downloadFileRequest);
+        }
+
+        MemoryStream IGoogleDriveHelperUtils.DownloadFile(GoogleDriveFileDownloadRequest downloadFileRequest)
+        {
+            return Helper.DownloadFile(downloadFileRequest);
+        }
+
+        void IGoogleDriveHelperUtils.SaveFile(MemoryStream stream, GoogleDriveFileDownloadRequest downloadFileRequest)
+        {
+            Helper.SaveFile(stream,downloadFileRequest);
+        }
     }
 }

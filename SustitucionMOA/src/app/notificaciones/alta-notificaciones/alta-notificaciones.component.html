@@ -1,166 +1,323 @@
 <div class="content-wraper">
   <!-- CONTENT-->
-  <section class="container-fluid clearfix">
-    <!--Title-->
-    <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10 ">
-        <strong *ngIf="notificacion.Id == 0">Nueva notificación</strong>
-        <strong *ngIf="notificacion.Id > 0">Editar notificación</strong>
-      </div>
-    </div>
-    <!--End Title-->
-    <!--Search-->
-    <div class="mySearch">
-      <div *ngIf="mensajeError != ''" class="formulario-input;">
-        <div class="alert alert-danger">
-          <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
+    <section class="container-fluid clearfix">
+     
+        <!--Title-->
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10 ">
+                <strong *ngIf="notificacion.Id == 0">Nueva novedad</strong>
+                <strong *ngIf="notificacion.Id > 0">Editar novedad</strong>
+            </div>
         </div>
-      </div>
-      <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
-        <div class="formulario-campo">
-          <div class="col-xs-12 col-md-12 search-header">
-            <title-caps>Información de la notificacion</title-caps>
-          </div>
-          <div class="formulario">
-            <div class="col-xs-12 col-md-6">
-              <div class="formulario-label">
-                Nombre:
-              </div>
+        <!--End Title-->
+        <!--Search-->
+        <div class="mySearch">
 
-              <div class="styled-select">
-                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
-              </div>
+            <p-toast [ngStyle]="{backgroundColor:'var(--primary-color)', color: 'var(--primary-color-text)', borderRadius: 'var(--border-radius)', padding: '3rem'}" position="top-center" key="tc"></p-toast>
+            <!--<section id="msjError">
+        <div *ngIf="mensajeError != ''" class="formulario-input;" #focusSection>
+            <div class="alert alert-danger">
+                <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
             </div>
-            <div class="col-xs-12 col-md-6">
-              <div class="divFalso">
-              </div>
-              <label class="mySearch" for="habilitada">
-                <input type="checkbox" class="checkboxGrande" [(ngModel)]="notificacion.Habilitada" id="habilitada">
-                Habilitada
-              </label>
-            </div>
-            <div class="col-xs-12 col-md-12"></div>
-            <div class="col-xs-12 col-md-3">
-              <div class="formulario-label">
-                Desde:
-              </div>
-              <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
-                <fieldset>
-                  <div>
-                    <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
-                      data-link-field="dtp_input1">
-                      <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
-                      <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+        </div>
+    </section>-->
+
+            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+                <div class="formulario-campo">
+                    <div class="col-xs-12 col-md-12 search-header">
+                        <title-caps>Información de la novedad</title-caps>
                     </div>
+                    <div class="formulario">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="formulario-label">
+                                Nombre:
+                            </div>
 
-                    <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
-                    <br />
-                  </div>
-                </fieldset>
-              </form>
-            </div>
-            <div class="col-xs-12 col-md-1">
-              <div class="formulario-label">
-                Hora
-              </div>
-              <div class="styled-select">
-                <select [(ngModel)]="horaInicio">
-                  <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
-                    00
-                  </option>
-                </select>
-              </div>
-            </div>
+                            <div class="styled-select">
+                                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre"><span class="requerido">*</span>
+                                <!--<p class="crearConsultaTitulos">Raz&oacute;n social vendedor<span class="requerido">*</span></p>-->
+                               
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="divFalso">
+                            </div>
+                            <label class="mySearch" for="habilitada">
+                                <input type="checkbox" class="checkboxGrande" [(ngModel)]="notificacion.Habilitada" id="habilitada">
+                                Habilitada
+                            </label>
+                        </div>
+                        <div class="col-xs-12 col-md-12"></div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="formulario-label">
+                                Desde:
+                            </div>
+                            <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+                                <fieldset>
+                                    <div>
+                                        <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
+                                             data-link-field="dtp_input1">
+                                            <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
+                                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                            <span class="requerido">*</span>
+                                        </div>
+                                        <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                                       
+                                        <br />
+                                    </div>
+                                </fieldset>
+                              
+                            </form>
+                        </div>
+                        <div class="col-xs-12 col-md-1">
+                            <div class="formulario-label">
+                                Hora
+                            </div>
+                            <div class="styled-select">
+                                <select id="hora" [(ngModel)]="horaInicio" #horaInicioSelect>
+                                    <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">
+                                        {{i | number: '2.0-0'}}:
+                                        00
+                                    </option>
+                                </select><span class="requerido">*</span>
+                            
+                            </div>
+                        </div>
 
-            <div class="col-xs-12 col-md-2">
-              <div class="formulario-label">
-                Hasta:
-              </div>
-              <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
-                <fieldset>
-                  <div>
-                    <div class="input-group date form_datetime2" data-date="" data-date-format="dd/MM/yyyy"
-                      data-link-field="dtp_input2">
-                      <input type="text" value="{{fecha_fin}}" id="noCursor" fechaFinInput readonly />
-                      <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                        <div class="col-xs-12 col-md-2">
+                            <div class="formulario-label">
+                                Hasta:
+                            </div>
+                            <form action="" class="form-horizontal styled-select form_datetime_form2" role="form">
+                                <fieldset>
+                                    <div>
+                                        <div class="input-group date form_datetime2" data-date="" data-date-format="dd/MM/yyyy"
+                                             data-link-field="dtp_input2">
+                                            <input type="text" value="{{fecha_fin}}" id="fechaFin" fechaFinInput readonly />
+                                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                                            <span class="requerido">*</span>
+                                        </div>
+                                        <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" /> 
+                                      
+                                        <br />
+                                    </div>
+                                </fieldset>
+                               
+                            </form>
+                        </div>
+
+                        <div class="col-xs-12 col-md-2">
+                            <div class="formulario-label">
+                                Prioridad
+                            </div>
+                            <div class="styled-select" style="background-color: white!important;">
+                                <select [(ngModel)]="selectedPrioridad" (change)="guardarPrioridad()">
+                                    <option value="Alta">Alta</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Baja">Baja</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-12">
+                            <div class="step-container shadow" name="Step 3" label="Adjuntar archivos">
+                                <div>
+                                    <div class="col-xs-12 col-md-12 step-container-header">
+                                        Adjuntar archivos
+                                    </div>
+                                    <div class="container-fluid display-f">
+                                        <div class="col-xs-12 formulario-label font-n">
+                                            Insertar imagen de previsualización
+                                        </div>
+                                        <input id="previewImageFile" pTooltip="Se recomienda un tamaño máximo de 596x490px para evitar una pérdida en la calidad de imagen al visualizar." class="input-select" type="file" (change)="cargarImagenPrevisualizacion($event)" accept="image/*" [multiple]="false">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="container-fluid display-f">
+                                        <div class="col-xs-12 formulario-label font-n">
+                                            Adjuntar imagen
+                                        </div>
+                                        <input id="imageFile" class="input-select" type="file" (change)="cargarListaImagenes($event)" accept="image/*" multiple>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="container-fluid display-f">
+                                        <div class="col-xs-12 formulario-label font-n">
+                                            Adjuntar video
+                                        </div>
+                                        <input id="videoFile" class="input-select" type="file" (change)="cargarVideo($event)" accept="video/*" multiple>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="container-fluid display-f">
+                                        <div class="col-xs-12 formulario-label font-n">
+                                            Adjuntar pdf
+                                        </div>
+                                        <input id="pdfFile" class="input-select" type="file" (change)="cargarPDF($event)" accept=".pdf" multiple>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="imagenPrevisualizacion.length > 0 || imageList.length > 0 || videoList.length > 0 || pdfList.length > 0" class="container-fluid">
+                                    <div class="col-xs-12 formulario-label">
+                                        Lista de archivos adjuntos
+                                    </div>
+
+                                    <div *ngIf="imagenPrevisualizacion.length > 0">
+                                        <div *ngFor="let image of imagenPrevisualizacion; let i = index;" class="container-fluid">
+                                            <div class="display-f m-b">
+                                                <div class="col-xs-12 formulario-label font-n text-lista-adjuntos">
+                                                    <a>{{ image.name }}</a>
+                                                </div>
+                                                <input value="Eliminar archivo" class="input-select" (click)="removerPrevisualizacion(i)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="imageList.length > 0">
+                                        <div *ngFor="let imagen of imageList; let i = index;" class="container-fluid">
+                                            <div class="display-f m-b">
+                                                <div class="col-xs-12 formulario-label font-n text-lista-adjuntos">
+                                                    <a>{{ imagen.name }}</a>
+                                                </div>
+                                                <input value="Eliminar archivo" class="input-select" (click)="removerImagenLista(i)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="videoList.length > 0">
+                                        <div *ngFor="let video of videoList; let i = index;" class="container-fluid">
+                                            <div class="display-f m-b">
+                                                <div class="col-xs-12 formulario-label font-n text-lista-adjuntos">
+                                                    <a>{{ video.name }}</a>
+                                                </div>
+                                                <input value="Eliminar archivo" class="input-select" (click)="removerVideoLista(i)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div *ngIf="pdfList.length > 0">
+                                        <div *ngFor="let pdf of pdfList; let i = index;" class="container-fluid">
+                                            <div class="display-f m-b">
+                                                <div class="col-xs-12 formulario-label font-n text-lista-adjuntos">
+                                                    <a>{{ pdf.name }}</a>
+                                                </div>
+                                                <input value="Eliminar archivo" class="input-select" (click)="removerPDFLista(i)">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="formulario-label">
+                            <title>Adjuntar archivos</title>
+                        </div>
+
+                        <div class="col-xs-12 col-md-12"></div>
+                        <div class="col-xs-12 col-md-12">
+                            <div class="formulario-label">
+                                Mensaje:
+                            </div>
+
+                            <div class="styled-select">
+                                <!--AÑANDIR COMENTARIO-->
+                                <div class="col-xs-12 col-sm-12 col-md-12 shadow contenedorNuevoComentario" id="contenedorNuevoComentario">
+                                    <angular-editor [placeholder]="'Añadir Comentario'"
+                                                    [(ngModel)]="notificacion.Mensaje" [config]="config" id="editor" class="custom-width"></angular-editor> <span class="requerido">*</span>
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12 col-md-12">
+
+                        </div>
+                        <br />
+
+                        <div class="col-xs-12 col-md-12">
+
+
+
+
+
+                            <div class="row" id="seccionRoles">
+
+                                <div class="col-md-12">
+                                    <div class="col-md-12">
+                                        <div class="col-md-12">
+                                            <input type="checkbox" name="checkAllRoles" id="checkAllRoles" (click)="checkAllRoles()"
+                                                   [(ngModel)]="allRoles">
+                                            <label for="checkAllRoles">Todos los Roles</label>
+                                            <input type="checkbox" name="checkExternalRoles" id="checkExternalRoles" (click)="checkExternalRoles($event.target.checked)"
+                                                   [(ngModel)]="externalRoles">
+                                            <label for="checkExternalRoles"> Roles Externos</label>
+                                            <input type="checkbox" name="checkInternalRoles" id="checkInternalRoles" (click)="checkInternalRoles($event.target.checked)"
+                                                   [(ngModel)]="internalRoles">
+                                            <label for="checkInternalRoles"> Roles Internos</label>
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6" *ngFor="let titulo of titulos">
+                                    <div class="col-md-12">
+                                        <h5 class="tituloCategoriaListaUsuarios">{{titulo}}</h5>
+                                        <hr>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <ng-container *ngFor="let rol of roles">
+                                            <div class="col-md-6" *ngIf="rol.Code == titulo">
+                                                <span>
+                                                    <input type="checkbox" name="selectedRoles" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                                           [(ngModel)]="rol.checked">
+                                                    &nbsp;
+                                                    <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                                                </span>
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <div class="containerBotones">
+                            <div class="col-xs-0 col-md-3"></div>
+                            <div class="col-xs-5 col-md-2">
+                                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
+                                       value="Volver">
+                            </div>
+                            <div class="col-xs-2 col-md-1"></div>
+
+
+                            <div class="col-xs-5 col-md-3">
+                                <div class="step-actions enviar">
+                                    <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
+                                            data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                                    <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                                </div>
+                            </div>
+                            <div class="col-xs-0 col-md-2"></div>
+                        </div>
                     </div>
-                    <input type="hidden" #dtp_input2 id="dtp_input2" class="dtp_input2" value="{{fecha_fin}}" />
-                    <br />
-                  </div>
-                </fieldset>
-              </form>
-            </div>
-
-            <div class="col-xs-12 col-md-6">
-
-              <div class="formulario-label">
-                Link adjunto:
-              </div>
-              <div class="styled-select">
-                <input type="text" id="LinkAdjunto" width="200px" [(ngModel)]="notificacion.LinkAdjunto">
-              </div>
-            </div>
-            <div class="col-xs-12 col-md-12"></div>
-
-            <div class="col-xs-12 col-md-12">
-              <div class="formulario-label">
-                Mensaje:
-              </div>
-              <div class="styled-select">
-                <textarea id="Mensaje" [(ngModel)]="notificacion.Mensaje" rows="5">
-
-                </textarea>
-              </div>
-            </div>
-
-            <div class="col-xs-12 col-md-12">
-              <div class="formulario-label">
-                <input type="checkbox" name="checkAllRoles" id="checkAllRoles" (click)="checkAllRoles()"
-                  [(ngModel)]="allRoles">
-                <label for="checkAllRoles"> Roles</label>
-              </div>
-              <span *ngFor="let rol of roles" class="col-xs-12 col-sm-12 col-md-6">
-                <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-                  [(ngModel)]="rol.checked">
-                &nbsp;
-                <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-              </span>
-            </div>
-            <br>
-
-            <div class="containerBotones">
-              <div class="col-xs-0 col-md-3"></div>
-              <div class="col-xs-5 col-md-2">
-                <input type="button" (click)="redirigirAListado()" class="btn-custom btn-add btn-mediano"
-                  value="Volver">
-              </div>
-              <div class="col-xs-2 col-md-1"></div>
-
-
-              <div class="col-xs-5 col-md-3">
-                <div class="step-actions enviar">
-                  <button type="button" id="openModalNotificacion" data-toggle="modal" style="display:none"
-                    data-target="#modalNotificación" class="btn-custom btn-azul"></button>
-                  <input type="submit" (click)="submit()" class="btn-custom btn-guardar btn-mediano" value="Enviar">
                 </div>
-              </div>
-              <div class="col-xs-0 col-md-2"></div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-    <!-- End Search-->
-    <!-- Tables-->
-    <div class="row myRow">
-      <div class="clearfix myTables">
-        <mensaje></mensaje>
-        <spinner></spinner>
-      </div>
-    </div>
-    <!-- END tables-->
-  </section>
+        <!-- End Search-->
+        <!-- Tables-->
+        <div class="row myRow">
+            <div class="clearfix myTables">
+                <mensaje></mensaje>
+                <spinner></spinner>
+            </div>
+        </div>
+        <!-- END tables-->
+    </section>
   <!--End CONTENT-->
 </div>
 

@@ -169,7 +169,7 @@
       <Name>SustitucionMOAExternalAPI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
@@ -177,7 +177,7 @@
       <Name>SustitucionMOARepositorio</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAUtils\SustitucionMOAUtils.csproj">
-      <Project>{DA180EE1-E819-4216-B0F5-2377A22EA72A}</Project>
+      <Project>{da180ee1-e819-4216-b0f5-2377a22ea72a}</Project>
       <Name>SustitucionMOAUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
@@ -190,11 +190,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="bin\Debug\Template\AvisoEdicionOrdenDeCarga.html" />
-    <Content Include="bin\Debug\Template\NotificacionOrdenesDeCarga.html" />
-    <Content Include="bin\Debug\Templates\Example.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Util\LogoBaufest.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

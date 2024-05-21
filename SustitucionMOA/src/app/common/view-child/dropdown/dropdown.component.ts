@@ -26,6 +26,11 @@ export class DropdownComponent implements OnInit {
     @Output()
     select = new EventEmitter();
 
+    // Se utiliza para diferenciar el valor seleccionado
+    // para una instancia en particular de este componente.
+    @Input()
+    key: string;
+
     selectedOption: string;
     selectedOptionLabel: string = "";
 
@@ -134,7 +139,7 @@ export class DropdownComponent implements OnInit {
         return this.selectedOptionLabel;
     }
 
-    selectItem(value: string, label: any) {
+  selectItem(value: string, label: any) {
         this.selectedOptionLabel = label;
         this.selectedOptionLabel = "";
         this.setSelectItem(value);
@@ -157,7 +162,12 @@ export class DropdownComponent implements OnInit {
                 break;
 
             case "periodos":
-                sessionStorage.setItem("periodo", this.selectedOption);
+                // Si en la instacia del componente se definió una 'key'
+                // entonces se utilizará como nombre para guardar en el
+                // session storage el valor seleccionado
+                // Si no se definió 'key' entonces usar default "periodo"
+                let keyName = this.key != undefined ? this.key : "periodo";
+                sessionStorage.setItem(keyName, this.selectedOption);                
                 break;
 
             default:
