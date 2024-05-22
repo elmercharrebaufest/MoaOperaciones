@@ -8,7 +8,6 @@
         <strong *ngIf="notificacion.Id > 0">Editar notificación</strong>
       </div>
     </div>
-
     <!--End Title-->
     <!--Search-->
     <div class="mySearch">
@@ -28,56 +27,50 @@
                 Nombre:
               </div>
 
-                            <div class="styled-select">
-                                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre"><span class="requerido">*</span>
-                                <!--<p class="crearConsultaTitulos">Raz&oacute;n social vendedor<span class="requerido">*</span></p>-->
-                               
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-md-6">
-                            <div class="divFalso">
-                            </div>
-                            <label class="mySearch" for="habilitada">
-                                <input type="checkbox" class="checkboxGrande" [(ngModel)]="notificacion.Habilitada" id="habilitada">
-                                Habilitada
-                            </label>
-                        </div>
-                        <div class="col-xs-12 col-md-12"></div>
-                        <div class="col-xs-12 col-md-3">
-                            <div class="formulario-label">
-                                Desde:
-                            </div>
-                            <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
-                                <fieldset>
-                                    <div>
-                                        <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
-                                             data-link-field="dtp_input1">
-                                            <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
-                                            <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
-                                            <span class="requerido">*</span>
-                                        </div>
-                                        <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
-                                       
-                                        <br />
-                                    </div>
-                                </fieldset>
-                              
-                            </form>
-                        </div>
-                        <div class="col-xs-12 col-md-1">
-                            <div class="formulario-label">
-                                Hora
-                            </div>
-                            <div class="styled-select">
-                                <select id="hora" [(ngModel)]="horaInicio" #horaInicioSelect>
-                                    <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">
-                                        {{i | number: '2.0-0'}}:
-                                        00
-                                    </option>
-                                </select><span class="requerido">*</span>
-                            
-                            </div>
-                        </div>
+              <div class="styled-select">
+                <input type="text" id="Nombre" [(ngModel)]="notificacion.Nombre">
+              </div>
+            </div>
+            <div class="col-xs-12 col-md-6">
+              <div class="divFalso">
+              </div>
+              <label class="mySearch" for="habilitada">
+                <input type="checkbox" class="checkboxGrande" [(ngModel)]="notificacion.Habilitada" id="habilitada">
+                Habilitada
+              </label>
+            </div>
+            <div class="col-xs-12 col-md-12"></div>
+            <div class="col-xs-12 col-md-3">
+              <div class="formulario-label">
+                Desde:
+              </div>
+              <form action="" class="form-horizontal styled-select form_datetime_form1" role="form">
+                <fieldset>
+                  <div>
+                    <div class="input-group date form_datetime1" data-date="" data-date-format="dd/MM/yyyy"
+                      data-link-field="dtp_input1">
+                      <input type="text" id="noCursor" value="{{fecha_inicio}}" fechaInicioInput readonly>
+                      <span class="input-group-addon"><span class="fa fa-calendar "></span></span>
+                    </div>
+
+                    <input type="hidden" #dtp_input1 id="dtp_input1" class="dtp_input1" value="{{fecha_inicio}}" />
+                    <br />
+                  </div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="col-xs-12 col-md-1">
+              <div class="formulario-label">
+                Hora
+              </div>
+              <div class="styled-select">
+                <select [(ngModel)]="horaInicio">
+                  <option value="{{i}}" *ngFor="let item of [].constructor(23); let i = index">{{i | number: '2.0-0'}}:
+                    00
+                  </option>
+                </select>
+              </div>
+            </div>
 
             <div class="col-xs-12 col-md-2">
               <div class="formulario-label">

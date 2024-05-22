@@ -18,10 +18,6 @@ import { NotificacionesService } from '../notificaciones.service';
 
 })
 export class ListadoNotificacionesComponent extends BaseComponent implements OnInit {
-
-  path: string[] = []; 
-  order: number = 1;
-  
   
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
@@ -55,7 +51,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado().subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -64,7 +60,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.data = result.data.filter(item => item.Borrada !== true);
+                        this.data = result.data;
                     }
                 },
                 error => {
@@ -88,7 +84,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.habilitar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -118,7 +114,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.deshabilitar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -148,7 +144,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.eliminar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -157,8 +153,8 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.getListado()
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getListado()
                     }
                 },
                 error => {
@@ -171,14 +167,5 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-    }
-
-    orderColumnBy(column: string) {
-        if (column === this.orderedByColumn) {
-            this.orderDirection = -this.orderDirection;
-        } else {
-            this.orderDirection = 1;
-            this.orderedByColumn = column;
-        }
     }
 }
