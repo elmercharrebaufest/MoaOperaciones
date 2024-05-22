@@ -379,6 +379,7 @@ i#btn-fullscreen {
     max-width: 8em;
     font-size: .8em;
     text-align: center;
+    word-wrap: break-word;
 }
 
 /* --- HIGHLIGHTED ROWS --- */
