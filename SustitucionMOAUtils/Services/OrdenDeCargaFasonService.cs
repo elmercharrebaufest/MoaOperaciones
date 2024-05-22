@@ -167,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedores.AddRange(
                     corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente)
-                        .Select(x => new ProveedorDto(x)).ToList());
+                        .Select(x => new ProveedorDto(x, false)).ToList());
                 }
                 return proveedores;
             }
@@ -185,7 +185,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedores.AddRange(
                     corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente)
-                        .Select(x => new ProveedorDto(x)).ToList());
+                        .Select(x => new ProveedorDto(x, false)).ToList());
                 }
                 return proveedores;
             }

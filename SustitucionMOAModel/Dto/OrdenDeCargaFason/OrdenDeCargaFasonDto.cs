@@ -61,6 +61,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
         public bool NecesitaVerificarCuitsTerceros { get; set; }
+        public string DestinoMercaderia { get; set; }
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
@@ -110,6 +111,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             DomicilioTipo = orden.DomicilioTipo;
             DomicilioOrden = orden.DomicilioOrden;
             NecesitaVerificarCuitsTerceros = !orden.CuitsTerceroExisten;
+            DestinoMercaderia = orden.DestinoMercaderia;
         }
     }
 }
