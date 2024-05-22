@@ -1,6 +1,7 @@
 :host ::ng-deep p-dialog#alta-certificaciones .ui-dialog {
   left: 32px;
   right: 32px;
+  font-family: Roboto Regular !important;
 }
 
 :host ::ng-deep p-dialog#alta-certificaciones .ui-dialog-content {
@@ -26,9 +27,9 @@
 :host ::ng-deep .alta-form p-calendar.smallCal > span > input,
 .alta-form textarea,
 .alta-form input {
-  border: 1px solid #a6a6a6;
+  border: 1px solid #a6a6a6 !important;
   font-size: .87em !important;
-  color: #333;
+  color: #333 !important;
   font-family: "Roboto", Arial, sans-serif;
 }
 
@@ -107,6 +108,15 @@ p-calendar.smallCal div {
     font-family: "Open Sans", "Helvetica Neue", sans-serif;
 }
 
+:host ::ng-deep #fechaDocumento > .ui-calendar > .ui-button,
+:host ::ng-deep #fechaContabilizacion > .ui-calendar > .ui-button {
+    margin: 0;
+    color: #ffffff !important;
+    background-color: #007ad9 !important;
+    border: 1px solid #007ad9 !important;
+}
+
+
 /* TABLE */
 p-table#items-list th,
 p-table#items-list td {
@@ -123,25 +133,25 @@ p-table#items-list td {
 
 p-table#items-list th {
     font-size: .76em;
-    background-color: #1C7CD5;
+    background-color: #1C7CD5 !important;
     color: white;
 }
 
 p-table#items-list th.anteriores {
     border-color: white;
-    background-color: #F9C834;
-    color: #333;
+    background-color: #F9C834 !important;
+    color: #333 !important;
 }
 
 p-table#items-list th.acertificar {
     border-color: white;
-    background-color: blue;
+    background-color: blue !important;
     color: #fff;
 }
 
 p-table#items-list th.acumulado {
     border-color: white;
-    background-color: #00B050;
+    background-color: #00B050 !important;
     color: #fff;
 }
 

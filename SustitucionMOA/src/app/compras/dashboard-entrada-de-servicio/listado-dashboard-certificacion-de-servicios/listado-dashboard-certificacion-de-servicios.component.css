@@ -299,6 +299,8 @@ i#btn-fullscreen {
     width: 9em;
     position: relative;
     top: .2em;
+    display: inline-block !important;
+    border: 1px solid #a6a6a6 !important;
 }
 
 :host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-label-container {
@@ -310,6 +312,8 @@ i#btn-fullscreen {
 :host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-label-container>label {
     padding: .2em .4em;
     margin-bottom: 0;
+    margin-top: 0 !important;
+    color: #3f4845 !important;
 }
 
 :host ::ng-deep .filtro-solicitante>p-multiselect#select-solicitante>.ui-multiselect>.ui-multiselect-trigger>.ui-multiselect-trigger-icon {
