@@ -88,7 +88,7 @@
                 case EstadoOrdenDeCargaFason.Generada:
                     return "green";
                 case EstadoOrdenDeCargaFason.Entregada:
-                    return "white";
+                    return "green_entregada";
                 case EstadoOrdenDeCargaFason.PendienteCompensacion:
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
                 case EstadoOrdenDeCargaFason.EdicionRechazada:

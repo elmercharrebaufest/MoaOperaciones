@@ -20,7 +20,10 @@
     background-color: palegreen;
     border: 1px solid greenyellow;
 }
-
+.green_entregada {
+    background-color: lightseagreen;
+    border: 1px solid darkturquoise;
+}
 
 ::ng-deep .ui-multiselect {
     font-size: 1.5rem !important;
