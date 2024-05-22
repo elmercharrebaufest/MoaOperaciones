@@ -17,7 +17,7 @@ import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
-import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
+import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../chat-interno/chat-interno.interface';
 import { forEach } from '@angular/router/src/utils/collection';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
@@ -144,8 +144,11 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
-    public chat: ChatComprasDto;
+    public chat: ChatsDto;
+    public chatCompras: ChatComprasDto;
+    public chatProveedores: ChatProveedorDto[] = [];
     clasesDocumento: number[] = [];
+    dasboardComprador: boolean = false;
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
@@ -794,8 +797,6 @@ export class DashboardComponent extends ListBaseComponent {
             })
     }
 
-
-
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
         return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
     }
@@ -834,7 +835,7 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    obtenerChatExterno(rowData) {
+    obtenerChatInterno(rowData) {
         try {
             this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
@@ -850,16 +851,59 @@ export class DashboardComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                            result.Mensajes = result.Mensajes.map((x) => {
+                            result = result as ChatsDto;
+                            result.ChatCompras = result.ChatCompras as ChatComprasDto;
+                            result.ChatProveedores = result.ChatProveedores as ChatProveedorDto;
+
+                            result.ChatCompras.Mensajes = result.ChatCompras.Mensajes.map((x) => {
                                 x.FechaEnvioDate = new Date(
                                     this.getDateFromAspNetFormat(x.FechaEnvioDate)
                                 );
                                 return x;
                             });
-                            result.FechaCreacionDate = new Date(
+                            result.ChatCompras.FechaCreacionDate = new Date(
                                 this.getDateFromAspNetFormat(result.FechaCreacionDate)
                             );
+
+                            result.ChatProveedores.forEach((chat) => {
+                                chat.Mensajes = chat.Mensajes.map((x) => {
+                                    x.FechaEnvioDate = new Date(
+                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                    );
+                                    return x;
+                                });
+                                
+                                chat.FechaCreacionDate = new Date(
+                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
+                                );
+                                
+
+                            });
+
+                            result.ChatProveedores.forEach((chat) => {
+                                chat.Mensajes = chat.Mensajes.map((x) => {
+                                    x.FechaEnvioDate = new Date(
+                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                    );
+                                    return x;
+                                });
+                            
+                                chat.FechaCreacionDate = new Date(
+                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
+                                );
+                            
+                                // Si chat.Mensajes es vacío o tiene longitud 0, establecer chat.ChatSinLeer en false
+                                if (!chat.Mensajes || chat.Mensajes.length === 0) {
+                                    chat.Mensajes = chat.Mensajes.map((c) => {
+                                        c.ChatSinLeer = false;
+                                        return c;
+                                    })
+                                };
+                            });                    
+
                             this.chat = result;
+                            this.chatCompras = result.ChatCompras;
+                            this.chatProveedores = result.ChatProveedores;
                             this.displayChatInterno = true;
                         };
                     },

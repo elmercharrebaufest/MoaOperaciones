@@ -187,6 +187,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         .Select(p => new CotizacionPosicionDto
                                                         {
                                                             Id = p.Id,
+                                                            PosicionId = p.PeticionDeOfertaSolpPosicion.SolpPosicion.Id,
                                                             EstaEliminado = p.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado != true,
                                                             Cotizacion_Id = p.Cotizacion_Id,
                                                             PeticionDeOfertaSolpPosicion_Id = p.PeticionDeOfertaSolpPosicion_Id,
@@ -212,11 +213,13 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                             PrimeraCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().PrimeraCantidad : null,
                                                             SegundaCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().SegundaCantidad : null,
                                                             TerceraCantidad = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == p.PeticionDeOfertaSolpPosicion.Id).FirstOrDefault().TerceraCantidad : null,
+                                                            Completado = true,
                                                             CotizacionSubPosiciones = (from subpos in contexto.Set<CotizacionSubPosicion>()
                                                                                        where p.Id == subpos.CotizacionPosicion_Id
                                                                                        select new CotizacionSubPosicionDto()
                                                                                        {
                                                                                            Id = subpos.Id,
+                                                                                           Completado = true,
                                                                                            CotizacionPosicion_Id = subpos.CotizacionPosicion_Id,
                                                                                            SolpSubPosicion_Id = subpos.SolpSubPosicion_Id,
                                                                                            Cantidad = subpos.Cantidad ?? 0,
@@ -250,7 +253,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
                 return resultado.First();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 throw;
             }

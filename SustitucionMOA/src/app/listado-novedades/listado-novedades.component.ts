@@ -117,44 +117,44 @@ export class ListadoNovedadesComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
       }
 
-    openModalNovedad(notificacionId: number, notificacion: any, adjunto: any) {
-        this.notificacionModal = null;
+    //openModalNovedad(notificacionId: number, notificacion: any, adjunto: any) {
+    //    this.notificacionModal = null;
 
-        try {
-            this.notificacionesService.postNotificacionLeida(notificacionId).subscribe(
-                async (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                    } else if (result.info != undefined) {
-                    } else {
-                        setTimeout(() => { this.modal.mostrarModal(); }, 200);
+    //    try {
+    //        this.notificacionesService.postNotificacionLeida(notificacionId).subscribe(
+    //            async (result: any) => {
+    //                if (result.logout == true) {
+    //                    this.sessionDataService.logout();
+    //                } else if (result.error != undefined && result.error != "") {
+    //                } else if (result.info != undefined) {
+    //                } else {
+    //                    setTimeout(() => { this.modal.mostrarModal(); }, 200);
 
-                        let result = await this.notificacionesService.getNotificacion(notificacionId).toPromise();
+    //                    let result = await this.notificacionesService.getNotificacion(notificacionId).toPromise();
 
-                        if (result.data) {
-                            this.notificacionModal = result.data;
+    //                    if (result.data) {
+    //                        this.notificacionModal = result.data;
 
-                            if (this.notificacionModal != null) {
-                                this.notificacionLeida[this.notificacionModal.Id] = this.notificacionModal.Leida == 1 ? true : false;
+    //                        if (this.notificacionModal != null) {
+    //                            this.notificacionLeida[this.notificacionModal.Id] = this.notificacionModal.Leida == 1 ? true : false;
 
-                                this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
-                                    if (adjunto.AdjuntoTipo != 'previsualizacion') {
-                                        this.adjuntoModal.push(adjunto);
-                                    }
-                                })
+    //                            this.notificacionModal.ArchivosAdjuntos.forEach((adjunto: any) => {
+    //                                if (adjunto.AdjuntoTipo != 'previsualizacion') {
+    //                                    this.adjuntoModal.push(adjunto);
+    //                                }
+    //                            })
 
-                            }
-                        }
-                    }
+    //                        }
+    //                    }
+    //                }
 
-                },
-                error => {
-                }
-            );
-        } catch (e) {
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
-    }
+    //            },
+    //            error => {
+    //            }
+    //        );
+    //    } catch (e) {
+    //        return false; //<-- Prevent Refresh
+    //    }
+    //    return false; //<-- Prevent Refresh
+    //}
 }

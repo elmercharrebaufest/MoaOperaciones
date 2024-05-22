@@ -12,7 +12,7 @@ import { AdjudicacionDto, AdjudicacionEdicionDto } from '../modelos/adjudicacion
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
-import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
+import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
 import { timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
@@ -1054,12 +1054,23 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
+    public obtenerChat(solpId: string): Observable<ChatsDto> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
 
         return this.http
-            .get("/api/compras/ObtenerChat", {
+            .get<ChatsDto>("/api/compras/ObtenerChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public obtenerChatProveedor(peticionDeOfertaUsuarioId: string): Observable<ChatsDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaUsuarioId", peticionDeOfertaUsuarioId);
+
+        return this.http
+            .get<ChatsDto>("/api/compras/ObtenerChatProveedor", {
                 params: params,
                 headers: this.headers
             });
@@ -1076,10 +1087,23 @@ export class ComprasService extends BaseService {
             .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
     }
 
-    public obtenerYExportarChat(solpId: string): Observable<any> {
+    public grabarMensajeChatExterno(mensaje: ChatExternoComprasDto) {
+        let json = JSON.stringify(mensaje);
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<ChatExternoComprasDto>('/api/compras/GrabarMensajeChatExterno', payload, { headers: this.headers });
+    }
+
+
+    public obtenerYExportarChat(solpId: string, peticionDeOfertaUsuarioId?: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
-
+        if(peticionDeOfertaUsuarioId != null){
+            params = params.set("peticionDeOfertaUsuarioId", peticionDeOfertaUsuarioId);
+        }
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
@@ -1233,4 +1257,23 @@ export class ComprasService extends BaseService {
 
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
+
+    public listarHistorialDeFechas(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionId", id.toString());
+        return this.http.get("/api/compras/ListarHistorialDeFechas", {
+            params: params,
+            headers: this.headers,
+        });
+    }
+
+    public marcarChatProveedorComoLeido(proveedor: ChatProveedorDto) {
+        let json = JSON.stringify(proveedor);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/MarcarChatProveedorComoLeido', payload, { headers: this.headers });
+    }
+
 }

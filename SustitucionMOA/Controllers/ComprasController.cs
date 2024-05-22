@@ -1449,6 +1449,28 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public JsonResult ObtenerChatProveedor(int peticionDeOfertaUsuarioId)
+        {
+            try
+            {
+                return JsonCustom(service.ObtenerChatProveedor(peticionDeOfertaUsuarioId, ObtenerUsuarioActual().Id));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         [HttpPost]
         public ActionResult GrabarMensajeChatInterno(string json)
         {
@@ -1479,14 +1501,44 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult ObtenerYExportarChat(int solpId)
+        [HttpPost]
+        public ActionResult GrabarMensajeChatExterno(string json)
+        {
+            try
+            {
+                var mensaje = JsonConvert.DeserializeObject<ChatExternoComprasDto>(json);
+                mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
+                var result = service.GrabarMensajeChatExterno(mensaje);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult ObtenerYExportarChat(int solpId, int? peticionDeOfertaUsuarioId)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaTxt = service.ExportarChatInternoAtexto(solpId, path);
+                string rutaTxt = service.ExportarChatInternoAtexto(solpId, path, peticionDeOfertaUsuarioId);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
                 string fileName = Path.GetFileName(rutaTxt);
 
@@ -1796,6 +1848,47 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpGet]
+        public ActionResult ListarHistorialDeFechas(int peticionId)
+        {
+            try
+            {
+                var resultado = service.ListarHistorialDeFechas(peticionId);
+                return JsonCustom(new { data = resultado });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult MarcarChatProveedorComoLeido(string json)
+        {
+            try
+            {
+                var proveedorChat = JsonConvert.DeserializeObject<ChatProveedoresDto>(json);
+                service.MarcarChatProveedorComoLeido(proveedorChat);
+                return JsonCustom(new { success = true });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress,
+                    SessionPersister.getUsername(),
+                    this.GetType().Name,
+                    System.Reflection.MethodBase.GetCurrentMethod().Name,
+                    e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
     }

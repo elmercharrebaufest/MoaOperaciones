@@ -110,6 +110,9 @@ namespace SustitucionMOAModel.Dto
         public int Cantidad { get; set; }
         public bool VerEditarOC { get; set; }
         public IEnumerable<int> PosicionesId { get; set; }
+        public bool TieneMensajesChatInterno { get; set; }
+        public bool TieneMensajesChatExterno { get; set; }
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)

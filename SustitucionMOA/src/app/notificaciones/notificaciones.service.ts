@@ -1,93 +1,90 @@
 
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
+import { Http, Response, URLSearchParams, Headers } from '@angular/http';
 import { BaseService } from './../common/services/BaseService';
 import { timeoutWith, map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { Notificacion } from '../common/models/notificacion';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Adjuntos } from '../common/models/adjuntos';
 
 @Injectable()
+
 export class NotificacionesService extends BaseService {
 
-    constructor(protected http: HttpClient) {
+    constructor(protected http: Http) {
         super(http);
     }
 
     public getNotificacion(notificacionId: Number): Observable<any> {
-        let params: HttpParams = new HttpParams();
-        params = params.append('notificacionId', notificacionId.toString());
+        let params: URLSearchParams = new URLSearchParams();
+        params.set('notificacionId', notificacionId.toString());
 
         return this.http
-            .get<any[]>('/api/Notificacion/GetNotificacion', { params: params, headers: this.headers })
-            .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .get('/api/Notificacion/GetNotificacion', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     public getListado(): Observable<any> {
         return this.http
             .get('/api/Notificacion/GetListado')
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     public getNotificaciones(): Observable<any> {
         return this.http
             .get('/api/Notificacion/getNotificaciones')
-            .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
-    public grabar(notificacion :Notificacion , adjuntos: Array<Adjuntos>): Observable<any> {
-
+    public grabar(notificacion :Notificacion): Observable<any> {
         let payload = new FormData();
-
-        for (let i = 0; i < adjuntos.length; i++) {
-            payload.append(`files[${i}]`, adjuntos[i].AdjuntoContenido);
-          }
-
+        console.log(notificacion)
         payload.append(
             "notificacionJson",
             JSON.stringify(notificacion)
         );
+
         return this.http
             .post('/api/Notificacion/Grabar', payload)
-            .pipe(timeoutWith(600000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     public eliminar(notificacionId: number): Observable<any> {
 
-        let params = new HttpParams();
-        params = params.append('notificacionId', notificacionId.toString());
+        let params = new URLSearchParams();
+        params.set('notificacionId', notificacionId.toString());
 
         return this.http
-            .get('/api/Notificacion/Eliminar', { params: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .get('/api/Notificacion/Eliminar', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
+
 
     public habilitar(notificacionId: number): Observable<any> {
         
-        let params = new HttpParams();
-        params = params.append('notificacionId', notificacionId.toString());
+        let params = new URLSearchParams();
+        params.set('notificacionId', notificacionId.toString());
 
         return this.http
-            .get('/api/Notificacion/Habilitar', { params: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .get('/api/Notificacion/Habilitar', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
     public deshabilitar(notificacionId: number): Observable<any> {
         
-        let params = new HttpParams();
-        params = params.append('notificacionId', notificacionId.toString());
+        let params = new URLSearchParams();
+        params.set('notificacionId', notificacionId.toString());
 
         return this.http
-            .get('/api/Notificacion/Deshabilitar', { params: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
-    }
-
-    public postNotificacionLeida(notificacionId:number): Observable<any> {
-        let params = new HttpParams();
-        params = params.append('notificacionId', notificacionId.toString());
-        return this.http
-            .get('/api/Notificacion/PostNotificacionLeida', { params: params, headers: this.headers })
-            .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
+            .get('/api/Notificacion/Deshabilitar', { search: params, headers: this.headers })
+            .pipe(timeoutWith(30000, observableThrowError(new Error("Se exedio el tiempo de espera, por favor intentelo mas tarde"))))
+            .pipe(map(this.extractData));
     }
 
 }

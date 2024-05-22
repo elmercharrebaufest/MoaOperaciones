@@ -26,6 +26,7 @@ import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 
+
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
     // {

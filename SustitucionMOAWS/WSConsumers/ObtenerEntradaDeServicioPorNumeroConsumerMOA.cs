@@ -87,7 +87,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
 
-                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("F2");
+                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2");
                 string currency = cabecera.CURRENCY;
 
                 var item = new ItemEntradaServicioDto();

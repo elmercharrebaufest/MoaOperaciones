@@ -9,6 +9,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { NotificacionesService } from '../notificaciones.service';
 
+
 @Component({
   selector: 'app-listado-notificaciones',
   templateUrl: './listado-notificaciones.component.html',
@@ -54,7 +55,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         try {
             this.unsubscribe();
             this.subscription = this.service.getListado().subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -87,7 +88,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.habilitar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -117,7 +118,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.deshabilitar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -147,7 +148,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
         this.mensajeComponent.setMsgsEmpty();
         try {
             this.service.eliminar(notificacionId).subscribe(
-                (result:any) => {
+                result => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();

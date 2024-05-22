@@ -32,7 +32,9 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Mail fiscal *
                              <div >
-                                <p-dropdown [options]="model.usuarioSolicitanteList" formControlName="mail" [(ngModel)]="model.selectUsuarioFiscal" dataKey="Id" optionLabel="CodigoDescripcion" (onChange)="onAutocompletarResponsable()">
+                                <p-dropdown [options]="model.usuarioSolicitanteList" formControlName="mail" 
+                                            [(ngModel)]="model.selectUsuarioFiscal" dataKey="Id" optionLabel="CodigoDescripcion"
+                                            (onChange)="onAutocompletarResponsable()" [filter]="true">
                                 </p-dropdown>                                
                             </div>           
                             <div *ngIf="mostrarValidacion('mail', model.selectUsuarioFiscal)">

@@ -90,7 +90,7 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
-                                <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho / Material entregado" formControlName="trabajoHecho"
+                                <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho / Material entregado / Con presupuesto" formControlName="trabajoHecho"
                                             binary="true" (click)="validarChecks(); limpiarCheck();" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales" (ngModelChange)="resetearFecha()" ></p-checkbox>
                             </div>
                         </div>
