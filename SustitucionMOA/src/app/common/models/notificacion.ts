@@ -21,3 +21,6 @@ export class Notificacion {
         this.FiltroRoles = new Array<Rol>();
     }
 }
+
+
+

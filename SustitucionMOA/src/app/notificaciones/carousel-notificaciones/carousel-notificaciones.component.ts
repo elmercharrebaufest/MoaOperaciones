@@ -16,6 +16,7 @@ import {
   trigger
 } from "@angular/animations";
 
+
 @Component({
   selector: 'app-carousel-notificaciones',
   templateUrl: './carousel-notificaciones.component.html',
