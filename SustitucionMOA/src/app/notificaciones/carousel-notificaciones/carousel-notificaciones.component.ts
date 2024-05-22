@@ -8,7 +8,6 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { NotificacionesService } from '../notificaciones.service';
 
-
 @Component({
   selector: 'app-carousel-notificaciones',
   templateUrl: './carousel-notificaciones.component.html',

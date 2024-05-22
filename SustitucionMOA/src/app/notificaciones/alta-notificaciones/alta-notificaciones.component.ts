@@ -16,8 +16,6 @@ import { UsuarioService } from '../../usuario/usuario.service';
 import { NotificacionesService } from '../notificaciones.service';
 declare var $: any;
 
-
-
 @Component({
     selector: 'app-alta-notificaciones',
     templateUrl: './alta-notificaciones.component.html',
