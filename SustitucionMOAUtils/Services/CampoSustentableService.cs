@@ -519,7 +519,7 @@ namespace SustitucionMOAUtils.Services
             {
                 return;
             }
-            var cuit = archivoSinDescargar.Proveedor.CUIT;
+            var cuit = archivoSinDescargar.CampoCosecha.Proveedores.First().CUIT;
             //Hay un punto ('.') extra porque el archivo que devuelve Ucropit lo toma del kmz
             //Al parecer cuando se sube usando la extension, esta ya tiene el '.' 
             var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}..json";
