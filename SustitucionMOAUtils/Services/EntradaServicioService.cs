@@ -25,6 +25,7 @@ using System.IO;
 using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOAModel.Models.WSMapMOA;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOAUtils.Services
 
@@ -391,6 +392,7 @@ namespace SustitucionMOAUtils.Services
 
             //2 - Comparar datos SolPed para certificar automaticamente o WKF de aprobaciones
             bool auto = false;
+            bool difSolicitante = false;
 
             //2a - Comparar Fiscal/Email con usuario FE
             if (userMail == detalleSolPed.FiscalContrato || userMail == detalleSolPed.Email)
@@ -423,6 +425,14 @@ namespace SustitucionMOAUtils.Services
                             if (usuario != null && usuario.Mail == userMail)
                             {
                                 auto = true;
+                                difSolicitante = false;
+                            }
+                            else if (usuario != null && auto == false)
+                            {
+                                difSolicitante = true;
+                            }
+                            else if (auto == false){
+                                difSolicitante = true;
                             }
                         }
                     }
@@ -432,8 +442,8 @@ namespace SustitucionMOAUtils.Services
             if (auto == false)
             {
                 bool empty = EmptySolPedValues(detalleSolPed);
-                if (empty)
-        {
+                if (empty || difSolicitante)
+                {
                     EntradaServicioCreateRespuestaDto emptySolPed = new EntradaServicioCreateRespuestaDto();
                     emptySolPed.Type = "S";
                     emptySolPed.Message = "No se encuentra fiscal en la Sol. Ped. Ingresada. Por favor, verificar con el creador de la misma";
@@ -626,76 +636,64 @@ namespace SustitucionMOAUtils.Services
             //Datos SolPed
             #region DatosSolPed
             // Pendiente Carga temp.Area, ya que se necesitan los datos de MMSN-726
-            string solPedNumber = parametros.EntrySheetHeader.SolPedNumber;
-            if (!string.IsNullOrEmpty(solPedNumber))
+            try
             {
-                SolpESDto detalleSolPed = new SolpESDto();
-                try
+                string solPedNumber = parametros.EntrySheetHeader.SolPedNumber;
+                if (!string.IsNullOrEmpty(solPedNumber))
                 {
-                    detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-
-                if (!EmptySolPedValues(detalleSolPed))
-                {
-                    //Busqueda Fiscal Contrato
-                    if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
+                    SolpESDto detalleSolPed = new SolpESDto();
+                    try
                     {
-                        if (detalleSolPed.FiscalContrato.Contains("@"))
-                        {
-                            temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
-                            if (usuario != null)
-                            {
-                                temp.Suplente = usuario.Suplente;
-                            }
-                        }
-                        else
-                        {
-                            string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal.ToUpper());
-                            if (usuario != null)
-                            {
-                                temp.Fiscal_SOLPED = usuario.Mail;
-                                temp.Suplente = usuario.Suplente;
-                            }
-                        }
-                    }             //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
-                    else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
-                    {
-                        //Busqueda por Supervisor Trabajo
-                        if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
-                        {
-                            temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.SupervisorTrabajo[0]);
-                            if (usuario != null)
-                            {
-                                temp.Suplente = usuario.Suplente;
-                            }
-                        }
-                        else
-                        {
-                            string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal.ToUpper());
-                            if (usuario != null)
-                            {
-                                temp.Fiscal_SOLPED = usuario.Mail;
-                                temp.Suplente = usuario.Suplente;
-                            }
-                        }
+                        detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
                     }
-                    else if (detalleSolPed.Posiciones != null && detalleSolPed.Posiciones.Count > 0)
+                    catch (Exception e)
                     {
-                        //Busqueda por Solicitante
-                        foreach (var pos in detalleSolPed.Posiciones)
+                        throw e;
+                    }
+
+                    if (!EmptySolPedValues(detalleSolPed))
+                    {
+                        //Busqueda Fiscal Contrato
+                        if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
                         {
-                            if (pos.Solicitante != null)
+                            if (detalleSolPed.FiscalContrato.Contains("@"))
                             {
-                                string solicitante = pos.Solicitante.Replace(" ", "");
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante.ToUpper());
+                                temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
+                                if (usuario != null)
+                                {
+                                    temp.Suplente = usuario.Suplente;
+                                }
+                            }
+                            else
+                            {
+                                string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
+                                fiscal = fiscal.ToUpper();
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
+                                if (usuario != null)
+                                {
+                                    temp.Fiscal_SOLPED = usuario.Mail;
+                                    temp.Suplente = usuario.Suplente;
+                                }
+                            }
+                        }             //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
+                        else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
+                        {
+                            //Busqueda por Supervisor Trabajo
+                            if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
+                            {
+                                temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
+                                if (usuario != null)
+                                {
+                                    temp.Suplente = usuario.Suplente;
+                                }
+                            }
+                            else
+                            {
+                                string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
+                                fiscal = fiscal.ToUpper();
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
                                 if (usuario != null)
                                 {
                                     temp.Fiscal_SOLPED = usuario.Mail;
@@ -703,13 +701,35 @@ namespace SustitucionMOAUtils.Services
                                 }
                             }
                         }
-                    }
+                        else if (detalleSolPed.Posiciones != null && detalleSolPed.Posiciones.Count > 0)
+                        {
+                            //Busqueda por Solicitante
+                            foreach (var pos in detalleSolPed.Posiciones)
+                            {
+                                if (pos.Solicitante != null)
+                                {
+                                    string solicitante = pos.Solicitante.Replace(" ", "");
+                                    solicitante = solicitante.ToUpper();
+                                    var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante);
+                                    if (usuario != null)
+                                    {
+                                        temp.Fiscal_SOLPED = usuario.Mail;
+                                        temp.Suplente = usuario.Suplente;
+                                    }
+                                }
+                            }
+                        }
 
+                    }
+                    if (!auto)
+                    {
+                        temp.Aprobador_CDS = temp.Fiscal_SOLPED;
+                    }
                 }
-                if (!auto)
-                {
-                    temp.Aprobador_CDS = temp.Fiscal_SOLPED;
-                }
+            }
+            catch(Exception e)
+            {
+                Logger.Log.Info(e.Message);
             }
             #endregion
 

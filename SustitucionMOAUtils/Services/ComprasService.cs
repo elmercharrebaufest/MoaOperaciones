@@ -1406,7 +1406,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioCreacion);
             includes.Add(u => u.UsuarioModificacion);
 
-            var solp = repositorio.Obtener<Solp>(includes, s => s.NroSolp == nroSolp);
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp,0,null,DirOrden.Asc, includes).ToList().FirstOrDefault();
 
             if (solp == null)
             {
