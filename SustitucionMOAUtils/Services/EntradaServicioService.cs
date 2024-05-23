@@ -427,11 +427,13 @@ namespace SustitucionMOAUtils.Services
                                 auto = true;
                                 difSolicitante = false;
                             }
-                            else if (usuario != null && auto == false)
+                            else if(usuario != null && usuario.Mail != userMail)
                             {
-                                difSolicitante = true;
+                                auto = false;
+                                difSolicitante = false;
                             }
-                            else if (auto == false){
+                            else if (usuario == null)
+                            {
                                 difSolicitante = true;
                             }
                         }
