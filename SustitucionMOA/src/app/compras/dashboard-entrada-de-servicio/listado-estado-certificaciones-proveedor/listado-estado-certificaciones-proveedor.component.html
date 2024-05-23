@@ -55,10 +55,10 @@
                                       : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
-                    <td>{{rowData.FechaCreacion}}</td>
+                    <td>{{rowData.FechaCreacion | date: 'd/M/yyyy' }}</td>
                     <td>{{rowData.EntradaServicio}}</td>
                     <td>{{rowData.Descripcion | defaultData }}</td>
-                    <td>{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{rowData.MontoTotal | currency }}</td>
                     <td>{{rowData.OrdenCompra || ""}}</td>
                     <td>
                         <div class="usuario-area">
