@@ -112,7 +112,8 @@
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
                  [autoLayout]="true"
-                 rowExpandMode="single">
+                 rowExpandMode="single"
+                 (onPage)="onPageChange($event)">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns>
                 <tr>
