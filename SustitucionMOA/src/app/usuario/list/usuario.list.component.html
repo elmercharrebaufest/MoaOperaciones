@@ -213,47 +213,49 @@
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
                 </div>
-                <div class="modal-body">
-                    <div>
-                        <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                            USUARIO SAP
+                <form [formGroup]="formularioUsuario">
+                    <div class="modal-body">
+                        <div>
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                USUARIO SAP
+                            </div>
+                            <div class="styled-select" style="width: 30% !important;">
+                                <input pInputText formControlName="usuarioSap" (keyup)="validarConExpresionesRegulares('usuarioSap')">
+                            </div>
                         </div>
-                        <div class="styled-select" style="width: 30% !important;">
-                            <input pInputText [(ngModel)]="usuarioSap" maxlength="10" rows="1">
+    
+                        <div style="margin-top: 10px;">
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                SUPLENTE
+                            </div>
+                            <div class="styled-select" style="width: 40% !important;">
+                                <input pInputText formControlName="suplente" (keyup)="validarConExpresionesRegulares('suplente')">
+                            </div>
+                        </div>
+    
+                        <div class="row" *ngFor="let titulo of titulos">
+                            <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
+                            <hr>
+                            <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
+                                <span class="col-md-6" *ngIf="rol.Code == titulo">
+                                    <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                           [(ngModel)]="rol.checked" [ngModelOptions]="{standalone: true}">
+                                    &nbsp;
+                                    <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                                </span>
+                            </ng-container>
                         </div>
                     </div>
-
-                    <div style="margin-top: 10px;">
-                        <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                            SUPLENTE
-                        </div>
-                        <div class="styled-select" style="width: 40% !important;">
-                            <input pInputText [(ngModel)]="suplente" maxlength="100" rows="1">
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
+                            style="display: inline-flex;">Cancelar</button>
+                        <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
+                            style="display: inline-flex;">
+                            Guardar
+                        </button>
+    
                     </div>
-
-                    <div class="row" *ngFor="let titulo of titulos">
-                        <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
-                        <hr>
-                        <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
-                            <span class="col-md-6" *ngIf="rol.Code == titulo">
-                                <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-                                       [(ngModel)]="rol.checked">
-                                &nbsp;
-                                <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-                            </span>
-                        </ng-container>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
-                        style="display: inline-flex;">Cancelar</button>
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
-                        style="display: inline-flex;">
-                        Guardar
-                    </button>
-
-                </div>
+                </form>
             </div>
         </div>
     </div>
