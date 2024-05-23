@@ -308,7 +308,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 ExternalLineNumber: this.zeroPad(item.NumeroLinea, 10),
                 Service: item.ServicioNumero.toString(),
                 Quantity: this.round(parseFloat(item.CantidadACertificar), 3),
-                GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
+                GrossPrice: this.round(parseFloat(item.PrecioBruto.toString()), 2),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO
