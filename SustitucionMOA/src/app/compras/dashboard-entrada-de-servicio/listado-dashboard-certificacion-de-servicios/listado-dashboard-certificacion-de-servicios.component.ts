@@ -211,7 +211,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.navService.setSeccionList(
             [
                 new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
-                new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
+               // new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
             ]
         );
         this.navService.setSeccionActive('Ingresar certificación');
