@@ -1,10 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EcheqDocumento } from '../echeq-contrato.model';
 import { EcheqApertura } from './echeqApertura-model';
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es';
 import { BehaviorSubject } from 'rxjs';
-import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 
 @Component({
     selector: 'app-echeq-popup',
@@ -37,11 +36,6 @@ export class EcheqPopupComponent implements OnInit {
                 this.listaChequesAux.push(aforo);
             }
             this.calcularPorcentajes();
-            setTimeout(() =>
-                this.mensajeComponent.setInfoMsg(
-                    "La cantidad mínima de e-cheq a generar son dos; del primer e-cheq se descontarán retenciones y facturas de servicio. Asimismo, el monto del resto de los e-cheq podría ser modificado por facturas a descontar"
-                )
-                , 0)
         }
     }
     @Input() aforoConf: number;
@@ -57,12 +51,10 @@ export class EcheqPopupComponent implements OnInit {
     mensajeMontosValidacion: string = "";
     mensajeRecordatorio: string = "";
 
-    @ViewChild("mensajePopup")
-    mensajeComponent: MensajeComponent
     ngOnInit() {
         registerLocaleData(es);
-    }
 
+    }
     onCancelarAperturarEcheq() {
         this.cancelarAperturarEcheqEmitter.next();
     }
@@ -85,14 +77,14 @@ export class EcheqPopupComponent implements OnInit {
     agregarInputEcheq() {
         this.listaChequesAux.push(
             {
-                ordenCheque: this.listaChequesAux.length,
+                ordenCheque: this.listaChequesAux.length ,
                 importeCheque: 0,
                 porcentaje: 0
             })
     }
 
     eliminarEcheq(ordenCheque) {
-        this.listaChequesAux.splice(ordenCheque, 1);
+        this.listaChequesAux.splice(ordenCheque , 1);
         this.reEnumerarEcheq(this.listaChequesAux);
         this.mostrarMensaje();
     }

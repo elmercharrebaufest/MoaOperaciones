@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -30,24 +29,5 @@ namespace SustitucionMOAModel.Dto
         public decimal PrecioBruto { get; set; }
         public string EstadoLiberacionCodigo { get; set; }
         public string EstadoLiberacionDetalle { get; set; }
-        public bool EsMonedaProveedor { get; set; }
-        public int RegionSap { get; set; }
-        public bool CreadoAutomatico { get; set; }
-        public string MonedaCodigo { get; set; }
-        public CondicionDePagoDto CondicionDePago { get; set; }
-        public CondicionDeImportacionDto CondicionDeImportacion { get; set; }       
-        public string CondicionDePagoCodigo { get; set; }
-        public string CondicionDePagoId { get; set; }
-        public string CondicionDeImportacionCodigo { get; set; }
-        public string CondicionDeImportacionId { get; set; }
-        public string CondicionDeImportacionDescripcion { get; set; }
-
-        public decimal PagoEn1 { get; set; }
-        public decimal PagoEn2 { get; set; }
-        public decimal PagoEn3 { get; set; }
-        public decimal PagoEn1Porcentaje { get; set; }
-        public decimal PagoEn2Porcentaje { get; set; }
-        public string NroSolp { get; set; }
     }
-
 }

@@ -1,5 +1,4 @@
 <p-autoComplete [(ngModel)]="selected" [suggestions]="filtroProveedor" (completeMethod)="filterProveedor($event)"
-  field="descVendedor" [minLength]="1" (onSelect)='selectEvent($event)' [disabled]="noEditarCliente"
-  (onBlur)="onBlur.emit($event)" (onFocus)="onFocus.emit($event)"></p-autoComplete>
+  field="descVendedor" [minLength]="1" (onSelect)='selectEvent($event)' [disabled]="noEditarCliente"></p-autoComplete>
 <mensaje></mensaje>
 <spinner></spinner>

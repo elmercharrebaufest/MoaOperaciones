@@ -291,7 +291,8 @@ namespace SustitucionMOAUtils.Services
             es.SePuedeBorrar = true;
             es.TextoBreve = ap.Texto_breve_servicio;
             es.Referencia = ap.Referencia;
-
+            es.Ingresante = ap.Ingresante_CDS;
+            es.IdES = ap.ID;
 
             return es;
         }

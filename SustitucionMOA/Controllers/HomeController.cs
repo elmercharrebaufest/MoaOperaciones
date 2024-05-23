@@ -186,9 +186,6 @@ namespace SustitucionMOA.Controllers
                 string apikey = string.Empty;
 
                 Entidades.Usuario usuario = azureB2CService.ObtenerUsuario(mail, granosFlagAzure);
-
-                string usuarioId = usuario.Id.ToString();
-
                 aceptoTyC = usuario.AceptoTyC;
                 apikey = usuario.ApiKey ?? string.Empty;
 
@@ -307,8 +304,7 @@ namespace SustitucionMOA.Controllers
                     aceptoTyC,
                     apikey,
                     cuit,
-                    proveedorId,
-                    usuarioId
+                    proveedorId
                 }, JsonRequestBehavior.AllowGet);
 
             }

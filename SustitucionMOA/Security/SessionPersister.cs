@@ -83,19 +83,6 @@ namespace SustitucionMOASecurity
             }
         }
 
-
-        public static bool EsCodigoDeCorredor
-        {
-            get
-            {
-                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsCodigoCorredorType) != null)
-                {
-                    return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsEsCodigoCorredorType).Value == "true";
-                }
-                return false;
-            }
-        }
-
         public static string getUsername()
         {
             if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsUserNameType) != null)

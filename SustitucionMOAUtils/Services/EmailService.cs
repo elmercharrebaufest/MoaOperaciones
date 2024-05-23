@@ -31,11 +31,7 @@ namespace SustitucionMOAUtils.Services
 
         public void EnviarMail(List<string> enviarA, string asunto, string cuerpo, List<string> copia = null, AlternateView vistaAlternativa = null, byte[] archivo = null, string nombreArchivo = null, string enviarDesde = null, List<string> copiaOculta = null, Dictionary<string, byte[]> archivos = null)
         {
-            List<string> destinatarios = enviarA?.Distinct().ToList() ?? new List<string>();
-            List<string> copias = copia?.Distinct().ToList() ?? new List<string>();
-
-
-            Task.Run(() => EmailSender.EnviarMailAsync(destinatarios, asunto, cuerpo, copias, vistaAlternativa, archivo, nombreArchivo, enviarDesde, copiaOculta, archivos));
+            Task.Run(() => EmailSender.EnviarMailAsync(enviarA,  asunto,  cuerpo,  copia ,  vistaAlternativa ,  archivo ,  nombreArchivo ,  enviarDesde,  copiaOculta ,archivos));
         }
     }
 }

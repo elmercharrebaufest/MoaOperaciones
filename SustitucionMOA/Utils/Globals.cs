@@ -48,7 +48,6 @@ namespace SustitucionMOA.Utils
         public const string ClaimsSeccionesVisitadas = "seccionesVisitadas";
         public const string ClaimsProveedorId = "proveedorId";
         public const string ClaimsCuit= "cuit";
-        public const string ClaimsEsCodigoCorredorType = "esCodigoCorredor";
 
     }
 }

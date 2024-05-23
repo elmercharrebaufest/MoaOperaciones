@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
 import { UsuarioService } from '../usuario.service';
-import { FormGroup, FormBuilder, FormArray, FormControl, Validators } from '@angular/forms';
-import { Subscription, forkJoin } from 'rxjs';
-import { debounceTime, filter, map, } from 'rxjs/operators';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { MessageService } from 'primeng/api';
 import { Proveedor } from '../../common/models/proveedor';
@@ -13,7 +13,7 @@ import { Proveedor } from '../../common/models/proveedor';
     styleUrls: ['./modificar-datos.component.css'],
     providers: [MessageService]
 })
-export class ModificarDatosComponent implements OnInit, OnDestroy {
+export class ModificarDatosComponent implements OnInit {
 
     tipoUsuario: any = [];
     existeProveedores: boolean = true;
@@ -21,8 +21,6 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
     @Output() cerrarModal = new EventEmitter();
-
-    subscriptions = new Subscription();
 
     constructor(protected service: UsuarioService,
         private formBuilder: FormBuilder,
@@ -37,7 +35,6 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.cargarTipoUsuario();
-        this.asignarFormSubscriptions()
     }
 
     get proveedoresFormArray(): FormArray {
@@ -213,100 +210,5 @@ export class ModificarDatosComponent implements OnInit, OnDestroy {
             })
         }
     }
-    @ViewChild("spinnerModalAsignar")
-    protected spinnerModalAsignar: SpinnerComponent;
-    asignandoCuit = false;
-    ngOnDestroy(): void {
-        this.subscriptions.unsubscribe()
-    }
 
-    formAsignarCUIT = new FormGroup({
-        cuit: new FormControl(null, [Validators.required, Validators.min(11)]),
-        razonSocial: new FormControl({ value: null, disabled: true }, [Validators.required]),
-        codigoProveedor: new FormControl({ value: null, disabled: true }, [Validators.required]),
-        tipoProveedorId: new FormControl({ value: null, disabled: true }, [Validators.required]),
-    });
-
-    asignarFormSubscriptions() {
-        const cuitControl = this.formAsignarCUIT.get("cuit");
-        this.subscriptions.add(
-            cuitControl.valueChanges.pipe(
-                filter((_) => cuitControl.valid),
-                debounceTime(500)).subscribe(cuit => {
-                    this.cargarValorRazonSocial(cuit)
-                })
-        )
-    }
-
-    cargarValorRazonSocial(cuit: string) {
-        this.spinnerModalAsignar.showIt();
-        this.service.getProveedorAprobadoPorCuit(cuit).subscribe(({ logout, error, info, data }) => {
-            this.spinnerModalAsignar.hideIt()
-            if (logout) {
-
-            } else if (error || info) {
-                this.messageService.add({
-                    key: "toastAsignacion",
-                    severity: error ? 'error' : 'warn',
-                    summary: "Validando CUIT",
-                    detail: error || info
-                })
-            } else {
-                if (!!data) {
-                    this.formAsignarCUIT.get("razonSocial").setValue(data.RazonSocial)
-                    this.formAsignarCUIT.get("tipoProveedorId").setValue(data.IdTipoProveedor)
-                    this.formAsignarCUIT.get("codigoProveedor").setValue(data.CodigoProveedor)
-                } else {
-                    this.messageService.add({
-                        key: "toastAsignacion",
-                        severity: 'info',
-                        summary: "CUIT",
-                        detail: `La cuit: ${cuit} no se ha encontrado.`
-                    })
-                }
-            }
-        })
-    }
-
-    public onAsignarNuevaCuit() {
-        if (this.asignandoCuit)
-            return;
-
-        this.asignandoCuit = true;
-        this.spinnerModalAsignar.showIt();
-        const { id, mail } = this.modificarDatosForm.getRawValue();
-        const { cuit, codigoProveedor, tipoProveedorId, razonSocial } = this.formAsignarCUIT.getRawValue();
-        this.service.asignarNuevaCuit({
-            idUsuario: id,
-            mailUsuario: mail,
-            cuitAAsignar: cuit,
-            codigoProveedorAAsignar: codigoProveedor,
-            tipoProveedorIdAAsignar: tipoProveedorId,
-            razonSocialAAsignar: razonSocial
-        }).subscribe(({ logout, error, info, data }) => {
-            this.spinnerModalAsignar.hideIt();
-            this.asignandoCuit = false;
-            if (logout) {
-            } else if (error || info) {
-                this.messageService.add({
-                    key: "toastAsignacion",
-                    severity: error ? 'error' : 'warn',
-                    summary: "Intentando Asignación",
-                    detail: error || info
-                })
-            } else {
-                this.messageService.add({
-                    key: "toastAsignacion",
-                    severity: "success",
-                    summary: "Asignación exitosa",
-                    detail: `Se asignó correctamente la CUIT: ${cuit} para el usuario ${mail}`
-                })
-                this.limpiarFormAsignar()
-            }
-        })
-    }
-
-    limpiarFormAsignar() {
-        this.formAsignarCUIT.reset()
-    }
 }

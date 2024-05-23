@@ -1,10 +1,15 @@
-﻿using SustitucionMOAModel.Models.WSMapMOA.Compras;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Contrato;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -14,8 +19,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerContratoSolpConsumerMOA()
         {
-            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES";
-            service = new SI_MMRFC_OBTENER_CONTRATOClient(SAPCredential.CrearSapLongBinding(), SAPCredential.DevolverEndpoint(url));
+            service = new SI_MMRFC_OBTENER_CONTRATOClient();
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }

@@ -16,14 +16,14 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" />
             </div>
         </div>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
@@ -37,36 +37,26 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios1" name="respetaServicios"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaServicios" [value]="true" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios2" name="respetaServicios"
-                [(ngModel)]="peticion.RespetaServicios" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaServicios" [value]="false" />
             </div>
         </div>
         <br>
         <br>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
             <div class="col-md-12 titulosModal">
-                <ng-container *ngIf="peticion.PideDescripcionTecnica && !peticion.PideDocumentacionTecnica; else elseBlock">
-                    <strong>En este apartado es obligatorio adjuntar una descripción técnica del trabajo sin valores comerciales.</strong>
-                </ng-container>
-                    <ng-template #elseBlock>
-                        <ng-container *ngIf="peticion.PideDescripcionTecnica && peticion.PideDocumentacionTecnica; else textoDefault">
-                            <strong>En este apartado es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
-                        </ng-container>
-                        <ng-template #textoDefault>
-                    <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
-                    </ng-template>
-                 </ng-template>
+                <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
             </div>
         </div>
         <div class="inputCompras">
             <div class="row myRow" style="padding-top: 2px;">
-                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [style.pointer-events]="peticion.RevisionFinalizada ? 'none' : 'auto'">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <label class="labelCompras" for="editorTexto">
                         <strong style="font-size: 14px;">
                             Adjuntar documentación
@@ -89,7 +79,7 @@
                             <div class="col-xs-12 col-md-9" *ngFor="let archivoTecnico of archivosTecnico">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                      (click)="eliminarArchivo(true, archivoTecnico, true)" style="width: 26px;" />
-                                <a class="pointer" (click)="descargarArchivo(archivoTecnico)">
+                                <a class="link-archivo pointer" (click)="descargarArchivo(archivoTecnico)">
                                     {{archivoTecnico.name}}
                                 </a>
                             </div>
@@ -100,7 +90,7 @@
                                 <div *ngIf="archivo?.FileKey == 'CotizacionRevisionTecnica'">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                          (click)="eliminarArchivo(false, archivo, false)" style="width: 26px;" />
-                                    <a class="pointer" (click)="descargarArchivo(archivo)"
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
                                        style="font-weight: lighter;">
                                         {{archivo.Nombre}}
                                     </a>
@@ -117,7 +107,7 @@
                                 Observaciones
                             </strong>
                         </label>
-                        <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionTecnica" [(disabled)]="peticion.RevisionFinalizada"
+                        <textarea name="Observacion" ngDefaultControl [(ngModel)]="this.peticion.ObservacionTecnica"
                                   placeholder="Agregue los comentarios que crea necesarios..." cols="30" rows="1"></textarea>
                     </div>
                 </div>
@@ -429,7 +419,7 @@
                             <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
                             <th class="columna" style="background-color: #4760ac !important;">Precio Total ARP</th>
                             <th class="columna" style="background-color: #4760ac !important;">Fecha de entrega</th>
-                            <th class="columna" style="background-color: #4a1884 !important;" title="Cantidad de días">Plazo de entrega</th>
+                            <th class="columna" style="background-color: #4a1884 !important;">Plazo de entrega</th>
                             <th class="columna" style="background-color: #4760ac !important;">Plazo de oferta</th>
                         </tr>
                     </ng-template>
@@ -599,7 +589,7 @@
                             <div class="col-xs-12 col-md-9" *ngFor="let archivoEconomico of archivosEconomico">
                                 <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                      (click)="eliminarArchivo(true, archivoEconomico, false)" style="width: 26px;" />
-                                <a class="pointer" (click)="descargarArchivo(archivoEconomico)">
+                                <a class="link-archivo pointer" (click)="descargarArchivo(archivoEconomico)">
                                     {{archivoEconomico.name}}
                                 </a>
                             </div>
@@ -609,7 +599,7 @@
                                 <div *ngIf="archivo?.FileKey == 'CotizacionRevisionEconomica'">
                                     <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
                                          (click)="eliminarArchivo(false, archivo, false)" style="width: 26px;" />
-                                    <a class="pointer" (click)="descargarArchivo(archivo)"
+                                    <a class="link-archivo pointer" (click)="descargarArchivo(archivo)"
                                        style="font-weight: lighter;">
                                         {{archivo.Nombre}}
                                     </a>

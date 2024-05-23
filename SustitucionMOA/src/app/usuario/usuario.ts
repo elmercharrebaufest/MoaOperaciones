@@ -3,5 +3,4 @@
     email: string;
     perfil: string;
     tipo: string;
-    Mail: string;
 }

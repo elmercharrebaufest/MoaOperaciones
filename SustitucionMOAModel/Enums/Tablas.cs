@@ -1,4 +1,10 @@
-﻿namespace SustitucionMOAModel.Enums
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Enums
 {
     public static class TablasEstado
     {
@@ -21,9 +27,8 @@
         public const string CuentasSolpSap = "CuentasSolpSap";
         public const string CentroBeneficio = "CentroBeneficio";
         public const string EstadoOC = "EstadoOC";
+
         public const string CodigoMaterialSap = "CodigoMaterialSap";
-        public const string CondicionesDeImportacion = "INCOTERMS";
-        public const string CondicionesDePago = "CondicionesDePago";
 
     }
 

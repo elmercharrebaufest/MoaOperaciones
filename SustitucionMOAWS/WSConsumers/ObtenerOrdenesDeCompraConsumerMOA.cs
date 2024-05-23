@@ -77,14 +77,16 @@ namespace SustitucionMOAWS.WSConsumers
                 DateTime fecha = DateTime.ParseExact(item.DOC_DATE, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 string fechaFormateada = fecha.ToString("dd/MM/yyyy");
 
-                result.Add(new OrdenCompraDto
-                {
-                    Id = long.Parse(item.PO_NUMBER),
-                    Fecha = fechaFormateada,
-                    ProveedorNombre = item.VEND_NAME,
-                    MonedaDescripcion = item.CURRENCY_ISO,
-                    SUBJ_TO_R = item.SUBJ_TO_R
-                });
+
+                    result.Add(new OrdenCompraDto
+                    {
+                        Id = long.Parse(item.PO_NUMBER),
+                        Fecha = fechaFormateada,
+                        ProveedorNombre = item.VEND_NAME,
+                        MonedaDescripcion = item.CURRENCY_ISO,
+                        ProveedorNumero = item.VENDOR,
+                        SUBJ_TO_R = item.SUBJ_TO_R
+                    });                
             }
             
             return result;

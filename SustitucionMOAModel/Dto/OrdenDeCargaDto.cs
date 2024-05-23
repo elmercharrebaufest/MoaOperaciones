@@ -47,8 +47,7 @@ namespace SustitucionMOAModel.Dto
         public bool Escalable { get; set; }
         public TipoContratoFAS TipoContrato { get; set; }
         public string DestinoMercaderia { get; set; }
-        public bool TienePatentesRepetidas { get; set; }
-        public bool TieneConsultasRealizadas { get; set; }
+
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
@@ -218,7 +217,6 @@ namespace SustitucionMOAModel.Dto
         public bool Escalable { get; set; }
         public bool NecesitaVerificarCuitsTerceros { get; set; }
         public string DestinoMercaderia { get; set; }
-        public List<int> OrdenesConPatentesRepetidas { get; set; }
         public OrdenDeCargaDetalleDto() { }
 
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)

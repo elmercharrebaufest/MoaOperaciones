@@ -10,21 +10,19 @@ namespace SustitucionMOAModel.Dto
         public string CodigoSap { get; set; }
         public string Descripcion { get; set; }
         public int? IdPadre { get; set; }
-        public bool? FiltroComprador { get; set; }
 
         public TablaSapDto() { }
 
         public TablaSapDto(TablaSap entity)
         {
-            if (entity != null)
+            if(entity != null)
             {
-                Id = entity.Id;
-                Tabla = entity.Tabla;
-                Codigo = entity.Codigo;
-                CodigoSap = entity.CodigoSap;
-                Descripcion = entity.Descripcion;
-                IdPadre = entity.Padre_id;
-                FiltroComprador = entity.FiltroComprador;
+                this.Id = entity.Id;
+                this.Tabla = entity.Tabla;
+                this.Codigo = entity.Codigo;
+                this.CodigoSap = entity.CodigoSap;
+                this.Descripcion = entity.Descripcion;
+                this.IdPadre = entity.Padre_id;
             }
         }
 
@@ -32,7 +30,7 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                return string.Format("{0} {1} {2}", CodigoSap, !string.IsNullOrEmpty(Descripcion) && !string.IsNullOrEmpty(CodigoSap) ? "-" : string.Empty, Descripcion);
+                return string.Format("{0} {1} {2}", this.CodigoSap, !string.IsNullOrEmpty(this.Descripcion) && !string.IsNullOrEmpty(this.CodigoSap) ? "-" : string.Empty, this.Descripcion);
             }
         }
     }

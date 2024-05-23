@@ -1,48 +1,38 @@
-:host ::ng-deep .ui-calendar {
-    width: 100%;
+::ng-deep .estiloCalendarDashboard {
+    width: 33%;
 }
 
-:host ::ng-deep .ui-calendar .ui-inputtext {
-    width: calc(100% - 2.357em);
+.fa{
+    margin-right:-8.7px;
 }
-
-.fa {
-    margin-right: -8.7px;
-}
-
 .buscar {
     background-color: #1C7CD5;
     border-color: #1C7CD5;
     color: white;
-    width: 100%;
+    width: 100%;   
 }
 
-.buttonBuscar {
+.buttonBuscar{
     margin-left: -121px;
     margin-top: 4px;
 }
-
-body.ui-paginator.ui-dropdown {
+body.ui-paginator.ui-dropdown{
+    width: 10% !important;
+}
+.ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix{
     width: 10% !important;
 }
 
-.ng-tns-c7-9.ui-dropdown.ui-widget.ui-state-default.ui-corner-all.ui-helper-clearfix {
-    width: 10% !important;
-}
-
-.columna {
-    word-break: break-all;
-    word-wrap: break-word;
-    font-size: 10px;
-    ;
+.columna{
+    word-break: break-all; word-wrap:break-word; font-size: 10px;;
 }
 
 .headerth {
-    font-size: 11px !important;
-    cursor: pointer;
+    font-size: 11px !important; 
+    cursor:pointer;
 }
 
-.padding {
+.padding{
     padding: 8px;
 }
 
@@ -51,9 +41,9 @@ body.ui-paginator.ui-dropdown {
 }
 
 .punto-rojo {
-    position: relative;
-    top: -29px;
-    left: -6px;
+    position: absolute;
+    top: 38px;
+    left: 65px;
     width: 10px;
     height: 10px;
     background-color: red;

@@ -22,6 +22,5 @@ namespace SustitucionMOAUtils.Interfaces
         CartaPorteDetalleWSMOAResponse GetDetalle(string proveedor, string cartaporteId);
         CartaPorteFormularioDropdownsWSMOAResponse GetFormularioDropdowns();
         byte[] GetTemplate(CCPPFormulario formulario);
-        List<Calidad> GetDetalleCalidades(string ccpp, string codigoProveedor);
     }
 }

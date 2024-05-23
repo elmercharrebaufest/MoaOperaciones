@@ -79,10 +79,7 @@
             switch (me)
             {
                 case EstadoOrdenDeCargaFason.Vencida:
-                case EstadoOrdenDeCargaFason.Anulada:
                     return "red";
-                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
-                case EstadoOrdenDeCargaFason.EdicionSolicitada:
                 case EstadoOrdenDeCargaFason.Pendiente:
                     return "yellow";
                 case EstadoOrdenDeCargaFason.Generada:
@@ -91,11 +88,34 @@
                     return "white";
                 case EstadoOrdenDeCargaFason.PendienteCompensacion:
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
+                case EstadoOrdenDeCargaFason.EdicionSolicitada:
                 case EstadoOrdenDeCargaFason.EdicionRechazada:
+                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
+                case EstadoOrdenDeCargaFason.Anulada:
                     return "";
+
                 default:
                     throw new System.Exception("Semáforo no mapeado");
             }
         }
+
+
+        //     public static EstadoOrdenDeCargaFason ObtenerDescripcionEstado(string estado)
+        //     {
+
+        //         switch (estado)
+        //         {
+        //             case "Orden generada":
+        //                 return EstadoOrdenDeCargaFason.Generada;
+        //	case "Pendiente":
+        //		return EstadoOrdenDeCargaFason.Pendiente;
+        //	case "Orden vencida":
+        //		return EstadoOrdenDeCargaFason.Vencida;
+        //	case "Orden entregada":
+        //		return EstadoOrdenDeCargaFason.Entregada;
+        //	default:
+        //		return EstadoOrdenDeCargaFason.SinEstado;
+        //}
+        //     }
     }
 }

@@ -8,8 +8,6 @@
         public string RazonSocial { get; set; }
         public string CUIT { get; set; }
         public string CodigoProveedor { get; set; }
-        public string Moneda { get; set; }
-
         public ProveedorComprasDto() { }
 
     }

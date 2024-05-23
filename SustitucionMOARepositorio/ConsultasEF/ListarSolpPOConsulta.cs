@@ -33,7 +33,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             EstadoCotizacion = estadoCotizacion;
             EstadoLicitacion = estadoLicitacion;
             FechaDesde = desde;
-            FechaHasta = hasta.HasValue ? hasta.Value.AddDays(1) : hasta;
+            FechaHasta = hasta;
         }
         public ListaPaginada<PeticionDeOfertaDto> Ejecutar(DbContext contexto)
         {
@@ -47,18 +47,17 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 from peticionDeOferta in peticion.DefaultIfEmpty()
                                 join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp).Contains(NroSolp))
+                                where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Solp.NroSolp.StartsWith(NroSolp))
                                 && (string.IsNullOrEmpty(NroPo) || x.PeticionDeOferta.Id.ToString().StartsWith(NroPo))
-                                && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
+                                && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
                                 && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true &&
                                 (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion))
-                                && x.PeticionDeOferta.Posiciones.Any(p => p.SolpPosicion.Estado == true) && x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true
+                                && x.PeticionDeOferta.Solp.Posiciones.Any(p => p.Estado == true)
                                 select new PeticionDeOfertaDto
                                 {
                                     Id = x.PeticionDeOferta.Id,
-                                    NrosSolp = x.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp),
-                                    NombreDeObra = x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego == null ? "" : 
-                                    x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra,
+                                    NroSolp = x.PeticionDeOferta.Solp.NroSolp,
+                                    NombreDeObra = x.PeticionDeOferta.Solp.Pliego == null ? "" : x.PeticionDeOferta.Solp.Pliego.NombreObra,
                                     UsuarioCreador_Id = x.PeticionDeOferta.UsuarioCreador_Id,
                                     UsuarioCreador = x.PeticionDeOferta.Usuario.Mail,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,

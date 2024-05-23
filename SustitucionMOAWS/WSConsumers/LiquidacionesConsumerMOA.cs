@@ -73,9 +73,7 @@ namespace SustitucionMOAWS.WSConsumers
                     documento = liquidacion.DOCUMENTO,
                     sociedad = liquidacion.SOCIEDAD,
                     ejercicio = liquidacion.EJERCICIO,
-                    fijacion = liquidacion.FIJACION,
-                    Total = liquidacion.IMPORTE + liquidacion.IVA,
-                    TotalStr = SAPFormatter.FormatearMonto(liquidacion.IMPORTE + liquidacion.IVA, liquidacion.MONEDA)
+                    fijacion = liquidacion.FIJACION
                 }
                 );
             }

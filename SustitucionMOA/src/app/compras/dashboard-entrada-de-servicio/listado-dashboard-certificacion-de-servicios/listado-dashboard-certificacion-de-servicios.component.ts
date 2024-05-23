@@ -127,7 +127,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     fullscreen: boolean = false;
     displayContent: boolean = false;
     isInputActive: boolean = false;
-
+    procesandoCelda: { [key: string]: any[] } = {
+        "FechaDocumento": [],
+        "DescripcionES": [],
+        "Remito": []
+    };
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -165,7 +169,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             name: 'Items',
             columns: [
                 { id: 'iLinea', header: 'N° Línea', field: 'NumeroLinea', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'iNroServicio', header: 'N° Servicio', field: 'ServicioNumero', type: 'string', sortable: false, required: false, visible: true },
+                { id: 'iNroServicio', header: 'N° Servicio', field: 'NumeroServicio', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'iDescripcion', header: 'Txt. Breve', field: 'Descripcion', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
@@ -185,11 +189,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             name: 'Entradas',
             columns: [
                 { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
-                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
             ]
@@ -424,10 +428,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else {
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
+                        this.cargarArrayProcesosSpinners(this.tablaPO);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                       
+
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -443,7 +448,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.spinnerComponent.hideIt();
 
                     this.displayContent = true;
-                    
+
                     // Se buscan las posiciones que están al 100%
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
@@ -465,7 +470,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
-      }
+    }
 
     isPendingRelease(oc): boolean {
         return oc.SubjToR != "";
@@ -513,7 +518,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + TempId);
                 }
                 else {
-                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                 }
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
@@ -1071,14 +1076,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularPorcentaje(oc): any[] {
-         const posicionesCompletas = oc.Posiciones.filter(posicion => {
+        const posicionesCompletas = oc.Posiciones.filter(posicion => {
             this.calcularValoresACertificar(posicion);
 
-        const items = posicion.Items || [];
-        const totalItems = items.length;
-        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
-        
-        return itemsCompletados === totalItems;
+            const items = posicion.Items || [];
+            const totalItems = items.length;
+            const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+
+            return itemsCompletados === totalItems;
 
         });
 
@@ -1141,5 +1146,110 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         }
 
         return valor;
+    }
+
+    /**
+     * Metodo para cargar un array de booleanos que corresponden a las celdas editables como usuario ingresante.
+     * @param pendienteAprobacion 
+     * @returns 
+     */
+    cargarArrayProcesosSpinners(pendienteAprobacion: any[]): void {
+        const tieneTemporalId = pendienteAprobacion.some(item =>
+            item.Posiciones.some(posicion =>
+                posicion.Items.some(item =>
+                    item.EntradasServicio.some(entrada =>
+                        entrada.TemporalId !== null
+                    )
+                )
+            )
+        );
+        if (!tieneTemporalId) {
+            return;
+        }
+        pendienteAprobacion.forEach(item => {
+            item.Posiciones.forEach(posicion => {
+                posicion.Items.forEach(item => {
+                    item.EntradasServicio.forEach(entrada => {
+                        if (entrada.TemporalId !== null) {
+                            this.procesandoCelda["FechaDocumento"][entrada.IdES] = false;
+                            this.procesandoCelda["DescripcionES"][entrada.IdES] = false;
+                            this.procesandoCelda["Remito"][entrada.IdES] = false;
+                        }
+                    });
+                });
+            });
+        });
+    }    
+
+    /**
+     * Metodo que envia la información de las ES editables como ingresante de la misma
+     * @param valor 
+     * @param columnaEditar 
+     * @param id 
+     * @param nroOc 
+     */
+    enviarInformacionIngresante(valor: any, columnaEditar: string, id: number, nroOc: string): void {
+        this.procesandoCelda[columnaEditar][id] = true;
+        const data = {
+          ID: id,
+          ColumnaEditar: columnaEditar,
+          NuevoValor: valor
+        }
+        this.service.enviarEdicionIngresante(data).subscribe( 
+        resp => {
+            this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+        }, error => {
+            console.error(error)
+        }
+        )
+    }
+
+    /**
+     * Metodo que setea el dato editado luego de ser enviado al servicio para actualizarlo.
+     * Esto actualiza el valor de la celda sin necesidad de cargar la tabla nuevamente.
+     * @param valor 
+     * @param columnaEditar 
+     * @param id 
+     * @param nroOc 
+     */
+    setearNuevoValorDeCelda(valor: any, columnaEditar: string, id: number, nroOc: string): void{
+        const ordenCompraIndex = this.tablaPO.findIndex(oc => oc.NumeroOrdenDeCompra === nroOc);
+            if (ordenCompraIndex !== -1) {
+                const ordenCompra = this.tablaPO[ordenCompraIndex];
+                const itemIndex = ordenCompra.Posiciones
+                    .flatMap(posicion => posicion.Items)
+                    .findIndex(item => item.EntradasServicio.some(es => es.IdES === id));
+
+                if (itemIndex !== -1) {
+                    const item = ordenCompra.Posiciones
+                        .flatMap(posicion => posicion.Items)[itemIndex];
+                    const entradaServicioIndex = item.EntradasServicio.findIndex(es => es.IdES === id);
+
+                    if (entradaServicioIndex !== -1) {
+                        const entradaServicio = item.EntradasServicio[entradaServicioIndex];
+
+                        switch (columnaEditar) {
+                            case 'DescripcionES':
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].TextoBreve = valor;
+                                break;
+                            case 'FechaDocumento':
+                                const fecha = valor.split('-');
+                                valor = fecha[2] + '/' + fecha[1] + '/' + fecha[0];
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].FechaDocumentoString = valor;
+                                break;
+                            case 'Remito':
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].Referencia = valor;
+                                break;
+                            default:
+                                // Caso no manejado
+                                break;
+                        }
+                        this.procesandoCelda[columnaEditar][id] = false;
+                    }
+                }
+            }
     }
 }

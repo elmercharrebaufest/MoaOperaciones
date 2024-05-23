@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="ord/+9IJipxKNSxAOGTEYKgX3QDCO7diOIWYhcBj1HM=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="qqRUKWFtl9anMt16FkJZumwHDMQHHFEzRGjwT0uFWDo=">
   <bindingConfigurations>
     <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_OBTENER_SOLPEDBinding2">
       <properties>
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port90" contract="ObtenerSolPEDWebServiceMOA.SI_MMRFC_OBTENER_SOLPED" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_OBTENER_SOLPEDBinding2">
+    <endpoint name="HTTP_Port83" contract="ObtenerSolPEDWebServiceMOA.SI_MMRFC_OBTENER_SOLPED" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_OBTENER_SOLPEDBinding2">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -296,7 +296,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTP_Port90</serializedValue>
+          <serializedValue>HTTP_Port83</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port88" contract="ObtenerSolPEDWebServiceMOA.SI_MMRFC_OBTENER_SOLPED" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_OBTENER_SOLPEDBinding3">
+    <endpoint name="HTTPS_Port81" contract="ObtenerSolPEDWebServiceMOA.SI_MMRFC_OBTENER_SOLPED" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_OBTENER_SOLPEDBinding3">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -381,7 +381,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTPS_Port88</serializedValue>
+          <serializedValue>HTTPS_Port81</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

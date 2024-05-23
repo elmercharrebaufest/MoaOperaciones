@@ -9,7 +9,6 @@
         public const string Cotizacion = "Cotización";
         public const string Legajo = "Legajo";
         public const string Solp = "SOLP";
-        public const string SolpArchivos = "SOLP Archivos";
         public const string PeticionDeOfertaVisualizacionPrecio = "Visualizacion de Precio";
         public const string ChatInterno = "Chat Interno";
         public const string RevisionTecnica = "Revisión tecnica";

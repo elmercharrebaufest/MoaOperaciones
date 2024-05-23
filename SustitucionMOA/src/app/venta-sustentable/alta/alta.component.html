@@ -8,7 +8,7 @@
         <mensaje></mensaje>
         <spinner></spinner>
         <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
-            (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
+                                     (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
         </app-declaracion-conformidad>
         <!--End Title-->
         <!-- Form-->
@@ -22,14 +22,14 @@
                             </p>
                             <div class="styled-select ">
                                 <input type="search" [(ngModel)]="nombreEstablecimiento" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Localidad <span class="requerido">*</span></p>
                             <app-autocomplete-localidad (onLocalidadSeleccionada)="localidadId = $event"
-                                [localidad_Id]="campoProveedorE?.Localidad_Id">
+                                                        [localidad_Id]="campoProveedorE.Localidad_Id">
                             </app-autocomplete-localidad>
                         </div>
                     </div>
@@ -38,14 +38,14 @@
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos">Modo de ingreso</p>
                             <input type="radio" id="operarComoCorredor" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="1" (change)="cambiarModoOperacion()" checked="checked">
+                                   [value]="1" (change)="cambiarModoOperacion()" checked="checked">
                             <label for="operarComoCorredor">Corredor</label>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos"></p>
                             <input type="radio" id="operarComoAcopiador" [(ngModel)]="operarComo" name="operarComo"
-                                [value]="2" (change)="cambiarModoOperacion()">
+                                   [value]="2" (change)="cambiarModoOperacion()">
                             <label for="operarComoAcopiador">Acopiador</label>
                         </div>
 
@@ -57,28 +57,20 @@
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">Proveedor <span class="requerido">*</span></p>
-                            <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
-                                [(valorInicial)]="CodigoProveedorEdit"
-                                (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
-                                (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
-                                (onQuery)="onQuery($event)">
-                            </app-seleccionar-proveedor>
-
+                            <div class="styled-select" style="overflow: initial;">
+                                <app-seleccionar-proveedor (onLocalidadSeleccionada)="onselect($event)"
+                                                           [(valorInicial)]="CodigoProveedorEdit">
+                                </app-seleccionar-proveedor>
+                            </div>
                         </div>
 
-                        <div class="col-xs-12 col-sm-12 col-md-6"
-                            *ngIf="ingresarProveedorPorCUIT || corredorDebeCargarCuit">
+                        <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="ingresarProveedorPorCUIT">
                             <p class="crearConsultaTitulos">
-                                CUIT
-                                <ng-container *ngIf="!corredorDebeCargarCuit">
-                                    titular Carta de Porte
-                                </ng-container>
-
-                                <span class="requerido">*</span>
+                                CUIT titular Carta de Porte <span class="requerido">*</span>
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                    maxlength="13" (change)="verificarCUITIngresado()" aria-controls="tableModal">
+                                       maxlength="13" (change)="verificarCUITIngresado()" aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -101,7 +93,7 @@
                             <p class="crearConsultaTitulos">Hectareas Totales<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input min="1" [type]="'number'" name="hectareasTotales" [(ngModel)]="hectareasTotales"
-                                    class="fourRounded" aria-controls="tableModal">
+                                       class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -109,7 +101,7 @@
                             <p class="crearConsultaTitulos">Hectareas de Soja<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="number" name="hectareasSoja" [(ngModel)]="hectareasSoja"
-                                    class="fourRounded" aria-controls="tableModal">
+                                       class="fourRounded" aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -119,7 +111,7 @@
                             <p class="crearConsultaTitulos">Latitud<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="search" name="latitud" [(ngModel)]="latitud" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -127,7 +119,7 @@
                             <p class="crearConsultaTitulos">Longitud<span class="requerido">*</span></p>
                             <div class="styled-select ">
                                 <input type="search" name="longitud" [(ngModel)]="longitud" class="fourRounded"
-                                    aria-controls="tableModal">
+                                       aria-controls="tableModal">
                             </div>
                         </div>
                     </div>
@@ -136,14 +128,13 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">Utilizar KMZ de la carga anterior</p>
                             <span class="col-md-6">
-                                <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id"
-                                    name="UsarArchivo_IdSi" [value]="true" (change)="cambiarModoOperacion()"
-                                    checked="checked">
+                                <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id" name="UsarArchivo_IdSi"
+                                       [value]="true" (change)="cambiarModoOperacion()" checked="checked">
                                 <label for="UsarArchivo_IdSi">Si</label>
                             </span>
                             <span class="col-md-6">
-                                <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id"
-                                    name="UsarArchivo_IdNo" [value]="false" (change)="cambiarModoOperacion()">
+                                <input type="radio" id="UsarArchivo_Id" [(ngModel)]="UsarArchivo_Id" name="UsarArchivo_IdNo"
+                                       [value]="false" (change)="cambiarModoOperacion()">
                                 <label for="UsarArchivo_IdNo">No</label>
                             </span>
 
@@ -172,7 +163,8 @@
                         </div>
 
                         <div class="col-xs-0 col-md-3">
-                            <button class="btn-custom btn-guardar btn-grande" (click)="campoProveedorAgregar()">
+                            <button class="btn-custom btn-guardar btn-grande"
+                                    (click)="campoProveedorAgregar()">
                                 Guardar
                             </button>
 

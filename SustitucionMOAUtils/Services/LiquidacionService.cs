@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -24,8 +23,6 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAValidator;
-using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
@@ -34,19 +31,14 @@ namespace SustitucionMOAUtils.Services
     {
         protected readonly IRepositorio repositorio;
         protected readonly IAzureService azureService;
-        private readonly IListarPesificacionesConsumer pesificacionesConsumer;
         private readonly string[] formatosDeArchivoValidos = new string[] { ".pdf", ".png", ".jpg" };
         private const string FECHA_REGEX = @"([0-2]?[0-9]|(3)[0-1])(\/)(((0)[0-9])|((1)[0-2]))(\/)\d{4}";
         private const string COE_REGEX = @"C.*O.*E.*:";
 
-        public LiquidacionService(
-            IRepositorio repositorio,
-            IAzureService azureService,
-            IListarPesificacionesConsumer pesificacionesConsumer)
+        public LiquidacionService(IRepositorio repositorio, IAzureService azureService)
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
-            this.pesificacionesConsumer = pesificacionesConsumer;
         }
 
         public LiquidacionViewModel getAprobadas(string proveedor, string fechaInicio, string fechaFin)
@@ -497,21 +489,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var data = new DetalleCteConsumerMOA().Request(fijacion, proveedor);
+                DetalleCteWSMOAResponse data = (DetalleCteWSMOAResponse) new DetalleCteConsumerMOA().request(fijacion, proveedor);
                 validarRespuestaProforma(data);
                 data.error = null;
-
-                if ((!data.LiquidacionParcialEmitida || data.FaltanDatosDeCalidad) &&
-                    data.cabecera.moneda != ConstanteSAP.MONEDA_PESOS)
-                {
-                    var pesificacionesResponse = pesificacionesConsumer.Request(proveedor);
-
-                    var contrato = data.salidas?.Count > 0 ? data.salidas[0].contrato : "";
-                    data.Pesificaciones = pesificacionesResponse.Pesificaciones
-                        .Where(x => x.Contrato == contrato || x.Fijacion == fijacion)
-                        .ToList();
-                }
-
                 return data;
             }
             catch (InfoCustomException e)
@@ -532,7 +512,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var data = new DetalleCteExcelConsumerMOA().Request(fijacion, proveedor);
+                DetalleCteExcelWSMOAResponse data = (DetalleCteExcelWSMOAResponse)new DetalleCteExcelConsumerMOA().request(fijacion, proveedor);
                 validarRespuestaDescargaProforma(data);
                 data.salidas.Add(data.subTotal);
                 data.salidas.Add(data.pagoACuenta);
@@ -703,8 +683,7 @@ namespace SustitucionMOAUtils.Services
                             repositorio.GuardarCambios();
 
                             //Subo el archivo al blob storage una vez procesado
-                            var blobReference = $"{coe}{Path.GetExtension(liquidacion.FileName).ToLower()}";
-                            await azureService.SubirArchivoABlobStorageAsync(liquidacion, blobReference, "liquidaciones");
+                            await azureService.SubirArchivoABlobStorageAsync(liquidacion, coe);
                         }
                         else
                         {

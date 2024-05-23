@@ -234,7 +234,7 @@ namespace SustitucionMOAModel.Dto
 
         public List<SolpSubposicionDto> Subposiciones { get; set; }
         public List<SolpProveedorDto> Proveedores { get; set; }
-        public ProvinciaDto Provincia { get; set; }
+        public ProvinciaDTO Provincia { get; set; }
         public string GrupoComprasDescripcion { get; set; }
         public string CentroComprasDescripcion { get; set; }
         public bool TieneCotizacion { get; set; }
@@ -309,7 +309,7 @@ namespace SustitucionMOAModel.Dto
                 this.CuentaMayor = entity.CuentaMayorSap != null ? new TablaSapDto(entity.CuentaMayorSap) : null;
                 this.TipoImputacionValor = entity.TipoImputacionSap != null ? new TablaSapDto(entity.TipoImputacionSap) : null;
 
-                this.Provincia = entity.ProvinciaId != null ? new ProvinciaDto(entity.Provincia) : null;
+                this.Provincia = entity.ProvinciaId != null ? new ProvinciaDTO(entity.Provincia) : null;
 
                 //Contrato Marco
                 this.NumeroContratoSuperior = entity.NumeroContratoSuperior;

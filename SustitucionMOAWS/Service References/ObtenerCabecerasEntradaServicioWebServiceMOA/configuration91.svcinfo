@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="qNenvvuKsVge25vG4YAjyjcuEss2KSISg1jY9OjVDr8=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="mwE5HRv0dUscZjN/+mOW2COsSZ9QCf4BOpUK9slsH6k=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding2">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding2</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -94,7 +94,7 @@
           <serializedValue>TransportSelected</serializedValue>
         </property>
         <property path="/security/transport/extendedProtectionPolicy/customServiceNames" isComplexType="true" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.Configuration.ServiceNameElementCollection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>(Collection)</serializedValue>
+          <serializedValue>(Colección)</serializedValue>
         </property>
         <property path="/security/transport/realm" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -110,10 +110,10 @@
         </property>
       </properties>
     </bindingConfiguration>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding3">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding1">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding3</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding1</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -203,7 +203,7 @@
           <serializedValue>TransportSelected</serializedValue>
         </property>
         <property path="/security/transport/extendedProtectionPolicy/customServiceNames" isComplexType="true" isExplicitlyDefined="false" clrType="System.Security.Authentication.ExtendedProtection.Configuration.ServiceNameElementCollection, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>(Collection)</serializedValue>
+          <serializedValue>(Colección)</serializedValue>
         </property>
         <property path="/security/transport/realm" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port88" contract="ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding2">
+    <endpoint name="HTTP_Port87" contract="ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -233,7 +233,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding2</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST</serializedValue>
@@ -296,7 +296,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTP_Port88</serializedValue>
+          <serializedValue>HTTP_Port87</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port86" contract="ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding3">
+    <endpoint name="HTTPS_Port85" contract="ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding1">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -318,7 +318,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding3</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_ENTRYSHEET_GETLISTBinding1</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ObtenerCabecerasEntradaServicioWebServiceMOA.SI_MMRFC_BAPI_ENTRYSHEET_GETLIST</serializedValue>
@@ -381,7 +381,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTPS_Port86</serializedValue>
+          <serializedValue>HTTPS_Port85</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

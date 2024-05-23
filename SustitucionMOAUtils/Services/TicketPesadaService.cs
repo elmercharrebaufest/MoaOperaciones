@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -51,7 +50,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
-                        Task.Run(()=>EnviarMail(consultaTicketPesada, archivoResultado));
+                        EnviarMail(consultaTicketPesada, archivoResultado);
                     }
                     catch
                     {
@@ -147,7 +146,7 @@ namespace SustitucionMOAUtils.Services
             zipStream.CloseEntry();
         }
 
-        private async Task EnviarMail(ConsultaTicketPesada consultaTicketPesada, byte[] adjunto)
+        private void EnviarMail(ConsultaTicketPesada consultaTicketPesada, byte[] adjunto)
         {
             var asunto = string.Format("Ticket pesada CCPP {0} - Pantente {1}", consultaTicketPesada.NumeroCartaPorte, consultaTicketPesada.PatenteCamion);
 
@@ -155,7 +154,7 @@ namespace SustitucionMOAUtils.Services
 
             string mensaje = string.Format("Te enviamos el archivo comprimido de la CCPP {0}.", consultaTicketPesada.NumeroCartaPorte);
 
-            await EmailSender.EnviarMailAsync(new List<string> { consultaTicketPesada.Mail }, asunto, mensaje, null, null, adjunto, nombreAchivo);
+            EmailSender.EnviarMail(new List<string> { consultaTicketPesada.Mail }, asunto, mensaje, null, null, adjunto, nombreAchivo);
         }
     }
 }

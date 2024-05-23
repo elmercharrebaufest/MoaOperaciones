@@ -1,6 +1,4 @@
-﻿import { Almacen } from "./almacen";
-
-export class Material {
+﻿export class Material {
     public Id: number;
     public Descripcion: string;
     public CampaniaActual: string;
@@ -9,8 +7,6 @@ export class Material {
     public MaterialId: number;
     public ValidaSisaRuca: boolean;
     public Abreviacion: string;
-
-    public Almacenes: Almacen[];
 
     constructor() { }
 }

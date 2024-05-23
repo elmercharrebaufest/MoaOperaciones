@@ -8,6 +8,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
     public class EntradaServicioCabeceraDto
     {
+        public int ID {  get; set; }
         public string EntradaServicio { get; set; }
         public string FechaCreacion { get; set; }
         public string OrdenCompra { get; set; }

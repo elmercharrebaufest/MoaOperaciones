@@ -427,13 +427,13 @@ namespace SustitucionMOA.Controllers
 
                 PDFResponse result = new PDFResponse
                 {
-                    Pdf = new Pdf()
+                    pdf = new Pdf()
                     {
                         data = FileArray
                     }
                 };
 
-                return JsonCustom(result.Pdf);
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {

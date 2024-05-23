@@ -1,7 +1,5 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
@@ -17,13 +15,12 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
         List<TablaSapDto> ObtenerTablaSap(string tabla);
-        List<TablaSapDto> ListarTablaSap(List<string> tabla);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
+        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool? sap, bool? mantenimiento, bool? web, bool? repoAutomatica, int? usuarioId, List<int> estados = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
-        SolpESDto TraerSolpPorNumero(string nroSolp);
+        SolpDto TraerSolpPorNumero(string nroSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
         Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
@@ -47,16 +44,16 @@ namespace SustitucionMOAUtils.Interfaces
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
         List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
-        List<ProvinciaDto> ListarProvincia();
+        List<ProvinciaDTO> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
         List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
-        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
+        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp = null, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null);
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
-        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor);
+        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario);
         Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
         string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos);
@@ -82,27 +79,8 @@ namespace SustitucionMOAUtils.Interfaces
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
         List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
         Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
-        ChatComprasDto ObtenerChat(int solpId, int usuarioActualId);
+        ChatComprasDto ObtenerChat(int peticionDeOfertaId, int usuarioActualId);
         Resultado GrabarMensajeChatInterno(ChatInternoComprasDto mensaje);
-        string ExportarChatInternoAtexto(int solpId, string rutaArchivo);
-        ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor);
-        List<RegionSap> ListarRegionesSap();
-        bool ValidarSolpTratada(string nroSolp);
-        List<LiberadorSapDto> ListarLiberadorSap();
-        List<TablaSapDto> ListarUnidadesDeMedida(string material);
-        ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
-        InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
-        List<TablaGeneralDto> ObtenerImputaciones(string tabla);
-        void ObtenerDatosReporteSolp();
-
-        List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
-        List<int> ListarClaseDocumento(int usuarioId);
-        Resultado ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible);
-        List<UsuarioDto> ListarUsuarioSolicitante();
-        List<CotizacionHistorialDto> ObtenerHistorial(int id);
-        List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
-        SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
-
-        void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
+        string ExportarChatInternoAtexto(int peticionDeOfertaId, string rutaArchivo);
     }
 }

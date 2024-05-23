@@ -40,6 +40,7 @@ namespace SustitucionMOAModel.Entities
         public virtual Proveedor Corredor { get; set; }
 
 
+        public int? CantidadEntregada { get; set; }
         public DateTime? FechaEgreso { get; set; }
         public DateTime? FechaIngreso { get; set; }
         public string NroRemito { get; set; }
@@ -66,8 +67,6 @@ namespace SustitucionMOAModel.Entities
         public bool? DestinatarioExisteScato { get; set; }
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
-        public double? PesadaTara { get; set; }
-        public double? PesadaNeto { get; set; }
 
         public bool CuitsTerceroExisten { 
             get
@@ -149,9 +148,8 @@ namespace SustitucionMOAModel.Entities
                 DomicilioDescr == carga.DomicilioDescr &&
                 DestinoMercaderia == carga.DestinoMercaderia &&
                 DestinatarioExisteScato == carga.DestinatarioExisteScato &&
-                DestinoExisteScato == carga.DestinoExisteScato &&
-                PesadaTara == carga.PesadaTara &&
-                PesadaNeto == carga.PesadaNeto;
+                DestinoExisteScato == carga.DestinoExisteScato;
+                ;
         }
 
         public override int GetHashCode()

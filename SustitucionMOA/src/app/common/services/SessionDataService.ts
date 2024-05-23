@@ -17,12 +17,10 @@ export class SessionDataService {
     public tipoUsuario = new Subject<string>();
     public permisos = new Subject<any>();
     public noticias = new Subject<any>();
-    public esCodigoCorredor = new Subject<any>();
     public seccionesVisitadas = new Subject<string>();
     public apikey = new Subject<string>();
     public cuit = new Subject<string>();
     public proveedorId = new Subject<string>();
-    public usuarioId = new Subject<string>();
 
 
 
@@ -34,12 +32,10 @@ export class SessionDataService {
     tipoUsuario$ = this.tipoUsuario.asObservable();
     permisos$ = this.permisos.asObservable();
     noticias$ = this.noticias.asObservable();
-    esCodigoCorredor$ = this.esCodigoCorredor.asObservable();
     seccionesVisitadas$ = this.seccionesVisitadas.asObservable();
     apikey$ = this.apikey.asObservable();
     cuit$ = this.cuit.asObservable();
     proveedorId$ = this.proveedorId.asObservable();
-    usuarioId$ = this.usuarioId.asObservable();
 
 
 
@@ -78,9 +74,6 @@ export class SessionDataService {
     setNoticias(value: any) {
         this.noticias.next(value);
     }
-    setEsCodigoCorredor(value: any) {
-        this.esCodigoCorredor.next(value);
-    }
 
     setApikey(value: string) {
         this.apikey.next(value);
@@ -92,10 +85,6 @@ export class SessionDataService {
 
     setProveedorId(value: string) {
         this.proveedorId.next(value);
-    }
-
-    setUsuarioId(value: string) {
-        this.usuarioId.next(value);
     }
 
     logout() {
@@ -111,8 +100,6 @@ export class SessionDataService {
         this.setApikey("");
         this.setCuit("");
         this.setProveedorId("");
-        this.setEsCodigoCorredor("");
-        this.setUsuarioId("");
 
         sessionStorage.clear();
 
@@ -130,5 +117,5 @@ export class SessionDataService {
         window.location.href = logoutURL;
     }
 
-
+    
 }

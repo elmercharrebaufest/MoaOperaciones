@@ -18,7 +18,8 @@
             {
                 switch (me)
                 {
-                    case EstadoAplicacionCartaPorte.Error:                  
+                    case EstadoAplicacionCartaPorte.Error:
+                    case EstadoAplicacionCartaPorte.Eliminado:
                         return "red";
                     case EstadoAplicacionCartaPorte.Pendiente:
                     case EstadoAplicacionCartaPorte.EnProceso:
@@ -35,7 +36,9 @@
                 switch (me)
                 {
                     case EstadoAplicacionCartaPorte.Error:
-                        return "Error";                   
+                        return "Error";
+                    case EstadoAplicacionCartaPorte.Eliminado:
+                        return "Eliminado";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "Aplicado";
                     case EstadoAplicacionCartaPorte.Pendiente:

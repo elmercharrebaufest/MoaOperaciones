@@ -84,8 +84,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                var idProveedorSeleccionado = SessionPersister.ProveedorId;
-                var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, idProveedorSeleccionado);
+                var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin);
                 return JsonCustom(result);
             }
             catch (InfoCustomException e)
@@ -180,7 +179,9 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerEditar(ordenDeCargaId) });
+                var mailUsuario = SessionPersister.getUsername();
+
+                return JsonCustom(new { data = ordenDeCargaService.ObtenerEditar(mailUsuario, ordenDeCargaId) });
             }
             catch (InfoCustomException e)
             {
@@ -509,7 +510,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-                return Json(ordenDeCargaService.ObtenerPatentes(ordenDeCarga), JsonRequestBehavior.AllowGet);
+                var mailUsuario = SessionPersister.getUsername();
+                return Json(ordenDeCargaService.ObtenerPatentes(ordenDeCarga, mailUsuario), JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {
@@ -700,6 +702,8 @@ namespace SustitucionMOA.Controllers
             var response = new ObtenerContratosDisponiblesResponse();
             try
             {
+
+                var mailUsuario = SessionPersister.getUsername();
                 var req = new ObtenerContratosDisponiblesRequest
                 {
                     ClienteCodigo = clienteCodigo,
@@ -707,7 +711,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
-                response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario);
             }
             catch (InfoCustomException ice)
             {
@@ -991,7 +995,8 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                ordenDeCargaService.SeleccionarFactura(ordenId, facturaSeleccionada);
+                var mailUsuario = SessionPersister.getUsername();
+                ordenDeCargaService.SeleccionarFactura(ordenId, facturaSeleccionada, mailUsuario);
                 response.Data = true;
             }
             catch (InfoCustomException ice)
@@ -1039,7 +1044,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-                return Json(new { cuils = ordenDeCargaService.ObtenerCuilsChofer(ordenDeCarga) }, JsonRequestBehavior.AllowGet);
+                var mailUsuario = SessionPersister.getUsername();
+                return Json(new { cuils = ordenDeCargaService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {
@@ -1110,7 +1116,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = ordenDeCargaService.VerificarCuitsTerceros(ordenId) });
+                var mailUsuario = SessionPersister.getUsername();
+                return JsonCustom(new { data = ordenDeCargaService.VerificarCuitsTerceros(ordenId, mailUsuario) });
             }
             catch (InfoCustomException e)
             {

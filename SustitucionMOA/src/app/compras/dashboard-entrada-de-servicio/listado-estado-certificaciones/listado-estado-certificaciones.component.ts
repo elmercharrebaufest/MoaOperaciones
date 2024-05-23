@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef, ElementRef, OnDestroy } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -12,19 +12,18 @@ import { NavService } from '../../../common/services/NavService';
 import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
-import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message } from 'primeng/api';
-import { EntradaServicio } from '../../../common/models/entradaServicio';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
   templateUrl: './listado-estado-certificaciones.component.html',
   styleUrls: ['./listado-estado-certificaciones.component.css']
 })
-export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit {
+export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
   //#region Variables 
+  subscripciones: Subscription[] = [];
   protected locale: any;
   @ViewChild("tabla") protected tabla: Table;
   @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
@@ -55,7 +54,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
   innerWidth: number;
-
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
@@ -72,9 +70,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Falta de presentación de documentación', code: '4' },
     { name: 'Otros/Observaciones', code: '5' }
   ];
-  suplentes: any = [
-    { name: 'Carlos Duarte', code: '001' }
-  ];
+  suplentes: any = [];
   listadoEstadoCertificacion: any = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
     { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
@@ -121,7 +117,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
   ];
   userId: any = '';
-  spinnerIcon: string = "";
+  tablaPO: any[] = [];
+  cols: any[];
+  usuario: string;
+  vendedor: string;
+  allItems : any[];
+  proveedor: string = sessionStorage.getItem("proveedor");
+  msgs: Message[] = [];
+  havePermision: boolean = false;
+  observaciones: string = '';
 
   constructor(protected service: ComprasService, protected navService: NavService,
       protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -134,29 +138,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.usuario = sessionStorage.getItem("username");
   }
 
-  tablaPO: any[] = [];
-  cols: any[];
-  usuario: string;
-  vendedor: string;
-  allItems : any[];
-  proveedor: string = sessionStorage.getItem("proveedor");
-  msgs: Message[] = [];
-  havePermision: boolean = false;
-  
-  observaciones: string = '';
+  public ngOnDestroy(): void {
+    this.subscripciones.forEach(sub => sub.unsubscribe());
+  }
       
   ngOnInit() {
-    this.innerWidth = window.innerWidth;
 
-      this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO(this.proveedor, this.documentoNumero);
 
     this.formsCreate();
 
     this.innerWidth = window.innerWidth;
 
-      this.navService.setSeccionActive("Estado certificaciones");
+    this.navService.setSeccionActive("Estado certificaciones");
 
-      this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+    this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
     
     let permisos = sessionStorage.getItem("permisos");
     
@@ -165,7 +161,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.havePermision = true;
     }
   }
-  
+
+
   showContainerTable(): void {
     this.spinnerComponent.hideIt();
     if (this.elementToToggle) {
@@ -205,62 +202,49 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   toggleTable(data: any) {
-      const index = this.posicionRow.indexOf(data);
-      if (index === -1) {
-          this.posicionRow.push(data);
-          this.isTableExpanded = !this.isTableExpanded;
-      } else {
-          this.posicionRow.splice(index, 1);
-          this.isTableExpanded = false;
-      }
-  
-
+    const index = this.posicionRow.indexOf(data);
+    if (index === -1) {
+      this.posicionRow.push(data);
+      this.isTableExpanded = !this.isTableExpanded;
+    } else {
+      this.posicionRow.splice(index, 1);
+      this.isTableExpanded = false;
     }
+  }
   
     toggleEntradaServicio() {
       this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
-    }
-  
-    onCheckboxChange(e: any) {
-  
-    }
-  
-  
-    ngOnDestroy(): void {
-        // this.subscripcionPO.unsubscribe();
     }
 
     getListarPO(proveedor, documentoNumero) {
       this.getFecha();
       this.hideContainerTable();
-          this.unsubscribe();
-      this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-                (result:any) => {
-                  if (result.logout == true) {
-                    this.sessionDataService.logout();
-                  } else if (result.error != undefined && result.error != "") {
-                  } else if (result.info != undefined) {
-                  } else {
-                      this.tablaPO = result.data; 
-              this.setColumsByUserProfile(this.tablaPO, this.usuario);
-                      this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                      this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                      this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                  }
-          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-          this.showContainerTable();
-          return true;
-        }, error => {
-                  this.floatMsgService.setErrorMsg(error.message);
-          this.showContainerTable();
-          return false;
-              }
-              );
-      } catch (e) {
-        this.floatMsgService.setErrorMsg(e);
-        this.spinnerComponent.hideIt();
-        return false; //<-- Prevent Refresh
-      }
+      this.subscripciones.push(
+        this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+          (result:any) => {
+            if (result.logout == true) {
+              this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+            } else if (result.info != undefined) {
+            } else {
+                this.tablaPO = result.data;
+                this.setColumsByUserProfile(this.tablaPO, this.usuario);
+                this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+                this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+                this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+            }
+            this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+            this.showContainerTable();
+            return true;
+          }, error => {
+            this.floatMsgService.setErrorMsg(error.message);
+            this.showContainerTable();
+            return false;
+          }
+        )
+      );
+      return false; //<-- Prevent Refresh
+  }
 
   displayContent() {
     return !this.spinnerComponent.visible;
@@ -273,35 +257,35 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     //actualizar
     fechaActual.setMonth(fechaActual.getMonth() - 2);
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-}
+  }
 
   
-    deleteES(item: any) {
-      //TODO: lógica para cuando se especifique el borrado de una ES
-    }
-  
-    handlePageEvent(e: any) {
-        this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;
-        this.getListarPO(this.proveedor, this.documentoNumero);
-    }
+  deleteES(item: any) {
+    //TODO: lógica para cuando se especifique el borrado de una ES
+  }
 
-    onOrder(columna: string) {
-      if (this.columnaOrden != columna) {
-          this.ordenAscendente = false
-      } else {
-          this.ordenAscendente = this.ordenAscendente == false ? true : false;
-      }
-      this.columnaOrden = columna;
-      this.getListarPO(this.proveedor, this.documentoNumero);
+  handlePageEvent(e: any) {
+    this.pageSize = e.rows;
+    this.pageIndex = e.page + 1;
+    this.getListarPO(this.proveedor, this.documentoNumero);
+  }
+
+  onOrder(columna: string) {
+    if (this.columnaOrden != columna) {
+      this.ordenAscendente = false
+    } else {
+      this.ordenAscendente = this.ordenAscendente == false ? true : false;
+    }
+    this.columnaOrden = columna;
+    this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
   toggleRow(rowData: any): void {
-      this.selectedRow = this.selectedRow === rowData ? null : rowData;
+    this.selectedRow = this.selectedRow === rowData ? null : rowData;
   }
 
   isSelectedRow(rowData: any): boolean {
-      return this.selectedRow === rowData;
+    return this.selectedRow === rowData;
   }
 
   verMotivosRechazos(rowData: any): void {
@@ -354,17 +338,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       Suplente: this.formularioSuplente.get('suplente').value,
       NroEsLocal: this.formularioSuplente.get('nro_es_local').value
     }
-
-    this.service.reasignarSuplente(data).subscribe(
-      (resp: any) => {
-        this.getListarPO(this.proveedor, this.documentoNumero);
-        this.mostrarSuplentes = false;
-        this.msgs.push({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
-      }, error => {
-        console.error('Error al obtener datos:', error);
-        this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-      }
-    )
+    this.subscripciones.push(
+      this.service.reasignarSuplente(data).subscribe(
+        (resp: any) => {
+          this.getListarPO(this.proveedor, this.documentoNumero);
+          this.mostrarSuplentes = false;
+          this.msgs.push({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+        }, error => {
+          console.error('Error al obtener datos:', error);
+          this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+        }
+      )
+    );
   }
 
   enviarMotivo() {
@@ -385,15 +370,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         Monto: item.Monto
       }))
     }
-    this.service.enviarMotivoRechazoES(data).subscribe(
-      (resp: any) => {
-      this.getListarPO(this.proveedor, this.documentoNumero);
-      this.mostrarMotivosRechazos = false;
-      this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
-      }, error => {
-        console.error('Error al obtener datos:', error);
-        this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-      }
+    this.subscripciones.push(
+      this.service.enviarMotivoRechazoES(data).subscribe(
+        (resp: any) => {
+        this.getListarPO(this.proveedor, this.documentoNumero);
+        this.mostrarMotivosRechazos = false;
+        this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+        }, error => {
+          console.error('Error al obtener datos:', error);
+          this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+        }
+      )
     );
   }
 
@@ -404,40 +391,42 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.hideContainerTable();
-        this.service.enviarAprobacionES(nro_es_local).subscribe(
-          resp => {
-            this.msgs = [];
-            let mensajeError: string = "";
-            if (!resp.data) {
-              mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-              this.msgs.push({severity:'error', summary:'Error', detail: mensajeError});
+        this.subscripciones.push(
+          this.service.enviarAprobacionES(nro_es_local).subscribe(
+            resp => {
+              this.msgs = [];
+              let mensajeError: string = "";
+              if (!resp.data) {
+                mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
+                this.msgs.push({severity:'error', summary:'Error', detail: mensajeError});
+              }
+              switch (resp.data.Type) {
+                case "I": {
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.msgs.push({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
+                  break;
+                }
+                case "S": {
+                  this.msgs.push({severity: 'info', summary: '', detail: resp.data.Message});
+                  break;
+                }
+                case "E": {
+                  mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                    resp.data.Message.startsWith("Contabilice en ") ?
+                    "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
+                  this.msgs.push({severity: 'warning', summary: '', detail: mensajeError});
+                  break;
+                }
+                default: {
+                  this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                  break;
+                }
+              }
+            }, error => {
+              this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+              console.error('Error al obtener datos:', error);
             }
-            switch (resp.data.Type) {
-              case "I": {
-                this.getListarPO(this.proveedor, this.documentoNumero);
-                this.msgs.push({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
-                break;
-              }
-              case "S": {
-                this.msgs.push({severity: 'info', summary: '', detail: resp.data.Message});
-                break;
-              }
-              case "E": {
-                mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
-                  resp.data.Message.startsWith("Contabilice en ") ?
-                  "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                this.msgs.push({severity: 'warning', summary: '', detail: mensajeError});
-                break;
-              }
-              default: {
-                this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-                break;
-              }
-            }
-          }, error => {
-            this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-            console.error('Error al obtener datos:', error);
-          }
+          )
         );
         this.showContainerTable();
       }

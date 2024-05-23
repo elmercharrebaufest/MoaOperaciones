@@ -62,7 +62,7 @@ namespace SustitucionMOAUtils.Services
                     break;
 
                 case "no granos":
-                    UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = "" };
+                    UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = mail, CUITRegistro = CUIT, SeccionesVisitadas = ""  };
 
                     usuarioNoGranos.TipoUsuario = ObtenerTipoPorNombreCorto("NG");
                     RegistrarUsuarioNoGranos(ref usuarioNoGranos);
@@ -166,13 +166,9 @@ namespace SustitucionMOAUtils.Services
                 }
             };
 
-            var listaAltaProveedores = repositorio.Listar<Proveedor>(x => x.Mail == mailUsuario);
-            var indiceProveedorAsignado = listaAltaProveedores.FindIndex(x => x.CUIT == cuit);
-
-            if (indiceProveedorAsignado != -1)
+            if (repositorio.Existe<Proveedor>(x=> x.CUIT == cuit && x.Mail == mailUsuario))
             {
-                proveedor = listaAltaProveedores[indiceProveedorAsignado];
-                listaAltaProveedores.RemoveAt(indiceProveedorAsignado);
+                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario); 
             }
 
             if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
@@ -184,18 +180,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             usuario.Proveedores.Add(proveedor);
-
-            for (int i = 0; i < listaAltaProveedores.Count; i++)
-            {
-                if (i == 0 && !usuario.TieneRol(RolEnum.Multifirma))
-                {
-                    var multifirma = ObtenerRolPorCodigo("MF");
-                    usuario.AgregarRol(multifirma);
-                }
-
-                var proveedorExtra = listaAltaProveedores[i];
-                usuario.Proveedores.Add(proveedorExtra);
-            }
 
             usuario.Habilitado = true;
 

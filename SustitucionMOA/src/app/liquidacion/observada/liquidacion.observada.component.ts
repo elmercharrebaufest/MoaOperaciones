@@ -61,8 +61,7 @@ export class LiquidacionObservadaComponent extends LiquidacionBaseComponent {
         if (liquidacion.linkConsulta) {
             this.sendDataService.setDatosLiquidacionObservada({
                 Tipo: liquidacion.tipo,
-                NroComprobante: liquidacion.comprobante,
-                NroContrato: liquidacion.contrato,
+                NroComprobante: liquidacion.comprobante
             })
             return this.goToSeccionParam("consulta", "crear-consulta")
         }

@@ -320,58 +320,6 @@
               </xsd:restriction>
             </xsd:simpleType>
           </xsd:element>
-          <xsd:element minOccurs="0" name="PRECIO_FLETE">
-            <xsd:annotation>
-              <xsd:documentation>Rate (condition amount or percentage)</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:decimal">
-                <xsd:totalDigits value="11" />
-                <xsd:fractionDigits value="2" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="PRECIO_MERCADERIA">
-            <xsd:annotation>
-              <xsd:documentation>Rate (condition amount or percentage)</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:decimal">
-                <xsd:totalDigits value="11" />
-                <xsd:fractionDigits value="2" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="CENTRO">
-            <xsd:annotation>
-              <xsd:documentation>Plant</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="4" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="NOMBRE_CENTRO">
-            <xsd:annotation>
-              <xsd:documentation>Name</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="30" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
-          <xsd:element minOccurs="0" name="MONEDA_FLETE">
-            <xsd:annotation>
-              <xsd:documentation>Currency Key</xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-              <xsd:restriction base="xsd:string">
-                <xsd:maxLength value="5" />
-              </xsd:restriction>
-            </xsd:simpleType>
-          </xsd:element>
           <xsd:element minOccurs="0" name="DETALLE" type="rfc:ZMPTT9580" />
         </xsd:sequence>
       </xsd:complexType>

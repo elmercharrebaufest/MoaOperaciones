@@ -24,8 +24,7 @@
                 </div>
                 <div *ngIf="esInterno" style="float: left; padding-left: 2px;">
                     <button type="button" pButton icon="fa fa-comments" (click)="nuevaConsultaInterna()"
-                        style="background-color: #075088; float: right; top: 5%;"
-                        pTooltip="Nueva consulta interna"></button> &nbsp;
+                        style="background-color: #075088; float: right; top: 5%;" pTooltip="Nueva consulta interna"></button> &nbsp;
                 </div>
                 <!-- Button trigger modal -->
                 <button *ngIf="mostrarBotonEditar" type="button"
@@ -64,14 +63,6 @@
         <!-- END tables-->
         <!--Search-->
         <div class="mySearch">
-            <div *ngIf="ordenDeCarga.OrdenesConPatentesRepetidas" class="formulario-input;">
-                <div class="alert alert-warning">
-                    Las siguientes ordenes tienen las mismas patentes de chasis y acoplado:
-                    <a class="cursor" style="cursor: pointer;"
-                        *ngFor="let idOrdenRepetida of ordenDeCarga.OrdenesConPatentesRepetidas"
-                        [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
-                </div>
-            </div>
             <div *ngIf="mensajeError != ''" class="formulario-input;">
                 <div class="alert alert-danger">
                     <i aria-hidden="true" class="fa fa-exclamation-triangle"></i>{{mensajeError}}
@@ -791,8 +782,7 @@
                     <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
                 </div>
                 <div class="modal-body">
-                    <div *ngIf="mensajeValidacionScato" class="row"
-                        class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
                         {{mensajeValidacionScato}}
                     </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">

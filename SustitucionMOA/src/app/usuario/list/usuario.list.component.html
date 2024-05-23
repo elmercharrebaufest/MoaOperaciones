@@ -17,7 +17,7 @@
                     Por Usuario/Vendedor:
                     <div class="styled-select">
                         <input type="search" class="" placeholder="" [value]="filtroUsuarioVendedor"
-                               (input)="filtroUsuarioVendedor = $event.target.value" aria-controls="tableModal">
+                            (input)="filtroUsuarioVendedor = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
             </div>
@@ -28,16 +28,18 @@
                 <mensaje></mensaje>
                 <spinner></spinner>
                 <table *ngIf="isVisible()" id="tableModal"
-                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
-                       cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
+                    class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"
+                    cellspacing="0" role="grid" aria-describedby="tableModal_info" style="width: 100%; padding:10px 0;">
                     <thead>
                         <tr role="row">
                             <th tabindex="0" rowspan="1" colspan="1" (click)="orderColumnBy('Id')">
                                 ID
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Id' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Id' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Id' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Id' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -45,8 +47,10 @@
                                 Usuario
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Mail' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -54,8 +58,10 @@
                                 Vendedor
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'CodigoProveedor' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -63,8 +69,10 @@
                                 Tipo
                                 <div>
                                     <span>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Tipo' && orderDirection > 0 }"></i>
-                                        <i [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Tipo' && orderDirection < 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-up': true, 'arrow': true, 'unselected': orderedByColumn === 'Tipo' && orderDirection > 0 }"></i>
+                                        <i
+                                            [ngClass]="{'fa': true, 'fa-arrow-down': true, 'arrow': true, 'unselected': orderedByColumn === 'Tipo' && orderDirection < 0 }"></i>
                                     </span>
                                 </div>
                             </th>
@@ -73,48 +81,36 @@
                             <th tabindex="0" rowspan="1" colspan="1">Roles</th>
                             <th tabindex="0" rowspan="1" colspan="1"></th>
                             <th tabindex="0" rowspan="1" colspan="1"></th>
-                            <th tabindex="0" rowspan="1" colspan="1"></th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let usuario of data | customFilterOr : 'Mail' : 'CodigoProveedor' : filtroUsuarioVendedor | orderedColumn : {property: orderedByColumn, direction: orderDirection} | paginate: { itemsPerPage:itemsPerPage, currentPage: p } ; let odd = odd"
                             role="row" [class.odd]="!odd">
-                            <td>
-                                <a (click)="showModalTableResponsive(usuario)" class="btnShowModal">
-                                    <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
-                                </a> {{usuario.Id}}
-                            </td>
-                            <td>
-                                <a (click)="showModalTableResponsive(usuario)" class="btnShowModal">
-                                    <i class="fa fa-plus fa-lg" aria-hidden="true"></i>
-                                </a>{{usuario.Mail}}
-                            </td>
+                            <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i
+                                        class="fa fa-plus fa-lg" aria-hidden="true"></i></a> {{usuario.Id}}</td>
+                            <td><a (click)="showModalTableResponsive(usuario)" class="btnShowModal"><i
+                                        class="fa fa-plus fa-lg" aria-hidden="true"></i></a>{{usuario.Mail}}</td>
                             <td>{{usuario.CodigoProveedor}}</td>
                             <td>{{usuario.Tipo}}</td>
                             <!--<td><a class="animate" (click)="desbloquear(usuario.usuario)" href="#" *ngIf=isBloqueado(usuario.bloqueo)>Desbloquear</a><span *ngIf=!isBloqueado(usuario.bloqueo)>Desbloqueado</span></td>-->
                             <td>
                                 <a class="animate" (click)="deshabilitar(usuario.Mail)" href="#"
-                                   *ngIf=usuario.Habilitado>Deshabilitar</a>
+                                    *ngIf=usuario.Habilitado>Deshabilitar</a>
                                 <a class="animate" (click)="habilitar(usuario.Mail)" href="#"
-                                   *ngIf=!usuario.Habilitado>Habilitar</a>
+                                    *ngIf=!usuario.Habilitado>Habilitar</a>
                             </td>
                             <td>
                                 <a class="animate" (click)="abrirModalEditarRoles(usuario)" href="#">Editar roles</a>
                             </td>
                             <td>
                                 <span title="Modificar Usuario" class="fa fa-edit cursor-pointer" data-toggle="modal"
-                                      data-target="#modalModificarUsuario" (click)="abrirModalModificarDatos(usuario)"
-                                      style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                    data-target="#modalModificarUsuario" (click)="abrirModalModificarDatos(usuario)"
+                                    style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
                             <td>
                                 <span title="Historial de cambios" class="fa fa-list cursor-pointer" data-toggle="modal"
-                                      data-target="#modalAuditoriaUsuario" (click)="abrirModalAuditoriaUsuario(usuario.Id)"
-                                      style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
-                            </td>
-                            <td>
-                                <span title="Ver vendedores" class="fa fa-users cursor-pointer" data-toggle="modal"
-                                      data-target="#modalVerVendedores" (click)="abrirModalVerVendedores(usuario)"
-                                      style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
+                                    data-target="#modalAuditoriaUsuario" (click)="abrirModalAuditoriaUsuario(usuario.Id)"
+                                    style="font-size: 22px; color: #009688; margin-right: 5px;"></span>
                             </td>
                         </tr>
                     </tbody>
@@ -123,18 +119,15 @@
                 <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="isVisible()">
                     <div class="dataTables_paginate paging_simple_numbers">
                         <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
+                            [class.disabled]="pT.isFirstPage()"> Anterior </a>
                         <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
                             <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">
-                                {{
- page.label
-                                }}
-                            </a>
+                                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label
+                                }}</a>
                         </span>
                         <a id="tableModal_next" class="paginate_button next" (click)="pT.next()"
-                           [class.disabled]="pT.isLastPage()"> Siguiente </a>
+                            [class.disabled]="pT.isLastPage()"> Siguiente </a>
                     </div>
                 </pagination-template>
             </div>
@@ -142,13 +135,13 @@
         <!-- END tables-->
         <!-- END form-->
         <div class="modal fade" id="modalModificarUsuario" tabindex="-1" role="dialog"
-             aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
-             style="background-color: rgba(0, 0, 0, 0.5);">
+            aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
+            style="background-color: rgba(0, 0, 0, 0.5);">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                                aria-label="Close">
+                            aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <h4 class="modal-title" id="cartaDePresentacionLabel">Modificar datos de usuario - {{usuarioModificacionSel}}</h4>
@@ -160,37 +153,19 @@
             </div>
         </div>
         <div class="modal fade" id="modalAuditoriaUsuario" tabindex="-1" role="dialog"
-             aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
-             style="background-color: rgba(0, 0, 0, 0.5);">
+            aria-labelledby="cartaDePresentacionLabel" data-backdrop="false"
+            style="background-color: rgba(0, 0, 0, 0.5);">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content" style="width: fit-content;">
                     <div class="modal-header">
                         <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                                aria-label="Close">
+                            aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                         <h4 class="modal-title" id="cartaDePresentacionLabel">Auditoria Usuario</h4>
                     </div>
                     <div class="modal-body">
                         <app-usuario-auditoria-list></app-usuario-auditoria-list>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="modalVerVendedores" tabindex="-1" role="dialog"
-             aria-labelledby="verVendedoresLabel" data-backdrop="false"
-             style="background-color: rgba(0, 0, 0, 0.5);">
-            <div class="modal-dialog modal-lg" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button id="cerrarModalUsuario" type="button" class="close btn-close" data-dismiss="modal"
-                                aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" id="verVendedoresLabel">Vendedores asociados a: {{usuarioModificacionSel}}</h4>
-                    </div>
-                    <div class="modal-body">
-                        <app-ver-vendedores></app-ver-vendedores>
                     </div>
                 </div>
             </div>
@@ -213,47 +188,49 @@
                     </button>
                     <h4 class="modal-title" id="myModalLabel">Asignar rol - {{usuarioSeleccionado?.Mail || ""}}</h4>
                 </div>
-                <div class="modal-body">
-                    <div>
-                        <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                            USUARIO SAP
+                <form [formGroup]="formularioUsuario">
+                    <div class="modal-body">
+                        <div>
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                USUARIO SAP
+                            </div>
+                            <div class="styled-select" style="width: 30% !important;">
+                                <input pInputText formControlName="usuarioSap" (keyup)="validarConExpresionesRegulares('usuarioSap')">
+                            </div>
                         </div>
-                        <div class="styled-select" style="width: 30% !important;">
-                            <input pInputText [(ngModel)]="usuarioSap" maxlength="10" rows="1">
+    
+                        <div style="margin-top: 10px;">
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                SUPLENTE
+                            </div>
+                            <div class="styled-select" style="width: 40% !important;">
+                                <input pInputText formControlName="suplente" (keyup)="validarConExpresionesRegulares('suplente')">
+                            </div>
+                        </div>
+    
+                        <div class="row" *ngFor="let titulo of titulos">
+                            <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
+                            <hr>
+                            <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
+                                <span class="col-md-6" *ngIf="rol.Code == titulo">
+                                    <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                           [(ngModel)]="rol.checked" [ngModelOptions]="{standalone: true}">
+                                    &nbsp;
+                                    <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                                </span>
+                            </ng-container>
                         </div>
                     </div>
-
-                    <div style="margin-top: 10px;">
-                        <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
-                            SUPLENTE
-                        </div>
-                        <div class="styled-select" style="width: 40% !important;">
-                            <input pInputText [(ngModel)]="suplente" maxlength="100" rows="1">
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
+                            style="display: inline-flex;">Cancelar</button>
+                        <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
+                            style="display: inline-flex;">
+                            Guardar
+                        </button>
+    
                     </div>
-
-                    <div class="row" *ngFor="let titulo of titulos">
-                        <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
-                        <hr>
-                        <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
-                            <span class="col-md-6" *ngIf="rol.Code == titulo">
-                                <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
-                                       [(ngModel)]="rol.checked">
-                                &nbsp;
-                                <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
-                            </span>
-                        </ng-container>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
-                        style="display: inline-flex;">Cancelar</button>
-                    <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
-                        style="display: inline-flex;">
-                        Guardar
-                    </button>
-
-                </div>
+                </form>
             </div>
         </div>
     </div>

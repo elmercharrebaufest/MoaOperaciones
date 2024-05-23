@@ -1,17 +1,16 @@
 <div id="solicitudes" class="content-wraper">
-  
-  <!-- HEADER -->
-  <section class="container-fluid clearfix">
-    <div class="row titleSection">
+    <!-- HEADER -->
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
             <div class="col-xs-12 col-sm-10">
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
-    </div>
+            </div>
         </div>
         <br />
-  </section>
-  <!-- HEADER END -->
+    </section>
+    <!-- HEADER END -->
     <p-messages [value]="msgs"></p-messages>
-  <spinner></spinner>
+    <spinner></spinner>
     <div class="container-tabla" #elementToToggle>
         <!-- FILTERS -->
         <div class="filters-row">
@@ -38,39 +37,39 @@
             </div>
         </div>
         <!-- FILTERS END -->
-  <!-- TABLE 1 -->
+        <!-- TABLE 1 -->
         <p-table
             #tabla
-           class="level1"
-           [value]="tablaPO"
-           dataKey="EntradaServicio"
-           [paginator]="true"
-           [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
-           [columns]="columns"
+            class="level1"
+            [value]="tablaPO"
+            dataKey="EntradaServicio"
+            [paginator]="true"
+            [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns"
             [globalFilterFields]="['OrdenCompra']"
-           responsiveLayout="scroll | stack"
+            responsiveLayout="scroll | stack"
             rowExpandMode="single"
         >
-    <!-- TABLE 1 HEADERS -->
-    <ng-template pTemplate="header" let-columns class="lista-header">
-      <tr>
+            <!-- TABLE 1 HEADERS -->
+            <ng-template pTemplate="header" let-columns class="lista-header">
+                <tr>
                     <th></th>
                     <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
                         <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                     </ng-container>
-      </tr>
-    </ng-template>
-    <!-- TABLE 1 HEADERS END -->
-    <!-- TABLE 1 BODY -->
+                </tr>
+            </ng-template>
+            <!-- TABLE 1 HEADERS END -->
+            <!-- TABLE 1 BODY -->
             <ng-template
                 pTemplate="body"
                 let-rowData
                 let-columns="columns"
                 let-expanded="expanded"
             >
-      <tr [pSelectableRow]="rowData">
-        <td>
+                <tr [pSelectableRow]="rowData">
+                    <td>
                         <a
                             *ngIf="rowData.entradaServicioDetalle?.length > 0"
                             href="#"
@@ -84,10 +83,12 @@
                                         : 'pi pi-chevron-right'
                                 "
                             ></i>
-          </a>
-        </td>
+                        </a>
+                    </td>
                     <td>{{ rowData.EntradaServicio }}</td>
-                    <td>{{ rowData.FechaCreacion }}</td>
+                    <td>
+                        {{ rowData.FechaCreacion }}
+                    </td>
                     <td>{{ rowData.OrdenCompra || "" }}</td>
                     <td>{{ rowData.CUIT | defaultData }}</td>
                     <td>{{ rowData.Proveedor | defaultData }}</td>
@@ -103,7 +104,7 @@
                             <span>{{ rowData.Fiscal }}</span>
                         </div>
                     </td>
-        <td>
+                    <td>
                         <div class="aprobada" *ngIf="rowData.Estado === 'Aprobada'"><span>Aprobada</span> </div>
                         <div class="pendiente-aprobacion" *ngIf="rowData.Estado === 'Pendiente Aprobación'">
                             <span>Pendiente de aprobación</span>
@@ -136,29 +137,28 @@
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"
                             [disabled]="rowData.Suplente === null || rowData.Fiscal !== usuario"
                         ></button>
-        </td>
+                    </td>
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada' && (userId === 'I' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'FI' || userId === 'F')">{{ rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
-      </tr>
-    </ng-template>
-    <!-- TABLE 1 BODY END -->
-
-    <ng-template pTemplate="emptymessage">
-      <tr>
+                </tr>
+            </ng-template>
+            <!-- TABLE 1 BODY END -->
+            <ng-template pTemplate="emptymessage">
+                <tr>
                     <td class="emptyData" colspan="15">
                         No hay ordenes de compra para mostrar
                     </td>
-      </tr>
-    </ng-template>
+                </tr>
+            </ng-template>
 
             <ng-template
                 pTemplate="rowexpansion"
                 let-rowData
                 let-columns="columns"
             >
-      <tr>
+                <tr>
                     <td colspan="18">
-          <!-- TABLE 2 -->
+                        <!-- TABLE 2 -->
                         <p-table
                             class="level2"
                             [value]="rowData.entradaServicioDetalle"
@@ -166,44 +166,43 @@
                             dataKey="NumeroLinea"
                             [columns]="columns"
                         >
-            <!-- TABLE 2 HEADERS -->
-            <ng-template pTemplate="header">
+                            <!-- TABLE 2 HEADERS -->
+                            <ng-template pTemplate="header">
                                 <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
                                     <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
                                     <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                                 </ng-container>
-            </ng-template>
-            <!-- TABLE 2 HEADERS END -->
-            <!-- TABLE 2 BODY -->
+                            </ng-template>
+                            <!-- TABLE 2 HEADERS END -->
+                            <!-- TABLE 2 BODY -->
                             <ng-template
                                 pTemplate="body"
-                                let-rowData
+                                let-rowDetalle
                                 let-expanded="expanded"
                             >
-              <tr>
-                                    <td>{{ rowData.NumeroLinea }}</td>
-                                    <td>{{ rowData.CodigoServicio }}</td>
-                                    <td>{{ rowData.TextoBreveServicio }}</td>
-                                    <td>{{ rowData.Cantidad }}</td>
-                                    <td>{{ rowData.UM }}</td>
-                                    <td>{{ rowData.Monto }}</td>
+                                <tr>
+                                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                                    <td>{{ rowDetalle.CodigoServicio }}</td>
+                                    <td>{{ rowDetalle.TextoBreveServicio }}</td>
+                                    <td>{{ rowDetalle.Cantidad }}</td>
+                                    <td>{{ rowDetalle.UM }}</td>
+                                    <td>{{ rowDetalle.Monto }}</td>
                                     <!-- <td></td> Cantidad real ? no se que va -->
-                                    <td>{{ rowData.CantidadCertificar }}</td>
-                                    <td>{{ rowData.PorcentajeCertificar }}</td>
-                                    <td>{{ rowData.MontoCertificar }}</td>
-                                    <td>{{ rowData.NroRemito }}</td>
-              </tr>
+                                    <td>{{ rowDetalle.CantidadCertificar }}</td>
+                                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
+                                    <td>{{ rowDetalle.MontoCertificar }}</td>
+                                    <td>{{ rowDetalle.NroRemito }}</td>
+                                </tr>
+                            </ng-template>
+                            <!-- TABLE 2 BODY END -->
+                        </p-table>
+                        <!-- TABLE 2 END -->
+                    </td>
+                </tr>
             </ng-template>
-            <!-- TABLE 2 BODY END -->
-          </p-table>
-          <!-- TABLE 2 END -->
-        </td>
-      </tr>
-    </ng-template>
-
-  </p-table>
-  <!-- TABLE 1 END -->
-</div>
+        </p-table>
+        <!-- TABLE 1 END -->
+    </div>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
 </div>
 <p-dialog

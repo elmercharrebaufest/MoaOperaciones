@@ -11,7 +11,6 @@ import { CotizacionFormularioComponent } from './dashboard-proveedor/cotizacion-
 import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofertas.component';
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
-import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
@@ -34,8 +33,9 @@ const routes: Routes = [
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },
     { path: "dashboard-proveedor/cotizacion/:id", component: CotizacionFormularioComponent },
     { path: "ver-ofertas/:id", component: VerOfertasComponent },
-    { path: "reporte-oc", component: ReporteOcComponent },
-    { path: "crear-po-multiple", component: CrearPoMultipleComponent }
+    { path: "reporte-oc", component: ReporteOcComponent }
+
+
 
 ];
 

@@ -13,13 +13,12 @@ import { MessageService } from "primeng/api";
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es'
 import { BlockUI, NgBlockUI } from "ng-block-ui";
-import { debounceTime, filter } from "rxjs/operators";
-
+import { filter } from "rxjs/operators";
 
 export const MSG_ALERTA_CREADO = { severity: 'success', summary: 'Aplicación CCPP', detail: 'La aplicación fue guardada exitosamente.', life: 5000 };
 export const MSG_ALERTA_ERROR_INFO_API = (msg: string) => ({ severity: 'error', summary: 'Aplicación CCPP', detail: msg, life: 10000 });
 export const MSG_ALERTA_NO_KG_DISPONIBLES = { severity: 'warn', summary: 'Aplicación CCPP', detail: "La carta de porte seleccionada no cuenta con kg disponibles.", life: 15000 };
-export const MIN_CONTRATO_LENGTH = 7;
+
 @Component({
     styleUrls: ['carga-manual.component.css'],
     templateUrl: "carga-manual.component.html"
@@ -56,8 +55,8 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
             Kilogramos: new FormControl(null, [Validators.required]),
 
             //Controles manuales
-            Contrato: new FormControl(null, [Validators.required, Validators.minLength(7), Validators.maxLength(20)]),
-            CartaPorte: new FormControl({ value: null, disabled: true }, [Validators.required, Validators.minLength(6), Validators.maxLength(12)])
+            Contrato: new FormControl(null, [Validators.required, Validators.minLength(6), Validators.maxLength(20)]),
+            CartaPorte: new FormControl({ value: null, disabled: true }, [Validators.required, Validators.minLength(6), Validators.maxLength(20)])
         })
     }
     setTabs(): void {
@@ -124,13 +123,8 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
         //Subscripciones para campos manuales
         this.subscriptions.add(
             ctoControl.valueChanges.pipe(
-                debounceTime(250),
                 filter(() => ctoControl.valid)
-            ).subscribe((nroContrato: string) => {
-                if (nroContrato.length == MIN_CONTRATO_LENGTH && !nroContrato.startsWith("0")) {
-                    nroContrato = `000${nroContrato}`
-                    ctoControl.setValue(nroContrato, { emitEvent: false })
-                }
+            ).subscribe(nroContrato => {
                 const contrato = this.contratos.find(cto => cto.NumeroContrato === nroContrato)
                 if (!contrato)
                     return;

@@ -58,7 +58,6 @@ export class PlazoDeOfertaComponent implements OnInit, OnChanges {
   }
 
   onCerrarPlazo() {
-    this.visualizarAlert = false;
     this.cerrarPlazoEmitter.next();
   }
 

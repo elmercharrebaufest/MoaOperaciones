@@ -21,8 +21,6 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Categoria WHERE Code = 'FLET' AND Nombre = 'F
 IF NOT EXISTS (SELECT TOP 1 1 FROM Categoria WHERE Code = 'OTRO' AND Nombre = 'Otros') BEGIN INSERT Categoria(Code, Nombre) VALUES ('OTRO','Otros') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Categoria WHERE Code = 'CRCPE' AND Nombre = 'Cesión y rectificación de CPE') BEGIN INSERT Categoria(Code, Nombre) VALUES ('CRCPE','Cesión y rectificación de CPE') END
 IF NOT EXISTS (SELECT TOP 1 1 FROM Categoria WHERE Code = 'ORD' AND Nombre = 'Orden de Carga') BEGIN INSERT Categoria(Code, Nombre) VALUES ('ORD','Orden de Carga') END
-IF NOT EXISTS (SELECT TOP 1 1 FROM Categoria WHERE Code = 'DISCAL' AND Nombre = 'Discrepancia Calidades') BEGIN INSERT Categoria(Code, Nombre) VALUES ('DISCAL','Discrepancia Calidades') END
-
 
 --Script para subcategorias
 IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCategoria.Categoria_Id = Categoria.Id where SubCategoria.Nombre = 'Retenciones' and Categoria.Nombre = 'Reclamo Impositivo') BEGIN insert into SubCategoria select 'RET','Retenciones',id from Categoria where Nombre = 'Reclamo Impositivo' END

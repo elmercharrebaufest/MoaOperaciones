@@ -105,13 +105,4 @@ export class AltaEmpresaService extends BaseService {
         return this.http
             .get("/api/usuario/eliminarCuitNoHabilitado", { params: params, headers: this.headers });
     }
-
-    public verificarExistenciaEmpresa(cuit: string): Observable<any> {
-        let params: HttpParams = new HttpParams()
-        .append('cuit', cuit.toString())
-
-        return this.http
-            .get('/api/AltaEmpresa/VerificarExistenciaEmpresa', { params: params, headers: this.headers })
-            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor intentelo mas tarde"))));
-    }
 }
