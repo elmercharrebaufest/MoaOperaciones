@@ -1,0 +1,6 @@
+.columna1 th, .columna1 td {
+    word-break: break-all;
+    font-size: 10px;
+    word-wrap: break-word;
+}
+

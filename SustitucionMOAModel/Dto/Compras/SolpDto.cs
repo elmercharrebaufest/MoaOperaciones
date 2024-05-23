@@ -387,6 +387,8 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto UnidadMedidaCotizacion { get; set; }
         public int? CodigoSolp { get; set; }
         public bool Eliminado { get; set; }
+        public decimal? ValorNeto { get; set; }
+
 
         public SolpSubposicionDto() { }
 

@@ -18,8 +18,6 @@ import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../chat-interno/chat-interno.interface';
-import { forEach } from '@angular/router/src/utils/collection';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 
@@ -153,10 +151,6 @@ export class DashboardComponent extends ListBaseComponent {
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
         { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
     ]
 
     subtitulos = [

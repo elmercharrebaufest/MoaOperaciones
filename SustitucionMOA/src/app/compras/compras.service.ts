@@ -1170,11 +1170,19 @@ export class ComprasService extends BaseService {
     }
     
     public listarSolpCondicionEspecial(filtrosPOAgrupada: FiltroDto): Observable<SolpDto> {
-        console.log("toy aca", filtrosPOAgrupada);
         let filtroJson = JSON.stringify(filtrosPOAgrupada);
         let params: HttpParams = new HttpParams()
         params = params.set('filtroJson', filtroJson);
         return this.http
             .get<SolpDto>('/api/compras/ListarSolpCondicionEspecial', { params: params, headers: this.headers })
     }
+
+    public agruparPeticionesDeOferta(peticionDeOfertaIds: number) {
+        var payload = new FormData();
+        payload.append('peticionDeOfertaIds', peticionDeOfertaIds.toString());
+
+        return this.http
+            .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
+    }
+
 }

@@ -64,4 +64,8 @@ export interface SolpDto {
     NroPeticionDeOferta: number;
     Agrupada: boolean;
     PosicionCompras: SolpPosicionDto[];
+    TipoPosicionCodigo: string;
+    Selected: boolean;
+    TodasSolpSeleccionadas: boolean;
+    Disabled: boolean;
 }
