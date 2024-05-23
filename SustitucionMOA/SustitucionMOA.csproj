@@ -262,10 +262,13 @@
     </Content>
     <Content Include="Content\images\icons\add-user.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\bell-ring.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\paper-clip.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\images\icons\send.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
