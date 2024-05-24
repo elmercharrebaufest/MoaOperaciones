@@ -321,6 +321,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newPos.posicionCheck = false;
                 newPos.numeroPosicion = _this.model.posiciones.length + 1;
                 newPos.id = uuid.v4();
+                newPos.concluido = false;
                 _this.model.posiciones.push(newPos);
                 _this.model.posicionActual = _this.model.posiciones[_this.model.posiciones.length - 1];
                 
