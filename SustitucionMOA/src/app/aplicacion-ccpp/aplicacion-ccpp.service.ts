@@ -28,6 +28,7 @@ export class AplicacionCcppService extends BaseService{
 
     return this.http.get<ApiResponse<boolean>>(`${this.baseUrl}/EliminarAplicacion`, { params });
   }
+
   obtenerComboContratosCcpp(): Observable<ApiResponse<ComboAppContratosCCPPResponse>> {
     return this.http
       .get<ApiResponse<ComboAppContratosCCPPResponse>>(`${this.baseUrl}/ObtenerComboContratosCcpp`);
@@ -51,5 +52,24 @@ export class AplicacionCcppService extends BaseService{
     return this.http
       .post(`${this.baseUrl}/CargarMasiva`, payload, { headers: this.headersPost })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));
-    }
+  }
+
+  aprobarAplicacionPendiente(idAplicacion: number): Observable<ApiResponse<boolean>> {
+    const params = new HttpParams()
+      .append('idAplicacion', idAplicacion.toString());
+
+      return this.http
+        .get<ApiResponse<boolean>>(`${this.baseUrl}/AprobarAplicacionPendiente`, { params })
+        .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));;
+  }
+
+  rechazarAplicacionPendiente(idAplicacion: number, motivo: string): Observable<ApiResponse<boolean>> {
+    const params = new HttpParams()
+      .append('idAplicacion', idAplicacion.toString())
+      .append('motivo', motivo);
+
+      return this.http
+        .get<ApiResponse<boolean>>(`${this.baseUrl}/RechazarAplicacionPendiente`, { params })
+        .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));;
+  }
 }

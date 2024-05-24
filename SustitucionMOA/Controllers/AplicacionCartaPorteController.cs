@@ -180,5 +180,57 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+        [HttpGet]
+        public ContentResult AprobarAplicacionPendiente(int idAplicacion)
+        {
+            var response = new SustitucionMOAApiResponse<bool> { Data = true };
+            try
+            {
+                aplicacionCCPPService.AprobarAplicacionPendiente(idAplicacion);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                var errorId = Guid.NewGuid();
+                Log.Error($"Error id {errorId}", ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult RechazarAplicacionPendiente(int idAplicacion, string motivo)
+        {
+            var response = new SustitucionMOAApiResponse<bool> { Data = true };
+            try
+            {
+                aplicacionCCPPService.RechazarAplicacionPendiente(idAplicacion, motivo);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                var errorId = Guid.NewGuid();
+                Log.Error($"Error id {errorId}", ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
+            }
+            return ContentCustom(response);
+        }
     }
 }

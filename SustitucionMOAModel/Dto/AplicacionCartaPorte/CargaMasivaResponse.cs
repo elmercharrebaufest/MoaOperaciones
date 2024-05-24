@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Enums.SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,7 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
         public string ContratoNumero { get; set; }
         public string CartaDePorte { get; set; }
         public string Kilos { get; set; }
+        public EstadoAplicacionCartaPorte Estado { get; set; }
     }
 
     public class ErrorValidacionCargaMasivaCCPP : AplicacionGuardadaCargaMasivaCCPP

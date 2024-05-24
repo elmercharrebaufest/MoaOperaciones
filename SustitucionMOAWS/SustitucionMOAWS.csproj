@@ -667,6 +667,7 @@
     <Compile Include="WSConsumers\VendedorHabilitadoConsumerMOA.cs" />
     <Compile Include="WSConsumers\VinculaDetalleConsumerMOA.cs" />
     <Compile Include="WSRequests\AplicacionCartaPorte\AppCartasPortePendienteRequest.cs" />
+    <Compile Include="WSRequests\AplicacionCartaPorte\AppCartasPortePendienteResponse.cs" />
     <Compile Include="WSRequests\OrdenCarga\ControlCargaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearEntregaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearOrdenRequest.cs" />

@@ -47,6 +47,7 @@ namespace SustitucionMOAModel.Dto
             this.Id =aplicacionCCPP.Id;
         }
     }
+
     public class AplicacionCartaPorteFiltrosDto
     {
 
