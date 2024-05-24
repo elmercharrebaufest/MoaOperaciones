@@ -472,6 +472,8 @@ namespace SustitucionMOAUtils.Email
                 {
                     Logger.Log.Info($"{ex.InnerException.Message}");
                 }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
 
                 throw;
             }
