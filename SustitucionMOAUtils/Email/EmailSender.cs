@@ -458,8 +458,7 @@ namespace SustitucionMOAUtils.Email
 
                 SmtpClient oCliente = GetSmtpClient();
                 //Data Cliente - Log
-                string clientData = JsonConvert.SerializeObject(oCliente);
-                Logger.Log.Info("oClient Data : " + clientData);
+
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
 
                 // Enviar el correo de forma asíncrona
