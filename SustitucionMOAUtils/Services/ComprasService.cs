@@ -172,7 +172,7 @@ namespace SustitucionMOAUtils.Services
                 includes.Add(x => x.UsuarioModificacion);
 
                 solpEntity = repositorio.Obtener<Solp>(solp.Id.Value);
-
+                ExistenPosicionesNuevas(solp, solpEntity);
                 if (solpEntity != null)
                 {
 
