@@ -184,6 +184,8 @@ export class ChatInternoComponent extends BaseComponent implements OnInit {
             this.proveedorSeleccionado.RazonSocialProveedor = "";
         }
         this.cerrardisplayChatEmitter.next();
+        this.esChatComprador = true;
+        this.mostrarChatComprador();
     }
 
     comentarioPropio(mensajes: ChatInternoComprasDto) {
