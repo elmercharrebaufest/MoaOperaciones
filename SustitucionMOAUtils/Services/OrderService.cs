@@ -138,11 +138,11 @@ namespace SustitucionMOAUtils.Services
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
             ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
-          
-            //List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            //List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-            List<TablaSap> centros = new List<TablaSap>();
-            List<TablaSap> almacenes = new List<TablaSap>();
+
+            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            //List<TablaSap> centros = new List<TablaSap>();
+            //List<TablaSap> almacenes = new List<TablaSap>();
 
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
