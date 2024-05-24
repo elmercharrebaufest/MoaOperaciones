@@ -216,7 +216,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.filtroFechaComponent.setPeriodoInitial('2');
+        this.filtroFechaComponent.setPeriodoInitial('1');
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
