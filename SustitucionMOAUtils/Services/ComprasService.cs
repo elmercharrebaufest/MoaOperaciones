@@ -6209,6 +6209,8 @@ namespace SustitucionMOAUtils.Services
                                 cotizacionPosicionEntidad.CotizacionSubPosiciones.Add(subpoNueva);
                             }
                         }
+
+                        GrabarLogCotizacion(cotizacion);
                         
                     }
 
@@ -9604,6 +9606,17 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.AgregarTodos(cotizaciones);
+            repositorio.GuardarCambios();
+            GrabarHistorialDeCotizaciones(cotizaciones);
+        }
+
+        private void GrabarHistorialDeCotizaciones(List<Cotizacion> cotizaciones)
+        {
+            foreach (var cotizacion in cotizaciones)
+            {
+                GrabarLogCotizacion(cotizacion);
+            }
+            repositorio.GuardarCambios();
         }
 
         private void EliminarCotizacionesAsociadasAPO(List<Cotizacion> cotizaciones)

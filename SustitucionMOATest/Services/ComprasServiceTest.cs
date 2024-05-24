@@ -3045,7 +3045,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOferta, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
         }
 
 
