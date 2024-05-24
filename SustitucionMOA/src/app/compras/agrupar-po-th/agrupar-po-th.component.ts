@@ -37,6 +37,8 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     todasSolpSeleccionadas: boolean = false;
     deshabilitarCheck: boolean;
     resultadoAgrupar: any;
+    displayPeticionAgrupada: boolean = false;
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -88,14 +90,14 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     columna: string = "NroSolp";
     itemsPorPagina: number = 10;
     pagina: number = 1;
-    proveedorSeleccionado: any = null;
+    proveedorSeleccionado: any = {};
     proveedores: any[] = new Array();
 
     Agrupada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
     selectAgrupada: boolean | null = null;
 
     EsServicio: SelectItem[] = [{ label: "Servicio", value: true }, { label: "Material", value: false }];
-    selectTipoPosicion: boolean | null = null;
+    selectTipoPosicion: boolean | null = true;
 
     public get esTipoMaterial(): boolean {
         return this.listaSolp.every(solp => solp.TipoPosicionCodigo === "MATERIALES");
@@ -255,10 +257,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
 
     onBuscar() {
         this.filtrosPOAgrupada.Pagina = this.pagina,
-            this.filtrosPOAgrupada.ItemsPorPagina = this.itemsPorPagina,
-            this.filtrosPOAgrupada.Orden = this.orden,
-            this.filtrosPOAgrupada.Columna = this.columna,
-            this.filtrosPOAgrupada.CodigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
+        this.filtrosPOAgrupada.ItemsPorPagina = this.itemsPorPagina,
+        this.filtrosPOAgrupada.Orden = this.orden,
+        this.filtrosPOAgrupada.Columna = this.columna,
+        this.filtrosPOAgrupada.CodigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
         this.filtrosPOAgrupada.NombrePedido = this.nombrePedido;
         this.filtrosPOAgrupada.GrupoDeCompras = this.selectGrupoCompras.join(",");
         this.filtrosPOAgrupada.Centros = this.selectCentro.join(",");
@@ -394,14 +396,14 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
-    continuar() {
+    agruparPO() {
         let idsSeleccionados = this.listaSolp
             .filter(solp => solp.Selected)
             .map(solp => solp.NroPeticionDeOferta);
 
         // Hacer un "distinct" de idsSeleccionados
         idsSeleccionados = idsSeleccionados.filter((value, index, self) => self.indexOf(value) === index);
-
+        
         if (idsSeleccionados.length > 1) {
             this.agruparPeticionesDeOferta(idsSeleccionados);
         } else {
@@ -422,6 +424,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.resultadoAgrupar = result.data;
+                        this.displayPeticionAgrupada = true;
                     }
                     this.blockUI.stop();
                 },
@@ -435,5 +438,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    cerrarPopUp() {
+        this.displayPeticionAgrupada = false;
+        this.onBuscar();
     }
 }
