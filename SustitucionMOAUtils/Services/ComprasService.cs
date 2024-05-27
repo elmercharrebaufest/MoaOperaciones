@@ -217,6 +217,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
+
                 solpEntity = new Solp()
                 {
                     UsuarioCreacion_Id = solp.UsuarioActual.Id,
@@ -227,6 +228,7 @@ namespace SustitucionMOAUtils.Services
                 solp.TipoSolpSap = (int)TipoSolpSap.Web;
                 var estadoIncompletoCodigo = EstadoDocumentoSolp.Incompleto.Code();
                 var estadoIncompleto = repositorio.Obtener<TablaEstado>(x => x.Tabla == TablasEstado.EstadoDocumento && x.Codigo == estadoIncompletoCodigo);
+                solpEntity.TieneModificaciones = false;
                 solpEntity.EstadoDocumento_Id = estadoIncompleto.Id;
                 solpEntity.Pliego = new Pliego();
                 solpEntity.Posiciones = new List<SolpPosicion>();
