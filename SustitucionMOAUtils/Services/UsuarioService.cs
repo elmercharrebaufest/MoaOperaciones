@@ -156,7 +156,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA"
+                "FLETE MOA","CERTIFICACION"
             };
 
             List<string> contacto = new List<string>

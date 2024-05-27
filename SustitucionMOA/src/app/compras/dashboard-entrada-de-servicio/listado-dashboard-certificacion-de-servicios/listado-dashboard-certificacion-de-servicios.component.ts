@@ -126,7 +126,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     fullscreen: boolean = false;
     displayContent: boolean = false;
     isInputActive: boolean = false;
-
+    currentPage: number = 0;
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -211,12 +211,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.navService.setSeccionList(
             [
                 new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
-                new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
+               // new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
             ]
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.filtroFechaComponent.setPeriodoInitial('2');
+        this.filtroFechaComponent.setPeriodoInitial('1');
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
@@ -425,8 +425,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.obtenerSolicitantes(result.data);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                       
+                        this.pageIndex = 0;                       
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -460,6 +459,22 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         return false; //<-- Prevent Refresh
     }
+
+    updateCurrentPage(pageIndex: number) {
+        if (this.tabla) {
+            this.currentPage = pageIndex;
+            this.tabla.first = this.currentPage * this.pageSize;
+            this.tabla.onPageChange({
+              first: this.tabla.first,
+              rows: this.pageSize,
+              page: this.currentPage,
+              pageCount: Math.ceil(this.currentPage / this.pageSize)
+            });
+          }
+      }
+    onPageChange(event: any): void {
+        this.currentPage = (event.first / event.rows);
+      }
 
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
@@ -844,6 +859,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
             this.tabla.first = 0;
             setTimeout(() => this.filtrarTablaPosiciones(), 60);
+            this.updateCurrentPage(this.currentPage);
         }, 20); // Esta espera es necesaria para que parezca el elemento en el DOM
     }
 
