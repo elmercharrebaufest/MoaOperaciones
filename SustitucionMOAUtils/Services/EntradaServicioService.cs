@@ -211,13 +211,13 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
-            // Busqueda Entrada Servicios temporales en pendiente de aprobación.
+            // Busqueda Entrada Servicios cargadas en la tabla aprobaciones.
             List<Aprobaciones> temporales = new List<Aprobaciones>();
             if (parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
             {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                temporales = repositorio.Listar<Aprobaciones>();
             } else {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                temporales = repositorio.Listar<Aprobaciones>(x =>x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail);
             }
 
             try

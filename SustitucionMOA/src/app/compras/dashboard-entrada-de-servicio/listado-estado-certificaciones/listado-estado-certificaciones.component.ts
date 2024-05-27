@@ -14,7 +14,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { ComprasService } from '../../compras.service';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ConfirmationService, Message } from 'primeng/api';
+import { ConfirmationService, Message, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -67,8 +67,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Servicio no ejecutado/concluido', code: '1' },
     { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
     { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
-    { name: 'Falta de presentación de documentación', code: '4' },
-    { name: 'Otros/Observaciones', code: '5' }
+    { name: 'Falta de presentación de documentación', code: '4' }
   ];
   suplentes: any = [];
   listadoEstadoCertificacion: any = [
@@ -133,7 +132,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       protected route: ActivatedRoute, protected router: Router,
       private location: Location,
       private cdr: ChangeDetectorRef,
-      private confirmationService: ConfirmationService) {
+      private confirmationService: ConfirmationService,
+      private messageService: MessageService) {
       super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
       this.usuario = sessionStorage.getItem("username");
   }
@@ -221,29 +221,32 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.hideContainerTable();
       this.subscripciones.push(
         this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-          (result:any) => {
-            if (result.logout == true) {
-              this.sessionDataService.logout();
-            } else if (result.error != undefined && result.error != "") {
-            } else if (result.info != undefined) {
-            } else {
-                this.tablaPO = result.data;
-                this.setColumsByUserProfile(this.tablaPO, this.usuario);
-                this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-            }
-            this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-            this.showContainerTable();
-            return true;
-          }, error => {
-            this.floatMsgService.setErrorMsg(error.message);
-            this.showContainerTable();
-            return false;
+        (result:any) => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+          } else if (result.info != undefined) {
+          } else {
+            this.tablaPO = result.data; 
+            this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+            this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+            this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
-        )
+          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.showContainerTable();
+        }, error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.showContainerTable();
+        })
       );
-      return false; //<-- Prevent Refresh
+      this.clear();
+    }
+
+  clear() {
+    setTimeout(() => {
+      this.messageService.clear();
+    }, 10000)
   }
 
   displayContent() {
@@ -343,10 +346,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         (resp: any) => {
           this.getListarPO(this.proveedor, this.documentoNumero);
           this.mostrarSuplentes = false;
-          this.msgs.push({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+          this.messageService.add({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
         }, error => {
-          console.error('Error al obtener datos:', error);
-          this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
         }
       )
     );
@@ -355,7 +357,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   enviarMotivo() {
     const data = {
       Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
-      MotivoRechazo: this.formularioMotivosRechazo.get('motivo').value.code === 5 ? this.formularioMotivosRechazo.get('motivo').value.name + ':' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
+      MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value != null ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
       Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
       NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
       FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
@@ -373,18 +375,45 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
         (resp: any) => {
-        this.getListarPO(this.proveedor, this.documentoNumero);
-        this.mostrarMotivosRechazos = false;
-        this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+          this.resetForm();
+          this.getListarPO(this.proveedor, this.documentoNumero);
+          this.mostrarMotivosRechazos = false;
+          this.messageService.add({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
         }, error => {
-          console.error('Error al obtener datos:', error);
-          this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
         }
       )
     );
   }
 
+  ocultandoModal(): void{
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.formularioMotivosRechazo.reset({
+      motivo: { name: null, code: null },
+      destinatario: null,
+      detalleCertificacionRechazada: null,
+      resumenLineas: null,
+      motivoRechazo: null,
+      fechaRechazo: null,
+      proveedor: null,
+      numeroCertificacion: null,
+      fechaCertificacion: null,
+      descripcion: null,
+      importe: null,
+      montoTotal: null,
+      detalleServicio: null,
+      observaciones: null
+    });
+    this.formularioMotivosRechazo.markAsPristine();
+    this.formularioMotivosRechazo.markAsUntouched();
+    this.formularioMotivosRechazo.updateValueAndValidity();
+  }
+
   enviarAprobacion(nro_es_local: string): any {
+    this.clear();
     this.confirmationService.confirm({
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
       header: 'Confirmar Aprobación',
@@ -394,41 +423,43 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.subscripciones.push(
           this.service.enviarAprobacionES(nro_es_local).subscribe(
             resp => {
-              this.msgs = [];
               let mensajeError: string = "";
               if (!resp.data) {
                 mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-                this.msgs.push({severity:'error', summary:'Error', detail: mensajeError});
+                this.messageService.add({severity:'error', summary:'Error', detail: mensajeError});
+                this.showContainerTable();
               }
               switch (resp.data.Type) {
                 case "I": {
                   this.getListarPO(this.proveedor, this.documentoNumero);
-                  this.msgs.push({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
+                  this.messageService.add({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
                   break;
                 }
                 case "S": {
-                  this.msgs.push({severity: 'info', summary: '', detail: resp.data.Message});
+                  this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
+                  this.showContainerTable();
                   break;
                 }
                 case "E": {
                   mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
                     resp.data.Message.startsWith("Contabilice en ") ?
                     "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                  this.msgs.push({severity: 'warning', summary: '', detail: mensajeError});
+                  this.messageService.add({severity: 'warning', summary: '', detail: mensajeError});
+                  this.showContainerTable();
                   break;
                 }
                 default: {
-                  this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                  this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                  this.showContainerTable();
                   break;
                 }
               }
             }, error => {
-              this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-              console.error('Error al obtener datos:', error);
+              this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+              this.showContainerTable();
             }
           )
         );
-        this.showContainerTable();
       }
     });
   }
