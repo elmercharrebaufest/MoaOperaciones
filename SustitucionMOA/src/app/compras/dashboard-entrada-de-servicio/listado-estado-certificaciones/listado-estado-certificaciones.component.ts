@@ -228,7 +228,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else if (result.info != undefined) {
           } else {
             this.tablaPO = result.data; 
-            this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.setColumsByUserProfile(this.tablaPO, this.usuario);
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -500,10 +500,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       if(fa.length > 0){
         this.userId = "FA";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Aprobador' || col.field === 'Usuario' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
-        return;
-      }
+          return;
+        }
       const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
       if(fi.length > 0){
         this.userId = "FI";
