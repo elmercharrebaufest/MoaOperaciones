@@ -1,5 +1,5 @@
 <div id="solicitudes" class="content-wraper">
-  <!-- HEADER -->
+    <!-- HEADER -->
     <section class="container-fluid clearfix">
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10">
@@ -8,7 +8,7 @@
         </div>
         <br />
     </section>
-  <!-- HEADER END -->
+    <!-- HEADER END -->
     <p-messages [value]="msgs"></p-messages>
     <spinner></spinner>
     <div class="container-tabla" #elementToToggle>
@@ -40,14 +40,14 @@
         <!-- TABLE 1 -->
         <p-table
             #tabla
-           class="level1"
-           [value]="tablaPO"
-           dataKey="EntradaServicio"
-           [paginator]="true"
-           [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
-           [columns]="columns"
+            class="level1"
+            [value]="tablaPO"
+            dataKey="EntradaServicio"
+            [paginator]="true"
+            [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns"
             [globalFilterFields]="['OrdenCompra']"
-           responsiveLayout="scroll | stack"
+            responsiveLayout="scroll | stack"
             rowExpandMode="single"
         >
             <!-- TABLE 1 HEADERS -->
@@ -86,18 +86,20 @@
                         </a>
                     </td>
                     <td>{{ rowData.EntradaServicio }}</td>
-                    <td>{{ rowData.FechaCreacion }}</td>
+                    <td>
+                        {{ rowData.FechaCreacion }}
+                    </td>
                     <td>{{ rowData.OrdenCompra || "" }}</td>
                     <td>{{ rowData.CUIT | defaultData }}</td>
                     <td>{{ rowData.Proveedor | defaultData }}</td>
                     <td>{{ rowData.Descripcion | defaultData }}</td>
                     <td>{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
-                    <td *ngIf="userId !== 'I'"> 
+                    <td *ngIf="userId === 'A' || userId === 'AI' || userId === 'FA' || userId === 'F' || userId === 'FAI' || userId === 'FI'"> 
                         <div class="usuario-area">
                             <span>{{ rowData.Ingresante }}</span>
                         </div>
                     </td>
-                    <td *ngIf="userId !== 'F'">
+                    <td *ngIf="userId === 'A' || userId === 'AI' || userId === 'FA' || userId === 'FAI' || userId === 'I' || userId === 'FI'">
                         <div class="usuario-area">
                             <span>{{ rowData.Fiscal }}</span>
                         </div>
@@ -136,7 +138,7 @@
                             [disabled]="rowData.Suplente === null || rowData.Fiscal !== usuario"
                         ></button>
                     </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada' && userId !== 'A'">{{ rowData.Aprobador | defaultData}}</td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada' && (userId === 'I' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'FI' || userId === 'F')">{{ rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
             </ng-template>
@@ -175,26 +177,26 @@
                             <!-- TABLE 2 BODY -->
                             <ng-template
                                 pTemplate="body"
-                                let-rowData
+                                let-rowDetalle
                                 let-expanded="expanded"
                             >
                                 <tr>
-                                    <td>{{ rowData.NumeroLinea }}</td>
-                                    <td>{{ rowData.CodigoServicio }}</td>
-                                    <td>{{ rowData.TextoBreveServicio }}</td>
-                                    <td>{{ rowData.Cantidad }}</td>
-                                    <td>{{ rowData.UM }}</td>
-                                    <td>{{ rowData.Monto }}</td>
+                                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                                    <td>{{ rowDetalle.CodigoServicio }}</td>
+                                    <td>{{ rowDetalle.TextoBreveServicio }}</td>
+                                    <td>{{ rowDetalle.Cantidad }}</td>
+                                    <td>{{ rowDetalle.UM }}</td>
+                                    <td>{{ rowDetalle.Monto }}</td>
                                     <!-- <td></td> Cantidad real ? no se que va -->
-                                    <td>{{ rowData.CantidadCertificar }}</td>
-                                    <td>{{ rowData.PorcentajeCertificar }}</td>
-                                    <td>{{ rowData.MontoCertificar }}</td>
-                                    <td>{{ rowData.NroRemito }}</td>
+                                    <td>{{ rowDetalle.CantidadCertificar }}</td>
+                                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
+                                    <td>{{ rowDetalle.MontoCertificar }}</td>
+                                    <td>{{ rowDetalle.NroRemito }}</td>
                                 </tr>
                             </ng-template>
                             <!-- TABLE 2 BODY END -->
                         </p-table>
-                    <!-- TABLE 2 END -->
+                        <!-- TABLE 2 END -->
                     </td>
                 </tr>
             </ng-template>

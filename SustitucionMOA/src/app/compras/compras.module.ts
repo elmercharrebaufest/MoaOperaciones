@@ -25,8 +25,8 @@ import { PanelModule } from 'primeng/panel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { QuillModule } from 'ngx-quill'
-import {CardModule} from 'primeng/card';
-import {CarouselModule} from 'primeng/carousel';
+import { CardModule } from 'primeng/card';
+import { CarouselModule } from 'primeng/carousel';
 
 
 import { SharedModule } from '../common/shared.module';
@@ -98,6 +98,9 @@ import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entr
 import { ModalAltaEntradaDeServicioProveedorComponent } from "./dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio-proveedor/modal-alta-entrada-de-servicio-proveedor.component";
 import { ButtonModule } from 'primeng/button';
 import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
+import { CeldaEditableComponent } from './dashboard-entrada-de-servicio/components/celda-editable/celda-editable.component';
+import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/components/spinner-celda/spinner-casilla.component';
+
 @NgModule({
     imports: [
         ButtonModule,
@@ -191,7 +194,9 @@ import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
         CustomDecimalPipe,
         ListadoEstadoCertificacionesProveedorComponent,
         ModalAltaEntradaDeServicioComponent,
-        ModalAltaEntradaDeServicioProveedorComponent
+        ModalAltaEntradaDeServicioProveedorComponent,
+        CeldaEditableComponent,
+        SpinnerCeldaComponent
     ],
     providers: [
         ComprasService,

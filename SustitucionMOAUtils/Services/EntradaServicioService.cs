@@ -122,7 +122,7 @@ namespace SustitucionMOAUtils.Services
             //Obtiene Cabeceras de Entradas de Servicio
             List<EntradaServicioCabeceraDto> EntradasServicioCabecera = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio);
 
-            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>(); 
+            List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
 
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
@@ -237,7 +237,7 @@ namespace SustitucionMOAUtils.Services
 
                     EntradaServicioDetalleDto detalleEntradaServicioTemp = MapEntradaServicioDetalle(temporal);
                     diccionarioES[nroEsLocal].entradaServicioDetalle.Add(detalleEntradaServicioTemp);
-            }
+                }
 
                 foreach (var kvp in diccionarioES)
                 {
@@ -264,6 +264,7 @@ namespace SustitucionMOAUtils.Services
 
             EntradaServicioCabeceraDto entradaServicioTemp = new EntradaServicioCabeceraDto
             {
+                ID = temporal.ID,
                 OrdenCompra = temporal.NRO_OC,
                 Descripcion = temporal.Descripcion_ES,
                 MontoTotal = temporal.Monto_total.ToString(),
@@ -295,6 +296,7 @@ namespace SustitucionMOAUtils.Services
         {
             EntradaServicioDetalleDto detalleEntradaServicioTemp = new EntradaServicioDetalleDto
             {
+                ID = temporal.ID,
                 Cantidad = temporal.Cantidad.ToString(),
                 NumeroLinea = temporal.Nro_linea,
                 UM = temporal.UM,
@@ -398,7 +400,7 @@ namespace SustitucionMOAUtils.Services
             if (userMail == detalleSolPed.FiscalContrato || userMail == detalleSolPed.Email)
             {
                 auto = true;
-            } //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
+            }
             else if (detalleSolPed.SupervisorTrabajo.Count > 0 && userMail == detalleSolPed.SupervisorTrabajo[0])
             {
                 //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
@@ -436,8 +438,8 @@ namespace SustitucionMOAUtils.Services
                             {
                                 difSolicitante = true;
                             }
-                        }
-                    }
+                }
+            }
                 }
             }
             //Aca - Si los 3 datos estan vacios o no vienen -> “No se encuentra fiscal en la Sol. Ped. Ingresada. Por favor, verificar con el creador de la misma”. 
@@ -597,6 +599,13 @@ namespace SustitucionMOAUtils.Services
 
             #region CargaDatosCabecera
             DateTime dateDocument;
+
+            //MMSN-991
+            if (String.IsNullOrEmpty(parametros.EntrySheetHeader.FechaDocumento))
+            {
+                parametros.EntrySheetHeader.FechaDocumento = DateTime.Today.ToString("yyyy-MM-dd");
+            }
+
             if (DateTime.TryParseExact(parametros.EntrySheetHeader.FechaDocumento, "yyyy-MM-dd",
                            System.Globalization.CultureInfo.InvariantCulture,
                            System.Globalization.DateTimeStyles.None, out dateDocument))
@@ -641,93 +650,105 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 string solPedNumber = parametros.EntrySheetHeader.SolPedNumber;
-                if (!string.IsNullOrEmpty(solPedNumber))
-                {
+            if (!string.IsNullOrEmpty(solPedNumber))
+            {
                     SolpESDto detalleSolPed = new SolpESDto();
-                    try
-                    {
-                        detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
-                    }
-                    catch (Exception e)
-                    {
-                        throw e;
-                    }
+                try
+                {
+                    detalleSolPed = comprasService.TraerSolpPorNumero(solPedNumber);
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
 
-                    if (!EmptySolPedValues(detalleSolPed))
+                if (!EmptySolPedValues(detalleSolPed))
+                {
+                    //Busqueda Fiscal Contrato
+                    if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
                     {
-                        //Busqueda Fiscal Contrato
-                        if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
+                        if (detalleSolPed.FiscalContrato.Contains("@"))
                         {
-                            if (detalleSolPed.FiscalContrato.Contains("@"))
+                            temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
+                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
+                            if (usuario != null)
                             {
-                                temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
-                                if (usuario != null)
-                                {
-                                    temp.Suplente = usuario.Suplente;
-                                }
-                            }
-                            else
-                            {
-                                string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
-                                fiscal = fiscal.ToUpper();
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
-                                if (usuario != null)
-                                {
-                                    temp.Fiscal_SOLPED = usuario.Mail;
-                                    temp.Suplente = usuario.Suplente;
-                                }
-                            }
-                        }             //TODO:se comenta por cambio en el dto solpdto hay que revisar la logica.
-                        else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
-                        {
-                            //Busqueda por Supervisor Trabajo
-                            if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
-                            {
-                                temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
-                                if (usuario != null)
-                                {
-                                    temp.Suplente = usuario.Suplente;
-                                }
-                            }
-                            else
-                            {
-                                string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
-                                fiscal = fiscal.ToUpper();
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
-                                if (usuario != null)
-                                {
-                                    temp.Fiscal_SOLPED = usuario.Mail;
-                                    temp.Suplente = usuario.Suplente;
-                                }
+                                temp.Suplente = usuario.Suplente;
                             }
                         }
-                        else if (detalleSolPed.Posiciones != null && detalleSolPed.Posiciones.Count > 0)
+                        else
                         {
-                            //Busqueda por Solicitante
-                            foreach (var pos in detalleSolPed.Posiciones)
+                            string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
+                                fiscal = fiscal.ToUpper();
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
+                                if (usuario != null)
                             {
-                                if (pos.Solicitante != null)
-                                {
-                                    string solicitante = pos.Solicitante.Replace(" ", "");
+                                temp.Fiscal_SOLPED = usuario.Mail;
+                                temp.Suplente = usuario.Suplente;
+                            }
+                        }
+                    }
+                    else if (detalleSolPed.SupervisorTrabajo != null && (detalleSolPed.SupervisorTrabajo.Count > 0 && !string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])))
+                    {
+                        //Busqueda por Supervisor Trabajo
+                        if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
+                        {
+                            temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
+                                if (usuario != null)
+                            {
+                                temp.Suplente = usuario.Suplente;
+                            }
+                        }
+                        else
+                        {
+                            string fiscal = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
+                                fiscal = fiscal.ToUpper();
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
+                                if (usuario != null)
+                            {
+                                temp.Fiscal_SOLPED = usuario.Mail;
+                                temp.Suplente = usuario.Suplente;
+                            }
+                        }
+                    }
+                    else if (detalleSolPed.Posiciones != null && detalleSolPed.Posiciones.Count > 0)
+                    {
+                        //Busqueda por Solicitante
+                        foreach (var pos in detalleSolPed.Posiciones)
+                        {
+                            if (pos.Solicitante != null)
+                            {
+                                string solicitante = pos.Solicitante.Replace(" ", "");
                                     solicitante = solicitante.ToUpper();
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante);
                                     if (usuario != null)
-                                    {
-                                        temp.Fiscal_SOLPED = usuario.Mail;
-                                        temp.Suplente = usuario.Suplente;
-                                    }
+                                {
+                                    temp.Fiscal_SOLPED = usuario.Mail;
+                                    temp.Suplente = usuario.Suplente;
+                                    // Pendiente Carga temp.Area, ya que se necesitan los datos de MMSN-726
+                                    /*
+                                     * Tentativo - Falta Testear y posible optimización
+                                     *                                     * 
+                                     * var idArea = repositorio.Obtener<Usuario_Area>(x => x.Usuario_ID == usuario.Id);
+                                     * if(idArea != null){
+                                     *  var Area = repositorio.Obtener<Area>(x => x.ID_Area == idArea.Area_ID);
+                                     *  if(Area != null) temp.Area_Fiscal = Area.NombreArea
+                                     *  
+                                     * }
+                                     *   
+                                     */
                                 }
                             }
                         }
+                    }
 
-                    }
-                    if (!auto)
-                    {
-                        temp.Aprobador_CDS = temp.Fiscal_SOLPED;
-                    }
                 }
+                if (!auto)
+                {
+                    temp.Aprobador_CDS = temp.Fiscal_SOLPED;
+                }
+            }
             }
             catch(Exception e)
             {
@@ -1106,6 +1127,15 @@ namespace SustitucionMOAUtils.Services
             return toReturn;
         }
 
+
+        /// <summary>
+        /// Reasigna el suplente del usuario fiscal a la CES como Aprobador
+        /// Reasigna al fiscal de nuevo como Aprobador
+        /// Solo el fiscal puede reasignar.
+        /// </summary>
+        /// <param name="nro_es_local"></param>
+        /// <param name="suplente"></param>
+        /// <returns></returns>
         public string ReasignarSuplente(string nro_es_local, string suplente) {
             try
             {
@@ -1132,6 +1162,43 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
             return "Se reasigno el suplente de la Entrada de servicio éxitosamente.";
+        }
+
+        public string ActualizarInformacionIngresante(IngresanteInfoEditableDto info)
+        {
+            try
+            {
+                Aprobaciones ESTemporal = repositorio.Obtener<Aprobaciones>(t => t.ID == info.ID);
+                if (ESTemporal != null)
+                {
+                    if (info.ColumnaEditar == "FechaDocumento")
+                    {
+                        DateTime fecha;
+                        if (DateTime.TryParseExact(info.NuevoValor, "yyyy-MM-dd",
+                                       System.Globalization.CultureInfo.InvariantCulture,
+                                       System.Globalization.DateTimeStyles.None, out fecha))
+                        {
+                            ESTemporal.Fecha_Documento = fecha;
+                        }
+                    } else if (info.ColumnaEditar == "DescripcionES")
+                    {
+                        ESTemporal.Descripcion_ES = info.NuevoValor;
+                    } else if (info.ColumnaEditar == "Remito")
+                    {
+                        ESTemporal.Referencia = info.NuevoValor;
+                    }
+                    repositorio.GuardarCambios();
+                }
+                else
+                {
+                    return "Nro de entrada servicio no encontrado.";
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            return "Actualización exitosa";
         }
     }
 }

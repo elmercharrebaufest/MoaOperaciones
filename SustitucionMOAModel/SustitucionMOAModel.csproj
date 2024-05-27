@@ -72,6 +72,7 @@
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
+    <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />

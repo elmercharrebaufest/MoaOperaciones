@@ -457,7 +457,6 @@ namespace SustitucionMOAUtils.Email
                 }
 
                 SmtpClient oCliente = GetSmtpClient();
-                //Data Cliente - Log
 
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
 

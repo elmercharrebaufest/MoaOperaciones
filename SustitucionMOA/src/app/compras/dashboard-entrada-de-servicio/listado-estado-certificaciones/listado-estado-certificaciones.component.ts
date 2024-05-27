@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ChangeDetectorRef, ElementRef, OnDestroy } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -21,8 +21,9 @@ import { ConfirmationService, Message, MessageService } from 'primeng/api';
   templateUrl: './listado-estado-certificaciones.component.html',
   styleUrls: ['./listado-estado-certificaciones.component.css']
 })
-export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit {
+export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
   //#region Variables 
+  subscripciones: Subscription[] = [];
   protected locale: any;
   @ViewChild("tabla") protected tabla: Table;
   @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
@@ -53,7 +54,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
   innerWidth: number;
-
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
@@ -69,9 +69,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
     { name: 'Falta de presentación de documentación', code: '4' }
   ];
-  suplentes: any = [
-    { name: 'Carlos Duarte', code: '001' }
-  ];
+  suplentes: any = [];
   listadoEstadoCertificacion: any = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
     { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
@@ -93,8 +91,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: false },
-        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: false },
+        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
       ]
@@ -118,7 +116,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
   ];
   userId: any = '';
-  spinnerIcon: string = "";
+  tablaPO: any[] = [];
+  cols: any[];
+  usuario: string;
+  vendedor: string;
+  allItems : any[];
+  proveedor: string = sessionStorage.getItem("proveedor");
+  msgs: Message[] = [];
+  havePermision: boolean = false;
+  observaciones: string = '';
 
   constructor(protected service: ComprasService, protected navService: NavService,
       protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -132,28 +138,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.usuario = sessionStorage.getItem("username");
   }
 
-  tablaPO: any[] = [];
-  cols: any[];
-  usuario: string;
-  vendedor: string;
-  allItems : any[];
-  proveedor: string = sessionStorage.getItem("proveedor");
-  havePermision: boolean = false;
-  msgs: Message[] = [];
-  observaciones: string = '';
+  public ngOnDestroy(): void {
+    this.subscripciones.forEach(sub => sub.unsubscribe());
+  }
       
   ngOnInit() {
-    this.innerWidth = window.innerWidth;
 
-      this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO(this.proveedor, this.documentoNumero);
 
     this.formsCreate();
 
     this.innerWidth = window.innerWidth;
 
-      this.navService.setSeccionActive("Estado certificaciones");
+    this.navService.setSeccionActive("Estado certificaciones");
 
-      this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+    this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
     
     let permisos = sessionStorage.getItem("permisos");
     
@@ -162,7 +161,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.havePermision = true;
     }
   }
-  
+
+
   showContainerTable(): void {
     this.spinnerComponent.hideIt();
     if (this.elementToToggle) {
@@ -202,36 +202,25 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   toggleTable(data: any) {
-      const index = this.posicionRow.indexOf(data);
-      if (index === -1) {
-          this.posicionRow.push(data);
-          this.isTableExpanded = !this.isTableExpanded;
-      } else {
-          this.posicionRow.splice(index, 1);
-          this.isTableExpanded = false;
-      }
-  
-
+    const index = this.posicionRow.indexOf(data);
+    if (index === -1) {
+      this.posicionRow.push(data);
+      this.isTableExpanded = !this.isTableExpanded;
+    } else {
+      this.posicionRow.splice(index, 1);
+      this.isTableExpanded = false;
     }
+  }
   
     toggleEntradaServicio() {
       this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
-    }
-  
-    onCheckboxChange(e: any) {
-  
-    }
-  
-  
-    ngOnDestroy(): void {
-        // this.subscripcionPO.unsubscribe();
     }
 
     getListarPO(proveedor, documentoNumero) {
       this.getFecha();
       this.hideContainerTable();
-      this.unsubscribe();
-      this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+      this.subscripciones.push(
+        this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
         (result:any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -249,7 +238,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.showContainerTable();
-        });
+        })
+      );
       this.clear();
     }
 
@@ -270,35 +260,35 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     //actualizar
     fechaActual.setMonth(fechaActual.getMonth() - 2);
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
-}
+  }
 
   
-    deleteES(item: any) {
-      //TODO: lógica para cuando se especifique el borrado de una ES
-    }
-  
-    handlePageEvent(e: any) {
-        this.pageSize = e.rows;
-        this.pageIndex = e.page + 1;
-        this.getListarPO(this.proveedor, this.documentoNumero);
-    }
+  deleteES(item: any) {
+    //TODO: lógica para cuando se especifique el borrado de una ES
+  }
 
-    onOrder(columna: string) {
-      if (this.columnaOrden != columna) {
-          this.ordenAscendente = false
-      } else {
-          this.ordenAscendente = this.ordenAscendente == false ? true : false;
-      }
-      this.columnaOrden = columna;
-      this.getListarPO(this.proveedor, this.documentoNumero);
+  handlePageEvent(e: any) {
+    this.pageSize = e.rows;
+    this.pageIndex = e.page + 1;
+    this.getListarPO(this.proveedor, this.documentoNumero);
+  }
+
+  onOrder(columna: string) {
+    if (this.columnaOrden != columna) {
+      this.ordenAscendente = false
+    } else {
+      this.ordenAscendente = this.ordenAscendente == false ? true : false;
+    }
+    this.columnaOrden = columna;
+    this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
   toggleRow(rowData: any): void {
-      this.selectedRow = this.selectedRow === rowData ? null : rowData;
+    this.selectedRow = this.selectedRow === rowData ? null : rowData;
   }
 
   isSelectedRow(rowData: any): boolean {
-      return this.selectedRow === rowData;
+    return this.selectedRow === rowData;
   }
 
   verMotivosRechazos(rowData: any): void {
@@ -351,17 +341,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       Suplente: this.formularioSuplente.get('suplente').value,
       NroEsLocal: this.formularioSuplente.get('nro_es_local').value
     }
-
-    this.service.reasignarSuplente(data).subscribe(
-      (resp: any) => {
-        this.getListarPO(this.proveedor, this.documentoNumero);
-        this.mostrarSuplentes = false;
-        this.messageService.add({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
-      }, error => {
-        console.error('Error al obtener datos:', error);
-        this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-      }
-    )
+    this.subscripciones.push(
+      this.service.reasignarSuplente(data).subscribe(
+        (resp: any) => {
+          this.getListarPO(this.proveedor, this.documentoNumero);
+          this.mostrarSuplentes = false;
+          this.messageService.add({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+        }, error => {
+          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+        }
+      )
+    );
   }
 
   enviarMotivo() {
@@ -382,16 +372,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         Monto: item.Monto
       }))
     }
-    this.service.enviarMotivoRechazoES(data).subscribe(
-      (resp: any) => {
-        this.resetForm();
-        this.getListarPO(this.proveedor, this.documentoNumero);
-        this.mostrarMotivosRechazos = false;
-        this.messageService.add({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
-      }, error => {
-        console.error('Error al obtener datos:', error);
-        this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-      }
+    this.subscripciones.push(
+      this.service.enviarMotivoRechazoES(data).subscribe(
+        (resp: any) => {
+          this.resetForm();
+          this.getListarPO(this.proveedor, this.documentoNumero);
+          this.mostrarMotivosRechazos = false;
+          this.messageService.add({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+        }, error => {
+          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+        }
+      )
     );
   }
 
@@ -429,43 +420,45 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.hideContainerTable();
-        this.service.enviarAprobacionES(nro_es_local).subscribe(
-          resp => {
-            let mensajeError: string = "";
-            if (!resp.data) {
-              mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-              this.messageService.add({severity:'error', summary:'Error', detail: mensajeError});
+        this.subscripciones.push(
+          this.service.enviarAprobacionES(nro_es_local).subscribe(
+            resp => {
+              let mensajeError: string = "";
+              if (!resp.data) {
+                mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
+                this.messageService.add({severity:'error', summary:'Error', detail: mensajeError});
+                this.showContainerTable();
+              }
+              switch (resp.data.Type) {
+                case "I": {
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.messageService.add({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
+                  break;
+                }
+                case "S": {
+                  this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
+                  this.showContainerTable();
+                  break;
+                }
+                case "E": {
+                  mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                    resp.data.Message.startsWith("Contabilice en ") ?
+                    "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
+                  this.messageService.add({severity: 'warning', summary: '', detail: mensajeError});
+                  this.showContainerTable();
+                  break;
+                }
+                default: {
+                  this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                  this.showContainerTable();
+                  break;
+                }
+              }
+            }, error => {
+              this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
               this.showContainerTable();
             }
-            switch (resp.data.Type) {
-              case "I": {
-                this.getListarPO(this.proveedor, this.documentoNumero);
-                this.messageService.add({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
-                break;
-              }
-              case "S": {
-                this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
-                this.showContainerTable();
-                break;
-              }
-              case "E": {
-                mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
-                  resp.data.Message.startsWith("Contabilice en ") ?
-                  "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                this.messageService.add({severity: 'warning', summary: '', detail: mensajeError});
-                this.showContainerTable();
-                break;
-              }
-              default: {
-                this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-                this.showContainerTable();
-                break;
-              }
-            }
-          }, error => {
-            this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
-            this.showContainerTable();
-          }
+          )
         );
       }
     });
@@ -484,57 +477,64 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
-  setColumsByUserProfile(entradasDeServicio: any, user: any): string {
+  setColumsByUserProfile(entradasDeServicio: any, user: any): void {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if(pendienteAprobacion.length > 0){
       const fai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal === user);
       if(fai.length > 0){
+        this.userId = "FAI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
-        return "FAI";
+        return;
       }
       const ai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal !== user);
       if(ai.length > 0){
+        this.userId = "AI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
         });
-        return "AI";
+        return;
       }
       const fa = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador === user && pa.Ingresante !== user);
       if(fa.length > 0){
+        this.userId = "FA";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Aprobador' || col.field === 'Usuario' ? false : true;
         });
-        return "FA";
+        return;
       }
       const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
       if(fi.length > 0){
+        this.userId = "FI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
         });
-        return "FI";
+        return;
       }
       const a = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante !== user && pa.Fiscal !== user);
       if(a.length > 0){
+        this.userId = "A";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Aprobador' ? false : true;
         });
-        return "A";
+        return;
       }
       const i = pendienteAprobacion.filter(pa => pa.Ingresante === user && pa.Aprobador !== user && pa.Fiscal !== user);
       if(i.length > 0){
+        this.userId = "I";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'Ingresante' ? false : true;
         });
-        return "I";
+        return;
       }
       const f = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador !== user && pa.Ingresante !== user);
       if(f.length > 0){
+        this.userId = "F";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Usuario' ? false : true;
         });
-        return "F";
+        return;
       }
     }
   }

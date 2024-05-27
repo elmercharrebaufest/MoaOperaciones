@@ -111,7 +111,7 @@ export class ComprasService extends BaseService {
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
-    }
+     }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -1076,7 +1076,7 @@ export class ComprasService extends BaseService {
     public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
-       
+
         return this.http
             .get("/api/compras/ObtenerChat", {
                 params: params,
@@ -1098,7 +1098,7 @@ export class ComprasService extends BaseService {
     public obtenerYExportarChat(solpId: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
-       
+
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
@@ -1277,6 +1277,19 @@ export class ComprasService extends BaseService {
         payload.append('nro_es_local', data.NroEsLocal);
         payload.append('suplente', data.Suplente);
         return this.http.post<any>("/api/EntradaServicio/ReasignarSuplente", payload, { headers: this.headers })
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public enviarEdicionIngresante(data: any): Observable<any> {
+        var payload = new FormData();
+        payload.append('ID', data.ID);
+        payload.append('ColumnaEditar', data.ColumnaEditar);
+        payload.append('NuevoValor', data.NuevoValor);
+        return this.http.post<any>("/api/EntradaServicio/ActualizarInformacionIngresante", payload, { headers: this.headers })
             .pipe(
                 catchError(error => {
                     return throwError(error);

@@ -183,11 +183,11 @@ namespace SustitucionMOAUtils.Services
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
-            usuario.Suplente = suplente;
+            usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
 
             usuario.RemoverRolesEditables();
 
-            usuario.UsuarioSap = usuarioSap.ToUpper();
+            usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
 
             foreach (int idRol in idRoles)
             {
@@ -545,8 +545,8 @@ namespace SustitucionMOAUtils.Services
             var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
             var proveedoresMismoCodigo = repositorio.Listar<Proveedor>(p => p.CodigoProveedor == proveedor.CodigoProveedor);
 
-            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados
-                .Where(u=>!u.Mail.EndsWith("@molinosagro.com.ar"))
+            var destinatarios = proveedoresMismoCodigo.SelectMany(p => p.UsuariosAsociados
+                .Where(u => !u.Mail.EndsWith("@molinosagro.com.ar"))
                 .Select(u => new DestinatarioDto(u))).ToList();
             return destinatarios;
         }
@@ -815,7 +815,7 @@ namespace SustitucionMOAUtils.Services
         {
             var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
 
-            return  !tieneActividad && usuario.Proveedores.Count() <= 1;
+            return !tieneActividad && usuario.Proveedores.Count() <= 1;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
