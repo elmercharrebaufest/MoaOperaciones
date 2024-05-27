@@ -439,7 +439,7 @@ namespace SustitucionMOAUtils.Services
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
             {
-                if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo))
+                if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && solpEntity.NroSolp != null)
                 {
                     solpEntity.TieneModificaciones = true;
                     break;
