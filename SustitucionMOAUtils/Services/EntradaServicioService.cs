@@ -599,6 +599,13 @@ namespace SustitucionMOAUtils.Services
 
             #region CargaDatosCabecera
             DateTime dateDocument;
+
+            //MMSN-991
+            if (String.IsNullOrEmpty(parametros.EntrySheetHeader.FechaDocumento))
+            {
+                parametros.EntrySheetHeader.FechaDocumento = DateTime.Today.ToString("yyyy-MM-dd");
+            }
+
             if (DateTime.TryParseExact(parametros.EntrySheetHeader.FechaDocumento, "yyyy-MM-dd",
                            System.Globalization.CultureInfo.InvariantCulture,
                            System.Globalization.DateTimeStyles.None, out dateDocument))
