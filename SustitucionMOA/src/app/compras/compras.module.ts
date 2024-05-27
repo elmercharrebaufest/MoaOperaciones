@@ -18,7 +18,7 @@ import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, SortEvent } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
@@ -196,7 +196,8 @@ import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
     providers: [
         ComprasService,
         ValidadorPasoSolpService,
-        ConfirmationService
+        ConfirmationService,
+        MessageService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
