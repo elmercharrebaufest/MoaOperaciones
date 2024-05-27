@@ -369,9 +369,12 @@ namespace SustitucionMOAModel.Entities
                 case "VER ORDENES DE CARGA RESIDUOS": return PermisoEnum.VerOrdenesDeCargaResiduos;
                 case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
-
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
+
                 case "ADMIN CONTABILIZACION MES ANTERIOR": return PermisoEnum.AdminContabilizacionMesAnterior;
+
+
+                case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
 
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;

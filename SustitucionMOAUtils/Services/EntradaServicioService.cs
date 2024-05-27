@@ -124,6 +124,9 @@ namespace SustitucionMOAUtils.Services
 
             List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
 
+            //Se filtran por las OC tomando las que empiezan con 412
+            EntradasServicioCabecera = EntradasServicioCabecera.Where(x => x.OrdenCompra.StartsWith("412")).ToList();
+
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
                 EntradasServicioCabecera = EntradasServicioCabecera.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();

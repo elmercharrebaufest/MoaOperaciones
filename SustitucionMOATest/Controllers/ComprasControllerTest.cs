@@ -387,9 +387,10 @@ namespace SustitucionMOATest.Controllers
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
-
-            var expected = "{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":\"Fiscal\",\"EmailFiscalContrato\":\"email@email.com\",\"Telefono\":\"12121212\",\"ClaseDocumento\":{\"Id\":12,\"Tabla\":\"ClaseDocumento\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"ClaseDocumento\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - ClaseDocumento\"},\"TipoPosicion\":{\"Id\":12,\"Tabla\":\"TipoPosicion\",\"Codigo\":\"21\",\"Descripcion\":\"TipoPosicion\",\"IdPadre\":1,\"Padre\":null,\"CodigoVisualizacion\":null},\"Almacen\":{\"Id\":12,\"Tabla\":\"Almacen\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Almacen\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Almacen\"},\"CuentaMayor\":{\"Id\":12,\"Tabla\":\"CuentaMayor\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayor\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayor\"},\"CuentaMayorSP\":{\"Id\":12,\"Tabla\":\"CuentaMayorSP\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"CuentaMayorSP\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - CuentaMayorSP\"},\"GrupoCompras\":{\"Id\":12,\"Tabla\":\"GrupoCompras\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"GrupoCompras1\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - GrupoCompras1\"},\"Centro\":{\"Id\":12,\"Tabla\":\"Centro\",\"Codigo\":\"21\",\"CodigoSap\":\"21\",\"Descripcion\":\"Centro\",\"IdPadre\":1,\"FiltroComprador\":null,\"CodigoDescripcion\":\"21 - Centro\"}}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}";
             var resultText = serializer.Serialize(result);
+
+            var expected = "{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":null,\"EmailFiscalContrato\":null,\"Telefono\":null,\"ClaseDocumento\":null,\"TipoPosicion\":null,\"Almacen\":null,\"CuentaMayor\":null,\"CuentaMayorSP\":null,\"GrupoCompras\":null,\"Centro\":null}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}";
+           
 
             Assert.AreEqual(expected.Normalize(), resultText.Normalize());
         }

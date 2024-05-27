@@ -42,7 +42,7 @@
             <p-table #tabla [value]="tablaPO" responsiveLayout="scroll | stack" dataKey="Id">
                 <ng-template pTemplate="header" let-columns class="lista-header">
                     <tr>
-                        <th data-toggle="tooltip" title="Acciones a realizar" style="width: 40px"></th>
+                        <th data-toggle="tooltip" title="Acciones a realizar" style="width: 50px"></th>
                         <th class="headerth" title="Numero SOLP" (click)="onOrder('NroSolp')" style="width: 80px">
                             Nro SOLP
                             <span>
@@ -116,6 +116,13 @@
                                     <div class="punto-rojo" *ngIf="rowData.Usuarios[0].CircularSinLeer == true"></div>
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                <span class="contenedor-imagen">
+                                    <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
+                                         (click)="obtenerChatProveedor(rowData)" width="25" />
+                                    <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
+                                </span>
+                            </div>
                         </td>
                         <td class="columna">
                             {{rowData.NroSolp}}
@@ -149,10 +156,10 @@
                             {{ rowData.CotizacionEstadoDescripcion}}
                         </td>
                         <td colspan="2" class="columna" style="text-align: center;">
-                            <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion != 'Cotizado'" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            <button *ngIf="rowData.VerCotizar && rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion != 'Cotizado'" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
                                 Cotizar
                             </button>
-                            <button *ngIf="rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion == 'Cotizado' && rowData.TieneAdjudicacion != true" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
+                            <button *ngIf="rowData.VerCotizar && rowData.Estado == 'Abierto' && rowData.CotizacionEstadoDescripcion == 'Cotizado' && rowData.TieneAdjudicacion != true" class="publicar btn btn-success" style="font-size: 12px;" (click)="publicarCotizacion(rowData.Usuarios[0].Id)">
                                 Recotizar
                             </button>
                         </td>
@@ -173,3 +180,9 @@
             (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
             [(legajo)]="legajo">
 </app-legajo>
+
+<app-chat-interno [(displayChatInterno)]="displayChatInterno"
+                  [(chat)]="chat"
+                  (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(dasboardProveedor)]="dasboardProveedor">
+</app-chat-interno>

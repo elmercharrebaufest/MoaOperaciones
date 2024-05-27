@@ -28,6 +28,7 @@ import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
 
+
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
     // {

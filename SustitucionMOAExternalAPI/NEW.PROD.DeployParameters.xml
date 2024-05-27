@@ -3,6 +3,7 @@
   <setParameter name="IIS Web Application Name" value="MOAOperaciones/externalApi" />
   <setParameter name="ConnectionMOADB-Web.config Connection String" value="48aeT2pkByRD/Pt9RTmajdbvJN9aCRxXaB1MEvGX056WayW5HIgN3y65/0dIgGfU4BjD+9GBbnVTqueQqHs73k0TqCeqVC/Zx1F/jxikiOgcWf8r0BSfyBvV1oeAPV4tswkLb4Q8uWu7IAQNoXF0zFvvLnNhhATqEv0XGxt2bfZ80AGJmX2ypbDJi5MNQNMpUVcbMnOz+rhBGG/NYAvTrQ==" />
   <setParameter name="CONTEXTO-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;initial catalog=Moaoperaciones;Pooling=False" />
+  <setParameter name="HfContexto-Web.config Connection String" value="data source=MOAOPAGLSPRD;User Id=MOAOPPRDUSR;Password=17E9438901;Initial Catalog=MOAOperacionesHangfire;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
   <setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
   <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scato.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />

@@ -139,10 +139,14 @@ namespace SustitucionMOAUtils.Services
 
             ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
 
+            //Se filtran por las OC tomando las que empiezan con 412
+            ordenesCompra = ordenesCompra.Where(x => x.Id.ToString().StartsWith("412")).ToList();
+
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             //List<TablaSap> centros = new List<TablaSap>();
             //List<TablaSap> almacenes = new List<TablaSap>();
+
 
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una

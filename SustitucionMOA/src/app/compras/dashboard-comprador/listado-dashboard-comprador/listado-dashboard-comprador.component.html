@@ -201,7 +201,7 @@
                         <div class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
+                                     (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
                                 <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
@@ -273,10 +273,10 @@
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
-                                            <tr>
-                                                <td id="agregarProveedor">
-                                                    <div>
-                                                        <span *ngIf="(rowData.Adicional == null && rowData.TrabajoYaHecho == null && rowData.CondEspProveedorAsignado == null)">
+                                            <tr>                                              
+                                                <td id="agregarProveedor">                                                   
+                                                    <div>                                              
+                                                        <span *ngIf="!rowData.Adicional && !rowData.TrabajoYaHecho && !rowData.CondEspProveedorAsignado">
                                                             <img class="pointer" src="./Content/images/icons/add-user.svg" title="Agregar proveedor"
                                                                  (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" style="height: 30px;" />
                                                         </span>
@@ -403,7 +403,8 @@
 
     <app-chat-interno [(displayChatInterno)]="displayChatInterno"
                       [(chat)]="chat"
-                      (cerrardisplayChatEmitter)="cerrarModalChat()">
+                      (cerrardisplayChatEmitter)="cerrarModalChat()"
+                      [(dasboardComprador)]="dasboardComprador">
     </app-chat-interno>
 
     <app-editar-orden-de-compra [(displayEditarOc)]="displayEditarOc"

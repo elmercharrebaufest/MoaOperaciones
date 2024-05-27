@@ -139,6 +139,24 @@
     <Compile Include="Consulta\ListaPaginada.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CargaMasivaResponse.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\ComboAplicacionesContratosCcppResponse.cs" />
+    <Compile Include="Dto\HistorialDeFechaDto.cs" />
+    <Compile Include="Dto\Compras\ChatsDto.cs" />
+    <Compile Include="Dto\Compras\ChatExternoComprasDto.cs" />
+    <Compile Include="Dto\Compras\POPosicionDto.cs" />
+    <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
+    <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
+    <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\MonedaConversionDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
+    <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\FrontLoggerRequestDto.cs" />
+    <Compile Include="Dto\LiberadorSapDto.cs" />
+    <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\CartaPorteParaAplicacionCartaPorte.cs" />
@@ -263,6 +281,20 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
+
+    <Compile Include="Entities\ChatExternoCompras.cs" />
+    <Compile Include="Entities\CotizacionHistorial.cs" />
+    <Compile Include="Entities\MonedaConversion.cs" />
+    <Compile Include="Entities\ArchivoBoleto.cs" />
+    <Compile Include="Entities\Almacen.cs" />
+    <Compile Include="Entities\ArchivoCampoSustentable.cs" />
+    <Compile Include="Entities\EstadoOrdenResiduos.cs" />
+    <Compile Include="Entities\OrdenResiduos.cs" />
+    <Compile Include="Entities\EstadoArchivoBoleto.cs" />
+    <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\RegionSap.cs" />
+    <Compile Include="Entities\ChatInternoCompras.cs" />
+
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />

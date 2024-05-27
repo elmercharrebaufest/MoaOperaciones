@@ -121,8 +121,8 @@ export class Generacion2Component extends ListBaseComponent {
                 tecnicoSeguridad: [{ value: true, disabled: true }, [Validators.required]],
                 grillaPersonal: [{ value: true, disabled: true }, [Validators.required]],
                 fabricacionTallerExterno: [{ value: true, disabled: true }, [Validators.required]],
-                descripcionTecnica: [{ value: true, disabled: true }, [Validators.required]],
-                entregaDocumentacion: [{ value: true, disabled: true }, [Validators.required]],
+                descripcionTecnica: [{ value: true, disabled: false }, [Validators.required]],
+                entregaDocumentacion: [{ value: true, disabled: false }, [Validators.required]],
                 fechaLimiteFecha: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteHora: [{ value: true, disabled: true }, [Validators.required]]
             });
@@ -170,7 +170,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+        if(vacio !== null && vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;

@@ -9,6 +9,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { NotificacionesService } from '../notificaciones.service';
 
+
 @Component({
   selector: 'app-listado-notificaciones',
   templateUrl: './listado-notificaciones.component.html',

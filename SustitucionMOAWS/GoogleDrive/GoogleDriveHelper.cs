@@ -167,7 +167,7 @@ namespace SustitucionMOAWS.GoogleDrive
 
             if (stream.Length == 0)
             {
-                throw new ArgumentNullException("Stream when fetching google drive file cannot be null or empty.");
+                throw new ArgumentNullException($"Stream when fetching google drive file cannot be null or empty. {query}");
             }
 
             // Guarda el archivo descargado localmente si la propiedad esta seteada
