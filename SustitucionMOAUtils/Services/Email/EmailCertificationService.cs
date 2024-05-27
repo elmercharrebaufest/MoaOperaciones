@@ -160,7 +160,7 @@ namespace SustitucionMOAUtils.Services.Email
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
 
-                Logger.Log.Info("Email Data: " + cuerpo);
+                //Logger.Log.Info("Email Data: " + cuerpo);
 
                 var emailSenderData = new EmailSenderData()
                 {
