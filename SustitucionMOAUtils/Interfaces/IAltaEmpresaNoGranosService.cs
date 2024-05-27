@@ -17,9 +17,23 @@ namespace SustitucionMOAUtils.Interfaces
         string RechazarProveedorNoGranos(int idProveedor, string usuarioMail, string observacionesParaElProveedor);
 
         InfoProveedorNoGranosDto ObtenerInfoProveedorNoGranos(string mailUsuario, int proveedorId);
-        string EditarAltaEmpresaNoGranos(int proveedorId, string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
-            , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual
-            , bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio);
+
+        string EditarAltaEmpresaNoGranos(int proveedorId,
+                                         string razonSocial,
+                                         string cuit,
+                                         string email,
+                                         string telefono,
+                                         bool realizarAnalisisNOSIS,
+                                         int? IdRubro,
+                                         string CondicionDePago,
+                                         string ServicioPrestado,
+                                         string OrganizacionDeCompra,
+                                         string RazonDeEleccion,
+                                         int? FacturacionAnual,
+                                         bool requiereVerificacionCompras,
+                                         bool ingresoAPlanta,
+                                         bool altaInterna,
+                                         bool siperObligatorio);
 
         string GetRazonSocial(string CUIT);
         byte[] DescargarFormularioNG(ProveedorAltaDto proveedorDto);
