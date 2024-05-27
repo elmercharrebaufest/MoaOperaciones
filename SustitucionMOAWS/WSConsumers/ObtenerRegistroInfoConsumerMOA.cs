@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor)
+        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEINE[] INFORECORD_PURCHORG = new BAPIEINE[] { };
                 BAPIRETURN[] bAPIRETURNs = new BAPIRETURN[] { };
                 service.BAPI_INFORECORD_GETLIST("", "", "", material, bAPIMGVMATNR, "", "", centro, "", "", "",
-                                                ""/*grupoDeCompras*/,"", proveedor, "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
+                                                ""/*grupoDeCompras*/, "", "", "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
 
                 return Map(INFORECORD_GENERAL, INFORECORD_PURCHORG, bAPIRETURNs);
             }
@@ -68,13 +68,13 @@ namespace SustitucionMOAWS.WSConsumers
                         Id = info.INFO_REC,
                         FechaFormateada = !string.IsNullOrEmpty(purch.PRICE_DATE) ? SAPFormatter.GetDateTime(purch.PRICE_DATE) : (DateTime?)null,
                         MaterialCodigo = info.MATERIAL,
-                        NumeroOrdenDeCompra = purch.PO_NUMBER,
-                        GrupoDeCompras = purch.PUR_GROUP
+                        NumeroOrdenDeCompra = purch.PO_NUMBER
                     };
 
                     registros.Add(registroInfo);
                 }
             }
+
             return registros;
         }
     }

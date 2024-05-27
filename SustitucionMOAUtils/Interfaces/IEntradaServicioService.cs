@@ -33,5 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
         string ReasignarSuplente(string nro_es_local, string mail);
+        string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
     }
 }

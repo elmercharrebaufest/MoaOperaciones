@@ -13,20 +13,21 @@ import { Table } from 'primeng/table';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
-import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
+import { forEach } from '@angular/router/src/utils/collection';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto } from '../chat-interno/chat-interno.interface';
-import { forEach } from '@angular/router/src/utils/collection';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
+
 
 @Component({
     selector: 'dashboard',
     templateUrl: `dashboard.component.html`,
-    styleUrls: ['../compras.component.css', './dashboard.component.css']
+    styleUrls: ['../compras.component.css',
+        './dashboard.component.css']
+
 })
 export class DashboardComponent extends ListBaseComponent {
 
@@ -44,12 +45,12 @@ export class DashboardComponent extends ListBaseComponent {
     protected spinnerComponent: SpinnerComponent;
 
     @ViewChild('myCalendar', undefined)
+    private calendar: any;
     nroSolp: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
     repoAutomatica: boolean = false;
-    contratoMarco: boolean = false;
     orden: string;
     columnaOrden: string;
     length = 0;
@@ -60,106 +61,16 @@ export class DashboardComponent extends ListBaseComponent {
     public ordenCompra: any;
     public solicitante: boolean = true;
     displayRevisionTecnica: boolean;
+
     displayCircular: boolean = false;
     combos: any;
     usuariosResult: any;
     ordenesDeCompra: AdjudicacionDto[] = [];
-    peticionesDeOferta: PeticionDeOfertaDto[] = [];
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
+    chatLeido: boolean = false;
 
-    filtrosSolicitante: {
-        nroSolp: string;
-        sap: boolean;
-        mantenimiento: boolean;
-        web: boolean;
-        repoAutomatica: boolean;
-        contratoMarco: boolean;
-        usuarios: string[];
-        estadoSolp: string[];
-        gruposCompras: string[];
-        centros: string[];
-        claseDocumento: string[];
-        tipoImputacion: string[];
-        valorTipoImputacion: string[];
-        subtipoImputacionCombo: SelectItem[];
-        fechaDesde: string;
-        fechaHasta: string;
-        pageIndex: number;
-    } = {
-            nroSolp: "",
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            contratoMarco: false,
-            usuarios: [],
-            estadoSolp: [],
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            pageIndex: 1
-        };
-
-    filteredfechas: any;
-    solpFecha: any = new Array();
-    fechaInicio: string = null;
-    fechaFin: string = null;
-    rangeDates: Date[];
-    tipoFiltroFecha = 1;
-    desdeDashboard: Date;
-    hastaDashboard: Date;
-    usuarioFiltro: SelectItem[];
-    selectUsuario: string[] = [];
-    estadoSolpItem: SelectItem[];
-    selectEstadoSolp: string[] = [];
-    grupoComprasFiltro: SelectItem[];
-    selectGrupoCompras: string[] = [];
-    centroFiltro: SelectItem[];
-    selectCentro: string[] = [];
-    claseDocumentoFiltro: SelectItem[];
-    selectClaseDocumento: string[] = [];
-    tipoImputacionFiltro: SelectItem[];
-    selectTipoImputacion: string[] = [];
-    valorTipoImputacionFiltro: SelectItem[] = [];
-    selectValorTipoImputacion: string[] = [];
-    buscarDashboard: string;
-    fechaSolp: any;
-    hoy: Date = new Date();
-    es: any;
-    display: boolean = false;
-    tablaSolp: any[];
-    tablaSolpCopy: any[];
-    cols: any[];
-    serviciosDashboard: any = "Servicios"
-    solp: Solp = new Solp();
-    usuario: string;// = "Prueba";
-    checkedFilterSap = false;
-    checkedFilterMantenimiento = false;
-    checkedFilterWeb = false;
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
-    public chat: ChatComprasDto;
-    clasesDocumento: number[] = [];
-
-    cards = [
-        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
-        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
-    ]
-
-    subtitulos = [
-        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
-        { nombre: "Servicio y/o Material catalogado" },
-    ]
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -175,11 +86,61 @@ export class DashboardComponent extends ListBaseComponent {
             today: 'Hoy',
             clear: 'Borrar'
         };
+
     }
+
+    filteredfechas: any;
+    solpFecha: any = new Array();
+    fechaInicio: any = null;
+    fechaFin: any = null;
+    rangeDates: Date[];
+    tipoFiltroFecha = 1;
+
+    desdeDashboard: Date;
+    hastaDashboard: Date;
+    estadoSolpItem: SelectItem[];
+    selectEstadoSolp: string[] = [];
+    buscarDashboard: string;
+    fechaSolp: any;
+    hoy: Date = new Date();
+    es: any;
+    display: boolean = false;
+    tablaSolp: any[];
+    tablaSolpCopy: any[];
+
+    usuarioFiltro: SelectItem[];
+    selectUsuario: number | null;
+
+    cols: any[];
+    serviciosDashboard: any = "Servicios"
+    solp: Solp = new Solp();
+    usuario: string;// = "Prueba";
+
+    checkedFilterSap = false;
+    checkedFilterMantenimiento = false;
+    checkedFilterWeb = false;
+
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    public chat: ChatComprasDto;
+
 
     showDialog() {
         this.display = true;
     }
+
+    cards = [
+        { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
+        { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
+        // { nombre: "Con documentos requerimientos", path: ""},
+        // { nombre: "Sin documento", path: ""},
+        // { nombre: "Emergencia", path: ""},
+        // { nombre: "Adicional", path: ""}
+    ]
+
+    subtitulos = [
+        { nombre: "Servicio y/o Material catalogado y sin catalogar" },
+        { nombre: "Servicio y/o Material catalogado" },
+    ]
 
     goToSeccion(path: string) {
         $("#mySidenav").css({ 'right': '-270px' });
@@ -214,13 +175,10 @@ export class DashboardComponent extends ListBaseComponent {
 
     ngOnInit() {
         this.navService.setSeccionList([]);
-        this.listarClaseDocumento();
-        this.recuperarFiltros();
-        this.listarUsuarioCreadorSolp();
-        this.navService.setSeccionList([]);
+        this.getListarSolp();
+
         this.desdeDashboard = new Date();
         this.hastaDashboard = new Date();
-        this.getCombos();
     }
 
     returnToTodaysDate() {
@@ -235,18 +193,86 @@ export class DashboardComponent extends ListBaseComponent {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
             let d = new Date(Date.parse(event));
             this.fechaInicio = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
-            this.fechaFin = '';
         } else {
             let d = new Date(Date.parse(event));
             this.fechaFin = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+            if (this.rangeDates[1]) { // If second date is selected
+                this.calendar.overlayVisible = false;
+            }
         }
     }
 
-    listarExpand() {
+    listarExpand() { 
         setTimeout(() => {
             $('[id^="ui-tabpanel-"]').css('padding', '0');
             $('[id^="ui-tabpanel-"]').css('transition', 'none').css('animation', 'none');
-        }, 0.01);
+        }, 0.01);        
+    }
+
+    filtrarPorSap() {
+        this.checkedFilterSap = !this.checkedFilterSap;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarPorMantenimiento() {
+        this.checkedFilterMantenimiento = !this.checkedFilterMantenimiento;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarPorWeb() {
+        this.checkedFilterWeb = !this.checkedFilterWeb;
+        this.filtrarTablaPorTipoSolp();
+    }
+
+    filtrarTablaPorTipoSolp() {
+
+        var fechaDesde = this.fechaInicio;
+        var fechaHasta = this.fechaFin + " 23:59:59";
+
+        let tablaPrincipal = this.tablaSolpCopy;
+        if (this.checkedFilterMantenimiento && this.checkedFilterWeb && this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal;
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterMantenimiento && this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento || x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterMantenimiento) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Mantenimiento);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterSap) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.SAP);
+            this.tabla.first = 0;
+        } else if (this.checkedFilterWeb) {
+            tablaPrincipal = tablaPrincipal.filter(x => x.TipoSolpSap === EnumTipoSolpSap.Web);
+            this.tabla.first = 0;
+        } this.tabla.first = 0;
+
+
+        if (fechaDesde != null && fechaHasta != null) {
+            tablaPrincipal = tablaPrincipal.filter(x =>
+                new Date(Date.parse(x.FechaCreacion)) >= new Date(fechaDesde) &&
+                new Date(Date.parse(x.FechaCreacion)) <= new Date(fechaHasta)
+            )
+            this.tabla.first = 0;
+        }
+        this.tablaSolp = tablaPrincipal;
+
+        if (this.tablaSolp.length == 0) {
+            this.mensajeComponent.setInfoMsg("No se encontraron Solps")
+        }
+        else {
+            this.mensajeComponent.setMsgsEmpty();
+        }
+    }
+
+    ngAfterViewInit(): void {
+        this.getCombos();
     }
 
     getStatusDocumentoSolp(data: any): String {
@@ -261,8 +287,8 @@ export class DashboardComponent extends ListBaseComponent {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
-                multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp,
+            this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, multiSelectValues, this.selectUsuario
             ).subscribe(
                 (result: any) => {
 
@@ -286,7 +312,6 @@ export class DashboardComponent extends ListBaseComponent {
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : 0;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                        this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
                     }
                 },
                 error => {
@@ -328,6 +353,7 @@ export class DashboardComponent extends ListBaseComponent {
         }
 
         return false; //<-- Prevent Refresh
+
     }
 
     getCombos() {
@@ -344,28 +370,12 @@ export class DashboardComponent extends ListBaseComponent {
                         this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
                         this.usuarioFiltro = [];
-                        this.centroFiltro = [];
-                        this.grupoComprasFiltro = [];
-                        this.claseDocumentoFiltro = [];
-                        this.tipoImputacionFiltro = [];
                         result.EstadosSolpSap.forEach(cd => this.estadoSolpItem.push({
                             label: cd.Descripcion, value: cd.Id
                         }));
                         result.Usuarios.forEach(x => x.forEach(d => this.usuarioFiltro.push({
-                            label: d.Id === 0 ? "" : d.Mail, value: d.Id
-                        })));
-                        result.Centro.forEach(c => this.centroFiltro.push({
-                            label: c.Codigo + " - " + c.Descripcion, value: c.Id
-                        }));
-                        result.GrupoCompras.forEach(gc => this.grupoComprasFiltro.push({
-                            label: gc.Codigo + " - " + gc.Descripcion, value: gc.Id
-                        }));
-                        result.ClaseDocumento.forEach(cd => this.claseDocumentoFiltro.push({
-                            label: cd.Codigo + " - " + cd.Descripcion, value: cd.Id
-                        }));
-                        result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
-                            label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
-                        }));
+                            label: d.Mail, value: d.Id
+                        })))
                     }
                 },
                 error => {
@@ -378,86 +388,12 @@ export class DashboardComponent extends ListBaseComponent {
             return false; //<-- Prevent Refresh
         }
 
-        return false;
-    }
+        return false; //<-- Prevent Refresh
 
-    subtipoImputacionCombo() {
-        var tablas: string[] = [];
-        this.selectTipoImputacion.forEach(tipo => {
-            switch (tipo) {
-                case EnumTipoImputacion.CentroDeCosto:
-                    tablas.push('CecoSolpSap');
-                    break;
-                case EnumTipoImputacion.OrdenDeOt:
-                case EnumTipoImputacion.OrdenInversion:
-                    tablas.push('OrdenSolpSap');
-                    break;
-                case EnumTipoImputacion.Siniestro:
-                    tablas.push('CentroBeneficio');
-                    break;
-            }
-        });
-
-        try {
-            this.subscription = this.service.listarTablaSap(tablas).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.valorTipoImputacionFiltro = [];
-                        this.valorTipoImputacionFiltro = result.data.map(vti => ({
-                            label: `${vti.CodigoDescripcion}`, value: vti.Id
-                        }));
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                });
-        }
-        catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false;
-    }
-
-    listarUsuarioCreadorSolp() {
-        try {
-            this.subscription = this.service.listarUsuarioCreadorSolp().subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
-                        result.data.forEach(x => x.forEach(x => {
-                            if (x.Id == sessionStorage.getItem("usuarioId") && !filtrosGuardados && !this.selectUsuario.includes(x.Id))
-                                this.selectUsuario.push(x.Id);
-                        }));
-                        this.getListarSolp();
-                    }
-                },
-                error => { this.floatMsgService.setErrorMsg(error.message); }
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false;
-        }
-        return false;
     }
 
     eliminarPosicionDashboard(idSolp) {
         this.confirmationService.confirm({
-            key: 'eliminarSOLP',
-            header: 'Eliminar SOLP',
             message: '¿Está seguro de que desea eliminar la SOLP?',
             accept: () => {
                 this.borrarSolp(idSolp)
@@ -468,7 +404,7 @@ export class DashboardComponent extends ListBaseComponent {
     }
 
     generarZipPliego(idSolp) {
-        this.blockUI.start('Generando...')
+        this.blockUI.start('Generando ')
         this.service.descargarZipPliego(idSolp)
             .subscribe(
                 (result) => {
@@ -506,7 +442,8 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.spinnerSmallComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
-                })
+                }
+            )
     }
 
     descargarPdf(idSolp): void {
@@ -529,7 +466,8 @@ export class DashboardComponent extends ListBaseComponent {
                     (error) => {
                         this.spinnerSmallComponent.hideIt();
                         this.mensajeComponent.setErrorMsg(error.message);
-                    })
+                    }
+                )
         }
     }
 
@@ -571,15 +509,11 @@ export class DashboardComponent extends ListBaseComponent {
     handlePageEvent(e: any) {
         this.pageSize = e.rows;
         this.pageIndex = e.page + 1;
-        this.filtrosSolicitante = {
-            ...this.filtrosSolicitante,
-            pageIndex: this.pageIndex
-        };
-        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
         this.getListarSolp()
+
     }
 
-    obtenerPeticionDeOferta(Id, rowData) {
+    obtenerPeticionDeOferta(Id) {
         this.blockUI.start('Cargando...')
         this.service.obtenerPeticionDeOferta(Id)
             .subscribe(
@@ -589,7 +523,6 @@ export class DashboardComponent extends ListBaseComponent {
                     }
                     else {
                         this.peticion = result.data;
-                        this.peticion.Solp = rowData;
                         this.displayRevisionTecnica = true;
                         this.blockUI.stop();
                     }
@@ -597,7 +530,8 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
-                })
+                }
+            )
     }
 
     obtenerPeticionDeOfertaCircular(Id) {
@@ -617,19 +551,12 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
-                })
+                }
+            )
     }
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.listarPeticiones(this.peticion.Solp);
-        this.onBuscar();
-
-    }
-
-    cancelarModal() {
-        this.displayRevisionTecnica = false;
-        this.displayCircular = false;
     }
 
     descargarArchivo({ archivoId }) {
@@ -652,7 +579,8 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
-                })
+                }
+            )
     }
 
     descargarAdjuntosCotizacion({ cotizacionId }) {
@@ -697,104 +625,93 @@ export class DashboardComponent extends ListBaseComponent {
                 }
             )
     }
-    
+
+    grabarRevisionTecnica(event) {
+        this.blockUI.start('Grabando...');
+        this.service.grabarRevisionTecnica(this.peticion.Usuarios, event.finalizar, event.revisionTecnica)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (result) {}
+                        this.displayRevisionTecnica = false;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
     cerrarCircular() {
         this.displayCircular = false;
-        this.listarPeticiones(this.peticion.Solp);
     }
 
     onBuscar() {
-        this.pageIndex = 1;
-        this.filtrosSolicitante.nroSolp = this.nroSolp;
-        this.filtrosSolicitante.sap = this.sap;
-        this.filtrosSolicitante.mantenimiento = this.mantenimiento;
-        this.filtrosSolicitante.web = this.web;
-        this.filtrosSolicitante.repoAutomatica = this.repoAutomatica;
-        this.filtrosSolicitante.contratoMarco = this.contratoMarco;
-        this.filtrosSolicitante.usuarios = this.selectUsuario;
-        this.filtrosSolicitante.estadoSolp = this.selectEstadoSolp;
-        this.filtrosSolicitante.gruposCompras = this.selectGrupoCompras;
-        this.filtrosSolicitante.centros = this.selectCentro;
-        this.filtrosSolicitante.claseDocumento = this.selectClaseDocumento;
-        this.filtrosSolicitante.tipoImputacion = this.selectTipoImputacion;
-        this.filtrosSolicitante.valorTipoImputacion = this.selectValorTipoImputacion;
-        this.filtrosSolicitante.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
-        this.filtrosSolicitante.fechaDesde = this.fechaInicio;
-        this.filtrosSolicitante.fechaHasta = this.fechaFin;
         this.paginator.changePage(0);
-        this.cerrarExpansiones();
+        this.pageIndex = 1;
         this.getListarSolp();
-        sessionStorage.setItem('filtrosSolicitante', JSON.stringify(this.filtrosSolicitante));
     }
 
     cerrarOrdenDeCompra() {
         this.displayOrdenDeCompra = false;
     }
 
-    verDetalleOrdenDeCompra(nroOC: any, solpId) {
-        this.obtenerAdjudicacion(nroOC, solpId);
+    verDetalleOrdenDeCompra(nroOC: any) {
+        this.obtenerAdjudicacion(nroOC);
         this.displayOrdenDeCompra = true;
     }
 
-    obtenerAdjudicacion(nroOC, rowData) {
+    obtenerAdjudicacion(nroOC) {
         this.blockUI.start('Cargando...')
-        this.service.obtenerAdjudicacion(nroOC).subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    this.ordenDeCompra = result.data;
-                    this.ordenDeCompra.Solp = rowData;
+        this.service.obtenerAdjudicacion(nroOC)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.ordenDeCompra = result.data;
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
                     this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            })
+            )
     }
 
-    listarAdjudicaciones(rowData) {
+    listarAdjudicaciones(solpId) {
         this.blockUI.start('Cargando...')
-        this.service.listarAdjudicaciones(rowData.Id).subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    rowData.OrdenesDeCompra = result.data;
+        this.service.listarAdjudicaciones(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        if (this.ordenesDeCompra.length > 0) {
+                            for (let i = this.ordenesDeCompra.length - 1; i >= 0; i--) {
+                                if (this.ordenesDeCompra[i].Solp_Id === solpId) {
+                                    this.ordenesDeCompra.splice(i, 1);
+                                }
+                            }
+                        }
+                        this.mapData(result.data);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
                     this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            })
+            )
     }
-
-    listarPeticiones(rowData) {
-        if(rowData.PeticionesDeOferta != undefined && rowData.PeticionesDeOferta != null && rowData.PeticionesDeOferta.length > 0){
-            return;
-        }
-        this.blockUI.start('Cargando...')
-        this.service.listarPeticiones(rowData.Id).subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {                    
-                    rowData.PeticionesDeOferta = result.data;
-                    this.blockUI.stop();
-                }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            })
-    }
-
-
 
     filtrarOrdenesDeCompra(solpId): AdjudicacionDto[] {
         return this.ordenesDeCompra.filter(orden => orden.Solp_Id == solpId);
@@ -834,116 +751,46 @@ export class DashboardComponent extends ListBaseComponent {
         });
     }
 
-    obtenerChatExterno(rowData) {
+    obtenerPeticionDeOfertaParaChat(Id) {
         try {
-            this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
-            rowData.ChatSinLeer = false;
-            this.subscription = this.service.obtenerChat(rowData.Id)
-                .subscribe(
-                    (result: any) => {
-                        this.blockUI.stop();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-                            result.Mensajes = result.Mensajes.map((x) => {
-                                x.FechaEnvioDate = new Date(
-                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                );
-                                return x;
-                            });
-                            result.FechaCreacionDate = new Date(
-                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
-                            );
-                            this.chat = result;
-                            this.displayChatInterno = true;
-                        };
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.floatMsgService.setErrorMsg(error.message);
-                    }
-                );
-        } catch (e) {
-            this.blockUI.stop();
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
+            this.subscription = this.service.obtenerChat(Id)
+              .subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        result.Mensajes = result.Mensajes.map((x) => {
+                            x.FechaEnvioDate = new Date(
+                                this.getDateFromAspNetFormat(x.FechaEnvioDate)                                
+                            );   
+                            return x;
+                        });
+                        result.FechaCreacionDate = new Date(
+                            this.getDateFromAspNetFormat(result.FechaCreacionDate)                                
+                        );   
+                        this.chat = result;
+                        this.displayChatInterno = true;
+                        this.chatLeido = true;
+                    };
+                },
+                (error) => {
+                  this.floatMsgService.setErrorMsg(error.message);
+              }
+          );
+      } catch (e) {
+          this.floatMsgService.setErrorMsg(e);
+          return false; //<-- Prevent Refresh
+      }
+      return false; //<-- Prevent Refresh
     }
 
     cerrarModalChat() {
         this.displayChatInterno = false;
     }
 
-    recuperarFiltros() {
-        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
-        if (filtrosGuardados) {
-            this.nroSolp = filtrosGuardados.nroSolp;
-            this.sap = filtrosGuardados.sap;
-            this.mantenimiento = filtrosGuardados.mantenimiento;
-            this.web = filtrosGuardados.web;
-            this.repoAutomatica = filtrosGuardados.repoAutomatica;
-            this.contratoMarco = filtrosGuardados.contratoMarco;
-            this.selectUsuario = filtrosGuardados.usuarios;
-            this.selectEstadoSolp = filtrosGuardados.estadoSolp;
-            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
-            this.selectCentro = filtrosGuardados.centros;
-            this.selectClaseDocumento = filtrosGuardados.claseDocumento;
-            this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
-            this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
-            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
-            this.fechaInicio = filtrosGuardados.fechaDesde;
-            this.fechaFin = filtrosGuardados.fechaHasta;
-            this.pageIndex = filtrosGuardados.pageIndex;
-            if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
-                const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
-                if (this.fechaFin != undefined && this.fechaFin.length > 0) {
-                    const [year2, month2, day2] = this.fechaFin.split('-').map(Number);
-                    this.rangeDates = [new Date(year, month - 1, day), new Date(year2, month2 - 1, day2)];
-                } else {
-                    this.rangeDates = [new Date(year, month - 1, day)];
-                }
-            }
-        }
-    }
-
-    listarClaseDocumento() {
-        try {
-            this.subscription = this.service.listarClaseDocumento(sessionStorage.getItem("usuarioId")).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else {
-                        this.clasesDocumento = result;
-                        if (this.clasesDocumento.length > 0)
-                            sessionStorage.setItem('clasesDocumentoUsuario', JSON.stringify(this.clasesDocumento));
-                    }
-                },
-                error => { this.floatMsgService.setErrorMsg(error.message); }
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false;
-        }
-        return false;
-    }
-
-    mismaClaseDocumento(claseDocumento_Id: number): boolean {
-        return this.clasesDocumento.some(x => x === claseDocumento_Id);
-    }
-
-    cerrarExpansiones(): void {
-        this.tabla.value.forEach(row => {
-            if (this.tabla.isRowExpanded(row)) {
-              this.tabla.toggleRow(row);
-            }
-          });
-      }
 }

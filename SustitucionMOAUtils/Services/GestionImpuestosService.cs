@@ -239,8 +239,9 @@ namespace SustitucionMOAUtils.Services
             var ingresoBrutoCU = this.repositorio.Obtener<IngresosBrutosCoeficienteUnificado>(i => i.Consulta_Id == consultaId);
             if (ingresoBrutoCU == null)
             {
-                return;
+                throw new InfoCustomException($"No se encontró la gestion de CM05 para la consulta nro: {consultaId}.");
             }
+            ingresoBrutoCU.EstadoIngresosBrutosCoeficienteUnificado_Id = 3;
 
             var movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
             {
@@ -252,10 +253,6 @@ namespace SustitucionMOAUtils.Services
                 EstadoAnterior_Id = ingresoBrutoCU.EstadoIngresosBrutosCoeficienteUnificado_Id,
                 EstadoPosterior_Id = 3,
             };
-
-            ingresoBrutoCU.EstadoIngresosBrutosCoeficienteUnificado_Id = 3;
-            ingresoBrutoCU.MalCargada = false;
-
             repositorio.Agregar(movimientoIngresosBrutosCoeficienteUnificado);
             repositorio.GuardarCambios();
         }

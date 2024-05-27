@@ -26,7 +26,6 @@ import { FileDropModule } from 'ngx-file-drop';
 import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {DataViewModule} from 'primeng/dataview';
-import { InputMaskModule } from 'primeng/inputmask';
 
 @NgModule({
   imports: [
@@ -50,8 +49,8 @@ import { InputMaskModule } from 'primeng/inputmask';
     FileDropModule,
     AngularEditorModule,
     ProgressSpinnerModule,
-    DataViewModule,
-    InputMaskModule,
+    DataViewModule
+    
   ],
   declarations: [
     MisConsultasComponent,

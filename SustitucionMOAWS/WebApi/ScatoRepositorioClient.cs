@@ -22,24 +22,19 @@ namespace SustitucionMOAWS.WebApi
         private static readonly string Password = ConfigurationManager.AppSettings["ScatoRepositorioPassword"];
         private static readonly string ScatoApi = "ScatoApi";
         private static readonly string AfipApi = "AFIPApi";
+        private readonly HttpClient cliente;
 
-        private HttpClient _cliente;
-        private HttpClient Cliente
+        public ScatoRepositorioClient()
         {
-            get
-            {
-                if (_cliente == null)
-                {
-                    _cliente = CrearClienteHttp();
-                }
-                return _cliente;
-            }
+            Log.Info("Instancia e inicializa cliente API ScatoRepositorio");
+            this.cliente = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
+            InicializarCliente();
         }
 
         public RespuestaListado<Planta> ObtenerPlantas(string cuitDestino)
         {
             var reqUri = $"{AfipApi}/ConsultarPlantasDGPorCUIT/{cuitDestino}";
-            HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var plantasResponse = response.Content.ReadAsAsync<RespuestaListado<Planta>>().GetAwaiter().GetResult();
@@ -54,7 +49,7 @@ namespace SustitucionMOAWS.WebApi
         public RespuestaListado<Domicilio> ObtenerDomicilios(string cuitDestino)
         {
             var reqUri = $"{AfipApi}/ConsultarDomiciliosPorCUIT/{cuitDestino}";
-            HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var domiciliosResponse = response.Content.ReadAsAsync<RespuestaListado<Domicilio>>().GetAwaiter().GetResult();
@@ -69,7 +64,7 @@ namespace SustitucionMOAWS.WebApi
         public Respuesta<Chofer> ObtenerChoferPorCuil(string cuilChofer)
         {
             var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuilChofer}";
-            HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var choferResponse = response.Content.ReadAsAsync<Respuesta<Chofer>>().GetAwaiter().GetResult();
@@ -83,7 +78,7 @@ namespace SustitucionMOAWS.WebApi
         public Respuesta<Chofer> ObtenerTransportePorCuit(string cuitTransporte)
         {
             var reqUri = $"{ScatoApi}/ObtenerChoferPorCuil/{cuitTransporte}";
-            HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+            HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
             if (response.IsSuccessStatusCode)
             {
                 var choferResponse = response.Content.ReadAsAsync<Respuesta<Chofer>>().GetAwaiter().GetResult();
@@ -104,7 +99,7 @@ namespace SustitucionMOAWS.WebApi
             try
             {
                 var reqUri = $"{ScatoApi}/ObtenerProveedorPorCuil/{cuilGuiones}/{tipo}";
-                HttpResponseMessage response = Cliente.GetAsync(reqUri).GetAwaiter().GetResult();
+                HttpResponseMessage response = cliente.GetAsync(reqUri).GetAwaiter().GetResult();
                 if (response.IsSuccessStatusCode)
                 {
                     jsonRes = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
@@ -123,20 +118,17 @@ namespace SustitucionMOAWS.WebApi
             }
         }
 
-        private HttpClient CrearClienteHttp()
+
+        private void InicializarCliente()
         {
-            var clienteHttp = new HttpClient { BaseAddress = new Uri(ScatoRepositorioBaseAddress) };
+            cliente.DefaultRequestHeaders.Accept.Clear();
+            cliente.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            clienteHttp.DefaultRequestHeaders.Accept.Clear();
-            clienteHttp.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            clienteHttp.DefaultRequestHeaders.Authorization =
+            cliente.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue(
                     "Basic",
                     Convert.ToBase64String(
                         Encoding.ASCII.GetBytes($"{Username}:{Password}")));
-
-            return clienteHttp;
         }
     }
 }

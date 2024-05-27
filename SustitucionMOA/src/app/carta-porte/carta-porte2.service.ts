@@ -1,21 +1,19 @@
 
-import { throwError as observableThrowError, Observable } from 'rxjs';
+import {throwError as observableThrowError,  Observable } from 'rxjs';
 
-import { map, timeoutWith } from 'rxjs/operators';
+import {map, timeoutWith} from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { CommonResponse } from '../common/models/common-response';
-import { ApiResponse } from '../common/models/response';
-import { CalidadCCPP } from '../common/models/cartaPorte';
 
 @Injectable()
 export class CartaPorteService extends BaseService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return null;
-    }
+    }  
 
     getCartasPorteCommon(periodo: string, fecha_inicio: string, fecha_fin: string, method: string): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -25,8 +23,8 @@ export class CartaPorteService extends BaseService {
 
         return this.http
             .get('/api/cartaporte/' + method, { params: params, headers: this.headers }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
-
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+            
     }
 
     getDetalle(cartaPorteId: string): Observable<any> {
@@ -35,8 +33,8 @@ export class CartaPorteService extends BaseService {
 
         return this.http
             .get('/api/cartaporte/getDetalle', { params: params, headers: this.headers }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
-    }
+            timeoutWith(30000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+    } 
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return null;
@@ -50,7 +48,7 @@ export class CartaPorteService extends BaseService {
 
         return this.http
             .get('/api/cartaporte/' + method, { params: params, headers: this.headers }).pipe(
-                timeoutWith(60000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+            timeoutWith(60000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
     exportExcelDetalle(cartaPorteId: string): Observable<any> {
@@ -59,7 +57,7 @@ export class CartaPorteService extends BaseService {
 
         return this.http
             .get('/api/cartaporte/downloadDetalle', { params: params, headers: this.headers }).pipe(
-                timeoutWith(60000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
+            timeoutWith(60000, observableThrowError(new Error("Por favor, restrinja el rango de fechas"))));
     }
 
     public exportPDFCalidad(numero_ccpp: string) {
@@ -89,18 +87,9 @@ export class CartaPorteService extends BaseService {
     public descargarFotos(cartaPorteIds: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('cartaPorteIds', cartaPorteIds);
-
+       
         return this.http
             .get('/api/cartaporte/DescargarFotos', { params: params, headers: this.headers });
-    }
-
-    public detalleCalidades(ccpp: number | string): Observable<ApiResponse<CalidadCCPP[]>> {
-        let params: HttpParams = new HttpParams();
-        params = params.append('cartaPorte', ccpp.toString());
-
-        return this.http
-            .get<ApiResponse<CalidadCCPP[]>>('/api/cartaporte/DetalleCalidades', { params: params, headers: this.headers });
-
     }
 }
 
@@ -121,7 +110,7 @@ export class CartaPorteAplicacionService extends CartaPorteService {
 
     getData(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.getCartasPorteCommon(periodo, fecha_inicio, fecha_fin, 'getAplicaciones');
-    }
+    } 
 
     exportExcel(periodo: string, fecha_inicio: string, fecha_fin: string): Observable<any> {
         return this.exportExcelCommon(periodo, fecha_inicio, fecha_fin, 'downloadAplicaciones');
@@ -142,7 +131,7 @@ export class CartaPorteFormularioService extends BaseService {
 
         return this.http
             .get('/api/cartaporte/getDataCTG', { params: params, headers: this.headers }).pipe(
-                timeoutWith(30000, observableThrowError(new Error("Por favor, intentelo nuevamente"))));
+            timeoutWith(30000, observableThrowError(new Error("Por favor, intentelo nuevamente"))));
     }
 
     getCompletedPDFTemplate(formulario: any, archivo: any, pageSelected: any): Observable<any> {
@@ -158,7 +147,7 @@ export class CartaPorteFormularioService extends BaseService {
     getTemplate(formulario: any): Observable<any> {
         var payload = new FormData();
         payload.append("formularioString", JSON.stringify(formulario));
-
+        
         return this.http
             .post('/api/cartaporte/getTemplate', payload, { headers: this.headersPost });
     }

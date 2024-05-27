@@ -131,8 +131,8 @@ export class BuscadorComponent extends BaseComponent implements OnInit {
     this.subscription = this.service.descargarProformaFinal(fijacion).subscribe(
         (result:any) => {
             this.spinnerSmallComponent.hideIt();
-            if(result.Pdf){
-                var byteArray = new Uint8Array(result.Pdf.data);
+            if(result.pdf){
+                var byteArray = new Uint8Array(result.pdf.data);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
                 var url = window.URL.createObjectURL(blob);
                 var link = document.createElement("a");

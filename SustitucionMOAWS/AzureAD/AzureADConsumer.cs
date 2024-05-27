@@ -11,6 +11,11 @@ namespace SustitucionMOAWS.AzureAD
     {
         private readonly IUsersGraphAPIClient ClienteApi;
 
+        public AzureADConsumer()
+        {
+            ClienteApi = new UsersGraphAPIClient();
+        }
+
         public AzureADConsumer(IUsersGraphAPIClient clienteApi)
         {
             ClienteApi = clienteApi;

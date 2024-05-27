@@ -6,8 +6,7 @@
 	[CodigoSap] [nvarchar](max) NULL,
 	[Descripcion] [nvarchar](max) NULL,
 	[Padre_id] [int] NULL,
-	[FiltroComprador] BIT NULL, 
-	CONSTRAINT [PK_dbo.TablaSap] PRIMARY KEY CLUSTERED 
+CONSTRAINT [PK_dbo.TablaSap] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],

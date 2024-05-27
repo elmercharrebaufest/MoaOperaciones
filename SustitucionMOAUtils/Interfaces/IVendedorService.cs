@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.Raw;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Habilitado;
@@ -19,6 +18,5 @@ namespace SustitucionMOAUtils.Interfaces
         List<EstadoVendedorDto> GetVariosVendedoresStatus(List<string> cuitsVendedores, string user);
         string AgregarVendedor(string mailUsuario, string cuit, int tipoProveedor);
         string EliminarVendedor(string mailUsuario, int proveedorId);
-        List<ProveedorRaw> GetVendedoresRaw();
     }
 }

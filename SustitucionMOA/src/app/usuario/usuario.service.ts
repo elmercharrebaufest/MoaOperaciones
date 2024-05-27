@@ -1,22 +1,17 @@
 
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { Usuario } from './usuario'
 import { BaseService } from './../common/services/BaseService';
 import { HttpParams } from '@angular/common/http';
 import { AltaNuevoProveedor } from '../compras/solp-compra';
-import { ApiResponse, BasicResponse } from '../common/models/response';
-import { Proveedor } from '../common/models/proveedor';
-import { AsignarNuevaCuit } from '../common/models/asignarNuevaCuit';
-import { SeleccionarVendedorResponse } from '../common/models/SeleccionarVendedorResponse';
 
 @Injectable()
 export class UsuarioService extends BaseService {
     private _usuarioModificarDatos = new BehaviorSubject<number>(0);
     private _usuarioRecargarLista = new BehaviorSubject<boolean>(false);
     private _usuarioCargarAuditoria = new BehaviorSubject<number>(0);
-    private _usuarioVerVendedores = new BehaviorSubject<number>(0);
     
     setUsuarioCargarAuditoria(value: number) {
         this._usuarioCargarAuditoria.next(value);
@@ -27,38 +22,30 @@ export class UsuarioService extends BaseService {
     setUsuarioRecargarLista(value: boolean) {
         this._usuarioRecargarLista.next(value);
     }
-    getUsuarioRecargarLista() {
+    getUsuarioRecargarLista(){
         return this._usuarioRecargarLista.asObservable()
     }
 
     setUsuarioModificarDatos(value: number) {
         this._usuarioModificarDatos.next(value);
     }
-    getUsuarioModificarDatos() {
+    getUsuarioModificarDatos()  {
         return this._usuarioModificarDatos.asObservable()
     }
-
-    setUsuarioVerVendedores(value: number) {
-        this._usuarioVerVendedores.next(value);
-    }
-    getUsuarioVerVendedores() {
-        return this._usuarioVerVendedores.asObservable()
-    }
-
-    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, usuarioSap: string) {
-        let params: HttpParams = new HttpParams();
-
-        var suplente = usuarioSeleccionado.Suplente;
-        var idUsuario = usuarioSeleccionado.Id;
-
-        params = params.append('idRoles', idRoles);
-        params = params.append('idUsuario', idUsuario);
-        params = params.append('usuarioSap', usuarioSap);
-        params = params.append('suplente', suplente);
-
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any) {
+        var payload = new FormData();
+        payload.append('idRoles', idRoles);
+        payload.append('idUsuario', usuarioSeleccionado.Id);
+        payload.append('usuarioSap', usuarioSeleccionado.UsuarioSap);
+        payload.append('suplente', usuarioSeleccionado.Suplente);
 
         return this.http
-            .get('/api/usuario/GuardarRoles', { params: params, headers: this.headers });
+            .post<any>('/api/usuario/GuardarRoles', payload, { headers: this.headers })
+                .pipe(
+                    catchError(error => {
+                        return throwError(error);
+                    })
+                );
     }
 
     public cambiarContrasenia(contraseniaActual: string, contraseniaNueva: string): Observable<any> {
@@ -73,7 +60,7 @@ export class UsuarioService extends BaseService {
     public alta(usuario: Usuario): Observable<any> {
         let body = JSON.stringify(usuario);
         return this.http
-            .post('/api/usuario/alta', body, { headers: this.headersPost });
+            .post('/api/usuario/alta', body, {headers: this.headersPost});
     }
 
     public getPerfiles(): Observable<any> {
@@ -112,12 +99,12 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/habilitar', { params: params, headers: this.headers });
     }
 
-    public seleccionarVendedor(vendedor: number): Observable<BasicResponse<SeleccionarVendedorResponse>> {
+    public seleccionarVendedor(vendedor: string, descripcion: string): Observable<any> {
         let params: HttpParams = new HttpParams();
-        params = params.append('vendedorId', vendedor.toString());
+        params = params.append('vendedor', vendedor);
+        params = params.append('descripcion', descripcion);
         return this.http
-            .get<BasicResponse<SeleccionarVendedorResponse>>
-            ('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
+            .get('/api/usuario/seleccionarVendedor', { params: params, headers: this.headers });
     }
 
     public getRoles(): Observable<any> {
@@ -237,42 +224,18 @@ export class UsuarioService extends BaseService {
     
     public getTipoUsuario(): Observable<any> {
         return this.http
-            .get('/api/usuario/GetTipoUsuario', { headers: this.headers });
+            .get('/api/usuario/GetTipoUsuario', {headers: this.headers });
     }
     
-    public getProvedoresEmail(tipoProveedorId: string, email: string, cuitUsuario: string): Observable<any> {
+    public getProvedoresEmail(tipoProveedorId:string, email: string, cuitUsuario: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.append('email', email);
         params = params.append('tipoProveedorId', tipoProveedorId);
-        params = params.append('cuitUsuario', cuitUsuario);        
+        params = params.append('cuitUsuario', cuitUsuario);
+
+        
 
         return this.http
             .get('/api/usuario/getProvedoresEmail', { params: params, headers: this.headers });
     }
-
-    public getProveedorAprobadoPorCuit(cuit: string): Observable<ApiResponse<Proveedor>> {
-        let params = new HttpParams().append("cuit", cuit);
-
-        return this.http.get('/api/usuario/GetProveedorAprobadoPorCuit', { params, headers: this.headers })
-    }
-    public asignarNuevaCuit(datosAAsignar: AsignarNuevaCuit): Observable<ApiResponse<void>> {
-        let jsonDatosAAsignar = JSON.stringify(datosAAsignar);
-        const payload = new FormData();
-        payload.append('datosAAsignar', jsonDatosAAsignar);
-        return this.http.post('/api/usuario/AsignarNuevaCuit', payload, { headers: this.headers })
-    }
-
-    public getProvedoresUsuario(usuarioId: string): Observable<any> {
-        let params: HttpParams = new HttpParams();
-        params = params.append('usuarioId', usuarioId);
-
-        return this.http
-            .get('/api/usuario/GetProvedoresUsuario', { params: params, headers: this.headers });
-    }
-
-    desasociarVendedor(usuarioId: number, proveedorId: number) {
-        return this.http
-            .post<any>('/api/usuario/DesasociarVendedor', {usuarioId, proveedorId}, { headers: this.headers });
-    }
-
 }

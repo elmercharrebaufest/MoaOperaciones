@@ -9,7 +9,7 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
         public int Usuario_Id { get; set; }
-        public int Solp_Id { get; set; }
+        public int PeticionDeOferta_Id { get; set; }
         public DateTime FechaEnvio { get; set; }
         public bool Leido { get; set; }
         public string Mensaje { get; set; }
@@ -17,8 +17,8 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Usuario_Id")]
         public virtual Usuario Usuario { get; set; }
 
-        [ForeignKey("Solp_Id")]
-        public virtual Solp Solp { get; set; }
+        [ForeignKey("PeticionDeOferta_Id")]
+        public virtual PeticionDeOferta PeticionDeOferta { get; set; }
 
     }
 }

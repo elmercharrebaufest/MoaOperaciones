@@ -88,7 +88,7 @@ namespace SustitucionMOATest.Controllers
                     )
                 .Returns(successMessage); ;
 
-            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "","");
+            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "", "");
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 

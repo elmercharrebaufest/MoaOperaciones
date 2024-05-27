@@ -172,7 +172,6 @@
     <Compile Include="Controllers\AccesoQrController.cs" />
     <Compile Include="Controllers\ActualizarSolpController.cs" />
     <Compile Include="Controllers\LiberacionSolpController.cs" />
-    <Compile Include="Controllers\OrdenesResiduosController.cs" />
     <Compile Include="Filter\CustomExceptionHandlerAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -255,10 +254,6 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
-      <Project>{f8d4a064-e19c-4b58-b17e-f516118a6eaf}</Project>
-      <Name>SustitucionMOACustomException</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>

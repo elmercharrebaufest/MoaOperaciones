@@ -36,16 +36,15 @@ namespace SustitucionMOAWS.WSConsumers
 
         private ListarPesificacionesWSMOAResponse Map(ZMPES6500[] pesificaciones)
         {
-            var result = new ListarPesificacionesWSMOAResponse();
-            var soja200FechaCotizacionStr = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
-            var soja200FechaCotizacion = DateTime.ParseExact(soja200FechaCotizacionStr, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+            ListarPesificacionesWSMOAResponse result = new ListarPesificacionesWSMOAResponse();
 
             foreach (ZMPES6500 pesificacion in pesificaciones)
             {
-                var fechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
-                if (fechaPesificacionDate.Date == soja200FechaCotizacion)
+                var FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_PESIFICACION, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                var Soja200FechaCotizacion = repositorio.Obtener<Configuracion>(a => a.Code == "Soja200FechaCotizacion").Value;
+                if (FechaPesificacionDate.Date == DateTime.ParseExact(Soja200FechaCotizacion, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture))
                 {
-                    fechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    FechaPesificacionDate = DateTime.ParseExact(pesificacion.FECHA_CARGA, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
                 }
                 result.Pesificaciones.Add(new PesificacionSapDto
                 {
@@ -57,8 +56,8 @@ namespace SustitucionMOAWS.WSConsumers
                     KilosString = SAPFormatter.FormatearCantidad(pesificacion.KILOS, "KG"),
                     Precio = pesificacion.PRECIO,
                     PrecioString = SAPFormatter.FormatearMonto(pesificacion.PRECIO, "USD"),
-                    FechaPesificacion = SAPFormatter.FormatearFecha(fechaPesificacionDate),
-                    FechaPesificacionDate = fechaPesificacionDate.ToString("yyyy-MM-ddTHH:mm:ss"),
+                    FechaPesificacion = SAPFormatter.FormatearFecha(FechaPesificacionDate),
+                    FechaPesificacionDate = FechaPesificacionDate.ToString("yyyy-MM-ddTHH:mm:ss"),
                     TipoCambio = SAPFormatter.FormatearMonto(pesificacion.TIPO_CAMBIO, "ARP"),
                 });
             }

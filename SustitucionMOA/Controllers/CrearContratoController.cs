@@ -22,18 +22,17 @@ using Kendo.DynamicLinq;
 using System.Web.Script.Serialization;
 using SustitucionMOAUtils.Export;
 using System.Data;
-using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOA.Controllers
 {
     public class CrearContratoController : BaseController
     {
         protected readonly IRepositorio repositorio;
-        readonly IDataAgroApiService dataAgroApiService;
+        readonly ICrearContratoService crearContratoService;
 
-        public CrearContratoController(IDataAgroApiService dataAgroApiService, IRepositorio repositorio)
+        public CrearContratoController(ICrearContratoService crearContratoService, IRepositorio repositorio)
         {
-            this.dataAgroApiService = dataAgroApiService;
+            this.crearContratoService = crearContratoService;
             this.repositorio = repositorio;
         }
 
@@ -61,8 +60,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
-                string DatosContrato = dataAgroApiService.ObteneDatosContrato(tiponegocio);
+                string BolsaAutomatica = crearContratoService.ConfiguracionBolsaAutomatica();
+                string DatosContrato = crearContratoService.ObteneDatosContrato(tiponegocio);
                 return JsonCustom(new { DatosContrato, BolsaAutomatica });
             }
             catch (InfoCustomException e)
@@ -93,10 +92,10 @@ namespace SustitucionMOA.Controllers
             {
                 if (idProveedorDataAgro.HasValue)
                 {
-                    return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
+                    return JsonCustom(crearContratoService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
                 }
                 var proveedor = ObtenerProveedor();
-                return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
+                return JsonCustom(crearContratoService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
             }
             catch (InfoCustomException e)
             {
@@ -145,7 +144,7 @@ namespace SustitucionMOA.Controllers
                 contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
                 contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string result = dataAgroApiService.CrearContratoAPrecio(contratoAPrecio);
+                string result = crearContratoService.CrearContratoAPrecio(contratoAPrecio);
 
                 return JsonCustom(result);
             }
@@ -193,7 +192,7 @@ namespace SustitucionMOA.Controllers
                 contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-                string result = dataAgroApiService.CrearContratoAFijar(contratoAFijar);
+                string result = crearContratoService.CrearContratoAFijar(contratoAFijar);
 
                 return JsonCustom(result);
             }
@@ -222,7 +221,7 @@ namespace SustitucionMOA.Controllers
             {
                 var proveedor = ObtenerProveedor();
 
-                var directo = dataAgroApiService.ValidarDirecto(proveedor.CUIT);
+                var directo = crearContratoService.ValidarDirecto(proveedor.CUIT);
                 int result = 0;
                 if (directo == "false")
                 {
@@ -263,7 +262,7 @@ namespace SustitucionMOA.Controllers
                 {
                     var proveedor = ObtenerProveedor();
 
-                    return JsonCustom(dataAgroApiService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
+                    return JsonCustom(crearContratoService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
                 }
                 else
                 {
@@ -298,11 +297,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string HabilitarPizarra = dataAgroApiService.HabilitarPizarra(material, tiponegocio);
-                string HabilitarCampana = dataAgroApiService.HabilitarCampaña(material);
-                string TraerPrecioMoa = dataAgroApiService.TraerPrecioMoa(material, tiponegocio);
-                string TraerPagosDiferido = dataAgroApiService.TraerPagosDiferido(material, tiponegocio);
-                string TraerHabilitarSustentable = dataAgroApiService.TraerHabilitarSustentable();
+                string HabilitarPizarra = crearContratoService.HabilitarPizarra(material, tiponegocio);
+                string HabilitarCampana = crearContratoService.HabilitarCampaña(material);
+                string TraerPrecioMoa = crearContratoService.TraerPrecioMoa(material, tiponegocio);
+                string TraerPagosDiferido = crearContratoService.TraerPagosDiferido(material, tiponegocio);
+                string TraerHabilitarSustentable = crearContratoService.TraerHabilitarSustentable();
                 var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
                 return JsonCustom(result);
             }
@@ -332,7 +331,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(dataAgroApiService.HabilitarCampaña(material));
+                return JsonCustom(crearContratoService.HabilitarCampaña(material));
             }
             catch (InfoCustomException e)
             {
@@ -360,7 +359,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(dataAgroApiService.HabilitarPizarra(material, tiponegocio));
+                return JsonCustom(crearContratoService.HabilitarPizarra(material, tiponegocio));
             }
             catch (InfoCustomException e)
             {
@@ -392,11 +391,11 @@ namespace SustitucionMOA.Controllers
 
                 if (esCorredorEnDataAgro)
                 {
-                    return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
+                    return JsonCustom(crearContratoService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
                 }
                 else
                 {
-                    return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
+                    return JsonCustom(crearContratoService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
 
                 }
             }
@@ -448,7 +447,7 @@ namespace SustitucionMOA.Controllers
                 contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-                string result = dataAgroApiService.CrearContratoFijacion(contratoFijacion);
+                string result = crearContratoService.CrearContratoFijacion(contratoFijacion);
 
                 return JsonCustom(result);
             }
@@ -640,7 +639,7 @@ namespace SustitucionMOA.Controllers
             }
             filtros.Add(new Kendo.DynamicLinq.Filter { Field = "ComercialCreadorId", Value = (int)proveedor.IdDataAgro, Operator = "eq" });//es el ProveedorCreadorId en el BasicoContrato
             request.Filter.Filters = filtros;
-            string result = dataAgroApiService.GetContratos(request);
+            string result = crearContratoService.GetContratos(request);
             return result;
         }
 
@@ -650,11 +649,11 @@ namespace SustitucionMOA.Controllers
             {
                 if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
                 {
-                    return JsonCustom(dataAgroApiService.ValidarProveedor(proveedorId));
+                    return JsonCustom(crearContratoService.ValidarProveedor(proveedorId));
                 }
                 Proveedor proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
+                return JsonCustom(crearContratoService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
             }
             catch (InfoCustomException e)
             {
@@ -683,7 +682,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
+                return JsonCustom(crearContratoService.TraerPrecioMoaMateriales(tipoNegocioId));
             }
             catch (InfoCustomException e)
             {
@@ -712,7 +711,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(dataAgroApiService.AnularNegocio(negocioId, tipoNegocioId, motivo));
+                return JsonCustom(crearContratoService.AnularNegocio(negocioId, tipoNegocioId, motivo));
             }
             catch (InfoCustomException e)
             {
@@ -741,7 +740,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(dataAgroApiService.TraerContratoCompleto(negocioId, tipoNegocioId));
+                return JsonCustom(crearContratoService.TraerContratoCompleto(negocioId, tipoNegocioId));
             }
             catch (InfoCustomException e)
             {
@@ -789,7 +788,7 @@ namespace SustitucionMOA.Controllers
                     return JsonCustom(new { info = errores });
                 }
 
-                BasicoContrato acuerdo = dataAgroApiService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+                BasicoContrato acuerdo = crearContratoService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
                 if (acuerdo.ContratoId == 0)
                 {
                     errores.Add(string.Concat("El Acuerdo seleccionado no es valido."));
@@ -816,9 +815,9 @@ namespace SustitucionMOA.Controllers
                 if (fileSubido.ContentLength > 0)
                 {
                     var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
-                    var materiales = dataAgroApiService.BuscarMateriales();
-                    var centros = dataAgroApiService.BuscarCentros();
-                    var campanias = dataAgroApiService.BuscarCampanias();
+                    var materiales = crearContratoService.BuscarMateriales();
+                    var centros = crearContratoService.BuscarCentros();
+                    var campanias = crearContratoService.BuscarCampanias();
                     var validations = GetValidatorContratos(materiales, centros, campanias);
                     var validator = new ExcelValidator(validations);
 
@@ -877,7 +876,7 @@ namespace SustitucionMOA.Controllers
                         }
                         else
                         {
-                            List<GrabarContratoResult> resultados = dataAgroApiService.CrearContratoMasivo(contratos);
+                            List<GrabarContratoResult> resultados = crearContratoService.CrearContratoMasivo(contratos);
 
                             foreach (var item in resultados)
                             {
@@ -1129,7 +1128,7 @@ namespace SustitucionMOA.Controllers
             {
                 var proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
+                return JsonCustom(crearContratoService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
             }
             catch (InfoCustomException e)
             {
@@ -1158,16 +1157,16 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var excel = dataAgroApiService.ExcelModeloAltaMasiva();
+                var excel = crearContratoService.ExcelModeloAltaMasiva();
                 PDFResponse result = new PDFResponse
                 {
-                    Pdf = new Pdf()
+                    pdf = new Pdf()
                     {
                         data = excel
                     }
                 };
 
-                return JsonCustom(result.Pdf);
+                return JsonCustom(result.pdf);
             }
             catch (InfoCustomException e)
             {
@@ -1199,7 +1198,7 @@ namespace SustitucionMOA.Controllers
             string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == userMail);
 
-            if (!usuario.EsAdmin() && !usuario.TienePermiso(PermisoEnum.ElegirTodosVendedores))
+            if (!usuario.EsAdmin() && !usuario.TienePermiso("ELEGIR TODOS VENDEDORES"))
             {
                 if (!usuario.TieneProveedor(vendedor))
                 {

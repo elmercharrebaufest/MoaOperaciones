@@ -154,7 +154,7 @@
                             <td><a (click)="descargaPDF(liquidacion.documento, liquidacion.ejercicio)" href="#"><span class="fa  fa-file-pdf-o " *ngIf="liquidacion.comprobante != ''"></span> {{liquidacion.comprobante}}</a></td>
                             <td>{{liquidacion.producto}}</td>
                             <td>{{liquidacion.liquidadoString}}</td>
-                            <td>{{liquidacion.TotalStr}}</td>
+                            <td>{{liquidacion.importeString}}</td>
                             <td><a class="animate" (click)="goToSeccionParam('/contrato/detalle', liquidacion.contrato)" href="#">{{liquidacion.contrato}}</a></td>
                             <td><a class="animate" (click)="goToSeccionParam('pago/detalle', liquidacion.detallePago)" href="#">{{liquidacion.detallePago}}</a></td>
                             <td><a (click)="showModal(liquidacion.contrato, liquidacion.secuencia, liquidacion.comprobante)" href="#" class="animate"><span class="fa fa-search"></span></a></td>

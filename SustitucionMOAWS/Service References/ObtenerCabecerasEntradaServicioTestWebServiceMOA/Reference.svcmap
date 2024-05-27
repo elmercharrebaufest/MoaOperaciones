@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="854fcd17-8243-4657-bc86-a8f0a8f99ba8" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ID="61196e54-6edc-471e-84e4-5faa861b0abf" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -22,7 +22,7 @@
     <MetadataSource Address="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/e64338efa7633acdb28b4a333b7c96b0" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST.wsdl" MetadataType="Wsdl" ID="23e59232-c08c-4603-a2a1-54cd4b3f904e" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/e64338efa7633acdb28b4a333b7c96b0" />
+    <MetadataFile FileName="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST.wsdl" MetadataType="Wsdl" ID="56550039-e743-4050-8859-fda578afe332" SourceId="1" SourceUrl="http://gslopidevqa00.molinosagro.ad:50000/dir/wsdl?p=ic/e64338efa7633acdb28b4a333b7c96b0" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

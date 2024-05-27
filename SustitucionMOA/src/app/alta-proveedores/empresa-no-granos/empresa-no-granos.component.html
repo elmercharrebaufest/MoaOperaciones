@@ -1,5 +1,5 @@
 <div class="content-wraper">
-    <div #mainDiv class="row titleSection">Alta Proveedores: <strong>{{razonSocial}} ({{proveedorCUIT}})</strong></div>
+    <div class="row titleSection">Alta Proveedores: <strong>{{razonSocial}} ({{proveedorCUIT}})</strong></div>
     <mensaje #msjEmpresaGranos></mensaje>
     <spinner-small></spinner-small>
     <div class="myRow firstSection" id="container">
@@ -93,27 +93,6 @@
                                             {{archivo.Nombre}}
                                         </a>
 
-                                        <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container-fluid" *ngIf="declaracionVinculosObligatorio">
-                            <div class="col-xs-12">
-                                <label for="declaracionVinculosAltaInterna">
-                                    <span class="link-adjuntar">Adjuntar</span> Declaración Vínculos <span
-                                        class="requerido">*</span>
-                                </label>
-                                <input style="display:none" type="file" class="form-control-file"
-                                    id="declaracionVinculosAltaInterna"
-                                    (change)="handleFileInput($event.target.files, 'declaracionVinculosAltaInterna')">
-                                <div class="container-archivos">
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'declaracionVinculosAltaInterna'">
-                                        <a class="link-archivo" (click)="descargarArchivo(archivo)">
-                                            {{archivo.Nombre}}
-                                        </a>
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
                                             title="Eliminar Adjunto">Eliminar</a>
                                     </span>

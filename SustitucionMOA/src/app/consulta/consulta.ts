@@ -1,6 +1,3 @@
-import { Archivo } from "../common/models/archivo";
-import { Usuario } from "../usuario/usuario";
-
 export interface Consulta {
     Id;
     CodigoCorredor;
@@ -18,7 +15,6 @@ export interface Consulta {
     UsuarioId;
     UsuarioActualId;
     UsuarioInternoId;
-    FechaVtoReapertura;
 
 
     Fecha;
@@ -35,19 +31,10 @@ export interface Consulta {
     SubCategoria?;
     EstadoConsulta;
     CausaConsulta;
-    Comentarios: Comentario[];
-
+    Comentarios;
+    
     DiasReclamo;
     Usuario?;
-    PuedeReabrir;
-
-    RelacionadaPorCodigo?: boolean;
-    GeneradaInternamente?: boolean;
-    GeneradaExternamente?: boolean;
-    GeneradaPorUsuarioSesion?: boolean;
-
-    MailUsuarioIniciaConsulta?: string;
-    Rubro: string;
 }
 
 export interface EstadoConsulta {
@@ -83,21 +70,14 @@ export interface Materiales {
     Descripcion;
 }
 
-export class Comentario {
-    Consulta_Id?: any;
-    consulta_Id: any;
-    Detalle: string;
+export class Comentario{
+    consulta_Id: any; 
+    Detalle: any; 
     Fecha: any;
+    Recordado: any;
     FechaRecordado: any;
-    UsuarioId?: number;
-    Id?: number;
-    Usuario?: Usuario;
-    Recordado?: boolean;
-    CreadorInterno?: boolean;
-    Archivos?: Archivo[];
-    ComentarioRecordados?: any;
 }
-export class ReclamoImpositivo {
+export class ReclamoImpositivo{
     Dni;
     RazonSocialEmpresa;
     RazonSocialProveedor;
@@ -106,29 +86,14 @@ export class ReclamoImpositivo {
     Reclamos: Array<Reclamo>;
     Lugar;
 }
-export interface Reclamo {
+export interface Reclamo{
     Fecha;
     Certificado;
     Importe;
 }
 
-export class Destinatario {
+export class Destinatario{
     Campo: string;
     Mail: string;
     UsuarioId: number;
-    NombreTipoUsuario;
-}
-
-export enum OpcionFiltroAsociadaCreacion {
-    Externa = "Externa",
-    PorMOA = "Por MOA",
-    PorUsuario = "Propias",
-}
-
-export function obtenerOpcionesFiltroPorCreacion(): Array<{ key: OpcionFiltroAsociadaCreacion, value: OpcionFiltroAsociadaCreacion }> {
-    return [
-        { key: OpcionFiltroAsociadaCreacion.Externa, value: OpcionFiltroAsociadaCreacion.Externa },
-        { key: OpcionFiltroAsociadaCreacion.PorMOA, value: OpcionFiltroAsociadaCreacion.PorMOA },
-        { key: OpcionFiltroAsociadaCreacion.PorUsuario, value: OpcionFiltroAsociadaCreacion.PorUsuario },
-    ]
 }

@@ -38,10 +38,5 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
         ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
-        ProveedorDto GetProveedorAprobadoPorCuit(string cuit, string mailUsuarioSesion);
-        void AsignarNuevaCUIT(AsignarNuevaCuitDto datosAsignar, string mailUsuarioSesion);
-        List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId);
-        List<ProveedorDto> GetProveedoresUsuario(int usuarioId);
-        void DesasociarVendedor(int usuarioId, int proveedorId, string mailUsuarioSesion);
     }
 }

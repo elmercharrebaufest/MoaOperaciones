@@ -30,9 +30,6 @@ namespace SustitucionMOAModel.Dto
         public string RespetaMaterialesDescripcion { get; set; }
         public bool TieneObservacionEconomica { get; set; }
         public decimal? PorcentajeDeHoras { get; set; }
-        public List<AdjudicacionDto> Adjudicaciones { get; set; }
-        public decimal TodasTotalGlobal { get; set; }
-        public decimal TodasTotalGlobalSubPos { get; set; }
     }
 
     public class CotizacionPosicionDto
@@ -76,9 +73,6 @@ namespace SustitucionMOAModel.Dto
         public decimal? SegundaCantidad { get; set; }
         public int? TercerPlazoDeOferta { get; set; }
         public decimal? TerceraCantidad { get; set; }
-        public bool EstaEliminado { get; set; }
-        public decimal TodasTotalPesos { get; set; }
-        public decimal TodasTotalARPCotizacionPosicion { get; set; }
     }
 
     public class CotizacionSubPosicionDto
@@ -147,7 +141,7 @@ namespace SustitucionMOAModel.Dto
 
     public class CotizacionSubposicionesDto
     {
-        public int? CotizacionSubPosicionId { get; set; }
+        public int CotizacionSubPosicionId { get; set; }
         public decimal Precio { get; set; }
         public int? MonedaId { get; set; }
         public int CotizacionPosicionId { get; set; }

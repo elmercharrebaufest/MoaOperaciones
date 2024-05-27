@@ -29,7 +29,6 @@ namespace SustitucionMOATest.Controllers
         private ConsultaController target;
         private Mock<IConsultaService> consultaServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
-        private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IOrdenDeCargaService> ordenDeCargaServiceMock;
         private string expectedJson;
         private string resultJson;
@@ -41,7 +40,6 @@ namespace SustitucionMOATest.Controllers
         {
             consultaServiceMock = new Mock<IConsultaService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
-            vendedorServiceMock = new Mock<IVendedorService>();
             ordenDeCargaServiceMock = new Mock<IOrdenDeCargaService>();
             repositorioMock = new Mock<IRepositorio>();
 
@@ -161,7 +159,7 @@ namespace SustitucionMOATest.Controllers
 
             consultaServiceMock.Setup(x => x.ObtenerConsulta(It.IsAny<int>())).Returns(consultaDto);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(consultaDto);
 
             resultado = target.Detalle(mockedId);
@@ -177,7 +175,7 @@ namespace SustitucionMOATest.Controllers
         {
             var mockedId = -1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id de consulta inválido" });
             
             resultado = target.Detalle(mockedId);
@@ -326,7 +324,7 @@ namespace SustitucionMOATest.Controllers
 
             consultaServiceMock.Setup(x => x.RecategorizarConsulta(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>())).Verifiable();
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { });
 
             resultado = target.Recategorizar(mockedConsultaId, mockedCategoriaId, mockedSubCategoriaId);
@@ -344,7 +342,7 @@ namespace SustitucionMOATest.Controllers
             var mockedCategoriaId = 1;
             var mockedSubCategoriaId = 1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
             resultado = target.Recategorizar(mockedConsultaId, mockedCategoriaId, mockedSubCategoriaId);
@@ -362,7 +360,7 @@ namespace SustitucionMOATest.Controllers
             var mockedCategoriaId = -1;
             var mockedSubCategoriaId = 1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
             resultado = target.Recategorizar(mockedConsultaId, mockedCategoriaId, mockedSubCategoriaId);
@@ -381,7 +379,7 @@ namespace SustitucionMOATest.Controllers
 
             consultaServiceMock.Setup(x => x.ActualizarEstadoConsulta(It.IsAny<int>(), It.IsAny<int>())).Verifiable();
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { });
 
             resultado = target.ActualizarEstado(mockedConsultaId, mockedEstadoId);
@@ -398,7 +396,7 @@ namespace SustitucionMOATest.Controllers
             var mockedConsultaId = -1;
             var mockedEstadoId = 1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
             resultado = target.ActualizarEstado(mockedConsultaId, mockedEstadoId);
@@ -415,7 +413,7 @@ namespace SustitucionMOATest.Controllers
             var mockedConsultaId = 1;
             var mockedCategoriaId = -1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
             resultado = target.ActualizarEstado(mockedConsultaId, mockedCategoriaId);
@@ -435,7 +433,7 @@ namespace SustitucionMOATest.Controllers
 
             consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(),It.IsAny<HttpFileCollectionBase>())).Returns(SuccessMsg.ArchivoSubidoOK);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { data = SuccessMsg.ArchivoSubidoOK });
 
@@ -454,7 +452,7 @@ namespace SustitucionMOATest.Controllers
             var mockedComentarioId = 1;
             var cantidadArchivosMocked = 1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
@@ -473,7 +471,7 @@ namespace SustitucionMOATest.Controllers
             var mockedComentarioId = -1;
             var cantidadArchivosMocked = 1;
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "Id inválido" });
 
@@ -494,7 +492,7 @@ namespace SustitucionMOATest.Controllers
 
             consultaServiceMock.Setup(x => x.AgregarAdjuntoComentario(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<HttpFileCollectionBase>())).Throws(new InfoCustomException("No se adjuntaron archivos"));
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             cargarFiles(cantidadArchivosMocked);
             expectedJson = JsonConvert.SerializeObject(new { info = "No se adjuntaron archivos" });
 
@@ -548,7 +546,7 @@ namespace SustitucionMOATest.Controllers
             var httpContextMock = new Mock<HttpContextBase>();
             httpContextMock.Setup(x => x.Request).Returns(httpRequestMock.Object);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             target.ControllerContext = new ControllerContext(httpContextMock.Object, new System.Web.Routing.RouteData(), target);
 
             consultaServiceMock
@@ -604,7 +602,7 @@ namespace SustitucionMOATest.Controllers
 
             this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
             
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
 
             var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
 
@@ -637,7 +635,7 @@ namespace SustitucionMOATest.Controllers
 
             this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
 
             var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
 
@@ -671,7 +669,7 @@ namespace SustitucionMOATest.Controllers
 
             this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
 
             var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
@@ -705,7 +703,7 @@ namespace SustitucionMOATest.Controllers
 
             this.usuarioServiceMock.Setup(x => x.GetUsuario("mail@mail.com")).Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
 
             var result = target.Consulta(consultaJsonTest, comentarioJsonTest);
@@ -730,7 +728,7 @@ namespace SustitucionMOATest.Controllers
                 .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
                 .Returns("Anulada ok");
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
 
             string mensajeResultData = result.Data.GetType().GetProperty("Mensaje").GetValue(result.Data).ToString();
@@ -756,7 +754,7 @@ namespace SustitucionMOATest.Controllers
                 .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
                 .Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
 
             string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
@@ -782,7 +780,7 @@ namespace SustitucionMOATest.Controllers
                 .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
                 .Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);
 
             string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
@@ -807,7 +805,7 @@ namespace SustitucionMOATest.Controllers
                 .Setup(x => x.AnularConsulta(consultaIdTest, 0, motivoRechazoTest))
                 .Throws(exceptionTest);
 
-            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, vendedorServiceMock.Object, ordenDeCargaServiceMock.Object);
+            target = new ConsultaController(consultaServiceMock.Object, usuarioServiceMock.Object, ordenDeCargaServiceMock.Object);
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new System.IO.StringWriter()));
             
             var result = target.AnularConsulta(consultaIdTest, motivoRechazoTest);

@@ -121,11 +121,6 @@ namespace SustitucionMOAWS.WSConsumers
                 //cabe.Proveedor = cabecera.PERSON_EXT; //Nombre del proveedor en la oc
                 cabe.Descripcion = cabecera.SHORT_TEXT;
                 cabe.MontoTotal = cabecera.GROSS_VAL;
-                cabe.Ingresante = cabecera.CREATED_BY;
-
-                // Momentaneo mientras se encontra la forma de buscar el aprobador o fiscal de la ES de sap
-                cabe.Aprobador = "-"; 
-                cabe.Fiscal = "-";
 
                 result.Add(cabe);
             }

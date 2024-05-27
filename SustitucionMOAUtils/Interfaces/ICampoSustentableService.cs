@@ -22,7 +22,6 @@ namespace SustitucionMOAUtils.Interfaces
         CampoProveedorDto ObtenerCampo(string mailUsuario, int proveedorId, int campoCosechaId);
         List<Cosecha> ObtenerCosechas(bool incluirInactivas);
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
-        string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
-        Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
+        string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);    
     }
 }

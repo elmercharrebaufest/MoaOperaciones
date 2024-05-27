@@ -14,12 +14,11 @@ import { ModalService } from './../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
-import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales, obtenerOpcionesFiltroPorCreacion, OpcionFiltroAsociadaCreacion } from '../consulta';
+import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
-import { DatosCartaPorteConDisconformidadCalidades, SendDataService } from '../send-data.service';
 
 declare var $: any;
 
@@ -55,7 +54,6 @@ export class MisConsultasComponent extends ListBaseComponent {
     cols: any[];
     colsFiltered: any[];
     consultas: Consulta[];
-    consultasFiltradas: Consulta[];
     estados: EstadoConsulta[];
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
@@ -77,19 +75,12 @@ export class MisConsultasComponent extends ListBaseComponent {
     estadoConsultaSeleccionado: EstadoConsulta[];
     categoriaSeleccionada: Categoria[];
 
-    opcionesFiltroPorCreacion = obtenerOpcionesFiltroPorCreacion();
-    filtrosPorCreacionSeleccionados: { key: OpcionFiltroAsociadaCreacion, label: OpcionFiltroAsociadaCreacion }[] = [];
-
-    datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
-
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
     }
 
-    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private sendDataService: SendDataService) {
+    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-
-        this.datosCartaPorteConDisconformidadCalidades = sendDataService.getDatosCartaPorteConDisconformidadCalidades();
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -402,8 +393,6 @@ export class MisConsultasComponent extends ListBaseComponent {
                             x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
                             x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
                         });
-                        this.filtrarPorTipoGeneracion();
-
                         this.estados = result.data.estados;
                         this.estados.forEach(e => {
                             let estado = result.data.estados.filter(x => x.Id == e.Id)[0];
@@ -420,8 +409,6 @@ export class MisConsultasComponent extends ListBaseComponent {
                         let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
                         this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
 
-                        if (this.datosCartaPorteConDisconformidadCalidades)
-                            this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
 
                         this.setfilter();
                     }
@@ -471,9 +458,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                 "Impuesto retenido / Impuesto percibido / Impuesto": c.Impuesto || "",
                 "Importe retención": c.Importe || "",
                 "Causa": c.CausaConsulta ? c.CausaConsulta.Nombre : '',
-                "Bolsa emisora de oblea": c.BolsaEmisoraOblea || "",
-                "Usuario que inicia consulta": c.MailUsuarioIniciaConsulta || '',
-                "Rubro/s (Discrepancia)": c.Rubro || ''
+                "Bolsa emisora de oblea": c.BolsaEmisoraOblea || ""
             }
         });
 
@@ -538,58 +523,5 @@ export class MisConsultasComponent extends ListBaseComponent {
                 document.body.removeChild(link);
             }
         }
-    }
-    filtrarPorTipoGeneracion() {
-        if (!this.consultas || !this.consultas.length) {
-            return;
-        }
-        const filtrarPorGeneradasPorUsuario = this.filtrarPorGeneradasPorUsuario();
-        const filtrarPorGeneradasPorMOA = this.filtrarPorGeneradasPorMOA();
-        const filtrarPorGeneradasPorExterno = this.filtrarPorGeneradasPorExterno();
-        //Opción donde se ven todas las consultas
-        //Retornamos sin filtrar
-        if ((filtrarPorGeneradasPorExterno &&
-            filtrarPorGeneradasPorMOA &&
-            filtrarPorGeneradasPorUsuario) ||
-            (!filtrarPorGeneradasPorExterno &&
-                !filtrarPorGeneradasPorMOA &&
-                !filtrarPorGeneradasPorUsuario) ||
-            this.filtrosPorCreacionSeleccionados.length == 0) {
-            this.consultasFiltradas = [...this.consultas]
-            return;
-        }
-
-        this.consultasFiltradas = this.consultas.filter(consulta => {
-            return (filtrarPorGeneradasPorExterno && consulta.GeneradaExternamente) ||
-                (filtrarPorGeneradasPorMOA && consulta.GeneradaInternamente) ||
-                (filtrarPorGeneradasPorUsuario && consulta.GeneradaPorUsuarioSesion)
-        })
-    }
-
-    filtrarPorGeneradasPorUsuario() {
-        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.PorUsuario)
-    }
-    filtrarPorGeneradasPorMOA() {
-        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.PorMOA)
-    }
-    filtrarPorGeneradasPorExterno() {
-        return !!this.filtrosPorCreacionSeleccionados.find(sel => sel.key === OpcionFiltroAsociadaCreacion.Externa)
-    }
-
-    public extraOnDestroy(): void {
-        this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades();
-    }
-
-    abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad() {
-        const consulta = this.consultas.find(
-            consulta =>
-                consulta.ComprobanteNo === this.datosCartaPorteConDisconformidadCalidades.NroCCPP &&
-                consulta.Categoria.Code === "DISCAL"
-        );
-        if (!consulta) {
-            return;
-        }
-        this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
-        this.openModal(consulta.Id, consulta.Asunto)
     }
 }

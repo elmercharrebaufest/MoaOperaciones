@@ -67,7 +67,6 @@ export class ReporteOcComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
-        this.navService.setSeccionList([]);
         this.obtenerReporteOrdenDeCompra();
     }
 

@@ -366,11 +366,6 @@ namespace SustitucionMOAModel.Entities
                 case "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS": return PermisoEnum.AdjudicarDentroDelPlazoDeOfertas;
                 case "FASON - MODIFICAR CAMPO REVENTA": return PermisoEnum.Fason_ModificarCampoReventa;
                 case "HANGFIREDASHBOARD": return PermisoEnum.HangfireDashboard;
-                case "VER ORDENES DE CARGA RESIDUOS": return PermisoEnum.VerOrdenesDeCargaResiduos;
-                case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
-                case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
-
-                case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
                 case "ADMIN CONTABILIZACION MES ANTERIOR": return PermisoEnum.AdminContabilizacionMesAnterior;
 
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
@@ -453,9 +448,6 @@ namespace SustitucionMOAModel.Entities
                 case "FLETE MOA": return RolEnum.FleteMOA;
                 case "REVENDEDOR FASON": return RolEnum.RevendedorFason;
                 case "ORDEN DE CARGA": return RolEnum.OrdenDeCarga;
-                case "RESIDUOS": return RolEnum.Residuos;
-                case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
-                case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
                 case "ADMIN CONTABILIZACION MES ANTERIOR": return RolEnum.AdminContabilizacionMesAnterior;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;

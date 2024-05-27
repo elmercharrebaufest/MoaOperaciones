@@ -14,14 +14,13 @@ namespace SustitucionMOA
         {
             GlobalConfiguration.Configuration.UseSqlServerStorage("HfContexto");
             GlobalConfiguration.Configuration.UseNLogLogProvider();
-            app.UseHangfireServer();
-            //app.UseHangfireDashboard("/hangfire");
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new HangFireAuthorizationFilter() }
-            });
-            Register();
-
+            //app.UseHangfireServer();
+            ////app.UseHangfireDashboard("/hangfire");
+            //app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            //{
+            //    Authorization = new[] { new HangFireAuthorizationFilter() }
+            //});
+            //Register();
         }
 
         private void Register()
@@ -73,7 +72,7 @@ namespace SustitucionMOA
 
             RecurringJob.RemoveIfExists("ObtenerSolpsDesdeSAPJob");
 
-            RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidadesPartidosJob>("ActualizarLocalidades", j => j.Execute(),
+            RecurringJob.AddOrUpdate<Jobs.IActualizarLocalidades>("ActualizarLocalidades", j => j.Execute(),
                  "0 0 * * *", tz);
 
             RecurringJob.AddOrUpdate<Jobs.IActualizarSISAJob>("ActualizarSISAJob", j => j.Execute(),
@@ -99,18 +98,6 @@ namespace SustitucionMOA
                 "VerificarOrdenesFacturaCompensadaJob",
                 j => j.Execute(),
                 "0 * * * *", tz);
-            RecurringJob.AddOrUpdate<Jobs.ICcSsObtenerArchivosUcropJob>(
-                "CcSsObtenerArchivosUcropJob",
-                j => j.Execute(),
-                "*/5 * * * *", tz);
-            RecurringJob.AddOrUpdate<Jobs.IEnviarCamposUcropitJob>(
-                "EnviarCamposUcropitJob",
-                j => j.Execute(),
-                "0 0 * * TUE,THU", tz);
-            RecurringJob.AddOrUpdate<Jobs.IVencimientoOrdenesResiduosJob>(
-                "VencimientoOrdenesResiduosJob",
-                j => j.Execute(),
-                "30 8 * * *", tz);
         }
     }
 

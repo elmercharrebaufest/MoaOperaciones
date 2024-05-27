@@ -6,7 +6,7 @@ namespace SustitucionMOAModel.Dto
     public class ChatComprasDto
     {    
         public List<ChatInternoComprasDto> Mensajes { get; set; }
-        public int Solp_Id { get; set; }
+        public int PeticionDeOferta_Id { get; set; }
         public string FechaCreacion { get; set; }
         public DateTime FechaCreacionDate { get; set; }
 
@@ -19,7 +19,7 @@ namespace SustitucionMOAModel.Dto
         public int Id { get; set; }
         public int Usuario_Id { get; set; }
         public string RolUsuario { get; set; }
-        public int Solp_Id { get; set; }
+        public int PeticionDeOferta_Id { get; set; }
         public string FechaEnvio { get; set; }
         public DateTime FechaEnvioDate { get; set; }
 

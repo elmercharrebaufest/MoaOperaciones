@@ -1,5 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ConfirmationService } from 'primeng/api';
 import { AdjudicacionDto } from '../../../../modelos/adjudicacion';
 import { ComprasService } from '../../../compras.service';
 import { NavService } from '../../../../common/services/NavService';
@@ -17,56 +19,49 @@ export class TextosAdjudicarComponent implements OnInit {
 
     @Input()
     displayTextos: boolean;
-    @Input()
-    public adjudicacion: AdjudicacionDto;
     @Input('locale') es: any;
 
-    index: number;
-    activeTabs: boolean[] = [false, false, false, false];
-    condicionesDeEntrega?: string;
-    condicionesDePago?: string;
-    garantias?: string;
-    textoDeCabecera?: string;
+    @Input()
+    public adjudicacion: AdjudicacionDto;
+    index: number
 
     @Output() cerrarModalTextosEmitter = new EventEmitter();
+    @Output() aceptarModalTextosEmitter = new EventEmitter();
+    activeTabs: boolean[] = [false, false, false, false];
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router) {
+        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
     }
+   
+    
 
-    ngOnInit() {
-        if (this.adjudicacion == null) {
+    ngOnInit() {       
+        if(this.adjudicacion == null){
             this.adjudicacion = {
                 Id: null,
-            }
+            };
         }
-        setTimeout(() => {
-            this.condicionesDeEntrega = this.adjudicacion.CondicionesDeEntrega;
-            this.condicionesDePago = this.adjudicacion.CondicionesDePago;
-            this.garantias = this.adjudicacion.Garantias;
-            this.textoDeCabecera = this.adjudicacion.TextoDeCabecera;
-        }, 2000);
     }
-
-    onCerrarTextos(aceptar: boolean) {
-        if (aceptar) {
-            this.condicionesDeEntrega = this.adjudicacion.CondicionesDeEntrega;
-            this.condicionesDePago = this.adjudicacion.CondicionesDePago;
-            this.garantias = this.adjudicacion.Garantias;
-            this.textoDeCabecera = this.adjudicacion.TextoDeCabecera;
-        } else {
-            this.adjudicacion.CondicionesDeEntrega = this.condicionesDeEntrega;
-            this.adjudicacion.CondicionesDePago = this.condicionesDePago;
-            this.adjudicacion.Garantias = this.garantias;
-            this.adjudicacion.TextoDeCabecera = this.textoDeCabecera;
-        }
+    
+    onCerrarTextos(aceptar:boolean) {     
+        if(aceptar){ 
+            this.reestablecerDatos()
+        }  
         this.closeAccordion();
         this.cerrarModalTextosEmitter.next();
+      
     }
 
-    closeAccordion() {
-        this.activeTabs = [false, false, false, false];
-    }
+   reestablecerDatos(){
+    this.adjudicacion.CondicionesDeEntrega = "";
+        this.adjudicacion.CondicionesDePago = "";
+        this.adjudicacion.Garantias = "";
+        this.adjudicacion.TextoDeCabecera = "";  
+   }
 
+  closeAccordion() {
+    this.activeTabs = [false,false,false,false];
+  }
+        
 }

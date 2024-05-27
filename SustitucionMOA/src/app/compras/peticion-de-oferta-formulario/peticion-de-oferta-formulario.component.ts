@@ -15,7 +15,6 @@ import { ModalService } from '../../common/services/ModalService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { AltaNuevoProveedor, EnvioSolpCompra, PosicionCompra, SolpCompraDto, SolpProveedorDto, SolpSubposicionDto } from '../solp-compra';
 import { RegistroInfoDto } from '../../modelos/registro-info';
-import { first } from 'rxjs/operators';
 
 @Component({
     selector: 'app-peticion-de-oferta-formulario',
@@ -58,7 +57,6 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     displayRegistroInfo: boolean = false;
     TodasPosicionesSeleccionadas: boolean = false;
     pliegoDeGeneralidades: boolean = false;
-    esTipoPOMultiple: boolean = false;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -73,20 +71,12 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.solpCompraDto = { Id: null, NroSolp: null, PosicionCompras: null, TipoPosicionCodigo: "" };
         this.altaNuevoProveedor = { CUIT: null, Mail: null, RazonSocial: null };
 
-        this.route.params.subscribe(params => {
-            let ids = params['id'];
-  
-            if(!isNaN(ids)){
-                this.obtenerSolpCompras(ids);
-                this.esTipoPOMultiple = false;
-                
-
-            } else {
-                this.obtenerPosicionesMultipleCompras(ids);
-                this.esTipoPOMultiple = true;
-
-            }
-        });
+        if (this.route.params) {
+            this.route.params.forEach((params: Params) => {
+                let id = parseInt(params["id"]);
+                this.obtenerSolpCompras(id);
+            })
+        };
 
         const validos = this.filtrarProveedores(this.proveedores, 'validos');
         const invalidos = this.filtrarProveedores(this.proveedores, 'invalidos');
@@ -110,7 +100,23 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.procesarResultado(result);
+                        this.solpCompraDto = result.data;
+                        //verificar tipo de pos y si es serv setear selected en true
+                        if (this.esTipoServicio) {
+                            this.solpCompraDto.PosicionCompras.forEach(x => x.Selected = true);
+                        }
+                        for (var i = 0; i < this.solpCompraDto.PosicionCompras.length; i++) {
+                            for (var j = 0; j < this.solpCompraDto.PosicionCompras[i].ProveedoresCompras.length; j++) {
+                                this.proveedores.push(this.solpCompraDto.PosicionCompras[i].ProveedoresCompras[j])
+                            }
+                        }
+                        const validos = this.filtrarProveedores(this.proveedores, 'VALIDO');
+                        const invalidos = this.filtrarProveedores(this.proveedores, 'INVALIDO');
+                        const noSugeridos = this.filtrarProveedores(this.proveedores, 'NOSUGERIDO');
+
+                        this.proveedoresValidos = this.mostrarProveedores(validos);
+                        this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
+                        this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
 
                     }
                     this.blockUI.stop();
@@ -127,65 +133,12 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         return false; //<-- Prevent Refresh
     }
 
-    private procesarResultado(result: any) {
-        this.solpCompraDto = result.data;
-        //verificar tipo de pos y si es serv setear selected en true
-        if (this.esTipoServicio) {
-            this.solpCompraDto.PosicionCompras.forEach(x => x.Selected = true);
-        }
-
-        if (this.esTipoPOMultiple) {
-            this.TodasPosicionesSeleccionadas = true;
-            this.seleccionarTodo();
-        }
-
-        for (var i = 0; i < this.solpCompraDto.PosicionCompras.length; i++) {
-            for (var j = 0; j < this.solpCompraDto.PosicionCompras[i].ProveedoresCompras.length; j++) {
-                this.proveedores.push(this.solpCompraDto.PosicionCompras[i].ProveedoresCompras[j]);
-            }
-        }
-        const validos = this.filtrarProveedores(this.proveedores, 'VALIDO');
-        const invalidos = this.filtrarProveedores(this.proveedores, 'INVALIDO');
-        const noSugeridos = this.filtrarProveedores(this.proveedores, 'NOSUGERIDO');
-
-        this.proveedoresValidos = this.mostrarProveedores(validos);
-        this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
-        this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
-    }
-
-    obtenerPosicionesMultipleCompras(ids) {
-        try {
-            this.blockUI.start('Cargando...');
-            this.subscription = this.service.obtenerPosicionesMultipleCompras(ids).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.procesarResultado(result);
-
-                    }
-                    this.blockUI.stop();
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.blockUI.stop();
-                });
-        } catch (e) {
-            this.blockUI.stop();
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
-    }
-
-
+    // public get esTipo(tipo: string): boolean {
+    //     return this.solpCompraDto.TipoPosicionCodigo === tipo
+    // }
 
     public get esTipoMaterial(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo  == "MATERIALES" || (this.solpCompraDto.PosicionCompras != null && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == "MATERIALES");
+        return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES";
     }
 
     public get esTipoServicio(): boolean {

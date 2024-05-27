@@ -7,13 +7,11 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.GoogleDrive.Interfaces;
-using SustitucionMOAWS.GoogleDrive.Models;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,43 +22,32 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Services
 {
     public class CampoSustentableService : ICampoSustentableService
     {
-        private readonly IRepositorioCampoSustentable repositorio;
+        private readonly IRepositorio repositorio;
         private readonly string DataAgroURL;
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
-        private readonly ICampoSustentableGoogleDrive campoSustentableGoogleDrive;
 
-        public CampoSustentableService(
-            IRepositorioCampoSustentable repositorio,
-            IExcelExportWrapper excelExport,
-            IDataAgroService dataAgroService,
-            ICampoSustentableGoogleDrive campoSustentableGoogleDrive
-            )
+        public CampoSustentableService(IRepositorio repositorio, IExcelExportWrapper excelExport, IDataAgroService dataAgroService)
         {
             this.repositorio = repositorio;
             this.DataAgroURL = ConfigurationManager.AppSettings["DataAgroURL"];
             this.excelExport = excelExport;
             this.dataAgroService = dataAgroService;
-            this.campoSustentableGoogleDrive = campoSustentableGoogleDrive;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
         {
-            var ruta = "";
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
-
+            string ruta = "";
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
-            ValidarCampo(campoProveedor, archivoKmz);
-
-            var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
-
+            ValidarCampo(usuario, campoProveedor, archivoKmz);
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == campoProveedor.CampoCosecha.Cosecha_Id && d.CUIT == campoProveedor.CUIT);
             campoProveedor.RazonSocial = declaracion.RazonSocial;
             campoProveedor.FechaCreacion = DateTime.Now;
             campoProveedor.Borrado = false;
@@ -70,26 +57,40 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
+                var archivoCampo = repositorio.Obtener<Archivo>(a => a.Id == campoProveedor.Archivo_Id);
                 ruta = archivoCampo.Ruta;
             }
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
-            if (!UsarArchivoId)
+
+            if (UsarArchivoId == false)
             {
-                ruta = GuardarArchivoKMZ(campoProveedor, archivoKmz);
+                GuardarArchivoKMZ(campoProveedor, archivoKmz);
                 repositorio.GuardarCambios();
+
             }
-
-            EnviarCampoACertificadorDeSustentables(ruta, campoProveedor);
-
-            var archivo = archivoKmz == null ? Convert.ToBase64String(File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
+            var archivo = archivoKmz == null ? Convert.ToBase64String(System.IO.File.ReadAllBytes(ruta)) : ConvertirArchivo64(archivoKmz);
             InformarCampoSustentable(campoProveedor, archivo);
             return new Resultado { IdEntidad = campoProveedor.CampoCosecha_Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
+        }
+
+        private void ValidarUsuario(Usuario usuario, int proveedorId)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
+            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
+            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
+            if (!(esAdmin || esComercial))
+            {
+                if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
+                {
+                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
+                }
+            }
         }
 
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
@@ -110,6 +111,9 @@ namespace SustitucionMOAUtils.Services
             }
 
             campoProveedor.FechaModificacion = DateTime.Now;
+            /*
+            ValidarCampo(usuario, campoProveedor, archivoKmz);
+            */
 
             campoProveedor.HectareasSoja = campoProveedorObj.HectareasSoja;
             campoProveedor.HectareasTotales = campoProveedorObj.HectareasTotales;
@@ -217,6 +221,92 @@ namespace SustitucionMOAUtils.Services
             return archivoResult;
         }
 
+        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
+        {
+            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
+            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
+
+            string userName = DataAgroWSCredential.getUserName();
+            string password = DataAgroWSCredential.getPassword();
+            string dominio = DataAgroWSCredential.getDominio();
+
+            var httpClientHandler = new HttpClientHandler
+            {
+                Credentials = new NetworkCredential(userName, password, dominio),
+            };
+            var content = JsonConvert.SerializeObject(datos);
+
+            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+
+            var buffer = Encoding.UTF8.GetBytes(content);
+            var byteContent = new ByteArrayContent(buffer);
+            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            using (var client = new HttpClient(httpClientHandler, false))
+            {
+                var task = client.PostAsync(urlReporteCampo, byteContent);
+
+                task.Wait();
+
+                var response = task.Result;
+
+                var stringContent = response.Content.ReadAsStringAsync();
+
+                dynamic jsonResult = JObject.Parse(stringContent.Result);
+
+                if (bool.Parse(jsonResult.HayErrores.ToString()))
+                {
+                    throw new InfoCustomException(jsonResult.Errores[0].Message);
+                }
+
+                string downloadKey = jsonResult.DownloadKey;
+                byte[] InformeComercialPDF;
+                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
+                using (WebClient clienteDescarga = new WebClient())
+                {
+                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
+
+                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
+                }
+
+                return InformeComercialPDF;
+            }
+        }
+
+        private void ValidarCampo(Usuario usuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
+            {
+                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
+            }
+
+            if (campoProveedor.Archivo_Id == 0 && Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
+            {
+                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
+            }
+        }
+
+        private void GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
+        {
+
+            string fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".kmz");
+
+            string rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
+
+            string rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
+
+            Directory.CreateDirectory(rutaCarpeta);
+
+            if (File.Exists(rutaArchivo))
+            {
+                File.Delete(rutaArchivo);
+            }
+
+            campoProveedor.Archivo.Ruta = rutaArchivo;
+
+            archivoKmz.SaveAs(rutaArchivo);
+        }
+
         public EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
@@ -240,7 +330,7 @@ namespace SustitucionMOAUtils.Services
                 OpcionDeclaracionCampoSustentable = OpcionesDeclaracionCampoSustentable.Totalidad
             };
 
-            var declaracion = repositorio.ObtenerDeclaracionDeProveedor(CUITDeclaracion, cosechaId);
+            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUITDeclaracion);
 
             if (declaracion != null)
             {
@@ -256,6 +346,11 @@ namespace SustitucionMOAUtils.Services
             }
 
             return estado;
+        }
+
+        private Cosecha ObtenerCosechaActual()
+        {
+            return repositorio.Obtener<Cosecha>(c => DateTime.Now > c.Inicio && DateTime.Now < c.Fin);
         }
 
         public string AdjuntarDeclaracionFirmada(string mailUsuario, int proveedorId, int cosechaId, string CUITDeclaracion, HttpPostedFileBase fileSubido)
@@ -389,7 +484,12 @@ namespace SustitucionMOAUtils.Services
             byte[] archivoResult;
             using (MemoryStream stream = new MemoryStream())
             {
-                ActualizarPdf(pdfBytes, stream, datos);
+                PdfReader pdfReader = new PdfReader(pdfBytes);
+                pdfReader.SelectPages("1");
+
+                PdfStamper pdfStamper = new PdfStamper(pdfReader, stream);
+                pdfStamper.Close();
+                pdfReader.Close();
 
                 archivoResult = stream.ToArray();
             }
@@ -505,156 +605,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
-        }
-
-        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
-        {
-            var campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
-
-            return campoProveedor.Archivo.Ruta;
-        }
-        public async Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar)
-        {
-            if (archivoSinDescargar.ProcesadoUcropit)
-            {
-                return;
-            }
-            var cuit = archivoSinDescargar.Proveedor.CUIT;
-            //Hay un punto ('.') extra porque el archivo que devuelve Ucropit lo toma del kmz
-            //Al parecer cuando se sube usando la extension, esta ya tiene el '.' 
-            var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}..json";
-            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", cuit);
-            var rutaGuardado = string.Concat(rutaCarpeta, "/", nombreArchivo);
-
-            var resultadoProcesadoUcropit= await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
-                new GoogleDriveFileDownloadRequest()
-                    .WithFilePath(rutaGuardado)
-                    .WithFileName(nombreArchivo)
-                );
-            var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado, };
-
-            repositorio.Agregar(nuevoArchivo);
-
-            archivoSinDescargar.Archivo = nuevoArchivo;
-            archivoSinDescargar.ProcesadoUcropit = true;
-            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ? 
-                    Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
-            archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
-
-            repositorio.GuardarCambios();
-        }
-
-        private void ValidarUsuario(Usuario usuario, int proveedorId)
-        {
-            var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-            var esComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
-            var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            if (!(esAdmin || esComercial))
-            {
-                if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
-                {
-                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
-                }
-            }
-        }
-
-        private byte[] GenerarPDFDeclaracion(DeclaracionCampoSustentableDto datos)
-        {
-            var urlReporteCampo = string.Concat(DataAgroURL, "/CamposSustentables/Generar");
-            var urlReporte = string.Concat(DataAgroURL, "/Download/Reporte");
-
-            string userName = DataAgroWSCredential.getUserName();
-            string password = DataAgroWSCredential.getPassword();
-            string dominio = DataAgroWSCredential.getDominio();
-
-            var httpClientHandler = new HttpClientHandler
-            {
-                Credentials = new NetworkCredential(userName, password, dominio),
-            };
-            var content = JsonConvert.SerializeObject(datos);
-
-            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
-
-            var buffer = Encoding.UTF8.GetBytes(content);
-            var byteContent = new ByteArrayContent(buffer);
-            byteContent.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-
-            using (var client = new HttpClient(httpClientHandler, false))
-            {
-                var task = client.PostAsync(urlReporteCampo, byteContent);
-
-                task.Wait();
-
-                var response = task.Result;
-
-                var stringContent = response.Content.ReadAsStringAsync();
-
-                dynamic jsonResult = JObject.Parse(stringContent.Result);
-
-                if (bool.Parse(jsonResult.HayErrores.ToString()))
-                {
-                    throw new InfoCustomException(jsonResult.Errores[0].Message);
-                }
-
-                string downloadKey = jsonResult.DownloadKey;
-                byte[] InformeComercialPDF;
-                urlReporte = string.Concat(urlReporte, "?key=", downloadKey);
-                using (WebClient clienteDescarga = new WebClient())
-                {
-                    clienteDescarga.Credentials = new NetworkCredential(userName, password, dominio);
-
-                    InformeComercialPDF = clienteDescarga.DownloadData(urlReporte);
-                }
-
-                return InformeComercialPDF;
-            }
-        }
-
-        private void ValidarCampo(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
-        {
-            if (!VerificarDeclaracion(campoProveedor.Proveedor_Id, campoProveedor.CampoCosecha.Cosecha_Id, campoProveedor.CUIT).DeclaracionFirmada)
-            {
-                throw new ValidationCustomException("El proveedor seleccionado no tiene firmada la declaración.");
-            }
-
-            if (campoProveedor.Archivo_Id == 0 && Path.GetExtension(archivoKmz.FileName).ToLower() != ".kmz")
-            {
-                throw new ValidationCustomException("El archivo debe tener formato KMZ.");
-            }
-        }
-
-        private string GuardarArchivoKMZ(CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz)
-        {
-            var extension = Path.GetExtension(archivoKmz.FileName);
-            var fileName = string.Concat(campoProveedor.CampoCosecha.CampoSustentable_Id, ".", extension);
-            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campoProveedor.CUIT);
-            var rutaArchivo = string.Concat(rutaCarpeta, "/", fileName);
-
-            Directory.CreateDirectory(rutaCarpeta);
-
-            if (File.Exists(rutaArchivo))
-            {
-                File.Delete(rutaArchivo);
-            }
-            archivoKmz.SaveAs(rutaArchivo);
-
-            campoProveedor.Archivo.Ruta = rutaArchivo;
-            return rutaArchivo;
-        }
-
-        private void EnviarCampoACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
-        {
-            var archivoCampoSustentable = new ArchivoCampoSustentable
-            {
-                CampoCosechaId = campoProveedor.CampoCosecha_Id,
-                IdArchivoRecepcion = 0,
-                ProcesadoUcropit = false,
-                ProveedorId = campoProveedor.Proveedor_Id
-            };
-            repositorio.Agregar(archivoCampoSustentable);
-
-            SubirArchivosAGoogleDrive(rutaArchivo, campoProveedor);
-            repositorio.GuardarCambios();
+            //return ExcelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
         }
 
         private List<TProyeccion> ListarCampos<TProyeccion>(Usuario usuario, Expression<Func<CampoProveedor, TProyeccion>> proyeccion) where TProyeccion : class
@@ -677,7 +628,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
+        public string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId)
+        {
+            CampoProveedor campoProveedor = repositorio.Obtener<CampoProveedor>(x => x.Proveedor_Id == proveedorId && x.CampoCosecha_Id == campoCosechaId);
+
+            return campoProveedor.Archivo.Ruta;
+        }
+
+        internal void InformarCampoSustentable(CampoProveedor campoProveedor, string archivoKmz)
         {
             dataAgroService.AltaCampoSustentable(campoProveedor, archivoKmz);
         }
@@ -705,7 +663,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="archivoKmz"></param>
         /// <returns></returns>
-        private string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
+        public string ConvertirArchivo64(HttpPostedFileBase archivoKmz)
         {
             string theFileName = Path.GetFileName(archivoKmz.FileName);
             byte[] thePictureAsBytes = new byte[archivoKmz.ContentLength];
@@ -714,220 +672,6 @@ namespace SustitucionMOAUtils.Services
                 thePictureAsBytes = theReader.ReadBytes(archivoKmz.ContentLength);
             }
             return Convert.ToBase64String(thePictureAsBytes);
-        }
-        private string ObtenerNombreArchivoDrive(CampoProveedor campoProveedor)
-        {
-            return ObtenerNombreArchivoDrive(campoProveedor.CUIT, campoProveedor.CampoCosecha);
-        }
-        private string ObtenerNombreArchivoDrive(string cuit, CampoCosecha campoCosecha)
-        {
-            return $"{cuit}_{campoCosecha.Campo.Id}_{campoCosecha.Cosecha.Nombre}";
-        }
-        private void SubirArchivosAGoogleDrive(string rutaArchivo, CampoProveedor campoProveedor)
-        {
-            var extension = Path.GetExtension(rutaArchivo);
-            var reporteACertificadorDto = repositorio.ObtenerReporteCertificador(
-                campoProveedor.CampoCosecha_Id, campoProveedor.Proveedor_Id);
-
-            var reporteCertificadorJson = JsonConvert.SerializeObject(reporteACertificadorDto);
-            var jsonBytes = Encoding.UTF8.GetBytes(reporteCertificadorJson);
-
-            var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
-
-            var uploadFileKMZ = new GoogleDriveFileUploadRequest()
-                .WithFileUploadName($"{nombreArchivo}.{extension}")
-                .WithFilePath(rutaArchivo);
-
-            campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
-
-            var uploadFileJSON = new GoogleDriveFileUploadRequest()
-                .WithFileUploadName($"{nombreArchivo}.json")
-                .WithMimeType("applications/json")
-                .WithBytes(jsonBytes);
-
-            campoSustentableGoogleDrive.UploadFile(uploadFileJSON);
-        }
-        private void ActualizarPdf(byte[] pdfBytes, MemoryStream stream, DeclaracionCampoSustentableDto datos)
-        {
-            // open the reader
-            PdfReader pdfReader = new PdfReader(pdfBytes);
-            Rectangle size = pdfReader.GetPageSizeWithRotation(1);
-            Document document = new Document(size);
-
-            // open the writer
-            PdfWriter writer = PdfWriter.GetInstance(document, stream);
-            document.Open();
-            // the pdf content
-            PdfContentByte cb = writer.DirectContent;
-
-            // write the older pdf information in the pdf content
-            PdfImportedPage page = writer.GetImportedPage(pdfReader, 1);
-            cb.AddTemplate(page, 0, 0);
-            float fontSizeNormal = 9.5f;
-            BaseFont baseFontBold = BaseFont.CreateFont(BaseFont.HELVETICA_BOLD, BaseFont.WINANSI, BaseFont.EMBEDDED);
-            BaseFont baseFont = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
-
-            LimpiarFirmaAclaracionPrevios(cb);
-            AddTextosPrimeraPagina(cb,baseFont,baseFontBold,fontSizeNormal);
-            document.NewPage();
-
-            float fontSize = 10f;
-            float xMargenBase = -22.5f;
-            float xMargenTexto = 15f;
-            float xPosition = iTextSharp.text.PageSize.A4.Width / 10;
-            float yPosition = iTextSharp.text.PageSize.A4.Height - ((iTextSharp.text.PageSize.A4.Height - 140f) / 5);
-
-            AddTextosSegundaPagina(writer,baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
-
-            var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
-            Image logo = Image.GetInstance(logoPath);
-            logo.ScaleToFit(200f, 150f);
-            document.Add(logo);
-
-            AddTablaDatos(cb,datos,xPosition,xMargenTexto,yPosition);
-            // close the streams and voilá the file should be changed :)
-            document.Close();
-            writer.Close();
-            pdfReader.Close();
-        }
-        private void LimpiarFirmaAclaracionPrevios(PdfContentByte cb)
-        {
-            cb.SetColorFill(new CMYKColor(0f, 0f, 0f, 0f));
-
-            cb.MoveTo(0, 220);
-            cb.LineTo(600, 220);
-            cb.LineTo(600, 300);
-            cb.LineTo(0, 300);
-
-            cb.Fill();
-
-            cb.MoveTo(55, 340);
-            cb.LineTo(500, 340);
-            cb.LineTo(500, 355);
-            cb.LineTo(55, 355);
-
-            cb.Fill();
-        }
-        private void AddTextosPrimeraPagina(PdfContentByte cb, BaseFont baseFont, BaseFont baseFontBold, float fontSizeNormal)
-        {
-            cb.BeginText();
-            cb.SetColorFill(BaseColor.BLACK);
-            cb.SetFontAndSize(baseFontBold, fontSizeNormal);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Esquema de Certificación 2BSvs", 300, 740, 0);
-            var baseTexto = 280f;
-            cb.SetFontAndSize(baseFont, fontSizeNormal);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED II, modificada por la reglamentación 2022/996"
-                , 55f, baseTexto + (11 *6) + 0.75f, 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BSvs o de un Estado miembro"
-                , 15f, baseTexto, 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
-                , 15f, baseTexto - (11 * 1), 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "los requisitos   mencionados estarán disponibles y se facilitarán durante la auditoría y/o previa solicitud."
-                , 15f, baseTexto - (11 * 2), 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "En caso de que se indique que no se cumplen los requisitos (por ejemplo, si los documentos no están disponibles o son incompletos), el "
-                , 15f, baseTexto - (11 * 3), 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "agricultor se expone a que se rebaje la categoría de sus suministros."
-                , 15f, baseTexto - (11 * 4), 0);
-
-            cb.SetFontAndSize(baseFontBold, fontSizeNormal);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Firma: "
-                , 15f, baseTexto - (11 * 14), 0);
-            cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Aclaración y DNI: "
-                , iTextSharp.text.PageSize.A4.Width / 2, baseTexto - (11 * 14), 0);
-
-            cb.EndText();
-
-        }
-        private void AddTextosSegundaPagina(PdfWriter writer, BaseFont baseFontBold, float fontSizeNormal, float fontSize, float xPosition, float xMargenBase, float xMargenTexto, float yPosition)
-        {
-
-            PdfContentByte under = writer.DirectContentUnder;
-            under.BeginText();
-            under.SetColorFill(BaseColor.BLACK);
-            under.SetFontAndSize(baseFontBold, fontSizeNormal);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Sres: Molinos Agro S.A.", xPosition + xMargenBase, yPosition,0);
-            under.SetFontAndSize(baseFontBold, fontSize);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
-                , xPosition + xMargenTexto, yPosition - (15f * 2),0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2018/2001/EC (RED II)"
-                , xPosition + xMargenTexto, yPosition - (15f * 3),0);
-            under.SetFontAndSize(baseFontBold, fontSizeNormal);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
-                , xPosition + xMargenBase, yPosition - (15f * 5),0);
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Me dirijo a Uds. Para presentar la documentación requerida, para dar cumplimiento a la normativa"
-                , xPosition + xMargenTexto, yPosition - (15f * 6),0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Internacional vigente (Reglamento EU 2023/1115), sus políticas y procesos internos."
-                , xPosition + xMargenTexto, yPosition - (15f * 7),0);
-
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Para ello, acompañamos a la presente, la siguiente documentación, la cual se declara bajo"
-                , xPosition + xMargenTexto, yPosition - (15f * 8),0);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "juramento, que es fiel a la original y se encuentra plenamente vigente:"
-                , xPosition + xMargenTexto, yPosition - (15f * 9),0);
-
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "1-  Declaración de sustentabilidad completa"
-                , xPosition + xMargenTexto, yPosition - (15f * 11),0);
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "2-  Copia del Estatuto (última versión vigente)"
-                , xPosition + xMargenTexto, yPosition - (15f * 12),0);
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "3-  Copia del poder de representación legal a nombre del firmante de la DDJJ"
-                , xPosition + xMargenTexto, yPosition - (15f * 13),0);
-
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "4-  En caso de persona física solo adjuntar copia del DNI en lugar de los puntos 2 y 3"
-                , xPosition + xMargenTexto, yPosition - (15f * 14), 0);
-
-            under.EndText();
-
-        }
-        private void AddTablaDatos(PdfContentByte cb, DeclaracionCampoSustentableDto datos, float xPosition, float xMargenTexto, float yPosition)
-        {
-
-            PdfPTable informacionADeclararEnTabla = new PdfPTable(3);
-
-            var fechaCell = new PdfPCell(new Phrase("Fecha"));
-            fechaCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(fechaCell);
-            var dateCell = new PdfPCell(new Phrase(DateTime.Now.ToString("d"))) { Colspan = 2 };
-            informacionADeclararEnTabla.AddCell(dateCell);
-
-            var razonSocialCell = new PdfPCell(new Phrase("Razón Social"));
-            razonSocialCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(razonSocialCell);
-            var razonSocialInfoCell = new PdfPCell(new Phrase(datos.RazonSocial)) { Colspan = 2 };
-            informacionADeclararEnTabla.AddCell(razonSocialInfoCell);
-
-            var cuitCell = new PdfPCell(new Phrase("CUIT"));
-            cuitCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(cuitCell);
-            var cuitInfoCell = new PdfPCell(new Phrase(datos.CUIT)) { Colspan = 2 };
-            informacionADeclararEnTabla.AddCell(cuitInfoCell);
-
-            var nombreApellidoCell = new PdfPCell(new Phrase("Nombre y Apellido"));
-            nombreApellidoCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(nombreApellidoCell);
-            var emptyCell = new PdfPCell(new Phrase("")) { Colspan = 2 };
-            informacionADeclararEnTabla.AddCell(emptyCell);
-
-            var dniCell = new PdfPCell(new Phrase("DNI"));
-            dniCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(dniCell);
-            informacionADeclararEnTabla.AddCell(emptyCell);
-
-            var cargoCell = new PdfPCell(new Phrase("Cargo"));
-            cargoCell.PaddingBottom = 15f;
-            informacionADeclararEnTabla.AddCell(cargoCell);
-            informacionADeclararEnTabla.AddCell(emptyCell);
-
-            var firmaCell = new PdfPCell(new Phrase("Firma"));
-            firmaCell.PaddingBottom = 60f;
-            informacionADeclararEnTabla.AddCell(firmaCell);
-            informacionADeclararEnTabla.AddCell(emptyCell);
-            informacionADeclararEnTabla.TotalWidth = 400f;
-            informacionADeclararEnTabla.WriteSelectedRows(0, -1, xPosition + (xMargenTexto * 3), yPosition - (15f * 16), cb);
-
         }
     }
 }

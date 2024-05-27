@@ -23,16 +23,4 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Reporte
             return DateTime.Now.ToString("dd-MM-yyyy");
         }
     }
-    public class EnvioCamposSustentablesUcropit: ReporteBase
-    {
-        public string Cosecha { get; set; }
-        public override string GetBody()
-        {
-            return "";
-        }
-        public override string GetFecha()
-        {
-            return Cosecha;
-        }
-    }
 }

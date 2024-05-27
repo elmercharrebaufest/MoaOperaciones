@@ -92,10 +92,9 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var campo in camposAReportar)
                 {
-                    string rutaArchivoKmz = campo.RutaKmz;
-                    string extension = Path.GetExtension(rutaArchivoKmz);
+                    string rutaArchivoKmz = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", campo.CUIT, "/", campo.Id, ".kmz");
 
-                    var kmzFileName = MakeValidFileName(string.Concat(campo.Id, "-", campo.Nombre,".", extension));
+                    var kmzFileName = MakeValidFileName(string.Concat(string.Concat(campo.Id, "-", campo.Nombre, ".kmz")));
 
                     ZipEntry entry = new ZipEntry(kmzFileName)
                     {

@@ -8,6 +8,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
     public class EntradaServicioDetalleDto
     {
+        public int ID { get; set; }
         public string NumeroLinea { get; set; }
         public string PLN_PCKG { get; set; }
         public string CodigoServicio { get; set; }

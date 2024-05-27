@@ -31,7 +31,7 @@
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
 	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
 
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 
@@ -55,7 +55,7 @@
 	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
 	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar" />
+	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,margarita.ranzatto@molinosagro.com.ar,david.erbojo@molinosagro.com.ar,juan.carlos.cappello@molinosagro.com.ar,contact@tsagroupinternational.com" />
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="Santiago.Barbarotta@molinosagro.com.ar, mariasoledad.romero@molinosagro.com.ar, gonzalo.delatorre@molinosagro.com.ar" />
 
@@ -149,7 +149,6 @@
 	<setParameter name="EmailAltaTempranaCuitFasCC Config" value="mesafassanlorenzo@molinosagro.com.ar"/>
 	<setParameter name="EmailAltaIntermediarioFleteTo Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailAltaIntermediarioFleteCC Config" value="mesafassanlorenzo@molinosagro.com.ar" />
-	<setParameter name="EmailConsultaInternaCC Config" value="mesafassanlorenzo@molinosagro.com.ar; comerciolocal@molinosagro.com.ar"/>
 
 	<setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SI_MPMF_MOAOP_ORD_CARGA_ENT_V2 Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORD_CARGA_ENT_V2&amp;interfaceNamespace=urn%3AOPERACIONES" />

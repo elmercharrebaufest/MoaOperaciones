@@ -48,7 +48,6 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,36 +56,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dto\AlmacenDto.cs" />
-    <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
-    <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
-    <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
-    <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
-    <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
-    <Compile Include="Dto\Compras\AdjudicacionDtoCopia.cs" />
-    <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
-    <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
-    <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
-    <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AreaDto.cs" />
-    <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
-    <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
-    <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
-    <Compile Include="Dto\Compras\POPosicionDto.cs" />
-    <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
-    <Compile Include="Dto\Compras\TablaSapDto.cs" />
+    <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\UsuarioAreaDto.cs" />
     <Compile Include="Dto\Compras\EmailDetailCertificateDto.cs" />
-    <Compile Include="Dto\CondicionDePagoDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
-    <Compile Include="Dto\FrontLoggerRequestDto.cs" />
-    <Compile Include="Dto\LiberadorSapDto.cs" />
-    <Compile Include="Dto\LocalidadDto.cs" />
-    <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
-    <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
-    <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
     <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
@@ -99,39 +75,14 @@
     <Compile Include="Dto\Compras\SolpDtoCopia.cs" />
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\ActualizarOrdenResiduosExternalDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\EstadoOrdenResiduosDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\GrabarOrdenResponse.cs" />
-    <Compile Include="Dto\OrdenResiduos\ListarOrdenesResiduosResponse.cs" />
-    <Compile Include="Dto\OrdenResiduos\LocalidadDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\OrdenResiduosDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\PatentesClienteDto.cs" />
-    <Compile Include="Dto\OrdenResiduos\TransportesIds.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
-    <Compile Include="Dto\PartidoDto.cs" />
-    <Compile Include="Dto\ReporteProcesoUcropit.cs" />
-    <Compile Include="Dto\SeleccionarVendedorResponseDto.cs" />
-    <Compile Include="Entities\Almacen.cs" />
-    <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
-    <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
-    <Compile Include="Entities\ArchivoBoleto.cs" />
-    <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
-    <Compile Include="Entities\CotizacionHistorial.cs" />
-    <Compile Include="Entities\EstadoArchivoBoleto.cs" />
-    <Compile Include="Entities\EstadoOrdenResiduos.cs" />
-    <Compile Include="Entities\LiberadorSap.cs" />
-    <Compile Include="Entities\MonedaConversion.cs" />
-    <Compile Include="Entities\OrdenResiduos.cs" />
-    <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
-    <Compile Include="Entities\RegionSap.cs" />
-    <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
     <Compile Include="Consulta\DirOrden.cs" />
     <Compile Include="Consulta\Expresiones.cs" />
@@ -285,11 +236,8 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
-    <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
-    <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
-    <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />
@@ -380,7 +328,6 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
-    <Compile Include="Models\Raw\ProveedorRaw.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
@@ -621,10 +568,6 @@
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
-      <Project>{f8d4a064-e19c-4b58-b17e-f516118a6eaf}</Project>
-      <Name>SustitucionMOACustomException</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
       <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
       <Name>SustitucionMOAFotmatter</Name>

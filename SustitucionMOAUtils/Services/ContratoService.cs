@@ -18,9 +18,6 @@ namespace SustitucionMOAUtils.Services
 {
     public class ContratoService : IContratoService
     {
-        private readonly string PEND_CAMARA_EXCEL = "PEND. CÁMARA";
-        private readonly string CAMARA_EXCEL = "CÁMARA";
-        private readonly string CALADO_EXCEL = "CALADO";
         public ContratoService()
         {
 
@@ -251,14 +248,14 @@ namespace SustitucionMOAUtils.Services
                         else if ((r.kgDtoValor > 0 && c.camaraPendiente) || !c.camaraPendiente)
                         {
                             var value = c.camaraPendiente ? r.calaResul : r.camaResul;
-                            var identificadorResultadoCalidad = c.camaraPendiente ? PEND_CAMARA_EXCEL :
-                                            c.tieneCertificado ? CAMARA_EXCEL : CALADO_EXCEL;
-                            detalle.resultado = identificadorResultadoCalidad == PEND_CAMARA_EXCEL? PEND_CAMARA_EXCEL : $"{value}";
+                            var agregado = c.camaraPendiente ? "PEND. CÁMARA" :
+                                            c.tieneCertificado ? "CÁMARA" : "CALADO";
+                            detalle.resultado = $"{value} ({agregado})";
                         }
 
                         if (string.IsNullOrEmpty(detalle.resultado) && c.camaraPendiente)
                         {
-                            detalle.resultado = PEND_CAMARA_EXCEL;
+                            detalle.resultado = "PEND. CÁMARA";
                         }
 
                         return detalle;
@@ -302,13 +299,13 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     PDFResponse pdfExport = PDFExport.ToPDF("Calidad Contrato(" + numeroContrato + ")", new List<string>() { "CCPP", "Característica", "Calado Result.", "Calado Dto.", "Cámara Result.", "Cámara Dto.", "Kg Netos", "Kg Apli" }, data.calidad);
-                    if (pdfExport.Pdf == null || pdfExport.Pdf.data == null || pdfExport.Pdf.data.Count() == 0)
+                    if (pdfExport.pdf == null || pdfExport.pdf.data == null || pdfExport.pdf.data.Count() == 0)
                     {
                         throw new ValidationCustomException(ErrorMsg.ErrorDescargaPDF);
                     }
 
 
-                    return pdfExport.Pdf;
+                    return pdfExport.pdf;
                 }
                 catch
                 {
@@ -335,16 +332,16 @@ namespace SustitucionMOAUtils.Services
             {
                 PDFResponse data = new ContratoPDFConsumerMOA().request(proveedor, contrato);
 
-                if (data.Error != null && data.Error.codigo != "00")
+                if (data.error != null && data.error.codigo != "00")
                 {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
 
-                if (data.Pdf == null || data.Pdf.data == null || data.Pdf.data.Count() == 0)
+                if (data.pdf == null || data.pdf.data == null || data.pdf.data.Count() == 0)
                 {
                     throw new InfoCustomException(InfoMsg.SinBoletoFisico);
                 }
-                return data.Pdf;
+                return data.pdf;
             }
             catch (InfoCustomException e)
             {

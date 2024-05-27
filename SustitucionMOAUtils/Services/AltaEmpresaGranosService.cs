@@ -478,19 +478,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>();
                 }
-                var estadoAprobacion = EstadoAprobacion.DocumentacionPendiente;
-
-                if (proveedor.CorrespondeAltaSolicitada())
-                {
-                    estadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                    proveedor.EstadoAprobacion = estadoAprobacion;
-                }
 
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
                     {
                         Fecha = DateTime.Now,
-                        EstadoAprobacion = estadoAprobacion,
+                        EstadoAprobacion = EstadoAprobacion.DocumentacionPendiente,
                         Observacion = "Guardado y notificado al proveedor",
                         Proveedor_Id = proveedorId,
                         Usuario_Id = usuario.Id
@@ -675,13 +668,6 @@ namespace SustitucionMOAUtils.Services
                 if(!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
-                }
-            }
-            if(proveedor.AltaInterna ?? false)
-            {
-                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.DeclaracionVinculosAltaInterna))
-                {
-                    throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "Declaración vinculos"));
                 }
             }
 

@@ -65,33 +65,33 @@ export class TabImputacionesComponent extends ListBaseComponent {
     return (camposVacios != null && (vacio == undefined || vacio == ""));
   }
 
-    actualizarTipoDeImputacion(): void {
-        if (this.posicion.tipoImputacion) {
-            switch (this.posicion.tipoImputacion.Codigo) {
-                case this.enumTipoImputacion.CentroDeCosto:
-                    this.tituloColumnaTipoDeImputacion = "Centro de costo";
-                    this.tablaAFiltrar = 'CecoSolpSap';
-                    break;
-                case this.enumTipoImputacion.OrdenDeOt:
-                    this.tituloColumnaTipoDeImputacion = "Nro de OT";
-                    this.tablaAFiltrar = 'OrdenSolpSap';
-                    break;
-                case this.enumTipoImputacion.OrdenInversion:
-                    this.tituloColumnaTipoDeImputacion = "Orden de inversión"
-                    this.tablaAFiltrar = 'OrdenSolpSap';
-                    break;
-                case this.enumTipoImputacion.Siniestro:
-                    this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
-                    this.tablaAFiltrar = 'CentroBeneficio';
-                    break;
-
-            }
-        } else {
-            this.enumTipoImputacion.CentroDeCosto;
-            this.tituloColumnaTipoDeImputacion = "Centro de costo";
-            this.tablaAFiltrar = 'CecoSolpSap';
-        }
-    }
+  actualizarTipoDeImputacion(): void {
+    if(this.posicion.tipoImputacion){
+      switch (this.posicion.tipoImputacion.Codigo) {
+          case this.enumTipoImputacion.CentroDeCosto:
+              this.tituloColumnaTipoDeImputacion = "Centro de costo";
+              this.tablaAFiltrar = 'CecoSolpSap';
+              break;
+          case this.enumTipoImputacion.OrdenDeOt:
+              this.tituloColumnaTipoDeImputacion = "Orden de OT";
+              this.tablaAFiltrar = 'OrdenSolpSap';
+              break;
+          case this.enumTipoImputacion.OrdenInversion:
+              this.tituloColumnaTipoDeImputacion = "Orden de inversión"
+              this.tablaAFiltrar = 'OrdenSolpSap';
+              break;
+          case this.enumTipoImputacion.Siniestro:
+              this.tituloColumnaTipoDeImputacion = "Siniestro / Centro de beneficio"
+              this.tablaAFiltrar = 'CentroBeneficio';
+              break;
+             
+      }
+    } else {
+      this.enumTipoImputacion.CentroDeCosto;
+      this.tituloColumnaTipoDeImputacion = "Centro de costo";
+      this.tablaAFiltrar = 'CecoSolpSap';
+    }   
+  }
 
   autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
     try {

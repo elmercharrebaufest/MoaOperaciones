@@ -1,11 +1,11 @@
 ::ng-deep .ui-table .ui-table-thead > .tr > .th {
-    background-color: #4760ac !important;
-    text-transform: none !important;
+  background-color: #4760ac !important;
+  text-transform: none !important;
 }
 
 .columna {
-    word-break: break-all;
-    word-wrap: break-word;
+    word-break: break-all; 
+    word-wrap:break-word; 
     font-size: 11px !important;
     text-transform: none !important;
 }
@@ -13,9 +13,10 @@
 .row1 {
     margin-right: 4px;
     margin-left: -2px;
+
 }
 
-.title {
+.title {  
     letter-spacing: var(--unnamed-character-spacing-0);
     color: var(--status);
     color: #1C7CD5;
@@ -24,15 +25,17 @@
     font-weight: 100;
 }
 
-.linea {
-    border-bottom: solid 1px #C8C8C8 !important;
-    width: 100% !important;
-    height: 50px !important;
-}
+
+.linea{  
+    border-bottom:solid 1px #C8C8C8 !important; 
+    width:100% !important;
+    height:50px !important;
+  }
 
 ::ng-deep .ui-chkbox-label, .labelCompras {
     font-weight: bold !important;
     font-size: 16px !important;
+
 }
 
 .ui-button {
@@ -42,41 +45,44 @@
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Firefox */
 input[type=number] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
+
+  
 ::ng-deep .ui-table .ui-table-thead > .tr > .th {
     /* border: none !important; */
     font-weight: 16px !important;
     color: #ffffff !important;
     background-color: #4760ac !important;
     margin-bottom: 10px;
-}
+  } 
 
-.invalido {
+
+  ::ng-deep .ui-inputtext {
+    width: 100% !important;
+  }
+
+  .invalido{
     border: 1px solid #f58686 !important;
     background: rgba(242, 196, 196, 0.35);
     box-shadow: 0 0 5px 1px rgba(242, 196, 196, 0.35) inset !important;
 }
 
-::ng-deep .ui-dropdown-label {
-    font-size: 13px !important;
+::ng-deep .ui-dropdown-label{
+  font-size: 13px !important;
 }
 
-::ng-deep #ui-tabpanel-0-label, ::ng-deep #ui-tabpanel-1-label {
-    padding: 0px !important;
+::ng-deep #ui-tabpanel-0-label, ::ng-deep #ui-tabpanel-1-label{
+padding: 0px !important;
 }
 
-.padding {
-    padding: 8px;
-}
-
-.pointer {
-    cursor: pointer;
+.padding{
+  padding: 8px;
 }

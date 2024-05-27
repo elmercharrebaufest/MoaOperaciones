@@ -15,7 +15,6 @@
                 </xsd:restriction>
               </xsd:simpleType>
             </xsd:element>
-            <xsd:element minOccurs="0" name="I_BUDATUM" type="rfc:date" />
             <xsd:element name="RETURN">
               <xsd:complexType>
                 <xsd:sequence>
@@ -39,14 +38,6 @@
           </xsd:all>
         </xsd:complexType>
       </xsd:element>
-      <xsd:simpleType name="date">
-        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:date rfc:genericDate" />
-      </xsd:simpleType>
-      <xsd:simpleType name="genericDate">
-        <xsd:restriction base="xsd:string">
-          <xsd:pattern value="....-..-.." />
-        </xsd:restriction>
-      </xsd:simpleType>
       <xsd:complexType name="BAPIRET2">
         <xsd:annotation>
           <xsd:documentation>Return Parameter</xsd:documentation>

@@ -159,9 +159,6 @@ namespace SustitucionMOAUtils.Services.Email
                 string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "\"";
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
-
-                Logger.Log.Info("Email Data: " + cuerpo);
-
                 var emailSenderData = new EmailSenderData()
                 {
                     Mails = dest,

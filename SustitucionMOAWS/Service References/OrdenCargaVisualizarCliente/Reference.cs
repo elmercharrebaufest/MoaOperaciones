@@ -422,20 +422,6 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         
         private string cUIT_CORREDORField;
         
-        private decimal pRECIO_FLETEField;
-        
-        private bool pRECIO_FLETEFieldSpecified;
-        
-        private decimal pRECIO_MERCADERIAField;
-        
-        private bool pRECIO_MERCADERIAFieldSpecified;
-        
-        private string cENTROField;
-        
-        private string nOMBRE_CENTROField;
-        
-        private string mONEDA_FLETEField;
-        
         private ZMPES6760[] dETALLEField;
         
         /// <remarks/>
@@ -799,91 +785,7 @@ namespace SustitucionMOAWS.OrdenCargaVisualizarCliente {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
-        public decimal PRECIO_FLETE {
-            get {
-                return this.pRECIO_FLETEField;
-            }
-            set {
-                this.pRECIO_FLETEField = value;
-                this.RaisePropertyChanged("PRECIO_FLETE");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool PRECIO_FLETESpecified {
-            get {
-                return this.pRECIO_FLETEFieldSpecified;
-            }
-            set {
-                this.pRECIO_FLETEFieldSpecified = value;
-                this.RaisePropertyChanged("PRECIO_FLETESpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=25)]
-        public decimal PRECIO_MERCADERIA {
-            get {
-                return this.pRECIO_MERCADERIAField;
-            }
-            set {
-                this.pRECIO_MERCADERIAField = value;
-                this.RaisePropertyChanged("PRECIO_MERCADERIA");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        public bool PRECIO_MERCADERIASpecified {
-            get {
-                return this.pRECIO_MERCADERIAFieldSpecified;
-            }
-            set {
-                this.pRECIO_MERCADERIAFieldSpecified = value;
-                this.RaisePropertyChanged("PRECIO_MERCADERIASpecified");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=26)]
-        public string CENTRO {
-            get {
-                return this.cENTROField;
-            }
-            set {
-                this.cENTROField = value;
-                this.RaisePropertyChanged("CENTRO");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=27)]
-        public string NOMBRE_CENTRO {
-            get {
-                return this.nOMBRE_CENTROField;
-            }
-            set {
-                this.nOMBRE_CENTROField = value;
-                this.RaisePropertyChanged("NOMBRE_CENTRO");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=28)]
-        public string MONEDA_FLETE {
-            get {
-                return this.mONEDA_FLETEField;
-            }
-            set {
-                this.mONEDA_FLETEField = value;
-                this.RaisePropertyChanged("MONEDA_FLETE");
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=29)]
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=24)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public ZMPES6760[] DETALLE {
             get {

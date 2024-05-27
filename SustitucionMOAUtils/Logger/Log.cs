@@ -1,12 +1,5 @@
-﻿using NLog.Config;
-using NLog.Targets;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAWS.Logger;
+﻿using SustitucionMOAAssets;
 using System;
-using System.IO;
-using System.Web.Hosting;
-using System.ServiceModel.Channels;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -15,75 +8,11 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
-        private static readonly NLog.Logger FrontLogger = NLog.LogManager.GetLogger("frontLogger");
-
-        public Log()
-        {
-        }
-
-        public static string ConfigLog()
-        {
-            // Crea una nueva instancia de LoggingConfiguration
-            var config = new LoggingConfiguration();
-            string rutaSitioWeb = HostingEnvironment.MapPath("~");
-            rutaSitioWeb = Path.Combine(rutaSitioWeb, "bin");
-            // Carga la configuración del archivo específico            
-            var logPath = Path.Combine(rutaSitioWeb, "nlog.config");
-            config = new XmlLoggingConfiguration(logPath);
-            var sapUrl = System.Configuration.ConfigurationManager.AppSettings["SpaUrl"] ?? "";
-            if (sapUrl.Contains("compras"))
-            {
-                logPath = Path.Combine(rutaSitioWeb, "nlog.compras.config");
-                config = new XmlLoggingConfiguration(logPath);
-            }
-            if (sapUrl.Contains("huenei"))
-            {
-                logPath = Path.Combine(rutaSitioWeb, "nlog.huenei.config");
-                config = new XmlLoggingConfiguration(logPath);
-            }
-            if (sapUrl.Contains("pre"))
-            {
-                logPath = Path.Combine(rutaSitioWeb, "nlog.pre.config");
-                config = new XmlLoggingConfiguration(logPath);
-            }
-            // Configura LogManager con la nueva configuración
-            NLog.LogManager.Configuration = config;
-
-            var target = GetTarget(config);
-
-            if (target != null)
-            {
-                Console.WriteLine("target found:");
-                Console.WriteLine("Name: " + target.Name);
-                Console.WriteLine("File Name: " + Path.GetDirectoryName(target.FileName.ToString()));
-                return Path.GetDirectoryName(target.FileName.ToString());
-            }
-            else
-            {
-                Console.WriteLine("Azure target not found.");
-            }
-
-            return "C:\\MOAOperacionesLogs";
-        }
-
-        static FileTarget GetTarget(LoggingConfiguration config)
-        {
-            foreach (var target in config.AllTargets)
-            {
-                if (target is FileTarget fileTarget)
-                {                    
-                        return fileTarget;                    
-                }
-            }
-            return null;
-        }
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
             try
             {
-                ConfigLog();
-
                 DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
             }
             catch (Exception e)
@@ -96,8 +25,6 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
             }
             catch (Exception e)
@@ -110,8 +37,6 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 DefaultLogger.Error(exception);
             }
             catch (Exception e)
@@ -125,8 +50,6 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 DefaultLogger.Error(excepcion, mensaje);
             }
             catch (Exception e)
@@ -140,9 +63,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
-                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores);
+                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
             }
             catch (Exception e)
             {
@@ -153,8 +74,6 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 DefaultLogger.Info(mensaje);
             }
             catch (Exception e)
@@ -162,12 +81,10 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-        public static void AzureError(Exception exception)
+        public static void AzureError (Exception exception)
         {
             try
             {
-                ConfigLog();
-
                 AzureLogger.Error(exception);
             }
             catch (Exception e)
@@ -179,8 +96,6 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 ExternalAPILogger.Error(exception);
             }
             catch (Exception e)
@@ -192,28 +107,11 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                ConfigLog();
-
                 ExternalAPILogger.Info(message);
             }
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en API:" + e.Message);
-            }
-        }
-        public static void FrontError(FrontLoggerRequestDto frontData)
-        {
-            FrontError(frontData.ToString());
-        }
-        public static void FrontError(string message)
-        {
-            try
-            {
-                FrontLogger.Info(message);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR en front:" + e.Message);
             }
         }
     }

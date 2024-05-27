@@ -118,9 +118,9 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     }
                 )
         } else if (tipoLegajo == "Chat Interno") {
-            let SolpId = this.legajo[0].SolpId;
+            let peticionDeOfertaId = this.legajo[0].PeticionDeOfertaId;
             this.blockUI.start("Generando...");
-            this.service.obtenerYExportarChat(SolpId)
+            this.service.obtenerYExportarChat(peticionDeOfertaId)
                 .subscribe(
                     (result) => {
                         if (result.logout == true) {
@@ -142,7 +142,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     }
                 )
         }
-        else if (tipoLegajo == "SOLP Archivos" || tipoLegajo == "Legajo" || tipoLegajo == "Circular") {
+        else {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(archivoId)
                 .subscribe(

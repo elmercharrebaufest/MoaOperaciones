@@ -111,78 +111,80 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-posicion let-expanded="expanded" let-columns="columns" let-rowIndex="rowIndex">
-                        <tr [class.tabla-grid-servicio]="esTipoServicio" [class.tabla-grid-material]="esTipoMaterial" [ngClass]="posicion.isPosicionEliminada ? 'posicion-eliminada' : '' ">
-                            <td>
-                                <a style="cursor: pointer;" [pRowToggler]="posicion" (click)="posicion.setTabPosicion();">
-                                    <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                                </a>
-                            </td>
-                            <td style="text-align: center;">
-                                <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
-                            </td>
-                            <td>{{posicion.numeroPosicion}}</td>
-                            <td hidden>
-                                <p-dropdown [options]="tipoPosicion"
-                                            [(ngModel)]="posicion.tipoPosicion"
-                                            [style]="{'width':'150px'}"
-                                            optionLabel="Codigo"
-                                            appendTo="body"
-                                            ariaLabel="Codigo"
-                                            field="Codigo"
-                                            (onFocus)="cambiarTipoSolp(posicion)"
-                                            (onChange)="cambiarTipoSolp(posicion); calcularValorNeto(posicion);"
-                                            [disabled]="posicion.concluido">
-                                    <ng-template let-item pTemplate="selectedItem">
-                                        <span style="vertical-align:middle">{{item.value.Descripcion}}</span>
-                                    </ng-template>
-                                    <ng-template let-item pTemplate="item">
-                                        <div class="ui-helper-clearfix" style="position: relative;height:25px;">
-                                            <div style="font-size:14px;float:right;margin-top:4px"><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
-                                        </div>
-                                    </ng-template>
-                                </p-dropdown>
-                            </td>
-                            <td>
-                                <p-dropdown dataKey="Id"
-                                            [options]="tipoImputacion"
-                                            placeholder="Tipo de imputacion"
-                                            [(ngModel)]="posicion.tipoImputacion"
-                                            [style]="{'width':'150px'}"
-                                            optionLabel="CodigoVisualizacion"
-                                            appendTo="body"
-                                            ariaLabel="CodigoVisualizacion"
-                                            field="CodigoVisualizacion"
-                                            (onFocus)="posicion.setTabPosicion();"
-                                            (onChange)="posicion.setTabPosicion()"
-                                            [disabled]="posicion.concluido">
+                            <tr [class.tabla-grid-servicio]="esTipoServicio" [class.tabla-grid-material]="esTipoMaterial" [ngClass]="posicion.isPosicionEliminada ? 'posicion-eliminada' : '' ">
+                                <td>
+                                    <a style="cursor: pointer;" [pRowToggler]="posicion" (click)="posicion.setTabPosicion();">
+                                        <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                    </a>
+                                </td>
+                                <td style="text-align: center;">
+                                    <p-checkbox name="posiciones" binary="false" [(ngModel)]="posicion.posicionCheck"></p-checkbox>
+                                </td>
+                                <td>{{posicion.numeroPosicion}}</td>
+                                <td hidden>
+                                    <p-dropdown [options]="tipoPosicion" 
+                                        [(ngModel)]="posicion.tipoPosicion" 
+                                        [style]="{'width':'150px'}"
+                                        optionLabel="Codigo" 
+                                        appendTo="body" 
+                                        ariaLabel="Codigo" 
+                                        field="Codigo" 
+                                        (onFocus)="cambiarTipoSolp(posicion)" 
+                                        (onChange)="cambiarTipoSolp(posicion); calcularValorNeto(posicion);" 
+                                        [disabled]="posicion.concluido">
+                                        <ng-template let-item pTemplate="selectedItem">
+                                            <span style="vertical-align:middle">{{item.value.Descripcion}}</span>
+                                        </ng-template>
+                                        <ng-template let-item pTemplate="item">
+                                            <div class="ui-helper-clearfix" style="position: relative;height:25px;">
+                                                <div style="font-size:14px;float:right;margin-top:4px"><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </td>
+                                <td>
+                                    <p-dropdown 
+                                        dataKey="Id"
+                                        [options]="tipoImputacion" 
+                                        placeholder="Tipo de imputacion" 
+                                        [(ngModel)]="posicion.tipoImputacion" 
+                                        [style]="{'width':'150px'}" 
+                                        optionLabel="Codigo" 
+                                        appendTo="body" 
+                                        ariaLabel="Codigo" 
+                                        field="Codigo" 
+                                        (onFocus)="posicion.setTabPosicion();" 
+                                        (onChange)="posicion.setTabPosicion()" 
+                                        [disabled] = "posicion.concluido">
 
-                                    <ng-template let-item pTemplate="selectedItem">
-                                        <span>{{item.value.Descripcion}}</span>
-                                    </ng-template>
-                                    <ng-template let-item pTemplate="item">
-                                        <div>
-                                            <div><b>{{item.value.Descripcion}}</b> - {{item.value.CodigoVisualizacion}}</div>
-                                        </div>
-                                    </ng-template>
-                                </p-dropdown>
-                            </td>
-                            <td>
-                                <p-dropdown dataKey="Id"
-                                            filter="true"
-                                            [options]="centroEntrega"
-                                            placeholder="Centro"
-                                            [(ngModel)]="posicion.selectCentroEntrega"
-                                            [style]="{'width':'150px'}"
-                                            optionLabel="CodigoDescripcion"
-                                            appendTo="body"
-                                            (onFocus)=" $event.target.select();"
-                                            (onClear)="posicion.selectAlmacenEntrega = undefined"
-                                            (completeMethod)="buscarCombo($event, 'CENTRO')"
-                                            (onChange)="centroSeleccionado(posicion); listarContratosAsociados(); eliminarContratoAsociar(posicion)"
-                                            [disabled]="posicion.concluido"
-                                            emptyMessage="Ningún centro encontrado"
-                                            [minLength]="1"
-                                            [dropdown]="true">
+                                        <ng-template let-item pTemplate="selectedItem">
+                                            <span>{{item.value.Descripcion}}</span>
+                                        </ng-template>
+                                        <ng-template let-item pTemplate="item">
+                                            <div>
+                                                <div><b>{{item.value.Descripcion}}</b> - {{item.value.Codigo}}</div>
+                                            </div>
+                                        </ng-template>
+                                    </p-dropdown>
+                                </td>
+                                <td>
+                                <p-dropdown 
+                                        dataKey="Id"
+                                        filter="true"
+                                        [options]="centroEntrega" 
+                                        placeholder="Centro" 
+                                        [(ngModel)]="posicion.selectCentroEntrega" 
+                                        [style]="{'width':'150px'}" 
+                                        optionLabel="CodigoDescripcion" 
+                                        appendTo="body"                      
+                                        (onFocus)=" $event.target.select();" 
+                                        (onClear)="posicion.selectAlmacenEntrega = undefined"
+                                        (completeMethod)="buscarCombo($event, 'CENTRO')"
+                                        (onChange)="centroSeleccionado(posicion); listarContratosAsociados(); eliminarContratoAsociar(posicion)"    
+                                        [disabled] = "posicion.concluido"
+                                        emptyMessage="Ningún centro encontrado" 
+                                        [minLength]="1" 
+                                        [dropdown]="true" >
 
                                         <ng-template let-item pTemplate="selectedItem">
                                             <span>{{item.value.Codigo}}</span>
@@ -245,7 +247,7 @@
                                     </p-cellEditor>
                                 </td>                      
                                 <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word">
-                                    <p-cellEditor data-toggle="tooltip" title="40 caracteres como máximo">
+                                    <p-cellEditor>
                                         <ng-template pTemplate="input" *ngIf="esTipoMaterial">
                                             <p-autoComplete [(ngModel)]="posicion.tareaSubcontratarObj"
                                                 [suggestions]="autocompleteServiciosSolp" 
@@ -256,7 +258,6 @@
                                                 [autoHighlight]="true" 
                                                 emptyMessage="" 
                                                 [minLength]="4" 
-                                                [maxlength]="40"
                                                 [forceSelection]="false" 
                                                 (completeMethod)="autocompleteMaterialSolp($event)"
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)" 
@@ -271,58 +272,58 @@
                                             <input type="text" class="inputGrilla"
                                                 [(ngModel)]="posicion.tareaSubcontratar" 
                                                 (paste)="onPaste($event,enumColumnaSubPosicion.TareaSubcontratar,rowIndex,dt)"
-                                                (blur)="onBlurTarea($event, posicion)"
-                                                [maxlength]="40"
-                                                data-toggle="tooltip" title="40 caracteres como máximo"> 
+                                                (blur)="onBlurTarea($event, posicion)">
                                         </ng-template>
 
-                                    <ng-template pTemplate="output" style="text-align: left;">
-                                        {{posicion.tareaSubcontratar}}
-                                    </ng-template>
-                                </p-cellEditor>
-                            </td>
-                            <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
-                                <p-cellEditor>
-                                    <ng-template pTemplate="input">
-                                        <input class="inputGrilla" type="text" pKeyFilter="num"
-                                               [(ngModel)]="posicion.cuentaTd"
-                                               (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)"
-                                               (ngModelChange)="calcularValorNeto(posicion)">
-                                    </ng-template>
-                                    <ng-template pTemplate="output">
-                                        {{posicion.cuentaTd  | number:'1.2-2'}}
-                                    </ng-template>
-                                </p-cellEditor>
-                            </td>
-                            <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">
-                                <p-dropdown filter="true"
-                                            [(ngModel)]="posicion.unidadSeleccionada"
-                                            [options]="posicion.unidadesAlternativas"
-                                            optionLabel="Descripcion"
-                                            dataKey="Id"
-                                            appendTo="body"
-                                            (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
-                                            (onFocus)=" $event.target.select()"
-                                            placeholder="Unidad">
-                                </p-dropdown>
-                            </td>
-                            <td>
-                                <p-dropdown dataKey="Id"
-                                            [options]="monedaCompras"
-                                            placeholder="Moneda"
-                                            [(ngModel)]="posicion.monedaSeleccionada"
-                                            [style]="{'width':'150px'}"
-                                            optionLabel="CodigoDescripcion"
-                                            appendTo="body"
-                                            (onFocus)=" $event.target.select();"
-                                            (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')"
-                                            [disabled]="posicion.concluido"
-                                            [minLength]="1"
-                                            [dropdown]="true"
-                                            (onChange)="onSelectMoneda()"
-                                            emptyMessage="Ningúna moneda encontrada"
-                                            [autoHighlight]="true"
-                                            [forceSelection]="true">
+                                        <ng-template pTemplate="output" style="text-align: left;">
+                                            {{posicion.tareaSubcontratar}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td [pEditableColumn]="posicion" style="word-break: break-all; word-wrap:break-word" *ngIf="esTipoMaterial">
+                                    <p-cellEditor>
+                                        <ng-template pTemplate="input">
+                                            <input class="inputGrilla" type="text" pKeyFilter="num" 
+                                                [(ngModel)]="posicion.cuentaTd" 
+                                                (paste)="onPaste($event,enumColumnaSubPosicion.CuentaTd,rowIndex,dt)"
+                                                (ngModelChange)="calcularValorNeto(posicion)">
+                                        </ng-template>
+                                        <ng-template pTemplate="output">
+                                            {{posicion.cuentaTd  | number:'1.2-2'}}
+                                        </ng-template>
+                                    </p-cellEditor>
+                                </td>
+                                <td [pEditableColumn]="posicion" *ngIf="esTipoMaterial">                                                                   
+                                    <p-dropdown 
+                                        filter="true"
+                                        [(ngModel)]="posicion.unidadSeleccionada"                                
+                                        [options]="unidades"
+                                        optionLabel="Descripcion" 
+                                        dataKey="Id"
+                                        appendTo="body"                                     
+                                        (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
+                                        (onFocus)=" $event.target.select()" 
+                                        placeholder="Unidad">
+                                    </p-dropdown>                                                    
+                                </td>
+                                <td>
+                                    <p-dropdown 
+                                        dataKey="Id"
+                                        [options]="monedaCompras" 
+                                        placeholder="Moneda" 
+                                        [(ngModel)]="posicion.monedaSeleccionada" 
+                                        [style]="{'width':'150px'}" 
+                                        optionLabel="CodigoDescripcion" 
+                                        appendTo="body"                      
+                                        (onFocus)=" $event.target.select();"                   
+                                        (completeMethod)="buscarCombo($event, 'MONEDA COMPRAS')"
+                                        [disabled] = "posicion.concluido"                          
+                                        [minLength]="1" 
+                                        [dropdown]="true"                                 
+                                        (onChange)="onSelectMoneda()"
+                                        emptyMessage="Ningúna moneda encontrada"
+                                        [autoHighlight]="true" 
+                                        [forceSelection]="true">
 
                                         <ng-template let-item pTemplate="selectedItem">
                                             <span>{{item.value.Codigo}}</span>
