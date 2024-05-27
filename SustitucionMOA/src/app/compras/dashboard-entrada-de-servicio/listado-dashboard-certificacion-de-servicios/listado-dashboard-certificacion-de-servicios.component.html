@@ -176,7 +176,7 @@
                                 <tr [class.purple-row]="isNotReceibeMoreMerchandise(rowData)" class="posicion" *ngIf="!ocFilterApplied || (ocFilterApplied && tieneItemsACertificar(rowData))" [class.green-row]="esPosicionCompleta(rowData)" [class.highlighted]="expanded">
                                     <ng-container *ngIf="mostrarPosicionSolicitante(rowData)">
 
-                                      <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
+                                        <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
                                             <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)" 
                                                    #seleccionarPosicionCheckbox
@@ -245,57 +245,57 @@
                                             </ng-template>
 
                                             <!-- TABLE 3 BODY -->
-                                            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100" [class.highlighted]="expanded">
+                                            <ng-template pTemplate="body" let-rowItem let-expanded="expanded" let-i="rowIndex">
+                                                <tr *ngIf="!ocFilterApplied || ocFilterApplied && (rowItem.Porcentaje*1) < 100" [class.highlighted]="expanded">
                                                     <td>
                                                         <input type="checkbox"
-                                                               [(ngModel)]="rowData.isSelected"
-                                                               (change)="onCheckboxChange(rowData)"
-                                                               [attr.disabled]="deshabilitarCheckboxDeItem(rowData) ? true : null" />
-                                                        <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
+                                                               [(ngModel)]="rowItem.isSelected"
+                                                               (change)="onCheckboxChange(rowItem)"
+                                                               [attr.disabled]="deshabilitarCheckboxDeItem(rowItem) ? true : null" />
+                                                        <a href="#" [pRowToggler]="rowItem" *ngIf="rowItem.EntradasServicio.length > 0">
                                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                                         </a>
                                                     </td>
 
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
-                                                        <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
-                                                        <td *ngIf="col.type==='string' && col.visible">{{ formatImport(col.id, rowData[col.field]) }}</td>
+                                                        <td *ngIf="col.type === 'date' && col.visible">{{ rowItem[col.field] | date: 'dd/MM/yyyy' }}</td>
+                                                        <td *ngIf="col.type==='string' && col.visible">{{ formatImport(col.id, rowItem[col.field]) }}</td>
                                                         <!-- Celdas de columas con contenido customizado -->
                                                         <td *ngIf="col.type==='custom' && col.visible">
                                                             <input *ngIf="col.id === 'iCantidadACertificar'"
                                                                    type="text"
                                                                    name="cantidad"
                                                                    (keypress)="numbersOnly($event)"
-                                                                   (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
-                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
-                                                                   (ngModelChange)="rowData.CantidadACertificar=$event"
-                                                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-3'"
+                                                                   (keyup)="actualizarValoresACertificarPorCantidad(rowItem);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowItem)"
+                                                                   (ngModelChange)="rowItem.CantidadACertificar=$event"
+                                                                   [ngModel]="rowItem.CantidadACertificar | number:'1.0-3'"
                                                                    required
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
-                                                                   [disabled]="rowData.Porcentaje==100" 
+                                                                   [disabled]="rowItem.Porcentaje==100"
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}" />
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
                                                                    type="text"
                                                                    name="porcentaje"
                                                                    (keypress)="numbersOnly($event)"
-                                                                   (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
-                                                                   (blur)="validarMantenerItemSeleccionado(rowData)"
-                                                                   (ngModelChange)="rowData.PorcentajeACertificar=$event"
-                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-3'"
+                                                                   (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem);"
+                                                                   (blur)="validarMantenerItemSeleccionado(rowItem)"
+                                                                   (ngModelChange)="rowItem.PorcentajeACertificar=$event"
+                                                                   [ngModel]="rowItem.PorcentajeACertificar | number:'1.0-3'"
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required
                                                                    disabled
                                                                    [ngClass]="{ 'input-border-color': !isPorcentajeDisabled}" />
 
-                                                            <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowData.Porcentaje >= 100, 'percentage-yellow': rowData.Porcentaje < 100 }">
-                                                                {{ rowData[col.field] | defaultData }}%
+                                                            <span *ngIf="col.id==='iPorcentaje'" [ngClass]="{ 'percentage-green': rowItem.Porcentaje >= 100, 'percentage-yellow': rowItem.Porcentaje < 100 }">
+                                                                {{ rowItem[col.field] | defaultData }}%
                                                             </span>
                                                             <span *ngIf="col.id==='iCantidadTotal'">
-                                                                {{ rowData.CantidadReal + rowData.CantidadACertificar }}
+                                                                {{ rowItem.CantidadReal + rowItem.CantidadACertificar }}
                                                             </span>
                                                             <span *ngIf="col.id === 'iMonto' || col.id === 'iMontoACertificar'">
-                                                                {{ calculateAmount(col.id, rowData) }}
+                                                                {{ calculateAmount(col.id, rowItem) }}
                                                             </span>
 
                                                             <button *ngIf="col.id === 'iAcciones'"
@@ -303,7 +303,7 @@
                                                                     type="button"
                                                                     pButton icon="fa fa-refresh"
                                                                     (click)="habilitarCampoDeValorACertificar(i)"
-                                                                    [disabled]="rowData.CantidadACertificar === 0 || rowData.PorcentajeACertificar === 0">
+                                                                    [disabled]="rowItem.CantidadACertificar === 0 || rowItem.PorcentajeACertificar === 0">
                                                             </button>
                                                         </td>
                                                     </ng-container>
@@ -318,12 +318,12 @@
                                             </ng-template>
 
                                             <!-- TABLE 3 ROW EXPANSION: ENTRADAS DE SERVICIO -->
-                                            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-                                                <tr id="entradasServicio" *ngIf="(!ocFilterApplied || ocFilterApplied && (rowData.Porcentaje*1) < 100) && (rowData.EntradasServicio && rowData.EntradasServicio.length > 0)">
+                                            <ng-template pTemplate="rowexpansion" let-rowItem let-columns="columns">
+                                                <tr id="entradasServicio" *ngIf="(!ocFilterApplied || ocFilterApplied && (rowItem.Porcentaje*1) < 100) && (rowItem.EntradasServicio && rowItem.EntradasServicio.length > 0)">
                                                     <td [attr.colspan]="cantidadColumnasTabla('items')">
                                                         <p-table id="entradasServicio"
                                                                  class="level4"
-                                                                 [value]="rowData.EntradasServicio"
+                                                                 [value]="rowItem.EntradasServicio"
                                                                  dataKey="Id">
                                                             <!-- TABLE 4 HEADERS -->
                                                             <ng-template pTemplate="header">
@@ -341,7 +341,46 @@
                                                                     <ng-container *ngFor="let col of userTablesConfig[3].columns">
                                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
                                                                         <td *ngIf="col.type === 'string' && col.visible && col.id !== esNro">{{ rowData[col.field] | defaultData }}</td>
-                                                                        <td *ngIf="col.type === 'custom' && col.visible">
+                                                                        <td *ngIf="col.type === 'custom' && col.visible" [style.max-width]="(col.field === 'Referencia' || col.field === 'TextoBreve' || col.field === 'FechaDocumentoString') && rowData.Ingresante === usuario ? 'max-content' : '8em'">
+                                                                            <ng-container *ngIf="col.id === 'esFechaDoc'">
+                                                                                <compras-celda-editable-ingresante 
+                                                                                    *ngIf="rowData.Ingresante === usuario"
+                                                                                    [columnaEditar]="'FechaDocumento'"
+                                                                                    [value]="rowData.FechaDocumentoString"
+                                                                                    [procesando]="procesandoCelda['FechaDocumento'][rowData.IdES]"
+                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'FechaDocumento', rowData.IdES, rowItem.NroOrdenCompra)"
+                                                                                >
+                                                                                </compras-celda-editable-ingresante>
+                                                                                <ng-container *ngIf="rowData.Ingresante !== usuario">
+                                                                                    {{ rowData.FechaDocumentoString }}
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="col.id === 'esDescripcion'">
+                                                                                <compras-celda-editable-ingresante 
+                                                                                    *ngIf="rowData.Ingresante === usuario"
+                                                                                    [columnaEditar]="'DescripcionES'"
+                                                                                    [value]="rowData.TextoBreve"
+                                                                                    [procesando]="procesandoCelda['DescripcionES'][rowData.IdES]"
+                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'DescripcionES', rowData.IdES, rowItem.NroOrdenCompra)"
+                                                                                >
+                                                                                </compras-celda-editable-ingresante>
+                                                                                <ng-container *ngIf="rowData.Ingresante !== usuario">
+                                                                                    {{ rowData.TextoBreve }}
+                                                                                </ng-container>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="col.id === 'esReferencia'">
+                                                                                <compras-celda-editable-ingresante 
+                                                                                    *ngIf="rowData.Ingresante === usuario"
+                                                                                    [columnaEditar]="'Remito'"
+                                                                                    [value]="rowData.Referencia"
+                                                                                    [procesando]="procesandoCelda['Remito'][rowData.IdES]"
+                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'Remito', rowData.IdES, rowItem.NroOrdenCompra)"
+                                                                                >
+                                                                                </compras-celda-editable-ingresante>
+                                                                                <ng-container *ngIf="rowData.Ingresante !== usuario">
+                                                                                    {{ rowData.Referencia }}
+                                                                                </ng-container>
+                                                                            </ng-container>
                                                                             <ng-container *ngIf="col.id==='esNro'">
                                                                                 {{(rowData[col.field] !== 0 ? rowData[col.field] : rowData.TemporalId) | defaultData }}
                                                                             </ng-container>
@@ -424,15 +463,15 @@
 </div>
 
 
-<app-modal-alta-entrada-de-servicio *ngIf="showModal"
-                                    [showModal]="showModal"
-                                    [itemSelected]="itemSelected"
+    <app-modal-alta-entrada-de-servicio *ngIf="showModal"
+                                        [showModal]="showModal"
+                                        [itemSelected]="itemSelected"
                                         [posicionSelected] ="posicionSelected"
-                                    [elementSelected]="elementSelected"
-                                    [itemIdSelected]="itemIdSelected"
-                                    (closeModal)="onCloseModal()"
-                                    (enviarMensajeGrilla)="actualizarGrilla($event)">
-</app-modal-alta-entrada-de-servicio>
+                                        [elementSelected]="elementSelected"
+                                        [itemIdSelected]="itemIdSelected"
+                                        (closeModal)="onCloseModal()"
+                                        (enviarMensajeGrilla)="actualizarGrilla($event)">
+    </app-modal-alta-entrada-de-servicio>
 
 
 
