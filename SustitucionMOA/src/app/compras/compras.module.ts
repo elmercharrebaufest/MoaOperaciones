@@ -79,7 +79,7 @@ import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
 import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
-import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
+import { VisualizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
@@ -181,7 +181,7 @@ import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/component
         CerrarCotizacionComponent,
         PlazoDeOfertaComponent,
         ReporteOcComponent,
-        VisalizarPrecioComponent,
+        VisualizarPrecioComponent,
         ChatInternoComponent,
         PosicionPlazoComponent,
         EditarOrdenDeCompraComponent,
