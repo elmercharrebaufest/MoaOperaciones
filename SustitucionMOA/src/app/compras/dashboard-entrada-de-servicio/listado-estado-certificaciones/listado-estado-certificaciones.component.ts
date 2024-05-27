@@ -69,8 +69,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Servicio no ejecutado/concluido', code: '1' },
     { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
     { name: 'Servicio realizado con resultado distinto al contratado', code: '3' },
-    { name: 'Falta de presentación de documentación', code: '4' },
-    { name: 'Otros/Observaciones', code: '5' }
+    { name: 'Falta de presentación de documentación', code: '4' }
   ];
   suplentes: any = [
     { name: 'Carlos Duarte', code: '001' }
@@ -231,36 +230,32 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     getListarPO(proveedor, documentoNumero) {
+      this.msgs = [];
       this.getFecha();
       this.hideContainerTable();
-          this.unsubscribe();
+      this.unsubscribe();
       this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-                (result:any) => {
-                  if (result.logout == true) {
-                    this.sessionDataService.logout();
-                  } else if (result.error != undefined && result.error != "") {
-                  } else if (result.info != undefined) {
-                  } else {
-                      this.tablaPO = result.data; 
-              this.setColumsByUserProfile(this.tablaPO, this.usuario);
-                      this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-                      this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                      this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                  }
-          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-          this.showContainerTable();
-          return true;
-        }, error => {
-                  this.floatMsgService.setErrorMsg(error.message);
-          this.showContainerTable();
-          return false;
-              }
-              );
-      } catch (e) {
-        this.floatMsgService.setErrorMsg(e);
-        this.spinnerComponent.hideIt();
-        return false; //<-- Prevent Refresh
-      }
+        (result:any) => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+          } else if (result.info != undefined) {
+          } else {
+            this.tablaPO = result.data; 
+            this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+            this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+            this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+          }
+        this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+        this.showContainerTable();
+        return true;
+      }, error => {
+        this.floatMsgService.setErrorMsg(error.message);
+        this.showContainerTable();
+        return false;
+      });
+    }
 
   displayContent() {
     return !this.spinnerComponent.visible;
@@ -370,7 +365,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   enviarMotivo() {
     const data = {
       Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
-      MotivoRechazo: this.formularioMotivosRechazo.get('motivo').value.code === 5 ? this.formularioMotivosRechazo.get('motivo').value.name + ':' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
+      MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value.length > 0 ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
       Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
       NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
       FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
@@ -387,14 +382,41 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.service.enviarMotivoRechazoES(data).subscribe(
       (resp: any) => {
-      this.getListarPO(this.proveedor, this.documentoNumero);
-      this.mostrarMotivosRechazos = false;
-      this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+        this.resetForm();
+        this.getListarPO(this.proveedor, this.documentoNumero);
+        this.mostrarMotivosRechazos = false;
+        this.msgs.push({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
       }, error => {
         console.error('Error al obtener datos:', error);
         this.msgs.push({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
       }
     );
+  }
+
+  ocultandoModal(): void{
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.formularioMotivosRechazo.reset({
+      motivo: { name: null, code: null },
+      destinatario: null,
+      detalleCertificacionRechazada: null,
+      resumenLineas: null,
+      motivoRechazo: null,
+      fechaRechazo: null,
+      proveedor: null,
+      numeroCertificacion: null,
+      fechaCertificacion: null,
+      descripcion: null,
+      importe: null,
+      montoTotal: null,
+      detalleServicio: null,
+      observaciones: null
+    });
+    this.formularioMotivosRechazo.markAsPristine();
+    this.formularioMotivosRechazo.markAsUntouched();
+    this.formularioMotivosRechazo.updateValueAndValidity();
   }
 
   enviarAprobacion(nro_es_local: string): any {
@@ -406,7 +428,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.hideContainerTable();
         this.service.enviarAprobacionES(nro_es_local).subscribe(
           resp => {
-            this.msgs = [];
             let mensajeError: string = "";
             if (!resp.data) {
               mensajeError = 'del servidor, vuelva a intentarlo más tarde.'

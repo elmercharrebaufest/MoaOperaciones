@@ -212,25 +212,25 @@
     [modal]="true" 
     [responsive]="true"
     [appendTo]="'body'"
-    [contentStyle]="{'overflow':'visible'}"
+    [contentStyle]="{'overflow':'visible', 'min-width': '500px'}"
     [draggable]="false"
+    (onHide)="ocultandoModal()"
 >
-    <!-- <div style="z-index: 10;" class="ui-widget-overlay ui-dialog-mask"></div> -->
     <form [formGroup]="formularioMotivosRechazo">
         <p-dropdown
             appendTo="body"
             [options]="motivos"
             formControlName="motivo"
             optionLabel="name"
-            placeholder="Selecciona un mótivo"
+            placeholder="Selecciona un motivo"
         ></p-dropdown>
-        <div class="input-wrapper" *ngIf="formularioMotivosRechazo.get('motivo').value?.code === '5'">
+        <div class="input-wrapper" *ngIf="formularioMotivosRechazo.get('motivo').value.name !== null">
             <textarea 
                 formControlName="observaciones"
                 class="textoLibre" 
                 [disabled]="formularioMotivosRechazo.invalid" 
                 type="text" 
-                placeholder="Escriba su observación." 
+                placeholder="En este espacio puede escribir una observación adicional." 
                 maxlength="50">
             </textarea>
             <p class="char-limit-message">Max 50 caracteres</p>

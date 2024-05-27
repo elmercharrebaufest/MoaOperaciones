@@ -131,85 +131,85 @@ namespace SustitucionMOAUtils.Services
             OrderParamsDto ordenParams = new OrderParamsDto();
 
             // ES APROBADAS
-            try
-            {
-            foreach (var documento in EntradasServicioCabecera)
-            {
-                string nroDoc = documento.EntradaServicio.ToString();
-                    int nro_es_sap = int.Parse(nroDoc);
+            //try
+            //{
+            //    foreach (var documento in EntradasServicioCabecera.Take(150))
+            //    {
+            //        string nroDoc = documento.EntradaServicio.ToString();
+            //            int nro_es_sap = int.Parse(nroDoc);
 
-                    DateTime fecha = DateTime.Parse(documento.FechaCreacion);
-                    string fechaFormateada = fecha.ToString("dd/MM/yyyy");
-                    documento.FechaCreacion = fechaFormateada;
+            //            DateTime fecha = DateTime.Parse(documento.FechaCreacion);
+            //            string fechaFormateada = fecha.ToString("dd/MM/yyyy");
+            //            documento.FechaCreacion = fechaFormateada;
 
-                // Se obtiene detalle de una ES
-                List<EntradaServicioDetalleDto> entradasServicioDetalleSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
-                    documento.entradaServicioDetalle = entradasServicioDetalleSAP;
+            //        // Se obtiene detalle de una ES
+            //        List<EntradaServicioDetalleDto> entradasServicioDetalleSAP = new ObtenerEntradaDeServicioPorNumeroConsumerMOA().ObtenerEntradaServicioDetalle(nroDoc);
+            //            documento.entradaServicioDetalle = entradasServicioDetalleSAP;
 
-                    documento.Estado = "Aprobada";
+            //            documento.Estado = "Aprobada";
 
-                    if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
-                    {
-                        ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
+            //            if (documento.entradaServicioDetalle != null && documento.entradaServicioDetalle.Count > 0)
+            //            {
+            //                ordenParams.OrdenCompraId = documento.entradaServicioDetalle[0].OrdenCompra;
 
-                        Proveedor prov = orderService.BuscarProveedor(ordenParams);
+            //                Proveedor prov = orderService.BuscarProveedor(ordenParams);
 
-                        documento.Proveedor = prov.RazonSocial ?? "-";
+            //                documento.Proveedor = prov.RazonSocial ?? "-";
 
-                        documento.CUIT = prov.CUIT ?? "-";
-                    }
+            //                documento.CUIT = prov.CUIT ?? "-";
+            //            }
 
-                    // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = parametros.VerTodo ?
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
-                            ? true
-                            : (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail))))
-                        )
-                        :
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail)))
-                        );
+            //            // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
+            //            List<Aprobaciones> ESTemporales = parametros.VerTodo ?
+            //                (
+            //                    repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+            //                    && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
+            //                    ? true
+            //                    : (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail))))
+            //                )
+            //                :
+            //                (
+            //                    repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+            //                    && (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail)))
+            //                );
 
 
-                    if (ESTemporales != null && ESTemporales.Count > 0)
-                    {
-                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales.ToDictionary(detalle => detalle.Nro_linea);
+            //            if (ESTemporales != null && ESTemporales.Count > 0)
+            //            {
+            //                Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales.ToDictionary(detalle => detalle.Nro_linea);
 
-                        // Iterar sobre los detalles de la entrada de servicio
-                        foreach (EntradaServicioDetalleDto detalleSAP in documento.entradaServicioDetalle)
-                        {
-                            // Verificar si hay detalles de aprobación correspondientes
-                            if (detallesAprobacionPorLinea.TryGetValue(detalleSAP.Ext_line, out Aprobaciones detalle))
-                            {
-                                detalleSAP.NumeroLinea = detalle.Nro_linea;
-                                detalleSAP.Descripcion = detalle.Descripcion_ES;
-                                detalleSAP.TextoBreveServicio = detalle.Texto_breve_servicio;
-                                detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
-                                detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
-                                detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
-                                detalleSAP.NroRemito = detalle.Referencia;
-                                detalleSAP.CodigoServicio = detalle.Nro_servicio;
-                                documento.MotivoRechazo = detalle.Motivo_rechazo;
-                                documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
-                                documento.Ingresante = detalle.Ingresante_CDS;
-                                documento.Aprobador = detalle.Aprobador_CDS;
-                                documento.Suplente = detalle.Suplente;
-                                documento.Fiscal = detalle.Fiscal_SOLPED;
-                            }
-                        }
-                    }
+            //                // Iterar sobre los detalles de la entrada de servicio
+            //                foreach (EntradaServicioDetalleDto detalleSAP in documento.entradaServicioDetalle)
+            //                {
+            //                    // Verificar si hay detalles de aprobación correspondientes
+            //                    if (detallesAprobacionPorLinea.TryGetValue(detalleSAP.Ext_line, out Aprobaciones detalle))
+            //                    {
+            //                        detalleSAP.NumeroLinea = detalle.Nro_linea;
+            //                        detalleSAP.Descripcion = detalle.Descripcion_ES;
+            //                        detalleSAP.TextoBreveServicio = detalle.Texto_breve_servicio;
+            //                        detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
+            //                        detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
+            //                        detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
+            //                        detalleSAP.NroRemito = detalle.Referencia;
+            //                        detalleSAP.CodigoServicio = detalle.Nro_servicio;
+            //                        documento.MotivoRechazo = detalle.Motivo_rechazo;
+            //                        documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
+            //                        documento.Ingresante = detalle.Ingresante_CDS;
+            //                        documento.Aprobador = detalle.Aprobador_CDS;
+            //                        documento.Suplente = detalle.Suplente;
+            //                        documento.Fiscal = detalle.Fiscal_SOLPED;
+            //                    }
+            //                }
+            //            }
 
-                EntradasServicio.Add(documento);
+            //        EntradasServicio.Add(documento);
 
-                }
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
+            //        }
+            //    }
+            //catch (Exception e)
+            //{
+            //    throw e;
+            //}
 
             // Busqueda Entrada Servicios temporales en pendiente de aprobación.
             List<Aprobaciones> temporales = new List<Aprobaciones>();
