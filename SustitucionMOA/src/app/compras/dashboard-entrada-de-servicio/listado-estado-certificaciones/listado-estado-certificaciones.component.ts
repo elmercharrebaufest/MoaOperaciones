@@ -95,8 +95,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: false },
+        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: false },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
       ]
@@ -242,19 +242,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else if (result.info != undefined) {
           } else {
             this.tablaPO = result.data; 
-            this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
-        this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-        this.showContainerTable();
-        return true;
-      }, error => {
-        this.floatMsgService.setErrorMsg(error.message);
-        this.showContainerTable();
-        return false;
-      });
+          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.showContainerTable();
+          return true;
+        }, error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.showContainerTable();
+          return false;
+        });
     }
 
   displayContent() {
@@ -478,64 +478,57 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
-  setColumsByUserProfile(entradasDeServicio: any, user: any): void {
+  setColumsByUserProfile(entradasDeServicio: any, user: any): string {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if(pendienteAprobacion.length > 0){
       const fai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal === user);
       if(fai.length > 0){
-        this.userId = "FAI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
-        return;
+        return "FAI";
       }
       const ai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal !== user);
       if(ai.length > 0){
-        this.userId = "AI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
         });
-        return;
+        return "AI";
       }
       const fa = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador === user && pa.Ingresante !== user);
       if(fa.length > 0){
-        this.userId = "FA";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Aprobador' || col.field === 'Usuario' ? false : true;
         });
-        return;
+        return "FA";
       }
       const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
       if(fi.length > 0){
-        this.userId = "FI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
         });
-        return;
+        return "FI";
       }
       const a = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante !== user && pa.Fiscal !== user);
       if(a.length > 0){
-        this.userId = "A";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Aprobador' ? false : true;
         });
-        return;
+        return "A";
       }
       const i = pendienteAprobacion.filter(pa => pa.Ingresante === user && pa.Aprobador !== user && pa.Fiscal !== user);
       if(i.length > 0){
-        this.userId = "I";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'Ingresante' ? false : true;
         });
-        return;
+        return "I";
       }
       const f = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador !== user && pa.Ingresante !== user);
       if(f.length > 0){
-        this.userId = "F";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Usuario' ? false : true;
         });
-        return;
+        return "F";
       }
     }
   }
