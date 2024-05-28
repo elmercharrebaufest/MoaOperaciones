@@ -118,6 +118,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         };
 
         this.fechaContabilizacion = new Date();
+        this.fechaDocumento = new Date();
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
