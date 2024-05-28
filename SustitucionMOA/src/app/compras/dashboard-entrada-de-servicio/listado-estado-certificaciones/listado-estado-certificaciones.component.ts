@@ -480,7 +480,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   setColumsByUserProfile(entradasDeServicio: any, user: any): void {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if(pendienteAprobacion.length > 0){
-      const fai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal === user);
+      const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if(fai.length > 0){
         this.userId = "FAI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -488,7 +488,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return;
       }
-      const ai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal !== user);
+      const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(ai.length > 0){
         this.userId = "AI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -496,15 +496,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return;
       }
-      const fa = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador === user && pa.Ingresante !== user);
-      if(fa.length > 0){
+      const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
+      if (fa.length > 0) {
         this.userId = "FA";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
           return;
         }
-      const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
+      const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if(fi.length > 0){
         this.userId = "FI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -512,7 +512,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return;
       }
-      const a = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante !== user && pa.Fiscal !== user);
+      const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(a.length > 0){
         this.userId = "A";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -520,7 +520,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return;
       }
-      const i = pendienteAprobacion.filter(pa => pa.Ingresante === user && pa.Aprobador !== user && pa.Fiscal !== user);
+      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(i.length > 0){
         this.userId = "I";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -528,7 +528,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return;
       }
-      const f = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador !== user && pa.Ingresante !== user);
+      const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if(f.length > 0){
         this.userId = "F";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -537,5 +537,31 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         return;
       }
     }
+    }
+
+  equalsIgnoreCase(str1: string, str2: string): boolean {
+    let areEqual = false;
+    if (str1 && str2) {
+      const normalized1 = this.eliminarAcentos(str1);
+      const normalized2 = this.eliminarAcentos(str2);
+      areEqual = normalized1.toLocaleLowerCase() === normalized2.toLocaleLowerCase();
+    }
+    return areEqual;
+  }
+
+  eliminarAcentos(string) {
+    const conAcento = 'áàãâäéèêëíìîïóòõôöúùûüçÁÀÃÂÄÉÈÊËÍÌÎÏÓÒÕÖÔÚÙÛÜÇ';
+    const sinAcento = 'aaaaaeeeeiiiiooooouuuucAAAAAEEEEIIIIOOOOOUUUUC';
+    const normalizedStr = string
+      .split('')
+      .map(char => {
+        const charIdx = conAcento.indexOf(char)
+        if (charIdx !== -1) {
+          return sinAcento[charIdx]
+        }
+        return char
+      })
+      .join('')
+    return normalizedStr;
   }
 }
