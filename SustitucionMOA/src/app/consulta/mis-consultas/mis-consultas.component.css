@@ -121,3 +121,11 @@
 .gap-5px {
     gap: 5px
 }
+
+.font-size-1em {
+    font-size: 1em;
+}
+
+.items-end {
+    align-items: end;
+}

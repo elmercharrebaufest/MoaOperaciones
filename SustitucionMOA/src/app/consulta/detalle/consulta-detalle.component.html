@@ -1,9 +1,5 @@
 ﻿<div class="container-fluid h-full" style="margin-top: 20px; margin-bottom: 20px;">
     <!-- CONTENT-->
-    <div class="col-xs-12 col-sm-12 col-md-12">
-        <mensaje></mensaje>
-        <spinner></spinner>
-    </div>
 
     <div class="col-xs-12 col-sm-12 col-md-12 h-full">
         <div [ngClass]="{
@@ -11,6 +7,10 @@
             'col-xs-8 col-sm-8 col-md-8':!datosExtrasMinimizado,
             'h-full flex flex-column': modalMaximizado
         }">
+            <div class="col-xs-12 col-sm-12 col-md-12 ">
+                <mensaje></mensaje>
+                <spinner></spinner>
+            </div>
             <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 col-lg-12 detalleConsulta flex-1" #detalleConsulta>
                 <ng-container *ngIf="consulta?.Comentarios; else loader">
                     <div *ngFor="let comentario of consulta.Comentarios, let i = index">
@@ -88,7 +88,8 @@
                             class="mx-auto d-block  ui-button-success p-2" pButton type="button" href="#"
                             style="text-decoration:none!important" pTooltip="Enviar" tooltipPosition="right">
                             <i>
-                                <img src="../../../../Content/images/icons/send.svg" alt="enviarMensaje" style="height:25px;" />
+                                <img src="../../../../Content/images/icons/send.svg" alt="enviarMensaje"
+                                    style="height:25px;" />
                             </i>
                         </button>
 

@@ -84,11 +84,11 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
                     } else {
                         this.data = result.data;
                         console.log("Data", this.data)
-                        const calidadesACamara = result.data.datosCalidad.filter(cal=>!cal.caracteristica.toUpperCase().includes("HUMEDAD"))
+                        const calidadesACamara = result.data.datosCalidad.filter(cal => !cal.caracteristica.toUpperCase().includes("HUMEDAD"))
                         this.condicionCamara = calidadesACamara
-                                .every(x => x.resultadoCamara == 0);
+                            .every(x => x.resultadoCamara == 0);
                         this.porcentajeDescuento = calidadesACamara
-                                .every(x => x.porcentajeDescuento == 0);
+                            .every(x => x.porcentajeDescuento == 0);
                     }
                 },
                 error => {
@@ -175,7 +175,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     isExportVisible() {
-        this.spinnerSmallComponent.visible;
+        this.spinnerSmallComponent.visible.value;
     }
 
     showDataPlus(calidad: any) {

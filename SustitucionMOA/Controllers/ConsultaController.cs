@@ -208,7 +208,84 @@ namespace SustitucionMOA.Controllers
                         estados,
                         totalConsultas = consultas.ItemsTotales,
                         pageItem = consultas.ItemsPorPagina,
+                        page = consultas.Pagina
                     }
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                var error = e + "-" + (e.InnerException != null ? e.InnerException.Message : string.Empty);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, error);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult ListaExportacionConsultas(ReqListadoConsultaDto reqListadoConsultaDto)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
+                FiltrosConsultaDto filtros = null;
+                if (!string.IsNullOrEmpty(reqListadoConsultaDto.FiltrosURIEncoded))
+                {
+                    var jsonDecode = DataFormatter.FormatEncodedURI(reqListadoConsultaDto.FiltrosURIEncoded);
+                    filtros = DataFormatter.GetDtoFromJsonString<FiltrosConsultaDto>(jsonDecode);
+                }
+
+                var consultas = consultaService.ListarConsultasSinPaginar(usuarioActual.Id, obtenerTodos, filtros);
+
+                return JsonCustom(new
+                {
+                    data = consultas
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                var error = e + "-" + (e.InnerException != null ? e.InnerException.Message : string.Empty);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, error);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult ObtenerConsultaDisconformidad(string numeroCCPP)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+                var consulta = consultaService.ObtenerConsultaDisconformidad(numeroCCPP, usuarioActual.Id, obtenerTodos);
+
+                return JsonCustom(new
+                {
+                    data = consulta
                 });
             }
             catch (InfoCustomException e)

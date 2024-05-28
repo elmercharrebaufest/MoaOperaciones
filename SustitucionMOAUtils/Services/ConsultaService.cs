@@ -27,6 +27,7 @@ using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -522,61 +523,11 @@ namespace SustitucionMOAUtils.Services
 
         public ListaPaginada<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos, Paginacion paginacion, FiltrosConsultaDto filtros = null)
         {
-
-            var includes = new List<Expression<Func<Consulta, object>>>();
-
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
-            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
 
-            var proveedorAsignado = usuario.ObtenerProveedor();
-            var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
+            Expression<Func<Consulta, bool>> filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
 
-            filtros = filtros == null ? new FiltrosConsultaDto() : filtros;
-
-            var noTieneFiltroRazonSocialCorredor = string.IsNullOrWhiteSpace(filtros.RazonSocialCorredor);
-            var noTieneFiltroRazonSocialProveedor = string.IsNullOrWhiteSpace(filtros.RazonSocialProveedor);
-            var noTieneFiltroAsunto = string.IsNullOrWhiteSpace(filtros.Asunto);
-            var noTieneFiltroMaterial_Id = filtros.Material_Id == null || filtros.Material_Id.Count == 0;
-            var filtroMaterial_Id = noTieneFiltroMaterial_Id ? new List<int?>() : filtros.Material_Id;
-            var noTieneFiltroCategoriaId = filtros.CategoriaId == null || filtros.CategoriaId.Count == 0;
-            var filtroCategoriaId = noTieneFiltroCategoriaId ? new List<int?>() : filtros.CategoriaId;
-            var noTieneFiltroSubCategoriaId = filtros.SubCategoriaId == null || filtros.SubCategoriaId.Count == 0;
-            var filtroSubCategoriaId = noTieneFiltroSubCategoriaId ? new List<int?>() : filtros.SubCategoriaId;
-            var noTieneFiltroEstadoConsultaId = filtros.EstadoConsultaId == null || filtros.EstadoConsultaId.Count == 0;
-            var filtroEstadoConsultaId = noTieneFiltroEstadoConsultaId ? new List<int?>() : filtros.EstadoConsultaId;
-            var noTieneFiltroUltimaModificacion = filtros.FechaUltimaModificacion == null;
-            var filtroDesdeUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.First();
-            var filtroHastaUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.Last();
-            var noTieneFiltroCreacion = filtros.FechaCreacion == null;
-            var filtroDesdeCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.First();
-            var filtroHastaCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.Last();
-
-            var noTieneFiltroDiasReclamo = string.IsNullOrWhiteSpace(filtros.DiasReclamo);
-
-            Expression<Func<Consulta, bool>> filtroBusqueda = (x) =>
-                    ((obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
-                    (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) || x.Usuario_Id == usuarioId) &&
-                    ((
-                    (filtros.Id == null || filtros.Id == 0 || x.Id.ToString().Contains(filtros.Id.ToString())) &&
-                    (noTieneFiltroRazonSocialProveedor || x.RazonSocialProveedor.Contains(filtros.RazonSocialProveedor)) &&
-                    (noTieneFiltroRazonSocialCorredor || x.RazonSocialCorredor.Contains(filtros.RazonSocialCorredor)) &&
-                    (noTieneFiltroAsunto || x.Asunto.Contains(filtros.Asunto)) &&
-                    //(noTieneFiltroDiasReclamo || x.FechaCreacion.Contains(filtros.DiasReclamo)) &&
-                    (noTieneFiltroMaterial_Id || filtroMaterial_Id.Contains(x.Detalle.Material_Id)) &&
-                    (noTieneFiltroCategoriaId || filtroCategoriaId.Contains(x.Categoria_Id)) &&
-                    (noTieneFiltroEstadoConsultaId || filtroEstadoConsultaId.Contains(x.EstadoConsulta_Id)) &&
-                    (noTieneFiltroSubCategoriaId || filtroSubCategoriaId.Contains(x.SubCategoria_Id)) &&
-                    (noTieneFiltroCreacion || (
-                      (filtroDesdeCreacion == null || x.FechaCreacion >= filtroDesdeCreacion) &&
-                      (filtroHastaCreacion == null || x.FechaCreacion <= filtroHastaCreacion)
-                        )) &&
-                    (noTieneFiltroUltimaModificacion || (
-                      (filtroDesdeUltimaModificacion == null || x.FechaUltimaModificacion >= filtroDesdeUltimaModificacion) &&
-                      (filtroHastaUltimaModificacion == null || x.FechaUltimaModificacion <= filtroHastaUltimaModificacion)
-                        ))
-                    ))
-                    ;
 
             var ret = repositorio.Listar(
                 x => new ConsultaDto
@@ -649,6 +600,90 @@ namespace SustitucionMOAUtils.Services
                 filtroBusqueda);
 
             return ret;
+        }
+        public List<ConsultaDto> ListarConsultasSinPaginar(int usuarioId, bool obtenerTodos, FiltrosConsultaDto filtros = null)
+        {
+
+            var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
+
+            Expression<Func<Consulta, bool>> filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
+
+            var ret = repositorio.Listar(
+                x => new ConsultaDto
+                {
+                    Id = x.Id,
+                    Asunto = x.Asunto,
+                    CodigoCorredor = x.CodigoCorredor,
+                    RazonSocialCorredor = x.RazonSocialCorredor,
+                    CodigoProveedor = x.CodigoProveedor,
+                    RazonSocialProveedor = x.RazonSocialProveedor,
+                    CategoriaId = x.Categoria_Id,
+                    Categoria = new CategoriaDto
+                    {
+                        Id = x.Categoria.Id,
+                        Code = x.Categoria.Code,
+                        Nombre = x.Categoria.Nombre
+                    },
+                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
+                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
+                    {
+                        Id = x.SubCategoria.Id,
+                        Code = x.SubCategoria.Code,
+                        Nombre = x.SubCategoria.Nombre,
+                        CategoriaId = x.SubCategoria.Categoria_Id
+                    } : new SubCategoriaDto
+                    {
+                        Id = 0,
+                        Code = "",
+                        Nombre = "",
+                        CategoriaId = 0
+                    },
+                    EstadoConsultaId = x.EstadoConsulta_Id,
+                    Material_Id = x.Detalle.Material_Id,
+                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
+                    EstadoConsulta = new EstadoConsultaDto
+                    {
+                        Id = x.EstadoConsulta.Id,
+                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
+                        Color = x.EstadoConsulta.Color,
+                        Code = x.EstadoConsulta.Code
+                    },
+                    FechaCreacion = x.FechaCreacion,
+                    FechaUltimaModificacion = x.FechaUltimaModificacion,
+                    UsuarioId = x.Usuario_Id,
+                    UsuarioInternoId = x.UsuarioInterno_Id,
+                    FechaVtoReapertura = x.FechaVtoReapertura,
+                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
+                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
+                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
+                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
+                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
+                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
+                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
+                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
+                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                    {
+                        Id = x.Detalle.CausaConsulta.Id,
+                        Nombre = x.Detalle.CausaConsulta.Nombre
+                    } : null,
+                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
+                    GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
+                    GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
+                    GeneradaExternamente = x.UsuarioInterno_Id == null,
+                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
+                    Rubro = x.Detalle.Rubro
+                },
+                filtroBusqueda);
+
+            return ret;
+        }
+        public ConsultaDto ObtenerConsultaDisconformidad(string numeroCCPP, int usuarioId, bool obtenerTodos)
+        {
+            return ListarConsultasSinPaginar(usuarioId, obtenerTodos)
+                .Find(c => c.Categoria.Code == "DISCAL" && c.ComprobanteNo == numeroCCPP);
         }
 
         public void RecategorizarConsulta(int consultaId, int categoriaId, int? subCategoriaId)
@@ -1357,5 +1392,62 @@ namespace SustitucionMOAUtils.Services
             return estadoConsulta;
         }
 
+        private Expression<Func<Consulta, bool>> ObtenerExpresionListaConsultas(
+            Usuario usuario,
+            bool obtenerTodos,
+            FiltrosConsultaDto filtros)
+        {
+            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
+
+            var proveedorAsignado = usuario.ObtenerProveedor();
+            var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
+
+            filtros = filtros == null ? new FiltrosConsultaDto() : filtros;
+
+            var noTieneFiltroRazonSocialCorredor = string.IsNullOrWhiteSpace(filtros.RazonSocialCorredor);
+            var noTieneFiltroRazonSocialProveedor = string.IsNullOrWhiteSpace(filtros.RazonSocialProveedor);
+            var noTieneFiltroAsunto = string.IsNullOrWhiteSpace(filtros.Asunto);
+            var noTieneFiltroMaterial_Id = filtros.Material_Id == null || filtros.Material_Id.Count == 0;
+            var filtroMaterial_Id = noTieneFiltroMaterial_Id ? new List<int?>() : filtros.Material_Id;
+            var noTieneFiltroCategoriaId = filtros.CategoriaId == null || filtros.CategoriaId.Count == 0;
+            var filtroCategoriaId = noTieneFiltroCategoriaId ? new List<int?>() : filtros.CategoriaId;
+            var noTieneFiltroSubCategoriaId = filtros.SubCategoriaId == null || filtros.SubCategoriaId.Count == 0;
+            var filtroSubCategoriaId = noTieneFiltroSubCategoriaId ? new List<int?>() : filtros.SubCategoriaId;
+            var noTieneFiltroEstadoConsultaId = filtros.EstadoConsultaId == null || filtros.EstadoConsultaId.Count == 0;
+            var filtroEstadoConsultaId = noTieneFiltroEstadoConsultaId ? new List<int?>() : filtros.EstadoConsultaId;
+            var noTieneFiltroUltimaModificacion = filtros.FechaUltimaModificacion == null;
+            var filtroDesdeUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.First()?.Date;
+            var filtroHastaUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.Last()?.Date.AddDays(1);
+            var noTieneFiltroCreacion = filtros.FechaCreacion == null;
+            var filtroDesdeCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.First()?.Date;
+            var filtroHastaCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.Last()?.Date.AddDays(1);
+
+            var noTieneFiltroDiasReclamo = string.IsNullOrWhiteSpace(filtros.DiasReclamo);
+
+            Expression<Func<Consulta, bool>> filtroBusqueda = (x) =>
+                    ((obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
+                    (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) || x.Usuario_Id == usuario.Id) &&
+            ((
+            (filtros.Id == null || filtros.Id == 0 || x.Id.ToString().Contains(filtros.Id.ToString())) &&
+            (noTieneFiltroRazonSocialProveedor || x.RazonSocialProveedor.Contains(filtros.RazonSocialProveedor)) &&
+                    (noTieneFiltroRazonSocialCorredor || x.RazonSocialCorredor.Contains(filtros.RazonSocialCorredor)) &&
+                    (noTieneFiltroAsunto || x.Asunto.Contains(filtros.Asunto)) &&
+                    //(noTieneFiltroDiasReclamo || x.FechaCreacion.Contains(filtros.DiasReclamo)) &&
+                    (noTieneFiltroMaterial_Id || filtroMaterial_Id.Contains(x.Detalle.Material_Id)) &&
+                    (noTieneFiltroCategoriaId || filtroCategoriaId.Contains(x.Categoria_Id)) &&
+                    (noTieneFiltroEstadoConsultaId || filtroEstadoConsultaId.Contains(x.EstadoConsulta_Id)) &&
+                    (noTieneFiltroSubCategoriaId || filtroSubCategoriaId.Contains(x.SubCategoria_Id)) &&
+                    (noTieneFiltroCreacion || (
+                      (filtroDesdeCreacion == null || x.FechaCreacion >= filtroDesdeCreacion) &&
+                      (filtroHastaCreacion == null || x.FechaCreacion < filtroHastaCreacion)
+                        )) &&
+                    (noTieneFiltroUltimaModificacion || (
+                      (filtroDesdeUltimaModificacion == null || x.FechaUltimaModificacion >= filtroDesdeUltimaModificacion) &&
+                      (filtroHastaUltimaModificacion == null || x.FechaUltimaModificacion < filtroHastaUltimaModificacion)
+                        ))
+                    ))
+                    ;
+            return filtroBusqueda;
+        }
     }
 }

@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
 import { Comentario, Consulta, Destinatario, ReqListadoConsultaDto } from './consulta';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { ApiResponse } from '../common/models/response';
 
 @Injectable()
 export class ConsultaService extends BaseService {
@@ -86,7 +87,21 @@ export class ConsultaService extends BaseService {
         return this.http
             .get('/api/consulta/Consultas', { headers: this.headers, params });
     }
+    listaExportacionConsultas(filtros: Record<keyof Consulta, any>): Observable<ApiResponse<Consulta[]>> {
+        let params = new HttpParams();
+        if (filtros) {
+            params = params.append('filtrosURIEncoded', encodeURIComponent(JSON.stringify(filtros)));
+        }
+        return this.http
+            .get('/api/consulta/ListaExportacionConsultas', { headers: this.headers, params });
+    }
+    public obtenerConsultaDisconformidad(numeroCCPP: number | string): Observable<ApiResponse<Consulta>> {
+        let params = new HttpParams();
+        params = params.append('numeroCCPP', numeroCCPP.toString());
 
+        return this.http
+            .get('/api/consulta/ObtenerConsultaDisconformidad', { headers: this.headers, params });
+    }
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });
