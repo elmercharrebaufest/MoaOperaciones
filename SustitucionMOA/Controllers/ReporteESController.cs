@@ -82,27 +82,27 @@ namespace SustitucionMOA.Controllers
             sb.AppendLine("<table id=\"items-list\" style=\"width:100%; border-collapse:collapse;\">");
             sb.AppendLine("<thead>");
             sb.AppendLine("<tr>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">N° LINEA</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">N° Servicio</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">Txt. Breve</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">Cant.</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">UM</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">Precio Unitario</th>");
-            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: left; font-size: .76em; background-color: #1C7CD5; color: white;\">Monto Total</th>");
-            sb.AppendLine("<th colspan=\"3\" class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #F9C834; color: #333; font-size: .76em;\">Anterior</th>");
-            sb.AppendLine("<th colspan=\"3\" class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: blue; color: #fff; font-size: .76em;\">A Certificar</th>");
-            sb.AppendLine("<th colspan=\"3\" class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #00B050; color: #fff; font-size: .76em;\">Acumulado</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">N° LINEA</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">N° Servicio</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">Txt. Breve</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">Cant.</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">UM</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">Precio Unitario</th>");
+            sb.AppendLine("<th rowspan=\"2\" style=\"border: 1px solid black; padding: 8px; text-align: center; font-size: .76em; background-color: #1C7CD5; color: white;\">Monto Total</th>");
+            sb.AppendLine("<th colspan=\"3\" class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #F9C834; color: #333; font-size: .76em;\">Anterior</th>");
+            sb.AppendLine("<th colspan=\"3\" class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: blue; color: #fff; font-size: .76em;\">A Certificar</th>");
+            sb.AppendLine("<th colspan=\"3\" class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #00B050; color: #fff; font-size: .76em;\">Acumulado</th>");
             sb.AppendLine("</tr>");
             sb.AppendLine("<tr>");
-            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #F9C834; color: #333; font-size: .76em;\">Cant.</th>");
-            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #F9C834; color: #333; font-size: .76em;\">%</th>");
-            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #F9C834; color: #333; font-size: .76em;\">Monto</th>");
-            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: blue; color: #fff; font-size: .76em;\">Cant.</th>");
-            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: blue; color: #fff; font-size: .76em;\">%</th>");
-            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: blue; color: #fff; font-size: .76em;\">Monto</th>");
-            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #00B050; color: #fff; font-size: .76em;\">Cant.</th>");
-            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #00B050; color: #fff; font-size: .76em;\">%</th>");
-            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: left; background-color: #00B050; color: #fff; font-size: .76em;\">Monto</th>");
+            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #F9C834; color: #333; font-size: .76em;\">Cant.</th>");
+            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #F9C834; color: #333; font-size: .76em;\">%</th>");
+            sb.AppendLine("<th class=\"anteriores\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #F9C834; color: #333; font-size: .76em;\">Monto</th>");
+            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: blue; color: #fff; font-size: .76em;\">Cant.</th>");
+            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: blue; color: #fff; font-size: .76em;\">%</th>");
+            sb.AppendLine("<th class=\"acertificar\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: blue; color: #fff; font-size: .76em;\">Monto</th>");
+            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #00B050; color: #fff; font-size: .76em;\">Cant.</th>");
+            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #00B050; color: #fff; font-size: .76em;\">%</th>");
+            sb.AppendLine("<th class=\"acumulado\" style=\"border: 1px solid black; padding: 8px; text-align: center; background-color: #00B050; color: #fff; font-size: .76em;\">Monto</th>");
             sb.AppendLine("</tr>");
             sb.AppendLine("</thead>");
             sb.AppendLine("<tbody>");
@@ -110,27 +110,27 @@ namespace SustitucionMOA.Controllers
             foreach (ReporteDto report in reports)
             {
                 sb.AppendLine("<tr>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.NumeroLinea.ToString()}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.ServicioNumero.ToString() ?? "N/A"}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.Descripcion ?? "N/A"}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.Cantidad.ToString() ?? "N/A"}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.UM ?? "N/A"}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.Importe.ToString("N2") ?? "N/A"}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.NumeroLinea.ToString()}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.ServicioNumero.ToString() ?? "N/A"}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Descripcion ?? "N/A"}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Cantidad.ToString() ?? "N/A"}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.UM ?? "N/A"}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Importe.ToString("N2") ?? "N/A"}</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.Cantidad * report.Importe).ToString("N2")}</td>");
 
                 // Anteriores
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.CantidadReal.ToString()}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{Convert.ToDecimal(report.Porcentaje):0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadReal.ToString()}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{Convert.ToDecimal(report.Porcentaje):0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{ (report.CantidadReal * report.Importe).ToString("N") }</td>");
 
                 // A certificar
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.CantidadACertificar.ToString("N")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{report.PorcentajeACertificar:0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N")}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.PorcentajeACertificar:0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.CantidadACertificar * report.Importe).ToString("N2")}</td>");
 
                 // Acumulado
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: left;\">{(Convert.ToDecimal(report.Porcentaje) + report.PorcentajeACertificar):0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2")}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje) + report.PorcentajeACertificar):0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2")}</td>");
                 sb.AppendLine("</tr>");
 
@@ -141,7 +141,7 @@ namespace SustitucionMOA.Controllers
 
             sb.AppendLine("<tfoot>");
             sb.AppendLine("<tr class=\"footer\" style =\"font-weight: bold;\">");
-            sb.AppendLine("<td colspan=\"10\" style=\"border:opx; padding:8px; text-align:left;\"></td>");
+            sb.AppendLine("<td colspan=\"10\" style=\"border:opx; padding:8px; text-align:center;\"></td>");
             sb.AppendLine("<td colspan=\"2\" class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">MONTO TOTAL</td>");
             sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{montoTotal.ToString("N2")}</td>");
             sb.AppendLine("</tr>");
