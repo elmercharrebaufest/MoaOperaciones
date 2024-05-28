@@ -439,12 +439,16 @@ namespace SustitucionMOAUtils.Services
             var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
                 .SolpPosicion.Solp.NroSolp == solpEntity.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
 
+            var peticiones = repositorio.Listar<PeticionDeOferta>(po => po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroSolp == solpEntity.NroSolp);
+            var revisionFinalizada = peticiones.Any(po => po.RevisionTecnica != null && po.RevisionTecnica.Finalizada == true);
+            var solpLiberada = solpEntity.NroSolp != null && solpEntity.EstadoSolpSap.CodigoSap == "05";
+
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
             {
-                if (cotizaciones != null && cotizaciones.Count > 0) {
+                if (cotizaciones != null && cotizaciones.Count > 0 && revisionFinalizada) {
 
-                    if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
+                    if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && solpLiberada)
                     {
                         solpEntity.TieneModificaciones = true;
                         break;
@@ -456,7 +460,7 @@ namespace SustitucionMOAUtils.Services
                         foreach (var nuevaSubposicion in nuevaPosicion.Subposiciones)
                         {
                             var posicionExistente = solpEntity.Posiciones.FirstOrDefault(p => p.Codigo == nuevaPosicion.Codigo);
-                            if ((posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo)) && (solpEntity.NroSolp != null && solpEntity.EstadoSolpSap.CodigoSap == "05"))
+                            if ((posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo)) && solpLiberada)
                             {
                                 solpEntity.TieneModificaciones = true;
                                 break;
