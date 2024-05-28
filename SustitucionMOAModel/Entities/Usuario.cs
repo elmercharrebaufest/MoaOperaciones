@@ -32,6 +32,7 @@ namespace SustitucionMOAModel.Entities
         //public virtual ICollection<Archivo> Archivos { get; set; }
         public string UsuarioSap { get; set; }
         public string OrganizacionDeCompra { get; set; }
+        public string Suplente { get; set; }
 
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
@@ -353,10 +354,10 @@ namespace SustitucionMOAModel.Entities
                 case "VER ORDENES DE CARGA RESIDUOS": return PermisoEnum.VerOrdenesDeCargaResiduos;
                 case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
-
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
                 case "ADMINISTRAR CURSOS": return PermisoEnum.AdminCursos;
                 case "REALIZAR CURSOS": return PermisoEnum.RealizarCursos;
+                case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
             }

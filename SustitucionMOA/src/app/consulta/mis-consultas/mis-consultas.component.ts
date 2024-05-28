@@ -59,12 +59,12 @@ export class MisConsultasComponent extends ListBaseComponent {
     protected containerList: HTMLDivElement;
 
     cols = [
-        { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 4, size: 4, visible: true },
-        { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, visible: true },
-        { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, visible: true },
+        { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 4, size: 4, visible: true, filteredValue: '' },
+        { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, visible: true, filteredValue: '' },
+        { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, visible: true, filteredValue: '' },
         { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre', visible: true },
         { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre', visible: true },
-        { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0, visible: true },
+        { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0, visible: true, filteredValue: '' },
         { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion', visible: true },
         { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material', visible: true },
         { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single', visible: true },
@@ -92,6 +92,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     esInterno = this.isAuthorized('CONSULTA ABM');
     widthModal: string;
     asunto: string;
+    estadoConsultaSeleccionado: EstadoConsulta[];
+    categoriaSeleccionada: Categoria[];
 
     opcionesFiltroPorCreacion = obtenerOpcionesFiltroPorCreacion();
     filtrosPorCreacionSeleccionados: { key: OpcionFiltroAsociadaCreacion, label: OpcionFiltroAsociadaCreacion }[] = [];
@@ -161,6 +163,91 @@ export class MisConsultasComponent extends ListBaseComponent {
                 return value <= filter[1]
             else
                 return true;
+        }
+    }
+
+    setfilter() {
+        this.route.queryParams.subscribe(params => {
+            const filtrosActivados = params['filtrosActivados'];
+            const categoria = params['categoria'];
+            const estadoConsulta = params['filter'];
+            const proveedor = params['proveedor'];
+            const idProveedor = params['idProveedor'];
+
+
+            if (filtrosActivados && filtrosActivados === 'true') {
+                this.showFilters = true;
+
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && categoria) {
+                if (idProveedor.startsWith('C')) {
+                    this.seleccionarOpcionFiltro('RazonSocialCorredor', proveedor);
+
+                }
+                else {
+                    this.seleccionarOpcionFiltro('RazonSocialProveedor', proveedor);
+                }
+
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && categoria) {
+                this.seleccionarOpcionFiltro('Categoria', categoria);
+            }
+
+            if (filtrosActivados && filtrosActivados === 'true' && estadoConsulta) {
+                this.seleccionarOpcionFiltro('EstadoConsulta', estadoConsulta);
+            }
+
+
+
+        });
+    }
+
+
+    seleccionarOpcionFiltro(columna: string, valor: string) {
+
+        valor = decodeURIComponent(valor);
+
+        switch (columna) {
+
+
+
+            case 'RazonSocialCorredor':
+
+
+                this.table.filter(valor, 'RazonSocialCorredor', 'contains');
+                let colC = this.cols.find(cols => cols.header === 'Corredor');
+
+                colC.filteredValue = valor;
+                break;
+            case 'RazonSocialProveedor':
+                this.table.filter(valor, 'RazonSocialProveedor', 'contains');
+                let colP = this.cols.find(cols => cols.header === 'Proveedor');
+
+                colP.filteredValue = valor;
+                break;
+            case 'EstadoConsulta':
+                // Encuentra la opción correspondiente en la lista de estados y selecciónala
+                const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
+                if (estadoSeleccionado) {
+                    this.estadoConsultaSeleccionado = [estadoSeleccionado]; // Asigna la opción seleccionada al filtro
+
+                    this.table.filter(estadoSeleccionado.Descripcion, 'EstadoConsulta.Descripcion', 'equals');
+                }
+                break;
+            case 'Categoria':
+                // Encuentra la opción correspondiente en la lista de categorías y selecciónala
+                const categoriaSeleccionada = this.categorias.find(categoria => categoria.Nombre === valor);
+                if (categoriaSeleccionada) {
+                    this.categoriaSeleccionada = [categoriaSeleccionada]; // Asigna la opción seleccionada al filtro
+                    this.table.filter(categoriaSeleccionada.Nombre, 'Categoria.Nombre', 'equals');
+                    // Además, puedes manejar cualquier lógica relacionada con la selección de subcategorías si es necesario
+                }
+                break;
+            // Repite el proceso para otros filtros si es necesario
+            default:
+                break;
         }
     }
 

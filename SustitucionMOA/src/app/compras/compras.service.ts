@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject,Observable, Subject, throwError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
@@ -12,8 +12,10 @@ import { AdjudicacionDto, AdjudicacionEdicionDto } from '../modelos/adjudicacion
 import { OrdenDeCompraSap } from '../modelos/ordenDeCompraSap';
 import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
-import { ChatInternoComprasDto } from './chat-interno/chat-interno.interface';
+import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
+import { timeoutWith } from 'rxjs/operators';
+import { EntradaServicio } from '../common/models/entradaServicio';
 
 @Injectable({
     providedIn: 'root'
@@ -25,6 +27,8 @@ export class ComprasService extends BaseService {
         pagina: 1,
         itemsPorPagina: 10,
         orden: "",
+        ordenAscendente: false,
+        columnaNombre: '',
         columna: "Id",
         nroSolp: "",
         nroPo: "",
@@ -52,6 +56,7 @@ export class ComprasService extends BaseService {
     observableListaSolp = new Subject<any[]>();
     observableListaPO = new Subject<any[]>();
 
+    onDataUpdate: EventEmitter<void> = new EventEmitter<void>();
 
     public getCombos(): Observable<any> {
         return this.http.get('/api/compras/Combos', { headers: this.headers });
@@ -139,6 +144,76 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+
+    notifyDataUpdate() {
+        this.onDataUpdate.emit();
+    }
+
+    public getByProveedor(
+        fechaInicio: any = this.filtros.fechaDesde,
+        fechaHasta: any = this.filtros.fechaHasta,
+        proveedorId: string,
+        ordenCompraId: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina,
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+    ): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('vendedor', proveedorId);
+        params = params.set('ordenCompraId', ordenCompraId);
+        params = params.set('columnaOrden', columnaOrden);
+        params = params.set('ordenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+
+        return this.http
+            .get<any[]>('/api/Order/GetByProveedor', { params: params, headers: this.headers })
+    }
+
+    public getByProveedorAsync(
+        fechaInicio: any = this.filtros.fechaDesde,
+        proveedorId: string, 
+        DocumentoNumero: string,
+        columnaOrden: string = this.filtros.columnaNombre,
+        ordenAscendente: boolean = this.filtros.ordenAscendente,
+        pagina: number = this.filtros.pagina, 
+        elementosPorPagina: number = this.filtros.itemsPorPagina,
+        ) : Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        
+        params = params.set('fechaInicio', (fechaInicio != null ? fechaInicio : ""));
+        params = params.set('vendedor', proveedorId);
+        params = params.set('documentoNumero', DocumentoNumero);
+        params = params.set('ColumnaOrden', columnaOrden);
+        params = params.set('OrdenAscendente', ordenAscendente.toString());
+        params = params.set('pagina', pagina.toString());
+        params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        
+        return this.http
+            .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
+    }
+
+    public deleteById(Id) {
+        //http.delete falla en ambiente QA - cambiado a Post
+        var payload = new FormData();
+        payload.append('DocumentoNumero', JSON.stringify(Id));
+
+        return this.http
+            .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
+    }
+
+    public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
+        return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
+          .pipe(
+            timeoutWith(30000, throwError(new Error('Se excedi� el tiempo de espera, por favor int�ntelo m�s tarde')))
+          );
+      }
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
@@ -390,6 +465,14 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
+    }
+
+    autocompleteProveedor(valor: string) {
+        let params: HttpParams = new HttpParams()
+            .append('valor', valor)
+
+        return this.http
+            .get<any[]>("/api/compras/AutocompleteProveedor", { params: params })
     }
 
     autocompleteMaterialSolp(valor: string, centroId: number) {
@@ -971,12 +1054,23 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(solpId: string): Observable<PeticionDeOfertaDto> {
+    public obtenerChat(solpId: string): Observable<ChatsDto> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
 
         return this.http
-            .get("/api/compras/ObtenerChat", {
+            .get<ChatsDto>("/api/compras/ObtenerChat", {
+                params: params,
+                headers: this.headers
+            });
+    }
+
+    public obtenerChatProveedor(peticionDeOfertaUsuarioId: string): Observable<ChatsDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionDeOfertaUsuarioId", peticionDeOfertaUsuarioId);
+
+        return this.http
+            .get<ChatsDto>("/api/compras/ObtenerChatProveedor", {
                 params: params,
                 headers: this.headers
             });
@@ -993,10 +1087,23 @@ export class ComprasService extends BaseService {
             .post<ChatInternoComprasDto>('/api/compras/GrabarMensajeChatInterno', payload, { headers: this.headers });
     }
 
-    public obtenerYExportarChat(solpId: string): Observable<any> {
+    public grabarMensajeChatExterno(mensaje: ChatExternoComprasDto) {
+        let json = JSON.stringify(mensaje);
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<ChatExternoComprasDto>('/api/compras/GrabarMensajeChatExterno', payload, { headers: this.headers });
+    }
+
+
+    public obtenerYExportarChat(solpId: string, peticionDeOfertaUsuarioId?: string): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
-
+        if(peticionDeOfertaUsuarioId != null){
+            params = params.set("peticionDeOfertaUsuarioId", peticionDeOfertaUsuarioId);
+        }
         return this.http
             .get("/api/compras/ObtenerYExportarChat", {
                 params: params,
@@ -1150,4 +1257,23 @@ export class ComprasService extends BaseService {
 
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
+
+    public listarHistorialDeFechas(id: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("peticionId", id.toString());
+        return this.http.get("/api/compras/ListarHistorialDeFechas", {
+            params: params,
+            headers: this.headers,
+        });
+    }
+
+    public marcarChatProveedorComoLeido(proveedor: ChatProveedorDto) {
+        let json = JSON.stringify(proveedor);
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/MarcarChatProveedorComoLeido', payload, { headers: this.headers });
+    }
+
 }

@@ -84,7 +84,7 @@ export class Generacion1Component extends ListBaseComponent  {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Generacion1", "Generacion1");
+        //this.setMenuSeccionTab("Generacion1", "Generacion1");
     }
 
     mostrarError(nombreCampo: string): boolean {
@@ -98,7 +98,7 @@ export class Generacion1Component extends ListBaseComponent  {
 
     mostrarValidacion(campoAValidar, vacio){
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+        if(vacio !== null && vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;

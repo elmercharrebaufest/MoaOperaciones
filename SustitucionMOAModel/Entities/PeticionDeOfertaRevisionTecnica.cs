@@ -11,6 +11,7 @@ namespace SustitucionMOAModel.Entities
         public bool RecotizacionEconomica { get; set; }
         public bool? ModificacionSolp { get; set; }
         public string ObservacionRecotizacion { get; set; }
+        public DateTime? FechaFinalizacion { get; set; }
         public bool Finalizada { get; set; }
 
         [ForeignKey("Usuario_Id")]

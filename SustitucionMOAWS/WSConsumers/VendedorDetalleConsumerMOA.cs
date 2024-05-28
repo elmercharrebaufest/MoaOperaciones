@@ -124,7 +124,8 @@ namespace SustitucionMOAWS.WSConsumers
                     fechaDesde = SAPFormatter.FormatearFecha(exencion.FECHA_DESDE),
                     fechaHasta = SAPFormatter.FormatearFecha(exencion.FECHA_HASTA),
                     fechaHastaDate = exencion.FECHA_HASTA,
-                    proveedor = exencion.PROVEEDOR
+                    proveedor = exencion.PROVEEDOR,
+                    tipoRetencion = exencion.TIPO_RETENCION
 
                 });
             }

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     namespace SustitucionMOAModel.Enums
     {
@@ -45,7 +39,7 @@ namespace SustitucionMOAModel.Enums
                 switch (me)
                 {
                     case EstadoAplicacionCartaPorte.Error:
-                        return "Error";
+                        return "Error";                   
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "Aplicado";
                     case EstadoAplicacionCartaPorte.Pendiente:

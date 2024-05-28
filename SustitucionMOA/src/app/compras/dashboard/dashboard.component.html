@@ -228,7 +228,7 @@
                         <div class="col-md-2">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
-                                     (click)="obtenerChatExterno(rowData)" style="height: 30px;" />
+                                     (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
                                 <div class="punto-rojo" *ngIf="rowData.ChatSinLeer == true"></div>
                             </span>
                         </div>
@@ -303,10 +303,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="rowData.VerCircular == true && licitacion.RevisionFinalizada != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
+                                                    <button class="publicar btn " *ngIf="(rowData.VerCircular == true && licitacion.RevisionFinalizada != true) && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
                                                         Circular
                                                     </button>
                                                 </td>
@@ -403,5 +403,6 @@
 
 <app-chat-interno [(displayChatInterno)]="displayChatInterno"
                   [(chat)]="chat"
-                  (cerrardisplayChatEmitter)="cerrarModalChat()">
+                  (cerrardisplayChatEmitter)="cerrarModalChat()"
+                  [(dasboardComprador)]="dasboardComprador">
 </app-chat-interno>

@@ -14,6 +14,7 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
 import { SelectItem } from 'primeng/api';
+import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
 
 @Component({
     selector: 'app-listado-dashboard-proveedor',
@@ -93,7 +94,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         };
 
     esProveedor: boolean = true;
-
+    dasboardProveedor: boolean = true;
+    public chat: ChatComprasDto;
+    public chatCompras: ChatComprasDto;
+    public chatProveedores: ChatProveedorDto[] = [];
+    displayChatInterno: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -104,6 +109,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.recuperarFiltros();
         this.getListarPO();
         this.listarPO();
@@ -442,5 +448,61 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                 }
             }
         }
+    }
+
+    obtenerChatProveedor(rowData) {
+        try {
+            this.blockUI.start('Cargando ');
+            this.displayChatInterno = false;
+            rowData.ChatSinLeer = false;
+            this.subscription = this.service.obtenerChatProveedor(rowData.Usuarios[0].Id)
+                .subscribe(
+                    (result: any) => {
+                        this.blockUI.stop();
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+
+                            result = result as ChatsDto;
+                            result.ChatCompras = result.ChatCompras as ChatComprasDto;
+                            result.ChatProveedores = result.ChatProveedores as ChatProveedorDto;
+                            result.ChatProveedores.forEach((chat) => {
+                                chat.Mensajes = chat.Mensajes.map((x) => {
+                                    x.FechaEnvioDate = new Date(
+                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                    );
+                                    return x;
+                                });
+                                
+                                chat.FechaCreacionDate = new Date(
+                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
+                                );
+                            });
+
+                            this.chat = result;
+                            this.chatCompras = result.ChatCompras;
+                            this.chatProveedores = result.ChatProveedores;  
+                            this.displayChatInterno = true;
+                        };
+                    },
+                    (error) => {
+                        this.blockUI.stop();
+                        this.floatMsgService.setErrorMsg(error.message);
+                    }
+                );
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    cerrarModalChat() {
+        this.displayChatInterno = false;
     }
 }

@@ -1,12 +1,13 @@
 ﻿CREATE TABLE [dbo].[PeticionDeOfertaRevisionTecnica](
-	[Id] INT NOT NULL IDENTITY, 
+    [Id] INT NOT NULL IDENTITY, 
 	[Usuario_Id] [int] NOT NULL,
-	[Fecha] DATETIME2 NOT NULL, 
-	[RecotizacionEconomica] BIT NOT NULL DEFAULT 0, 
+    [Fecha] DATETIME2 NOT NULL, 
+    [RecotizacionEconomica] BIT NOT NULL DEFAULT 0, 
 	[ModificacionSolp] BIT NULL, 
 	[ObservacionRecotizacion] NVARCHAR(MAX) NULL, 
 	[Finalizada] BIT NOT NULL DEFAULT 1, 
-	CONSTRAINT [PK_PeticionDeOfertaRevisionTecnica] PRIMARY KEY ([Id]),
+	[FechaFinalizacion] DATETIME2 NULL, 
+    CONSTRAINT [PK_PeticionDeOfertaRevisionTecnica] PRIMARY KEY ([Id]),
 ) ON [PRIMARY]
 GO
 

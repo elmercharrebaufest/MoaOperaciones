@@ -29,7 +29,8 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("NotificacionesAsociadas")]
 
-        public virtual ICollection<Rol> FiltroRoles { get; set; }
+        public virtual ICollection<Rol> FiltroRoles { get; set; } 
+
 
     }
 }

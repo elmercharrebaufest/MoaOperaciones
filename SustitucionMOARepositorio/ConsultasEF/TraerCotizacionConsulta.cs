@@ -35,6 +35,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Cotizacion = new CotizacionDto(),
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
+                                    ObservacionTecnicaOriginal = cotizacion != null ? cotizacion.ObservacionTecnica : "",
+                                    ObservacionEconomicaOriginal = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     RespetaMateriales = cotizacion != null ? cotizacion.RespetaMateriales : null,
                                     RespetaServicios = cotizacion != null ? cotizacion.RespetaServicios : null,
                                     TipoPosicionCodigo = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
@@ -42,6 +44,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     PorcentajeDeHoras = cotizacion.PorcentajeDeHoras,
                                     PideDescripcionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDescripcionTecnica == true,
                                     PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
+                                    EsNuevaCotizacion = cotizacion != null && cotizacion.CotizarNuevaPosicion == true ? true : false,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -62,7 +65,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             Cantidad = pop.SolpPosicion.Cantidad,
                                             UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                             UnidadId = pop.SolpPosicion.Unidad_Id,
-                                            FechaEntregaServicio = cotizacion != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
+                                            FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio,
                                             FechaOferta = pop.SolpPosicion.FechaEntregaServicio,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {

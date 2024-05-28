@@ -3,10 +3,10 @@
           (onHide)="onCerrarChat()" appendTo="body" positionTop="30"
           (onShow)="onMostrarDialog()"
          [contentStyle]="{
-        'max-height':'800px',
+        'max-height':'850px',
         'min-height':'550px'}">
-          <p-header class="headerModal" style="color: #067935;">
-            <b>Chat </b> <span *ngIf="chat?.PeticionDeOferta_Id != null">Petici&oacute;n de oferta #{{chat?.PeticionDeOferta_Id}}</span>
+          <p-header class="headerModal" style="color: #bbb9b9;">
+            <b>Chat </b> <span *ngIf="chat?.Solp_Id != null"> - SOLP #{{chat?.ChatCompras.Solp_Id}}</span>
           </p-header>
           <!-- CONTENT-->          
           <div class="container-fluid" style="margin-top: 20px; margin-bottom: 20px;">
@@ -17,95 +17,131 @@
             </p>
             <!-- CONTENIDO -->
             <div class="row">
-                <!-- DETALLE DE CONSULTA -->
-                <div class="col-xs-12 col-sm-12 col-md-12">
-                    <div #contenedorMensajes class="rounded shadow detalleChat">
-                        <!-- Mostrar comentarios -->
-                        <ng-container *ngIf="chat?.Mensajes.length > 0; else loader">
-                            <div *ngFor="let mensajes of chat.Mensajes let i = index">
-                                <!-- Renderizar comentarios -->
-                                <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensajes.FechaDiaEnvio != chat.Mensajes[i-1].FechaDiaEnvio)">
-                                    <p class="fechaComentarioTexto">
-                                        {{mensajes.FechaEnvioDate | date :'EEEE,d MMM'}}
-                                    </p>
-                                </div>
-                                <div class="row myRow">
-                                    <div [ngClass]="comentarioPropio(mensajes) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" >
-                                        {{mensajes.Mensaje}}
+                <!-- MENÚ LATERAL -->
+                <div class="col-xs-4 col-sm-4 col-md-4" *ngIf="!dasboardComprador && !dasboardProveedor">
+                    <div class="menuLateralConsulta" style="background: #bbb9b9 !important;">
+                        <!-- Cards adicionales -->
+                        <p-card class="my-card" *ngIf="chat?.ChatProveedores.length > 0" (click)="mostrarChatComprador()">
+                            <div [ngClass]="{'selected-card': esChatComprador == true}" style="padding: 10px;">
+                                <div>Chat interno</div>
+                            </div>
+                        </p-card>
+                        <div *ngIf="chat?.ChatProveedores.length > 0; else nohay">
+                            <div *ngFor="let proveedor of chat.ChatProveedores; let i = index">
+                                <p-card class="my-card" (click)="mostrarChatProveedor(proveedor); marcarChatProveedorComoLeido(proveedor)" [ngClass]="{'unread-provider': tieneMensajesSinLeer(proveedor)}">
+                                    <div [ngClass]="{'selected-card': proveedor === proveedorSeleccionado}" style="padding: 10px;">                                       
+                                        <div >{{proveedor.RazonSocialProveedor}}</div>
+                                        <div>{{formatoCUIT(proveedor.CuitProveedor)}} - PO# {{proveedor.PeticionDeOferta_Id}}</div>
                                     </div>
-                                </div>
+                                </p-card>
+                            </div>                            
+                        </div>    
+                    </div>
+                </div>
 
-                                <div>
-                                    <p [ngClass]="comentarioPropio(mensajes) ? 'horaComentarioRespuesta' : 'horaComentario'"
-                                        class="col-xs-12 col-sm-12 col-md-12">
-                                        {{mensajes.Mail}} - {{mensajes.FechaEnvioDate | date :'h:mm:ss a'}}
-                                    </p>                       
+
+                <!-- DETALLE DE CONSULTA -->
+                <div [ngClass]="(dasboardComprador || dasboardProveedor) ? 'col-xs-12 col-sm-12 col-md-12' : 'col-xs-8 col-sm-8 col-md-8'">
+                    <div #contenedorMensajes class="rounded shadow detalleChat" id="divmsg">
+                        <!-- Mostrar comentarios -->
+                        <div>
+                            <div *ngIf="esChatComprador">
+                                <ng-container *ngIf="chat?.ChatCompras?.Mensajes?.length > 0; else loader" >
+                                    <div class="comprador-content">
+                                        <div class="comprador-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span class="comprador-title">Chat interno</span> 
+                                            <span style="margin-left: auto;" >
+                                                <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                                    (click)="obtenerYExportarChat(chat?.ChatCompras.Solp_Id, null)" />
+                                            </span>
+                                        </div>                                        
+                                    </div>
+                                    <div *ngFor="let mensajes of chat.ChatCompras.Mensajes let i = index">
+                                        <!-- Renderizar comentarios -->
+                                        <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensajes.FechaDiaEnvio != chat.ChatCompras.Mensajes[i-1].FechaDiaEnvio)">
+                                            <p class="fechaComentarioTexto">
+                                                {{mensajes.FechaEnvioDate | date :'EEEE,d MMM'}}
+                                            </p>
+                                        </div>
+                                    
+                                        <div class="row myRow">
+                                            <div [ngClass]="comentarioPropio(mensajes) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
+                                                {{mensajes.Mensaje}}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <p [ngClass]="comentarioPropio(mensajes) ? 'horaComentarioRespuesta' : 'horaComentario'"
+                                                class="col-xs-12 col-sm-12 col-md-12">
+                                                {{mensajes.Mail}} - {{mensajes.FechaEnvioDate | date :'h:mm:ss a'}}
+                                            </p>                       
+                                        </div>
+                                    </div>
+                                </ng-container>
+                            </div>
+                        </div>
+                        
+
+                        <ng-container *ngIf="esChatProveedor">
+                            <div class="comprador-content">
+                                <div class="comprador-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span class="comprador-title">{{ dasboardProveedor ? 'Chat interno' : proveedorSeleccionado.RazonSocialProveedor}}</span> 
+                                    <span *ngIf="tieneMensajes(proveedorSeleccionado)">
+                                        <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
+                                            (click)="obtenerYExportarChat(chat?.ChatCompras.Solp_Id, proveedorSeleccionado.PeticionDeOfertaUsuario_Id)" />
+                                    </span>
                                 </div>
                             </div>
+                            <div *ngFor="let proveedor of chat.ChatProveedores">
+                                <div *ngIf="proveedor.Mensajes.length > 0; else noMensajes">
+                                    <div *ngFor="let mensaje of proveedor.Mensajes  let i = index">
+                                        <!-- Verificar si hay mensajes -->
+                                        <ng-container >
+                                            <div *ngIf="proveedor == proveedorSeleccionado">                                            
+                                                <!-- Renderizar comentarios -->
+                                                <div class="fechaComentario col-xs-12 col-sm-6 col-md-12" *ngIf="i == 0 || (mensaje.FechaDiaEnvio != proveedor.Mensajes[i-1].FechaDiaEnvio)">
+                                                    <p class="fechaComentarioTexto">
+                                                        {{mensaje.FechaEnvioDate | date :'EEEE,d MMM'}}
+                                                    </p>
+                                                </div>
+                                                <div class="row myRow">
+                                                    <div [ngClass]="comentarioPropio(mensaje) ? 'comentarioPropio' : 'comentarioRespuesta' " class="col-xs-12 col-sm-6 col-md-7" style="white-space: pre-wrap;">
+                                                        {{mensaje.Mensaje}}
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <p [ngClass]="comentarioPropio(mensaje) ? 'horaComentarioRespuesta' : 'horaComentario'" class="col-xs-12 col-sm-12 col-md-12">
+                                                        {{mensaje.Mail}} - {{mensaje.FechaEnvioDate | date :'h:mm:ss a'}}
+                                                    </p>                       
+                                                </div>                        
+                                            </div>
+                                        </ng-container>             
+                                    </div>     
+                                </div>            
+                            </div>   
                         </ng-container>
 
-                        <!-- Mostrar loader si no hay comentarios -->
+                        
+                        
+                        <!-- Mostrar loader si no hay comentarios -->                
                         <ng-template #loader>
                             <div style="width: 100%; display: flex; justify-content: center;">
                                 <p>No hay mensajes</p>
                             </div>
                         </ng-template>
-        
                     </div>
+                    <br>
                     <!-- AÑADIR COMENTARIO -->
-                    <hr>
-                    <textarea class="col-xs-12 col-sm-12 col-md-9" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario" rows="5"></textarea>
-    
+                    <textarea class="col-xs-10 col-sm-10 col-md-10" [(ngModel)]="mensajeNuevo" name="mensaje" placeholder="Añadir Comentario" rows="1" style="height: 38px;"></textarea>
                     <div class="col-xs-12 col-sm-12 col-md-2">
                         <button (click)="validar()" class="mx-auto d-block enviarComentario"
-                                href="#" style="text-decoration:none!important">
-                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">
+                                href="#" style="text-decoration:none!important; width: 100%;">
+                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario" style="width: 100%;">
                                 Enviar
                             </div>
                         </button>
-                        <button (click)="obtenerYExportarChat(chat?.Solp_Id)"
-                                class="mx-auto d-block enviarComentario"
-                                href="#" style="text-decoration:none!important">
-                            <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Exportar</div>
-                        </button>
                     </div>
                 </div>
-        
-                <!-- MENÚ LATERAL -->
-                <!--<div class="col-xs-4 col-sm-4 col-md-4">
-                    <div class="rounded shadow col-xs-12 col-sm-12 col-md-12 menuLateralConsulta">
-                        <div>
-                            <span *ngIf="chat?.Solp_Id != null"><strong>SOLP </strong>#{{chat?.Solp_Id}}</span>
-                        </div>
-                        <hr style="margin-top: 10px; margin-bottom: 10px;">
-                        <div>
-                            <div class="col-md-12">
-                                <ng-container>
-                                    <div>
-                                        <strong>Fecha Creacion:</strong> {{chat?.FechaCreacionDate | date :'dd/MM/yyyy' }}<br>
-                                    </div>
-                                    <div>
-                                        <strong>Proveedores:</strong> <br>
-                                    </div>
-                                    <ng-container *ngIf="chat?.Proveedores.length > 0; else nohay">
-                                        <div *ngFor="let proveedor of chat.Proveedores let i = index">
-                                            <p>{{proveedor.RazonSocial}}</p>
-                                            <p>{{proveedor.Mail}}</p>
-                                        </div>
-                                    </ng-container>
-                                </ng-container>    
-                                <div style="margin-top: 107px;">
-                                    <button (click)="obtenerYExportarChat(chat?.Solp_Id)"  
-                                    class="mx-auto d-block enviarComentario"
-                                    href="#" style="text-decoration:none!important">
-                                <div class="btn-custom btn-mediano btn-add animate align-center btn-enviar-comentario">Exportar</div>
-                            </button>
-                                </div>                            
-                              
-                            </div>
-                        </div>                           
-                    </div>
-                </div>-->
             </div>
         </div>
 </p-dialog>

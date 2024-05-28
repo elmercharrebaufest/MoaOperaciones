@@ -39,5 +39,6 @@ namespace SustitucionMOAUtils.Interfaces
         void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual);
         List<ConsultaDto> ListarConsultasSinPaginar(int usuarioId, bool obtenerTodos, FiltrosConsultaDto filtros);
         ConsultaDto ObtenerConsultaDisconformidad(string numeroCCPP, int usuarioId, bool obtenerTodos);
+        List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos);
     }
 }

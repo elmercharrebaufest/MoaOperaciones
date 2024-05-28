@@ -16,7 +16,7 @@
         /// Name, in drive, for the wanted file to be downloaded.
         /// </summary>
         public string FileName { get; set; }
-
+        
         public GoogleDriveFileDownloadRequest WithFileName(string fileName)
         {
             FileName = fileName;

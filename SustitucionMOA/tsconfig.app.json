@@ -34,8 +34,9 @@
     "src/app/ordenes-de-carga/ordenes-de-carga.module.ts",
     "src/app/reporte-contrato/reporte-contrato.module.ts",
     "src/app/ordenes-de-carga-fason/ordenes-de-carga-fason.module.ts",
-    "src/app/ordenes-residuos/ordenes-residuos.module.ts",
-    "src/app/aplicacion-ccpp/aplicacion-ccpp.module.ts"
+    "src/app/ordenes-residuos/ordenes-residuos.module.ts",   
+    "src/app/aplicacion-ccpp/aplicacion-ccpp.module.ts",
+    "src/app/notificaciones/notificaciones.module.ts"
   ],
   "include": [
     "src/**/*.d.ts"

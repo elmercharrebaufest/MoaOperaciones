@@ -36,4 +36,8 @@ Post-Deployment Script Template
 :r .\AlmacenMaterial.sql
 :r .\Curso.sql
 
-
+:r ..\Notificaciones\Notificacion.sql
+:r ..\Notificaciones\NotificacionFechaCreacion.sql
+:r ..\Notificaciones\NotificacionPrioridad.sql
+:r ..\Comunicacion\ComunicacionTipo.sql
+:r ..\Comunicacion\TipoRetencion.sql

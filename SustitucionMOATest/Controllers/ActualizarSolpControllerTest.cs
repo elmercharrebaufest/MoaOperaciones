@@ -63,7 +63,7 @@ namespace SustitucionMOATest.Controllers
             // Assert
             Assert.IsNotNull(result);
             Assert.IsInstanceOf(typeof(OkResult), result);
-            comprasServiceMock.Verify(c => c.ObtenerSolpesDesdeSAPJob(It.IsAny<SustitucionMOAWS.WSConsumers.ObtenerSolpRequest>()), Times.Once);
+            comprasServiceMock.Verify(c => c.ExecuteObtenerSolpesDesdeSAPJob(It.IsAny<SustitucionMOAWS.WSConsumers.ObtenerSolpRequest>()), Times.Once);
         }
 
     }

@@ -24,8 +24,8 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
-using static iTextSharp.text.pdf.qrcode.Version;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -513,28 +513,41 @@ namespace SustitucionMOAUtils.Services
 
             return campoProveedor.Archivo.Ruta;
         }
-        public void DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar)
+        public async Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar)
         {
             if (archivoSinDescargar.ProcesadoUcropit)
             {
                 return;
             }
-            var cuit = archivoSinDescargar.Proveedor.CUIT;
-            var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}.csv";
+            var cuit = archivoSinDescargar.CampoCosecha.Proveedores.First().CUIT;
+            //Hay un punto ('.') extra porque el archivo que devuelve Ucropit lo toma del kmz
+            //Al parecer cuando se sube usando la extension, esta ya tiene el '.' 
+            var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}..json";
             var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", cuit);
             var rutaGuardado = string.Concat(rutaCarpeta, "/", nombreArchivo);
 
-            campoSustentableGoogleDrive.DownloadFile(
-                new GoogleDriveFileDownloadRequest()
-                    .WithFilePath(rutaGuardado)
-                    .WithFileName(nombreArchivo)
-                );
+            ReporteProcesoUcropit resultadoProcesadoUcropit = null;
+            try
+            {
+                resultadoProcesadoUcropit = await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
+                               new GoogleDriveFileDownloadRequest()
+                                   .WithFilePath(rutaGuardado)
+                                   .WithFileName(nombreArchivo)
+                               );
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
             var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado, };
 
             repositorio.Agregar(nuevoArchivo);
 
             archivoSinDescargar.Archivo = nuevoArchivo;
             archivoSinDescargar.ProcesadoUcropit = true;
+            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ? 
+                    Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
+            archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
 
             repositorio.GuardarCambios();
         }

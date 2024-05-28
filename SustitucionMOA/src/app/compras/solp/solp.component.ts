@@ -62,7 +62,7 @@ import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
     providers: [ComprasService, MessageService]
 })
 
-export class SolpComponent extends BaseComponent implements OnInit {
+export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -138,6 +138,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         super(navService, securytiService, floatMsgService, modalService);
         this.pasos = setupSolpPasos();
         this.solpActual = new Solp();
+    }
+    ngOnChanges(changes: SimpleChanges): void {
+        this.obtenerUsuarioSolicitante(); 
     }
 
     ngOnInit() {
@@ -530,7 +533,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if (!mostrarPreview && !guardarPorPaso) {
                             this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
                         }
-                        // this.floatMsgService.setSuccessMsg("Los datos se guardaron correctamente");
                         this.solpActual.id = result.Solp.Id;
                         this.solpActual.NroSolp = result.Solp.NroSolp;
                         this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
@@ -574,11 +576,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                                 } else {
                                     this.displaySAP = true;
                                 }
-
-                                //TODO aca iria el metodo para el mail
-                                // this.showEmailPopup(esPrimeraFinalizacion, esPosteriorFinalizacion);
-                                // this.sendEmail(emailModel);
-
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {

@@ -64,18 +64,9 @@ export class CircularComponent implements OnInit, OnChanges {
                             .filter(x => x.PropuestaTecnicaAprobada)
                             .map(x => x.UsuarioId);
                     }
-                    // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
                     this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
                 } else {
-                    this.selectedProv = this.peticion.Usuarios
-                        .filter(x => x.Cotizacion.CotizacionEstado_Id == 1
-                            && (this.peticion.RespetaMateriales == true
-                                || (this.peticion.RespetaMateriales == false
-                                    && (this.peticion.RevisionFinalizada && x.PropuestaTecnicaAprobada))))
-                        .map(x => x.UsuarioId);
-
-                    // Establecer la propiedad Deshabilitado para los usuarios que no cumplen la condición
-                    this.peticion.Usuarios.forEach(x => x.Deshabilitado = !this.selectedProv.includes(x.UsuarioId));
+                    this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
                 }
             }
         }

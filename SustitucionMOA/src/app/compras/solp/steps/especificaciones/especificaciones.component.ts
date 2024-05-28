@@ -66,7 +66,7 @@ export class EspecificacionesComponent extends ListBaseComponent {
     }
 
     setTabs() {
-        this.setMenuSeccionTab("Especificaciones", "Especificaciones");
+        //this.setMenuSeccionTab("Especificaciones", "Especificaciones");
     }
 
     ngOnInit() {

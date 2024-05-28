@@ -157,7 +157,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA","ADMIN_CURSOS"
+                "FLETE MOA","ADMIN_CURSOS","CERTIFICACION"
             };
 
             List<string> contacto = new List<string>
@@ -404,6 +404,8 @@ namespace SustitucionMOAUtils.Services
                               x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().RazonSocial,
                 CUIT = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
                               x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().CUIT,
+                CodigoProveedor = x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id &&
+                              x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG").FirstOrDefault().CodigoProveedor,
             }, x => x.Proveedores.Any(y => x.TipoUsuario.Id == y.TipoProveedor.Id && y.CodigoProveedor != null && y.CodigoProveedor != "" &&
             x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.TipoProveedor.NombreCorto == "NG") && x.Habilitado &&
             (x.Proveedores.Where(y => x.TipoUsuario.Id == y.TipoProveedor.Id && x.CUITRegistro == y.CUIT && x.Mail == y.Mail && y.CodigoProveedor != null && y.CodigoProveedor != ""

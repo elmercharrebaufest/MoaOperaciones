@@ -6,6 +6,7 @@ using Ninject.Web.Common.WebHost;
 using SustitucionMOA.Jobs;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Helpers;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Interfaces.Wrappers;
@@ -77,7 +78,7 @@ namespace SustitucionMOA.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-
+           
             //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
@@ -137,6 +138,7 @@ namespace SustitucionMOA.App_Start
             //kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
+            //kernel.Bind<IOrderService>().To(typeof(OrderService)).InScope(ctx => OperationContext.Current);
             //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarMailReporteSOLPJob>().To(typeof(EnviarMailReporteSOLPJob)).InScope(ctx => OperationContext.Current);

@@ -958,15 +958,19 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var subcategorias = repositorio.Listar<Material>().Where(x => x.TablaSeccionMaterial == tablaSeccionMaterial).OrderBy(c => c.Nombre);
-                return subcategorias.Select(x => new MaterialDto
+                var materiales = repositorio.Listar<Material, MaterialDto>(
+                x => new MaterialDto
                 {
                     MaterialId = x.Id,
                     Descripcion = x.Nombre,
                     CodigoSap = x.CodigoSap,
                     ValidaSisaRuca = x.ValidaSisaRuca
-
-                }).ToList();
+                },
+                x => x.TablaSeccionMaterial == tablaSeccionMaterial && !string.IsNullOrEmpty(x.Nombre))
+                    .OrderBy(c => c.Descripcion)
+                    .ToList();
+            
+                return materiales;
             }
             catch (ValidationCustomException e)
             {
@@ -1398,6 +1402,7 @@ namespace SustitucionMOAUtils.Services
             FiltrosConsultaDto filtros)
         {
             var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
             var proveedorAsignado = usuario.ObtenerProveedor();
             var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
@@ -1422,11 +1427,9 @@ namespace SustitucionMOAUtils.Services
             var filtroDesdeCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.First()?.Date;
             var filtroHastaCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.Last()?.Date.AddDays(1);
 
-            var noTieneFiltroDiasReclamo = string.IsNullOrWhiteSpace(filtros.DiasReclamo);
-
             Expression<Func<Consulta, bool>> filtroBusqueda = (x) =>
                     ((obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
-                    (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) || x.Usuario_Id == usuario.Id) &&
+                    (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado && !esInterno) || x.Usuario_Id == usuario.Id) &&
             ((
             (filtros.Id == null || filtros.Id == 0 || x.Id.ToString().Contains(filtros.Id.ToString())) &&
             (noTieneFiltroRazonSocialProveedor || x.RazonSocialProveedor.Contains(filtros.RazonSocialProveedor)) &&
@@ -1449,5 +1452,77 @@ namespace SustitucionMOAUtils.Services
                     ;
             return filtroBusqueda;
         }
-    }
+        public List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos)
+        {
+            var ret = new List<ConsultaDto>();
+
+            var includes = new List<Expression<Func<Consulta, object>>>();
+            includes.Add(x => x.Detalle);
+            includes.Add(x => x.Detalle.CausaConsulta);
+            includes.Add(x => x.Categoria);
+            includes.Add(x => x.SubCategoria);
+            includes.Add(x => x.EstadoConsulta);
+
+            var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
+            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
+
+            ret = repositorio.Listar<Consulta>(x => (vendedor.StartsWith("C") ? x.CodigoCorredor == vendedor : x.CodigoProveedor == vendedor) && x.EstadoConsulta_Id == (int)EstadosConsulta.SolicitudInformacion, includes: includes)
+                .Select(x => new ConsultaDto
+                {
+                    Id = x.Id,
+                    Asunto = x.Asunto,
+                    CodigoCorredor = x.CodigoCorredor,
+                    RazonSocialCorredor = x.RazonSocialCorredor,
+                    CodigoProveedor = x.CodigoProveedor,
+                    RazonSocialProveedor = x.RazonSocialProveedor,
+                    CategoriaId = x.Categoria_Id,
+                    Categoria = new CategoriaDto
+                    {
+                        Id = x.Categoria.Id,
+                        Code = x.Categoria.Code,
+                        Nombre = x.Categoria.Nombre
+                    },
+                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
+                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
+                    {
+                        Id = x.SubCategoria.Id,
+                        Code = x.SubCategoria.Code,
+                        Nombre = x.SubCategoria.Nombre,
+                        CategoriaId = x.SubCategoria.Categoria_Id
+                    } : new SubCategoriaDto { Nombre = "" },
+                    EstadoConsultaId = x.EstadoConsulta_Id,
+                    Material_Id = x.Detalle.Material_Id,
+                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
+                    EstadoConsulta = new EstadoConsultaDto
+                    {
+                        Id = x.EstadoConsulta.Id,
+                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
+                        Color = x.EstadoConsulta.Color,
+                        Code = x.EstadoConsulta.Code
+                    },
+                    FechaCreacion = x.FechaCreacion,
+                    FechaUltimaModificacion = x.FechaUltimaModificacion,
+                    UsuarioId = x.Usuario_Id,
+                    UsuarioInternoId = x.UsuarioInterno_Id,
+                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
+                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
+                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
+                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
+                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
+                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
+                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
+                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
+                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                    {
+                        Id = x.Detalle.CausaConsulta.Id,
+                        Nombre = x.Detalle.CausaConsulta.Nombre
+                    } : null
+                }).ToList();
+
+            return ret;
+        }
+    }   
 }

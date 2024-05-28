@@ -222,6 +222,7 @@ namespace SustitucionMOAUtils.Services
 
             return notificacionDto;
 
+
             //return repositorio.Obtener<Operador, OperadorDto>(x => x.Id == id, x => new OperadorDto { Id = x.Id, Descripcion = x.Descripcion }) ?? new OperadorDto();
         }
     }

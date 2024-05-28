@@ -79,13 +79,20 @@ import {AccordionModule} from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
 import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
-import { VisalizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
+import { VisualizarPrecioComponent } from './dashboard-comprador/ver-ofertas/visualizar-precio/visualizar-precio.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { ChatInternoComponent } from './chat-interno/chat-interno.component';
 import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posicion-plazo/posicion-plazo.component';
 import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
+
+import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
+import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
+import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
+import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
+
 
 @NgModule({
     imports: [
@@ -166,12 +173,17 @@ import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.
         CerrarCotizacionComponent,
         PlazoDeOfertaComponent,
         ReporteOcComponent,
-        VisalizarPrecioComponent,
+        VisualizarPrecioComponent,
         ChatInternoComponent,
         PosicionPlazoComponent,
         EditarOrdenDeCompraComponent,
         CotizacionHistorialComponent,
-        CrearPoMultipleComponent
+        CrearPoMultipleComponent,
+        ListadoDashboardCertificacionDeServiciosComponent,
+        FiltroDashboardCertificacionDeServiciosComponent,
+        ListadoEstadoCertificacionesComponent,
+        ModalAltaEntradaDeServicioComponent,
+        VisualizarMovimientoComponent
     ],
     providers: [
         ComprasService,

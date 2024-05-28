@@ -32,7 +32,7 @@ export class LayoutComponent implements OnDestroy {
     granosSelected: string;
     tipoUsuario: string;
     noticias: any;
-    noticiasCantidad = 0;
+    quantityCommunications:number = 0;
     modalHeader: any;
     showLiquidaciones = false;
     showComprobantes = false;
@@ -65,6 +65,9 @@ export class LayoutComponent implements OnDestroy {
     seccionesVisitadas: string;
     auxiliarSeccionesVisitadas: string = '';
     menuSmall: boolean = false;
+    showComunicaciones: boolean = true;
+    comunicacionesIsOpen: boolean = false;
+
 
     @ViewChild("myModal") modal: any;
 
@@ -76,6 +79,39 @@ export class LayoutComponent implements OnDestroy {
         this.validarSreen();
     }
 
+    @HostListener('document:click', ['$event'])
+    clickout(event) {
+        const allowedIds = ["notificationBell", "UserNotification", "openNotification", "notificationClose", "notificationOpenSmall","notificationCloseSmall" ];
+        const notAllowedIds = ["unread-button", "comunicacion-target", "body-message-comunicaciones"];
+        const targetId = event.target.id || (event.target.parentElement ? event.target.parentElement.id : null);
+
+        if (notAllowedIds.includes(event.target.id)) {
+            return;
+        }
+        
+        if (allowedIds.includes(targetId)) {
+            this.showComunicaciones = true;
+            this.comunicacionesIsOpen = true;
+        } else {
+            this.showComunicaciones = false;
+            this.comunicacionesIsOpen = false;
+        }
+
+        if (this.showComunicaciones) {
+            $("#notificationSmall, #notificationClose").css({ "display" : "block" });
+            $("#notificationOpen").css({ "display" : "none" });
+            $("#notificationSmall").css({ "right" : "0" });
+            $("#coverAll").fadeIn();
+        } else {
+            $("#notificationClose, #notificationSmall").css({ "display": "none" });
+            $("#notificationOpen").css({ "display": "block" });
+            $("#notificationSmall").css({ "right" : "-270px" });
+            $("#coverAll").fadeOut();
+        }
+
+        this.showComunicaciones = true;
+    }
+
     //se porque al usuario comercial se le asigno el nuevo rol de 
     //alta empresa granos y solo deberia acceder desde el listado
     esUsuarioComercial : boolean = false;
@@ -84,7 +120,7 @@ export class LayoutComponent implements OnDestroy {
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
     private cd: ChangeDetectorRef) {
-
+        
         this.renderer.setElementClass(document.body, 'wrapper', true);
 
         this.titulo = 'Moa Operaciones';
@@ -257,11 +293,21 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'Instructivo Corredor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/Carga%20Masiva%20Contratos%20Corredor%20-%20MOAOPERACIONES.mp4" target="_blank">click aqui</a>.';
                         this.textoTooltip2 = '';
                         break;
+                    case 'Ingresar certificación':
+                        this.auxiliarSeccionesVisitadas = 'Ingresar certificación';
+                        this.textoTooltip = '¡Bienvenido! Aquí tienes una guía rápida para utilizar esta página: <br/><br/>' + 
+                                            '1. Utiliza los filtros para afinar tu búsqueda.<br/>' + 
+                                            '2. La grilla muestra los detalles de las órdenes de compra filtradas.<br/>' +
+                                            '3. Las flechas en la primera columna te permiten expandir y ver más información sobre las posiciones de cada orden de compra.<br/>' +
+                                            '4. Al seleccionar uno o varios ítems, se activará el botón para certificar las entradas de servicios correspondientes.<br/>';
+                        this.textoTooltip2 = '';
+                        break;
                     default:
                         this.textoTooltip = '';
                         this.textoTooltip2 = '';
                         break;
                 }
+                this.cd.detectChanges();
             });
         navService.menuActive$.subscribe(
             menuActive => {
@@ -685,7 +731,18 @@ export class LayoutComponent implements OnDestroy {
         }
     }
 
+    updateQuantity(quantity: number) {
+        this.quantityCommunications = quantity;
+      }
+
     ngOnInit(){
-        this.validarSreen()
+        this.validarSreen();
+    }
+
+    cerrarComunicaciones(): void{
+        $("#notificationClose, #notificationSmall").css({ "display": "none" });
+        $("#notificationOpen").css({ "display": "block" });
+        $("#notificationSmall").css({ "right" : "-270px" });
+        $("#coverAll").fadeOut();
     }
 }

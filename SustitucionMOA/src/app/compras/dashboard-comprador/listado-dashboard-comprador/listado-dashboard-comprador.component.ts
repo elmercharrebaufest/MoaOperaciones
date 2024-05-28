@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 import { PeticionDeOfertaDto } from '../../../modelos/peticion-de-oferta-model';
 import { CircularDto } from '../../../modelos/circular-model';
 import { AdjudicacionDto, AdjudicacionEdicionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
-import { ChatComprasDto } from '../../chat-interno/chat-interno.interface';
+import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
 
 declare var $: any;
@@ -144,6 +144,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     mensaje: string;
     displayAdjudicacionCreada: boolean;
     esProveedor: boolean = false;
+    public chatCompras: ChatComprasDto;
+    public chatProveedores: ChatProveedorDto[] = [];
+    dasboardComprador: boolean = true;
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -164,12 +167,13 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     ngOnInit() {
+        this.navService.setSeccionList([]);
         this.recuperarFiltros();
         this.getListarSolp();
+        this.getCombos();
     }
 
     ngAfterViewInit(): void {
-        this.getCombos();
     }
 
     ngOnDestroy(): void {
@@ -624,7 +628,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    obtenerChatExterno(rowData) {
+    obtenerChatInterno(rowData) {
         try {
             this.blockUI.start('Cargando ');
             this.displayChatInterno = false;
@@ -640,16 +644,40 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         } else if (result.info != undefined) {
                             this.floatMsgService.setInfoMsg(result.info);
                         } else {
-                            result.Mensajes = result.Mensajes.map((x) => {
+
+                            result = result as ChatsDto;
+                            result.ChatCompras = result.ChatCompras as ChatComprasDto;
+                            result.ChatProveedores = result.ChatProveedores as ChatProveedorDto;
+
+                            result.ChatCompras.Mensajes = result.ChatCompras.Mensajes.map((x) => {
                                 x.FechaEnvioDate = new Date(
                                     this.getDateFromAspNetFormat(x.FechaEnvioDate)
                                 );
                                 return x;
                             });
-                            result.FechaCreacionDate = new Date(
+                            result.ChatCompras.FechaCreacionDate = new Date(
                                 this.getDateFromAspNetFormat(result.FechaCreacionDate)
                             );
+
+                            if(result.ChatProveedores != null){
+                                result.ChatProveedores.forEach((chat) => {
+                                    chat.Mensajes = chat.Mensajes.map((x) => {
+                                        x.FechaEnvioDate = new Date(
+                                            this.getDateFromAspNetFormat(x.FechaEnvioDate)
+                                        );
+                                        return x;
+                                    });
+                                    
+                                    chat.FechaCreacionDate = new Date(
+                                        this.getDateFromAspNetFormat(chat.FechaCreacionDate)
+                                    );
+                                });
+                            }
+                            
+
                             this.chat = result;
+                            this.chatCompras = result.ChatCompras;
+                            this.chatProveedores = result.ChatProveedores;  
                             this.displayChatInterno = true;
                         };
                     },

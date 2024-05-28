@@ -88,7 +88,7 @@ namespace SustitucionMOAUtils.Helpers
             cb.BeginText();
             cb.SetFontAndSize(bf, 8);
             cb.ShowTextAligned(PdfContentByte.ALIGN_RIGHT,
-                "F-2285_02",
+                "F-2285_04",
                 pageSize.GetRight(60),
                 pageSize.GetBottom(50), 0);
             cb.EndText();

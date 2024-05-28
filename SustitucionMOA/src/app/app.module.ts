@@ -1,4 +1,5 @@
 ﻿import { DatePipe } from "@angular/common";
+
 import {
     CUSTOM_ELEMENTS_SCHEMA,
     ErrorHandler,
@@ -41,9 +42,9 @@ import { HomeComponent } from "./home/home.component";
 import { HomeNGSComponent } from "./home/no-granos/home.no-granos.component";
 import { LayoutComponent } from "./layout/layout.component";
 import { LayoutService } from "./layout/layout.service";
-import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component';
+//import { AltaNotificacionesComponent } from './notificaciones/alta-notificaciones/alta-notificaciones.component'; //esta declarado en el NotificacionModule
 import { CarouselNotificacionesComponent } from './notificaciones/carousel-notificaciones/carousel-notificaciones.component';
-import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component';
+//import { ListadoNotificacionesComponent } from './notificaciones/listado-notificaciones/listado-notificaciones.component'; //esta declarado en el NotificacionModule
 import { NotificacionesService } from "./notificaciones/notificaciones.service";
 import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
@@ -64,7 +65,9 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
-import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component'
+import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component';
+
+
 import { PesificacionBaseComponent } from "./pesificacion/pesificacion-base.component";
 import { ModificarDatosComponent } from './usuario/modificar-datos/modificar-datos.component';
 import { ToastModule } from "primeng/toast";
@@ -72,6 +75,15 @@ import { UsuarioAuditoriaListComponent } from './usuario/usuario-auditoria-list/
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { GlobalErrorHandler } from "./common/services/GlobalErrorHandler";
 import { VerVendedoresComponent } from "./usuario/ver-vendedores/ver-vendedores.component";
+
+import { QuillModule } from "ngx-quill";
+import { ModalNotificacionesComponent } from "./notificaciones/modal-notificaciones/modal-notificaciones.component";
+
+
+import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades.component';
+import { AngularEditorModule } from '@kolkov/angular-editor';;
+import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
+import { NotificacionesModule } from "./notificaciones/notificaciones.module";
 
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from "primeng/button";
@@ -106,7 +118,10 @@ import { TooltipModule } from "primeng/tooltip";
         ToastModule,
         DropdownModule,
         ButtonModule,
-        TooltipModule
+        TooltipModule,
+        QuillModule,
+        AngularEditorModule,
+        NotificacionesModule
     ],
     declarations: [
         AppComponent,
@@ -124,8 +139,8 @@ import { TooltipModule } from "primeng/tooltip";
         EmpresaNoGranosComponent,
         AltasComponent,
         EstadoSolicitudComponent,
-        AltaNotificacionesComponent,
-        ListadoNotificacionesComponent,
+        //AltaNotificacionesComponent,
+        //ListadoNotificacionesComponent,
         CarouselNotificacionesComponent,
         VentaSustentableBaseComponent,
         FaqComponent,
@@ -138,7 +153,10 @@ import { TooltipModule } from "primeng/tooltip";
         ModificarDatosComponent,
         UsuarioAuditoriaListComponent,
         LegajoExternoComponent,
-        VerVendedoresComponent
+        VerVendedoresComponent,
+        ListadoNovedadesComponent,
+        ModalNotificacionesComponent,
+        ComunicacionesComponent
     ],
     providers: [
         DatePipe,

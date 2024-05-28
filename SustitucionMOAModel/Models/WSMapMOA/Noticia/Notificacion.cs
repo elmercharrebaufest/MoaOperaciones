@@ -10,6 +10,6 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Noticia
     {
         public string id { get; set; }
 
-        public string texto { get; set; }
+        public string texto { get; set; }  
     }
 }

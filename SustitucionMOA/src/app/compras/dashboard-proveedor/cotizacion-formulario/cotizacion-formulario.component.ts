@@ -15,7 +15,7 @@ import { NavService } from '../../../common/services/NavService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto } from '../../../modelos/peticion-de-oferta-model';
 import { CotizacionMaterialComponent } from './cotizacion-material/cotizacion-material.component';
-import { GuardarCotizacion } from '../../../modelos/cotizacionDto';
+import { CotizacionDto, CotizacionHoraDto, GuardarCotizacion } from '../../../modelos/cotizacionDto';
 import { CotizacionServicioComponent } from './cotizacion-servicio/cotizacion-servicio.component';
 import { forEach } from '@angular/router/src/utils/collection';
 
@@ -40,6 +40,15 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     archivosEconomico: File[];
     archivosTecnico: File[];
     cotizacionSubposiciones: any;
+    cambioDeGrillaOk: boolean;
+    displayHoras: boolean = false;
+    displayFinalizada: boolean = false;
+    confirmoHoras: boolean;
+    displayObservacionTecnica: boolean;
+    displayPropuestaEconomica: boolean;
+    confirmoPropuestaEconomica: boolean;
+    displayPropuestaTecnica: boolean;
+    confirmoPropuestaTecnica: boolean;
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -52,6 +61,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.route.params.forEach((params: Params) => {
                 let id = parseInt(params["id"]);
                 this.obtenerCotizacion(id);
+              
             })
         };
     }
@@ -133,17 +143,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.floatMsgService.setErrorMsg(mensaje)
             return;
         }
-        this.confirmationService.confirm({
-            header: "¡Último Paso!",
-            acceptLabel: "SI, CONFIRMAR",
-            rejectLabel: "VOLVER",
-            message: 'Está a punto de enviar la cotización. <br>Podrá volver a editarla mientras el plazo de oferta esté vigente y no se le haya adjudicado una orden de compra. <b>¿Desea continuar?</b>',
-            accept: () => {
-                this.finalizarCotizacion(true);
-            },
-            reject: () => {
-            }
-        });
+        this.RevalidarGrillaHoras();       
     }
 
     public finalizarCotizacion(esFinalizado) {
@@ -176,38 +176,38 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if (esFinalizado == undefined) this.esFinalizado = false;
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
-        this.blockUI.start("Grabando...");
-        try {
+            this.blockUI.start("Grabando...");
+            try {
 
-            this.subscription = this.service.GrabarCotizacion(this.cotizacion, esFinalizado).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        // this.nroPeticion = result.data.IdEntidad;
-                        if(result.data.Errores && result.data.Errores.length > 0){
-                            this.floatMsgService.setErrorMsg(result.data.Errores[0]);
-                        }else{
-                            this.displayCotizacionCreada = true;
-                        }                        
-                    }
-                    this.blockUI.stop();
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                    this.blockUI.stop();
+                this.subscription = this.service.GrabarCotizacion(this.cotizacion, esFinalizado).subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            // this.nroPeticion = result.data.IdEntidad;
+                            if (result.data.Errores && result.data.Errores.length > 0) {
+                                this.floatMsgService.setErrorMsg(result.data.Errores[0]);
+                            } else {
+                                this.displayCotizacionCreada = true;
+                            }
+                        }
+                        this.blockUI.stop();
+                    },
+                    error => {
+                        this.floatMsgService.setErrorMsg(error.message);
+                        this.blockUI.stop();
 
-                });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            this.blockUI.stop();
+                    });
+            } catch (e) {
+                this.floatMsgService.setErrorMsg(e);
+                this.blockUI.stop();
+                return false; //<-- Prevent Refresh
+            }
             return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
     }
 
     public obtenerArchivosNuevos() {
@@ -449,6 +449,121 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         }
 
         return mensaje;
+    }
+
+    public RevalidarGrillaHoras() {
+        this.ObtenerCotizacion();
+        debugger;
+        this.cambioDeGrillaOk = false;
+        if (this.cotizacion.EsNuevaCotizacion) {
+            if (!this.confirmoHoras && !this.hayCambiosEnGrillaDeHoras(this.cotizacion.CotizacionesHoras, this.cotizacion.CotizacionesHorasOriginal)) {
+                this.displayHoras = true;                          
+            }
+            else if(!this.confirmoPropuestaTecnica && this.hayCambiosEnPropuestaTecnica()){
+                this.confirmoHoras = true; 
+                this.displayPropuestaTecnica = true;
+            }else if(!this.confirmoPropuestaEconomica && this.hayCambiosEnPropuestaEconomica()){
+                this.confirmoPropuestaTecnica = true;
+                this.displayPropuestaEconomica = true;  
+            }else{
+                this.mostrarDialogFinalizar();
+            }   
+        }else{
+            this.mostrarDialogFinalizar();
+        }       
+    }
+
+    aceptarHoras(){
+        this.displayHoras = false;   
+        this.confirmoHoras = true;     
+        if(this.hayCambiosEnPropuestaTecnica()){
+            this.displayPropuestaTecnica = true;
+        }else{
+            this.mostrarDialogFinalizar();
+        }     
+    }
+
+    salirHoras(){
+        this.displayHoras = false; 
+    }
+    
+    aceptarPropuestaTecnica(){
+        this.confirmoPropuestaTecnica = true;  
+        this.displayPropuestaTecnica = false; 
+        if(this.hayCambiosEnPropuestaEconomica()){
+            this.displayPropuestaEconomica = true;  
+        }else{
+            this.mostrarDialogFinalizar();
+        }
+    }
+
+    salirPropuestaTecnica(){
+        this.displayPropuestaTecnica = false; 
+    }
+
+    aceptarPropuestaEconomica(){
+        this.confirmoPropuestaEconomica = true;  
+        this.displayPropuestaEconomica = false; 
+        this.mostrarDialogFinalizar();     
+        
+    }
+
+    salirPropuestaEconomica(){
+        this.displayPropuestaEconomica = false; 
+    }
+
+    public mostrarDialogFinalizar() {    
+        this.confirmationService.confirm({
+            header: "¡Último Paso!",
+            acceptLabel: "SI, CONFIRMAR",
+            rejectLabel: "VOLVER",
+            message: 'Está a punto de enviar la cotización. <br>Podrá volver a editarla mientras el plazo de oferta esté vigente y no se le haya adjudicado una orden de compra. <b>¿Desea continuar?</b>',
+            accept: () => {
+                this.finalizarCotizacion(true);
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    public hayCambiosEnGrillaDeHoras(original: CotizacionHoraDto[], cambios: CotizacionHoraDto[]): boolean {
+        if (original.length !== cambios.length) {
+            return true;
+        }
+    
+        for (let i = 0; i < original.length; i++) {
+            const originalItem = original[i];
+            const cambioItem = cambios[i];
+    
+            if (!this.sonIguales(originalItem, cambioItem)) {
+                return true;
+            }
+        }
+    
+        return false;
+    }
+    
+    public sonIguales(objA: any, objB: any): boolean {
+        for (const key in objA) {
+            if (objA.hasOwnProperty(key)) {
+                if (objA[key] !== objB[key]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public hayCambiosEnPropuestaEconomica(){
+        this.ObtenerCotizacion();
+        return this.cotizacion.ObservacionEconomica == this.cotizacion.ObservacionEconomicaOriginal
+         || this.cotizacion.ArchivosNuevos.length == 0;
+    }
+
+    public hayCambiosEnPropuestaTecnica(){
+        this.ObtenerCotizacion();
+        return this.cotizacion.ObservacionTecnica == this.cotizacion.ObservacionTecnicaOriginal ||
+        this.cotizacion.ArchivosTecnico.length == 0;
     }
 
     formatearNumero(numero: number) {

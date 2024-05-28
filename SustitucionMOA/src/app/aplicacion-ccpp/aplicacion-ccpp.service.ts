@@ -12,7 +12,7 @@ export interface ListadoRequest {
 }
 
 @Injectable()
-export class AplicacionCcppService extends BaseService{
+export class AplicacionCcppService extends BaseService {
   private baseUrl = "/api/AplicacionCartaPorte/";
   getListado({ fechaInicio, fechaFin }: ListadoRequest): Observable<ApiResponse<AplicacionCCPP[], AplicacionCCPPFiltro>> {
     const params = new HttpParams()

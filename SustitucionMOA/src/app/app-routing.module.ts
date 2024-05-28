@@ -23,6 +23,9 @@ import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
+import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
+import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
+
 
 const appRoutes: Routes = [
     // { path: "documentacion", component: DocumentacionComponent },
@@ -75,6 +78,7 @@ const appRoutes: Routes = [
                 path: "reporte",
                 loadChildren: "./reporte/reporte.module#ReporteModule",
             },
+
             { path: "contacto", component: ContactoMailComponent },
             {
                 path: "cuenta-corriente",
@@ -160,7 +164,17 @@ const appRoutes: Routes = [
             { path: "notificaciones", component: ListadoNotificacionesComponent },
             { path: "notificaciones/alta", component: AltaNotificacionesComponent },
             { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
+
+            { path: "comunicaciones", component: ComunicacionesComponent },
+
+            { path: "novedades", component: ListadoNotificacionesComponent },
+            { path: "novedades/alta", component: AltaNotificacionesComponent },
+            { path: "novedades/alta/:id", component: AltaNotificacionesComponent },
             { path: "gestionCM05", loadChildren: "./gestionCM05/gestionCM05.module#GestionCM05Module" },
+            {
+                path: "notificaciones",
+                loadChildren: "./notificaciones/notificaciones.module#NotificacionesModule",
+            },
             {
                 path: "faq",
                 component: FaqComponent
@@ -184,7 +198,9 @@ const appRoutes: Routes = [
             {
                 path: "archivos-boleto",
                 loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule"
-            }
+            },
+            { path: "mis-novedades", component: ListadoNovedadesComponent },
+
         ],
     },
     { path: "**", component: HomeComponent },
