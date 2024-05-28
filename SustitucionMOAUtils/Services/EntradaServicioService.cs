@@ -55,14 +55,7 @@ namespace SustitucionMOAUtils.Services
         public async Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, SustitucionMOAModel.Dto.UsuarioDto usuario)
         {
             List<EntradaServicioCabeceraDto> Documentos = await ServicioSAP_EntradasServicioCabecera(parametros, usuario);
-
-            //Ordena si se proporciona la columna de orden y el tipo de orden
-            if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
-                Documentos = OrdenarEntradasServicio(Documentos, parametros.ColumnaOrden, parametros.OrdenAscendente);
-
-            // Se comenta la paginación de resultados para probar eficiencia en la respuesta de este metodo
-            // El metodo Paginar resultados causa una doble llamda hilada al metodo de buscar proveedor. 
-            // Documentos = PaginarResultados(Documentos, parametros.pagina, parametros.elementosPorPagina); //Realiza la paginación
+            Documentos = OrdenarEntradasServicio(Documentos);
 
             return Documentos;
         }
@@ -70,24 +63,9 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Realiza ordenamiento del objeto OrdenCompraDto según la columna y el tipo de orden especificados
         /// </summary>
-        public List<EntradaServicioCabeceraDto> OrdenarEntradasServicio(List<EntradaServicioCabeceraDto> ordenes, string columnaOrden, bool ordenAscendente)
+        public List<EntradaServicioCabeceraDto> OrdenarEntradasServicio(List<EntradaServicioCabeceraDto> ordenes)
         {
-            if (string.IsNullOrEmpty(columnaOrden))
-                return ordenes; // Sin ordenamiento. Si no se especifica una columna
-
-            // reflexión para obtener la propiedad de la columna
-            var propiedadOrden = typeof(EntradaServicioCabeceraDto).GetProperty(columnaOrden, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
-
-            if (propiedadOrden == null)
-                return ordenes; // Si la propiedad no se encuentra, no se realiza ordenación
-
-            // Ordenar la lista según la propiedad especificada y el orden ascendente o descendente
-            var orderedDocument = ordenAscendente
-                ? ordenes.OrderBy(o => propiedadOrden.GetValue(o, null))
-                : ordenes.OrderByDescending(o => propiedadOrden.GetValue(o, null));
-
-            //return orderedOrdenes.ToList();
-            return orderedDocument.ToList();
+            return ordenes.OrderByDescending(es => es.FechaCreacionDateTime).ThenByDescending(es => es.EntradaServicio).ToList();
         }
 
         /// <summary>
@@ -218,9 +196,9 @@ namespace SustitucionMOAUtils.Services
             List<Aprobaciones> temporales = new List<Aprobaciones>();
             if (parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
             {
-                temporales = repositorio.Listar<Aprobaciones>();
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
             } else {
-                temporales = repositorio.Listar<Aprobaciones>(x =>x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail);
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
             }
 
             try
@@ -272,6 +250,7 @@ namespace SustitucionMOAUtils.Services
                 Descripcion = temporal.Descripcion_ES,
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaFormateada.ToString("dd/MM/yyyy"),
+                FechaCreacionDateTime = temporal.Fecha_Carga_ES,
                 EntradaServicio = temporal.NRO_ES_LOCAL,
                 Estado = temporal.Estado_certificacion,
                 MotivoRechazo = temporal.Motivo_rechazo,
@@ -279,7 +258,8 @@ namespace SustitucionMOAUtils.Services
                 Ingresante = temporal.Ingresante_CDS,
                 Aprobador = temporal.Aprobador_CDS,
                 Suplente = temporal.Suplente,
-                Fiscal = temporal.Fiscal_SOLPED
+                Fiscal = temporal.Fiscal_SOLPED,
+                DesdeSap = false
             };
 
             Proveedor prov = orderService.BuscarProveedor(ordenParams);

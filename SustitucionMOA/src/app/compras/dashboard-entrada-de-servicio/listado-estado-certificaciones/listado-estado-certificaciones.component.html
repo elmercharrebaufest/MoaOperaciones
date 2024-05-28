@@ -94,14 +94,9 @@
                     <td>{{ rowData.Proveedor | defaultData }}</td>
                     <td>{{ rowData.Descripcion | defaultData }}</td>
                     <td>{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
-                    <td *ngIf="userId === 'A' || userId === 'AI' || userId === 'FA' || userId === 'F' || userId === 'FAI' || userId === 'FI'"> 
+                    <td> 
                         <div class="usuario-area">
                             <span>{{ rowData.Ingresante }}</span>
-                        </div>
-                    </td>
-                    <td *ngIf="userId === 'A' || userId === 'AI' || userId === 'FA' || userId === 'FAI' || userId === 'I' || userId === 'FI'">
-                        <div class="usuario-area">
-                            <span>{{ rowData.Fiscal }}</span>
                         </div>
                     </td>
                     <td>
@@ -138,7 +133,7 @@
                             [disabled]="rowData.Suplente === null || !equalsIgnoreCase(rowData.Fiscal,usuario)"
                         ></button>
                     </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada' && (userId === 'I' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'FI' || userId === 'F')">{{ rowData.Aprobador | defaultData}}</td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{ rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
             </ng-template>
