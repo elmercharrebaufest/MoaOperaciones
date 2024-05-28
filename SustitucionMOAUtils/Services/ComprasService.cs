@@ -441,7 +441,7 @@ namespace SustitucionMOAUtils.Services
 
             var peticiones = repositorio.Listar<PeticionDeOferta>(po => po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroSolp == solpEntity.NroSolp);
             var revisionFinalizada = peticiones.Any(po => po.RevisionTecnica != null && po.RevisionTecnica.Finalizada == true);
-            var solpLiberada = solpEntity.NroSolp != null && solpEntity.EstadoSolpSap.CodigoSap == "05";
+            var solpLiberada = solpEntity.NroSolp != null && solpEntity.EstadoSolpSap != null && solpEntity.EstadoSolpSap.CodigoSap == "05";
 
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
