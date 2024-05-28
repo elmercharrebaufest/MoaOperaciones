@@ -436,32 +436,38 @@ namespace SustitucionMOAUtils.Services
 
         private void ExistenPosicionesNuevas(SolpDto solp, Solp solpEntity)
         {
+            var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
+                .SolpPosicion.Solp.NroSolp == solpEntity.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
+
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
             {
-                if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
-                {
-                    solpEntity.TieneModificaciones = true;
-                    break;
-                }
+                if (cotizaciones != null && cotizaciones.Count > 0) {
 
-                // Comparar las subposiciones si existen
-                if (nuevaPosicion.Subposiciones != null)
-                {
-                    foreach (var nuevaSubposicion in nuevaPosicion.Subposiciones)
+                    if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
                     {
-                        var posicionExistente = solpEntity.Posiciones.FirstOrDefault(p => p.Codigo == nuevaPosicion.Codigo);
-                        if ((posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo)) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
+                        solpEntity.TieneModificaciones = true;
+                        break;
+                    }
+
+                    // Comparar las subposiciones si existen
+                    if (nuevaPosicion.Subposiciones != null)
+                    {
+                        foreach (var nuevaSubposicion in nuevaPosicion.Subposiciones)
                         {
-                            solpEntity.TieneModificaciones = true;
-                            break;
+                            var posicionExistente = solpEntity.Posiciones.FirstOrDefault(p => p.Codigo == nuevaPosicion.Codigo);
+                            if ((posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo)) && (solpEntity.NroSolp != null && solpEntity.EstadoSolpSap.CodigoSap == "05"))
+                            {
+                                solpEntity.TieneModificaciones = true;
+                                break;
+                            }
                         }
                     }
-                }
 
-                if (solpEntity.TieneModificaciones == true)
-                {
-                    break;
+                    if (solpEntity.TieneModificaciones == true)
+                    {
+                        break;
+                    }
                 }
             }
         }
