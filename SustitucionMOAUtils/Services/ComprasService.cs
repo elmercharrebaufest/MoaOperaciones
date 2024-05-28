@@ -439,7 +439,7 @@ namespace SustitucionMOAUtils.Services
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
             {
-                if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && solpEntity.NroSolp != null)
+                if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
                 {
                     solpEntity.TieneModificaciones = true;
                     break;
@@ -451,7 +451,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var nuevaSubposicion in nuevaPosicion.Subposiciones)
                     {
                         var posicionExistente = solpEntity.Posiciones.FirstOrDefault(p => p.Codigo == nuevaPosicion.Codigo);
-                        if (posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo))
+                        if ((posicionExistente != null && !posicionExistente.Subposiciones.Any(sp => sp.Codigo == nuevaSubposicion.Codigo)) && (solpEntity.NroSolp != null && solp.EstadoSolpSap.CodigoSap == "05"))
                         {
                             solpEntity.TieneModificaciones = true;
                             break;
