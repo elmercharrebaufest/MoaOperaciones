@@ -1,0 +1,74 @@
+<p-dialog [(visible)]="displayVisualizarMovimientos" modal="modal" [width]="900" [draggable]="false" [closable]="false"
+    appendTo="body" positionTop="30" [height]="450" [max] [contentStyle]="{ 
+        'max-height':'500px', 
+        'min-height':'500px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Visualizacion de Movimientos</b>
+    </p-header>
+
+    
+    <br>
+    <div class="container-fluid" style="height: 273.75px;">
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+             <ul *ngIf="historialDeFechas != undefined" style="list-style-type: none; padding: 0;border: 1px solid black; padding: 10px; margin-bottom: 10px;">
+                <!-- Iterar sobre la lista de objetos -->
+             <div *ngFor="let item of historialDeFechas.ListaSolp" >
+                   <strong>Nro de SOLP:</strong> {{ item.NroSolp }}
+                   <br>
+                   <strong>Fecha de Creación:</strong> {{ item.FechaCreacionFormateada }}
+                  <br>
+                   <strong>Fecha de Liberación:</strong> {{ item.FechaLiberacionSapFormateada }}
+                   <br>                  
+                 </div>
+                 <strong>Fecha creación PO:</strong> {{ historialDeFechas.FechaCreacionPOFormateada }}
+             </ul>
+             <p-table [value]="historialDeFechas?.Cuerpo" *ngIf="historialDeFechas">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th *ngFor="let header of historialDeFechas.Cuerpo[0]">{{ header }}</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-rowIndex="rowIndex">
+                    <ng-container *ngIf="rowIndex > 0">
+                        <tr [ngStyle]="{'background-color': getRowColor(rowData)}">
+                            <!-- Manejar Revisión Técnica -->
+                            <ng-container *ngIf="isRevisionTecnica(rowData)">
+                                <td [attr.colspan]="colspan"  class="revision-tecnica">
+                                    {{ getRevisionTecnica(rowData) }}
+                                </td>
+                            </ng-container>
+                            <!-- Manejar Cierre de Cotización -->
+                            <ng-container *ngIf="isCierreCotizacion(rowData)">
+                                <td [attr.colspan]="colspan" class="cierre-cotizacion" style="text-align: center;">
+                                    {{ getCierreCotizacion(rowData) }}
+                                </td>
+                            </ng-container>
+                            
+                
+                            <!-- Manejar otras filas -->
+                            <ng-container *ngIf="!isRevisionTecnica(rowData) && !isCierreCotizacion(rowData)">
+                                <td *ngFor="let cell of rowData"
+                                    [ngClass]="getCellClass(cell)"
+                                    [ngStyle]="{'text-align': rowData.length === 1 ? 'center' : 'left'}">
+                                    {{ cell }}
+                                </td>
+                            </ng-container>
+                            
+                        </tr>
+                    </ng-container>
+                </ng-template>
+                
+                
+                
+            </p-table>
+            
+            
+            
+                  
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-primary" (click)="salir()">ACEPTAR</button>
+    </p-footer>
+</p-dialog>
+

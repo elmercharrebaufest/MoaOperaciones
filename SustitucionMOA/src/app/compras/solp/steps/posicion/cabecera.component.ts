@@ -21,6 +21,8 @@ import { mergeMap, map, switchMap } from 'rxjs/operators';
 import { from, Observable, of } from 'rxjs';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-contrato-marco.service';
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
+import * as uuid from 'uuid';
+import _ from 'lodash';
 
 declare var $: any;
 
@@ -73,7 +75,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     arraryErrores: any = new Array<{ id: number, text: string }>();
     posicionSeleccionada: any;
     //Fuera de la tabla
-    claseDocumento: SelectItem[];
+    claseDocumento: SelectItem[] = [];
+
     editarDocumento: boolean = false;
     disabled: boolean = true;
     concluido: boolean = false;
@@ -164,6 +167,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     contratosAsociar: any;
     listaDePosicionesAsociar: any;
     alertaParaAsociar: boolean;
+    previousValue: any = null;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -180,17 +184,34 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.agregarPosicion();
             this.deshabilitarImputaciones();
         }
-        this.listarContratosAsociados();
+
         if (this.model.posicionActual != undefined) {
             this.model.posicionActual.setTabPosicion();
         }
 
         this.listarContratosAsociados();
     }
-
+    
     public setCombos(): void {
         if (this.combos != undefined) {
-            this.claseDocumento = this.combos.ClaseDocumento;
+            this.claseDocumento = this.combos.ClaseDocumento.map(ds => {
+                return {
+                    label: ds.CodigoDescripcion, 
+                    value: {
+                        Id: ds.Id, 
+                        Tabla: ds.Tabla,
+                        Codigo: ds.Codigo,
+                        CodigoDescripcion: ds.Codigo + " - " + ds.Descripcion,	
+                        CodigoSap: ds.CodigoSap, 
+                        Descripcion: ds.Descripcion,
+                        IdPadre: ds.IdPadre, 
+                        FiltroComprador: ds.FiltroComprador,
+                        Deshabilitado: ds.Deshabilitado
+                    }, 
+                    disabled: ds.Deshabilitado
+                 }
+            });
+
             this.centroEntrega = this.combos.Centro;
             this.monedaCompras = this.combos.Moneda;
             this.tipoPosicion = this.combos.TipoPosicion;
@@ -203,17 +224,13 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 });
             }
         }
-        if (!this.model.nroSolp && !this.combos.CombosSeteados) {
-            this.completarDatosUltimaSolp();
-            this.combos.CombosSeteados = true;
-        }
     }
 
     ngOnChanges() {
         this.setTabs();
-
+        this.setCombos();
         //Hace que clase documento no use la primera opcion como predeterminada
-        var clase = this.claseDocumento != undefined ? this.claseDocumento[0] : null;
+        var clase = this.claseDocumento != undefined && this.claseDocumento.length > 0 ? this.claseDocumento[0].value : null;
         let claseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : clase;
         this.model.selectClaseDocumento = this.model.selectClaseDocumento !== undefined && this.model.selectClaseDocumento.Id > 0 ? this.model.selectClaseDocumento : 0;
         this.actualizarCamposObligatorios(this.model.selectClaseDocumento);
@@ -244,7 +261,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         else {
             this.mensajesEncabezado = [];
-            this.formularioActual.enable();
+            if(this.formularioActual != undefined){
+                this.formularioActual.enable();
+            }
         }
 
         this.validarTipoPosicion();
@@ -280,18 +299,16 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-    
     agregarPosicion() {
-        var ultimaPosicion = this.model.posiciones.length > 0 ? 
-        this.model.posiciones[this.model.posiciones.length - 1] as any : null;
-        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);   
-        this.setupAlmacenEntregaByCentro();      
+        var ultimaPosicion = this.model.posiciones.length > 0 ?
+            this.model.posiciones[this.model.posiciones.length - 1] as any : null;
+        this.model.agregarNuevaPosicion(ultimaPosicion as SolpPosicion);
+        this.setupAlmacenEntregaByCentro();
         this.model.posicionActual.setTabPosicion();
         if (!this.model.nroSolp && !this.combos.CombosSeteados) {
             this.completarDatosUltimaSolp();
             this.combos.CombosSeteados = true;
         }
-
     }
 
     duplicarPosicion(el: HTMLElement) {
@@ -299,8 +316,15 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         var posicionChequeadas = this.model.posiciones.filter(x => x.posicionCheck === true);
         if (posicionChequeadas.length > 0) {
             var _this = this;
-            posicionChequeadas.forEach(function (item1: any) {
-                _this.model.agregarNuevaPosicion(item1 as SolpPosicion);
+            posicionChequeadas.forEach(function (item1: SolpPosicion) {
+                let newPos = _.cloneDeep(item1);
+                newPos.posicionCheck = false;
+                newPos.numeroPosicion = _this.model.posiciones.length + 1;
+                newPos.id = uuid.v4();
+                newPos.concluido = false;
+                _this.model.posiciones.push(newPos);
+                _this.model.posicionActual = _this.model.posiciones[_this.model.posiciones.length - 1];
+                
                 _this.setupAlmacenEntregaByCentro();
             });
             //  el.scrollIntoView();
@@ -475,7 +499,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
     }
 
-    //Cambia la clase de documento y el seteo de los campos obligatorios
     cambiarClaseDocumento() {
         this.setControlesObligatorios(this.model.selectClaseDocumento);
         this.validarPosicionActual();
@@ -1023,11 +1046,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (this.model.selectTipoPosicion) {
             this.model.posiciones.forEach(posicion => {
                 this.model.eliminarPosicion(posicion as SolpPosicion)
-                // posicion.tipoPosicion = this.model.selectTipoPosicion;
-                // this.model.posicionActual = posicion;
-                // this.model.posicionActual.setTabPosicion();
-                // posicion.calcularValorTotal();
-                // posicion.doValidatePosicion(this.model.tipoSolpSap);
             });
             if (this.model.posiciones.length == 1) {
                 this.setupAlmacenEntregaByCentro();
@@ -1060,15 +1078,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         // Set Combos
         let unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == $event.contrato.UnidadMedida);
         this.model.posiciones[posicionIndex].unidadSeleccionada = unidadSeleccionadaAux;
-
-        // let monedaSeleccionadaAux = this.combos.Moneda.find(x => x.Codigo == $event.contrato.ClaveMoneda);
-        //this.model.posiciones[posicionIndex].monedaSeleccionada = monedaSeleccionadaAux;
-
-        //  let almacenSeleccionadoAux = this.combos.Almacen.find(x => x.Codigo == $event.contrato.Almacen);
-        // this.model.posiciones[posicionIndex].selectAlmacenEntrega = almacenSeleccionadoAux;
-
-        //  let grupoArticuloSeleccionadoAux = this.combos.GrupoArticulo.find(x => x.Codigo == $event.contrato.GrupoArticulo);
-        //  this.model.posiciones[posicionIndex].selectArticuloCompras = grupoArticuloSeleccionadoAux;
 
         let grupoComprasSeleccionadoAux = this.combos.GrupoCompras.find(x => x.Codigo == $event.contrato.GrupoCompras);
         this.model.posiciones[posicionIndex].selectGrupoCompras = grupoComprasSeleccionadoAux;
@@ -1242,7 +1251,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     eliminarContratoAsociar(posicion) {
-
         posicion.numeroContratoSuperior = "";
         posicion.provedorFijo = "";
         posicion.nombreProveedor = "";
@@ -1252,7 +1260,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     listarContratosAsociados() {
         try {
-
             this.subscription = this.service.listarContratosAsociar(this.model.posiciones
             ).subscribe(
                 (result: any) => {
@@ -1277,14 +1284,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             this.floatMsgService.setErrorMsg(e);
             return false;
         }
-
         return false;
     }
 
     validarBotonAsociarEditarContrato() {
-
-        //eliminar contrato marco     
-
         if ((this.listaDePosicionesAsociar == null || this.listaDePosicionesAsociar.length == 0)) {
             this.alertaParaAsociar = false;
             this.displayBotonAsociar = false;
@@ -1322,7 +1325,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
                     let direccionCentro = this.combos.CentrosDireccion.find(x => x.CodigoSap == this.model.posicionActual.selectCentroEntrega.CodigoSap);
                     this.fillValoresDireccion(direccionCentro);
-
                 }
 
                 if (this.datosUltimaSolp.Almacen != null) {

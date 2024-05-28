@@ -68,6 +68,7 @@ export class LayoutComponent implements OnDestroy {
     showComunicaciones: boolean = true;
     comunicacionesIsOpen: boolean = false;
 
+
     @ViewChild("myModal") modal: any;
 
     @ViewChild("mensajeModal")

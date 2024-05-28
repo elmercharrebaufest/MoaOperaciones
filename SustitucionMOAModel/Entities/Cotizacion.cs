@@ -19,7 +19,8 @@ namespace SustitucionMOAModel.Entities
         public string ObservacionEconomica { get; set; }
         public int Revision { get; set; }
         public decimal? PorcentajeDeHoras { get; set; }
-        
+        public bool? CotizarNuevaPosicion { get; set; }        
+
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario UsuarioCreador { get; set; }

@@ -8,6 +8,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Adjuntos } from '../common/models/adjuntos';
 
 @Injectable()
+
 export class NotificacionesService extends BaseService {
 
     constructor(protected http: HttpClient) {

@@ -333,6 +333,8 @@ namespace SustitucionMOAUtils.Email
         {
             try
             {
+                var enviarAValidos = new List<string>();
+                var enviarCopiaValidos = new List<string>();
                 MailMessage oMensaje = new MailMessage
                 {
                     From = new MailAddress(string.IsNullOrEmpty(enviarDesde) ? EmailConfig.getEmailAddFrom() : enviarDesde),
@@ -340,6 +342,10 @@ namespace SustitucionMOAUtils.Email
                     Subject = asunto,
                     IsBodyHtml = true,
                 };
+
+                enviarA.RemoveAll(correo => !EsCorreoValido(correo));
+                copia.RemoveAll(correo => !EsCorreoValido(correo));
+
                 foreach (string mail in enviarA)
                 {
                     if (!string.IsNullOrEmpty(mail))
@@ -406,6 +412,20 @@ namespace SustitucionMOAUtils.Email
                 throw;
             }
         }
+
+        private static bool EsCorreoValido(string correo)
+        {
+            try
+            {
+                MailAddress mailAddress = new MailAddress(correo);
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
         public static async Task EnviarMailAsync(EmailSenderData emailSenderData)
         {
             try

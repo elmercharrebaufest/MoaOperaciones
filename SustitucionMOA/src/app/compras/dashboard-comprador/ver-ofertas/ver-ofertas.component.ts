@@ -76,6 +76,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     displayHistorial: boolean;
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
+    displayVisualizarMovimientos: boolean;
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -588,6 +589,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayVisualizarPrecio = true;
     }
 
+    cerrarModalMovimientos() {
+        this.displayVisualizarMovimientos = false;
+    }
+
+    abrirModalMovimientos() {
+        this.displayVisualizarMovimientos = true;
+    }
+
     obtenerPrimerPlazo(cotizacionPosicion: any): string {
         let plazos = '';
 
@@ -755,29 +764,28 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayHistorial = false;
     }
 
-    // Dentro del componente de Angular
-    getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
-        // Crear un objeto para almacenar la suma de precios por moneda
-        const preciosPorMoneda: { [key: string]: number } = {};
-
-        // Iterar sobre las subposiciones y sumar los precios por moneda
-        for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-            if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
-                preciosPorMoneda[subpos.MonedaDescripcion] = 0;
-            }
-            preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
+   // Dentro del componente de Angular
+getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+    const preciosPorMoneda: { [key: string]: number } = {};
+    for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+        if (!subpos.MonedaDescripcion) {
+            continue;
         }
-
-        this.resultado = '';
-        for (const moneda in preciosPorMoneda) {
-            if (preciosPorMoneda.hasOwnProperty(moneda)) {
-                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                this.resultado += ` ${moneda} ${precioFormateado} <br>`;
-            }
+        if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+            preciosPorMoneda[subpos.MonedaDescripcion] = 0;
         }
-
-        return this.resultado;
+        preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
     }
+    this.resultado = '';
+    for (const moneda in preciosPorMoneda) {
+        if (preciosPorMoneda.hasOwnProperty(moneda)) {
+            const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
+            this.resultado += `${moneda} ${precioFormateado}<br>`;
+        }
+    }
+    return this.resultado;
+}
+
 
 }
 

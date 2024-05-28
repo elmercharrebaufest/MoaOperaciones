@@ -665,4 +665,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="CondEspProveedorAsignado" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="a814e37f-ae4b-48f7-8144-cb6314cab01e" ChangeDateTime="05/24/2024 16:27:35">
+    <Property Name="ElementName" Value="[dbo].[Solp].[TieneCambios]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Solp]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TieneModificaciones" />
+  </Operation>
 </Operations>
