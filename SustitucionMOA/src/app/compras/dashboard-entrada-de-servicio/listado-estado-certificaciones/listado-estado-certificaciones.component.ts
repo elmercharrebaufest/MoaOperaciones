@@ -226,7 +226,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else if (result.info != undefined) {
           } else {
             this.tablaPO = result.data; 
-            this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -491,7 +491,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   setColumsByUserProfile(entradasDeServicio: any, user: any): string {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if(pendienteAprobacion.length > 0){
-      const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
+      const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if(fai.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' ? false : true;
