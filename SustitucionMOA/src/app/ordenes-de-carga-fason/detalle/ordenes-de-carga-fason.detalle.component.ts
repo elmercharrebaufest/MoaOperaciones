@@ -201,9 +201,9 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     confirmarRechazarSolicitudEdicion(aprobado: boolean) {
         this.confirmationService.confirm({
             key: 'confirmarSolicitudEdicion',
-            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
+            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de edición?`,
             accept: () => {
-                this.solicitudAnulacion(aprobado)
+                this.solicitudEdicion(aprobado)
             },
             reject: () => {
             }
