@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 
@@ -31,13 +34,14 @@ namespace SustitucionMOAFotmatter
             }
 
         }
-        public static string CuitConGuion(string cuit) {
+        public static string CuitConGuion(string cuit)
+        {
             string formateado = cuit;
             if (string.IsNullOrEmpty(cuit))
                 throw new ValidationCustomException("No se puede formatear como CUIT una string vacía");
             if (!cuit.Contains("-"))
             {
-                formateado = cuit.Insert(2,"-").Insert(11,"-");
+                formateado = cuit.Insert(2, "-").Insert(11, "-");
             }
             return formateado;
         }
@@ -90,6 +94,30 @@ namespace SustitucionMOAFotmatter
             int milliseconds = (remainingMinutes * 60 * 1000) % 1000; // Calculate milliseconds preserving precision
 
             return $"{hours:04d}:{remainingMinutes:02d}:{seconds:02d}.{milliseconds:03d}";
+        }
+
+        public static string FormatEncodedURI(string encoded)
+        {
+            string newUrl;
+            while ((newUrl = Uri.UnescapeDataString(encoded)) != encoded)
+                encoded = newUrl;
+            return newUrl;
+        }
+        public static T GetDtoFromJsonString<T>(string json)
+        {
+            var settings = new JsonSerializerSettings
+            {
+                ContractResolver = new DefaultContractResolver
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy() // or PascalCaseNamingStrategy()
+                }
+            };
+
+            using (var jsonReader = new JsonTextReader(new StringReader(json)))
+            {
+                var serializer = JsonSerializer.Create(settings);
+                return serializer.Deserialize<T>(jsonReader);
+            }
         }
     }
 }

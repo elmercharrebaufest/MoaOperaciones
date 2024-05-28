@@ -1,5 +1,7 @@
 ﻿using iTextSharp.text;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
@@ -26,7 +28,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<SubCategoriaDto> ObtenerSubCategorias(UsuarioDto usuario);
         List<CausaConsultaDto> ObtenerCausas();
         string EnviarMailRecordatorio(int consultaId);
-        List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos);
+        ListaPaginada<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos, Paginacion paginacion, FiltrosConsultaDto filtro = null);
         string ActualizarCombos(int consultaId, int estadoConsultaId, int categoriaId, int? subcategoriaId, int? causaConsultaId);
         string ObtenerRutaArchivo(int archivoId);
         string RecordarComentario(int consultaId);

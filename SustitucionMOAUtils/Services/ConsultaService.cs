@@ -12,7 +12,6 @@ using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.DesignPattern.Classes;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -20,14 +19,14 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
-using System.ServiceModel.Channels;
-using SustitucionMOAUtils.Helpers;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto.Consulta;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -38,6 +37,7 @@ namespace SustitucionMOAUtils.Services
         private readonly ITimeProvider timeProvider;
         private readonly IConsultaContext consultaContext;
         private readonly IGestionImpuestosService gestionImpuestosService;
+        private readonly IRepositorioConsultas repositorioConsultas;
 
         private readonly string rutaArchivosConsulta = ConfigurationManager.AppSettings["RutaArchivosConsulta"];
         private readonly string rutaMisConsultas = ConfigurationManager.AppSettings["UrlMisConsultas"];
@@ -46,13 +46,20 @@ namespace SustitucionMOAUtils.Services
         private static readonly string DESTINOS_EMAILS_DISCONFORMIDAD = ConfigurationManager.AppSettings["MailsDisconformidadCalidades"];
         private readonly string rutaArchivosCM05 = ConfigurationManager.AppSettings["RutaArchivosCM05"];
 
-        public ConsultaService(IRepositorio repositorio, IAzureService azureService, ITimeProvider timeProvider, IConsultaContext consultaContext, IGestionImpuestosService gestionImpuestosService)
+        public ConsultaService(IRepositorio repositorio,
+            IAzureService azureService,
+            ITimeProvider timeProvider,
+            IConsultaContext consultaContext,
+            IGestionImpuestosService gestionImpuestosService,
+            IRepositorioConsultas repositorioConsultas
+            )
         {
             this.repositorio = repositorio;
             this.azureService = azureService;
             this.timeProvider = timeProvider;
             this.consultaContext = consultaContext;
             this.gestionImpuestosService = gestionImpuestosService;
+            this.repositorioConsultas = repositorioConsultas;
         }
 
         public virtual void ActualizarEstadoConsulta(int consultaId, int estadoConsultaId)
@@ -513,15 +520,10 @@ namespace SustitucionMOAUtils.Services
             return archivo?.Ruta;
         }
 
-        public List<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos)
+        public ListaPaginada<ConsultaDto> ListarConsultas(int usuarioId, bool obtenerTodos, Paginacion paginacion, FiltrosConsultaDto filtros = null)
         {
 
             var includes = new List<Expression<Func<Consulta, object>>>();
-            //includes.Add(x => x.Detalle);
-            //includes.Add(x => x.Detalle.CausaConsulta);
-            //includes.Add(x => x.Categoria);
-            //includes.Add(x => x.SubCategoria);
-            //includes.Add(x => x.EstadoConsulta);
 
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
@@ -530,7 +532,53 @@ namespace SustitucionMOAUtils.Services
             var proveedorAsignado = usuario.ObtenerProveedor();
             var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
 
-            var ret = repositorio.Listar<Consulta, ConsultaDto>(
+            filtros = filtros == null ? new FiltrosConsultaDto() : filtros;
+
+            var noTieneFiltroRazonSocialCorredor = string.IsNullOrWhiteSpace(filtros.RazonSocialCorredor);
+            var noTieneFiltroRazonSocialProveedor = string.IsNullOrWhiteSpace(filtros.RazonSocialProveedor);
+            var noTieneFiltroAsunto = string.IsNullOrWhiteSpace(filtros.Asunto);
+            var noTieneFiltroMaterial_Id = filtros.Material_Id == null || filtros.Material_Id.Count == 0;
+            var filtroMaterial_Id = noTieneFiltroMaterial_Id ? new List<int?>() : filtros.Material_Id;
+            var noTieneFiltroCategoriaId = filtros.CategoriaId == null || filtros.CategoriaId.Count == 0;
+            var filtroCategoriaId = noTieneFiltroCategoriaId ? new List<int?>() : filtros.CategoriaId;
+            var noTieneFiltroSubCategoriaId = filtros.SubCategoriaId == null || filtros.SubCategoriaId.Count == 0;
+            var filtroSubCategoriaId = noTieneFiltroSubCategoriaId ? new List<int?>() : filtros.SubCategoriaId;
+            var noTieneFiltroEstadoConsultaId = filtros.EstadoConsultaId == null || filtros.EstadoConsultaId.Count == 0;
+            var filtroEstadoConsultaId = noTieneFiltroEstadoConsultaId ? new List<int?>() : filtros.EstadoConsultaId;
+            var noTieneFiltroUltimaModificacion = filtros.FechaUltimaModificacion == null;
+            var filtroDesdeUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.First();
+            var filtroHastaUltimaModificacion = noTieneFiltroUltimaModificacion ? null : filtros.FechaUltimaModificacion.Last();
+            var noTieneFiltroCreacion = filtros.FechaCreacion == null;
+            var filtroDesdeCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.First();
+            var filtroHastaCreacion = noTieneFiltroCreacion ? null : filtros.FechaCreacion.Last();
+
+            var noTieneFiltroDiasReclamo = string.IsNullOrWhiteSpace(filtros.DiasReclamo);
+
+            Expression<Func<Consulta, bool>> filtroBusqueda = (x) =>
+                    ((obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
+                    (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) || x.Usuario_Id == usuarioId) &&
+                    ((
+                    (filtros.Id == null || filtros.Id == 0 || x.Id.ToString().Contains(filtros.Id.ToString())) &&
+                    (noTieneFiltroRazonSocialProveedor || x.RazonSocialProveedor.Contains(filtros.RazonSocialProveedor)) &&
+                    (noTieneFiltroRazonSocialCorredor || x.RazonSocialCorredor.Contains(filtros.RazonSocialCorredor)) &&
+                    (noTieneFiltroAsunto || x.Asunto.Contains(filtros.Asunto)) &&
+                    //(noTieneFiltroDiasReclamo || x.FechaCreacion.Contains(filtros.DiasReclamo)) &&
+                    (noTieneFiltroMaterial_Id || filtroMaterial_Id.Contains(x.Detalle.Material_Id)) &&
+                    (noTieneFiltroCategoriaId || filtroCategoriaId.Contains(x.Categoria_Id)) &&
+                    (noTieneFiltroEstadoConsultaId || filtroEstadoConsultaId.Contains(x.EstadoConsulta_Id)) &&
+                    (noTieneFiltroSubCategoriaId || filtroSubCategoriaId.Contains(x.SubCategoria_Id)) &&
+                    (noTieneFiltroCreacion || (
+                      (filtroDesdeCreacion == null || x.FechaCreacion >= filtroDesdeCreacion) &&
+                      (filtroHastaCreacion == null || x.FechaCreacion <= filtroHastaCreacion)
+                        )) &&
+                    (noTieneFiltroUltimaModificacion || (
+                      (filtroDesdeUltimaModificacion == null || x.FechaUltimaModificacion >= filtroDesdeUltimaModificacion) &&
+                      (filtroHastaUltimaModificacion == null || x.FechaUltimaModificacion <= filtroHastaUltimaModificacion)
+                        ))
+                    ))
+                    ;
+
+            var ret = repositorio.Listar(
                 x => new ConsultaDto
                 {
                     Id = x.Id,
@@ -596,13 +644,9 @@ namespace SustitucionMOAUtils.Services
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
                     Rubro = x.Detalle.Rubro
-                }
-                ,
-                x =>
-                (obtenerTodos && categorias.Contains(x.Categoria.Id)) ||
-                (x.Usuario.CUITRegistro == usuario.CUITRegistro && usuarioAprobado) ||
-                x.Usuario_Id == usuarioId
-                ).ToList();
+                },
+                paginacion,
+                filtroBusqueda);
 
             return ret;
         }
@@ -761,7 +805,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<string> exclude = new List<string>() { };
-                List<Categoria> categorias = new List<Categoria>() { };
+                List<CategoriaDto> categorias = new List<CategoriaDto>() { };
 
                 if (excluir.HasValue && excluir == true)
                 {
@@ -778,13 +822,13 @@ namespace SustitucionMOAUtils.Services
                 if (usuario.NuevoUsuario)
                 {
                     var categoriasNuevosUsuarios = new List<string>() { "OTRO", "FWEB" };
-                    categorias = repositorio.Listar<Categoria>(c => categoriasNuevosUsuarios.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                    categorias = repositorioConsultas.ListaCategorias(incluir: categoriasNuevosUsuarios).ToList();
                 }
                 else
                 {
-                    categorias = repositorio.Listar<Categoria>(c => !exclude.Contains(c.Code)).OrderBy(c => c.Nombre).ToList();
+                    categorias = repositorioConsultas.ListaCategorias(excluir: exclude).ToList();
                 }
-                return categorias.Select(x => new CategoriaDto(x)).ToList();
+                return categorias;
             }
             catch (ValidationCustomException e)
             {
@@ -816,9 +860,8 @@ namespace SustitucionMOAUtils.Services
                 var rolesUsuario = user.Roles.Where(r => categoriasContacto.Contains(r.Codigo))
                     .Select(r => r.Codigo).ToList();
 
-                var categorias = repositorio.Listar<Categoria>(c => rolesUsuario.Contains(c.Code));
 
-                return categorias.Select(x => new CategoriaDto(x)).OrderBy(c => c.Nombre).ToList();
+                return repositorioConsultas.ListaCategorias(incluir: rolesUsuario);
             }
             catch (ValidationCustomException e)
             {
@@ -908,8 +951,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var estados = repositorio.Listar<EstadoConsulta>();
-                return estados.Select(x => new EstadoConsultaDto(x)).ToList();
+                return repositorioConsultas.ListaEstadosConsultas();
             }
             catch (ValidationCustomException e)
             {

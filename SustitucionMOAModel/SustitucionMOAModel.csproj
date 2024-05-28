@@ -67,6 +67,8 @@
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\Consulta\DetallesCategoriasEstadosDto.cs" />
+    <Compile Include="Dto\Consulta\ReqListadoConsultaDto.cs" />
     <Compile Include="Dto\Curso\ActualizarProgresoReqDto.cs" />
     <Compile Include="Dto\Curso\AsignarAlumnosResDto.cs" />
     <Compile Include="Dto\Curso\AsignarReqDto.cs" />

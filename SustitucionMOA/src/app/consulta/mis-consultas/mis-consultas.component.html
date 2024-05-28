@@ -80,26 +80,53 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Mis Consultas</strong> </div>
+            <div class="col-xs-12 col-sm-10 flex items-center"><strong>Mis Consultas</strong>
+                <i (click)="verSeleccionColumnas = !verSeleccionColumnas" class="pi pi-cog cursor-pointer"
+                    pTooltip="Modificar Columnas"></i>
+            </div>
         </div>
+    </section>
+    <!-- COLUMNS CONFIG PANEL -->
+    <section id="columns" *ngIf="verSeleccionColumnas">
+        <div>
+            <h4 class="flex items-center">Columnas
+                <i class="pi pi-times cursor-pointer" (click)="verSeleccionColumnas=false"></i>
+            </h4>
+            <div class="inline-flex w-full gap-15px item-list">
+                <ng-container *ngFor="let col of colsFiltered; index as index">
+                    <p *ngIf="col">
+                        <label>
+                            <input type="checkbox" [id]="col.field+'_'+index" [disabled]="col.required"
+                                [(ngModel)]="col.visible" [value]="col.id"
+                                (ngModelChange)="guardarConfiguracionDeTablasDeUsuario()" />
+                            {{col.header}}
+                        </label>
+                    </p>
+                </ng-container>
+            </div>
+        </div>
+    </section>
+    <section>
         <!--End Title-->
         <div class="row myRow">
+            <spinner #topSpinner></spinner>
             <div class="clearfix">
                 <div class="display nowrap no-footer rounded shadow animate consulta-table" #containerList>
-                    <p-table #dt [columns]="colsFiltered" [value]="consultasFiltradas" dataKey="Id" [paginator]="true"
-                        [rows]="15" [responsive]="true" [scrollable]="false"
+                    <p-table #dt [columns]="colsFiltered | customFilterBoolean : 'visible':true:true "
+                        [value]="consultasFiltradas" dataKey="Id" [rows]="15" [responsive]="true" [scrollable]="false"
                         ([style])="{'width.px': this.containerList.offsetWidth}" sortField="FechaUltimaModificacion"
-                        sortOrder="-1">
+                        sortOrder="-1" (onSort)="changeSort($event)" [lazy]="true">
                         <ng-template pTemplate="caption">
                             <div class="ui-helper-clearfix" style="text-align: right">
-                                <div style="float:left">
+                                <div class="flex items-center py-4 gap-5px">
                                     <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o "
                                         iconPos="left" label="Exportar" (click)="exportConsultas()"
                                         style="background-color:#075088;"></button> &nbsp;
                                     <p-multiSelect *ngIf="esInterno" [(ngModel)]="filtrosPorCreacionSeleccionados"
                                         [options]="opcionesFiltroPorCreacion" (onChange)="filtrarPorTipoGeneracion()"
                                         optionLabel="key" defaultLabel="Todos" [filter]="false"
-                                        [style]="{'margin-right': '1rem','position':'relative','top':'1.25rem'}"></p-multiSelect>
+                                        [style]="{'max-height': '35px', 'height':'35px!important'}"
+                                        style="height:35px!important"></p-multiSelect>
                                     <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()"
                                         style="background-color: #067935;"></button> &nbsp;
                                     <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel=""
@@ -137,16 +164,16 @@
                                 <th style="width: 3rem"></th>
                                 <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
                                     <p-spinner *ngSwitchCase="'number'"
-                                        (onChange)="dt.filter(col.numberValue, col.field, 'equals')"
+                                        (onChange)="cambiarFiltro( col.field, col.numberValue)"
                                         [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
                                     <input *ngSwitchCase="'text'" pInputText type="text"
-                                        (input)="dt.filter($event.target.value, col.field, 'contains')"
+                                        (input)="cambiarFiltro( col.field, $event.target.value)"
                                         class="filters-text-table">
                                     <div *ngSwitchCase="'custom'">
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'"
                                             [options]="estados" defaultLabel="Todos" optionLabel="Descripcion"
                                             dataKey="Id" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')">
+                                            (onChange)="cambiarFiltro('EstadoConsultaId',getIds($event.value))">
                                             <ng-template let-estado pTemplate="item">
                                                 <span class="label label-default"
                                                     [ngStyle]="{'background-color': estado.value.Color}">{{estado.label}}
@@ -158,7 +185,7 @@
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'Categoria'"
                                             [options]="categorias" defaultLabel="Todos" optionLabel="Nombre"
                                             dataKey="Id" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)"
+                                            (onChange)="cambiarFiltro('CategoriaId',getIds($event.value)); setSubcategorias($event.value)"
                                             [style]="{'width.%': 100}">
                                             <ng-template let-categoria pTemplate="item">
                                                 <label>{{categoria.label}} <span class="badge right"
@@ -168,12 +195,12 @@
 
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'"
                                             [options]="subcategoriasList" defaultLabel="Todos" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')"
+                                            (onChange)="cambiarFiltro( 'SubCategoriaId',$event.value)"
                                             [style]="{'width.%': 100}"></p-multiSelect>
 
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'"
                                             [options]="materialesList" defaultLabel="Todos" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')"
+                                            (onChange)="cambiarFiltro('Material_Id',$event.value)"
                                             [style]="{'width.%': 100}">
                                         </p-multiSelect>
                                     </div>
@@ -405,6 +432,10 @@
                             </tr>
                         </ng-template>
                     </p-table>
+                    <spinner *ngIf="consultasFiltradas?.length > 10" #bottomSpinner></spinner>
+                    <p-paginator #paginator [rows]="pageSize" [totalRecords]="totalConsultas"
+                        (onPageChange)="handlePageEvent($event)"></p-paginator>
+
                 </div>
             </div>
         </div>

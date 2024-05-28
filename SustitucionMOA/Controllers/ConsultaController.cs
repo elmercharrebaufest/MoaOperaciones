@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel;
@@ -175,18 +176,28 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        public ActionResult Consultas()
+        public ActionResult Consultas(ReqListadoConsultaDto reqListadoConsultaDto)
         {
             try
             {
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
-                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
+                var paginacion = new Paginacion(
+                    reqListadoConsultaDto.OrderBy,
+                    reqListadoConsultaDto.DirOrden,
+                    reqListadoConsultaDto.Page,
+                    reqListadoConsultaDto.PageSize);
+                FiltrosConsultaDto filtros = null;
+                if (!string.IsNullOrEmpty(reqListadoConsultaDto.FiltrosURIEncoded))
+                {
+                    var jsonDecode = DataFormatter.FormatEncodedURI(reqListadoConsultaDto.FiltrosURIEncoded);
+                    filtros = DataFormatter.GetDtoFromJsonString<FiltrosConsultaDto>(jsonDecode);
+                }
+
+
+                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos, paginacion, filtros);
                 var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
                 var estados = consultaService.ObtenerEstados();
-
-                categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
-                estados.ForEach(x => x.Cantidad = consultas.Count(c => c.EstadoConsultaId == x.Id));
 
                 return JsonCustom(new
                 {
@@ -194,7 +205,9 @@ namespace SustitucionMOA.Controllers
                     {
                         consultas,
                         categorias,
-                        estados
+                        estados,
+                        totalConsultas = consultas.ItemsTotales,
+                        pageItem = consultas.ItemsPorPagina,
                     }
                 });
             }
