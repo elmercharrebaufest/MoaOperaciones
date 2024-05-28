@@ -88,7 +88,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
+        // { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
@@ -106,8 +106,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'DCtdPedido', header: 'Cantidad', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DT', header: 'Monto', field: 'T', type: 'string', sortable: false, required: false, visible: true },
-        //{ id: 'DCantidadReal', header: 'Cantidad Real', field: 'CantidadReal', type: 'string', sortable: false, required: false, visible: true },
-        //{ id: 'DPorcentaje', header: 'PORC. %', field: 'Porcentaje', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCantidadCertificar', header: 'Cantidad a certificar', field: 'CantidadCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DPorcentajeCertificar', header: 'Porcentaje a certificar', field: 'PorcentajeCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DMontoCertificar', header: 'Monto a certificar', field: 'MontoCertificar', type: 'string', sortable: false, required: false, visible: true },
@@ -477,64 +475,70 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.getListarPO(this.proveedor, this.documentoNumero);
   }
 
-  setColumsByUserProfile(entradasDeServicio: any, user: any): void {
+  /**
+   * Metodo para definir el perfil de usuario en la tabla de datos con el filtro Pendiente Aprobación.
+   * FAI: Fiscal, Aprobador, Ingresante
+   * AI: Aprobador, Ingresante
+   * FA: Fiscal, Aprobador
+   * FI: Fiscal, Ingresante
+   * A: Aprobador
+   * I: Ingresante
+   * F: Fiscal
+   * @param entradasDeServicio 
+   * @param user 
+   * @returns 
+   */
+  setColumsByUserProfile(entradasDeServicio: any, user: any): string {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if(pendienteAprobacion.length > 0){
       const fai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal === user);
       if(fai.length > 0){
-        this.userId = "FAI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
-        return;
+        return "FAI";
       }
       const ai = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante === user && pa.Fiscal !== user);
       if(ai.length > 0){
-        this.userId = "AI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
         });
-        return;
+        return "AI";
       }
       const fa = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador === user && pa.Ingresante !== user);
       if(fa.length > 0){
-        this.userId = "FA";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Aprobador' || col.field === 'Usuario' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' ? false : true;
         });
-        return;
+        return "FA";
       }
       const fi = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Ingresante === user && pa.Aprobador !== user);
       if(fi.length > 0){
-        this.userId = "FI";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
         });
-        return;
+        return "FI";
       }
       const a = pendienteAprobacion.filter(pa => pa.Aprobador === user && pa.Ingresante !== user && pa.Fiscal !== user);
       if(a.length > 0){
-        this.userId = "A";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Aprobador' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
         });
-        return;
+        return "A";
       }
       const i = pendienteAprobacion.filter(pa => pa.Ingresante === user && pa.Aprobador !== user && pa.Fiscal !== user);
       if(i.length > 0){
-        this.userId = "I";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'Ingresante' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' ? false : true;
         });
-        return;
+        return "I";
       }
       const f = pendienteAprobacion.filter(pa => pa.Fiscal === user && pa.Aprobador !== user && pa.Ingresante !== user);
       if(f.length > 0){
-        this.userId = "F";
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Usuario' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
         });
-        return;
+        return "F";
       }
     }
   }

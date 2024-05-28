@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
     {
         public int ID {  get; set; }
         public string EntradaServicio { get; set; }
+        public DateTime? FechaCreacionDateTime { get; set; }
         public string FechaCreacion { get; set; }
         public string OrdenCompra { get; set; }
         public string Proveedor { get; set; }
@@ -26,6 +27,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Estado { get; set; }
         public string NumeroCertificacion { get; set; }
         public string Ingresante { get; set; }
+        public bool DesdeSap { get; set; }
         public EntradaServicioCabeceraDto()
         {
             // Inicializa la lista entradaServicioDetalle en el constructor

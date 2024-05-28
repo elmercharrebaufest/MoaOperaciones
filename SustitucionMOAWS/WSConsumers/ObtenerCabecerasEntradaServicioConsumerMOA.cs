@@ -8,6 +8,7 @@ using SustitucionMOAWS.ResponseHandler.EntradadeServicios;
 using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -114,8 +115,11 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var cabecera in Cabeceras)
             {
                 var cabe = new EntradaServicioCabeceraDto();
+                DateTime fechaCreacion;
+                DateTime.TryParseExact(cabecera.CREATED_ON, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCreacion);
 
                 cabe.EntradaServicio = cabecera.SHEET_NO;
+                cabe.FechaCreacionDateTime = fechaCreacion;
                 cabe.FechaCreacion = cabecera.CREATED_ON;
                 cabe.OrdenCompra = cabecera.PO_NUMBER;
                 //cabe.Proveedor = cabecera.PERSON_EXT; //Nombre del proveedor en la oc
@@ -126,6 +130,7 @@ namespace SustitucionMOAWS.WSConsumers
                 // Momentaneo mientras se encontra la forma de buscar el aprobador o fiscal de la ES de sap
                 cabe.Aprobador = "-"; 
                 cabe.Fiscal = "-";
+                cabe.DesdeSap = true;
 
                 result.Add(cabe);
             }
