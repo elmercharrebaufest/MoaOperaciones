@@ -4114,6 +4114,14 @@ namespace SustitucionMOAUtils.Services
 
             var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
 
+            // Primero, filtra las SOLP según la condición deseada
+            var solpsAgrupadas = peticion.Posiciones
+                .Where(x => x.PeticionDeOferta.Agrupada == true)
+                .Select(x => x.SolpPosicion.Solp.NroSolp)
+                .ToList();
+
+            var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas);
+
             foreach (var solp in solps.Distinct())
             {
 
@@ -4123,6 +4131,9 @@ namespace SustitucionMOAUtils.Services
                 var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
+
+                
+
 
                 if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                 {
@@ -4173,7 +4184,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-
                 //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
                 if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
                 {
@@ -4218,11 +4228,27 @@ namespace SustitucionMOAUtils.Services
                             SolpId = solp.Id,
                             Fecha = usuario.ChatExterno.First().FechaEnvio,
                             FechaFormateado = usuario.ChatExterno.First().FechaEnvio.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = solp.ChatInternoCompras.First().Usuario.CUITRegistro, Mail = usuario.ChatExterno.First().Usuario.Mail, Id = usuario.ChatExterno.First().Usuario_Id },
+                            Usuario = new UsuarioDto { CUIT = usuario.ChatExterno.First().Usuario.CUITRegistro, Mail = usuario.ChatExterno.First().Usuario.Mail, Id = usuario.ChatExterno.First().Usuario_Id },
                             Tipo = TipoLegajo.ChatExterno
                         });
                     }
                 }
+            }
+
+            // Agrupar po th
+            if (peticion.Agrupada == true)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = null,
+                    Observacion = "Solps agrupadas: " + solpsAgrupadasStr,
+                    PeticionDeOfertaId = peticionDeOfertaId,
+                    SolpId = 0,
+                    Fecha = peticion.FechaCreacion,
+                    FechaFormateado = peticion.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.PeticionDeOfertaAgrupada
+                });
             }
 
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
