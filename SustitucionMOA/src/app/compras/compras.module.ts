@@ -87,6 +87,7 @@ import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dash
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
 import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
+import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
@@ -183,7 +184,8 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
         ModalAltaEntradaDeServicioComponent,
-        VisualizarMovimientoComponent
+        VisualizarMovimientoComponent,
+        AgruparPoThComponent
     ],
     providers: [
         ComprasService,

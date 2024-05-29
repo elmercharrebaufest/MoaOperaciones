@@ -453,7 +453,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
     public RevalidarGrillaHoras() {
         this.ObtenerCotizacion();
-        debugger;
         this.cambioDeGrillaOk = false;
         if (this.cotizacion.EsNuevaCotizacion) {
             if (!this.confirmoHoras && !this.hayCambiosEnGrillaDeHoras(this.cotizacion.CotizacionesHoras, this.cotizacion.CotizacionesHorasOriginal)) {

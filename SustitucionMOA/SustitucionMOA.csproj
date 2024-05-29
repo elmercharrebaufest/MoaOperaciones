@@ -336,6 +336,8 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.css" />
+    <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
     <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.css" />
@@ -1223,6 +1225,10 @@
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th-filtro-model.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th-model.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.ts" />
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.ts" />

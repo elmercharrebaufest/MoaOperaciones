@@ -7,6 +7,7 @@
     [RegistroInfo] BIT NULL, 
     [AdjuntoPliego] BIT NULL, 
     [RevisionTecnica_Id] INT NULL, 
+    [Agrupada] BIT NULL, 
     CONSTRAINT [PK_PeticionDeOferta] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.PeticionDeOferta_Usuario_UsuarioCreadorId] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
     CONSTRAINT [FK.PeticionDeOferta_RevisionTecnica_RevisionTecnica_Id] FOREIGN KEY ([RevisionTecnica_Id]) REFERENCES [PeticionDeOfertaRevisionTecnica]([Id]),

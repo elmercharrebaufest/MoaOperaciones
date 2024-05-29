@@ -16,14 +16,13 @@
                         </ngb-alert>
                     </p>                   
                     
-                    
                     <div class="row">
                         <div class="col-md-2">
                             <p-dropdown dataKey="Codigo" [options]="monedaCompras" placeholder="Moneda"
                                 [(ngModel)]="ordenDeCompra.AdjudicacionPosiciones[0].Moneda" [style]="{'width':'150px'}"
                                 optionLabel="CodigoDescripcion" (onFocus)=" $event.target.select();"
-                                (onChange)="onSelectMoneda(ordenDeCompra, $event)" [minLength]="1" [dropdown]="true"
-                                emptyMessage="Ningúna moneda encontrada" [autoHighlight]="true">
+                                (onChange)="onSelectMoneda(ordenDeCompra, $event); onChangeMoneda(ordenDeCompra, $event)" [minLength]="1" [dropdown]="true"
+                                emptyMessage="Ningúna moneda encontrada" [autoHighlight]="true" [disabled]="monedaDeshabilitada">
                             </p-dropdown>
                         </div>
                         <div class="col-md-10" style="text-align: end;">
@@ -71,8 +70,14 @@
                             <ng-template pTemplate="body" let-posiciones let-expanded="expanded" let-columns="columns"
                                 let-editing="editing" let-index="rowIndex">
                                 <tr  *ngIf="!posiciones.Eliminado">
-                                    <td class="columna"><p-checkbox name="posiciones"
-                                            [(ngModel)]="posiciones.EntregaFinal" binary="false"></p-checkbox></td>
+                                    <td class="columna">
+                                        <p-checkbox 
+                                            name="posiciones"
+                                            [(ngModel)]="posiciones.EntregaFinal" 
+                                            binary="false" 
+                                            [disabled]="camposDeshabilitados" 
+                                            (onChange)="onChangeCampos()">
+                                        </p-checkbox></td>
                                     <td class="columna">{{posiciones.Indice}}</td>
                                     <td class="columna">{{posiciones.MaterialComprasCodigo}}</td>
                                     <td class="columna">{{posiciones.Tarea}}</td>
@@ -81,14 +86,20 @@
                                     <td pEditableColumn class="columna">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input pInputText type="number" [(ngModel)]="posiciones.Cantidad"
-                                                    pKeyFilter="num" (focus)="onEditarCelda(posiciones, 'Cantidad', 0)"
+                                                <input 
+                                                    pInputText 
+                                                    type="number" 
+                                                    [(ngModel)]="posiciones.Cantidad"
+                                                    pKeyFilter="num" 
+                                                    (focus)="onEditarCelda(posiciones, 'Cantidad', 0)"
                                                     (blur)="onReestablecerValor(posiciones, 'Cantidad')"
-                                                    numeric-format />
+                                                    numeric-format 
+                                                    [disabled]="camposDeshabilitados"
+                                                    (ngModelChange)="onChangeCampos()" />
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 <div [ngClass]="{'invalido': (posiciones.Cantidad != undefined) &&
-                                                 (posiciones.Cantidad <= 0)} ">
+                                                 (posiciones.Cantidad <= 0)}">
                                                     {{ posiciones.Cantidad | number:'1.2-2'}} </div>
                                             </ng-template>
                                         </p-cellEditor>
@@ -100,14 +111,21 @@
                                     </td>
                                     <td class="columna">
                                         <div>
-                                            <p-dropdown dataKey="CodigoSap" [options]="regiones" placeholder="Region"
+                                            <p-dropdown 
+                                                dataKey="CodigoSap" 
+                                                [options]="regiones" 
+                                                placeholder="Region"
                                                 [(ngModel)]="posiciones.DireccionDeEntrega"
-                                                [style]="{'width':'150px', 'height':'10px'}" optionLabel="CodigoSap"
+                                                [style]="{'width':'150px', 'height':'10px'}" 
+                                                optionLabel="CodigoSap"
                                                 (onFocus)=" $event.target.select();"
-                                                (onChange)="onSelectRegion(posiciones, $event)" [minLength]="1"
-                                                [dropdown]="true" emptyMessage="Ningúna región encontrada"
-                                                [autoHighlight]="true" [forceSelection]="true">
-
+                                                (onChange)="onSelectRegion(posiciones, $event); onChangeCampos()"
+                                                [minLength]="1"
+                                                [dropdown]="true" 
+                                                emptyMessage="Ningúna región encontrada"
+                                                [autoHighlight]="true" 
+                                                [forceSelection]="true" 
+                                                [disabled]="camposDeshabilitados">
                                                 <ng-template let-item pTemplate="selectedItem">
                                                     <span>{{item.value.Descripcion}}</span>
                                                 </ng-template>
@@ -123,9 +141,16 @@
                                     <td pEditableColumn class="columna" style="cursor:pointer">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input" style="width: 100% !important">
-                                                <p-calendar [minDate]="hoy" class="calendar" appendTo="body"
-                                                    [locale]="es" dateFormat="dd-M-yy"
-                                                    [(ngModel)]="posiciones.FechaEntregaServicio">
+                                                <p-calendar 
+                                                    [minDate]="hoy" 
+                                                    class="calendar" 
+                                                    appendTo="body"
+                                                    [locale]="es" 
+                                                    dateFormat="dd-M-yy"
+                                                    [(ngModel)]="posiciones.FechaEntregaServicio" 
+                                                    [disabled]="camposDeshabilitados" 
+                                                    (onSelect)="onChangeCampos()"
+                                                    (onInput)="onChangeCampos()">
                                                 </p-calendar>
                                             </ng-template>
                                             <ng-template pTemplate="output">
@@ -139,11 +164,16 @@
                                     <td pEditableColumn class="columna">
                                         <p-cellEditor>
                                             <ng-template pTemplate="input">
-                                                <input pInputText type="number" [(ngModel)]="posiciones.PrecioUnidad"
+                                                <input 
+                                                    pInputText 
+                                                    type="number" 
+                                                    [(ngModel)]="posiciones.PrecioUnidad"
                                                     pKeyFilter="num"
                                                     (focus)="onEditarCelda(posiciones, 'PrecioUnidad', 0)"
                                                     (blur)="onReestablecerValor(posiciones, 'PrecioUnidad')"
-                                                    numeric-format />
+                                                    numeric-format 
+                                                    [disabled]="camposDeshabilitados"
+                                                    (ngModelChange)="onChangeCampos()"/>
                                             </ng-template>
                                             <ng-template pTemplate="output">
                                                 <div [ngClass]="{'invalido': (posiciones.PrecioUnidad != undefined) &&
@@ -157,9 +187,14 @@
                                         number:'1.2-2'}}
                                     </td>
                                     <td style="text-align:center">
-                                        <img style="cursor:pointer !important" src="./Content/images/icons/trashRed.svg"
-                                            alt="imageAlt" (click)="eliminarRow(index)" style="width: 26px;" />
-
+                                        <img 
+                                            style="cursor:pointer !important; width: 26px;" 
+                                            src="./Content/images/icons/trashRed.svg"
+                                            alt="imageAlt" 
+                                            (click)="camposDeshabilitados ? null : eliminarRow(index)" 
+                                            [class.disabled]="camposDeshabilitados"
+                                            [style.opacity]="camposDeshabilitados ? 0.5 : 1"
+                                            [style.cursor]="camposDeshabilitados ? 'not-allowed' : 'pointer'"/>
                                     </td>
                                 </tr>
                             </ng-template>
@@ -199,20 +234,34 @@
                                                     [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
                                         </td>
-                                        <td class="columna"><p-checkbox name="posicionCompra"
-                                                [(ngModel)]="posicionCompra.EntregaFinal" binary="false"></p-checkbox>
+                                        <td class="columna">
+                                            <p-checkbox 
+                                                name="posicionCompra"
+                                                [(ngModel)]="posicionCompra.EntregaFinal" 
+                                                binary="false" 
+                                                [disabled]="camposDeshabilitados" 
+                                                (onChange)="onChangeCampos()">
+                                            </p-checkbox>
                                         </td>
                                         <td class="columna">{{posicionCompra.Indice}}</td>
                                         <td class="columna">{{posicionCompra.Tarea}}</td>
                                         <td class="columna">
                                             <div>
-                                                <p-dropdown dataKey="CodigoSap" [options]="regiones"
-                                                    placeholder="Region" [(ngModel)]="posicionCompra.DireccionDeEntrega"
-                                                    [style]="{'width':'150px', 'height':'10px'}" optionLabel="CodigoSap"
+                                                <p-dropdown 
+                                                    dataKey="CodigoSap" 
+                                                    [options]="regiones"
+                                                    placeholder="Region" 
+                                                    [(ngModel)]="posicionCompra.DireccionDeEntrega"
+                                                    [style]="{'width':'150px', 'height':'10px'}" 
+                                                    optionLabel="CodigoSap"
                                                     (onFocus)=" $event.target.select();"
-                                                    (onChange)="onSelectRegion(posicionCompra, $event)" [minLength]="1"
-                                                    [dropdown]="true" emptyMessage="Ningúna región encontrada"
-                                                    [autoHighlight]="true" [forceSelection]="true">
+                                                    (onChange)="onSelectRegion(posicionCompra, $event); onChangeCampos()" 
+                                                    [minLength]="1"
+                                                    [dropdown]="true" 
+                                                    emptyMessage="Ningúna región encontrada"
+                                                    [autoHighlight]="true" 
+                                                    [forceSelection]="true" 
+                                                    [disabled]="camposDeshabilitados">
 
                                                     <ng-template let-item pTemplate="selectedItem">
                                                         <span>{{item.value.Descripcion}}</span>
@@ -234,9 +283,14 @@
                                             {{posicionCompra.PlazoDeOferta }}
                                         </td>
                                         <td style="text-align:center">
-                                            <img style="cursor:pointer !important" src="./Content/images/icons/trashRed.svg"
-                                                alt="imageAlt" (click)="eliminarRowServicio(indexPos)" style="width: 26px;" />
-    
+                                            <img 
+                                                style="cursor:pointer !important; width: 26px;" 
+                                                src="./Content/images/icons/trashRed.svg"
+                                                alt="imageAlt" 
+                                                (click)="camposDeshabilitados ? null : eliminarRowServicio(indexPos)" 
+                                                [class.disabled]="camposDeshabilitados"
+                                                [style.opacity]="camposDeshabilitados ? 0.5 : 1"
+                                                [style.cursor]="camposDeshabilitados ? 'not-allowed' : 'pointer'"/>
                                         </td>
                                     </tr>
                                 </ng-template>
@@ -272,12 +326,17 @@
                                         <td pEditableColumn class="columna">
                                             <p-cellEditor>
                                                 <ng-template pTemplate="input">
-                                                    <input pInputText type="number"
-                                                        [(ngModel)]="subposicionesCompras.Cantidad" pKeyFilter="num"
+                                                    <input 
+                                                        pInputText 
+                                                        type="number"
+                                                        [(ngModel)]="subposicionesCompras.Cantidad" 
+                                                        pKeyFilter="num"
                                                         (focus)="onEditarCelda(subposicionesCompras, 'Cantidad', 0)"
                                                         (blur)="onReestablecerValor(subposicionesCompras, 'Cantidad')"
                                                         numeric-format
-                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra);" />
+                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra);" 
+                                                        [disabled]="camposDeshabilitados"
+                                                        (ngModelChange)="onChangeCampos()"/>
                                                 </ng-template>
                                                 <ng-template pTemplate="output">
                                                     <div [ngClass]="{'invalido': (subposicionesCompras.Cantidad != undefined) &&
@@ -290,12 +349,16 @@
                                         <td pEditableColumn class="columna">
                                             <p-cellEditor>
                                                 <ng-template pTemplate="input">
-                                                    <input pInputText type="number"
-                                                        [(ngModel)]="subposicionesCompras.PrecioBruto" pKeyFilter="num"
+                                                    <input 
+                                                        pInputText 
+                                                        type="number"
+                                                        [(ngModel)]="subposicionesCompras.PrecioBruto" 
+                                                        pKeyFilter="num"
                                                         (focus)="onEditarCelda(subposicionesCompras, 'PrecioBruto', 0)"
                                                         (blur)="onReestablecerValor(subposicionesCompras, 'PrecioBruto')"
                                                         numeric-format
-                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra);" />
+                                                        (ngModelChange)="calcularPrecioTotalPosiciones(posicionCompra); onChangeCampos()" 
+                                                        [disabled]="camposDeshabilitados"/>
                                                 </ng-template>
                                                 <ng-template pTemplate="output">
                                                     <div [ngClass]="{'invalido': (subposicionesCompras.PrecioBruto != undefined) &&
@@ -307,10 +370,15 @@
                                         <td class="columna">{{subposicionesCompras.Cantidad *
                                             subposicionesCompras.PrecioBruto | number:'1.2-2'}}</td>
                                         <td style="text-align:center">
-                                            <img style="cursor:pointer !important"
-                                                src="./Content/images/icons/trashRed.svg" alt="imageAlt"
-                                                (click)="eliminarRowSub(posicionCompra, rowIndex)"
-                                                style="width: 26px;" />
+                                            <img 
+                                                style="cursor:pointer !important; width: 26px;" 
+                                                src="./Content/images/icons/trashRed.svg" 
+                                                alt="imageAlt"
+                                                (click)="camposDeshabilitados ? null : eliminarRowSub(posicionCompra, rowIndex)"
+                                                style="width: 26px;" 
+                                                [class.disabled]="camposDeshabilitados"
+                                                [style.opacity]="camposDeshabilitados ? 0.5 : 1"
+                                                [style.cursor]="camposDeshabilitados ? 'not-allowed' : 'pointer'"/>
                                         </td>
                                     </tr>
                                 </ng-template>

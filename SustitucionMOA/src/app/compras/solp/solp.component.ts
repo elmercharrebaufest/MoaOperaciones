@@ -986,8 +986,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.solpActual.usuarioComprasList = [];
                         result.data.forEach(element => {
                             this.solpActual.usuarioComprasList.push({
-                                Id: element.UsuarioCompras.Id,
-                                CodigoDescripcion: element.UsuarioCompras.Mail
+                                Id: element.Id,
+                                CodigoDescripcion: element.Mail
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];

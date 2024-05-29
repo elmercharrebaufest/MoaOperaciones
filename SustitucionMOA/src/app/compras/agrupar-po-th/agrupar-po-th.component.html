@@ -1,0 +1,240 @@
+
+<div class="row titleSection" style="margin-bottom: 10px;">
+    <div class="col-xs-12 col-sm-10 "> <strong>Agrupar PO TH</strong></div>
+</div>
+
+<div class="row">
+    <div class="row myRow col-md-11 col-lg-11">
+        <div class="col-md-3 col-lg-3">
+            <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
+                           defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
+                           selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
+        </div>
+
+        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+            <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
+                           [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
+        </div>
+
+        <div class="col-md-3 col-lg-3">
+            <p-multiSelect [options]="claseDocumentoFiltro" [(ngModel)]="selectClaseDocumento" defaultLabel="Clase de Documento"
+                           [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3" style="position: relative; top: -10px;">
+          <p-autoComplete [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedores"
+                          (completeMethod)="searchProveedor($event)" 
+                          placeholder="Seleccione un proveedor" field="RazonSocial" [minLength]="3"
+                          id="buscadorProveedor" >
+              <ng-template let-proveedor pTemplate="item">
+                  <div class="ui-helper-clearfix">
+                      <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.RazonSocial}}</div>
+                      <div style="font-size:10px;color:darkgrey;margin:10px 10px 0 0">
+                          {{proveedor.CUIT}} - {{proveedor.RazonSocial}}
+                      </div>
+                  </div>
+              </ng-template>
+          </p-autoComplete>
+      </div>
+    </div>
+
+    <div class="row myRow col-md-11 col-lg-11">
+        <div class="col-md-3 col-lg-3">
+            <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
+                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
+        </div>
+        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+            <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
+                           [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
+        </div>
+
+        <div class="col-md-3 col-lg-3">
+            <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
+                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                        [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                        (onClearClick)="returnToTodaysDate()">
+            </p-calendar>
+        </div>
+        <div class="col-md-3 col-lg-3">
+            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" [(ngModel)]="nombrePedido"
+                   placeholder="Buscar por pliego">
+        </div>
+    </div>
+
+    <div class="row myRow col-md-11 col-lg-11">
+        <div class="col-md-3 col-lg-3">
+            <label for="selectAgrupada">Filtro agrupada</label>
+            <p-dropdown [options]="Agrupada" [(ngModel)]="selectAgrupada" placeholder="Esta agrupada" showClear="true"></p-dropdown>
+        </div>
+        <div class="col-md-3 col-lg-3">
+            <label for="selectTipoPosicion">Filtro posicion</label>
+            <p-dropdown [options]="EsServicio" [(ngModel)]="selectTipoPosicion"></p-dropdown>
+        </div>
+        <div class="col-md-6" style="margin-top: 35px;">
+            <span style="margin-right: 10px;">
+                <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP" [(ngModel)]="sap"></p-checkbox>
+            </span>
+            <span style="margin-right: 10px;">
+                <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                            [(ngModel)]="mantenimiento"></p-checkbox>
+            </span>
+            <span style="margin-right: 10px;">
+                <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+            </span>
+            <span style="margin-right: 10px;">
+                <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
+                            [(ngModel)]="repoAutomatica"></p-checkbox>
+            </span>
+            <span>
+                <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
+                            [(ngModel)]="contratoMarco"></p-checkbox>
+            </span>
+            <div class="col-md-3 col-lg-3  buttonBuscar" style="padding-right: 30px;">
+                <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content-wraper alinearAlturaMenuDashboard row1 myRow firstSection" style="margin-bottom: 100px;">
+    <div class="rounded shadow">
+        <section class="container-fluid clearfix">
+            <p-table #tabla [value]="listaSolp" dataKey="Id" class="columna1"> 
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th></th>
+                        <th>Seleccionar</th>
+                        <th>Nro PO</th>
+                        <th>Nro Solp</th>
+                        <th>Nombre pedido</th>
+                        <th>CUIT</th>
+                        <th>Razon Social</th>
+                        <th>Adicional</th>
+                        <th>Agrupada</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-solp let-rowIndex="rowIndex">
+                    <tr>
+                        <td>
+                            <a (click)="solp.expanded = !solp.expanded">
+                                <i [ngClass]="solp.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                            </a>
+                        </td>
+                        <td>
+                          <p-checkbox 
+                            name="selectedSolp" 
+                            binary="false" 
+                            [(ngModel)]="solp.Selected" 
+                            (click)="solp.Disabled ? null : seleccionarSolp(solp)" 
+                            [disabled]="solp.Disabled">
+                          </p-checkbox>
+                        </td>
+                        <td>{{solp.NroPeticionDeOferta}}</td>
+                        <td>{{solp.NroSolp}}</td>
+                        <td>{{solp.NombreDeObra}}</td>
+                        <td>{{solp.ProveedorAsignadoCuit}}</td>
+                        <td>{{solp.ProveedorAsignadoRazonSocial}}</td>
+                        <td>{{solp.Adicional}}</td>
+                        <td>{{solp.Agrupada ? "Si":"No"}}</td>
+                    </tr>
+                    <tr *ngIf="solp.expanded && solp.PosicionCompras.length > 0">
+                        <td [attr.colspan]="9">
+                            <p-table [value]="solp.PosicionCompras" dataKey="Id">
+                                <ng-template pTemplate="header">
+                                    <tr>
+                                      <th *ngIf="hasSubposicionesCompras(solp)"></th>                                        
+                                      <th>Pos.</th>
+                                      <th *ngIf="esTipoMaterial">Codigo</th>
+                                      <th>Descripcion</th>
+                                      <th>Centro</th>
+                                      <th>Almacen</th>
+                                      <th *ngIf="esTipoMaterial">Texto de suministro</th>
+                                      <th *ngIf="esTipoMaterial">Modelo</th>
+                                      <th>Grupo de compras</th>
+                                      <th *ngIf="esTipoMaterial">CTD.</th>
+                                      <th *ngIf="esTipoMaterial">UM</th>
+                                      <th>MON.</th>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="body" let-posicionCompras>
+                                    <tr>
+                                        <td *ngIf="posicionCompras.SubposicionesCompras.length > 0">
+                                            <a (click)="posicionCompras.expanded = !posicionCompras.expanded">
+                                                <i [ngClass]="posicionCompras.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{posicionCompras.Indice}}</td>
+                                        <td *ngIf="esTipoMaterial">{{posicionCompras.MaterialComprasCodigo}}</td>
+                                        <td>{{posicionCompras.MaterialDescripcion }}</td>
+                                        <td>{{posicionCompras.CentroCodigoSap}}</td>
+                                        <td>{{posicionCompras.AlmacenComprasDescripcion}}</td>
+                                        <td *ngIf="esTipoMaterial">{{posicionCompras.TextoSuministro}}</td>
+                                        <td *ngIf="esTipoMaterial">{{posicionCompras.Modelo}}</td>
+                                        <td>{{posicionCompras.GrupoComprasCodigoSap}}</td>
+                                        <td *ngIf="esTipoMaterial">{{posicionCompras.Cantidad}}</td>
+                                        <td *ngIf="esTipoMaterial">{{posicionCompras.UnidadComprasDescripcion}}</td>
+                                        <td>{{posicionCompras.MonedaSolpDescripcion}}</td>
+                                    </tr>
+                                    <tr *ngIf="posicionCompras.expanded && posicionCompras.SubposicionesCompras.length > 0">
+                                        <td [attr.colspan]="7">
+                                            <p-table [value]="posicionCompras.SubposicionesCompras" dataKey="Id">
+                                                <ng-template pTemplate="header">
+                                                    <tr>
+                                                        <th>SubPos</th>
+                                                        <th>Codigo</th>
+                                                        <th>Tarea a subcontratar</th>
+                                                        <th>CTD.</th>
+                                                        <th>UM</th>
+                                                        <th>Precio unidad</th>
+                                                        <th>Precio total</th>
+                                                    </tr>
+                                                </ng-template>
+                                                <ng-template pTemplate="body" let-subPosicionCompras>
+                                                    <tr>
+                                                        <td>{{subPosicionCompras.Numero}}</td>
+                                                        <td>{{subPosicionCompras.CodigoServicioSap}}</td>
+                                                        <td>{{subPosicionCompras.Tarea}}</td>
+                                                        <td>{{subPosicionCompras.Cantidad}}</td>
+                                                        <td>{{subPosicionCompras.UnidadComprasDescripcion}}</td>
+                                                        <td>{{subPosicionCompras.PrecioBruto}}</td>
+                                                        <td>{{subPosicionCompras.ValorNeto}}</td>
+                                                    </tr>
+                                                </ng-template>
+                                            </p-table>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </p-table>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </section>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+<p-sidebar visible="true" position="bottom" [modal]="false" [showCloseIcon]="false" dismissible="false" appendTo="body">
+    <div class="row">
+        <div class="col-xs-8 col-md-12" style="display: flex; justify-content: flex-end;">
+            <div class="col-xs-2 col-md-2">
+                <button class="btn btn-success botonesComprasColor" (click)="agruparPO()">
+                    AGRUPAR
+                </button>
+            </div>
+        </div>
+    </div>
+</p-sidebar>
+
+<p-dialog [(visible)]="displayPeticionAgrupada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Peticion de oferta agrupada!
+    </p-header>
+    <br> La peticion #{{resultadoAgrupar?.IdEntidad}} se agrupo correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUp()">Aceptar</button>
+    </p-footer>
+</p-dialog>
