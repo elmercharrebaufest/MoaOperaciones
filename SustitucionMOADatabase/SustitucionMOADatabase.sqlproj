@@ -240,6 +240,7 @@
     <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
     <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
+    <None Include="scripts\PostDeployment\UsuariosParaExternalAPI.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

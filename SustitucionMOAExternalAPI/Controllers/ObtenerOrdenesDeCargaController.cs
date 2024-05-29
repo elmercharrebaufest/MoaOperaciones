@@ -19,7 +19,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             _ordenesCargaApi = ordenesCargaApi;
         }
 
-        [Authorize(Roles = "APIKEY")]
+        [Authorize(Roles = "API ORDENES DE CARGA")]
         public IHttpActionResult Get(string patenteChasis = null, bool fason = true, bool fas = false)
         {
             try

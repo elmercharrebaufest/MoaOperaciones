@@ -158,6 +158,33 @@ namespace SustitucionMOAModel.Dto
                 return "";
             }
         }
+
+        public string RemitenteComercial
+        {
+            get
+            {
+                if(Reventa && CUITDestino != CUITCliente && TipoOrden==TipoOrdenes.FASON)
+                {
+                    return CUITCliente;
+                }
+                return null;
+            }
+        }
+        public string PagadorFlete
+        {
+            get
+            {
+                if (FleteMOA && TipoOrden == TipoOrdenes.FASON)
+                {
+                    string cUIT_MOA = CUIT_MOA;
+
+                    return cUIT_MOA;
+                }
+                return CUITCliente;
+            }
+        }
+
+        private readonly string CUIT_MOA = "30715118773";
     }
     public static class TipoOrdenes
     {
