@@ -766,7 +766,7 @@ namespace SustitucionMOAUtils.Services
                 // Generar la nueva ruta con el número incremental
                 nuevaRuta = $"{directorioArchivo}/{nombreArchivo}({numeroIncremental}){extensionArchivo}";
             }
-           
+
             bool rutaExiste = archivos.Any(archivo => archivo.Ruta == nuevaRuta);
 
             // Si la ruta ya existe, generar una nueva ruta con el número incremental
@@ -946,12 +946,12 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
-        {         
+        {
             var posicionesId = solpEntity.Posiciones.Select(x => x.Id).ToList();
             var posicionId = posicionesId.FirstOrDefault();
 
             var peticionDeOferta = repositorio.Obtener<PeticionDeOferta>(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicionId));
-           
+
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(peticionPos => posicionesId.Contains(peticionPos.SolpPosicion_Id));
             var posiciones = peticionDeOfertaSolpPosicion.Select(x => x.SolpPosicion).ToList();
             var peticionUsuarioId = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.PeticionDeOferta_Id == peticionDeOferta.Id).Id;
@@ -1350,7 +1350,7 @@ namespace SustitucionMOAUtils.Services
                 if (ordenDeCompraSAPDto.Error == null)
                 {
                     solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
-                    solpDevuelta.ProveedorAsignado_Id = ordenDeCompraSAPDto.Cabecera.Usuario_Id; 
+                    solpDevuelta.ProveedorAsignado_Id = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
                     solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
                     solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
@@ -6208,7 +6208,7 @@ namespace SustitucionMOAUtils.Services
                                 UnidadDeMedida = posicion.Unidad,
                                 UnidadDeMedida_Id = posicion.Unidad_Id,
                                 PeticionDeOfertaSolpPosicion_Id = peticion.Id,
-                                PeticionDeOfertaSolpPosicion = peticion,                               
+                                PeticionDeOfertaSolpPosicion = peticion,
                             };
                             cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
                         }
@@ -6237,7 +6237,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         GrabarLogCotizacion(cotizacion);
-                        
+
                     }
 
                     repositorio.GuardarCambios();
@@ -9481,7 +9481,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var filtro = ConvertirAFiltroServiceDto(filtroDto);
-                var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpCondicionEspecialConsulta(filtro));     
+                var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpCondicionEspecialConsulta(filtro));
                 return todasLasSolp;
             }
             catch (Exception e)
@@ -9537,30 +9537,28 @@ namespace SustitucionMOAUtils.Services
         }
 
         public Resultado AgruparPeticionesDeOferta(int usuarioId, string ids)
-        {          
+        {
             try
             {
-                var resultado = new Resultado(); 
+                var resultado = new Resultado();
                 var cotizaciones = new List<Cotizacion>();
-                var peticionesDeOfertaId = ConvertirStringAListaInt(ids);              
-                var peticiones = repositorio.Listar<PeticionDeOferta>(pet => peticionesDeOfertaId.Contains(pet.Id));
-             
-                if(peticiones.Count > 0)
+                var peticionesDeOfertaIdViejas = ConvertirStringAListaInt(ids);
+                var peticionesViejas = repositorio.Listar<PeticionDeOferta>(pet => peticionesDeOfertaIdViejas.Contains(pet.Id));
+                var peticionDeOfertaUsuarioIds = peticionesViejas.SelectMany(p => p.Usuarios).Select(x => x.Id).ToList();
+
+                if (peticionesViejas.Count > 0)
                 {
-                    PeticionDeOferta peticion = CrearNuevaPOAgrupada(usuarioId, peticiones);
-                    EliminarPOTrabajoHecho(peticiones);
+                    PeticionDeOferta peticionNueva = CrearNuevaPOAgrupada(usuarioId, peticionesViejas);
+                    CrearCotizacionEnTH(usuarioId, cotizaciones, peticionNueva);
 
-                    var peticionDeOfertaUsuarioIds = peticion.Usuarios.Select(x => x.Id).ToList();
-                    var cotizacionesGuardadas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioIds.Contains(coti.PeticionDeOfertaUsuario_Id));
-                    EliminarHistorialDeCotizaciones(cotizacionesGuardadas);
-                    EliminarCotizacionesAsociadasAPO(cotizacionesGuardadas);
+                    //AgregarPosicionesCotizacionPOAgrupada(peticion);
+                    AgregarPosicionesCotizacionPOAgrupada(peticionNueva, peticionDeOfertaUsuarioIds);
 
-                    CrearCotizacionEnTH(usuarioId, cotizaciones, peticion);
-                    repositorio.GuardarCambios();
-                    resultado.IdEntidad = peticion.Id;
+                    EliminarPOTrabajoHecho(peticionesViejas);
 
-                    AgregarPosicionesCotizacionPOAgrupada(peticion);
-                }              
+                    resultado.IdEntidad = peticionNueva.Id;
+
+                }
 
                 return resultado;
             }
@@ -9571,17 +9569,40 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion)
+        private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion, List<int> peticionDeOfertaUsuarioIds)
         {
-            var peticionDeOfertaUsuarioId = peticion.Usuarios.Select(x => x.Id).ToList();
-            var cotizacionesNuevas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioId.Contains(coti.PeticionDeOfertaUsuario_Id));
-            AgregarPosicionACotizacionTrabajoYaHecho(cotizacionesNuevas, peticion.Posiciones.Select(x => x.SolpPosicion).ToList());
+            var cotizacionesGuardadas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioIds.Contains(coti.PeticionDeOfertaUsuario_Id));
+            var cotizacion = peticion.Usuarios.First().Cotizaciones.First();
+            foreach (var cotizacionVieja in cotizacionesGuardadas)
+            {
+                foreach (var cotizacionPosicion in cotizacionVieja.CotizacionPosiciones)
+                {
+                    cotizacionPosicion.Cotizacion_Id = cotizacion.Id;
+                }
+            }
             repositorio.GuardarCambios();
         }
 
+        //private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion)
+        //{
+        //    var peticionDeOfertaUsuarioId = peticion.Usuarios.Select(x => x.Id).ToList();
+        //    var cotizacionesNuevas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioId.Contains(coti.PeticionDeOfertaUsuario_Id));
+        //    AgregarPosicionACotizacionTrabajoYaHecho(cotizacionesNuevas, peticion.Posiciones.Select(x => x.SolpPosicion).ToList());
+        //    repositorio.GuardarCambios();
+        //}
+
         private void EliminarPOTrabajoHecho(List<PeticionDeOferta> peticiones)
         {
-            repositorio.RemoverTodos(peticiones);
+            try
+            {
+                repositorio.RemoverTodos(peticiones);
+                repositorio.GuardarCambios();
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+
         }
 
         private PeticionDeOferta CrearNuevaPOAgrupada(int usuarioId, List<PeticionDeOferta> peticiones)
@@ -9591,12 +9612,12 @@ namespace SustitucionMOAUtils.Services
                 Observaciones = string.Join(Environment.NewLine, peticiones.Select(peti => peti.Observaciones)),
                 FechaCreacion = DateTime.Now,
                 Agrupada = true,
-                Posiciones = peticiones.SelectMany(x => x.Posiciones).GroupBy(y => y.SolpPosicion_Id).Where(group => group.Count() == 1).SelectMany(group => group).ToList(),
+                Posiciones = peticiones.SelectMany(x => x.Posiciones).GroupBy(y => y.SolpPosicion_Id).Select(group => group.First()).ToList(),
                 UsuarioCreador_Id = usuarioId,
                 AdjuntoPliego = peticiones.Any(x => x.Archivos.Any()),
                 Archivos = peticiones.SelectMany(x => x.Archivos).ToList(),
                 PlazoDeOferta = peticiones.Select(peti => peti.PlazoDeOferta).OrderBy(f => f).FirstOrDefault(),
-                Usuarios = peticiones.SelectMany(x => x.Usuarios).GroupBy(y => y.Usuario_Id).Where(group => group.Count() == 1).SelectMany(group => group).ToList(),
+                Usuarios = peticiones.SelectMany(x => x.Usuarios).GroupBy(y => y.Usuario_Id).Select(group => new PeticionDeOfertaUsuario { Usuario_Id = group.First().Usuario_Id }).ToList(),
                 UsuariosAdicionales = peticiones.SelectMany(x => x.UsuariosAdicionales).ToList(),
             };
             CrearRevisionTecnicaParaPO(usuarioId, peticion);
@@ -9629,9 +9650,9 @@ namespace SustitucionMOAUtils.Services
                     RespetaServicios = true,
                 };
                 cotizaciones.Add(cotizacion);
+                repositorio.Agregar(cotizacion);
             }
 
-            repositorio.AgregarTodos(cotizaciones);
             repositorio.GuardarCambios();
             GrabarHistorialDeCotizaciones(cotizaciones);
         }

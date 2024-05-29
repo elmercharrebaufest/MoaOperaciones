@@ -6,7 +6,7 @@
     [Observacion]              NVARCHAR(1000)            NOT NULL,
     CONSTRAINT [PK_PeticionDeOfertaCierre] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.PeticionDeOfertaCierre_Usuario_UsuarioId] FOREIGN KEY ([Usuario_Id]) REFERENCES [Usuario]([Id]),
-    CONSTRAINT [FK.PeticionDeOfertaCierre_PeticionDeOferta_PeticionDeOfertaId] FOREIGN KEY([PeticionDeOferta_Id]) REFERENCES [PeticionDeOferta] ([Id]),
+    CONSTRAINT [FK.PeticionDeOfertaCierre_PeticionDeOferta_PeticionDeOfertaId] FOREIGN KEY([PeticionDeOferta_Id]) REFERENCES [PeticionDeOferta] ([Id]) ON DELETE CASCADE,
 
 );
 
