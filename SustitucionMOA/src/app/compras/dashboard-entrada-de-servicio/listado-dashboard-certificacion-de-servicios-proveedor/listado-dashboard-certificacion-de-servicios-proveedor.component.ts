@@ -1029,4 +1029,20 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             document.body.style.overflow = 'auto';
         }
     }
+
+    tieneItemsACertificarTodosValidos(posicion: any): boolean {
+        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item));
+    }
+
+    tienePorcentajeACertificar(item: any): boolean {
+        return Number(item.Porcentaje) < 100;
+    }
+
+    tieneMontoVálidoACertificar(item: any): boolean {
+        return item.MontoACertificar > 0;
+    }
+
+    esItemValidoParaCertificar(item: any): boolean {
+        return this.tienePorcentajeACertificar(item) && this.tieneMontoVálidoACertificar(item);
+    }
 }
