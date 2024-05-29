@@ -112,7 +112,8 @@
                  [rows]="10"
                  [globalFilterFields]="['NumeroOrdenDeCompra','Proveedor', 'NombreProveedor']"
                  [autoLayout]="true"
-                 rowExpandMode="single">
+                 rowExpandMode="single"
+                 (onPage)="onPageChange($event)">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns>
                 <tr>
@@ -354,7 +355,7 @@
                                                                                 </div>
                                                                                 <ng-template #SePuedeBorrar>
                                                                                     <i>
-                                                                                        <img (click)="deleteES(rowData.Id)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
+                                                                                        <img (click)="deleteES(rowData.Id, rowData.FechaContabilizacion)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
                                                                                     </i>
                                                                                 </ng-template>
                                                                             </ng-container>

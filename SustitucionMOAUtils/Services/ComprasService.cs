@@ -401,7 +401,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             SetNombreDePedido(solpEntity);
-           
+            ExistenPosicionesNuevas(solp, solpEntity);
             repositorio.GuardarCambios();
             solp.Id = solpEntity.Id;
 

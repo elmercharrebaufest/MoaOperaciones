@@ -21,6 +21,8 @@ import { MessageService } from 'primeng/api';
 
 declare var $: any;
 
+
+
 @Component({
     selector: 'app-alta-notificaciones',
     templateUrl: './alta-notificaciones.component.html',
