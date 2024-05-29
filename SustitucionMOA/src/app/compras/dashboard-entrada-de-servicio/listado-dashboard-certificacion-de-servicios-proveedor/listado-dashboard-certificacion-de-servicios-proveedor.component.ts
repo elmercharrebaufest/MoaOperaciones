@@ -374,9 +374,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
         }
-        else {
-            this.proveedor = '';
-        }
 
         this.expandedPositionRow = false;
         this.saveConfigurationFilterDates();
