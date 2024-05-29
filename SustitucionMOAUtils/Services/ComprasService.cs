@@ -2064,7 +2064,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
-                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp.Posiciones.ToList());
+                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
                         }
                     }
                 }
@@ -6272,7 +6272,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void AgregarPosicionACotizacionTrabajoYaHecho(List<Cotizacion> cotizaciones, List<SolpPosicion> posicionesEntidad)
+        private void AgregarPosicionACotizacionTrabajoYaHecho(List<Cotizacion> cotizaciones, Solp solp)
         {
             try
             {
@@ -6348,7 +6348,6 @@ namespace SustitucionMOAUtils.Services
             }
 
         }
-
 
 
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
