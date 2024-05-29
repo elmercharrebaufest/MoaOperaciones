@@ -30,15 +30,15 @@
 }
 
 .green-row {
-    background-color: #c2e4ce !important;
+    background-color: rgba(14, 146, 59, 0.11) !important;
 }
 
 .orange-row {
-    background-color: #ec7f1a !important;
+    background-color: rgba(236, 127, 26, 0.11) !important;
 }
 
 .purple-row {
-    background-color: #a831e2 !important;
+    background-color: rgba(175, 50, 234, 0.11) !important;
 }
 
 .reference-position-complete {

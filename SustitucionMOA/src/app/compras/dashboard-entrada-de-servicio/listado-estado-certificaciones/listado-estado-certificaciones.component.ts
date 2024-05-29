@@ -354,7 +354,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   enviarMotivo() {
     const data = {
-      Destinatario: "molinoshuenei@gmail.com", // TODO: descomentar y reemplazar por "molinoshuenei@gmail.com" cuando se vaya a producción this.formularioMotivosRechazo.get('destinatario').value,
+      Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
       MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value != null ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
       Proveedor: this.formularioMotivosRechazo.get('proveedor').value,
       NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
