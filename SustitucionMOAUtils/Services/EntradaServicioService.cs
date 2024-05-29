@@ -495,6 +495,17 @@ namespace SustitucionMOAUtils.Services
                     prov = orderService.BuscarProveedor(orderParams);
 
                     emailCertificationService.EnviarMailAprobacion(completeAp, prov);
+
+                    //MMSN-1010
+                    if(completeAp.Count > 0)
+                    {
+                        foreach (Aprobaciones aprobacion in completeAp)
+                        {
+                            aprobacion.Notificaciones_enviadas = true;
+                        }
+                        repositorio.GuardarCambios();
+                    }
+
                 }
             }
             catch (Exception e)
@@ -1046,15 +1057,17 @@ namespace SustitucionMOAUtils.Services
             bool response = false;
             var aprobaciones = repositorio.Obtener<Aprobaciones>(a => a.NRO_ES_LOCAL == emailDetailCertificateDto.NumeroCertificacion);
 
-            if (emailDetailCertificateDto != null && !string.IsNullOrEmpty(emailDetailCertificateDto.Destinatario)
-                && aprobaciones.Notificaciones_enviadas == false)
+            if (emailDetailCertificateDto != null && !string.IsNullOrEmpty(emailDetailCertificateDto.Destinatario))
             {
                 await emailCertificationService.SendNotifyRejectionEmail(emailDetailCertificateDto);
 
-                aprobaciones.Notificaciones_enviadas = true;
+                if (aprobaciones.Notificaciones_enviadas == false)
+                {
+                    aprobaciones.Notificaciones_enviadas = true;
 
-                repositorio.GuardarCambios();
-
+                    repositorio.GuardarCambios();
+                }
+                
                 response = true;
             }
 
