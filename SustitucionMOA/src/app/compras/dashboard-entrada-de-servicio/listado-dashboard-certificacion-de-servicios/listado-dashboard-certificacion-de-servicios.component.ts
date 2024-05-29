@@ -498,17 +498,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
 
-    deleteES(Id: any) {
+    deleteES(Id: any, AccountingDate: any) {
         this.confirmationService.confirm({
             message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
-            accept: () => { this.deleteById(Id); },
+            accept: () => { this.deleteById(Id, AccountingDate); },
             reject: () => { }
         });
     }
 
-    deleteById(Id) {
+    deleteById(Id, AccountingDate) {
         this.mensajeComponent.setMsgsEmpty();
-        this.service.deleteById(Id).subscribe((result: any) => {
+        this.service.deleteById(Id, AccountingDate).subscribe((result: any) => {
             if (result.logout == true) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
