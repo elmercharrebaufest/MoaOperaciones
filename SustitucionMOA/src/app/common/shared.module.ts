@@ -54,6 +54,7 @@ import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
 import { CustomFilterEstados } from './pipes/customFilterEstados';
 
 import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
+import { DefaultNumberParser } from './pipes/defaultNumber';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -92,7 +93,8 @@ const declaredAndExported = [
     CustomTipoProveedorFilter,
     CustomFilterEstados
     ,
-    CustomDefaultDataPipe
+    CustomDefaultDataPipe,
+    DefaultNumberParser
 ];
 @NgModule({
     imports: [CommonModule,

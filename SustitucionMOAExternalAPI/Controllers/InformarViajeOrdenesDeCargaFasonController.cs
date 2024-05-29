@@ -20,7 +20,7 @@ namespace SustitucionMOAExternalAPI.Controllers
             _ordenesCargaApi = ordenesCargaApi;
         }
 
-        [Authorize(Roles = "APIKEY")]
+        [Authorize(Roles = "API ORDENES DE CARGA")]
         public IHttpActionResult Post([FromBody] IngresosEgresosFasones ingresosEgresosFasones)
         {
             try

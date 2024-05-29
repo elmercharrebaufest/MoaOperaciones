@@ -141,7 +141,7 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Fecha de retiro</strong></p>
+                                        <p class="blue"><strong>Fecha Est. de retiro</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.FechaRetiro}}</p>
                                     </div>
 
@@ -230,15 +230,15 @@
                                         <tr role="row">
                                             <th>Fecha de salida</th>
                                             <th>Fecha de ingreso</th>
-                                            <th>Cantidad de {{ordenDeCargaFason.UniMedCant | lowercase}}</th>
+                                            <th>Cantidad de {{(ordenDeCargaFason.UniMedCant || 'KG') | lowercase}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="fw-normal">{{ordenDeCargaFason.FechaEgreso}}</td>
-                                            <td class="fw-normal">{{ordenDeCargaFason.FechaIngreso}}</td>
-                                            <td class="fw-normal">{{ordenDeCargaFason.CantidadEntregada |
-                                                number:'2.0-0'}}</td>
+                                            <td class="fw-normal">{{ordenDeCargaFason.FechaRetiroReal}}</td>
+                                            <td class="fw-normal">{{ordenDeCargaFason.FechaIngresoPlanta}}</td>
+                                            <td class="fw-normal">{{ ordenDeCargaFason.CantidadDescargada |
+                                                defaultNumber }}</td>
                                         </tr>
                                     </tbody>
                                 </table>

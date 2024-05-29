@@ -81,7 +81,8 @@
               <th *ngIf="esAdmin || isCorredor()">Cliente</th>
               <th>Estado</th>
               <th>Fecha Creación</th>
-              <th>Fecha Retiro</th>
+              <th>Fecha Est. Retiro</th>
+              <th>Fecha Retiro real</th>
               <th>Destino</th>
               <th>Producto</th>
               <th>Patente chasis</th>
@@ -102,6 +103,7 @@
               <td>{{ordenDeCargaFason.DescripcionEstado}}</td>
               <td>{{ordenDeCargaFason.FechaCreacion || ordenDeCargaFason.fechaCreacion}}</td>
               <td>{{ordenDeCargaFason.FechaRetiro || ordenDeCargaFason.fechaRetiro}}</td>
+              <td>{{ordenDeCargaFason.FechaRetiroReal || '---'}}</td>
               <td>{{ordenDeCargaFason.LocalidadDescripcion}}</td>
               <td>{{ordenDeCargaFason.Material}}</td>
               <td>{{ordenDeCargaFason.patenteChasis}}

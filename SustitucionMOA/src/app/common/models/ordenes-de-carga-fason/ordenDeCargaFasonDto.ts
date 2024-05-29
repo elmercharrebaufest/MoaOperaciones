@@ -24,7 +24,10 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
 
     public FechaCreacion: string;
     public FechaRetiro: Date;
+    public FechaRetiroReal?: Date;
+    public FechaIngresoPlanta?: Date;
     public Cantidad: number;
+    public CantidadDescargada: number;
     public PatenteAcoplado: string;
     public PatenteChasis: string;
     public NombreChofer: string;

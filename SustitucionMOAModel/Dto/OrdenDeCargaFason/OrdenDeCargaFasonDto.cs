@@ -62,6 +62,9 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public short? DomicilioOrden { get; set; }
         public bool NecesitaVerificarCuitsTerceros { get; set; }
         public string DestinoMercaderia { get; set; }
+        public string FechaRetiroReal { get; set; }
+        public string FechaIngresoPlanta { get; set; }
+        public double? CantidadDescargada { get; set; }
 
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
@@ -112,6 +115,10 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             DomicilioOrden = orden.DomicilioOrden;
             NecesitaVerificarCuitsTerceros = !orden.CuitsTerceroExisten;
             DestinoMercaderia = orden.DestinoMercaderia;
+            FechaRetiroReal = orden.FechaEgreso?.ToString("dd/MM/yyyy HH:mm");
+            FechaIngresoPlanta = orden.FechaIngreso?.ToString("dd/MM/yyyy HH:mm");
+            CantidadDescargada = orden.PesadaTara != null && orden.PesadaNeto != null
+                ? orden.PesadaNeto - orden.PesadaTara : null;
         }
     }
 }
