@@ -169,6 +169,9 @@ namespace SustitucionMOAUtils.Services.Email
                     Cuerpo = cuerpo
                 };
 
+                Logger.Log.Info("Cuerpo Mail: ");
+                Logger.Log.Info(cuerpo);
+
                 emailService.EnviarMail(emailSenderData);
             }
             catch (Exception ex)

@@ -479,6 +479,8 @@ namespace SustitucionMOAUtils.Email
                 SmtpClient oCliente = GetSmtpClient();
 
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
+                Logger.Log.Info("Asunto Mail : ");
+                Logger.Log.Info($"{oMensaje.Subject}");
 
                 // Enviar el correo de forma asíncrona
                 await oCliente.SendMailAsync(oMensaje);
