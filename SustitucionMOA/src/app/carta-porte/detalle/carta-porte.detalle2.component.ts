@@ -175,7 +175,7 @@ export class CartaPorteDetalleComponent extends BaseComponent implements OnInit,
     }
 
     isExportVisible() {
-        this.spinnerSmallComponent.visible.value;
+        this.spinnerSmallComponent.visible;
     }
 
     showDataPlus(calidad: any) {

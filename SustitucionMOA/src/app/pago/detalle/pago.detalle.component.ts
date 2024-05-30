@@ -122,7 +122,7 @@ export class PagoDetalleComponent extends BaseComponent implements OnInit, After
     }
 
     isExportVisible() {
-        this.spinnerSmallComponent.visible.value;
+        this.spinnerSmallComponent.visible;
     }
 
 

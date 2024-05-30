@@ -165,7 +165,7 @@ export class LiquidacionProformaComponent extends BaseComponent implements OnIni
     }
 
     isExportVisible() {
-        this.spinnerSmallComponent.visible.value;
+        this.spinnerSmallComponent.visible;
     }
 
 
