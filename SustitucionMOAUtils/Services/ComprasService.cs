@@ -4765,7 +4765,7 @@ namespace SustitucionMOAUtils.Services
                     posiciones +=
                     $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
                     $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
-                    $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : "")} </td>" +
+                    $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea)} </td>" +
                     $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
