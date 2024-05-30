@@ -29,6 +29,7 @@
     [THServicioPermanente] BIT NULL, 
     [THAjustePolinomica] BIT NULL, 
     [THProveedorDirecto] BIT NULL, 
+    [TieneModificaciones] BIT NULL DEFAULT 0, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Solp_dbo.UsuarioCompras_Id] FOREIGN KEY ([UsuarioCompras_Id]) REFERENCES [dbo].[UsuarioCompras] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Solp_Pliego] FOREIGN KEY ([Pliego_Id]) REFERENCES [dbo].[Pliego] ([Id]),
