@@ -81,28 +81,6 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 flex items-end"><strong>Mis Consultas</strong>
-                <i (click)="verSeleccionColumnas = !verSeleccionColumnas" class="pi pi-cog cursor-pointer font-size-1em"
-                    pTooltip="Modificar Columnas"></i>
-            </div>
-        </div>
-    </section>
-    <!-- COLUMNS CONFIG PANEL -->
-    <section id="columns" *ngIf="verSeleccionColumnas">
-        <div>
-            <h4 class="flex items-center">Columnas
-                <i class="pi pi-times cursor-pointer" (click)="verSeleccionColumnas=false"></i>
-            </h4>
-            <div class="inline-flex w-full gap-15px item-list">
-                <ng-container *ngFor="let col of colsFiltered; index as index">
-                    <p *ngIf="col">
-                        <label>
-                            <input type="checkbox" [id]="col.field+'_'+index" [disabled]="col.required"
-                                [(ngModel)]="col.visible" [value]="col.id"
-                                (ngModelChange)="guardarConfiguracionDeTablasDeUsuario()" />
-                            {{col.header}}
-                        </label>
-                    </p>
-                </ng-container>
             </div>
         </div>
     </section>
@@ -131,6 +109,11 @@
                                         style="background-color: #067935;"></button> &nbsp;
                                     <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel=""
                                         offLabel="" offIcon="pi pi-filter"></p-toggleButton>
+                                    <button type="button" pButton icon="fa fa-table"
+                                        (click)="verSeleccionColumnas = !verSeleccionColumnas"
+                                        pTooltip="Modificar Columnas" class="ui-button-secondary"
+                                        style="background-color: #dadada;">
+                                    </button>
                                 </div>
 
                                 <h4 *ngIf="!isExternal"><span *ngFor="let estado of estadosSummary"
@@ -140,6 +123,28 @@
                                 <!-- <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
                                     <input type="text" pInputText placeholder="Buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:40% !important"> -->
                             </div>
+                            <!-- COLUMNS CONFIG PANEL -->
+                            <section id="columns" *ngIf="verSeleccionColumnas">
+                                <div>
+                                    <h4 class="flex items-center">Columnas
+                                        <i class="pi pi-times cursor-pointer" (click)="verSeleccionColumnas=false"></i>
+                                    </h4>
+                                    <div class="inline-flex w-full gap-15px item-list">
+                                        <ng-container *ngFor="let col of colsFiltered; index as index">
+                                            <p *ngIf="col">
+                                                <label>
+                                                    <input type="checkbox" [id]="col.field+'_'+index"
+                                                        [disabled]="col.required" [(ngModel)]="col.visible"
+                                                        [value]="col.id"
+                                                        (ngModelChange)="guardarConfiguracionDeTablasDeUsuario()" />
+                                                    {{col.header}}
+                                                </label>
+                                            </p>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </section>
+
                         </ng-template>
                         <ng-template pTemplate="colgroup" let-columns>
                             <colgroup>

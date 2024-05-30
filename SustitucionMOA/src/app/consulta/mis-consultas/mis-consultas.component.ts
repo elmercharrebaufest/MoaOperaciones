@@ -23,6 +23,8 @@ import { debounceTime, finalize, } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { DirOrden } from '../../common/enums/DirOrden';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { UsuarioService } from '../../usuario/usuario.service';
+import { TipoConfiguracionUsuario } from '../../common/enums/TipoConfiguracionUsuario';
 
 declare var $: any;
 
@@ -30,7 +32,7 @@ declare var $: any;
     selector: 'mis-consultas',
     templateUrl: `mis-consultas.component.html`,
     styleUrls: ['mis-consultas.component.css'],
-    providers: [{ provide: ConsultaService, useClass: ConsultaService }],
+    providers: [{ provide: ConsultaService, useClass: ConsultaService }, UsuarioService],
     // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MisConsultasComponent extends ListBaseComponent {
@@ -104,12 +106,14 @@ export class MisConsultasComponent extends ListBaseComponent {
     modalMaximizado = false;
 
     $buscarConsultas = new Subject<void>();
+    $guardarConfiguracion = new Subject<string>();
 
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
     }
 
     constructor(
+        private usuarioService: UsuarioService,
         private cdr: ChangeDetectorRef,
         protected service: ConsultaService,
         protected navService: NavService,
@@ -128,6 +132,12 @@ export class MisConsultasComponent extends ListBaseComponent {
             this.listarConsultas()
         }
         )
+        this.$guardarConfiguracion.pipe(debounceTime(250)).subscribe((valor) => {
+            this.usuarioService.guardarConfiguracionUsuario({
+                valor,
+                tipo: TipoConfiguracionUsuario.ColumnaConsultas
+            }).subscribe(console.info)
+        })
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
@@ -650,7 +660,6 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     obtenerConfiguracionDeTablasDelUsuario() {
         let colConfig = sessionStorage.getItem(this.keyConfiguracionTablas);
-
         if (colConfig) {
             let visibleCols = colConfig.split(',');
 
@@ -665,8 +674,10 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     guardarConfiguracionDeTablasDeUsuario() {
         let visibleColumns = this.colsFiltered.filter(col => col.visible).map(col => col.field);
-        sessionStorage.setItem(this.keyConfiguracionTablas, visibleColumns.join(','));
+        const valorGuardado = visibleColumns.join(',');
+        sessionStorage.setItem(this.keyConfiguracionTablas, valorGuardado);
         this.colsFiltered = [... this.colsFiltered]
+        this.$guardarConfiguracion.next(valorGuardado)
     }
 
     pageSize = 20;

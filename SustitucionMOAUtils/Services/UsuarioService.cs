@@ -545,8 +545,8 @@ namespace SustitucionMOAUtils.Services
             var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
             var proveedoresMismoCodigo = repositorio.Listar<Proveedor>(p => p.CodigoProveedor == proveedor.CodigoProveedor);
 
-            var destinatarios = proveedoresMismoCodigo.SelectMany(p=>p.UsuariosAsociados
-                .Where(u=>!u.Mail.EndsWith("@molinosagro.com.ar"))
+            var destinatarios = proveedoresMismoCodigo.SelectMany(p => p.UsuariosAsociados
+                .Where(u => !u.Mail.EndsWith("@molinosagro.com.ar"))
                 .Select(u => new DestinatarioDto(u))).ToList();
             return destinatarios;
         }
@@ -815,7 +815,7 @@ namespace SustitucionMOAUtils.Services
         {
             var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
 
-            return  !tieneActividad && usuario.Proveedores.Count() <= 1;
+            return !tieneActividad && usuario.Proveedores.Count() <= 1;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
@@ -866,7 +866,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se ha encontrado un usuario para asignar la cuit.");
             }
 
-            if(usuario.Proveedores.Any(p=>p.CUIT == datosAsignar.CuitAAsignar))
+            if (usuario.Proveedores.Any(p => p.CUIT == datosAsignar.CuitAAsignar))
             {
                 throw new InfoCustomException("El usuario ya tiene asignada la cuit solicitada.");
             }
@@ -948,6 +948,44 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<Usuario, string>(
                 u => u.Mail
                 , u => DbFunctions.Like(u.Mail, likeString));
+        }
+
+        public void GuardarConfiguracionUsuario(string mailUsuario, string valor, TipoConfiguracionUsuario tipo)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            if (usuario == null)
+            {
+                throw new InfoCustomException("Usuario inexistente");
+            }
+            var configuracion = repositorio.Obtener<ConfiguracionUsuario>(c => c.Usuario_Id == usuario.Id && c.Tipo == tipo);
+            if (configuracion == null)
+            {
+                configuracion = new ConfiguracionUsuario
+                {
+                    Tipo = tipo,
+                    Usuario = usuario
+                };
+
+                repositorio.Agregar(configuracion);
+            }
+            
+            configuracion.Valor = valor;
+            repositorio.GuardarCambios();
+        }
+        public string ObtenerConfiguracion(string mailUsuario, TipoConfiguracionUsuario tipo)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            if (usuario == null)
+            {
+                throw new InfoCustomException("Usuario inexistente");
+            }
+            var configuracion = repositorio.Obtener<ConfiguracionUsuario>(c => c.Usuario_Id == usuario.Id && c.Tipo == tipo);
+            if (configuracion == null)
+            {
+                throw new InfoCustomException("No tiene configuracion guardada: " + tipo);
+            }
+
+            return configuracion.Valor;
         }
     }
 }

@@ -241,6 +241,7 @@
     <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
     <None Include="scripts\PostDeployment\UsuariosParaExternalAPI.sql" />
+    <Build Include="DBO\Tables\ConfiguracionUsuario.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

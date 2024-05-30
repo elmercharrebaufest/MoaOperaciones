@@ -76,6 +76,7 @@
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
     <Compile Include="Consulta\DirOrden.cs" />
@@ -295,6 +296,7 @@
     <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
+    <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />

@@ -7,10 +7,12 @@ import { NavService } from './common/services/NavService';
 import { MensajeComponent } from './common/view-child/mensaje/mensaje.component';
 import { SpinnerSmallComponent } from './common/view-child/spinner-small/spinner-small.component';
 import { Location } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UsuarioLogueado } from './common/models/usuario-logueado';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { ConfirmationService } from 'primeng/components/common/api';
+import { TipoConfiguracionUsuario } from './common/enums/TipoConfiguracionUsuario';
+import { ApiResponse } from './common/models/response';
 
 @Component({
     selector: 'my-app',
@@ -136,10 +138,23 @@ export class AppComponent implements OnDestroy {
         sessionStorage.setItem("granosSelected", result.granosFlag == 'A' ? 'G' : result.granosFlag);
 
         this.redirigir(result);
-        
+
         if (result.aceptoTyC != true) {
             document.getElementById("openModalaceptoTyCModal").click();
         }
+        this.cargarConfiguracion(TipoConfiguracionUsuario.ColumnaConsultas)
+            .subscribe(res => {
+                if (res) {
+                    sessionStorage.setItem('columnasMisConsultas', res)
+                }
+            })
+    }
+    cargarConfiguracion(tipo: TipoConfiguracionUsuario): Observable<string> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('tipo', tipo.toString());
+
+        return this.http
+            .get<string>('/api/usuario/ObtenerConfiguracionUsuario', { params });
     }
     aceptarTyC() {
         this.aceptarTyCSub = this.http
@@ -165,14 +180,13 @@ export class AppComponent implements OnDestroy {
             this.aceptarTyCSub.unsubscribe();
     }
 
-    redirigir(result: any){
-        if(this.path === '/consulta/mis-consultas'){
+    redirigir(result: any) {
+        if (this.path === '/consulta/mis-consultas') {
             setTimeout
-            (
-            () =>
-            {  this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
-           
-        }else{
+                (
+                    () => { this.navService.navegarSeccion('/consulta/mis-consultas'); }, 3);
+
+        } else {
             this.navService.navegarSeccion(result.redirectURL);
         }
     }

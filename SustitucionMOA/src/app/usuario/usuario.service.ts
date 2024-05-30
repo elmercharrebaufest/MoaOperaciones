@@ -10,6 +10,8 @@ import { ApiResponse, BasicResponse } from '../common/models/response';
 import { Proveedor } from '../common/models/proveedor';
 import { AsignarNuevaCuit } from '../common/models/asignarNuevaCuit';
 import { SeleccionarVendedorResponse } from '../common/models/SeleccionarVendedorResponse';
+import { TipoConfiguracionUsuario } from '../common/enums/TipoConfiguracionUsuario';
+import { ReqGuardarConfiguracionUsuario } from '../common/models/ReqGuardarConfiguracionUsuario';
 
 @Injectable()
 export class UsuarioService extends BaseService {
@@ -266,5 +268,19 @@ export class UsuarioService extends BaseService {
 
     getMailUsuarios(mail: string): Observable<ApiResponse<string[]>> {
         return this.http.get(`/api/usuario/GetMailUsuarios?mail=${mail}`)
+    }
+    public obtenerConfiguracion(tipo: TipoConfiguracionUsuario): Observable<string> {
+        let params: HttpParams = new HttpParams();
+        params = params.append('tipo', tipo.toString());
+
+        return this.http
+            .get<string>('/api/usuario/ObtenerConfiguracionUsuario', { headers: this.headersPost, params });
+    }
+    public guardarConfiguracionUsuario({ tipo, valor }: ReqGuardarConfiguracionUsuario): Observable<any> {
+        const payload = new FormData();
+        payload.append('tipo', tipo.toString())
+        payload.append('valor', valor)
+        return this.http
+            .post('/api/usuario/GuardarConfiguracionUsuario', payload, { headers: this.headersPost });
     }
 }
