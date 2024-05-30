@@ -689,17 +689,32 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.calcularMontoACertificar(item);
     }
 
-    actualizarValoresACertificarPorPorcentaje(item: any): void {
-        const porcentajeDisponible = (100 - item.Porcentaje);
-        const porcentajeACertificar = item.PorcentajeACertificar;
+    Number = Number;
+    timeout: any = null;
+    actualizarValoresACertificarPorPorcentaje(item: any, event): void {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            if (event.keyCode != 13) {
+                const porcentajeDisponible = (100 - item.Porcentaje);
+                const cantidadDisponible = item.Cantidad - item.CantidadReal;
+                const porcentajeACertificar = item.PorcentajeACertificar;
 
-        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
-            item.PorcentajeACertificar = porcentajeDisponible;
-        }
+                if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
+                    item.PorcentajeACertificar = porcentajeDisponible;
+                }
 
-        const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
-        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+                const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+                item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
+                this.calcularMontoACertificar(item);
+
+                if (porcentajeACertificar != '' && porcentajeACertificar > 0 &&
+                    (item.CantidadACertificar.toFixed(3) === cantidadDisponible.toFixed(3) || Number(item.MontoACertificar.toFixed(2)) < 0.01)) {
+                    item.PorcentajeACertificar = porcentajeDisponible;
+                    item.CantidadACertificar = cantidadDisponible;
+                    this.calcularMontoACertificar(item);
+                }
+            }
+        }, 500);
     }
 
     validarMantenerItemSeleccionado(item: any) {
@@ -1124,6 +1139,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             return this.formatAmount(monto, rowData.Moneda);
         } else if (colId === 'iMontoACertificar') {
             const montoACertificar = rowData.CantidadACertificar * rowData.Importe;
+            if (isNaN(montoACertificar)) return '';
             return this.formatAmount(montoACertificar, rowData.Moneda);
         }
         return '';
