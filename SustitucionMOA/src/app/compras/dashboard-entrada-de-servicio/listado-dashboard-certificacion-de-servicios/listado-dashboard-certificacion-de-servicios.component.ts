@@ -1132,10 +1132,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     formatAmount(monto: number, moneda: string): string {
         if (moneda === "ARP") {
             this.isARP = true;
-            return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         } else {
             this.isARP = false;
-            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
     }
 
