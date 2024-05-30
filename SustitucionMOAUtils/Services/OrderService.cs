@@ -134,6 +134,11 @@ namespace SustitucionMOAUtils.Services
         // Consultas a servicio SAP con distintos criterios de busqueda
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
         {
+            List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
+
+            if (parametros.vendedor == "-")
+                return result;
+
             List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
@@ -150,7 +155,6 @@ namespace SustitucionMOAUtils.Services
 
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
-            List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
 
             string today = DateTime.Now.ToString(dateTimeFormat);
             DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);

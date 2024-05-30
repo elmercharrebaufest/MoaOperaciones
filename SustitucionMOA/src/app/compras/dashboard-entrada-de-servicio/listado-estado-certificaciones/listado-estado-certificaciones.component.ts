@@ -290,7 +290,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verMotivosRechazos(rowData: any): void {
-    this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Usuario);
+    this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Ingresante);
     this.formularioMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
     this.formularioMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
     this.formularioMotivosRechazo.controls['importe'].patchValue(rowData.Importe);

@@ -172,7 +172,7 @@
 
                                         <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="hidePositionCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)" />
+                                            <input *ngIf="hidePositionCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)" [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true"/>
 
                                             <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>

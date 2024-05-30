@@ -374,9 +374,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
         }
-        else {
-            this.proveedor = '';
-        }
 
         this.expandedPositionRow = false;
         this.saveConfigurationFilterDates();
@@ -1031,5 +1028,21 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         } else {
             document.body.style.overflow = 'auto';
         }
+    }
+
+    tieneItemsACertificarTodosValidos(posicion: any): boolean {
+        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item));
+    }
+
+    tienePorcentajeACertificar(item: any): boolean {
+        return Number(item.Porcentaje) < 100;
+    }
+
+    tieneMontoVálidoACertificar(item: any): boolean {
+        return item.MontoACertificar > 0;
+    }
+
+    esItemValidoParaCertificar(item: any): boolean {
+        return this.tienePorcentajeACertificar(item) && this.tieneMontoVálidoACertificar(item);
     }
 }
