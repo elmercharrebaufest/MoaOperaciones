@@ -18,4 +18,5 @@ export interface CampoCosecha {
 export interface CampoSustentable {
     Nombre: string;
     Localidad_Id?: number;
+    Renspa: string;
 }

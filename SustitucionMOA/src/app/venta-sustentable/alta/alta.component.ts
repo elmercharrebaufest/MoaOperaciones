@@ -61,6 +61,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     nombreEstablecimiento: string;
+    renspa: string;
     pais: string;
     dataLocalidades = [];
     myLocalidades = <any>[];
@@ -317,7 +318,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
 
         campoSustentable = {
-            Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+            Nombre: this.nombreEstablecimiento,
+            Localidad_Id: this.localidadId,
+            Renspa: this.renspa
         }
 
         campoCosecha = {
@@ -433,6 +436,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
         if (!this.localidadId || this.localidadId <= 0) {
             this.mensajeComponent.setErrorMsg("Falta seleccionar la localidad.");
+            return true;
+        }
+
+        if (this.renspa == "" || !this.renspa || this.renspa.length < 13) {
+            this.mensajeComponent.setErrorMsg("Falta completar RENSPA.");
             return true;
         }
 

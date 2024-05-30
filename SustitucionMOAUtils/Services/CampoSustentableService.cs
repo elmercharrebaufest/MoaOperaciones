@@ -8,6 +8,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
@@ -117,6 +118,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.Latitud = campoProveedorObj.Latitud;
             campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
+            campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
 
             repositorio.GuardarCambios();
@@ -162,6 +164,7 @@ namespace SustitucionMOAUtils.Services
                     HectareasTotales = c.HectareasTotales.ToString(),
                     Localidad = c.CampoCosecha.Campo.Localidad.Nombre,
                     Nombre = c.CampoCosecha.Campo.Nombre,
+                    Renspa = c.CampoCosecha.Campo.Renspa,
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
@@ -445,6 +448,7 @@ namespace SustitucionMOAUtils.Services
                                 HectareasSoja = cp.HectareasSoja,
                                 HectareasTotales = cp.HectareasTotales,
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
                                 Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
                                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
@@ -467,7 +471,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
+            var headersBase = new List<string>() { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
             dynamic listado;
 
             if (esAdminCampos)
@@ -476,6 +480,7 @@ namespace SustitucionMOAUtils.Services
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
+                    Renspa = cp.CampoCosecha.Campo.Renspa,
                     ProveedorRazonSocial = cp.Proveedor.RazonSocial,
                     CuitProveedor = cp.Proveedor.CUIT,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -487,12 +492,14 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = cp.RazonSocial,
                     FechaCreacion = cp.FechaCreacion
                 });
+                ((List<CampoSustentableExportDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
             }
             else
             {
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
+                    Renspa = cp.CampoCosecha.Campo.Renspa,
                     ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
                     HectareasSoja = cp.HectareasSoja,
@@ -502,6 +509,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = cp.RazonSocial,
                     FechaCreacion = cp.FechaCreacion
                 });
+                ((List<CampoSustentableExportBaseDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
             }
 
             return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
