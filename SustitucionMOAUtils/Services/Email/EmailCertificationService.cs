@@ -117,7 +117,7 @@ namespace SustitucionMOAUtils.Services.Email
             return bodyTable;
         }
 
-        public void EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov)
+        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov)
         {
             try
             {
@@ -170,7 +170,8 @@ namespace SustitucionMOAUtils.Services.Email
                 };
 
 
-                emailService.EnviarMail(emailSenderData);
+                Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+                await emailSendTask;
             }
             catch (Exception ex)
             {

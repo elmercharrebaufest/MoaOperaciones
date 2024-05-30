@@ -315,6 +315,14 @@ namespace SustitucionMOAUtils.Email
             }
             catch (Exception ex)
             {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+
                 throw ex;
             }
         }
@@ -478,24 +486,11 @@ namespace SustitucionMOAUtils.Email
 
                 SmtpClient oCliente = GetSmtpClient();
 
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                Logger.Log.Info("Asunto Mail : ");
-                Logger.Log.Info($"{oMensaje.Subject}");
-                try
-                {
-                    string oMensajeJson = JsonConvert.SerializeObject(oMensaje, Formatting.Indented);
-                    Logger.Log.Info($"oMensaje: {oMensajeJson}");
-                }
-                catch(Exception e)
-                {
-                    Logger.Log.Info("Error serializando: " + e.Message);
-                }
-                
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);         
 
                 // Enviar el correo de forma asíncrona
                 await oCliente.SendMailAsync(oMensaje);
 
-                Logger.Log.Info("Post - Envio Mail");
             }
             catch (Exception ex)
             {

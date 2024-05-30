@@ -494,7 +494,8 @@ namespace SustitucionMOAUtils.Services
                     Proveedor prov = new Proveedor();
                     prov = orderService.BuscarProveedor(orderParams);
 
-                    emailCertificationService.EnviarMailAprobacion(completeAp, prov);
+                    _= NotifyCreation(completeAp, prov);
+                    //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
                     if(completeAp.Count > 0)
@@ -517,6 +518,13 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov)
+        {
+           await emailCertificationService.EnviarMailAprobacion(completeAp, prov);
+           return true;
+        }
+
 
         /// <summary>
         /// MMSN-601: Metodo para validar si los valores de detalleSolPed estan vacios 
