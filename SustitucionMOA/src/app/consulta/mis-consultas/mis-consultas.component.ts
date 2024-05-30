@@ -26,6 +26,19 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { UsuarioService } from '../../usuario/usuario.service';
 import { TipoConfiguracionUsuario } from '../../common/enums/TipoConfiguracionUsuario';
 
+export interface ConfiguracionColumna {
+    field: string,
+    header: string,
+    filterType: string,
+    visibleExternal: boolean,
+    selectionMode?: 'range' | 'single',
+    width: number,
+    size: number,
+    visible?: boolean,
+    filteredValue?: string
+    sortdropdown?: string
+}
+
 declare var $: any;
 
 @Component({
@@ -60,7 +73,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     @ViewChild("containerList")
     protected containerList: HTMLDivElement;
 
-    cols = [
+    cols: ConfiguracionColumna[] = [
         { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 4, size: 4, visible: true, filteredValue: '' },
         { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, visible: true, filteredValue: '' },
         { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, visible: true, filteredValue: '' },
@@ -73,7 +86,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single', visible: true },
         { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4 },
     ];;
-    colsFiltered: any[];
+    colsFiltered: ConfiguracionColumna[];
     consultas: Consulta[];
     consultasFiltradas: Consulta[];
     estados: EstadoConsulta[];
@@ -662,9 +675,15 @@ export class MisConsultasComponent extends ListBaseComponent {
         let colConfig = sessionStorage.getItem(this.keyConfiguracionTablas);
         if (colConfig) {
             let visibleCols = colConfig.split(',');
+            const cantidadColumnas = visibleCols.length;
+            // const  = visibleCols.length;
 
             this.colsFiltered = this.colsFiltered
-                .map(c => { c.visible = visibleCols.includes(c.field); return c; })
+                .map(c => {
+                    c.visible = visibleCols.includes(c.field);
+                    // c.width=
+                    return c;
+                })
         }
         else {
             this.guardarConfiguracionDeTablasDeUsuario();
@@ -723,4 +742,6 @@ export class MisConsultasComponent extends ListBaseComponent {
             return x;
         });
     }
+
+    recalcularWidth() { }
 }

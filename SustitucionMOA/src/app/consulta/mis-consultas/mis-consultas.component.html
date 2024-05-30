@@ -148,13 +148,14 @@
                         </ng-template>
                         <ng-template pTemplate="colgroup" let-columns>
                             <colgroup>
+                                <col [style.width.%]="2.5">
                                 <col *ngFor="let col of columns" [style.width.%]="col.width">
-                                <col style="width: 4rem">
+                                <col [style.width.%]="columns.length>=8? 5: 2.5">
                             </colgroup>
                         </ng-template>
                         <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th style="width: 3rem"></th>
+                                <th style="width: 2rem"></th>
 
                                 <th *ngFor="let col of columns"
                                     [pSortableColumn]="col.filterType != 'custom'? col.field : col.sortdropdown"
@@ -163,10 +164,10 @@
                                         <p-sortIcon
                                             [field]="col.filterType != 'custom'? col.field : col.sortdropdown"></p-sortIcon></span>
                                 </th>
-                                <th style="width: 4rem"></th>
+                                <th style="width: 2rem"></th>
                             </tr>
                             <tr *ngIf="this.showFilters">
-                                <th style="width: 3rem"></th>
+                                <th style="width: 2rem"></th>
                                 <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
                                     <p-spinner *ngSwitchCase="'number'"
                                         (onChange)="cambiarFiltro( col.field, col.numberValue)"
@@ -229,12 +230,12 @@
                                         </p-calendar>
                                     </div>
                                 </th>
-                                <th style="width: 4rem"></th>
+                                <th style="width: 2rem"></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                             <tr style="word-wrap: break-word;">
-                                <td style="width: 3rem; padding: 0">
+                                <td style="width: 2rem; padding: 0">
                                     <a style="cursor: pointer;" [pRowToggler]="rowData">
                                         <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                     </a>
@@ -257,7 +258,7 @@
                                     </div>
                                     <span *ngSwitchCase="'date'">{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                 </td>
-                                <td style="text-align: center; width: 5rem; padding: 0">
+                                <td style="text-align: center; width: 2rem; padding: 0">
                                     <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)"
                                         class="p-button-secondary" style="background-color: #067935;"
                                         icon="fa fa-comments-o"></button>
