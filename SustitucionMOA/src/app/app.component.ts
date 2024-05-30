@@ -144,7 +144,7 @@ export class AppComponent implements OnDestroy {
         }
         this.cargarConfiguracion(TipoConfiguracionUsuario.ColumnaConsultas)
             .subscribe(res => {
-                if (res) {
+                if (typeof res === 'string') {
                     sessionStorage.setItem('columnasMisConsultas', res)
                 }
             })

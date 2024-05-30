@@ -742,6 +742,4 @@ export class MisConsultasComponent extends ListBaseComponent {
             return x;
         });
     }
-
-    recalcularWidth() { }
 }
