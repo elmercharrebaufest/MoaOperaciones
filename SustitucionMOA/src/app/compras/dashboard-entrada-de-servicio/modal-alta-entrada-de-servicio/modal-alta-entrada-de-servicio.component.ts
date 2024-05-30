@@ -167,9 +167,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         });
 
         if (moneda === 'ARP') {
-            return `$ ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            return `$ ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         } else {
-            return `${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            return `${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
     
     }
