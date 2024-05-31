@@ -918,7 +918,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     //revertir los cambios si da error
                     ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
-                    respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);                
+                    respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
                 }
                 repositorio.GuardarCambios();
             }
@@ -989,12 +989,12 @@ namespace SustitucionMOAUtils.Services
         }
 
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
-        {         
+        {
             var posicionId = solpEntity.Posiciones.FirstOrDefault()?.Id;
             var peticionDeOfertaId = repositorio.Obtener<PeticionDeOferta>(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicionId)).Id;
             var posicionesId = solpEntity.Posiciones.Select(x => x.Id).ToList();
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(peticionPos => posicionesId.Contains(peticionPos.SolpPosicion_Id));
-        
+
             var peticionUsuarioId = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.PeticionDeOferta_Id ==  peticionDeOfertaId).Id;
             var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticionUsuarioId);
             var cotizaciones = new List<Cotizacion> { cotizacion };
@@ -1947,7 +1947,7 @@ namespace SustitucionMOAUtils.Services
             string entrada = valor;
             if (entrada.StartsWith("C"))
             {
-               entrada = entrada.Substring(1);
+                entrada = entrada.Substring(1);
             }
             double i;
 
@@ -2075,11 +2075,11 @@ namespace SustitucionMOAUtils.Services
                     {
                         CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                     }
-                }           
+                }
 
                 var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
                                 .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
-                              
+
                 var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
 
                 if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
@@ -2632,10 +2632,10 @@ namespace SustitucionMOAUtils.Services
                                 }
                             }
                         }
-                        var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
-                        if (codigoSap != null)
+                        var estadoSolpSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
+                        if (estadoSolpSap != null)
                         {
-                            solp.EstadoSolpSap_Id = codigoSap.Id;
+                            solp.EstadoSolpSap_Id = estadoSolpSap.Id;
                         }
                         DireccionSolpSAP direccion = result.Direcciones
                             .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
@@ -2651,6 +2651,9 @@ namespace SustitucionMOAUtils.Services
 
                         var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
 
+                        var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(p => p.PeticionDeOfertaSolpPosicion
+                                .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
+
                         if (posicionEntity == null)
                         {
                             posicionEntity = new SolpPosicion
@@ -2662,7 +2665,10 @@ namespace SustitucionMOAUtils.Services
                                 Codigo = Guid.NewGuid().ToString(),
                                 Estado = posicion.EstadoPosicion != "X"
                             };
-                            ActualizarTieneModificaciones(solp);
+                            if (cotizaciones != null && cotizaciones.Count > 0)
+                            {
+                                ActualizarTieneModificaciones(solp);
+                            }
                         }
 
                         posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
@@ -6162,7 +6168,7 @@ namespace SustitucionMOAUtils.Services
                     tieneUnidadDeMedidaNula = cotizacionDto.CotizacionSubposiciones != null && cotizacionDto.CotizacionSubposiciones.Any(subPosicion =>
                     subPosicion.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == subPosicion.UnidadDeMedidaId));
                 }
-                
+
                 if (esFinalizado && tieneUnidadDeMedidaNula)
                 {
                     respuestaGuardarSOLP.Errores.Add("Debe ingresar la unidad de medida");
@@ -6887,7 +6893,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                if (adjudicacion != null && adjudicacion.Id > 0)
+                if (adjudicacion != null && adjudicacion.Id > 0 && string.IsNullOrEmpty(adjudicacion.NumeroOrdenDeCompra))
                 {
                     repositorio.Remover(adjudicacion);
                     repositorio.GuardarCambios();
@@ -8777,9 +8783,8 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Log.Info($"ActualizarDatosSolp ");
+                Log.Error( new Exception("ActualizarDatosSolp") );
                 Log.Error(e);
-                throw;
             }
         }
 
