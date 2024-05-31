@@ -2601,11 +2601,11 @@ namespace SustitucionMOAUtils.Services
                                     solp.UsuarioCreacion_Id = usuario.Id;
                                 }
                             }
-                        }
-                        var codigoSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
-                        if (codigoSap != null)
+                        }                        
+                        var estadoSolpSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
+                        if (estadoSolpSap != null)
                         {
-                            solp.EstadoSolpSap_Id = codigoSap.Id;
+                            solp.EstadoSolpSap_Id = estadoSolpSap.Id;
                         }
                         DireccionSolpSAP direccion = result.Direcciones
                             .SingleOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud &&
@@ -2621,6 +2621,9 @@ namespace SustitucionMOAUtils.Services
 
                         var posicionEntity = solp.Posiciones.SingleOrDefault(pos => pos.Indice == Int32.Parse(posicion.NumeroPosicion));
 
+                        var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(p => p.PeticionDeOfertaSolpPosicion
+                                .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
+
                         if (posicionEntity == null)
                         {
                             posicionEntity = new SolpPosicion
@@ -2632,7 +2635,10 @@ namespace SustitucionMOAUtils.Services
                                 Codigo = Guid.NewGuid().ToString(),
                                 Estado = posicion.EstadoPosicion != "X"
                             };
-                            ActualizarTieneModificaciones(solp);
+                            if (cotizaciones != null && cotizaciones.Count > 0) 
+                            { 
+                                ActualizarTieneModificaciones(solp);
+                            }
                         }
 
                         posicionEntity.TipoPosicion_Id = tipoSolpPosicion_Id;
@@ -2719,7 +2725,11 @@ namespace SustitucionMOAUtils.Services
                             {
                                 subPosicionEntity = new SolpSubposicion();
                                 posicionEntity.Subposiciones.Add(subPosicionEntity);
-                                ActualizarTieneModificaciones(solp);
+
+                                if (cotizaciones != null && cotizaciones.Count > 0)
+                                {
+                                    ActualizarTieneModificaciones(solp);
+                                }
                             }
 
                             subposicionIndice += 1;
