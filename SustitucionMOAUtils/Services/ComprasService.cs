@@ -2755,7 +2755,11 @@ namespace SustitucionMOAUtils.Services
                             {
                                 subPosicionEntity = new SolpSubposicion();
                                 posicionEntity.Subposiciones.Add(subPosicionEntity);
-                                ActualizarTieneModificaciones(solp);
+
+                                if (cotizaciones != null && cotizaciones.Count > 0)
+                                {
+                                    ActualizarTieneModificaciones(solp);
+                                }
                             }
 
                             subposicionIndice += 1;
