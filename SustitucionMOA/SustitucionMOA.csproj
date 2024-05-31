@@ -1053,6 +1053,7 @@
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="Template\NuevaConsultaInterna.html" />
+    <Content Include="Template\ReporteAltaES.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1147,6 +1148,7 @@
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
     <Compile Include="Controllers\ReporteContratoController.cs" />
+    <Compile Include="Controllers\ReporteESController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
@@ -1624,6 +1626,7 @@
     <Folder Include="Views\LogPesificacion\" />
     <Folder Include="Views\OrdenDeCarga\" />
     <Folder Include="Views\ReporteContrato\" />
+    <Folder Include="Views\ReporteES\" />
     <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>

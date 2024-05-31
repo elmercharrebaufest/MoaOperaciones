@@ -1270,4 +1270,9 @@ export class ComprasService extends BaseService {
             .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
     }
 
+    public buildReportES(report : any): Observable<any> {
+
+        return this.http
+            .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
+    }
 }
