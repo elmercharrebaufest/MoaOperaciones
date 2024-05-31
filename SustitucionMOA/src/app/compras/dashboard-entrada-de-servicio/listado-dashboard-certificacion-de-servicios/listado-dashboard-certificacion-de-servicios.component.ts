@@ -632,12 +632,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     * o 'Porcentaje a certificar.' Por requerimiento en
     * MMSN-634 sólo uno de los campos puede ser editable a 
     * la vez.
-    * @param index Indice de item sobre el que se aplica la acción.
     */
-    habilitarCampoDeValorACertificar(index: number) {
+    habilitarCampoDeValorACertificar(idItem: string, nroLinea: string) {
         this.isInputActive = !this.isInputActive;
-        let cantidad = document.getElementsByName('cantidad')[index];
-        let porcentaje = document.getElementsByName('porcentaje')[index];
+        let cantidad = document.getElementById('cantidad_' + idItem + '_' + nroLinea);
+        let porcentaje = document.getElementById('porcentaje_' + idItem + '_' + nroLinea);
 
         if (cantidad.hasAttribute('disabled')) {
             cantidad.removeAttribute('disabled');
