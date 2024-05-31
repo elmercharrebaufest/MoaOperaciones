@@ -1048,6 +1048,7 @@ namespace SustitucionMOAUtils.Services
                     try
                     {
                         rechazo.Importe = ES.Importe.ToString();
+                        rechazo.GeneradoPor = ES.Aprobador_CDS;
                         _ = NotifyRejection(rechazo);
                     }
                     catch (Exception e)
@@ -1067,6 +1068,8 @@ namespace SustitucionMOAUtils.Services
 
             if (emailDetailCertificateDto != null && !string.IsNullOrEmpty(emailDetailCertificateDto.Destinatario))
             {
+                emailDetailCertificateDto.GeneradoPor = aprobaciones.Aprobador_CDS;
+
                 await emailCertificationService.SendNotifyRejectionEmail(emailDetailCertificateDto);
 
                 if (aprobaciones.Notificaciones_enviadas == false)
