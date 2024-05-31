@@ -74,7 +74,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     protected containerList: HTMLDivElement;
 
     cols: ConfiguracionColumna[] = [
-        { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 4, size: 4, visible: true, filteredValue: '' },
+        { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 8, size: 4, visible: true, filteredValue: '' },
         { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, visible: true, filteredValue: '' },
         { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, visible: true, filteredValue: '' },
         { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre', visible: true },
