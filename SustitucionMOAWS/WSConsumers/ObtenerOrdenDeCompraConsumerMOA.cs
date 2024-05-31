@@ -611,6 +611,9 @@ namespace SustitucionMOAWS.WSConsumers
             /// Recorre cada Posicion en busqueda de itemsOC
             foreach (var posicion in POITEM)
             {
+                if (posicion.DELETE_IND == "L" || posicion.DELETE_IND == "S")
+                    continue;
+
                 PosicionDto pos = new PosicionDto();
 
                 pos.Id = int.Parse(posicion.PCKG_NO);

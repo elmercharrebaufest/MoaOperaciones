@@ -21,6 +21,7 @@ namespace SustitucionMOAModel.Dto.Compras
         public string Descripcion { get; set; }
         public string Importe { get; set; }
         public string MontoTotal { get; set; }
+        public string GeneradoPor { get; set; } = null;
         public List<ServiceDetailDto> DetalleServicio { get; set; }
     }
 
