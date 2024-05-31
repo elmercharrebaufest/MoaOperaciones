@@ -199,10 +199,11 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
     }
 
-    public deleteById(Id) {
+    public deleteById(Id, AccountingDate) {
         //http.delete falla en ambiente QA - cambiado a Post
         var payload = new FormData();
         payload.append('DocumentoNumero', JSON.stringify(Id));
+        payload.append('FechaContabilizacion', AccountingDate);
 
         return this.http
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
@@ -1276,4 +1277,9 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/MarcarChatProveedorComoLeido', payload, { headers: this.headers });
     }
 
+    public buildReportES(report : any): Observable<any> {
+
+        return this.http
+            .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
+    }
 }

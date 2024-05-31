@@ -3746,7 +3746,7 @@ namespace SustitucionMOAUtils.Services
                     //CURRENCY_ISO = "X",
                     PLND_DELRY = "X",
                     PCKG_NO = "X",
-                    DELETE_IND = posicion.TipoPosicion.Codigo != "MATERIALES" ? SAPFormatter.FormatearBooleano(eliminarPosicion) : "",
+                    DELETE_IND = string.IsNullOrEmpty(solpActual.NroSolp) ? "" : "X",
                 });
 
 

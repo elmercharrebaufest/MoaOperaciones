@@ -63,17 +63,17 @@
                     <!-- Anteriores -->
                     <!-- * 1  is just to turn it into a number -->
                     <td>{{ rowData.CantidadReal * 1 | number:'1.0-3':'es' }}</td>
-                    <td>{{ rowData.Porcentaje | number:'1.0-3':'es' }}%</td>
+                    <td>{{ rowData.Porcentaje | number:'1.0-2':'es' }}%</td>
                     <td class="text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
 
                     <!-- A certificar -->
                     <td>{{ rowData.CantidadACertificar | number:'1.0-3':'es' }}</td>
-                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-3':'es' }}%</td>
+                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-2':'es' }}%</td>
                     <td class="text-right">{{ rowData.CantidadACertificar * rowData.Importe  | number:'1.0-2':'es' }}</td>
 
                     <!-- Acumulado -->
                     <td>{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3':'es'}}</td>
-                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-3':'es' }}%</td>
+                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-2':'es' }}%</td>
                     <td class="text-right">{{ calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2':'es' }}</td>
                 </tr>
             </ng-template>
@@ -151,8 +151,13 @@
             </div>-->
         </div>
 
-        <div class="form-actions">
-            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()">Certificar</button>
+        <div class="d-flex justify-content-end">
+            <div class="form-actions">
+                <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()">Certificar</button>
+            </div>
+            <div class="form-actions ml-2">
+                <button type="submit" class="btn btn-success btn-certificar" (click)="BuildReport()">Generar Reporte</button>
+            </div>
         </div>
     </section>
 

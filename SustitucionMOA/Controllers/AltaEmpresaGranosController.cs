@@ -44,14 +44,14 @@ namespace SustitucionMOA.Controllers
                 informeComercialJson = informeComercialJson.Replace("nia", "ña");
                 var informeComercial = JsonConvert.DeserializeObject<ParamInformeComercial>(informeComercialJson);
 
-                var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
+                mailUsuario = SessionPersister.getUsername();
+                
                 if (proveedorId == 0)
                 {
+                    var usuario = repositorio.Obtener<UsuarioGranos>(u => u.Mail == mailUsuario);
                     proveedorId = usuario.ObtenerProveedor().Id;
                 }
                 var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
-
-                proveedor = repositorio.Obtener<Proveedor>(proveedorId);
 
                 var infoProveedor = altaEmpresaService.ObtenerInfoProveedor(mailUsuario, proveedorId);
 
@@ -62,7 +62,6 @@ namespace SustitucionMOA.Controllers
                         throw new ValidationCustomException("Para generar el informe comercial debe informar los campos");
                     }
                 }
-
 
                 informeComercial.ContactoComercial.Email1 = proveedor.Mail;
 
@@ -83,15 +82,6 @@ namespace SustitucionMOA.Controllers
 
                 if (informeComercial.NuevosCampos != null)
                 {
-                    /* foreach (var nuevosCampos in informeComercial.NuevosCampos)
-                     {
-                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
-                         {
-                             MaterialId = nuevosCampos.MaterialId,
-                             Toneladas = nuevosCampos.Toneladas
-                         });
-                     }*/
-
                     foreach (var nuevosCampos in informeComercial.NuevosCampos.GroupBy(x => x.MaterialId))
                     {
                         informeComercial.Materiales.Add(new ParamInformeComercialMaterial
