@@ -46,7 +46,10 @@
             <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
         </div>
-
+        <div class="col-md-3 col-lg-3">
+            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" [(ngModel)]="nombrePedido"
+                   placeholder="Buscar por pliego">
+        </div>
         <div class="col-md-3 col-lg-3">
             <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
                         dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
@@ -54,22 +57,18 @@
                         (onClearClick)="returnToTodaysDate()">
             </p-calendar>
         </div>
-        <div class="col-md-3 col-lg-3">
-            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputAltura" pInputText type="text" [(ngModel)]="nombrePedido"
-                   placeholder="Buscar por pliego">
-        </div>
     </div>
 
     <div class="row myRow col-md-11 col-lg-11">
-        <div class="col-md-3 col-lg-3">
+        <div class="col-md-2 col-lg-2">
             <label for="selectAgrupada">Filtro agrupada</label>
             <p-dropdown [options]="Agrupada" [(ngModel)]="selectAgrupada" placeholder="Esta agrupada" showClear="true"></p-dropdown>
         </div>
-        <div class="col-md-3 col-lg-3">
+        <div class="col-md-2 col-lg-2">
             <label for="selectTipoPosicion">Filtro posicion</label>
             <p-dropdown [options]="EsServicio" [(ngModel)]="selectTipoPosicion"></p-dropdown>
         </div>
-        <div class="col-md-6" style="margin-top: 35px;">
+        <div class="col-md-4" style="margin-top: 35px;">
             <span style="margin-right: 10px;">
                 <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP" [(ngModel)]="sap"></p-checkbox>
             </span>
@@ -84,13 +83,9 @@
                 <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
                             [(ngModel)]="repoAutomatica"></p-checkbox>
             </span>
-            <span>
-                <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
-                            [(ngModel)]="contratoMarco"></p-checkbox>
-            </span>
-            <div class="col-md-3 col-lg-3  buttonBuscar" style="padding-right: 30px;">
-                <button class="btn buscar" (click)="onBuscar()">Buscar</button>
-            </div>
+        </div>
+        <div class="col-md-3 col-lg-3">
+            <button class="btn buscar" (click)="onBuscar()">Buscar</button>
         </div>
     </div>
 </div>

@@ -4,3 +4,19 @@
     word-wrap: break-word;
 }
 
+.buscar {
+    background-color: #1C7CD5;
+    border-color: #1C7CD5;
+    color: white;
+    width: 100%;
+    margin-left: 129px;
+    margin-top: 30px;
+}
+
+:host ::ng-deep .ui-calendar {
+    width: 100%;
+}
+
+:host ::ng-deep .ui-calendar .ui-inputtext {
+    width: calc(100% - 2.357em);
+}
