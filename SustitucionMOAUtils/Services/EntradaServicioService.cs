@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Spreadsheet;
 using SustitucionMOAUtils.Services;
 using static SustitucionMOAWS.WSConsumers.CrearEntradaDeServicioConsumerMOA;
+using System;
 
 namespace SustitucionMOAUtils.Services
 
@@ -132,7 +133,17 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public string BorrarEntradaServicio(EntradaServicioParamsDto parametros)
         {
-            string result = new BorrarEntradaServicioConsumerMOA().BorrarEntradaServicio(parametros.DocumentoNumero);
+            string fechaContabilizacion = parametros.FechaContabilizacion;
+            DateTime FechaContabilizacionToDateTime = Convert.ToDateTime(fechaContabilizacion).ToUniversalTime();
+            int currentMonth = DateTime.UtcNow.Month;
+            int currentYear = DateTime.UtcNow.Year;
+            int lastMonth = currentMonth == 1 ? 12 : currentMonth - 1;
+            int lastYear = currentMonth == 1 ? currentYear - 1 : currentYear;
+
+            if (FechaContabilizacionToDateTime.Year == lastYear && FechaContabilizacionToDateTime.Month == lastMonth)
+                fechaContabilizacion = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+            string result = new BorrarEntradaServicioConsumerMOA().BorrarEntradaServicio(parametros.DocumentoNumero, fechaContabilizacion);
 
             return result;
         }

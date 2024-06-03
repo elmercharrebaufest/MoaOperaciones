@@ -70,6 +70,7 @@
     <Compile Include="Dto\OrdenesCompra\PosicionDto.cs" />
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\ReporteDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenCompraItemDto.cs" />

@@ -284,7 +284,7 @@
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowData)"
                                                                    (ngModelChange)="rowData.PorcentajeACertificar=$event"
-                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-3'"
+                                                                   [ngModel]="rowData.PorcentajeACertificar | number:'1.0-2'"
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required
                                                                    disabled
@@ -355,7 +355,7 @@
                                                                                 </div>
                                                                                 <ng-template #SePuedeBorrar>
                                                                                     <i>
-                                                                                        <img (click)="deleteES(rowData.Id)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
+                                                                                        <img (click)="deleteES(rowData.Id, rowData.FechaContabilizacion)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
                                                                                     </i>
                                                                                 </ng-template>
                                                                             </ng-container>

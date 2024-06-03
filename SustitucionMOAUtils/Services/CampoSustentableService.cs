@@ -527,7 +527,8 @@ namespace SustitucionMOAUtils.Services
             {
                 return;
             }
-            var cuit = archivoSinDescargar.CampoCosecha.Proveedores.First().CUIT;
+            var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.CampoCosecha_Id == archivoSinDescargar.CampoCosechaId);
+            var cuit = campoProveedor.CUIT;
             //Hay un punto ('.') extra porque el archivo que devuelve Ucropit lo toma del kmz
             //Al parecer cuando se sube usando la extension, esta ya tiene el '.' 
             var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}..json";
@@ -553,7 +554,7 @@ namespace SustitucionMOAUtils.Services
 
             archivoSinDescargar.Archivo = nuevoArchivo;
             archivoSinDescargar.ProcesadoUcropit = true;
-            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ? 
+            archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ?
                     Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
             archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
 
@@ -784,7 +785,7 @@ namespace SustitucionMOAUtils.Services
             BaseFont baseFont = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.WINANSI, BaseFont.EMBEDDED);
 
             LimpiarFirmaAclaracionPrevios(cb);
-            AddTextosPrimeraPagina(cb,baseFont,baseFontBold,fontSizeNormal);
+            AddTextosPrimeraPagina(cb, baseFont, baseFontBold, fontSizeNormal);
             document.NewPage();
 
             float fontSize = 10f;
@@ -793,14 +794,14 @@ namespace SustitucionMOAUtils.Services
             float xPosition = iTextSharp.text.PageSize.A4.Width / 10;
             float yPosition = iTextSharp.text.PageSize.A4.Height - ((iTextSharp.text.PageSize.A4.Height - 140f) / 5);
 
-            AddTextosSegundaPagina(writer,baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
+            AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
 
             var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
             Image logo = Image.GetInstance(logoPath);
             logo.ScaleToFit(200f, 150f);
             document.Add(logo);
 
-            AddTablaDatos(cb,datos,xPosition,xMargenTexto,yPosition);
+            AddTablaDatos(cb, datos, xPosition, xMargenTexto, yPosition);
             // close the streams and voilá the file should be changed :)
             document.Close();
             writer.Close();
@@ -833,7 +834,7 @@ namespace SustitucionMOAUtils.Services
             var baseTexto = 280f;
             cb.SetFontAndSize(baseFont, fontSizeNormal);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "RED II, modificada por la reglamentación 2022/996"
-                , 55f, baseTexto + (11 *6) + 0.75f, 0);
+                , 55f, baseTexto + (11 * 6) + 0.75f, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Con esta declaración, el agricultor reconoce que los auditores de los organismos de certificación o de 2BSvs o de un Estado miembro"
                 , 15f, baseTexto, 0);
             cb.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "pueden venir a verificar in situ si se han cumplido los requisitos pertinentes estipulados en la Directiva (UE) 2018/2001. Las pruebas de"
@@ -861,36 +862,36 @@ namespace SustitucionMOAUtils.Services
             under.BeginText();
             under.SetColorFill(BaseColor.BLACK);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
-            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Sres: Molinos Agro S.A.", xPosition + xMargenBase, yPosition,0);
+            under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Sres: Molinos Agro S.A.", xPosition + xMargenBase, yPosition, 0);
             under.SetFontAndSize(baseFontBold, fontSize);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Declaración de Conformidad según criterios de sustentabilidad para la producción de Biomasa, de acuerdo con los"
-                , xPosition + xMargenTexto, yPosition - (15f * 2),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 2), 0);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "requisitos de la Directiva 2018/2001/EC (RED II)"
-                , xPosition + xMargenTexto, yPosition - (15f * 3),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 3), 0);
             under.SetFontAndSize(baseFontBold, fontSizeNormal);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "De mi mayor consideración:"
-                , xPosition + xMargenBase, yPosition - (15f * 5),0);
+                , xPosition + xMargenBase, yPosition - (15f * 5), 0);
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Me dirijo a Uds. Para presentar la documentación requerida, para dar cumplimiento a la normativa"
-                , xPosition + xMargenTexto, yPosition - (15f * 6),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 6), 0);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Internacional vigente (Reglamento EU 2023/1115), sus políticas y procesos internos."
-                , xPosition + xMargenTexto, yPosition - (15f * 7),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 7), 0);
 
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "Para ello, acompañamos a la presente, la siguiente documentación, la cual se declara bajo"
-                , xPosition + xMargenTexto, yPosition - (15f * 8),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 8), 0);
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "juramento, que es fiel a la original y se encuentra plenamente vigente:"
-                , xPosition + xMargenTexto, yPosition - (15f * 9),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 9), 0);
 
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "1-  Declaración de sustentabilidad completa"
-                , xPosition + xMargenTexto, yPosition - (15f * 11),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 11), 0);
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "2-  Copia del Estatuto (última versión vigente)"
-                , xPosition + xMargenTexto, yPosition - (15f * 12),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 12), 0);
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "3-  Copia del poder de representación legal a nombre del firmante de la DDJJ"
-                , xPosition + xMargenTexto, yPosition - (15f * 13),0);
+                , xPosition + xMargenTexto, yPosition - (15f * 13), 0);
 
             under.ShowTextAligned(PdfContentByte.ALIGN_LEFT, "4-  En caso de persona física solo adjuntar copia del DNI en lugar de los puntos 2 y 3"
                 , xPosition + xMargenTexto, yPosition - (15f * 14), 0);
