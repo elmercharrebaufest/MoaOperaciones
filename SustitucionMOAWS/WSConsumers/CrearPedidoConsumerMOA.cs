@@ -305,9 +305,9 @@ namespace SustitucionMOAWS.WSConsumers
                 solpPedidoSAP.IM_POCONDList.Add(new ZMPES6870
                 {
                     ITM_NUMBER = $"{poItem:00000}",  //el número de ítem al que corresponda la condición
-                    COND_TYPE = creadoAutomatico ? "ZP01" : "ZP00",
-                    //ZP01 toma los datos del registro info
-                    //ZP00 toma los datos de la adjudicacion
+                    COND_TYPE = creadoAutomatico ? "ZP00" : "ZP01",
+                    //ZP00 toma los datos del registro info
+                    //ZP01 toma los datos de la adjudicacion
                     COND_VALUE = IM_POITEM.NET_PRICE, //el importe de la condición
                     COND_VALUESpecified = true,
                     CURRENCY = adjudicacion.Moneda.Codigo /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo*/,//moneda de la adjudicacion
