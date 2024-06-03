@@ -889,8 +889,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-    ordenarYFiltrarClientes(result: any): any[] {
-        result = result.filter((thing, i, arr) => {
+    ordenarYFiltrarClientes(listaClientes: any): any[] {
+        let result = listaClientes.filter((thing, i, arr) => {
             return arr.indexOf(arr.find(t => t.CodigoProveedor === thing.CodigoProveedor)) === i;
         });
         result.sort((a, b) => {
@@ -913,6 +913,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 // Clientes que existen en SAP pero no en BD
                 cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CodigoProveedor + ")";
             }
+            cliente.EsRevendedor = cliente.EsRevendedor ||
+                listaClientes.some((e, i, arr) => {
+                    return e.CodigoProveedor == cliente.CodigoProveedor && e.EsRevendedor;
+                });
         });
         return result;
     }
