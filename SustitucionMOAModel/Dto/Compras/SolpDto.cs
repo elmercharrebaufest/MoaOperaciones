@@ -117,6 +117,7 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorAsignadoCuit { get; set; }
         public string ProveedorAsignadoRazonSocial { get; set; }
         public int? ProveedorAdicional_Id { get; set; }
+        public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

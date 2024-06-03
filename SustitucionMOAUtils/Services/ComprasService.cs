@@ -3195,7 +3195,7 @@ namespace SustitucionMOAUtils.Services
 
                     solps.Add(obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros));
                 }
-
+                
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
@@ -3206,7 +3206,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
                 foreach (var item in todasLasOfertas.Usuarios)
-                {
+                {                    
                     var respetaMateriales = true;
                     if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
                     {
@@ -3313,6 +3313,7 @@ namespace SustitucionMOAUtils.Services
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
+                todasLasOfertas.SolpDto.ObservacionesCotizacion = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
@@ -3350,7 +3351,7 @@ namespace SustitucionMOAUtils.Services
                             posicion.Posicion.AdjudicacionCompleta = false;
                         }
                     }
-                }
+                }               
 
                 return todasLasOfertas;
             }
