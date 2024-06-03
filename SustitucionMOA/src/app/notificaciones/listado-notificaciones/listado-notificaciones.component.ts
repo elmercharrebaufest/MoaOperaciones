@@ -9,7 +9,6 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { NotificacionesService } from '../notificaciones.service';
 
-
 @Component({
   selector: 'app-listado-notificaciones',
   templateUrl: './listado-notificaciones.component.html',
@@ -18,10 +17,6 @@ import { NotificacionesService } from '../notificaciones.service';
 
 })
 export class ListadoNotificacionesComponent extends BaseComponent implements OnInit {
-
-  path: string[] = []; 
-  order: number = 1;
-  
   
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
@@ -64,7 +59,7 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.data = result.data.filter(item => item.Borrada !== true);
+                        this.data = result.data;
                     }
                 },
                 error => {
@@ -157,8 +152,8 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
                     } else if (result.info != undefined) {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
-                        this.getListado()
                         this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getListado()
                     }
                 },
                 error => {
@@ -171,14 +166,5 @@ export class ListadoNotificacionesComponent extends BaseComponent implements OnI
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
-    }
-
-    orderColumnBy(column: string) {
-        if (column === this.orderedByColumn) {
-            this.orderDirection = -this.orderDirection;
-        } else {
-            this.orderDirection = 1;
-            this.orderedByColumn = column;
-        }
     }
 }

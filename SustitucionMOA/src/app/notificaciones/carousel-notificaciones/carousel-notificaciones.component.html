@@ -1,35 +1,34 @@
 <div *ngIf="mostrarNotificaciones">
-  <div class="col-xs-12 col-md-12 tituloNotificacion">
-    <strong>¡Bienvenido!</strong>
-  </div>
-  <div class="col-xs-12 col-md-12 subtituloNotificacion">
-    Hoy tienes una nueva noticia.
-  </div>
-     
-
-  <div class="col-xs-12 col-md-12 notificacionContainer">
-
-    <div class="col-xs-12 col-md-8 col-lg-9 container notificacionMensaje">
-      <div class="divAnterior">
-        <i class="fa fa-caret-left btnPrevious" *ngIf="mostrarBotonAnterior" (click)="notificacionAnterior()"></i>
-      </div>
-      <div class="divMensaje">{{notificacionActual?.Mensaje || ""}}</div>
-      <div class="divSiguiente">
-        <i class="fa fa-caret-right btnNext" *ngIf="mostrarBotonSiguiente" (click)="siguienteNotificacion()"></i>
-      </div>
+    <div class="col-xs-12 col-md-12 tituloNotificacion">
+        <strong>¡Bienvenido!</strong>
     </div>
-    <div class="col-xs-12 col-md-4 col-lg-3 notificacionContenedorBotones">
-      <div class="row">
-        <div class="col-xs-6 col-md-6 col-lg-6">
-          <a *ngIf="mostrarVerMas" href="{{notificacionActual?.LinkAdjunto || ''}}" target="blank"
-            class="btn-custom btn-guardar btn-chico">VER MAS</a>
-        </div>
-        <div class="col-xs-6 col-md-6 col-lg-6">
-          <button class="btn-custom btn-cerrar btn-chico" (click)="cerrarNotificaciones()"> CERRAR </button>
-        </div>
-      </div>
+    <div class="col-xs-12 col-md-12 subtituloNotificacion">
+        Hoy tienes una nueva noticia.
     </div>
-  </div>
+
+    <div class="col-xs-12 col-md-12 notificacionContainer">
+
+        <div class="col-xs-12 col-md-8 col-lg-9 container notificacionMensaje">
+            <div class="divAnterior">
+                <i class="fa fa-caret-left btnPrevious" *ngIf="mostrarBotonAnterior" (click)="notificacionAnterior()"></i>
+            </div>
+            <div class="divMensaje">{{notificacionActual?.Mensaje || ""}}</div>
+            <div class="divSiguiente">
+                <i class="fa fa-caret-right btnNext" *ngIf="mostrarBotonSiguiente" (click)="siguienteNotificacion()"></i>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-4 col-lg-3 notificacionContenedorBotones">
+            <div class="row">
+                <div class="col-xs-6 col-md-6 col-lg-6">
+                    <a *ngIf="mostrarVerMas" href="{{notificacionActual?.LinkAdjunto || ''}}" target="blank"
+                       class="btn-custom btn-guardar btn-chico">VER MAS</a>
+                </div>
+                <div class="col-xs-6 col-md-6 col-lg-6">
+                    <button class="btn-custom btn-cerrar btn-chico" (click)="cerrarNotificaciones()"> CERRAR </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="divPaddingFinal">
 
