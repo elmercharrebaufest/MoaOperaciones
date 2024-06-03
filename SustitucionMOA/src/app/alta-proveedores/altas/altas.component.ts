@@ -133,7 +133,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     setEstadosDefault() {
         const estadosDefault: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([
             "Alta solicitada",
-            "Analisis de Nosis",
+            "Análisis de Nosis",
+            "Análisis Interno",
             "Etapa Final"
         ]);
         this.estadosSelected = estadosDefault.value;
