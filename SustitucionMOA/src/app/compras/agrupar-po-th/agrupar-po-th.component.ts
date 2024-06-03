@@ -331,7 +331,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.fechaInicio = filtrosGuardados.FechaDesde;
             this.fechaFin = filtrosGuardados.FechaHasta;
             this.selectAgrupada = filtrosGuardados.Agrupada;
-            this.selectTipoPosicion = filtrosGuardados.EsServicio;
+            this.selectTipoPosicion = true;
         }
         this.listarSolpCondicionEspecial();
     }
