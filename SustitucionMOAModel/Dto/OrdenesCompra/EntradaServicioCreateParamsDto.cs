@@ -50,5 +50,6 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string ShortText { get; set; }
         public string PlannedPackage { get; set; }
         public string PlannedLine { get; set; }
+        public string Descripcion { get; set; }
     }
 }

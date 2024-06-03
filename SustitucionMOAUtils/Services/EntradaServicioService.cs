@@ -157,13 +157,13 @@ namespace SustitucionMOAUtils.Services
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
-                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales.ToDictionary(detalle => detalle.Nro_linea);
+                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales.ToDictionary(detalle => detalle.Planned_line);
 
                         // Iterar sobre los detalles de la entrada de servicio
                         foreach (EntradaServicioDetalleDto detalleSAP in documento.entradaServicioDetalle)
                         {
                             // Verificar si hay detalles de aprobación correspondientes
-                            if (detallesAprobacionPorLinea.TryGetValue(detalleSAP.Ext_line, out Aprobaciones detalle))
+                            if (detallesAprobacionPorLinea.TryGetValue(detalleSAP.NumeroLinea, out Aprobaciones detalle))
                             {
                                 detalleSAP.NumeroLinea = detalle.Nro_linea;
                                 detalleSAP.Descripcion = detalle.Descripcion_ES;
@@ -623,7 +623,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             temp.Referencia = parametros.EntrySheetHeader.DocumentoReferenciaNumero;
-            temp.Descripcion_ES = parametros.EntrySheetHeader.Descripcion;
             temp.Fecha_Carga_ES = DateTime.Today;
             temp.Notificaciones_enviadas = false;
             temp.Ingresante_CDS = userMail;
@@ -808,6 +807,8 @@ namespace SustitucionMOAUtils.Services
             //Datos por Item en ES
             foreach (EntrySheetServiceItemSection esItem in parametros.EntrySheetServices.Items)
             {
+                temp.Descripcion_ES = esItem.Descripcion;
+
                 Aprobaciones aprobacion = new Aprobaciones();
 
                 //Copiar lo cargado hasta ahora
@@ -931,8 +932,8 @@ namespace SustitucionMOAUtils.Services
                     EntradaServicioSapParams.EntrySheetHeader = new EntrySheetHeaderSection
                     {
                         Descripcion = EntradasDeServicioTemp[0].Descripcion_ES,
-                        FechaDocumento = FormatearFecha(EntradasDeServicioTemp[0].Fecha_Documento.ToString()),
-                        FechaContabilizacion = modDate == false ? FormatearFecha(EntradasDeServicioTemp[0].Fecha_Contabilizacion.ToString()) : FormatearFecha(newDate.ToString()),
+                        FechaDocumento = EntradasDeServicioTemp[0].Fecha_Documento?.ToString("yyyy-MM-dd"),
+                        FechaContabilizacion = modDate == false ? EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd") : newDate.ToString("yyyy-MM-dd"),
                         OrdenCompraNumero = EntradasDeServicioTemp[0].NRO_OC,
                         OrdenCompraPosicionNumero = EntradasDeServicioTemp[0].NRO_POS,
                         DocumentoReferenciaNumero = EntradasDeServicioTemp[0].Referencia

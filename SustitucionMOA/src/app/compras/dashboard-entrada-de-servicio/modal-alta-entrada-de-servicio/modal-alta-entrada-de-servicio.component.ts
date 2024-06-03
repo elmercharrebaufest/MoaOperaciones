@@ -358,7 +358,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
-                PlannedLine: item.LINE_NO
+                PlannedLine: item.LINE_NO,
+                Descripcion: item.Descripcion,
             }));
 
             const entrySheetServices = {
