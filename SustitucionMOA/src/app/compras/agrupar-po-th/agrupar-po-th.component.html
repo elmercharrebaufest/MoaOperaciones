@@ -60,15 +60,15 @@
     </div>
 
     <div class="row myRow col-md-11 col-lg-11">
-        <div class="col-md-2 col-lg-2">
+        <div class="col-md-3 col-lg-3">
             <label for="selectAgrupada">Filtro agrupada</label>
             <p-dropdown [options]="Agrupada" [(ngModel)]="selectAgrupada" placeholder="Esta agrupada" showClear="true"></p-dropdown>
         </div>
-        <div class="col-md-2 col-lg-2">
+        <div class="col-md-3 col-lg-3">
             <label for="selectTipoPosicion">Filtro posicion</label>
             <p-dropdown [options]="EsServicio" [(ngModel)]="selectTipoPosicion"></p-dropdown>
         </div>
-        <div class="col-md-4" style="margin-top: 35px;">
+        <div class="col-md-3" style="margin-top: 35px;">
             <span style="margin-right: 10px;">
                 <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP" [(ngModel)]="sap"></p-checkbox>
             </span>
@@ -128,7 +128,7 @@
                         <td>{{solp.NombreDeObra}}</td>
                         <td>{{solp.ProveedorAsignadoCuit}}</td>
                         <td>{{solp.ProveedorAsignadoRazonSocial}}</td>
-                        <td>{{solp.Adicional}}</td>
+                        <td>{{solp.NroOrdenDeCompraAdicional}}</td>
                         <td>{{solp.Agrupada ? "Si":"No"}}</td>
                     </tr>
                     <tr *ngIf="solp.expanded && solp.PosicionCompras.length > 0">
