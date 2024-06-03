@@ -69,6 +69,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             UnidadId = pop.SolpPosicion.Unidad_Id,
                                             FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio,
                                             FechaOferta = pop.SolpPosicion.FechaEntregaServicio,
+                                            NroSolp = pop.SolpPosicion.Solp.NroSolp,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {
                                                 
