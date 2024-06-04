@@ -909,6 +909,14 @@ namespace SustitucionMOAUtils.Services
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
+            string status = CheckESStatus(EntradasDeServicioTemp);
+            if(status.Contains("Modificado"))
+            {
+                result.Type = "Desync";
+                string estado = status.Split('-')[1];
+                result.Message = $"La entrada de servicio {nro_es_local} no se encuentra en estado Pendiente de Aprobación. Su estado actual es: {estado}";
+                return result;
+            }
             EntradaServicioCreateParamsDto EntradaServicioSapParams = new EntradaServicioCreateParamsDto();
             EmailDetailCertificateDto emailDetailCertificateDto = new EmailDetailCertificateDto();
             List<ServiceDetailDto> serviceDetailDtoList = new List<ServiceDetailDto>();
@@ -1028,9 +1036,24 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="rechazo"></param>
         /// <returns></returns>
-        public List<Aprobaciones> RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo)
+        public EntradaServicioRejectRespuestaDto RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo)
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == rechazo.NumeroCertificacion);
+            EntradaServicioRejectRespuestaDto ret = new EntradaServicioRejectRespuestaDto();            
+            ret.status = "";
+            string check = CheckESStatus(EntradasDeServicioTemp);
+            if (check.Contains("Modificado"))
+            {
+                string estado = check.Split('-')[1];
+                ret.status = $"La entrada de servicio {EntradasDeServicioTemp[0].NRO_ES_LOCAL} no se encuentra en estado Pendiente de Aprobación. Su estado actual es: {estado}";
+                ret.result = EntradasDeServicioTemp;
+                return ret;
+            }
+            else
+            {
+                ret.status = "OK";
+            }
+            
             foreach (var ES in EntradasDeServicioTemp)
             {
                 if (ES.Estado_certificacion == "Pendiente Aprobación")
@@ -1059,8 +1082,39 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            ret.result = EntradasDeServicioTemp;
 
-            return EntradasDeServicioTemp;
+            return ret;
+        }
+
+        /// <summary>
+        /// MMSN-1021 - Chequea los estados de las ES seleccionadas, por si han sido cambiadas y no ha sido actualizado el listado
+        /// </summary>
+        /// <param name="ESList">Lista de entradas de servicio</param>
+        /// <returns>OK - ES en pendiente de aprobación
+        /// Modificado - ES en un estado distinto de pendiente de aprobación
+        /// Vacia - Lista sin elementos - Error</returns>
+        private string CheckESStatus(List<Aprobaciones> ESList)
+        {
+            string res = "OK";
+
+            if(ESList.Count > 0)
+            {
+                foreach(Aprobaciones ap in ESList)
+                {
+                    if(ap.Estado_certificacion != "Pendiente Aprobación")
+                    {
+                        res = "Modificado -" + ap.Estado_certificacion;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                res = "Vacia";
+            }
+
+            return res;
         }
 
         public async Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto)

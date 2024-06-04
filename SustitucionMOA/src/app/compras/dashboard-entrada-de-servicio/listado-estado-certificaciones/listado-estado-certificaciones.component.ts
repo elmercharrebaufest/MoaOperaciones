@@ -372,11 +372,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
-        (resp: any) => {
-          this.resetForm();
-          this.getListarPO(this.proveedor, this.documentoNumero);
-          this.mostrarMotivosRechazos = false;
-          this.messageService.add({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+          (resp: any) => {
+              if (resp.data.status == "OK") {
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.mostrarMotivosRechazos = false;
+                  this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
+              }
+              else {
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.mostrarMotivosRechazos = false;
+                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
+              }
         }, error => {
           this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
         }
@@ -436,6 +444,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 case "S": {
                   this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
                   this.showContainerTable();
+                  break;
+                 }
+                case "Desync": {
+                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
+                  this.showContainerTable();
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
                   break;
                 }
                 case "E": {

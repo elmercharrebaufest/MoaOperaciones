@@ -28,7 +28,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         EntradaServicioCreateRespuestaDto ValidarIngresante(EntradaServicioCreateParamsDto parametros, string userMail);
         Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto);
-        List<Aprobaciones> RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo);
+        EntradaServicioRejectRespuestaDto RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo);
         Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local);
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);

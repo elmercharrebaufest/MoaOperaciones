@@ -93,6 +93,7 @@
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraMocDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateParamsDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioRejectRespuestaDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateRespuestaDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDetalleDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemEntradaServicioDto.cs" />
@@ -281,7 +282,6 @@
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
-
     <Compile Include="Entities\ChatExternoCompras.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
@@ -294,7 +294,6 @@
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
-
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
     <Compile Include="Entities\Adjudicacion.cs" />
     <Compile Include="Entities\AdjudicacionPosicion.cs" />
