@@ -512,8 +512,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var clientes = usuario.Proveedores.Select(c => c.Id);
-                orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.Cliente_Id) && n.Id == ordenId).FirstOrDefault();
+                var clientes = usuario.Proveedores.Select(c => c.CUIT);
+                orden = repositorio.Listar<OrdenDeCarga>(n => clientes.Contains(n.CUITCliente) && n.Id == ordenId).FirstOrDefault();
             }
 
             if (orden == null) throw new InfoCustomException("No se encontró ninguna orden de carga");
