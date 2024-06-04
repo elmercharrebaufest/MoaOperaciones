@@ -179,6 +179,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.Aprobador = detalle.Aprobador_CDS;
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
+                                documento.Descripcion = detalle.Texto_breve_servicio;
                             }
                         }
                     }
@@ -247,7 +248,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 OrdenCompra = temporal.NRO_OC,
-                Descripcion = temporal.Descripcion_ES,
+                Descripcion = temporal.Texto_breve_servicio,
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
