@@ -224,8 +224,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         } else {
                             let estadosIntermedios = result.intermedios;
                             let estadosFinales = result.finales;
-                            let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
-                            this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
+                            this.estados = estadosIntermedios.concat(estadosFinales);
                             this.descripcionEstadoAlta = [];
                             this.estados.forEach(x =>
                                 this.descripcionEstadoAlta.push({
