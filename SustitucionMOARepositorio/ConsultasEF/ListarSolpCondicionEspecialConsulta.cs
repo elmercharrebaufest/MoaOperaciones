@@ -12,10 +12,11 @@ using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
 using System.Linq;
+using System.Transactions;
 
 namespace SustitucionMOARepositorio.ConsultasEF
 {
-    public class ListarSolpCondicionEspecialConsulta : IConsultaPaginada<SolpDto>
+    public class ListarSolpCondicionEspecialConsulta : IConsulta<SolpDto>
     {
         private readonly FiltroServiceDto filtro;
 
@@ -23,7 +24,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
         {
             this.filtro = filtro;
         }
-        public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
+        public List<SolpDto> Ejecutar(DbContext contexto)
         {
             try
             {
@@ -46,8 +47,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                       (!filtro.TipoImputacion.Any() || solp.Posiciones.Any(c => filtro.TipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
                                       (!filtro.ValorTipoImputacion.Any() || solp.Posiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)) ||
                                         solp.Posiciones.Any(p => p.Subposiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.TipoImputacion_Id)))) &&
-                                      (filtro.EsServicio ? solp.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") : solp.Posiciones.Any(p => p.TipoPosicion.Codigo != "SERVICIO")) && 
-                                      (filtro.Agrupada != null ? solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.PeticionDeOferta.Agrupada == filtro.Agrupada) : true) &&
+                                      (filtro.EsServicio ? solp.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") : solp.Posiciones.Any(p => p.TipoPosicion.Codigo != "SERVICIO")) &&
+
+                                      (filtro.Agrupada != null ? solp.Posiciones.FirstOrDefault().Peticiones.All(x => x.PeticionDeOferta.Agrupada == filtro.Agrupada) : true) &&
+                                      
                                       (!solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.SolpPosicion.AdjudicacionPosiciones.Any())) &&
                                       solp.Posiciones.All(posi => string.IsNullOrEmpty(posi.NumeroContratoSuperior))
                                 select new SolpDto
@@ -69,7 +72,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Pagina = filtro.Paginacion.Pagina,
                                     EstadoSolpSap = solp.EstadoSolpSap_Id != null ? new TablaSapDto { Id = solp.EstadoSolpSap_Id ?? 0, CodigoSap = solp.EstadoSolpSap.CodigoSap, Descripcion = solp.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
                                     NroPeticionDeOferta = solp.Posiciones.All(x => x.Peticiones.Any()) ? solp.Posiciones.FirstOrDefault().Peticiones.FirstOrDefault().PeticionDeOferta.Id : 0,
-                                    Agrupada = solp.Posiciones.FirstOrDefault().Peticiones.FirstOrDefault().PeticionDeOferta.Agrupada ?? false,
+                                    Agrupada = solp.Posiciones.FirstOrDefault().Peticiones.FirstOrDefault().PeticionDeOferta.Agrupada ? true : false,
                                     TipoPosicionCodigo = solp.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
                                     PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                        where posicion.Solp_Id == solp.Id 
@@ -110,11 +113,19 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                        }),
                                 };
 
-                return resultado.OrdenarPaginarLista(filtro.Paginacion);
+                return resultado.ToList();
             }
             catch (Exception e)
             {
                 throw;
+            }
+        }
+
+        List<SolpDto> IConsulta<SolpDto>.Ejecutar(DbContext contexto)
+        {
+            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
+            {
+                return Ejecutar(contexto);
             }
         }
     }

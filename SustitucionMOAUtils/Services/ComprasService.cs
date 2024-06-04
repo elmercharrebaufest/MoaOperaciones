@@ -9582,12 +9582,12 @@ namespace SustitucionMOAUtils.Services
             return usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "Comprador" : "Solicitante";
         }
 
-        public ListaPaginada<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto)
+        public List<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto)
         {
             try
             {
                 var filtro = ConvertirAFiltroServiceDto(filtroDto);
-                var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpCondicionEspecialConsulta(filtro));
+                var todasLasSolp = repositorio.ListarConsulta(new ListarSolpCondicionEspecialConsulta(filtro));
                 return todasLasSolp;
             }
             catch (Exception e)
@@ -9672,7 +9672,6 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
-
         }
 
         private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion, List<int> peticionDeOfertaUsuarioIds)
