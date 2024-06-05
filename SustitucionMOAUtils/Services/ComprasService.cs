@@ -6360,7 +6360,6 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
             var cotizaciones = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).ToList();
@@ -8085,8 +8084,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-
         public string ExportarChatInternoAtexto(int solpId, string rutaArchivo, int? peticionDeOfertaUsuarioId)
         {
             try
@@ -9679,9 +9676,9 @@ namespace SustitucionMOAUtils.Services
         private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion, List<int> peticionDeOfertaUsuarioIds)
         {
             var cotizacionesGuardadas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioIds.Contains(coti.PeticionDeOfertaUsuario_Id));
-            var cotizacion = peticion.Usuarios.First().Cotizaciones.First();
-            if (cotizacion != null) 
-            { 
+            var cotizacion = peticion.Usuarios.First().Cotizaciones.FirstOrDefault();
+            if (cotizacion != null)
+            {
                 foreach (var cotizacionVieja in cotizacionesGuardadas)
                 {
                     foreach (var cotizacionPosicion in cotizacionVieja.CotizacionPosiciones)
@@ -9690,7 +9687,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 repositorio.GuardarCambios();
-
                 GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
             }
         }

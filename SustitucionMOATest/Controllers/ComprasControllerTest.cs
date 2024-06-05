@@ -581,7 +581,7 @@ namespace SustitucionMOATest.Controllers
             {
                 Columna = "NroSolp"
             };
-            var solpsDto = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { } }, 1, 10, 5);
+            var solpsDto = new List<SolpDto>(new List<SolpDto> { new SolpDto { } });
             comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Returns(solpsDto);
 
             var result = target.ListarSolpCondicionEspecial(filtroJson);
@@ -598,7 +598,7 @@ namespace SustitucionMOATest.Controllers
             {
                 Columna = "NroSolp"
             };
-            var solpsDto = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { } }, 1, 10, 5);
+            var solpsDto = new List<SolpDto>(new List<SolpDto> { new SolpDto { } });
             var expectedJsonResult = new { data = solpsDto };
             comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Returns(solpsDto);
 
