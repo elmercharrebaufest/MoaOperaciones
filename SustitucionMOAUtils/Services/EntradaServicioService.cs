@@ -141,18 +141,26 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = parametros.VerTodo ?
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
-                            ? true
-                            : (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail))))
-                        )
-                        :
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail)))
-                        );
+                    List<Aprobaciones> ESTemporales;
+
+                    if (parametros.VerTodo)
+                    {
+                        if (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
+                        {
+                            ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
+                        }
+                        else
+                        {
+                            ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+                                && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                        }
+                    }
+                    else
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+                            && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                    }
+
 
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
@@ -179,12 +187,12 @@ namespace SustitucionMOAUtils.Services
                                 documento.Aprobador = detalle.Aprobador_CDS;
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
-                                documento.Descripcion = detalle.Texto_breve_servicio;
                             }
                         }
-                    }
 
-                    EntradasServicio.Add(documento);
+                        EntradasServicio.Add(documento);
+
+                    }
 
                 }
             }
