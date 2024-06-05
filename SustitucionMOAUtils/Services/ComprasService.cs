@@ -9686,6 +9686,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     cotizacionPosicion.Cotizacion_Id = cotizacion.Id;
                 }
+                repositorio.GuardarCambios();
+
+                GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
             }
             repositorio.GuardarCambios();
             GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
