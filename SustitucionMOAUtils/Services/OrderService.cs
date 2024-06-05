@@ -34,11 +34,11 @@ namespace SustitucionMOAUtils.Services
             //_liquidacionService = liquidacionService;
         }
 
-        public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros)
+        public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros, string userMail)
         {
             try
             {
-                List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros);
+                List<DetalleOrdenDeCompraDto> result = ServicioSAP_OrdenesCompraCabeceras(parametros, userMail);
 
                 if (!string.IsNullOrEmpty(parametros.ColumnaOrden))
                     result = OrdenarOrdenesCompra(result, parametros.ColumnaOrden, parametros.OrdenAscendente);
@@ -132,17 +132,25 @@ namespace SustitucionMOAUtils.Services
         }
 
         // Consultas a servicio SAP con distintos criterios de busqueda
-        public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros)
+        public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
         {
             List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
+            List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
             if (parametros.vendedor == "-")
                 return result;
 
-            List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            bool usuarioSolp = false;
 
-            ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+            if (userMail != null)
+            {
+                Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == userMail);
+
+                usuarioSolp = usuario.Roles.Any(rol => rol.Nombre == "SOLP");
+            }
+
+            ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, usuarioSolp);
 
             //Se filtran por las OC tomando las que empiezan con 412
             ordenesCompra = ordenesCompra.Where(x => x.Id.ToString().StartsWith("412")).ToList();
@@ -151,8 +159,6 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             //List<TablaSap> centros = new List<TablaSap>();
             //List<TablaSap> almacenes = new List<TablaSap>();
-
-
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
 
@@ -203,7 +209,7 @@ namespace SustitucionMOAUtils.Services
                 string nroOC = ordenCompra.Id.ToString();
 
                 // Obtengo detalle de una OC //
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes);
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, usuarioSolp);
 
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
