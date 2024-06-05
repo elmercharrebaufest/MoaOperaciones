@@ -963,7 +963,6 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.Proveedor = "";
                     emailDetailCertificateDto.Importe = EntradasDeServicioTemp[0].Importe.ToString();
                     emailDetailCertificateDto.MontoTotal = EntradasDeServicioTemp[0].Monto_total.ToString();
-                    emailDetailCertificateDto.NumeroCertificacion = EntradasDeServicioTemp[0].NRO_ES_LOCAL;
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {
@@ -1015,6 +1014,7 @@ namespace SustitucionMOAUtils.Services
                 if (result.Type == "I" && result.Id == "SE")
                 {
                     int ESNumber = GetESNumber(result.Message);
+                    emailDetailCertificateDto.NumeroCertificacion = ESNumber.ToString();
                     foreach (var ES in EntradasDeServicioTemp)
                     {
                         if (ES.Estado_certificacion == "Pendiente Aprobación")
@@ -1032,6 +1032,9 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
                     }
+                } else
+                {
+                    emailDetailCertificateDto.NumeroCertificacion = EntradasDeServicioTemp[0].NRO_ES_LOCAL;
                 }
             }
 
