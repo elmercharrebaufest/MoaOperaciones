@@ -4138,14 +4138,14 @@ namespace SustitucionMOAUtils.Services
                     UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
                     Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
                     FechaCreacion = DateTime.Now,
-
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posicionesPeticion,
                     PlazoDeOferta = fechaOferta ?? posiciones.OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value,
                     Usuarios = poUsuarios,
                     UsuariosAdicionales = poUsuariosAdicionales,
                     RegistroInfo = peticionDeOferta.RegistroInfo,
-                    AdjuntoPliego = peticionDeOferta.AdjuntoPliego
+                    AdjuntoPliego = peticionDeOferta.AdjuntoPliego,
+                    Agrupada = false
                 };
 
                 peticion = repositorio.Agregar(peticion);
