@@ -294,7 +294,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 this.confirmationService.confirm({
                     message: "<ul>" + this.mensajeError + "</ul>",
                     accept: () => this.cerrarMensajes(msjTypes),
-                    reject: () => this.cerrarMensajes(msjTypes)
+                    rejectVisible: false
                 });
             },
             (error) => {
@@ -303,9 +303,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     accept: () => {
                         this.closeDialog.emit();
                     },
-                    reject: () => {
-                        this.closeDialog.emit();
-                    }
+                    rejectVisible: false
                 }
                 );
             }
