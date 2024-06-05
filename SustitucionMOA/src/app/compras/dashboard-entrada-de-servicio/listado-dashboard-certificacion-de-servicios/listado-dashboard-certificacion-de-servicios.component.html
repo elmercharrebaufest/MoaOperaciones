@@ -126,7 +126,7 @@
 
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
+                <tr [class.purple-row]="totalesBloqueadasEliminadas(rowData)" [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
                         <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
@@ -251,7 +251,7 @@
                                                         <input type="checkbox"
                                                                [(ngModel)]="rowItem.isSelected"
                                                                (change)="onCheckboxChange(rowItem)"
-                                                               [attr.disabled]="deshabilitarCheckboxDeItem(rowItem) ? true : null" />
+                                                               [attr.disabled]="deshabilitarCheckboxDeItem(rowItem) || rowData.Bloqueada ? true : null" />
                                                         <a href="#" [pRowToggler]="rowItem" *ngIf="rowItem.EntradasServicio.length > 0">
                                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                                         </a>
@@ -453,7 +453,7 @@
                         <td>
                             <div class="reference-merchandise"></div>
                         </td>
-                        <td>&emsp;La posición no recibe mas mercaderia</td>
+                        <td>&emsp;Entrega final / Eliminadas / Bloqueadas</td>
                     </tr>
                 </tbody>
             </table>
