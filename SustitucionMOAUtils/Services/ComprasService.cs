@@ -9680,27 +9680,19 @@ namespace SustitucionMOAUtils.Services
         {
             var cotizacionesGuardadas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioIds.Contains(coti.PeticionDeOfertaUsuario_Id));
             var cotizacion = peticion.Usuarios.First().Cotizaciones.First();
-            foreach (var cotizacionVieja in cotizacionesGuardadas)
-            {
-                foreach (var cotizacionPosicion in cotizacionVieja.CotizacionPosiciones)
+            if (cotizacion != null) 
+            { 
+                foreach (var cotizacionVieja in cotizacionesGuardadas)
                 {
-                    cotizacionPosicion.Cotizacion_Id = cotizacion.Id;
+                    foreach (var cotizacionPosicion in cotizacionVieja.CotizacionPosiciones)
+                    {
+                        cotizacionPosicion.Cotizacion_Id = cotizacion.Id;
+                    }
                 }
                 repositorio.GuardarCambios();
-
                 GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
             }
-            repositorio.GuardarCambios();
-            GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
         }
-
-        //private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion)
-        //{
-        //    var peticionDeOfertaUsuarioId = peticion.Usuarios.Select(x => x.Id).ToList();
-        //    var cotizacionesNuevas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioId.Contains(coti.PeticionDeOfertaUsuario_Id));
-        //    AgregarPosicionACotizacionTrabajoYaHecho(cotizacionesNuevas, peticion.Posiciones.Select(x => x.SolpPosicion).ToList());
-        //    repositorio.GuardarCambios();
-        //}
 
         private void EliminarPOTrabajoHecho(List<PeticionDeOferta> peticiones)
         {
