@@ -88,8 +88,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     contratoMarco: boolean = false;
     orden: string;
     columna: string = "NroSolp";
-    itemsPorPagina: number = 10;
-    pagina: number = 1;
     proveedorSeleccionado: any = {};
     proveedores: any[] = new Array();
 
@@ -108,10 +106,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     filtrosPOAgrupada: FiltroDto = {
-        Pagina: 0,
-        ItemsPorPagina: 0,
+        Pagina: 1,
+        ItemsPorPagina: 300,
         Orden: '',
-        Columna: '',
+        Columna: 'NroSolp',
         NroSolp: '',
         NroPo: '',
         NombrePedido: '',
@@ -132,13 +130,13 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         CodigoProveedor: '',
         ListarPendiente: false,
         EsServicio: true,
-        Agrupada: false
+        Agrupada: false,
     };
 
     ngOnInit() {
         this.filtrosPOAgrupada = {
             Pagina: 1,
-            ItemsPorPagina: 10,
+            ItemsPorPagina: 300,
             Orden: '',
             Columna: 'NroSolp',
             NroSolp: '',
@@ -256,8 +254,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     onBuscar() {
-        this.filtrosPOAgrupada.Pagina = this.pagina,
-        this.filtrosPOAgrupada.ItemsPorPagina = this.itemsPorPagina,
         this.filtrosPOAgrupada.Orden = this.orden,
         this.filtrosPOAgrupada.Columna = this.columna,
         this.filtrosPOAgrupada.CodigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -312,8 +308,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     recuperarFiltros() {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosPOAgrupada'));
         if (filtrosGuardados) {
-            this.pagina = filtrosGuardados.Pagina;
-            this.itemsPorPagina = filtrosGuardados.ItemsPorPagina;
             this.orden = filtrosGuardados.Orden;
             this.columna = filtrosGuardados.Columna;
             this.sap = filtrosGuardados.Sap;
