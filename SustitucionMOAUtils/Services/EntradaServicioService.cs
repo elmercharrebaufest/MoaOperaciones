@@ -187,6 +187,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.Aprobador = detalle.Aprobador_CDS;
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
+                                documento.Descripcion = detalle.Texto_breve_servicio;
                             }
                         }
 
