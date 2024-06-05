@@ -9690,6 +9690,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 repositorio.GuardarCambios();
+
                 GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
             }
         }
