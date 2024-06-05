@@ -7313,8 +7313,8 @@ namespace SustitucionMOAUtils.Services
                 Adjuntos = null,
                 RegistroInfo = esRegistroInfo
             };
-
-            var resultado = GrabarPeticionDeOferta(peticion, null, solp.TrabajoYaHecho != true && solp.Adicional == true, registroInfoLista);
+            var enviarMail = solp.TrabajoYaHecho != true && (solp.Adicional == true || solp.ProveedorAsignado_Id > 0);
+            var resultado = GrabarPeticionDeOferta(peticion, null, enviarMail, registroInfoLista);
             var peticionEntidad = repositorio.Obtener<PeticionDeOferta>(resultado.IdEntidad);
 
             return peticionEntidad;
