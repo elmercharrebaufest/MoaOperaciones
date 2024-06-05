@@ -659,7 +659,7 @@
                                 </a>
                             </div>
 
-                            <div>
+                            <div *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA')">
                                 <a (click)="goToSeccion('/compras/dashboardCertificacionDeServiciosProveedores')" href="#">
                                     CERTIFICACIÓN DE SERVICIOS PROVEEDOR
                                 </a>
