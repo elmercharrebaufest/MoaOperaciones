@@ -132,7 +132,7 @@ namespace SustitucionMOAWS.WSConsumers
                         PURCH_ORG = registro.OrganizacionDeCompra,
                         INFO_TYPE = "0",
                         PUR_GROUP = registro.GrupoDeCompras,
-                        PLANT = "",
+                        PLANT = registro.Centro,
                         CURRENCY = registro.Moneda,
                         MIN_PO_QTY = 0,
                         NRM_PO_QTY = 1,
@@ -156,7 +156,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         PURCH_ORG = "X",
                         INFO_TYPE = "X",
-                        PLANT = "",
+                        PLANT = string.IsNullOrEmpty(registro.Centro) ? "" : "X",
                         PUR_GROUP = "X",
                         CURRENCY = "X",
                         MIN_PO_QTY = "X",
