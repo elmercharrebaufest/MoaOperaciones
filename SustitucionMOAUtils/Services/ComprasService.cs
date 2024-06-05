@@ -4228,7 +4228,7 @@ namespace SustitucionMOAUtils.Services
                 .Select(x => x.SolpPosicion.Solp.NroSolp)
                 .ToList();
 
-            var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas);
+            var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas).Distinct();
 
             foreach (var solp in solps.Distinct())
             {
