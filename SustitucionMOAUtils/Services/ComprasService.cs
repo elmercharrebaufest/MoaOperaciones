@@ -7244,6 +7244,8 @@ namespace SustitucionMOAUtils.Services
             GuardarCotizacion cotizacion = CrearCotizacionDto(peticionEntidad, registroInfo, posiciones);
             respuestaCotizacion = GrabarCotizacion(cotizacion, null, true, solp.UsuarioCreacion_Id.Value, enviarMail);
             cotizacionNueva = repositorio.Obtener<Cotizacion>(respuestaCotizacion.IdEntidad);
+            var cotizaciones = new List<Cotizacion> { cotizacionNueva };
+            GrabarHistorialDeCotizaciones(cotizaciones);
         }
 
         private static GuardarCotizacion CrearCotizacionDto(PeticionDeOferta peticionEntidad, List<RegistroInfoDto> registroInfo, ICollection<SolpPosicion> posiciones)
@@ -9686,6 +9688,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             repositorio.GuardarCambios();
+            GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
         }
 
         //private void AgregarPosicionesCotizacionPOAgrupada(PeticionDeOferta peticion)
@@ -9759,7 +9762,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.GuardarCambios();
-            GrabarHistorialDeCotizaciones(cotizaciones);
+       
         }
 
         private void GrabarHistorialDeCotizaciones(List<Cotizacion> cotizaciones)
