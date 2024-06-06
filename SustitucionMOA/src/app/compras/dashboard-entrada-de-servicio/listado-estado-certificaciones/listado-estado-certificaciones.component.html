@@ -224,10 +224,10 @@
                 class="textoLibre" 
                 [disabled]="formularioMotivosRechazo.invalid" 
                 type="text" 
-                placeholder="En este espacio puede escribir una observación adicional." 
-                maxlength="50">
+                placeholder="Escriba una notificación adicional y se notificará al ingresante." 
+                maxlength="80">
             </textarea>
-            <p class="char-limit-message">Max 50 caracteres</p>
+            <p class="char-limit-message">Max. 80 caracteres</p>
         </div>
         <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()" [disabled]="formularioMotivosRechazo.invalid"></p-button>
     </form>
