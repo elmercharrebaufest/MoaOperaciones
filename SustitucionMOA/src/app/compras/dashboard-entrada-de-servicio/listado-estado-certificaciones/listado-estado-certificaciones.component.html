@@ -123,16 +123,15 @@
                             (click)="verMotivosRechazos(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
                         ></button>
-                    </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')">
-                        <button
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
                             type="button"
                             pButton
-                            label="Ver suplente"
+                            icon="pi pi-ellipsis-h"
+                            class="btn btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"
                             [disabled]="rowData.Suplente === null || !equalsIgnoreCase(rowData.Fiscal,usuario)"
                         ></button>
-                    </td>
+                    </td>                    
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{ rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
