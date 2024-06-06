@@ -504,7 +504,16 @@ namespace SustitucionMOAUtils.Services
                     Proveedor prov = new Proveedor();
                     prov = orderService.BuscarProveedor(orderParams);
 
-                    _= NotifyCreation(completeAp, prov);
+                    //MMSN-1030: Fix
+                    string aprobador = completeAp[0].Aprobador_CDS;
+                    var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                    int userId = 0;
+                    if(user != null)
+                    {
+                        userId = user.Id;
+                    }
+
+                    _ = NotifyCreation(completeAp, prov, userId);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -529,9 +538,9 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov,int userId)
         {
-           await emailCertificationService.EnviarMailAprobacion(completeAp, prov);
+           await emailCertificationService.EnviarMailAprobacion(completeAp, prov,userId);
            return true;
         }
 

@@ -18,13 +18,15 @@ namespace SustitucionMOA.Controllers
     public class AprobacionExternaController : BaseController
     {
         readonly IEntradaServicioService entradaServicioService;
+        readonly IUsuarioService usuarioService;
         private readonly OrderService orderService;
         
 
-        public AprobacionExternaController(IEntradaServicioService entradaServicioService, OrderService orderService)
+        public AprobacionExternaController(IEntradaServicioService entradaServicioService, OrderService orderService, IUsuarioService usuarioService)
         {
             this.entradaServicioService = entradaServicioService;
             this.orderService = orderService;
+            this.usuarioService = usuarioService;
         }
 
 
@@ -58,7 +60,8 @@ namespace SustitucionMOA.Controllers
 
                     if (!string.IsNullOrEmpty(User))
                     {
-                        if (aprobacionesListdb[0].Aprobador_CDS == User)
+                        var Usuario = usuarioService.GetUsuarioPorId(int.Parse(User));
+                        if (aprobacionesListdb[0].Aprobador_CDS == Usuario.Mail)
                         {
                             isApprover = true;
                         }
