@@ -188,6 +188,8 @@ namespace SustitucionMOAUtils.Services
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
                                 documento.Descripcion = detalle.Texto_breve_servicio;
+                                DateTime fechaAprobacionFormateada = (DateTime)detalle.Fecha_aprobacion;
+                                documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                             }
                         }
 
@@ -268,9 +270,20 @@ namespace SustitucionMOAUtils.Services
                 Ingresante = temporal.Ingresante_CDS,
                 Aprobador = temporal.Aprobador_CDS,
                 Suplente = temporal.Suplente,
-                Fiscal = temporal.Fiscal_SOLPED,
-                DesdeSap = false
+                Fiscal = temporal.Fiscal_SOLPED
             };
+
+            if (temporal.Estado_certificacion == "Aprobada")
+            {
+                DateTime fechaAprobacionFormateada = (DateTime)temporal.Fecha_aprobacion;
+                entradaServicioTemp.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
+            }
+
+            if (temporal.Estado_certificacion == "Rechazado")
+            {
+                DateTime fechaRechazoFormateada = (DateTime)temporal.Fecha_rechazo;
+                entradaServicioTemp.FechaRechazo = fechaRechazoFormateada.ToString("dd/MM/yyyy");
+            }
 
             Proveedor prov = orderService.BuscarProveedor(ordenParams);
             entradaServicioTemp.Proveedor = prov.RazonSocial ?? "-";
