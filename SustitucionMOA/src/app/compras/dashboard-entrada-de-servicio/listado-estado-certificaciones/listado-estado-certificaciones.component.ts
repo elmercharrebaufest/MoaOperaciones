@@ -328,9 +328,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-    // this.formularioSuplente.controls['suplente'].patchValue(suplente);
-    // this.formularioSuplente.controls['nro_es_local'].patchValue(nro_es_local);
-    // this.mostrarSuplentes = true;
     const data = {
       Suplente: suplente,
       NroEsLocal: nro_es_local
