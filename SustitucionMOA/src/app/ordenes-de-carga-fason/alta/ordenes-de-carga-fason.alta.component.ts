@@ -859,6 +859,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.validandoCuitDestino = false;
                 const esValidoSisa = this.manejarErroresApiResponse(result);
                 if (!esValidoSisa) {
+                    this.resetearPlantasDomicilios();
                     this.mensajeCuitDestino = "El CUIT destino no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
                 }
                 else {
@@ -890,6 +891,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.validandoCuitDestino = false;
                 const esValidoRuca = this.manejarErroresApiResponse(result);
                 if (!esValidoRuca) {
+                    this.resetearPlantasDomicilios();
                     this.mensajeCuitDestino = "El CUIT destino no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
                 } else {
                     this.onDestinoIngresado(cuitDestino)
