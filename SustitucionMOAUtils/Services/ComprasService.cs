@@ -3711,8 +3711,8 @@ namespace SustitucionMOAUtils.Services
                     //PRICE_UNIT = "X"
                     ITEM_CAT = "X",
                     ACCTASSCAT = "X",
-                    //DES_VENDOR = "X",
-                    FIXED_VEND = posicion.ProveedorAdjudicado_Id != null ? "X" : "",
+                    DES_VENDOR = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp == null ? "X" : "",
+                    FIXED_VEND = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp != null ? "X" : "",
                     PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",
                     AGREEMENT = !string.IsNullOrEmpty(posicion.NumeroContratoSuperior) ? "X" : "",
                     AGMT_ITEM = !string.IsNullOrEmpty(posicion.NumeroPosicionContratoSuperior) ? "X" : "",
