@@ -235,9 +235,9 @@ namespace SustitucionMOAUtils.Services
                 aplicacion.Estado = EstadoAplicacionCartaPorte.Rechazada;
                 aplicacion.Error = motivo;
                 repositorio.GuardarCambios();
-            }
 
-            emailAplicacionCPService.EnviarMailAplicacionRechazada(aplicacion.CartaPorte, aplicacion.Contrato, motivo, aplicacion.Proveedor.Mail);
+                emailAplicacionCPService.EnviarMailAplicacionRechazada(aplicacion.CartaPorte, aplicacion.Contrato, motivo, aplicacion.Usuario.Mail);
+            }
         }
 
         private void ValidarSchema<T>(T schema, string controller, string metodo)
