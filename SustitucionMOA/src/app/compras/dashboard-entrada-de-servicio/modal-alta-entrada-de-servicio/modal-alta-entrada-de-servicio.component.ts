@@ -333,10 +333,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 SolPedNumber: this.solPed,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
-                Descripcion: position.Descripcion,
+                Descripcion: position.Descripcion.trim(),
                 OrdenCompraNumero: PONumber,
                 OrdenCompraPosicionNumero: position.NroPosicion.toString(),
-                DocumentoReferenciaNumero: ref,
+                DocumentoReferenciaNumero: ref.trim(),
                 FechaDocumento: fechaDocFormateada,
                 FechaContabilizacion: fechaConFormateada,
                 GrabarAceptada: 'X'
@@ -490,7 +490,17 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     // --------- FIN CONFIGURACION DE COLUMNAS --------- //
 
-
+    /**
+     * No se puede comenzar la descripción con espacios en blanco
+     * @param event 
+     */
+    limpiarComienzoConEspacios(event: KeyboardEvent): void {
+        const inputElement = event.target as HTMLInputElement;
+        const value = inputElement.value;
+        if (/^\s/.test(value)) {
+            inputElement.value = value.replace(/^\s+/, '');
+        }
+    }
 
     ngOnDestroy() {
         this.saveColumnConfig(this.colConfig);
