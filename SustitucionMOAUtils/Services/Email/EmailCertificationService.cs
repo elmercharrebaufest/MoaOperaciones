@@ -155,8 +155,8 @@ namespace SustitucionMOAUtils.Services.Email
                 }
 
                 string baseURL = ConfigurationManager.AppSettings["SpaUrl"];
-                string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "\"";
-                string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "\"";
+                string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + destinatario + "\"";
+                string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + destinatario + "\"";
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
 

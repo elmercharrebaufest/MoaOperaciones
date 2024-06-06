@@ -32,7 +32,22 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var aprobacionesListdb = entradaServicioService.GetESTemporaria(nroESLocal);
+                string ES = "";
+                string User = "";               
+                bool oldES = false;
+                bool isApprover = false;
+                if (nroESLocal.Contains("&"))
+                {
+                    ES = nroESLocal.Split('&')[0];
+                    User = nroESLocal.Split('&')[1];
+                }
+                else
+                {
+                    ES = nroESLocal;
+                    oldES = true;
+                }
+
+                var aprobacionesListdb = entradaServicioService.GetESTemporaria(ES);
                 Proveedor prov = new Proveedor();
 
                 if (aprobacionesListdb.Count > 0)
@@ -40,10 +55,20 @@ namespace SustitucionMOA.Controllers
                     OrderParamsDto orderParams = new OrderParamsDto();
                     orderParams.OrdenCompraId = aprobacionesListdb[0].NRO_OC;
                     prov = orderService.BuscarProveedor(orderParams);
+
+                    if (!string.IsNullOrEmpty(User))
+                    {
+                        if (aprobacionesListdb[0].Aprobador_CDS == User)
+                        {
+                            isApprover = true;
+                        }
+                    }
                 }
 
+
+
                 string proveedorName = !string.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : "";
-                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName };
+                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName, aprobador = isApprover, versionAnt = oldES };
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
