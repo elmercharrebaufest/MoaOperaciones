@@ -92,7 +92,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
       ]
@@ -329,16 +328,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-    this.formularioSuplente.controls['suplente'].patchValue(suplente);
-    this.formularioSuplente.controls['nro_es_local'].patchValue(nro_es_local);
-    this.mostrarSuplentes = true;
+    const data = {
+      Suplente: suplente,
+      NroEsLocal: nro_es_local
+    }
+
+    this.confirmationService.confirm({
+        message: `Está derivando la certificación Nº `+ nro_es_local +` al siguiente aprobador ` + suplente +`. <b>¿Desea continuar?</b>`,
+        accept: () => { this.reasignar(data); },
+        reject: () => { }
+    });
   }
 
-  reasignar():void {
-    const data = {
-      Suplente: this.formularioSuplente.get('suplente').value,
-      NroEsLocal: this.formularioSuplente.get('nro_es_local').value
-    }
+  reasignar(data):void {
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
