@@ -1060,9 +1060,22 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
+            try {
+                _ = NotifyApproval(emailDetailCertificateDto);
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info(e.Message);
+            }
+            //await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
 
             return result;
+        }
+
+        private async Task<bool> NotifyApproval(EmailDetailCertificateDto emailDetailCertificateDto)
+        {
+            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
+            return true;
         }
 
         /// <summary>
