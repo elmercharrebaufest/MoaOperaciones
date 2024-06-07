@@ -60,7 +60,7 @@
 
     <spinner></spinner>
     <div *ngIf="approvalSuccess === true" class="center-container">
-        <p class="center-text"> <strong>La entrada de servicio {{ cert }} ha sido aprobada</strong></p>
+        <p class="center-text"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
         <br />
     </div>
     <div *ngIf="approvalError === true" class="center-container">

@@ -25,6 +25,7 @@ export class AprobacionExternaComponent implements OnInit {
     //Datos Generales
     usuario: string = "";
     cert: string = "";
+    certSap: string = '';
     fechaCarga: string = "";
     desc: string = "";
     importe: string = "";
@@ -135,6 +136,7 @@ export class AprobacionExternaComponent implements OnInit {
             this.spinnerComponent.showIt();
             this.isButtonDisabled = true;
             this.comprasService.enviarAprobacionES(this.cert).subscribe((resp: any) => {
+                this.certSap = resp.data.NroESSap;
                 this.spinnerComponent.hideIt();
                 this.approvalSuccess = true;
             },

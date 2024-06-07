@@ -1006,6 +1006,7 @@ namespace SustitucionMOAUtils.Services
                                 ES.NRO_ES_SAP = ESNumber;
                                 ES.Estado_certificacion = "Aprobada";
                                 ES.Fecha_aprobacion = DateTime.Today;
+                                result.NroESSap = ESNumber.ToString();
                                 repositorio.GuardarCambios();
                             }
                             catch (Exception e)
