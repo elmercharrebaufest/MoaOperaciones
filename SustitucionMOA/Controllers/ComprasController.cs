@@ -1897,7 +1897,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
+               var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
                 var ordenar = filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(filtro.Columna) ? filtro.Columna : null), ordenar, (filtro.Pagina == null) ? 0 : filtro.Pagina.Value, (filtro.ItemsPorPagina == 0 || !filtro.ItemsPorPagina.HasValue) ? 10 : filtro.ItemsPorPagina.Value);
                 var resultado = service.ListarSolpCondicionEspecial(filtro);

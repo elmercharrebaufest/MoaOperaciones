@@ -9722,6 +9722,7 @@ namespace SustitucionMOAUtils.Services
             };
             CrearRevisionTecnicaParaPO(usuarioId, peticion);
             repositorio.Agregar(peticion);
+            repositorio.GuardarCambios();
             return peticion;
         }
 

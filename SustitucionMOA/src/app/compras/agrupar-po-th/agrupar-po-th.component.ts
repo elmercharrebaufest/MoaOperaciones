@@ -113,8 +113,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         NroSolp: '',
         NroPo: '',
         NombrePedido: '',
-        FechaDesde: null,
-        FechaHasta: new Date(),
         Sap: false,
         Mantenimiento: false,
         Web: false,
@@ -129,43 +127,19 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         ValorTipoImputacion: '',
         CodigoProveedor: '',
         ListarPendiente: false,
-        EsServicio: true,
         Agrupada: false,
     };
 
     ngOnInit() {
-        this.filtrosPOAgrupada = {
-            Pagina: 1,
-            ItemsPorPagina: 300,
-            Orden: '',
-            Columna: 'NroSolp',
-            NroSolp: '',
-            NroPo: '',
-            NombrePedido: '',
-            FechaDesde: null,
-            FechaHasta: null,
-            Sap: false,
-            Mantenimiento: false,
-            Web: false,
-            RepoAutomatica: false,
-            ContratoMarco: false,
-            Estados: '',
-            Usuarios: '',
-            Centros: '',
-            GrupoDeCompras: '',
-            ClaseDocumento: '',
-            TipoImputacion: '',
-            ValorTipoImputacion: '',
-            CodigoProveedor: '',
-            ListarPendiente: false,
-            EsServicio: true,
-            Agrupada: null
-        };
         this.recuperarFiltros();
     }
 
     ngAfterViewInit(): void {
         this.getCombos();
+    }
+
+    ngOnChanges() {
+        this.recuperarFiltros();
     }
 
     getCombos() {
@@ -263,8 +237,6 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.filtrosPOAgrupada.ClaseDocumento = this.selectClaseDocumento.join(",");
         this.filtrosPOAgrupada.TipoImputacion = this.selectTipoImputacion.join(",");
         this.filtrosPOAgrupada.ValorTipoImputacion = this.selectValorTipoImputacion.join(",");
-        this.filtrosPOAgrupada.FechaDesde = this.fechaInicio;
-        this.filtrosPOAgrupada.FechaHasta = this.fechaFin;
         this.filtrosPOAgrupada.Agrupada = this.selectAgrupada;
         this.filtrosPOAgrupada.EsServicio = this.selectTipoPosicion;
         this.filtrosPOAgrupada.Sap = this.sap;
@@ -272,8 +244,20 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.filtrosPOAgrupada.Web = this.web;
         this.filtrosPOAgrupada.RepoAutomatica = this.repoAutomatica;
         this.filtrosPOAgrupada.ContratoMarco = this.contratoMarco;
-        this.listarSolpCondicionEspecial();
+        if(this.rangeDates != undefined){
+            this.filtrosPOAgrupada.FechaDesde = this.rangeDates[0];
+            this.filtrosPOAgrupada.FechaHasta = this.rangeDates[1];
+            sessionStorage.setItem('rangeDates', JSON.stringify(this.rangeDates));
+
+        } else {
+            this.filtrosPOAgrupada.FechaDesde = null;
+            this.filtrosPOAgrupada.FechaHasta = null;
+        }
+
         sessionStorage.setItem('filtrosPOAgrupada', JSON.stringify(this.filtrosPOAgrupada));
+        sessionStorage.setItem('proveedorSeleccionado', JSON.stringify(this.proveedorSeleccionado));
+
+        this.listarSolpCondicionEspecial();
     }
 
     listarSolpCondicionEspecial() {
@@ -307,6 +291,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
 
     recuperarFiltros() {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosPOAgrupada'));
+        const proveedorGuardado = JSON.parse(sessionStorage.getItem('proveedorSeleccionado'));
+        const rangeDatesGuardado = JSON.parse(sessionStorage.getItem('rangeDates'));
+
+
         if (filtrosGuardados) {
             this.orden = filtrosGuardados.Orden;
             this.columna = filtrosGuardados.Columna;
@@ -319,16 +307,27 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.selectCentro = filtrosGuardados.Centros ? filtrosGuardados.Centros.split(",") : [];
             this.selectClaseDocumento = filtrosGuardados.ClaseDocumento ? filtrosGuardados.ClaseDocumento.split(",") : [];
             this.selectTipoImputacion = filtrosGuardados.TipoImputacion ? filtrosGuardados.TipoImputacion.split(",") : [];
+            this.subtipoImputacionCombo();
             this.selectValorTipoImputacion = filtrosGuardados.ValorTipoImputacion ? filtrosGuardados.ValorTipoImputacion.split(",") : [];
             this.codigoProveedor = filtrosGuardados.CodigoProveedor;
             this.nombrePedido = filtrosGuardados.NombrePedido;
-            this.fechaInicio = filtrosGuardados.FechaDesde;
-            this.fechaFin = filtrosGuardados.FechaHasta;
+            this.fechaInicio = new Date(filtrosGuardados.FechaDesde);
+            this.fechaFin = new Date(filtrosGuardados.FechaHasta);
             this.selectAgrupada = filtrosGuardados.Agrupada;
-            this.selectTipoPosicion = true;
+            this.selectTipoPosicion = filtrosGuardados.EsServicio;
+            this.rangeDates = rangeDatesGuardado;
+
+            if(this.rangeDates != undefined){
+                this.rangeDates = [this.fechaInicio, this.fechaFin];
+            }
         }
-        this.listarSolpCondicionEspecial();
-    }
+
+        if (proveedorGuardado) {
+            this.proveedorSeleccionado = proveedorGuardado;
+        }
+
+        this.onBuscar();
+    } 
 
     onSelect(event: any) {
         if (this.rangeDates[0] && this.rangeDates[1] == null) {
@@ -339,6 +338,8 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             let d = new Date(Date.parse(event));
             this.fechaFin = event;
         }
+        // Guardar las fechas seleccionadas en sessionStorage como cadenas
+        sessionStorage.setItem('rangeDates', JSON.stringify(this.rangeDates.map(date => date)));
     }
 
     hasSubposicionesCompras(solp: any): boolean {
