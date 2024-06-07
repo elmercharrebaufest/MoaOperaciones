@@ -12,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto);
 
-        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov,int userId);
+        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov,int userId, string destinatario);
 
         Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto);
     }

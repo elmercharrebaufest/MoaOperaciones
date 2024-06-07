@@ -526,11 +526,11 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId);
+                    _ = NotifyCreation(completeAp, prov, userId, completeAp[0].Fiscal_SOLPED);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
-                    if(completeAp.Count > 0)
+                    if (completeAp.Count > 0)
                     {
                         foreach (Aprobaciones aprobacion in completeAp)
                         {
@@ -551,10 +551,10 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov,int userId)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
         {
-           await emailCertificationService.EnviarMailAprobacion(completeAp, prov,userId);
-           return true;
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario);
+            return true;
         }
 
 
@@ -1250,19 +1250,35 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Aprobaciones esTemporalPendienteAprobacion = repositorio.Obtener<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+
+                var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente).ToList().FirstOrDefault();
+
                 if (esTemporalPendienteAprobacion != null)
                 {
                     if (suplente == esTemporalPendienteAprobacion.Fiscal_SOLPED)
                     {
                         esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Aprobador_CDS;
                         esTemporalPendienteAprobacion.Aprobador_CDS = esTemporalPendienteAprobacion.Fiscal_SOLPED;
-                    } else
+                    }
+                    else
                     {
                         esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Fiscal_SOLPED;
                         esTemporalPendienteAprobacion.Aprobador_CDS = suplente;
+
+                        List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esTemporalPendienteAprobacion.NRO_ES_LOCAL);
+
+                        OrderParamsDto orderParams = new OrderParamsDto();
+                        orderParams.OrdenCompraId = esTemporalPendienteAprobacion.NRO_OC;
+                        Proveedor prov = new Proveedor();
+                        prov = orderService.BuscarProveedor(orderParams);
+
+                        _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacion.Aprobador_CDS);
                     }
+
                     repositorio.GuardarCambios();
-                } else
+
+                }
+                else
                 {
                     return "Nro de entrada servicio no encontrado.";
                 }

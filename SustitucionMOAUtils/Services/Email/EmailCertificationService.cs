@@ -117,12 +117,11 @@ namespace SustitucionMOAUtils.Services.Email
             return bodyTable;
         }
 
-        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId)
+        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario)
         {
             try
             {
                 string dateTimeFormat = "dd/MM/yyyy";
-                var destinatario = apList[0].Fiscal_SOLPED;
                 List<string> dest = new List<string>();
                 dest.Add(destinatario);
 

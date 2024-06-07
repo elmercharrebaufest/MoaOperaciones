@@ -330,16 +330,31 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
+  
     const data = {
       Suplente: suplente,
       NroEsLocal: nro_es_local
     }
-
-    this.confirmationService.confirm({
+  
+    let confirmMessage;
+  
+    if (suplente) {
+      confirmMessage = {
+        acceptLabel: 'Si',
         message: `Está derivando la certificación Nº `+ nro_es_local +` al siguiente aprobador ` + suplente +`. <b>¿Desea continuar?</b>`,
         accept: () => { this.reasignar(data); },
         reject: () => { }
-    });
+      }
+    } else
+    {
+      confirmMessage = {
+        message: 'No posee suplente asignado',
+        acceptLabel: 'Ok',
+        rejectVisible: false
+      }
+    }
+
+    this.confirmationService.confirm(confirmMessage);
   }
 
   reasignar(data):void {
