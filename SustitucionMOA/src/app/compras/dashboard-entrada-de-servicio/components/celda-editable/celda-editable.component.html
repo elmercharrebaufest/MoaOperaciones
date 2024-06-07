@@ -2,6 +2,7 @@
     <ng-container *ngIf="!editarInfo">
         {{ value | defaultData }}
         <button
+            class="edit"
             type="button"
             pButton
             icon="pi pi-pencil"
@@ -86,7 +87,7 @@
                 type="button" 
                 pButton 
                 icon="pi pi-times"
-                (click)="mostrarFormularioEditarDescricionES(editarInfo)"
+                (click)="mostrarFormularioEditarDescricionES(editarInfo, value)"
             ></button>
         </form>
     </ng-container>
