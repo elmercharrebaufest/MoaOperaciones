@@ -8,7 +8,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
     public class EntradaServicioCabeceraDto
     {
-        public int ID {  get; set; }
+        public int ID { get; set; }
         public string EntradaServicio { get; set; }
         public DateTime? FechaCreacionDateTime { get; set; }
         public string FechaCreacion { get; set; }
@@ -18,16 +18,18 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string MontoTotal { get; set; }
         public string CUIT { get; set; }
         public List<EntradaServicioDetalleDto> entradaServicioDetalle { get; set; }
-        public string Fiscal {  get; set; }
+        public string Fiscal { get; set; }
         public string Area { get; set; }
         public string Suplente { get; set; }
         // DATOS PROVENIENTES DE TABLA APROBACIONES NECESARIOS PARA LA PANTALLA.
         public string Aprobador { get; set; }
-        public string MotivoRechazo {  get; set; }
+        public string MotivoRechazo { get; set; }
         public string Estado { get; set; }
         public string NumeroCertificacion { get; set; }
         public string Ingresante { get; set; }
         public bool DesdeSap { get; set; }
+        public string FechaAprobacion { get; set; }
+        public string FechaRechazo { get; set; }
         public EntradaServicioCabeceraDto()
         {
             // Inicializa la lista entradaServicioDetalle en el constructor
