@@ -106,6 +106,12 @@
                         </div>
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
                     </td>
+                    <td class="text-center" *ngIf="rowData.Estado === 'Aprobada'">
+                        {{ rowData.FechaAprobacion }}
+                    </td>
+                    <td class="text-center" *ngIf="rowData.Estado === 'Rechazado'">
+                        {{ rowData.FechaRechazo }}
+                    </td>
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
                         <button
                             type="button"
@@ -123,16 +129,15 @@
                             (click)="verMotivosRechazos(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
                         ></button>
-                    </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')">
-                        <button
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
                             type="button"
                             pButton
-                            label="Ver suplente"
+                            icon="pi pi-ellipsis-h"
+                            class="btn btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"
                             [disabled]="rowData.Suplente === null || !equalsIgnoreCase(rowData.Fiscal,usuario)"
                         ></button>
-                    </td>
+                    </td>                    
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{ rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
@@ -224,10 +229,10 @@
                 class="textoLibre" 
                 [disabled]="formularioMotivosRechazo.invalid" 
                 type="text" 
-                placeholder="En este espacio puede escribir una observación adicional." 
-                maxlength="50">
+                placeholder="Escriba una notificación adicional y se notificará al ingresante." 
+                maxlength="80">
             </textarea>
-            <p class="char-limit-message">Max 50 caracteres</p>
+            <p class="char-limit-message">Max. 80 caracteres</p>
         </div>
         <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()" [disabled]="formularioMotivosRechazo.invalid"></p-button>
     </form>

@@ -58,5 +58,6 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string NroOrdenCompra { get; set; }
 
         public string NoMoreGR { get; set; }
+        public bool Bloqueada { get; set; }
     }
 }

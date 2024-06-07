@@ -477,7 +477,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     isNotReceibeMoreMerchandise(posicion): boolean {
-        return posicion.NoMoreGR === "X";
+        return posicion.NoMoreGR === "X" || posicion.Bloqueada;
     }
 
     getFecha() {
@@ -822,7 +822,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
         let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
-        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar;
+        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar && !posicion.Bloqueada;
         return mostrarCheckboxDeSeleccionarTodosItems;
     }
 
@@ -942,7 +942,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     tieneItemsACertificarTodosValidos(posicion: any): boolean {
-        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item));
+        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item)) && !posicion.Bloqueada;
     }
 
     tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
@@ -1267,5 +1267,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     }
                 }
             }
+    }
+
+    totalesBloqueadasEliminadas(oc: any): void {
+        const allBlockOrDeleted = oc.Posiciones.every(
+            pos => pos.Bloqueada
+        )
+
+        return allBlockOrDeleted;
     }
 }

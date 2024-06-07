@@ -71,12 +71,12 @@ export class CeldaEditableComponent implements OnInit {
   }
 
   mostrarFormularioEditarDescricionES(editarInfo: boolean, value: any): void {
-    this.formularioActualizarInformacionIngresante.controls['info'].patchValue(value);
+    this.formularioActualizarInformacionIngresante.controls['info'].patchValue(value.trim());
     this.editarInfo = !editarInfo ? true : false;
   }
 
   actualizarInformacionIngresante(): void {
-    let info: any = this.formularioActualizarInformacionIngresante.get('info').value
+    let info: any = this.formularioActualizarInformacionIngresante.get('info').value.trim();
     if (info !== this.value) {
       if (this.columnaEditar === 'FechaDocumento') {
         info = this.dateFormatter(info);

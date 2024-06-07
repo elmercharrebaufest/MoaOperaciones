@@ -7,6 +7,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -194,8 +195,8 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var motivoRechazo = JsonConvert.DeserializeObject<EmailDetailCertificateDto>(json);
-                var result = EntradaServicioService.RechazarEntradaDeServicio(motivoRechazo);
-                return JsonCustom(new { data = result });
+                var toRet = EntradaServicioService.RechazarEntradaDeServicio(motivoRechazo);
+                return JsonCustom(new { data = toRet });
             }
             catch (InfoCustomException e)
             {

@@ -91,8 +91,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         // { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cReasignar', header: 'Reasignar', field: 'Reasignar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
       ]
@@ -105,7 +106,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cantidad', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DT', header: 'Monto', field: 'T', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCantidadCertificar', header: 'Cantidad a certificar', field: 'CantidadCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DPorcentajeCertificar', header: 'Porcentaje a certificar', field: 'PorcentajeCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DMontoCertificar', header: 'Monto a certificar', field: 'MontoCertificar', type: 'string', sortable: false, required: false, visible: true },
@@ -305,7 +306,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     switch (event.value.code) {
       case 'Aprobada':
         this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar'? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' ? false : true;
         });
         break;
       case 'Pendiente Aprobación':
@@ -313,7 +314,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         break;
       case 'Rechazado':
         this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar'? false : true;
+          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' ? false : true;
         });
         break;
     }
@@ -329,16 +330,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-    this.formularioSuplente.controls['suplente'].patchValue(suplente);
-    this.formularioSuplente.controls['nro_es_local'].patchValue(nro_es_local);
-    this.mostrarSuplentes = true;
+    const data = {
+      Suplente: suplente,
+      NroEsLocal: nro_es_local
+    }
+
+    this.confirmationService.confirm({
+        message: `Está derivando la certificación Nº `+ nro_es_local +` al siguiente aprobador ` + suplente +`. <b>¿Desea continuar?</b>`,
+        accept: () => { this.reasignar(data); },
+        reject: () => { }
+    });
   }
 
-  reasignar():void {
-    const data = {
-      Suplente: this.formularioSuplente.get('suplente').value,
-      NroEsLocal: this.formularioSuplente.get('nro_es_local').value
-    }
+  reasignar(data):void {
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
@@ -372,11 +376,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
-        (resp: any) => {
-          this.resetForm();
-          this.getListarPO(this.proveedor, this.documentoNumero);
-          this.mostrarMotivosRechazos = false;
-          this.messageService.add({severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+          (resp: any) => {
+              if (resp.data.status == "OK") {
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.mostrarMotivosRechazos = false;
+                  this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
+              }
+              else {
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.mostrarMotivosRechazos = false;
+                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
+              }
         }, error => {
           this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
         }
@@ -437,6 +449,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                   this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
                   this.showContainerTable();
                   break;
+                 }
+                case "Desync": {
+                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
+                  this.showContainerTable();
+                  this.resetForm();
+                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  break;
                 }
                 case "E": {
                   mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
@@ -494,49 +513,49 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if(fai.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
         });
         return "FAI";
       }
       const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(ai.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
         });
         return "AI";
       }
       const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if (fa.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
         });
           return "FA";
       }
       const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if(fi.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
         });
         return "FI";
       }
       const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(a.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
         });
         return "A";
       }
       const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
       if(i.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' ? false : true;
         });
         return "I";
       }
       const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
       if(f.length > 0){
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
         });
         return "F";
       }

@@ -141,18 +141,26 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = parametros.VerTodo ?
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
-                            ? true
-                            : (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail))))
-                        )
-                        :
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS == usuario.Mail || (x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail)))
-                        );
+                    List<Aprobaciones> ESTemporales;
+
+                    if (parametros.VerTodo)
+                    {
+                        if (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
+                        {
+                            ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
+                        }
+                        else
+                        {
+                            ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+                                && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                        }
+                    }
+                    else
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
+                            && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                    }
+
 
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
@@ -179,11 +187,15 @@ namespace SustitucionMOAUtils.Services
                                 documento.Aprobador = detalle.Aprobador_CDS;
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
+                                documento.Descripcion = detalle.Texto_breve_servicio;
+                                DateTime fechaAprobacionFormateada = (DateTime)detalle.Fecha_aprobacion;
+                                documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                             }
                         }
-                    }
 
-                    EntradasServicio.Add(documento);
+                        EntradasServicio.Add(documento);
+
+                    }
 
                 }
             }
@@ -247,7 +259,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 OrdenCompra = temporal.NRO_OC,
-                Descripcion = temporal.Descripcion_ES,
+                Descripcion = temporal.Texto_breve_servicio,
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
@@ -258,9 +270,20 @@ namespace SustitucionMOAUtils.Services
                 Ingresante = temporal.Ingresante_CDS,
                 Aprobador = temporal.Aprobador_CDS,
                 Suplente = temporal.Suplente,
-                Fiscal = temporal.Fiscal_SOLPED,
-                DesdeSap = false
+                Fiscal = temporal.Fiscal_SOLPED
             };
+
+            if (temporal.Estado_certificacion == "Aprobada")
+            {
+                DateTime fechaAprobacionFormateada = (DateTime)temporal.Fecha_aprobacion;
+                entradaServicioTemp.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
+            }
+
+            if (temporal.Estado_certificacion == "Rechazado")
+            {
+                DateTime fechaRechazoFormateada = (DateTime)temporal.Fecha_rechazo;
+                entradaServicioTemp.FechaRechazo = fechaRechazoFormateada.ToString("dd/MM/yyyy");
+            }
 
             Proveedor prov = orderService.BuscarProveedor(ordenParams);
             entradaServicioTemp.Proveedor = prov.RazonSocial ?? "-";
@@ -494,7 +517,16 @@ namespace SustitucionMOAUtils.Services
                     Proveedor prov = new Proveedor();
                     prov = orderService.BuscarProveedor(orderParams);
 
-                    _= NotifyCreation(completeAp, prov);
+                    //MMSN-1030: Fix
+                    string aprobador = completeAp[0].Aprobador_CDS;
+                    var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                    int userId = 0;
+                    if(user != null)
+                    {
+                        userId = user.Id;
+                    }
+
+                    _ = NotifyCreation(completeAp, prov, userId);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -519,9 +551,9 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov,int userId)
         {
-           await emailCertificationService.EnviarMailAprobacion(completeAp, prov);
+           await emailCertificationService.EnviarMailAprobacion(completeAp, prov,userId);
            return true;
         }
 
@@ -908,6 +940,14 @@ namespace SustitucionMOAUtils.Services
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
+            string status = CheckESStatus(EntradasDeServicioTemp);
+            if(status.Contains("Modificado"))
+            {
+                result.Type = "Desync";
+                string estado = status.Split('-')[1];
+                result.Message = $"La entrada de servicio {nro_es_local} no se encuentra en estado Pendiente de Aprobación. Su estado actual es: {estado}";
+                return result;
+            }
             EntradaServicioCreateParamsDto EntradaServicioSapParams = new EntradaServicioCreateParamsDto();
             EmailDetailCertificateDto emailDetailCertificateDto = new EmailDetailCertificateDto();
             List<ServiceDetailDto> serviceDetailDtoList = new List<ServiceDetailDto>();
@@ -1031,9 +1071,24 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="rechazo"></param>
         /// <returns></returns>
-        public List<Aprobaciones> RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo)
+        public EntradaServicioRejectRespuestaDto RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo)
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == rechazo.NumeroCertificacion);
+            EntradaServicioRejectRespuestaDto ret = new EntradaServicioRejectRespuestaDto();            
+            ret.status = "";
+            string check = CheckESStatus(EntradasDeServicioTemp);
+            if (check.Contains("Modificado"))
+            {
+                string estado = check.Split('-')[1];
+                ret.status = $"La entrada de servicio {EntradasDeServicioTemp[0].NRO_ES_LOCAL} no se encuentra en estado Pendiente de Aprobación. Su estado actual es: {estado}";
+                ret.result = EntradasDeServicioTemp;
+                return ret;
+            }
+            else
+            {
+                ret.status = "OK";
+            }
+            
             foreach (var ES in EntradasDeServicioTemp)
             {
                 if (ES.Estado_certificacion == "Pendiente Aprobación")
@@ -1062,8 +1117,39 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            ret.result = EntradasDeServicioTemp;
 
-            return EntradasDeServicioTemp;
+            return ret;
+        }
+
+        /// <summary>
+        /// MMSN-1021 - Chequea los estados de las ES seleccionadas, por si han sido cambiadas y no ha sido actualizado el listado
+        /// </summary>
+        /// <param name="ESList">Lista de entradas de servicio</param>
+        /// <returns>OK - ES en pendiente de aprobación
+        /// Modificado - ES en un estado distinto de pendiente de aprobación
+        /// Vacia - Lista sin elementos - Error</returns>
+        private string CheckESStatus(List<Aprobaciones> ESList)
+        {
+            string res = "OK";
+
+            if(ESList.Count > 0)
+            {
+                foreach(Aprobaciones ap in ESList)
+                {
+                    if(ap.Estado_certificacion != "Pendiente Aprobación")
+                    {
+                        res = "Modificado -" + ap.Estado_certificacion;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                res = "Vacia";
+            }
+
+            return res;
         }
 
         public async Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto)

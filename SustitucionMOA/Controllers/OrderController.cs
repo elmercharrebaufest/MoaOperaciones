@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -40,7 +41,9 @@ namespace SustitucionMOA.Controllers
                     parametros.vendedor = string.Empty;
                 }
 
-                ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros);
+                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+                ListaPaginada<DetalleOrdenDeCompraDto> result = orderService.ObtenerOrdenesCompraConDetalle(parametros, userMail);
 
                 if (result.Items.Count > 0)
                 {

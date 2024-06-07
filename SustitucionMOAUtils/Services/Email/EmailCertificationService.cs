@@ -117,7 +117,7 @@ namespace SustitucionMOAUtils.Services.Email
             return bodyTable;
         }
 
-        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov)
+        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId)
         {
             try
             {
@@ -154,13 +154,13 @@ namespace SustitucionMOAUtils.Services.Email
                     tabla = GenerarTablaAprobaciones(apList);
                 }
 
+
                 string baseURL = ConfigurationManager.AppSettings["SpaUrl"];
-                string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "\"";
-                string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "\"";
+                string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
+                string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
 
                 var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
 
-                //Logger.Log.Info("Email Data: " + cuerpo);
 
                 var emailSenderData = new EmailSenderData()
                 {
