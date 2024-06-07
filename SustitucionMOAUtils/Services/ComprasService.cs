@@ -9677,6 +9677,7 @@ namespace SustitucionMOAUtils.Services
         {
             var cotizacionesGuardadas = repositorio.Listar<Cotizacion>(coti => peticionDeOfertaUsuarioIds.Contains(coti.PeticionDeOfertaUsuario_Id));
             var cotizacion = peticion.Usuarios.First().Cotizaciones.FirstOrDefault();
+            var listaCotizaciones = new List<Cotizacion> { cotizacion };
             if (cotizacion != null)
             {
                 foreach (var cotizacionVieja in cotizacionesGuardadas)
@@ -9687,7 +9688,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
                 repositorio.GuardarCambios();
-                GrabarHistorialDeCotizaciones(cotizacionesGuardadas);
+                GrabarHistorialDeCotizaciones(listaCotizaciones);
             }
         }
 
@@ -9718,7 +9719,7 @@ namespace SustitucionMOAUtils.Services
                 Archivos = peticiones.SelectMany(x => x.Archivos).ToList(),
                 PlazoDeOferta = peticiones.Select(peti => peti.PlazoDeOferta).OrderBy(f => f).FirstOrDefault(),
                 Usuarios = peticiones.SelectMany(x => x.Usuarios).GroupBy(y => y.Usuario_Id).Select(group => new PeticionDeOfertaUsuario { Usuario_Id = group.First().Usuario_Id }).ToList(),
-                UsuariosAdicionales = peticiones.SelectMany(x => x.UsuariosAdicionales).ToList(),
+                UsuariosAdicionales = peticiones.SelectMany(x => x.UsuariosAdicionales).ToList()
             };
             CrearRevisionTecnicaParaPO(usuarioId, peticion);
             repositorio.Agregar(peticion);
