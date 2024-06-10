@@ -122,7 +122,10 @@ export class AprobacionExternaComponent implements OnInit {
 
                                     })
                                 }
-                            
+
+                                if (this.action === 'approve' && this.estado.includes('Pendiente')) {
+                                    this.aprobarES();
+                                }
                             }
                         },
                         error => {
@@ -131,6 +134,7 @@ export class AprobacionExternaComponent implements OnInit {
             } catch (e) {
                 return false; //<-- Prevent Refresh
             }
+
             return false; //<-- Prevent Refresh
         }
 
@@ -144,20 +148,15 @@ export class AprobacionExternaComponent implements OnInit {
     //Aprobar Btn
     aprobarES() {
         try {
-            this.spinnerComponent.showIt();
-            this.isButtonDisabled = true;
             this.comprasService.enviarAprobacionES(this.cert).subscribe((resp: any) => {
                 this.certSap = resp.data.NroESSap;
-                this.spinnerComponent.hideIt();
                 this.approvalSuccess = true;
             },
                 error => {
-                    this.spinnerComponent.hideIt();
                     this.approvalError = true;
                 });
         }
-        catch (e) {
-            this.spinnerComponent.hideIt();
+        catch (e) {         
             this.approvalError = true;
         }
     }

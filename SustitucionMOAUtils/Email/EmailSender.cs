@@ -129,12 +129,11 @@ namespace SustitucionMOAUtils.Email
         {
             SmtpClient client = new SmtpClient
             {
-                Port = 587,
+                Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new System.Net.NetworkCredential("rodrigovavich10@gmail.com", "dzfu lckp ucpm uswp"),
-                Host = "smtp.gmail.com",
-                EnableSsl = true
+                //Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar","", ConfigurationManager.AppSettings["HostEmail"]),
+                Host = EmailConfig.getEmailHost()
             };
             return client;
         }

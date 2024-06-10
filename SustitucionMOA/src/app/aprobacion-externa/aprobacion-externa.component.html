@@ -79,8 +79,7 @@
 
         <div class="center-container">
             <div *ngIf="estado.includes('Pendiente'); else elseState">
-                <button pButton type="button" label="Aprobar" class="ui-button-success custom-button" [disabled]="isButtonDisabled" (click)="aprobarES()">
-                </button>
+
             </div>
             <ng-template #elseState>
                 <p class="center-text"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
