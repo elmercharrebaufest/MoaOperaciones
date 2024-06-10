@@ -354,6 +354,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <Compile Include="Service References\ObtenerCabecerasEntradaServicioTestWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -419,7 +424,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\ObtenerSolPEDWebServiceMOA\Reference.cs">
+    <Compile Include="Service References\ObtenerSolpWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -471,11 +476,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
     <Compile Include="Service References\ObtenerServiciosSolpWebServiceMOA\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\ObtenerSolpWebServiceMOA\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -661,6 +661,7 @@
     <Compile Include="WSConsumers\IObtenerOrdenesDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ModificarOrdenDeCompraConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerCabecerasEntradaServicioConsumerMOA.cs" />
+    <Compile Include="WSConsumers\ObtenerAdjuntosSOLPEDConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerUnidadesDeMedidaAlternativasConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerEntradaDeServicioPorNumeroConsumerMOA.cs" />
     <Compile Include="WSConsumers\ObtenerOrdenesDeCompraConsumerMOA.cs" />
@@ -1099,6 +1100,7 @@
     <None Include="Service References\NoticiasDetalleWebServiceMOA\SustitucionMOAWS.NoticiasDetalleWebServiceMOA.ZMPES4920.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
+    <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\SI_MMRFC_ADJUNTOS_SOLPED.wsdl" />
     <None Include="Service References\ObtenerCabecerasEntradaServicioTestWebServiceMOA\SI_MMRFC_BAPI_ENTRYSHEET_GETLIST.wsdl" />
     <None Include="Service References\ObtenerCabecerasEntradaServicioWebServiceMOA\SI_MMRFC_BAPI_ENTRYSHEET_GETLIST.wsdl" />
     <None Include="Service References\ObtenerContratoSolpWebServiceMOA\SI_MMRFC_OBTENER_CONTRATO.wsdl" />
@@ -1112,7 +1114,7 @@
     <None Include="Service References\ObtenerProveedorWebServiceMOA\SI_MMRFC_OBTENER_PROV.wsdl" />
     <None Include="Service References\ObtenerRegistroInfoConsumerMOA\BAPI_INFORECORD_GETLIST.wsdl" />
     <None Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\BAPI_PO_GETDETAIL1.wsdl" />
-    <None Include="Service References\ObtenerSolPEDWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
+    <None Include="Service References\ObtenerSolpWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
     <None Include="Service References\ObtenerTipoCambioWebServiceMOA\SI_MMRFC_OBTENER_TIPO_CAMBIO.wsdl" />
     <None Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\SI_MMRFC_UM_ALTERNATIVAS.wsdl" />
     <None Include="Service References\OrdenCargaControlEstadoSAP\SI_MPMF_MOAOP_CONTROL_ESTADO.wsdl" />
@@ -1123,7 +1125,6 @@
     <None Include="Service References\ObtenerCuentasSolpWebServiceMOA\SI_MMRFC_OBTENER_CUENTAS.wsdl" />
     <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\SI_MMRFC_OBTENER_ORDEN.wsdl" />
     <None Include="Service References\ObtenerServiciosSolpWebServiceMOA\SI_MMRFC_OBTENER_SERVICIOS.wsdl" />
-    <None Include="Service References\ObtenerSolpWebServiceMOA\SI_MMRFC_OBTENER_SOLPED.wsdl" />
     <None Include="Service References\OrdenCargaVisualizarCliente\SI_MPMF_MOAOP_VISUALIZAR_ZFAS.wsdl" />
     <None Include="Service References\OrdenesDeCompraParaSolpWebServiceMOA\Z_MMRFC_OC_PARA_SOLP.wsdl" />
     <None Include="Service References\PagoComprobantesWebServiceMOA\SI_MPMF_MOAOP_DET_PAGOS_NG.wsdl" />
@@ -2518,6 +2519,7 @@
     <WCFMetadataStorage Include="Service References\ModificarSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\MovimientoBalanzaWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\NoticiasDetalleWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerCabecerasEntradaServicioTestWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerCabecerasEntradaServicioWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerContratoSolpWebServiceMOA\" />
@@ -2531,7 +2533,7 @@
     <WCFMetadataStorage Include="Service References\ObtenerProveedorWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerRegistroInfoConsumerMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerOrdenDeCompraWebServiceMOA\" />
-    <WCFMetadataStorage Include="Service References\ObtenerSolPEDWebServiceMOA\" />
+    <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerTipoCambioWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlEstadoSAP\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaControlSAP\" />
@@ -2541,7 +2543,6 @@
     <WCFMetadataStorage Include="Service References\ObtenerCuentasSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerOrdenSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerServiciosSolpWebServiceMOA\" />
-    <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaVisualizarCliente\" />
     <WCFMetadataStorage Include="Service References\OrdenesDeCompraParaSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
@@ -3260,18 +3261,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ObtenerSolpWebServiceMOA\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\ObtenerOrdenSolpWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -3771,9 +3760,15 @@
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Service References\ObtenerSolPEDWebServiceMOA\configuration91.svcinfo" />
-    <None Include="Service References\ObtenerSolPEDWebServiceMOA\configuration.svcinfo" />
-    <None Include="Service References\ObtenerSolPEDWebServiceMOA\Reference.svcmap">
+    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration91.svcinfo" />
+    <None Include="Service References\ObtenerSolpWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\ObtenerSolpWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\configuration91.svcinfo" />
+    <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

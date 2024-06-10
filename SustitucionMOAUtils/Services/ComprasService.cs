@@ -3518,7 +3518,7 @@ namespace SustitucionMOAUtils.Services
                 numeroPaquete = $"{numeroPosicion:0000000000}";
                 serialNumber = $"{numeroPosicion:00}";
 
-                var IM_PRITEM = new ZMPES5700();
+                var IM_PRITEM = new ZMPES7090();
 
                 //Nombre: ZBAPIMEREQITEMIMP Denominación: Posición de SOLPED
                 IM_PRITEM.PREQ_ITEM = preqItem; //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
@@ -3558,7 +3558,7 @@ namespace SustitucionMOAUtils.Services
 
                     ))
                     {
-                        solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
                         {
                             PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
@@ -3570,7 +3570,7 @@ namespace SustitucionMOAUtils.Services
                             CO_AREA = "MOA"
                         });
 
-                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
+                        solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = "01",
@@ -3598,7 +3598,7 @@ namespace SustitucionMOAUtils.Services
                         });
                     });
 
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber,
@@ -3687,7 +3687,7 @@ namespace SustitucionMOAUtils.Services
                 solpSAP.IM_PRITEMList.Add(IM_PRITEM);
 
                 //Esta es una lista de campos que SAP nos pide que enviemos una "X" con los datos.
-                solpSAP.IM_PRITEMXList.Add(new ZMPES5660
+                solpSAP.IM_PRITEMXList.Add(new ZMPES8000
                 {
                     PREQ_ITEM = preqItem,
                     PREQ_ITEMX = "X",
@@ -3740,7 +3740,7 @@ namespace SustitucionMOAUtils.Services
                     //serialNumberItem = serialNumber;
 
                     //SUBPOSICION
-                    var IM_SERVICELINE = new ZMPES5780();
+                    var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
 
                     IM_SERVICELINE.DOC_ITEM = docItem; //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
                     IM_SERVICELINE.OUTLINE = outlineNumber; //OUTLINE OUTLINE_NO  Número de estructuración
@@ -3762,7 +3762,7 @@ namespace SustitucionMOAUtils.Services
 
                     solpSAP.IM_SERVICELINESList.Add(IM_SERVICELINE);
 
-                    solpSAP.IM_SERVICELINESXList.Add(new ZMPES5720
+                    solpSAP.IM_SERVICELINESXList.Add(new BAPI_SRV_SERVICE_LINEX
                     {
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber,
@@ -3790,7 +3790,7 @@ namespace SustitucionMOAUtils.Services
 
                         serialNumberItem = $"{numeroSerialNumberItem:00}";
 
-                        solpSAP.IM_PRACCOUNTList.Add(new ZMPES5690
+                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
                         {
                             PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = serialNumberItem, //SERIAL_NO    DZEKKN  Número actual de la imputación
@@ -3801,7 +3801,7 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
                         });
 
-                        solpSAP.IM_PRACCOUNTXList.Add(new ZMPES5680
+                        solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
                             PREQ_ITEM = preqItem,
                             SERIAL_NO = serialNumberItem,
@@ -3827,7 +3827,7 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     //IMPUTACION SUBPOSICION
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new ZMPES5790
+                    solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
                         DOC_ITEM = docItem,
                         OUTLINE = outlineNumber,
@@ -3862,7 +3862,7 @@ namespace SustitucionMOAUtils.Services
                     centroPorDefecto.Numero != posicion.NumeroEntrega)
                 {
                     solpSAP.IM_PRADDRDELIVERYList.Add(
-                    new ZMPES5750
+                    new ZMPES7110
                     {
                         PREQ_NO = preqItem, //PREQ_NO BANFN   Numero de SOLPED
                         PREQ_ITEM = preqItem, //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
