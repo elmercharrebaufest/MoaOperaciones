@@ -10,6 +10,18 @@ button {
     font-size: 12px;
 }
 
+.edit{
+    color: #007ad9 !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.edit:hover{
+    color: #007ad9 !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}
+
 .aprove {
     background-color: green;
     border-color: green;
