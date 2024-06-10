@@ -7447,8 +7447,8 @@ namespace SustitucionMOAUtils.Services
             }
             List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
             var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
-            //if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
-            //    throw new WSCustomException("No existe un proveedor con ese codigo.");
+            if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+                throw new WSCustomException("No existe un proveedor con ese codigo.");
             var cuit = vendedoresMoa.vendedores.First().cuit;
 
             var usuarioDb = repositorio.Obtener<Usuario>(a => a.Mail == proveedorMoa.MAIL);
