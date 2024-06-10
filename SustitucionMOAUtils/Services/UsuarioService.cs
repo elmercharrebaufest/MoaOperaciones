@@ -238,9 +238,22 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
+            
+            if (!string.IsNullOrEmpty(suplente))
+            {
+                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
 
+                foreach (var aprobacion in aprobaciones)
+                {
+                    aprobacion.Suplente = suplente;
+                }
+            }
+            
             repositorio.GuardarCambios();
+
+
             var proveedor = usuario.ObtenerProveedor();
+
             if (proveedor != null)
             {
                 return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail, " ( CUIT: " + proveedor.CUIT + ")");
