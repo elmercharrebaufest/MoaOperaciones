@@ -159,7 +159,7 @@ namespace SustitucionMOAWS.WSConsumers
                 };
 
                 poItem++;
-                numeroDePaquete = solpPosicion.Indice ?? 0;
+                numeroDePaquete++;
 
                 //Nombre: ZBAPIMEPOHEADER Denominación:	Cabecera del Pedido de Compras
                 var cabeceraDelPedido = new ZMPES6780();

@@ -3341,8 +3341,8 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        if (adjudicaciones.Any(x => x.Posiciones.FirstOrDefault().Posicion.Solp_Id == posicion.Posicion.Solp_Id) &&
-                            adjudicaciones.Any(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicion.Posicion.Id)))
+                        if (adjudicaciones.Any(x => x.Posiciones.Any(y => y.Posicion.Solp_Id == posicion.SolpId)) &&
+                            adjudicaciones.Any(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicion.SolpPosicion_Id)))
                         {
                             posicion.Posicion.AdjudicacionCompleta = true;
                         }
@@ -6349,6 +6349,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         repositorio.GuardarCambios();
+                        GrabarHistorialDeCotizaciones(cotizaciones);
                     }
                 }
             }
@@ -6785,12 +6786,13 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion_Id);
                 var todasLasSolpPosiciones = repositorio.Listar<SolpPosicion>(posi => peticionDeOfertaPosiciones.Contains(posi.Id)).ToDictionary(x => x.Id);
 
-                // Agrupar las posiciones por MonedaId y TipoSolp (trabajo ya hecho o adicional)
                 var posicionesAgrupadas = adjudicacionDto.AdjudicacionPosiciones
                     .GroupBy(posicion =>
                     {
                         var solpPosicion = todasLasSolpPosiciones[posicion.SolpPosicion_Id];
-                        var tipoSolp = solpPosicion.Solp.Adicional == true ? "ADICIONAL" : solpPosicion.Solp.TrabajoYaHecho == true ? "TRABAJO_YA_HECHO" : "OTRO";
+                        var tipoSolp = solpPosicion.Solp.Adicional == true ? "ADICIONAL"
+                                    : solpPosicion.Solp.TrabajoYaHecho == true ? "TRABAJOYAHECHO"
+                                    : "OTRO";
                         return new { posicion.MonedaId, TipoSolp = tipoSolp };
                     })
                     .ToList();
@@ -7243,8 +7245,6 @@ namespace SustitucionMOAUtils.Services
             GuardarCotizacion cotizacion = CrearCotizacionDto(peticionEntidad, registroInfo, posiciones);
             respuestaCotizacion = GrabarCotizacion(cotizacion, null, true, solp.UsuarioCreacion_Id.Value, enviarMail);
             cotizacionNueva = repositorio.Obtener<Cotizacion>(respuestaCotizacion.IdEntidad);
-            var cotizaciones = new List<Cotizacion> { cotizacionNueva };
-            GrabarHistorialDeCotizaciones(cotizaciones);
         }
 
         private static GuardarCotizacion CrearCotizacionDto(PeticionDeOferta peticionEntidad, List<RegistroInfoDto> registroInfo, ICollection<SolpPosicion> posiciones)
@@ -7447,8 +7447,8 @@ namespace SustitucionMOAUtils.Services
             }
             List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
             var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
-            if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
-                throw new WSCustomException("No existe un proveedor con ese codigo.");
+            //if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+            //    throw new WSCustomException("No existe un proveedor con ese codigo.");
             var cuit = vendedoresMoa.vendedores.First().cuit;
 
             var usuarioDb = repositorio.Obtener<Usuario>(a => a.Mail == proveedorMoa.MAIL);

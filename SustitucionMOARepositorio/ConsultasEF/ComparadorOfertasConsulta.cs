@@ -68,6 +68,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
                                                                     EstaEliminado = pop.SolpPosicion.Estado != true,
+                                                                    SolpId = pop.SolpPosicion.Solp_Id,
                                                                     Posicion = new SolpPosicionDto
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
