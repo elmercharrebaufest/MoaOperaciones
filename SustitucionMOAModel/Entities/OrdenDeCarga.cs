@@ -110,6 +110,7 @@ namespace SustitucionMOAModel.Entities
         public bool? DestinatarioExisteScato { get; set; }
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
+        public bool? FleteMOA { get; set; }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {

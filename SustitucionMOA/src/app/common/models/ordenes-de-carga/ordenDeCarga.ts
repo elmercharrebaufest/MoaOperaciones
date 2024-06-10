@@ -56,6 +56,7 @@ export class OrdenDeCarga {
     Escalable: boolean;
     NecesitaVerificarCuitsTerceros: boolean;
     DestinoMercaderia: string;
+    FleteMOA: boolean;
     constructor() {
     }
     TienePatentesRepetidas?: boolean;

@@ -63,13 +63,15 @@ namespace SustitucionMOAUtils.Services
         public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
         {
             Log.Info($"Agregar orden de carga con datos: {ordenDeCarga.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
+            Result contratoSAP = null;
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 LlenarOrdenAltaCorredorCliente(ordenDeCarga, usuario);
                 ValidarOrdenDeCargaAlta(ordenDeCarga);
                 LlenarOrdenAlta(ordenDeCarga, usuario);
-                var contratoTieneKgsDisponibles = ContratoTieneKgDisponibles(ordenDeCarga);
+                var contratoTieneKgsDisponibles = ContratoTieneKgDisponibles(ordenDeCarga, out contratoSAP);
+                LlenarOrdenDeCargaFleteMOA(ordenDeCarga,contratoSAP);
                 var ordenPuedeEnviarseDirectoSap = contratoTieneKgsDisponibles;
 
                 var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
@@ -453,7 +455,8 @@ namespace SustitucionMOAUtils.Services
                         Escalable = x.Escalable,
                         TipoContrato = x.TipoContrato,
                         TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
-                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id)
+                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id),
+                        FleteMOA = x.FleteMOA ?? false
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -1842,14 +1845,14 @@ namespace SustitucionMOAUtils.Services
             return ResponseConverter.GetOrdenCargaControlEstadoResponse(result) == ControlEstadoResEnum.TransportistaOK;
         }
 
-        private bool ContratoTieneKgDisponibles(OrdenDeCarga orden)
+        private bool ContratoTieneKgDisponibles(OrdenDeCarga orden, out Result contratoSAP)
         {
             var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
             Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
                 $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
 
-            var contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null) ?? throw new InfoCustomException("No se encontró el contrato en SAP");
-
+            contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null) ?? throw new InfoCustomException("No se encontró el contrato en SAP");
+            
             Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");
 
             var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
@@ -1859,7 +1862,7 @@ namespace SustitucionMOAUtils.Services
             if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                 throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
             if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                return false;
+                return false ;
 
             return true;
         }
@@ -3010,6 +3013,11 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return proveedor;
+        }
+
+        private void LlenarOrdenDeCargaFleteMOA(OrdenDeCarga orden, Result contratoSAP)
+        {
+            orden.FleteMOA = contratoSAP.PrecioFlete > 0;
         }
     }
 }

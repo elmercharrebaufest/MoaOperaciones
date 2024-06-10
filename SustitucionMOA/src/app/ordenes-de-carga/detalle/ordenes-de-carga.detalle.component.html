@@ -231,6 +231,11 @@
                                             [(ngModel)]="ordenDeCarga.Escalable" [disabled]="true"></p-checkbox>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" *ngIf="esInterno || esComercial || esMesaFas">
+                                        <p class="blue"><strong>Flete MOA</strong></p>
+                                        <p-checkbox name="escalable" [binary]="true" [(ngModel)]="ordenDeCarga.FleteMOA"
+                                            [disabled]="true"></p-checkbox>
+                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Fecha</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.FechaCarga}}</p>
