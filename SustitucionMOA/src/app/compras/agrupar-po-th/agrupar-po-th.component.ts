@@ -246,7 +246,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.filtrosPOAgrupada.ContratoMarco = this.contratoMarco;
         if(this.rangeDates != undefined){
             this.filtrosPOAgrupada.FechaDesde = this.rangeDates[0];
-            this.filtrosPOAgrupada.FechaHasta = this.rangeDates[1];
+            this.filtrosPOAgrupada.FechaHasta = this.rangeDates[1] == undefined ? this.rangeDates[0] : this.rangeDates[1];
             sessionStorage.setItem('rangeDates', JSON.stringify(this.rangeDates));
 
         } else {
@@ -312,7 +312,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.codigoProveedor = filtrosGuardados.CodigoProveedor;
             this.nombrePedido = filtrosGuardados.NombrePedido;
             this.fechaInicio = new Date(filtrosGuardados.FechaDesde);
-            this.fechaFin = new Date(filtrosGuardados.FechaHasta);
+            this.fechaFin = new Date(filtrosGuardados.FechaHasta == undefined ? filtrosGuardados.FechaDesde : filtrosGuardados.FechaHasta);
             this.selectAgrupada = filtrosGuardados.Agrupada;
             this.selectTipoPosicion = filtrosGuardados.EsServicio;
             this.rangeDates = rangeDatesGuardado;
