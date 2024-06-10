@@ -12,6 +12,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string Id { get; set; }
         public string Number { get; set; }
         public string Message { get; set; }
+        public string NroESSap { get; set; }
 
         public override string ToString()
         {
