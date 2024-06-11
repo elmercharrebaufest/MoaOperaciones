@@ -665,7 +665,7 @@
                                 </a>
                             </div>
 
-                            <div>
+                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
                                 <a (click)="goToSeccion('/compras/agrupar-po-th')" href="#">
                                     AGRUPAR PO TH
                                 </a>
