@@ -2469,7 +2469,7 @@ namespace SustitucionMOATest.Services
 
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<CotizacionPosicion>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(9));
         }
 
         [Test]

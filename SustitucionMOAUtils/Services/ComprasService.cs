@@ -6301,12 +6301,11 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var posicion in posiciones)
                         {
-                            var existePosicion = cotizacion.CotizacionPosiciones.Any(posi => posi.PeticionDeOfertaSolpPosicion.SolpPosicion.Id == posicion.Id);
-                            if (!existePosicion)
+                            var cotizacionPosicionEntidad = cotizacion.CotizacionPosiciones.FirstOrDefault(coti => coti.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
+                            if (cotizacionPosicionEntidad == null)
                             {
-                                var peticion = peticionDeOfertaSolpPosicion.Where
-                                    (posi => posi.SolpPosicion_Id == posicion.Id).FirstOrDefault();
-                                var cotizacionPosicion = new CotizacionPosicion
+                                var peticion = peticionDeOfertaSolpPosicion.FirstOrDefault(posi => posi.SolpPosicion_Id == posicion.Id);
+                                cotizacionPosicionEntidad = new CotizacionPosicion
                                 {
                                     Cantidad = posicion.Cantidad,
                                     Cotizacion = cotizacion,
@@ -6320,13 +6319,23 @@ namespace SustitucionMOAUtils.Services
                                     PeticionDeOfertaSolpPosicion_Id = peticion.Id,
                                     PeticionDeOfertaSolpPosicion = peticion,
                                 };
-                                cotizacion.CotizacionPosiciones.Add(cotizacionPosicion);
+                                cotizacion.CotizacionPosiciones.Add(cotizacionPosicionEntidad);
                             }
-                            var cotizacionPosicionEntidad = cotizacion.CotizacionPosiciones.Where(coti => coti.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id).FirstOrDefault();
+                            else
+                            {
+                                cotizacionPosicionEntidad.Cantidad = posicion.Cantidad;
+                                cotizacionPosicionEntidad.FechaDeEntrega = posicion.FechaEntregaServicio;
+                                cotizacionPosicionEntidad.Moneda = posicion.Moneda;
+                                cotizacionPosicionEntidad.Moneda_Id = posicion.Moneda_Id;
+                                cotizacionPosicionEntidad.Precio = posicion.PrecioBruto;
+                                cotizacionPosicionEntidad.UnidadDeMedida = posicion.Unidad;
+                                cotizacionPosicionEntidad.UnidadDeMedida_Id = posicion.Unidad_Id;
+                            }
+
                             foreach (var subposicion in subposiciones.Where(subpoPosicion => subpoPosicion.SolpPosicion_Id == posicion.Id).ToList())
                             {
-                                var existeSubpo = cotizacionSubposiciones.Any(subpo => subpo.SolpSubPosicion_Id == subposicion.Id);
-                                if (!existeSubpo)
+                                var cotizacionSubposicionEntidad = cotizacionPosicionEntidad.CotizacionSubPosiciones.FirstOrDefault(subpo => subpo.SolpSubPosicion_Id == subposicion.Id);
+                                if (cotizacionSubposicionEntidad == null)
                                 {
                                     var subpoNueva = new CotizacionSubPosicion
                                     {
@@ -6340,12 +6349,19 @@ namespace SustitucionMOAUtils.Services
                                         SolpSubPosicion_Id = subposicion.Id,
                                         CotizacionPosicion = cotizacionPosicionEntidad,
                                         CotizacionPosicion_Id = cotizacionPosicionEntidad.Id
-
                                     };
                                     cotizacionPosicionEntidad.CotizacionSubPosiciones.Add(subpoNueva);
                                 }
+                                else
+                                {
+                                    cotizacionSubposicionEntidad.Cantidad = subposicion.Cantidad;
+                                    cotizacionSubposicionEntidad.Moneda = posicion.Moneda;
+                                    cotizacionSubposicionEntidad.Moneda_Id = posicion.Moneda_Id;
+                                    cotizacionSubposicionEntidad.UnidadDeMedida = subposicion.Unidad;
+                                    cotizacionSubposicionEntidad.UnidadDeMedida_Id = subposicion.Unidad_Id;
+                                    cotizacionSubposicionEntidad.Precio = subposicion.PrecioBruto;
+                                }
                             }
-
                         }
 
                         repositorio.GuardarCambios();
@@ -6358,7 +6374,6 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Info($"Error al AgregarPosicionACotizacionTrabajoYaHecho");
                 Logger.Log.Error(e);
             }
-
         }
 
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
