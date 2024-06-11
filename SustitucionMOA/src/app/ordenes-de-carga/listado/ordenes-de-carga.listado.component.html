@@ -144,8 +144,10 @@
                   tooltipPosition="bottom"></span>
               </td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}
-                <span *ngIf="ordenDeCarga.FleteMOA" class="fa fa-shopping-cart pointer" aria-hidden="true"
-                  pTooltip="Flete a cargo MOA" tooltipPosition="bottom"></span>
+                <i *ngIf="ordenDeCarga.FleteMOA" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
+                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa"
+                    style="height:15px;" />
+                </i>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
                 {{ordenDeCarga.RazonSocialCliente}}</td>

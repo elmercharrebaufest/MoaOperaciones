@@ -265,6 +265,7 @@
     <Content Include="Content\images\icons\bell-ring.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\images\icons\dolly-solid.svg" />
     <Content Include="Content\images\icons\paper-clip.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
