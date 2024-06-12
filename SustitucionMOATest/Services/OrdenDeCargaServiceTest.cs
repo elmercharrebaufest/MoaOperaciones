@@ -23,6 +23,8 @@ using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOAWS.OrdenCargaControlSAP;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAFotmatter;
 
 namespace SustitucionMOATest.Services
 {
@@ -30,7 +32,7 @@ namespace SustitucionMOATest.Services
     public class OrdenDeCargaServiceTest
     {
         private OrdenDeCargaService target;
-        private Mock<IRepositorio> repositorioMock;
+        private Mock<IRepositorioOrdenDeCarga> repositorioMock;
         private Mock<IOrdenCargaConsumerMOA> consumerOrdenCargaMOA;
         private OrdenDeCarga ordenDeCarga;
         private List<OrdenDeCargaCambiosHistorial> ordenDeCargaCambiosHistorial;
@@ -57,7 +59,8 @@ namespace SustitucionMOATest.Services
         [SetUp]
         public void SetUp()
         {
-            repositorioMock = new Mock<IRepositorio>();
+            //repositorioMock = new Mock<IRepositorio>();
+            repositorioMock = new Mock<IRepositorioOrdenDeCarga>();
             consumerOrdenCargaMOA = new Mock<IOrdenCargaConsumerMOA>();
             mIFacturaAnticipadaService = new Mock<IFacturaAnticipadaService>();
             feriadoService = new Mock<IFeriadoService>();
@@ -1602,6 +1605,82 @@ namespace SustitucionMOATest.Services
         public void ValidarDigitoCuit_NoCumpleFormato_Exception()
         {
             Assert.Throws<ValidationCustomException>(() => target.ValidarDigitoCuit(""));
+        }
+
+        [Test]
+        public void ValidarChofer_NoExisteEnOrdenesPendientes()
+        {
+            var cuilChofer = "20343197072";
+            var cuitCliente = "30500858628";
+            var scatoRes = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                IsValid = true,
+                Data = new ScatoRepo.Chofer()
+            };
+
+            mIScatoRepositorioClient
+                .Setup(x => x.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer)))
+                .Returns(scatoRes);
+
+            repositorioMock
+                .Setup(x => x.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(cuilChofer))
+                .Returns(new List<string>());
+
+            var resp = target.ValidarChofer(cuilChofer, cuitCliente);
+
+            Assert.That(resp.EsCuilValido);
+            Assert.That(!resp.ExisteEnOtraOrden);
+        }
+
+        [Test]
+        public void ValidarChofer_ExisteEnOrdenesPendientesMismoCliente()
+        {
+            var cuilChofer = "20343197072";
+            var cuitCliente = "30500858628";
+            var scatoRes = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                IsValid = true,
+                Data = new ScatoRepo.Chofer()
+            };
+
+            mIScatoRepositorioClient
+                .Setup(x => x.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer)))
+                .Returns(scatoRes);
+
+            repositorioMock
+                .Setup(x => x.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(cuilChofer))
+                .Returns(new List<string> { cuitCliente });
+
+            var resp = target.ValidarChofer(cuilChofer, cuitCliente);
+
+            Assert.That(resp.EsCuilValido);
+            Assert.That(!resp.ExisteEnOtraOrden);
+        }
+
+        [Test]
+        public void ValidarChofer_ExisteEnOrdenesPendientesOtroCliente()
+        {
+            var cuilChofer = "20343197072";
+            var cuitCliente = "30500858628";
+            var cuitOtroCliente = "30716780291";
+            var scatoRes = new ScatoRepo.Respuesta<ScatoRepo.Chofer>
+            {
+                IsValid = true,
+                Data = new ScatoRepo.Chofer()
+            };
+
+            mIScatoRepositorioClient
+                .Setup(x => x.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer)))
+                .Returns(scatoRes);
+
+            repositorioMock
+                .Setup(x => x.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(cuilChofer))
+                .Returns(new List<string> { cuitCliente, cuitOtroCliente });
+
+            var resp = target.ValidarChofer(cuilChofer, cuitCliente);
+
+            Assert.That(resp.EsCuilValido);
+            Assert.That(resp.ExisteEnOtraOrden);
         }
     }
 }
