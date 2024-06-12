@@ -268,7 +268,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 this.confirmationService.confirm({
                     message: "<ul>" + this.mensajeError + "</ul>",
                     accept: () => this.cerrarMensajes(msjTypes),
-                    reject: () => this.cerrarMensajes(msjTypes)
+                    rejectVisible: false
                 });
             },
             (error) => {
@@ -277,9 +277,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                     accept: () => {
                         this.closeDialog.emit();
                     },
-                    reject: () => {
-                        this.closeDialog.emit();
-                    }
+                    rejectVisible: false
                 }
                 );
             }
@@ -332,7 +330,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
-                PlannedLine: item.LINE_NO
+                PlannedLine: item.LINE_NO,
+                Descripcion: item.Descripcion,
             }));
 
             const entrySheetServices = {

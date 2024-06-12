@@ -18,8 +18,8 @@
         <p-table id="items-list"
                  [value]="position.Items"
                  dataKey="NumeroLinea"
-                 [paginator]="position.Items.length > 5"
-                 [rows]="5">
+                 [scrollable]="true" 
+                 scrollHeight="300px">
             <!-- TABLE HEADERS-->
             <ng-template pTemplate="header">
                 <tr>
