@@ -275,6 +275,8 @@ namespace SustitucionMOAUtils.Services
                     repositorio.GuardarCambios();
                 }
 
+                NotificarChoferAutorizadoMultiplesOrdenes(ordenEditar);
+
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
