@@ -73,6 +73,7 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: any = this.filtros.nombrePedido,
         fechaDesde: any = this.filtros.fechaDesde,
         fechaHasta: any = this.filtros.fechaHasta,
         sap: boolean = this.filtros.sap,
@@ -85,7 +86,7 @@ export class ComprasService extends BaseService {
         centros: any = this.filtros.centros,
         grupoDeCompras: any = this.filtros.grupoDeCompras,
         claseDocumento: any = this.filtros.claseDocumento,
-        tipoImputacion: any = this.filtros.tipoImputacion,
+        tipoImputacion: any = this.filtros.tipoImputacion,      
         valorTipoImputacion: any = this.filtros.valorTipoImputacion): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
@@ -95,7 +96,8 @@ export class ComprasService extends BaseService {
         params = params.set('itemsPorPagina', itemsPorPagina.toString());
         params = params.set('orden', orden);
         params = params.set('columna', columna);
-        params = params.set('nroSolp', nroSolp);
+        params = params.set('nroSolp', nroSolp);        
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         params = params.set('sap', sap.toString());

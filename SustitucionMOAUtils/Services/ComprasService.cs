@@ -1159,7 +1159,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             try
             {
@@ -1177,7 +1177,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtro = (x => x.FechaBorrado == null);
                 }
-
+                string[] pedidos = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
@@ -1213,7 +1213,7 @@ namespace SustitucionMOAUtils.Services
                     TieneMensajesChatExterno = x.Posiciones.Select(po => po.Peticiones
                                             .SelectMany(se => se.PeticionDeOferta.Usuarios
                                             .SelectMany(re => re.ChatExterno)))
-                                            .Where(chatExterno => chatExterno.Any()) // Filtrar solo colecciones no vacías
+                                            .Where(chatExterno => chatExterno.Any()) 
                                             .Any(),
 
 
@@ -1224,11 +1224,12 @@ namespace SustitucionMOAUtils.Services
                 (!usuarios.Any() || (x.UsuarioCreacion_Id != null && usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                 (sap == true && x.TipoSolpSap == 3 || mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
-                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) &&
+                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) 
+                && (!pedidos.Any() || pedidos.All(p => x.Pliego.NombreObra.ToUpper().Contains(p.ToUpper()))) &&
                 (!contratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
                 (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                 (!claseDocumento.Any() || claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id))))); ;
+                (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id))))); 
 
 
                 if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
