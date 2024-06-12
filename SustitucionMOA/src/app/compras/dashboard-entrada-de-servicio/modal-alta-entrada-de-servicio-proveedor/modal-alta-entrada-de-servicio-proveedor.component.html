@@ -98,7 +98,7 @@
     <section class="alta-form">
         <div class="row fields">
             <div class="col-md-3">
-                <p>Fecha Documento</p>
+                <p>Fecha de prestación del servicio</p>
                 <p-calendar [(ngModel)]="fechaDocumento"
                             class="smallCal"
                             id="fechaDocumento"
@@ -111,8 +111,10 @@
                             [maxDate]="fechaDocMax"
                             yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
                             autoZIndex="true"
+                            [required]="true"
                             [showIcon]="true">
                 </p-calendar>
+                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
 
             <div class="col-md-3">
