@@ -174,8 +174,8 @@ namespace SustitucionMOAUtils.Services
                             if (detallesAprobacionPorLinea.TryGetValue(detalleSAP.NumeroLinea, out Aprobaciones detalle))
                             {
                                 detalleSAP.NumeroLinea = detalle.Nro_linea;
-                                detalleSAP.Descripcion = detalle.Descripcion_ES;
-                                detalleSAP.TextoBreveServicio = detalle.Texto_breve_servicio;
+                                detalleSAP.Descripcion = detalle.Descripcion_ES.Trim();
+                                detalleSAP.TextoBreveServicio = detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
                                 detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
@@ -187,7 +187,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.Aprobador = detalle.Aprobador_CDS;
                                 documento.Suplente = detalle.Suplente;
                                 documento.Fiscal = detalle.Fiscal_SOLPED;
-                                documento.Descripcion = detalle.Texto_breve_servicio;
+                                documento.Descripcion = detalle.Texto_breve_servicio.Trim();
                                 DateTime fechaAprobacionFormateada = (DateTime)detalle.Fecha_aprobacion;
                                 documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                             }
@@ -259,7 +259,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 OrdenCompra = temporal.NRO_OC,
-                Descripcion = temporal.Texto_breve_servicio,
+                Descripcion = temporal.Texto_breve_servicio.Trim(),
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
@@ -306,8 +306,8 @@ namespace SustitucionMOAUtils.Services
                 Cantidad = temporal.Cantidad.ToString(),
                 NumeroLinea = temporal.Nro_linea,
                 UM = temporal.UM,
-                Descripcion = temporal.Descripcion_ES,
-                TextoBreveServicio = temporal.Texto_breve_servicio,
+                Descripcion = temporal.Descripcion_ES.Trim(),
+                TextoBreveServicio = temporal.Texto_breve_servicio.Trim(),
                 Monto = Convert.ToDecimal(temporal.Monto),
                 CantidadCertificar = temporal.Cantidad_a_certificar,
                 PorcentajeCertificar = temporal.Porcentaje_a_certificar,
@@ -852,7 +852,7 @@ namespace SustitucionMOAUtils.Services
 
                     aprobacion.Nro_linea = esItem.ExternalLineNumber;
                     aprobacion.Nro_servicio = esItem.Service;
-                    aprobacion.Texto_breve_servicio = esItem.ShortText;
+                    aprobacion.Texto_breve_servicio = esItem.ShortText.Trim();
                     aprobacion.UM = esItem.UM;
                     aprobacion.Cantidad_a_certificar = esItem.Quantity;
                     aprobacion.Porcentaje_a_certificar = esItem.Percentage;

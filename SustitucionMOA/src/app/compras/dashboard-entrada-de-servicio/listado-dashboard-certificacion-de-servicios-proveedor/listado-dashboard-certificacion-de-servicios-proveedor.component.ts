@@ -452,7 +452,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
       }
 
     isPendingRelease(oc) : boolean{
-        return oc.SubjToR != "";
+        return oc.SubjToR === "";
     }
 
     isNotReceibeMoreMerchandise(posicion) : boolean {
