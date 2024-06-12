@@ -6925,7 +6925,7 @@ namespace SustitucionMOAUtils.Services
 
             if (moneda != monedaCodigo)
             {
-                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, monedaCodigo).TipoCambio;
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), monedaCodigo, moneda).TipoCambio;
             }
 
             foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)

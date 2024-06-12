@@ -1024,7 +1024,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             if (moneda != adjudicacion.Moneda.Codigo)
             {
-                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), moneda, adjudicacion.Moneda.Codigo).TipoCambio;
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, moneda).TipoCambio;
             }
 
             foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
