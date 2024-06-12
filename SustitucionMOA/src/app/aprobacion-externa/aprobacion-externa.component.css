@@ -134,3 +134,7 @@
     margin: auto;
     top: 190px;
 }
+
+.status-message {
+    font-size: 1.8em;
+}
