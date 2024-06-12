@@ -118,7 +118,7 @@
                             pButton
                             icon="pi pi-check"
                             class="btn accept-btn"
-                            (click)="enviarAprobacion(rowData.NumeroCertificacion)"
+                            (click)="mostrarResumenDeAprobacion(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
                         ></button>
                         <button
@@ -252,15 +252,13 @@
             type="text"
             readonly
         />
-        <!-- <p-dropdown
-            appendTo="body"
-            [options]="suplentes"
-            formControlName="suplente"
-            optionLabel="name"
-            placeholder="Seleccionar suplente"
-        ></p-dropdown> -->
         <p-button class="boton-enviar-motivo" label="Reasignar" (onClick)="reasignar()" [disabled]="formularioSuplente.invalid"></p-button>
     </form>
 </p-dialog>
 
-<p-confirmDialog [style]="{width: '50vw'}" appendTo="body"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" appendTo="body">
+</p-confirmDialog>
+
+<modal-aprobacion 
+    (aprobarEntradaServicio)="enviarAprobacion($event)"
+></modal-aprobacion>

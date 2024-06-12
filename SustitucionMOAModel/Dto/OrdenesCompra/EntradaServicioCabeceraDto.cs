@@ -30,6 +30,9 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public bool DesdeSap { get; set; }
         public string FechaAprobacion { get; set; }
         public string FechaRechazo { get; set; }
+        public string Moneda { get; set; }
+        public string FechaContabilizacion { get; set; }
+        public string FechaDocumento { get; set; }
         public EntradaServicioCabeceraDto()
         {
             // Inicializa la lista entradaServicioDetalle en el constructor
