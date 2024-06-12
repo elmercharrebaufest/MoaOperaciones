@@ -972,10 +972,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     /**
      * Obtiene configuración de tablas del usuario
-     * del sessionStorage.
+     * del localStorage.
      */
     obtenerConfiguracionDeTablasDelUsuario() {
-        let colConfig = sessionStorage.getItem('columnasCertificaciones');
+        let colConfig = localStorage.getItem('columnasCertificaciones');
         this.userTablesConfig = [...this.defaultTablesConfig];
 
         if (colConfig) {
@@ -992,12 +992,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     /**
-     * Guarda en el session storage la configuración
+     * Guarda en el localStorage la configuración
      * de tablas del usuario.
      */
     guardarConfiguracionDeTablasDeUsuario() {
         let visibleColumns = this.userTablesConfig.reduce((acc, t) => acc.concat(t.columns.filter(c => c.visible).map(a => a.id)), []);
-        sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
+        localStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
     }
 
 
