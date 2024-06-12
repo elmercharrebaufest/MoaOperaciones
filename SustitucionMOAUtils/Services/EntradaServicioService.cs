@@ -448,7 +448,7 @@ namespace SustitucionMOAUtils.Services
             }
                 }
             }
-            //Aca - Si los 3 datos estan vacios o no vienen -> “No se encuentra fiscal en la Sol. Ped. Ingresada. Por favor, verificar con el creador de la misma”. 
+            //Aca - Si los 3 datos estan vacios o no vienen -> “No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante”. 
             if (auto == false)
             {
                 bool empty = EmptySolPedValues(detalleSolPed);
@@ -456,7 +456,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     EntradaServicioCreateRespuestaDto emptySolPed = new EntradaServicioCreateRespuestaDto();
                     emptySolPed.Type = "S";
-                    emptySolPed.Message = "No se encuentra fiscal en la Sol. Ped. Ingresada. Por favor, verificar con el creador de la misma";
+                    emptySolPed.Message = "No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante";
                     return emptySolPed;
                 }
             }
