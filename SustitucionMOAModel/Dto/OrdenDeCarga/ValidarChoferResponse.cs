@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SustitucionMOAModel.Dto.OrdenDeCarga
+{
+    public class ValidarChoferResponse
+    {
+        public bool EsCuilValido { get; set; }
+
+        public bool ExisteEnOtraOrden { get; set; }
+    }
+}

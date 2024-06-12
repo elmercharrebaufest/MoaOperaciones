@@ -276,6 +276,20 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
+        public void EnviarMailChoferAutorizadoEnVariasOrdenes(string cuilChofer, List<string> cuitsClientesOrdenes)
+        {
+            var cuerpo = $"El chofer {cuilChofer} se encuentra autorizado en órdenes pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Asunto = $"Chofer {cuilChofer} autorizado en varias órdenes pendientes",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
+
 
         private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenDeCarga> ordenes)
         {

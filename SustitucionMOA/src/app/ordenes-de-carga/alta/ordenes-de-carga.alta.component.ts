@@ -1364,24 +1364,40 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
         return response.data;
     }
+
     validarCuilChofer() {
         const campo = "CUITChofer";
-        const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
-        if (!this.revisarCUITFormatoValido(cuit))
+        const cuilChofer = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
+        const cuitCliente = this.ordenDeCarga.CUITCliente;
+
+        if (!this.revisarCUITFormatoValido(cuilChofer))
             return;
+
         if (this.mensajesOrdenDeCarga[campo])
             this.floatMsgService.setMsgsEmpty();
+
         this.validando[campo] = true;
-        this.mensajesOrdenDeCarga[campo] = null;
-        this.service.validarCuilChofer(cuit).subscribe(result => {
-            this.validando[campo] = false;
-            let data = this.manejarErroresApiResponse(result);
-            if (!data && data != null) {
-                this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
-                this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+        this.mensajesOrdenDeCarga[campo] = undefined;
+
+        this.service.validarChofer(cuilChofer, cuitCliente).subscribe(
+            result => {
+                this.validando[campo] = false;
+                let data = this.manejarErroresApiResponse(result);
+                if (data) {
+                    if (!data.EsCuilValido) {
+                        this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
+                        this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+                    }
+                    else {
+                        if (data.ExisteEnOtraOrden) {
+                            this.floatMsgService.setInfoMsg("El chofer se encuentra autorizado en otra orden");
+                        }
+                    }
+                }
             }
-        });
+        );
     }
+
     validarCuitTransporte() {
         const campo = "CUITTransporte";
         const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";

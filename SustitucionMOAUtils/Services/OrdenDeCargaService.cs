@@ -29,6 +29,7 @@ using System.Threading;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
 using System.Collections;
 using System.Data.Entity;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -42,8 +43,10 @@ namespace SustitucionMOAUtils.Services
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService kgDisponiblesFasService;
 
+        public IRepositorioOrdenDeCarga RepositorioOrdenDeCarga { get { return (IRepositorioOrdenDeCarga)repositorio; } }
+
         public OrdenDeCargaService(
-            IRepositorio repositorio,
+            IRepositorioOrdenDeCarga repositorioOrdenDeCarga,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IFeriadoService feriadoService,
             IScatoRepositorioClient scatoRepositorioClient,
@@ -52,7 +55,7 @@ namespace SustitucionMOAUtils.Services
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio, cNRTClient)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient)
         {
             this.feriadoService = feriadoService;
             this.emailFasService = emailFasService;
@@ -130,6 +133,7 @@ namespace SustitucionMOAUtils.Services
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
                 NotificarVariasFacturas(ordenDeCarga);
+                NotificarChoferAutorizadoMultiplesOrdenes(ordenDeCarga);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: {resultado.ToJson()}");
@@ -1670,7 +1674,23 @@ namespace SustitucionMOAUtils.Services
             return clientesNuevos;
         }
 
+        public ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente)
+        {
+            var esCuilValido = ValidarCuilChoferDigito(cuilChofer);
+            var choferExisteEnOrdenDeOtroCliente = false;
 
+            if (esCuilValido)
+            {
+                var clientesDeOrdenesConChofer = RepositorioOrdenDeCarga.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(cuilChofer);
+                choferExisteEnOrdenDeOtroCliente = clientesDeOrdenesConChofer.Any(c => c != cuitCliente);
+            }
+
+            return new ValidarChoferResponse
+            {
+                EsCuilValido = esCuilValido,
+                ExisteEnOtraOrden = choferExisteEnOrdenDeOtroCliente
+            };
+        }
 
         private void LlenarOrdenAltaCorredorCliente(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
@@ -2126,6 +2146,29 @@ namespace SustitucionMOAUtils.Services
             if (ordenDeCarga.EsFacturaAnticipada && ordenDeCarga.SinSeleccionarFactura && facturaAnticipadaService.OrdenConMultiplesFacturas(ordenDeCarga))
             {
                 emailFasService.EnviarMailVariasFacturasPendientes(ordenDeCarga);
+            }
+        }
+
+        private void NotificarChoferAutorizadoMultiplesOrdenes(OrdenDeCarga ordenDeCarga)
+        {
+            var estadosParaNotificar = new List<EstadoOrdenDeCarga>
+            {
+                EstadoOrdenDeCarga.Confirmado,
+                EstadoOrdenDeCarga.Vencida,
+                EstadoOrdenDeCarga.EntregaPendiente,
+                EstadoOrdenDeCarga.EdicionSolicitada,
+                EstadoOrdenDeCarga.AnulacionSolicitada,
+                EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
+                EstadoOrdenDeCarga.EntregaGenerada
+            };
+
+            if (estadosParaNotificar.Contains(ordenDeCarga.Estado))
+            {
+                var clientesDeOrdenesConChofer = RepositorioOrdenDeCarga.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(ordenDeCarga.CUITChofer);
+                if (clientesDeOrdenesConChofer.Any(c => c != ordenDeCarga.CUITCliente))
+                {
+                    emailFasService.EnviarMailChoferAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, clientesDeOrdenesConChofer);
+                }
             }
         }
 

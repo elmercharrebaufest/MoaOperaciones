@@ -917,6 +917,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -940,6 +941,31 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+        [HttpGet]
+        public ContentResult ValidarChofer(string cuilChofer, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarChoferResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarChofer(cuilChofer, cuitCliente);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
         [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {

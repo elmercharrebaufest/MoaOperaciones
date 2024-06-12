@@ -58,5 +58,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
         List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId);
         void VerificarOrdenesFacturaCompensadaJob();
+        ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente);
     }
 }

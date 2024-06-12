@@ -15,6 +15,7 @@ import { Factura } from '../common/models/ordenes-de-carga/Factura';
 import { OrdenesBaseService } from '../common/base-components/ordenes-base-component';
 import { Proveedor } from '../common/models/proveedor';
 import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
+import { ValidarChoferResponse } from '../common/models/ordenes-de-carga/ValidarChoferResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -455,6 +456,7 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
     public validarCuilChofer(cuil: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuilChofer", cuil);
@@ -465,6 +467,19 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
+    public validarChofer(cuilChofer: string, cuitCliente: number): Observable<ApiResponse<ValidarChoferResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("cuilChofer", cuilChofer)
+            .append("cuitCliente", cuitCliente.toString());
+
+        return this.http
+            .get<ApiResponse<ValidarChoferResponse>>(
+                '/api/OrdenDeCarga/ValidarChofer',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
     public validarCuitTransporte(cuil: string): Observable<ApiResponse<boolean>> {
         let params: HttpParams = new HttpParams()
             .append("cuitTransporte", cuil);

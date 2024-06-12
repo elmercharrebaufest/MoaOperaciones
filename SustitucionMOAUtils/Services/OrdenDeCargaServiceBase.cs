@@ -199,10 +199,12 @@ namespace SustitucionMOAUtils.Services
             }
             return (cuitValido, transporte);
         }
+
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
             return ValidarCuilChofer(cuilChofer).Item1;
         }
+
         public bool ValidarCuitTransporteDigito(string cuitTransporte)
         {
             return ValidarCuitTransporte(cuitTransporte).Item1;
