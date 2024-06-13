@@ -9139,7 +9139,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = x.Id,
                 Cotizacion_Id = x.Cotizacion_Id,
-                FechaFinalizacion = x.FechaFinalizacion.ToString("dd-MM-yyyy"),
+                FechaFinalizacion = x.FechaFinalizacion.ToString("dd-MM-yyyy hh:mm:ss") + "hs",
                 Log = x.Log,
                 Usuario_Id = x.Usuario_Id,
                 UsuarioRazonSocial = x.Usuario.ObtenerRazonSocial()
