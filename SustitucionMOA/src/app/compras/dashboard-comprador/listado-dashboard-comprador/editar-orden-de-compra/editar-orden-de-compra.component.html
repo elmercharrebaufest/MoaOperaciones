@@ -14,8 +14,7 @@
                         <ngb-alert type="danger" [dismissible]="true" *ngIf="mensaje !== undefined && mensaje !== null && mensaje !== ''" (close)="mensaje = null">
                             <strong>Error! </strong>{{ mensaje }}
                         </ngb-alert>
-                    </p>                   
-                    
+                    </p>    
                     <div class="row">
                         <div class="col-md-2">
                             <p-dropdown dataKey="Codigo" [options]="monedaCompras" placeholder="Moneda"
