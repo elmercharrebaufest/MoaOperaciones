@@ -292,6 +292,7 @@
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
     <Content Include="Content\images\LogoBaufest.png" />
+    <Content Include="Content\js\jquery.migrate.js" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
