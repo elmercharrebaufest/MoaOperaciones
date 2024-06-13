@@ -120,7 +120,7 @@
 
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData" *ngIf="!isPendingRelease(rowData) && (!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones)))" [class.highlighted]="expanded">
+                <tr [pSelectableRow]="rowData" *ngIf="isPendingRelease(rowData) && (!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones)))" [class.highlighted]="expanded">
                     <td>
                         <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
