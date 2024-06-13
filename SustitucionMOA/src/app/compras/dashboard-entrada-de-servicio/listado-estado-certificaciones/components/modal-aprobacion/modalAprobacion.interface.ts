@@ -1,4 +1,4 @@
-interface certificacionES {
+export interface certificacionES {
     Descripcion: string,
     Items: certificacionItemES[]
     MontoTotalACertificar: number,
@@ -6,7 +6,7 @@ interface certificacionES {
     NroPosicion: string,
 }
 
-interface certificacionItemES {
+export interface certificacionItemES {
     Cantidad: string,
     CantidadReal: number,
     CantidadACertificar: string,

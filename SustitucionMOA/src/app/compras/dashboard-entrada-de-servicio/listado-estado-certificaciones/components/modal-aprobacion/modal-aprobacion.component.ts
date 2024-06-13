@@ -1,5 +1,5 @@
-import { AfterContentInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { certificacionES } from './modalAprobacion.interface';
 type Column = {
     name: string;
     visible: boolean;
@@ -11,14 +11,12 @@ type Column = {
     styleUrls: ['modal-aprobacion.component.css']
 })
 
-export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContentInit {
-    colConfig = [];
+export class ModalAprobacionComponent implements OnInit {
     @Input() showModal: boolean = false;
     @Input() entradaServicioSeleccionada: certificacionES[] = [];
+    @Output() aprobarES = new EventEmitter<string>();
     @Output() closeModal = new EventEmitter<void>();
-    @Output() aprobarES = new EventEmitter<boolean>();
     colConfigName: string = 'columnasAprobaciones';
-    itemsAgrupadosPorPosicion: any[] = [];
     fechaDocumento: Date = new Date();
     fechaDocMin: Date = new Date();
     fechaDocMax: Date = new Date();
@@ -40,12 +38,10 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
     };
     monthNavStatus: boolean = false;
     totalMontoCertificar: number = 0;
-    colspanMonto: number = 10;
 
     constructor() { }
 
     ngOnDestroy(): void {
-        this.saveColumnConfig(this.colConfig);
     }
 
     ngOnInit() {
@@ -53,12 +49,8 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
         this.entradaServicioSeleccionada = this.orderBy(this.entradaServicioSeleccionada, 'NroPosicion');
-        this.colConfig = this.getColumnConfig();
     }
 
-    ngAfterContentInit(): void {
-        this.applyColumnConfig(this.colConfig);
-    }
     /**
      * Ordena el array por el Nro de posicion.
      * @param array 
@@ -74,9 +66,11 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
      */
     calcularTotalMontoCertificar() {
         let total = 0;
-        for (let item of this.entradaServicioSeleccionada) {
-            total += item.MontoACertificar;
-        }
+        this.entradaServicioSeleccionada.forEach((es: any) => {
+            es.Items.forEach( (item: any) => {
+                total += item.MontoACertificar;
+            });
+        });
 
         this.totalMontoCertificar = total;
     }
@@ -106,98 +100,20 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
     }
 
     /**
-     * Agrupa posiciones por items
-     * @param items 
+     * Calcula el porcentaje acumulado.
      */
-    agruparItemPorPosicion(items) {
-        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, ...Items }) => {
-            const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
-            if (id >= 0) {
-                prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
-                prev[id].Items.push(Items);
-            } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
-            }
-            return prev;
-        }, []);
-    }
-
-    // --------- CONFIGURACION DE COLUMNAS --------- //
-    /**
-     * Obtiene la configuración de columnas guardada en el session storage,
-     * si no existe devuelve una configuración default.
-     * @returns Array de columnas con sus propiedades.
-     */
-    private getColumnConfig(): Column[] {
-        if (sessionStorage.getItem(this.colConfigName) == null) {
-            const defaultColConfig = [{ name: 'anterior', visible: true }, { name: 'acumulado', visible: true }];
-            this.saveColumnConfig(defaultColConfig);
-        }
-        let storedColConfig = sessionStorage.getItem(this.colConfigName);
-        return JSON.parse(storedColConfig);
+    calcularPorcentajeAcumulado(rowData: any) : number {
+        let totalPorcentaje = (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1);
+        return Math.min(totalPorcentaje, 100);
     }
 
     /**
-     * Guarda la configuración en session storage.
-     * @param colConfig
+     * Calcula el monto certificado anteriormente
+     * a la certificacion actual.
      */
-    private saveColumnConfig(colConfig: any): void {
-        sessionStorage.setItem(this.colConfigName, JSON.stringify(colConfig));
-    }
-
-    /**
-     * 
-     * @param event 
-     */
-    toggleColumn(event) {
-        let colName = event.target.value;
-        let visible = event.target.checked;
-        this.updateColumnConfig(colName, visible);
-        this.applyColumnConfig(this.colConfig);
-    }
-
-    /**
-     * Aplica la configuración de columnas a la tabla de alta
-     * de certificaciones.
-     * @param colConfig
-     */
-    private applyColumnConfig(colConfig: Column[]): void {
-        setTimeout(() => {
-            colConfig.forEach(col => {
-                this.showHideColumn(col.name, col.visible);
-            });
-        }, 50); // Timeout necesario para que aparezca la tabla.
-    }
-
-    /**
-     * Muestra/Oculta una columna.
-     * @param colName Clase de css que identifica a la columna.
-     * @param visible 
-     */
-    private showHideColumn(colName: string, visible: boolean): void {
-        let colGroups = document.getElementsByClassName(colName) as HTMLCollectionOf<HTMLElement>;
-        Array.from(colGroups).forEach(colGroup => {
-            visible ? colGroup.classList.remove('hidden') : colGroup.classList.add('hidden');
-        });
-
-        // Necesario para mantener la estructura de la tabla
-        if (colName === 'anterior') {
-            this.colspanMonto = visible ? 10 : 7;
-        }
-    }
-
-    /**
-    *  Actualiza la configuración de columnas.
-    * @param colName
-    * @param visible
-    */
-    private updateColumnConfig(colName: string, visible: boolean): void {
-        this.colConfig = this.colConfig.map(col => {
-            if (col.name === colName) {
-                return { ...col, visible: visible };
-            }
-            return col;
-        });
+    calcularMontoAnterior(item: any): number {
+        item.MontoAnterior = (item.CantidadReal * item.Importe);
+        return item.MontoAnterior;
     }
 
     /**
@@ -207,9 +123,9 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
     calculateGeneralTotalAmount(): string {
         let montoTotalGeneral = 0;
         let moneda: string = ''
-        moneda = this.itemsAgrupadosPorPosicion[0].Items[0].Moneda;
+        moneda = this.entradaServicioSeleccionada[0].Items[0].Moneda;
 
-        this.itemsAgrupadosPorPosicion.forEach(position => {
+        this.entradaServicioSeleccionada.forEach(position => {
             montoTotalGeneral += position.MontoTotalACertificar;
         });
 
@@ -233,13 +149,6 @@ export class ModalAprobacionComponent implements OnInit, OnDestroy, AfterContent
         } else {
             element.classList.remove('error');
         }
-    }
-
-    /**
-     * Aprobar Entrada de servicio
-     */
-    aprobarEntradaServicio() {
-        this.aprobarES.emit(true);
     }
 
     /**

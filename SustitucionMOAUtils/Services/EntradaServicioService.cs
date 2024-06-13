@@ -261,7 +261,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 OrdenCompra = temporal.NRO_OC,
-                Descripcion = temporal.Texto_breve_servicio,
+                Descripcion = temporal.Descripcion_ES,
                 MontoTotal = temporal.Monto_total.ToString(),
                 FechaCreacion = fechaCreacionFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
@@ -274,7 +274,8 @@ namespace SustitucionMOAUtils.Services
                 Suplente = temporal.Suplente,
                 Fiscal = temporal.Fiscal_SOLPED,
                 FechaContabilizacion = fechaContabilizacionFormateada.ToString("dd/MM/yyyy"),
-                FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy")
+                FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy"),
+                NroPosicion = temporal.NRO_POS
             };
 
             if (temporal.Estado_certificacion == "Aprobada")

@@ -15,7 +15,7 @@ import { ComprasService } from '../../compras.service';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { ModalAprobacionComponent } from './components/modal-aprobacion/modal-aprobacion.component';
+import { certificacionES } from './components/modal-aprobacion/modalAprobacion.interface';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -24,7 +24,6 @@ import { ModalAprobacionComponent } from './components/modal-aprobacion/modal-ap
 })
 export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
   //#region Variables 
-  @ViewChild("modalAprobacion") protected modalAprobacionComponent: ModalAprobacionComponent = new ModalAprobacionComponent();
   @ViewChild("tabla") protected tabla: Table;
   @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
   @ViewChild('paginator') paginator: Paginator;
@@ -37,6 +36,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   subscripciones: Subscription[] = [];
+  entradaServicioSeleccionada: certificacionES[] = [];
+  mostrarModalAprobaciones: boolean = false;
   protected locale: any;
   private destroy$: Subject<void> = new Subject<void>();
   nroSolp: string = "";
@@ -439,32 +440,34 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.formularioMotivosRechazo.updateValueAndValidity();
   }
 
-  mostrarResumenDeAprobacion(EntradaServicio: any): void {
-    this.modalAprobacionComponent.entradaServicioSeleccionada = [
+  mostrarResumenDeAprobacion(entradaServicio: any): void {
+    this.entradaServicioSeleccionada = [
       {
-        NroPosicion: '',
-        Descripcion: '',
-        MontoTotalACertificar: 0,
-        NumeroCertificacion: '',
-        Items: [
-          {
-            Cantidad: '',
-            CantidadACertificar: '',
-            CantidadReal: 0,
-            Importe: 0,
-            Descripcion: '',
-            Moneda: '',
-            MontoACertificar: 0,
-            NumeroLinea: 0,
-            Porcentaje: '',
-            PorcentajeACertificar: 0,
-            ServicioNumero: 0,
-            UM: ''
-          }
-        ]
+        NroPosicion: entradaServicio.NroPosicion,
+        Descripcion: entradaServicio.Descripcion,
+        MontoTotalACertificar: Number(entradaServicio.MontoTotal.replace(",", ".")),
+        NumeroCertificacion: entradaServicio.NumeroCertificacion,
+        Items: entradaServicio.entradaServicioDetalle.map((item: any) => ({
+          Cantidad: item.Cantidad,
+          CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
+          CantidadReal: item.Cantidad,
+          Importe: item.MontoCertificar,
+          Descripcion: item.TextoBreveServicio,
+          Moneda: entradaServicio.Moneda,
+          MontoACertificar: item.MontoCertificar,
+          NumeroLinea: item.NumeroLinea,
+          Porcentaje: Number(item.PorcentajeCertificar),
+          PorcentajeACertificar: Number(item.PorcentajeCertificar),
+          ServicioNumero: item.CodigoServicio,
+          UM: item.UM
+        }))
       }
     ];
-    this.modalAprobacionComponent.showIt();
+    this.mostrarModalAprobaciones = true;
+  }
+
+  cerrarModalResumen(): void {
+    this.mostrarModalAprobaciones = false;
   }
 
   enviarAprobacion(numeroCertificacion: string): void {
@@ -473,6 +476,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
       header: 'Confirmar Aprobación',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: "Sí",
+      rejectLabel: "No",
       accept: () => {
         this.hideContainerTable();
         this.subscripciones.push(
@@ -487,7 +492,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               switch (resp.data.Type) {
                 case "I": {
                   this.getListarPO(this.proveedor, this.documentoNumero);
-                  this.modalAprobacionComponent.hideIt();
+                  this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   break;
                 }
