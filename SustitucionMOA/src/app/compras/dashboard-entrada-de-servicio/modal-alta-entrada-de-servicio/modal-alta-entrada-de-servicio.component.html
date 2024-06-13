@@ -150,8 +150,10 @@
                             yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
                             autoZIndex="true"
                             [showIcon]="true"
+                            [required]="true"
                             appendTo="body">
                 </p-calendar>
+                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
 
             <div class="col-md-3">

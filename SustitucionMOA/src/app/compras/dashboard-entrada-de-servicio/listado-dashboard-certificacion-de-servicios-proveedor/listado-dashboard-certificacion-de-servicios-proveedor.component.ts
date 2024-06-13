@@ -452,7 +452,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
       }
 
     isPendingRelease(oc) : boolean{
-        return oc.SubjToR != "";
+        return oc.SubjToR === "";
     }
 
     isNotReceibeMoreMerchandise(posicion) : boolean {
@@ -883,10 +883,10 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     /**
      * Obtiene configuración de tablas del usuario
-     * del sessionStorage.
+     * del localStorage.
      */
     obtenerConfiguracionDeTablasDelUsuario() {
-        let colConfig = sessionStorage.getItem('columnasCertificaciones');
+        let colConfig = localStorage.getItem('columnasCertificacionesProveedor');
         this.userTablesConfig = [...this.defaultTablesConfig];
 
         if (colConfig) {
@@ -903,12 +903,12 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     }
 
     /**
-     * Guarda en el session storage la configuración
+     * Guarda en el localStorage la configuración
      * de tablas del usuario.
      */
     guardarConfiguracionDeTablasDeUsuario() {
         let visibleColumns = this.userTablesConfig.reduce((acc, t) => acc.concat(t.columns.filter(c => c.visible).map(a => a.id)), []);
-        sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
+        localStorage.setItem('columnasCertificacionesProveedor', JSON.stringify(visibleColumns));
     }
 
 

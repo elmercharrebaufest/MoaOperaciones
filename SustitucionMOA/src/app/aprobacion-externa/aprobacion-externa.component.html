@@ -1,19 +1,20 @@
-<div *ngIf="action === 'approve'">
-    <br />
-    <div style="display:flex;" align="center">
-        <img src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" class="img-responsive logo-center">
-    </div>
+<div class="logo-container" align="center">
+    <img src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" class="img-responsive logo-center">
+</div>
 
-    <div *ngIf="isApprover === false">
-        <br />
+<message-spinner class="center-content"></message-spinner>
+
+<ng-container *ngIf="!messageSpinnerComponent.spinnerStatus">
+    <div class="message-container" *ngIf="isApprover === false">
         <h3 class="headerTitle">El aprobador de esta entrada de servicio ha sido modificado. Si desea, consulte su estado en el portal, en la pantalla "Estado Certificaci&oacute;n".</h3>
     </div>
-    <div *ngIf="isApprover === true && oldES === true">
-        <br />
+    
+    <div class="message-container" *ngIf="isApprover === true && oldES === true">
         <h3 class="headerTitle">Este enlace de entrada de servicio corresponde a una versi&oacute;n anterior, consulte su estado en el portal,en la pantalla "Estado Certificaci&oacute;n".</h3>
     </div>
-    <div *ngIf="isApprover === true && oldES === false">
-        <h1 class="headerTitle">Aprobaci&oacute;n de entrada de servicio temporal</h1>
+    
+    <div *ngIf="action === 'approve' && isApprover === true && oldES === false" class="resumen-container">
+        <h3 class="headerTitle">Aprobaci&oacute;n de entrada de servicio temporal</h3>
 
         <div class="container">
             <div class="flex-container">
@@ -87,26 +88,10 @@
         </div>
         <br />
     </div>
-</div>
-
-
-<div *ngIf="action === 'reject'">
-    <br />
-    <div style="display:flex;" align="center">
-        <img src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" class="img-responsive logo-center">
-    </div>
-
-    <div *ngIf="isApprover === false">
-        <br />
-        <h3 class="headerTitle">El aprobador de esta entrada de servicio ha sido modificado. Si desea, consulte su estado en el portal, en la pantalla "Estado Certificaci&oacute;n".</h3>
-    </div>
-    <div *ngIf="isApprover === true && oldES === true">
-        <br />
-        <h3 class="headerTitle">Este enlace de entrada de servicio corresponde a una versi&oacute;n anterior, consulte su estado en el portal,en la pantalla "Estado Certificaci&oacute;n".</h3>
-    </div>
-    <div *ngIf="isApprover === true && oldES === false">
-
-        <h1 class="headerTitle">Rechazo de entrada de servicio temporal</h1>
+    
+    <div *ngIf="action === 'reject' && isApprover === true && oldES === false" class="resumen-container">
+    
+        <h3 class="headerTitle">Rechazo de entrada de servicio temporal</h3>
 
         <div class="container">
             <div class="flex-container">
@@ -155,8 +140,6 @@
                     </tr>
                 </tbody>
             </table>
-
-
         </div>
 
         <div *ngIf="estado.includes('Pendiente'); else elseState2">
@@ -201,11 +184,11 @@
 
             <spinner></spinner>
             <div *ngIf="rejectionSuccess === true" class="center-container">
-                <p class="center-text message"> <strong>La entrada de servicio {{ cert }} ha sido rechazada</strong></p>
+                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido rechazada</strong></p>
                 <br />
             </div>
             <div *ngIf="rejectionError === true" class="center-container">
-                <p class="center-text message"> <strong>La entrada de servicio {{ cert }} no ha sido rechazada, intente nuevamente</strong></p>
+                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido rechazada, intente nuevamente</strong></p>
                 <br />
             </div>
 
@@ -225,9 +208,7 @@
         </div>
 
         <ng-template #elseState2>
-            <p class="center-text message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
+            <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
         </ng-template>
-
-        <br />
     </div>
-</div>
+</ng-container>

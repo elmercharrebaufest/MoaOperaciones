@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
@@ -61,6 +61,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     colspanMonto: number = 10;
     colConfig = [];
     monthNavStatus: boolean = false;
+    documentDateMsg: Message[] = [];
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -118,7 +119,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         };
 
         this.fechaContabilizacion = new Date();
-        this.fechaDocumento = new Date();
+        //this.fechaDocumento = new Date();
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
@@ -140,9 +141,10 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
                 prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
+                prev[id].Descripcion.trim();
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
             }
             return prev;
         }, []);
@@ -160,8 +162,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     calculateGeneralTotalAmount(): string {
         let montoTotalGeneral = 0;
         let moneda: string = ''
-        moneda =  this.itemsAgrupadosPorPosicion[0].Items[0].Moneda; 
-    
+        moneda = this.itemsAgrupadosPorPosicion[0].Items[0].Moneda;
+
         this.itemsAgrupadosPorPosicion.forEach(position => {
             montoTotalGeneral += position.MontoTotalACertificar;
         });
@@ -171,9 +173,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         } else {
             return `${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
-    
+
     }
-    
+
 
     setRangoFechaDocumento() {
         // Fecha máxima: Fecha actual
@@ -192,7 +194,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
         else {
             this.fechaContabilizacionMin = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-        }        
+        }
     }
 
     dateFormatter(date_Object: Date): string {
@@ -262,52 +264,57 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     certificarPosicion() {
-        this.buildEntrySheet();
-        this.service.postCreateAsync(this.entrySheetObjects).subscribe(
-            (response) => {
-                this.mensajeError = '';
-                let resultMsj: string[] = [];
-                let msjTypes: string[] = [];
+        if (this.validateValues() === true) {
 
-                response.data.forEach(element => {
-                    if (!element) {
-                        this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+            this.buildEntrySheet();
+            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+                (response) => {
+                    this.mensajeError = '';
+                    let resultMsj: string[] = [];
+                    let msjTypes: string[] = [];
+
+                    response.data.forEach(element => {
+                        if (!element) {
+                            this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                        }
+
+                        if (!element.Message) {
+                            element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                        }
+
+                        let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                            element.Message.startsWith("Contabilice en ") ?
+                            "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
+
+                        resultMsj.push("<li>" + msj + "</li>");
+
+                        if (!msjTypes.includes(element.Type)) {
+                            msjTypes.push(element.Type);
+                        }
+                    });
+
+                    this.mensajeError = resultMsj.join("");
+
+                    this.confirmationService.confirm({
+                        message: "<ul>" + this.mensajeError + "</ul>",
+                        accept: () => this.cerrarMensajes(msjTypes),
+                        rejectVisible: false
+                    });
+                },
+                (error) => {
+                    this.confirmationService.confirm({
+                        message: error.error.Message,
+                        accept: () => {
+                            this.closeDialog.emit();
+                        },
+                        rejectVisible: false
                     }
-
-                    if (!element.Message) {
-                        element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
-                    }
-
-                    let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                        element.Message.startsWith("Contabilice en ") ?
-                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
-
-                    resultMsj.push("<li>" + msj + "</li>");
-
-                    if (!msjTypes.includes(element.Type)) {
-                        msjTypes.push(element.Type);
-                    }
-                });
-
-                this.mensajeError = resultMsj.join("");
-
-                this.confirmationService.confirm({
-                    message: "<ul>" + this.mensajeError + "</ul>",
-                    accept: () => this.cerrarMensajes(msjTypes),
-                    rejectVisible: false
-                });
-            },
-            (error) => {
-                this.confirmationService.confirm({
-                    message: error.error.Message,
-                    accept: () => {
-                        this.closeDialog.emit();
-                    },
-                    rejectVisible: false
+                    );
                 }
-                );
-            }
-        );
+            );
+
+        }
+      
 
     }
 
@@ -408,7 +415,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         return Number(num.toFixed(decimals));
     }
 
-    calcularPorcentajeAcumulado(rowData: any) : number {
+    calcularPorcentajeAcumulado(rowData: any): number {
         let totalPorcentaje = (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1);
         return Math.min(totalPorcentaje, 100);
     }
@@ -504,5 +511,15 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     ngOnDestroy() {
         this.saveColumnConfig(this.colConfig);
+    }
+
+    validateValues() {
+        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
+            this.documentDateMsg = [];
+            this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Por favor, ingrese una fecha de documento' });
+            return false;
+        }
+        this.documentDateMsg = [];
+        return true;
     }
 }

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AprobacionExternaService } from './aprobacion-externa.service';
 import { ComprasService } from '../compras/compras.service';
 import { SpinnerComponent } from '../common/view-child/spinner/spinner.component';
+import { MessageSpinnerComponent } from '../common/message-spinner/message-spinner.component';
 
 @Component({
   selector: 'app-aprobacion-externa',
@@ -47,13 +48,18 @@ export class AprobacionExternaComponent implements OnInit {
 
 
     constructor(private route: ActivatedRoute, private router: Router, protected aprobacionExternaService: AprobacionExternaService, protected comprasService: ComprasService) {
+        this.messageSpinnerComponent = new MessageSpinnerComponent();
     }
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
+    @ViewChild(MessageSpinnerComponent)
+    protected messageSpinnerComponent: MessageSpinnerComponent;
+
 
     ngOnInit(): void {
+        this.messageSpinnerComponent.showIt();
         this.route.url.subscribe(url => {
             // Extract action from URL or route parameters
             this.action = url[1].path === 'approve' ? 'approve' : 'reject';
@@ -80,61 +86,58 @@ export class AprobacionExternaComponent implements OnInit {
 
     getESData() {
         if (this.nroESLocal !== "") {
-            try {
-                this.subscription = this.aprobacionExternaService.getESData(this.nroESLocal)
-                    .subscribe(
-                        (result: any) => {
-                            if (result.data.aprobador === true) {
-                                this.isApprover = true;
-                            }
-                            if (result.data.versionAnt) {
-                                this.oldES = true;
-                            }
-                            if (this.isApprover && !this.oldES) {
-                                this.prov = result.data.proveedor;
-                                this.aprobacionesList = result.data.aprobacionesList;
-                                if (this.aprobacionesList.length > 0) {
-                                    this.usuario = this.aprobacionesList[0].Ingresante_CDS;
-                                    this.cert = this.aprobacionesList[0].NRO_ES_LOCAL;
-                                    this.estado = this.aprobacionesList[0].Estado_certificacion;
-                                    let dateString = this.aprobacionesList[0].Fecha_Carga_ES.toString();
-                                    let ts = parseInt(dateString.match(/\d+/)[0], 10);
-                                    let jsonDate = new Date(ts);
-                                    const day = ('0' + jsonDate.getDate()).slice(-2);
-                                    const month = ('0' + (jsonDate.getMonth() + 1)).slice(-2);
-                                    const year = jsonDate.getFullYear();
-                                    this.fechaCarga = `${day}/${month}/${year}`;
-                                    this.desc = this.aprobacionesList[0].Descripcion_ES;
-                                    this.aprobacionesList[0].Monto_total = this.round(this.aprobacionesList[0].Monto_total, 2);
-                                    this.importe = '$ ' + this.aprobacionesList[0].Monto_total.toString();
-                                    this.aprobacionesList.forEach(ap => {
-                                        ap.Monto_a_certificar = this.round(ap.Monto_a_certificar, 2);
-
-                                        let detServicio = {
-                                            Descripcion: ap.Descripcion_ES,
-                                            Cantidad: ap.Cantidad_a_certificar.toString(),
-                                            UM: ap.UM,
-                                            Porcetaje: ap.Porcentaje_a_certificar,
-                                            Monto: this.round(ap.Monto_a_certificar, 2).toString(),
-                                        };
-
-                                        this.detalleServicios.push(detServicio);
-
-                                    })
-                                }
-
-                                if (this.action === 'approve' && this.estado.includes('Pendiente')) {
-                                    this.aprobarES();
-                                }
-                            }
-                        },
-                        error => {
+            this.subscription = this.aprobacionExternaService.getESData(this.nroESLocal)
+                .subscribe(
+                    (result: any) => {
+                        if (result.data.aprobador === true) {
+                            this.isApprover = true;
                         }
-                    );
-            } catch (e) {
-                return false; //<-- Prevent Refresh
-            }
+                        if (result.data.versionAnt) {
+                            this.oldES = true;
+                        }
+                        if (this.isApprover && !this.oldES) {
+                            this.prov = result.data.proveedor;
+                            this.aprobacionesList = result.data.aprobacionesList;
+                            if (this.aprobacionesList.length > 0) {
+                                this.usuario = this.aprobacionesList[0].Ingresante_CDS;
+                                this.cert = this.aprobacionesList[0].NRO_ES_LOCAL;
+                                this.estado = this.aprobacionesList[0].Estado_certificacion;
+                                let dateString = this.aprobacionesList[0].Fecha_Carga_ES.toString();
+                                let ts = parseInt(dateString.match(/\d+/)[0], 10);
+                                let jsonDate = new Date(ts);
+                                const day = ('0' + jsonDate.getDate()).slice(-2);
+                                const month = ('0' + (jsonDate.getMonth() + 1)).slice(-2);
+                                const year = jsonDate.getFullYear();
+                                this.fechaCarga = `${day}/${month}/${year}`;
+                                this.desc = this.aprobacionesList[0].Descripcion_ES;
+                                this.aprobacionesList[0].Monto_total = this.round(this.aprobacionesList[0].Monto_total, 2);
+                                this.importe = '$ ' + this.aprobacionesList[0].Monto_total.toString();
+                                this.aprobacionesList.forEach(ap => {
+                                    ap.Monto_a_certificar = this.round(ap.Monto_a_certificar, 2);
 
+                                    let detServicio = {
+                                        Descripcion: ap.Descripcion_ES,
+                                        Cantidad: ap.Cantidad_a_certificar.toString(),
+                                        UM: ap.UM,
+                                        Porcetaje: ap.Porcentaje_a_certificar,
+                                        Monto: this.round(ap.Monto_a_certificar, 2).toString(),
+                                    };
+
+                                    this.detalleServicios.push(detServicio);
+
+                                })
+                            }
+                            if (this.action === 'approve' && this.estado.includes('Pendiente')) {
+                                this.aprobarES();
+                            }
+                        }
+                        setTimeout(()=> {
+                            this.messageSpinnerComponent.hideIt();
+                        }, 5000)
+                    },
+                    error => {
+                    }
+                );
             return false; //<-- Prevent Refresh
         }
 

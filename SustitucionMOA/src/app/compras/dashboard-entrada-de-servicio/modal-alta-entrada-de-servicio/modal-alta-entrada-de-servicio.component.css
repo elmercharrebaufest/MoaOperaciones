@@ -37,10 +37,22 @@
   font-size: .7em;
 }
 
+::ng-deep .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
+    font-size: 0.7em;
+}
+
+::ng-deep .ui-messages-icon.pi.pi-times {
+    font-size: 1.3em;
+}
+
+::ng-deep body .ui-messages.ui-messages-error .ui-messages-icon {
+    color: #c0392b;
+}
+
 .alta-form input#ref {
-  height: 2.4em;
-  border-radius: 3px;
-  width: 100%;
+    height: 2.4em;
+    border-radius: 3px;
+    width: 100%;
 }
 .alta-form .row {
   margin-bottom: 2rem;

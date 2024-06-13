@@ -159,6 +159,18 @@ p-table#items-list th.acumulado {
     border-left: none;
 }
 
+::ng-deep .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
+    font-size: 0.7em;
+}
+
+::ng-deep .ui-messages-icon.pi.pi-times {
+    font-size: 1.3em;
+}
+
+::ng-deep body .ui-messages.ui-messages-error .ui-messages-icon {
+    color: #c0392b;
+}
+
 /* Calendar end */
 
 .form-actions {

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
@@ -50,6 +50,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     fechaDocMax: Date;
     fechaContabilizacionMin: Date;
     fechaContabilizacionMax: Date;
+    documentDateMsg: Message[] = [];
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -127,9 +128,10 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
                 prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
+                prev[id].Descripcion.trim();
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion, Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
             }
             return prev;
         }, []);
@@ -235,55 +237,54 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     certificarPosicion() {
-        this.buildEntrySheet();
-        this.service.postCreateAsync(this.entrySheetObjects).subscribe(
-            (response) => {
-                this.mensajeError = '';
-                let resultMsj: string[] = [];
-                let msjTypes: string[] = [];
+        if (this.validateValues() === true) {
+            this.buildEntrySheet();
+            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+                (response) => {
+                    this.mensajeError = '';
+                    let resultMsj: string[] = [];
+                    let msjTypes: string[] = [];
 
-                response.data.forEach(element => {
-                    if (!element) {
-                        this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                    response.data.forEach(element => {
+                        if (!element) {
+                            this.mensajeError = 'Error del servidor, vuelva a intentarlo más tarde.'
+                        }
+
+                        if (!element.Message) {
+                            element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
+                        }
+
+                        let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
+                            element.Message.startsWith("Contabilice en ") ?
+                            "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
+
+                        resultMsj.push("<li>" + msj + "</li>");
+
+                        if (!msjTypes.includes(element.Type)) {
+                            msjTypes.push(element.Type);
+                        }
+                    });
+
+                    this.mensajeError = resultMsj.join("");
+
+                    this.confirmationService.confirm({
+                        message: "<ul>" + this.mensajeError + "</ul>",
+                        accept: () => this.cerrarMensajes(msjTypes),
+                        rejectVisible: false
+                    });
+                },
+                (error) => {
+                    this.confirmationService.confirm({
+                        message: error.error.Message,
+                        accept: () => {
+                            this.closeDialog.emit();
+                        },
+                        rejectVisible: false
                     }
-
-                    if (!element.Message) {
-                        element.Message = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
-                    }
-
-                    let msj = element.Message.startsWith("Sólo es posible contabilizar en ") ||
-                        element.Message.startsWith("Contabilice en ") ?
-                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : element.Message;
-
-                    resultMsj.push("<li>" + msj + "</li>");
-
-                    if (!msjTypes.includes(element.Type)) {
-                        msjTypes.push(element.Type);
-                    }
-                });
-
-                this.mensajeError = resultMsj.join("");
-
-                this.confirmationService.confirm({
-                    message: "<ul>" + this.mensajeError + "</ul>",
-                    accept: () => this.cerrarMensajes(msjTypes),
-                    reject: () => this.cerrarMensajes(msjTypes)
-                });
-            },
-            (error) => {
-                this.confirmationService.confirm({
-                    message: error.error.Message,
-                    accept: () => {
-                        this.closeDialog.emit();
-                    },
-                    reject: () => {
-                        this.closeDialog.emit();
-                    }
+                    );
                 }
-                );
-            }
-        );
-
+            );
+        }
     }
 
     buildEntrySheet() {
@@ -331,7 +332,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
                 PlannedPackage: item.Id,
-                PlannedLine: item.LINE_NO
+                PlannedLine: item.LINE_NO,
+                Descripcion: item.Descripcion,
             }));
 
             const entrySheetServices = {
@@ -380,5 +382,15 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     //Redondeo de decimales
     round(num: number, decimals: number) {
         return Number(num.toFixed(decimals));
+    }
+
+    validateValues() {
+        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
+            this.documentDateMsg = [];
+            this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una fecha de prestación del servicio' });
+            return false;
+        }
+        this.documentDateMsg = [];
+        return true;
     }
 }

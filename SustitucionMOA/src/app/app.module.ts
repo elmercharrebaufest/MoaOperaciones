@@ -89,6 +89,7 @@ import { AprobacionExternaComponent } from './aprobacion-externa/aprobacion-exte
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
+import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
 
 @NgModule({
   imports: [
@@ -158,7 +159,8 @@ import { TooltipModule } from "primeng/tooltip";
     ListadoNovedadesComponent,
     ModalNotificacionesComponent,
     ComunicacionesComponent,
-    AprobacionExternaComponent
+    AprobacionExternaComponent,
+    MessageSpinnerComponent
     ],
     providers: [
         DatePipe,
