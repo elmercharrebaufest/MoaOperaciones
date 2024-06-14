@@ -66,10 +66,13 @@
         <div class="mySearch">
             <div *ngIf="ordenDeCarga.OrdenesConPatentesRepetidas" class="formulario-input;">
                 <div class="alert alert-warning">
-                    Las siguientes ordenes tienen las mismas patentes de chasis y acoplado:
-                    <a class="cursor" style="cursor: pointer;"
-                        *ngFor="let idOrdenRepetida of ordenDeCarga.OrdenesConPatentesRepetidas"
-                        [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
+                    Las siguientes ordenes tienen la misma patente de chasis:
+                    <ng-container
+                        *ngFor="let idOrdenRepetida of ordenDeCarga.OrdenesConPatentesRepetidas;let last = last">
+                        <a class="cursor" style="cursor: pointer;"
+                            [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
+                        <ng-container *ngIf="!last">-</ng-container>
+                    </ng-container>
                 </div>
             </div>
             <div *ngIf="mensajeError != ''" class="formulario-input;">

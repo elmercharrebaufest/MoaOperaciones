@@ -74,7 +74,7 @@ namespace SustitucionMOAUtils.Services
                 ValidarOrdenDeCargaAlta(ordenDeCarga);
                 LlenarOrdenAlta(ordenDeCarga, usuario);
                 var contratoTieneKgsDisponibles = ContratoTieneKgDisponibles(ordenDeCarga, out contratoSAP);
-                LlenarOrdenDeCargaFleteMOA(ordenDeCarga,contratoSAP);
+                LlenarOrdenDeCargaFleteMOA(ordenDeCarga, contratoSAP);
                 var ordenPuedeEnviarseDirectoSap = contratoTieneKgsDisponibles;
 
                 var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
@@ -133,7 +133,7 @@ namespace SustitucionMOAUtils.Services
                 NotificarContratoSinKm(ordenDeCarga);
                 NotificarTransporte(ordenDeCarga.Id);
                 NotificarVariasFacturas(ordenDeCarga);
-                NotificarChoferAutorizadoMultiplesOrdenes(ordenDeCarga);
+                NotificarCamionAutorizadoMultiplesOrdenes(ordenDeCarga);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
                 Log.Info($"Result: {resultado.ToJson()}");
@@ -275,7 +275,7 @@ namespace SustitucionMOAUtils.Services
                     repositorio.GuardarCambios();
                 }
 
-                NotificarChoferAutorizadoMultiplesOrdenes(ordenEditar);
+                NotificarCamionAutorizadoMultiplesOrdenes(ordenEditar);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
                 Log.Info($"Result: {resultado.ToJson()}");
@@ -403,7 +403,7 @@ namespace SustitucionMOAUtils.Services
         public List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null)
         {
             Log.Info($"Listar(mailUsuario: {mailUsuario}, fechaInicio: {fechaInicio}, fechaFin: {fechaFin})");
-            
+
             var fechaInicioDateTime = DataFormatter.StringToDateTime(fechaInicio, "inicio");
             var fechaFinDateTime = DataFormatter.StringToDateTime(fechaFin, "fin");
 
@@ -418,7 +418,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esTercero = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaDeTerceros);
             var esInterno = EsUsuarioInterno(usuario);
-            
+
             var descripcion = EstadoOrdenDeCarga.EdicionRechazada;
             fechaFinDateTime = fechaFinDateTime.AddDays(1);
 
@@ -462,7 +462,8 @@ namespace SustitucionMOAUtils.Services
                         TipoContrato = x.TipoContrato,
                         TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
                         TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id),
-                        FleteMOA = x.FleteMOA ?? false
+                        FleteMOA = x.FleteMOA ?? false,
+                        TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
                     }).OrderByDescending(y => y.Id).ToList();
             }
             else
@@ -1006,7 +1007,7 @@ namespace SustitucionMOAUtils.Services
         {
             string resultado = SuccessMsg.OrdenDeCargaActualizada;
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-            if(orden != null && !string.IsNullOrEmpty(orden.ContratoSAP))
+            if (orden != null && !string.IsNullOrEmpty(orden.ContratoSAP))
             {
                 return new Resultado { info = "La orden ya tiene un contrato seleccionado." };
             }
@@ -1679,19 +1680,31 @@ namespace SustitucionMOAUtils.Services
         public ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente)
         {
             var esCuilValido = ValidarCuilChoferDigito(cuilChofer);
-            var choferExisteEnOrdenDeOtroCliente = false;
-
-            if (esCuilValido)
-            {
-                var clientesDeOrdenesConChofer = RepositorioOrdenDeCarga.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(cuilChofer);
-                choferExisteEnOrdenDeOtroCliente = clientesDeOrdenesConChofer.Any(c => c != cuitCliente);
-            }
 
             return new ValidarChoferResponse
             {
                 EsCuilValido = esCuilValido,
-                ExisteEnOtraOrden = choferExisteEnOrdenDeOtroCliente
             };
+        }
+
+        public bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente)
+        {
+            return OrdenesConPatentesRepetidas(patenteChasis)
+                .Where(oc => oc.CUITCliente != cuitCliente).Count() > 0;
+        }
+
+        private List<OrdenDeCarga> OrdenesConPatentesRepetidas(string patenteChasis)
+        {
+            var estadosNoPuedeCompararPatentes = new EstadoOrdenDeCarga[]
+            {
+                EstadoOrdenDeCarga.Anulada,
+                EstadoOrdenDeCarga.Entregada,
+                EstadoOrdenDeCarga.Vencida
+            };
+            return repositorio.Listar<OrdenDeCarga>(oc =>
+                !estadosNoPuedeCompararPatentes.Contains(oc.Estado) &&
+                oc.ChasisAcoplado == patenteChasis
+            );
         }
 
         private void LlenarOrdenAltaCorredorCliente(OrdenDeCarga ordenDeCarga, Usuario usuario)
@@ -1721,7 +1734,7 @@ namespace SustitucionMOAUtils.Services
                         x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
                         x.TipoProveedor.Id == (int)TipoUsuarioEnum.Corredor)
                     ?? throw new Exception("No se encontró el corredor seleccionado");
-                    
+
                     ordenDeCarga.CodigoCorredor = corredor.CodigoProveedor;
                     ordenDeCarga.Corredor_Id = corredor.Id;
                 }
@@ -1874,17 +1887,17 @@ namespace SustitucionMOAUtils.Services
                 $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
 
             contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null) ?? throw new InfoCustomException("No se encontró el contrato en SAP");
-            
+
             Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");
 
             var ordenesPendientes = ObtenerOrdenesPendientesDeCliente(orden.Cliente.CodigoProveedor).Where(ordenPendiente => ordenPendiente.Id != orden.Id).ToList();
-            
+
             var kilosDisponibles = kgDisponiblesFasService.ObtenerKgDisponiblesContrato(contratoSAP, ordenesPendientes);
             Log.Info($"Validar kg disponibles: {kilosDisponibles}");
             if (kilosDisponibles <= Constante.FAS_KILOS_LIMITE_INFERIOR)
                 throw new InfoCustomException($"El contrato seleccionado no tiene kg disponibles");
             if (kilosDisponibles < Constante.FAS_KILOS_LIMITE_SUPERIOR)
-                return false ;
+                return false;
 
             return true;
         }
@@ -2151,25 +2164,22 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void NotificarChoferAutorizadoMultiplesOrdenes(OrdenDeCarga ordenDeCarga)
+        private void NotificarCamionAutorizadoMultiplesOrdenes(OrdenDeCarga ordenDeCarga)
         {
-            var estadosParaNotificar = new List<EstadoOrdenDeCarga>
+            var estadosParaNoNotificar = new List<EstadoOrdenDeCarga>
             {
-                EstadoOrdenDeCarga.Confirmado,
                 EstadoOrdenDeCarga.Vencida,
-                EstadoOrdenDeCarga.EntregaPendiente,
-                EstadoOrdenDeCarga.EdicionSolicitada,
-                EstadoOrdenDeCarga.AnulacionSolicitada,
-                EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
-                EstadoOrdenDeCarga.EntregaGenerada
+                EstadoOrdenDeCarga.Anulada,
+                EstadoOrdenDeCarga.Entregada,
             };
 
-            if (estadosParaNotificar.Contains(ordenDeCarga.Estado))
+            if (!estadosParaNoNotificar.Contains(ordenDeCarga.Estado))
             {
-                var clientesDeOrdenesConChofer = RepositorioOrdenDeCarga.ObtenerCuitsClientesDeOrdenesPendientesParaChofer(ordenDeCarga.CUITChofer);
-                if (clientesDeOrdenesConChofer.Any(c => c != ordenDeCarga.CUITCliente))
+                var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.ChasisAcoplado);
+                if (ordenesConPatentesRepetidas.Where(oc=>oc.CUITCliente!=ordenDeCarga.CUITCliente).Count() > 0)
                 {
-                    emailFasService.EnviarMailChoferAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, clientesDeOrdenesConChofer);
+                    emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, ordenesConPatentesRepetidas
+                        .Select(oc => oc.CUITCliente).Distinct().ToList());
                 }
             }
         }
@@ -2204,7 +2214,7 @@ namespace SustitucionMOAUtils.Services
 
             var contratoKgDisponibles = ContratoConMas15TN(ordenEditar);
             var validaCPEDG = product.ValidaSisaRuca;
-            
+
             if (validaCPEDG)
             {
                 if (string.IsNullOrEmpty(ordenDeCarga.CUITDestinatario))
@@ -2633,28 +2643,49 @@ namespace SustitucionMOAUtils.Services
                 .ToList()
                 .ForEach(oc =>
                 {
-                    var key = oc.ObtenerKeyHashPatentes();
-                    if (hashPatentesCargadas.ContainsKey(key))
+                    if (hashPatentesCargadas.ContainsKey(oc.ChasisAcoplado))
                     {
-                        var ordenesCargadas = (List<int>)hashPatentesCargadas[key];
-                        ordenesCargadas.Add(oc.Id);
-                        hashPatentesCargadas[key] = ordenesCargadas;
+                        var ordenesCargadas = (List<(int, string)>)hashPatentesCargadas[oc.ChasisAcoplado];
+                        ordenesCargadas.Add((oc.Id, oc.CUITCliente));
+                        hashPatentesCargadas[oc.ChasisAcoplado] = ordenesCargadas;
                     }
                     else
                     {
-                        hashPatentesCargadas.Add(key, new List<int> { oc.Id });
+                        hashPatentesCargadas.Add(oc.ChasisAcoplado, new List<(int, string)> { (oc.Id, oc.CUITCliente) });
                     }
+
                 });
             return hashPatentesCargadas;
         }
 
         private bool VerificarOrdenConPatentesRepetidas(OrdenDeCarga orden, Hashtable hashPatentesCargadas)
         {
-            var key = orden.ObtenerKeyHashPatentes();
-            if (hashPatentesCargadas.ContainsKey(key))
+            if (hashPatentesCargadas.ContainsKey(orden.ChasisAcoplado))
             {
-                var ordenesCargadas = (List<int>)hashPatentesCargadas[key];
+                var ordenesCargadas = (List<(int, string)>)hashPatentesCargadas[orden.ChasisAcoplado];
                 return ordenesCargadas.Count > 1;
+            }
+            return false;
+        }
+
+        private bool VerificarChasisConMultiplesAutorizaciones(OrdenDeCarga orden, Hashtable hashPatentesCargadas)
+        {
+            var estadosParaNoNotificar = new List<EstadoOrdenDeCarga>
+            {
+                EstadoOrdenDeCarga.Anulada,
+                EstadoOrdenDeCarga.Vencida,
+                EstadoOrdenDeCarga.Entregada,
+            };
+
+            if (estadosParaNoNotificar.Contains(orden.Estado))
+            {
+                return false;
+            }
+
+            if (hashPatentesCargadas.ContainsKey(orden.ChasisAcoplado))
+            {
+                var chasisAutorizados = (List<(int, string)>)hashPatentesCargadas[orden.ChasisAcoplado];
+                return chasisAutorizados.Any(data => data.Item2 != orden.CUITCliente);
             }
             return false;
         }
@@ -2681,8 +2712,10 @@ namespace SustitucionMOAUtils.Services
             {
                 return null;
             }
-            var ordenesConPatentesRepetidas = (List<int>)hashPatentesCargadas[orden.ObtenerKeyHashPatentes()];
-            return ordenesConPatentesRepetidas.Where(id => id != orden.Id).ToList();
+            var ordenesConPatentesRepetidas = (List<(int, string)>)hashPatentesCargadas[orden.ChasisAcoplado];
+            return ordenesConPatentesRepetidas.Where(data => data.Item1 != orden.Id)
+                .Select(data => data.Item1)
+                .ToList();
         }
 
         private Hashtable ObtenerHashPatentesCargadas()

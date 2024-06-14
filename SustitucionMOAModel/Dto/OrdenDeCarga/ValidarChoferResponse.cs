@@ -9,7 +9,5 @@ namespace SustitucionMOAModel.Dto.OrdenDeCarga
     public class ValidarChoferResponse
     {
         public bool EsCuilValido { get; set; }
-
-        public bool ExisteEnOtraOrden { get; set; }
     }
 }

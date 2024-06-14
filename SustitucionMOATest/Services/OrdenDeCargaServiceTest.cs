@@ -1629,7 +1629,6 @@ namespace SustitucionMOATest.Services
             var resp = target.ValidarChofer(cuilChofer, cuitCliente);
 
             Assert.That(resp.EsCuilValido);
-            Assert.That(!resp.ExisteEnOtraOrden);
         }
 
         [Test]
@@ -1654,7 +1653,6 @@ namespace SustitucionMOATest.Services
             var resp = target.ValidarChofer(cuilChofer, cuitCliente);
 
             Assert.That(resp.EsCuilValido);
-            Assert.That(!resp.ExisteEnOtraOrden);
         }
 
         [Test]
@@ -1680,7 +1678,6 @@ namespace SustitucionMOATest.Services
             var resp = target.ValidarChofer(cuilChofer, cuitCliente);
 
             Assert.That(resp.EsCuilValido);
-            Assert.That(resp.ExisteEnOtraOrden);
         }
     }
 }

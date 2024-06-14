@@ -276,14 +276,14 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailChoferAutorizadoEnVariasOrdenes(string cuilChofer, List<string> cuitsClientesOrdenes)
+        public void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes)
         {
-            var cuerpo = $"El chofer {cuilChofer} se encuentra autorizado en órdenes pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
+            var cuerpo = $"El camión {patenteChasis} se encuentra autorizado en órdenes pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
 
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
-                Asunto = $"Chofer {cuilChofer} autorizado en varias órdenes pendientes",
+                Asunto = $"Camión {patenteChasis} autorizado en varias órdenes pendientes",
                 Cuerpo = cuerpo
             };
 

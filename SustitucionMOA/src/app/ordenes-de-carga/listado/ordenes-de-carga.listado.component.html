@@ -145,8 +145,7 @@
               </td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}
                 <i *ngIf="ordenDeCarga.FleteMOA" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
-                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa"
-                    style="height:15px;" />
+                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
                 </i>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
@@ -164,8 +163,11 @@
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
                 <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>
-                <span pTooltip="Patentes repetidas" tooltipPosition="bottom" *ngIf="ordenDeCarga.TienePatentesRepetidas"
-                  class="fa fa-exclamation-triangle text-repetido" aria-hidden="true"></span>
+                <span pTooltip="Patente repetida" tooltipPosition="bottom"
+                  *ngIf="ordenDeCarga.TienePatentesRepetidas || ordenDeCarga.TienePatenteMultiplesAutorizaciones"
+                  class="fa fa-exclamation-triangle text-repetido" [ngClass]="{
+                  'text-multiples-autorizaciones':ordenDeCarga.TienePatenteMultiplesAutorizaciones
+                 }" aria-hidden="true"></span>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">

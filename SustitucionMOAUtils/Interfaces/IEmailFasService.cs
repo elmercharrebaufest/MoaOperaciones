@@ -31,6 +31,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         void EnviarMailSolicitudAnulacion(OrdenDeCarga ordenDeCarga);
 
-        void EnviarMailChoferAutorizadoEnVariasOrdenes(string cuilChofer, List<string> cuitsClientesOrdenes);
+        void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes);
     }
 }

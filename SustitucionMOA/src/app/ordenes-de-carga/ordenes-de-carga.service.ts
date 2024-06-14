@@ -564,4 +564,15 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+    public validarExistenciaPatentes(chasis: string, cuitCliente: string | number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append("patenteChasis", chasis)
+            .append("cuitCliente", cuitCliente.toString());
+
+        return this.http
+            .get<ApiResponse<boolean>>(
+                '/api/OrdenDeCarga/ValidarExistenciaPatentes',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
 }

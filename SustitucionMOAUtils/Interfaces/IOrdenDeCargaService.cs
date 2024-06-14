@@ -59,5 +59,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId);
         void VerificarOrdenesFacturaCompensadaJob();
         ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente);
+        bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente);
     }
 }

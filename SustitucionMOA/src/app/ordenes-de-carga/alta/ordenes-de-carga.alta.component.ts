@@ -19,7 +19,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
-import { debounceTime, finalize, take } from 'rxjs/operators';
+import { debounceTime, filter, finalize, take, tap } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
@@ -125,6 +125,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     ordenActivaScato: boolean = false;
     mensajeValidacionScato: string = "";
 
+    validacionExistenciaPatente$ = new Subject<void>();
+    validacionExistenciaPatenteSub?: Subscription;
+
+    localSubscriptions = new Subscription();
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService,
         protected navService: NavService,
@@ -140,10 +145,28 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     ) {
         super(navService, securytiService, floatMsgService, modalService);
 
-        this.subscriptions.add(
+        this.localSubscriptions.add(
             this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
                 this.validarCNRTRequest()
             ))
+        this.localSubscriptions.add(
+            this.validacionExistenciaPatente$
+                .pipe(
+                    debounceTime(500),
+                    filter(_ =>
+                        this.chasisAcopladoValido && !!this.ordenDeCarga.CUITCliente))
+                .subscribe(() => {
+                    this.validacionExistenciaPatenteSub = this.service
+                        .validarExistenciaPatentes(
+                            this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.CUITCliente)
+                        .subscribe(res => {
+                            const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+                            if (notificarExistencia) {
+                                this.floatMsgService.setInfoMsg("El camión ya fué autorizado por otro cliente.");
+                            }
+                        });
+                })
+        ) //
     }
 
     get noPuedeEditarCuitsTerceros() {
@@ -645,6 +668,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();
         else if (event.value)
             this.ordenDeCarga.ChasisAcoplado = event.value.toUpperCase();
+        this.validacionExistenciaPatente$.next()
     }
     patenteAcopladoSelected(event: string | { value: string }) {
         if (typeof (event) === "string")
@@ -791,6 +815,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.getPatentes();
         this.cargarContratosDisponibles(pClienteCodigo);
         this.setearDefaultEnCPEDG();
+        if (!this.editando) {
+            this.validacionExistenciaPatente$.next()
+        }
     }
 
     onContratoSeleccionadoChanged = () => {
@@ -1388,11 +1415,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
                         this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
                     }
-                    else {
-                        if (data.ExisteEnOtraOrden) {
-                            this.floatMsgService.setInfoMsg("El chofer se encuentra autorizado en otra orden");
-                        }
-                    }
                 }
             }
         );
@@ -1599,7 +1621,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.displayModalEscalable = false;
     }
     public extraOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+        if (this.validacionExistenciaPatenteSub)
+            this.validacionExistenciaPatenteSub.unsubscribe()
     }
 
     verificarOrdenActivaScato(ordenId: string) {
@@ -1635,3 +1658,4 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         document.getElementById("openEdicionOrdenInterno").click();
     }
 }
+

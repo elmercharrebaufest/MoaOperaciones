@@ -1177,5 +1177,29 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        [HttpGet]
+        public ContentResult ValidarExistenciaPatentes(string patenteChasis, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarExistenciaPatente(patenteChasis, cuitCliente);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
     }
 }
