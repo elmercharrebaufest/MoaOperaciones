@@ -1,7 +1,35 @@
-#solicitudes {
+#solicitudes.content-wraper {
     margin: 0;
     padding-top: 2rem;
     padding-right: 1.2rem;
+    margin-top: 0;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.content-wraper {
+    overflow: hidden;
+    overflow-y: scroll;
+}
+
+.fullscreen {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
+.fullscreen.show-scrollbar {
+    display: block; /* Forzar la barra de desplazamiento visible */
+    
 }
 
 .usuario-area {
@@ -196,7 +224,117 @@
     padding-left: 0.8rem;
 }
 
-.btn {
+::ng-deep .filtro-fechas #btnAplicar {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+i#btn-fullscreen {
+    transform: rotate(-90deg);
+}
+
+i#btn-fullscreen,
+i#btn-filtros {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.filtro-nro-orden>input[type=text],
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text] {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    height: 2.69em;
+    width: 100%;
+    height: 2.68em;
+    padding: 0.429em;
+    font-family: Roboto Regular;
+    font-size: 15px;
+    line-height: 21.4333px;
+}
+
+.filtro-nro-orden>input:active,
+.filtro-nro-orden>input:hover,
+.filtro-nro-orden>input:focus,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:active,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:hover,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:focus {
+    border: 1px solid #ddd;
+}
+
+::ng-deep p-autocomplete.filtro-proveedor .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
+    margin: auto !important;
+}
+
+:host ::ng-deep p-autocomplete.filtro-proveedor>span.ui-autocomplete {
+    top: -10px !important;
+}
+
+.aux-panel {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+    margin: .5em 0 1em 0;
+    width: 31%;
+}
+
+.aux-panel:has(.columns-config-container) {
+    background-color: rgba(255, 255, 255, .93) !important;
+}
+
+.aux-panel-header {
+    padding: 10px;
+    background-color: #959595;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    padding-left: 15px;
+    min-height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.aux-panel-header>.pi-times {
+    cursor: pointer;
+}
+
+.aux-panel-body {
+    margin: 1em;
+}
+
+/* Columns Config Panel */
+.aux-panel-body:has(> .columns-config-container) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 0 0 1em 0;
+}
+
+.search-filters .btn-buscar {
+    background-color: #1C7CD5;
+    border-color: #1C7CD5;
+    color: white;
+    font-size: 1.3em;
+    padding: .31em 2em;
+    margin-top: 1.6em;
+}
+
+/* Search Panel */
+.search-filters p {
+    color: #075088;
+    font-weight: bold !important;
+}
+
+.btn-action {
     width: 30px !important;
     border: none;
     margin: 0.3rem;

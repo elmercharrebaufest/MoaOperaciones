@@ -15,6 +15,12 @@ import { ComprasService } from '../../compras.service';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.component';
+
+export interface autoCompleteObject {
+  valor: string;
+  CodigoProveedor: string;
+};
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -33,10 +39,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   nroSolp: string = "";
   ordenAscendente: boolean = false;
   columnaOrden: string = "FechaCreacion";
-  fechaInicio =  "";
+  fechaInicio = "";
   length = 0;
   pageSize: number = 10;
-  pageIndex: number = 1;                                        
+  pageIndex: number = 1;
   @ViewChild('paginator') paginator: Paginator
   subscripcionPO: Subscription
   documentoNumero: string = "";
@@ -52,8 +58,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   selectedItemId: number | null = null;
   selectedPosicionId: number | null = null;
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
+  ordenCompraId: string = "";
+  proveedorSeleccionado: autoCompleteObject;
   selectedRow: any;
   innerWidth: number;
+  proveedorList: any[] = new Array();
+  filtroFechas: Array<DropdownOption> = [
+    new DropdownOption("1", "Últimos dos dias"),
+    new DropdownOption("2", "Última semana"),
+    new DropdownOption("3", "Último mes"),
+  ];
   @HostListener('window:resize', ['$event'])
   onResize(event) {
     this.innerWidth = window.innerWidth;
@@ -63,6 +77,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   formularioSuplente: FormGroup | undefined;
   mostrarMotivosRechazos: boolean = false;
   mostrarSuplentes: boolean = false;
+  fullscreen: boolean = false;
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
     { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
@@ -119,44 +134,37 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   cols: any[];
   usuario: string;
   vendedor: string;
-  allItems : any[];
+  allItems: any[];
   proveedor: string = sessionStorage.getItem("proveedor");
   msgs: Message[] = [];
   havePermision: boolean = false;
   observaciones: string = '';
 
   constructor(protected service: ComprasService, protected navService: NavService,
-      protected sessionDataService: SessionDataService, protected securityService: SecurityService,
-      protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-      protected route: ActivatedRoute, protected router: Router,
-      private location: Location,
-      private cdr: ChangeDetectorRef,
-      private confirmationService: ConfirmationService,
-      private messageService: MessageService) {
-      super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-      this.usuario = sessionStorage.getItem("username");
+    protected sessionDataService: SessionDataService, protected securityService: SecurityService,
+    protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+    protected route: ActivatedRoute, protected router: Router,
+    private location: Location,
+    private cdr: ChangeDetectorRef,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService) {
+    super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
+    this.usuario = sessionStorage.getItem("username");
   }
 
   public ngOnDestroy(): void {
     this.subscripciones.forEach(sub => sub.unsubscribe());
   }
-      
+
   ngOnInit() {
-
+    this.getFecha('1');
     this.getListarPO(this.proveedor, this.documentoNumero);
-
     this.formsCreate();
-
     this.innerWidth = window.innerWidth;
-
     this.navService.setSeccionActive("Estado certificaciones");
-
     this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
-    
     let permisos = sessionStorage.getItem("permisos");
-    
-    if(permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES"))
-    {
+    if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
       this.havePermision = true;
     }
   }
@@ -178,7 +186,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   formsCreate(): void {
     this.formularioMotivosRechazo = new FormGroup({
-      motivo: new FormControl({name: null, code: null}, Validators.required),
+      motivo: new FormControl({ name: null, code: null }, Validators.required),
       destinatario: new FormControl(null),
       detalleCertificacionRechazada: new FormControl(null),
       resumenLineas: new FormControl(null),
@@ -210,23 +218,22 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.isTableExpanded = false;
     }
   }
-  
-    toggleEntradaServicio() {
-      this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
-    }
 
-    getListarPO(proveedor, documentoNumero) {
-      this.getFecha();
-      this.hideContainerTable();
-      this.subscripciones.push(
-        this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
-        (result:any) => {
+  toggleEntradaServicio() {
+    this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
+  }
+
+  getListarPO(proveedor, documentoNumero) {
+    this.hideContainerTable();
+    this.subscripciones.push(
+      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+        (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
           } else if (result.info != undefined) {
           } else {
-            this.tablaPO = result.data; 
+            this.tablaPO = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
@@ -238,9 +245,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           this.floatMsgService.setErrorMsg(error.message);
           this.showContainerTable();
         })
-      );
-      this.clear();
-    }
+    );
+    this.clear();
+  }
 
   clear() {
     setTimeout(() => {
@@ -251,17 +258,31 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   displayContent() {
     return !this.spinnerComponent.visible;
   }
-  
-  getFecha() {
+
+  setDateByRange(event: string): void {
+    this.getFecha(event);
+  }
+
+  getFecha(rango: string) {
     var fechaActual = new Date();
-    //fechaActual.setDate(fechaActual.getDate() - 2);
-    //TODO: cambiar cuando se agregue el filtro de fecha.
-    //actualizar
-    fechaActual.setMonth(fechaActual.getMonth() - 2);
+    switch (rango) {
+      case '1':
+        fechaActual.setDate(fechaActual.getDate() - 2);
+        break;
+      case '2':
+        fechaActual.setDate(fechaActual.getDate() - 14);
+        break;
+      case '3':
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+      default:
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+    }
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
-  
+
   deleteES(item: any) {
     //TODO: lógica para cuando se especifique el borrado de una ES
   }
@@ -330,23 +351,22 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-  
+
     const data = {
       Suplente: suplente,
       NroEsLocal: nro_es_local
     }
-  
+
     let confirmMessage;
-  
+
     if (suplente) {
       confirmMessage = {
         acceptLabel: 'Si',
-        message: `Está derivando la certificación Nº `+ nro_es_local +` al siguiente aprobador ` + suplente +`. <b>¿Desea continuar?</b>`,
+        message: `Está derivando la certificación Nº ` + nro_es_local + ` al siguiente aprobador ` + suplente + `. <b>¿Desea continuar?</b>`,
         accept: () => { this.reasignar(data); },
         reject: () => { }
       }
-    } else
-    {
+    } else {
       confirmMessage = {
         message: 'No posee suplente asignado',
         acceptLabel: 'Ok',
@@ -357,15 +377,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.confirmationService.confirm(confirmMessage);
   }
 
-  reasignar(data):void {
+  reasignar(data): void {
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
           this.getListarPO(this.proveedor, this.documentoNumero);
           this.mostrarSuplentes = false;
-          this.messageService.add({severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'});
+          this.messageService.add({ severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
         }, error => {
-          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
         }
       )
     );
@@ -391,27 +411,27 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
-          (resp: any) => {
-              if (resp.data.status == "OK") {
-                  this.resetForm();
-                  this.getListarPO(this.proveedor, this.documentoNumero);
-                  this.mostrarMotivosRechazos = false;
-                  this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
-              }
-              else {
-                  this.resetForm();
-                  this.getListarPO(this.proveedor, this.documentoNumero);
-                  this.mostrarMotivosRechazos = false;
-                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
-              }
+        (resp: any) => {
+          if (resp.data.status == "OK") {
+            this.resetForm();
+            this.getListarPO(this.proveedor, this.documentoNumero);
+            this.mostrarMotivosRechazos = false;
+            this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
+          }
+          else {
+            this.resetForm();
+            this.getListarPO(this.proveedor, this.documentoNumero);
+            this.mostrarMotivosRechazos = false;
+            this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
+          }
         }, error => {
-          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
         }
       )
     );
   }
 
-  ocultandoModal(): void{
+  ocultandoModal(): void {
     this.resetForm();
   }
 
@@ -451,20 +471,20 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               let mensajeError: string = "";
               if (!resp.data) {
                 mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
-                this.messageService.add({severity:'error', summary:'Error', detail: mensajeError});
+                this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
                 this.showContainerTable();
               }
               switch (resp.data.Type) {
                 case "I": {
                   this.getListarPO(this.proveedor, this.documentoNumero);
-                  this.messageService.add({severity: 'success', summary: 'Aprobado', detail: resp.data.Message});
+                  this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   break;
                 }
                 case "S": {
-                  this.messageService.add({severity: 'info', summary: '', detail: resp.data.Message});
+                  this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
                   this.showContainerTable();
                   break;
-                 }
+                }
                 case "Desync": {
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
                   this.showContainerTable();
@@ -476,18 +496,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                   mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
                     resp.data.Message.startsWith("Contabilice en ") ?
                     "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
-                  this.messageService.add({severity: 'warning', summary: '', detail: mensajeError});
+                  this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
                   this.showContainerTable();
                   break;
                 }
                 default: {
-                  this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+                  this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
                   this.showContainerTable();
                   break;
                 }
               }
             }, error => {
-              this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.'});
+              this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
               this.showContainerTable();
             }
           )
@@ -498,13 +518,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   isAll: boolean = false;
 
-  SeeAll(){
+  SeeAll() {
     this.isAll = true;
     this.getListarPO("", this.documentoNumero);
-    
+
   }
 
-  SeeForProvider(){
+  SeeForProvider() {
     this.isAll = false;
     this.getListarPO(this.proveedor, this.documentoNumero);
   }
@@ -524,58 +544,58 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
    */
   setColumsByUserProfile(entradasDeServicio: any, user: any): string {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
-    if(pendienteAprobacion.length > 0){
+    if (pendienteAprobacion.length > 0) {
       const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
-      if(fai.length > 0){
+      if (fai.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
         });
         return "FAI";
       }
-      const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
-      if(ai.length > 0){
+      const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+      if (ai.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
         });
         return "AI";
       }
-      const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
+      const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (fa.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
         });
-          return "FA";
+        return "FA";
       }
-      const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
-      if(fi.length > 0){
+      const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+      if (fi.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
         });
         return "FI";
       }
-      const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
-      if(a.length > 0){
+      const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+      if (a.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
         });
         return "A";
       }
-      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && this.equalsIgnoreCase(pa.Ingresante,user) && !this.equalsIgnoreCase(pa.Fiscal,user));
-      if(i.length > 0){
+      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+      if (i.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' ? false : true;
         });
         return "I";
       }
-      const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador,user) && !this.equalsIgnoreCase(pa.Ingresante,user) && this.equalsIgnoreCase(pa.Fiscal,user));
-      if(f.length > 0){
+      const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+      if (f.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
         });
         return "F";
       }
     }
-    }
+  }
 
   equalsIgnoreCase(str1: string, str2: string): boolean {
     let areEqual = false;
@@ -602,4 +622,95 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       .join('')
     return normalizedStr;
   }
+
+  /**
+   * Hacer la pantalla fullscreen.
+   */
+  toggleFullscreen() {
+    this.fullscreen = !this.fullscreen;
+    if (this.fullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  /**
+     * Muestra/Oculta un panel según nombre de clase
+     * que lo identifica.
+     * Sólo un panel puede estar activo a la vez.
+     * @param className
+     */
+  togglePanel(className: string): void {
+    let panels = document.getElementsByClassName('aux-panel') as HTMLCollectionOf<HTMLElement>;
+    Array.from(panels).forEach(panel => {
+      if (panel.id === className && panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+      }
+      else {
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  autocompleteProveedor(event) {
+    this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
+      (result: any) => {
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.floatMsgService.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.floatMsgService.setInfoMsg(result.info);
+        } else {
+          let provisional: any[] = new Array();
+          result.forEach((element) => {
+            let obj: autoCompleteObject;
+            obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
+            obj.CodigoProveedor = element.CodigoProveedor;
+            if (provisional.some(x => x.valor === obj.valor)) {
+            }
+            else {
+              provisional.push(obj);
+            }
+          });
+          this.proveedorList = provisional;
+        }
+      },
+      error => {
+        this.floatMsgService.setErrorMsg(error.message);
+        this.spinnerComponent.hideIt();
+      });
+
+    return false; //<-- Prevent Refresh
+  }
+
+  /**
+     * Colapsa la fila expandida.
+     */
+  collapseExpandedRow() {
+    let elementExpanded = document.querySelector('.pi-chevron-down') as HTMLElement;
+    if (elementExpanded != null) {
+      elementExpanded.click();
+    }
+  }
+
+  /**
+   * filtro de busqueda de las entradas de servicio por rango de fechas.
+   */
+  onBuscar() {
+    // MMSN-519: Colapsar fila expandida al activar un filtro.
+    this.collapseExpandedRow();
+
+    if (this.proveedorSeleccionado !== undefined) {
+      this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
+    }
+    else {
+      this.proveedor = '';
+    }
+
+    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.tabla.first = 0;
+  }
+
 }
