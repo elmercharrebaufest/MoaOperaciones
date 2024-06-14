@@ -89,7 +89,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.peticion = result.data;
-                        console.log("this.peticion", this.peticion)
                         this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;
                         this.parsearFecha();
                     }
@@ -398,7 +397,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
 
             var self = this;
-            console.log(this.cotizacionSubposiciones);
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {
                 if (!breakFor) {
                     if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
@@ -450,7 +448,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     }
                     if (self.peticion.RequisitoCiberseguridad && noTieneArchivoTecnico) {
                         mensaje = "Debe adjuntar la documentación de ciberseguridad solicitada";
-                        console.log("validacion", self.peticion.RequisitoCiberseguridad, noTieneArchivoTecnico, mensaje) 
                         return mensaje;
                     }
                 }
