@@ -118,7 +118,7 @@
                             pButton
                             icon="pi pi-check"
                             class="btn accept-btn"
-                            (click)="enviarAprobacion(rowData.NumeroCertificacion)"
+                            (click)="mostrarResumenDeAprobacion(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
                         ></button>
                         <button
@@ -186,7 +186,6 @@
                                     <td>{{ rowDetalle.Cantidad }}</td>
                                     <td>{{ rowDetalle.UM }}</td>
                                     <td>{{ rowDetalle.Monto }}</td>
-                                    <!-- <td></td> Cantidad real ? no se que va -->
                                     <td>{{ rowDetalle.CantidadCertificar }}</td>
                                     <td>{{ rowDetalle.PorcentajeCertificar }}</td>
                                     <td>{{ rowDetalle.MontoCertificar }}</td>
@@ -252,15 +251,17 @@
             type="text"
             readonly
         />
-        <!-- <p-dropdown
-            appendTo="body"
-            [options]="suplentes"
-            formControlName="suplente"
-            optionLabel="name"
-            placeholder="Seleccionar suplente"
-        ></p-dropdown> -->
         <p-button class="boton-enviar-motivo" label="Reasignar" (onClick)="reasignar()" [disabled]="formularioSuplente.invalid"></p-button>
     </form>
 </p-dialog>
 
-<p-confirmDialog [style]="{width: '50vw'}" appendTo="body"></p-confirmDialog>
+<p-confirmDialog [style]="{width: '50vw'}" appendTo="body">
+</p-confirmDialog>
+
+<modal-aprobacion 
+    *ngIf="mostrarModalAprobaciones"
+    [showModal]="mostrarModalAprobaciones"
+    [entradaServicioSeleccionada]="entradaServicioSeleccionada"
+    (aprobarES)="enviarAprobacion($event)"
+    (closeModal)="cerrarModalResumen()"
+></modal-aprobacion>

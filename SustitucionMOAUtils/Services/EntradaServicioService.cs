@@ -253,7 +253,9 @@ namespace SustitucionMOAUtils.Services
         /// <returns>entradaServicioTemp</returns>
         public EntradaServicioCabeceraDto MapEntradaServicioCabecera(Aprobaciones temporal, OrderParamsDto ordenParams)
         {
-            DateTime fechaFormateada = (DateTime)temporal.Fecha_Carga_ES;
+            DateTime fechaCreacionFormateada = (DateTime)temporal.Fecha_Carga_ES;
+            DateTime fechaContabilizacionFormateada = (DateTime)temporal.Fecha_Contabilizacion;
+            DateTime fechaDocumentoFormateada = (DateTime)temporal.Fecha_Documento;
 
             EntradaServicioCabeceraDto entradaServicioTemp = new EntradaServicioCabeceraDto
             {
@@ -261,7 +263,7 @@ namespace SustitucionMOAUtils.Services
                 OrdenCompra = temporal.NRO_OC,
                 Descripcion = string.IsNullOrEmpty(temporal.Texto_breve_servicio) ? "": temporal.Texto_breve_servicio.Trim(),
                 MontoTotal = temporal.Monto_total.ToString(),
-                FechaCreacion = fechaFormateada.ToString("dd/MM/yyyy"),
+                FechaCreacion = fechaCreacionFormateada.ToString("dd/MM/yyyy"),
                 FechaCreacionDateTime = temporal.Fecha_Carga_ES,
                 EntradaServicio = temporal.NRO_ES_LOCAL,
                 Estado = temporal.Estado_certificacion,
@@ -270,7 +272,10 @@ namespace SustitucionMOAUtils.Services
                 Ingresante = temporal.Ingresante_CDS,
                 Aprobador = temporal.Aprobador_CDS,
                 Suplente = temporal.Suplente,
-                Fiscal = temporal.Fiscal_SOLPED
+                Fiscal = temporal.Fiscal_SOLPED,
+                FechaContabilizacion = fechaContabilizacionFormateada.ToString("dd/MM/yyyy"),
+                FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy"),
+                NroPosicion = temporal.NRO_POS
             };
 
             if (temporal.Estado_certificacion == "Aprobada")
@@ -288,6 +293,8 @@ namespace SustitucionMOAUtils.Services
             Proveedor prov = orderService.BuscarProveedor(ordenParams);
             entradaServicioTemp.Proveedor = prov.RazonSocial ?? "-";
             entradaServicioTemp.CUIT = prov.CUIT ?? "-";
+
+            entradaServicioTemp.Moneda = BuscarMoneda(ordenParams);
 
             return entradaServicioTemp;
         }
@@ -318,6 +325,19 @@ namespace SustitucionMOAUtils.Services
             };
 
             return detalleEntradaServicioTemp;
+        }
+
+        public string BuscarMoneda(OrderParamsDto parametros)
+        {
+
+            List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
+
+            if (!string.IsNullOrEmpty(ordenesCompra[0].MonedaDescripcion))
+            {
+                return ordenesCompra[0].MonedaDescripcion;
+            }
+
+            return "";
         }
 
         /// <summary>
