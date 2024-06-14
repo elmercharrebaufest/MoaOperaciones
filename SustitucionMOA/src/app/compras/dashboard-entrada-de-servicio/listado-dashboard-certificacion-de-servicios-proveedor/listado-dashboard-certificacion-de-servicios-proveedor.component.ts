@@ -743,30 +743,23 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         );
     }
 
+    /**
+     * Este método se utiliza para evaluar si mostrar el checkbox de selección
+     * a nivel posición y a nivel items.
+     * @param items Puede ser una posición o un item.
+     */
     hidePositionCheckboxToAll(items: any): boolean {
-         //return items.Items.some(element => {
-         //    return !this.isGet100(element) || (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) != 0 || this.tablaPO.some(x => x.NumeroOrdenDeCompra === items.NroOrdenCompra && x.SubjToR != "");;
-         //});
-        let isOk = false;
+        const oc = this.tablaPO.find(co => co.NumeroOrdenDeCompra === items.NroOrdenCompra);
 
-        this.tablaPO.some(x => {
-            if (x.NumeroOrdenDeCompra === items.NroOrdenCompra) {
-                if (x.SubjToR === "") {
-                    isOk = true; // Devuelve true si SubjToR es "X"
-                    return true; // Sale del some
-                }
-                
-                if (x.SubjToR === "") {
-                    isOk = !items.Items.some(element => 
-                        !this.isGet100(element) || 
-                        (((element.Cantidad - element.CantidadReal) * element.Importe) / element.Cantidad) !== 0
-                    );
-                    return isOk; // Sale del some si isOk es true
-                }
-            }
-        });
+        // Si no se encontró orden de compra o si orden de compra está pendiente
+        // de liberación no mostrar checkbox de selección
+        if (oc === undefined || oc.SubjToR === "X") {
+            return false;
+        }
 
-        return isOk;
+        // Mostrar checkbox si es un item válido para certificar o si la posición tiene items para certificar
+        const hideCheckbox = (items.hasOwnProperty('Items')) ? this.tieneItemsACertificar(items) : this.esItemValidoParaCertificar(items);
+        return hideCheckbox;
     }
 
     hideItemsCheckbox(items: any): boolean {
