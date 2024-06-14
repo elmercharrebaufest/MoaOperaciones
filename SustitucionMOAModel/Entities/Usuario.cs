@@ -354,6 +354,9 @@ namespace SustitucionMOAModel.Entities
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
                 case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
+                case "VER REPORTE OC": return PermisoEnum.ReporteOC;
+                case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
+                case "VER AGRUPAR PO": return PermisoEnum.AgruparPO;
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
             }
@@ -437,6 +440,7 @@ namespace SustitucionMOAModel.Entities
                 case "RESIDUOS": return RolEnum.Residuos;
                 case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
                 case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
+                case "AUDITOR COMPRAS": return RolEnum.AuditorCompras;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }
