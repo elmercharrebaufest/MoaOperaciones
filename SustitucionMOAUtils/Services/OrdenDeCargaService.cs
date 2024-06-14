@@ -43,6 +43,15 @@ namespace SustitucionMOAUtils.Services
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService kgDisponiblesFasService;
 
+        protected readonly List<EstadoOrdenDeCarga> estadosParaNoNotificarChasisRepetido = new List<EstadoOrdenDeCarga>
+        {
+            EstadoOrdenDeCarga.Vencida,
+            EstadoOrdenDeCarga.Anulada,
+            EstadoOrdenDeCarga.Entregada,
+            EstadoOrdenDeCarga.AnulacionSolicitada,
+            EstadoOrdenDeCarga.ErrorDeCarga
+        };
+
         public IRepositorioOrdenDeCarga RepositorioOrdenDeCarga { get { return (IRepositorioOrdenDeCarga)repositorio; } }
 
         public OrdenDeCargaService(
@@ -646,7 +655,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoOrdenDeCarga.PendienteAprobacionCredito,
                 EstadoOrdenDeCarga.Vencida,
                 EstadoOrdenDeCarga.EdicionSolicitada,
-                EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion
+                EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
+                EstadoOrdenDeCarga.ErrorDeCarga,
             };
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
@@ -1690,19 +1700,13 @@ namespace SustitucionMOAUtils.Services
         public bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente)
         {
             return OrdenesConPatentesRepetidas(patenteChasis)
-                .Where(oc => oc.CUITCliente != cuitCliente).Count() > 0;
+                .Any(oc => oc.CUITCliente != cuitCliente);
         }
 
         private List<OrdenDeCarga> OrdenesConPatentesRepetidas(string patenteChasis)
         {
-            var estadosNoPuedeCompararPatentes = new EstadoOrdenDeCarga[]
-            {
-                EstadoOrdenDeCarga.Anulada,
-                EstadoOrdenDeCarga.Entregada,
-                EstadoOrdenDeCarga.Vencida
-            };
             return repositorio.Listar<OrdenDeCarga>(oc =>
-                !estadosNoPuedeCompararPatentes.Contains(oc.Estado) &&
+                !estadosParaNoNotificarChasisRepetido.Contains(oc.Estado) &&
                 oc.ChasisAcoplado == patenteChasis
             );
         }
@@ -2166,17 +2170,11 @@ namespace SustitucionMOAUtils.Services
 
         private void NotificarCamionAutorizadoMultiplesOrdenes(OrdenDeCarga ordenDeCarga)
         {
-            var estadosParaNoNotificar = new List<EstadoOrdenDeCarga>
-            {
-                EstadoOrdenDeCarga.Vencida,
-                EstadoOrdenDeCarga.Anulada,
-                EstadoOrdenDeCarga.Entregada,
-            };
 
-            if (!estadosParaNoNotificar.Contains(ordenDeCarga.Estado))
+            if (!estadosParaNoNotificarChasisRepetido.Contains(ordenDeCarga.Estado))
             {
                 var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.ChasisAcoplado);
-                if (ordenesConPatentesRepetidas.Where(oc=>oc.CUITCliente!=ordenDeCarga.CUITCliente).Count() > 0)
+                if (ordenesConPatentesRepetidas.Any(oc => oc.CUITCliente != ordenDeCarga.CUITCliente))
                 {
                     emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, ordenesConPatentesRepetidas
                         .Select(oc => oc.CUITCliente).Distinct().ToList());
@@ -2628,17 +2626,11 @@ namespace SustitucionMOAUtils.Services
 
         private Hashtable ObtenerHashPatentesCargadas(IEnumerable<OrdenDeCarga> ordenes)
         {
-            var estadosNoPuedeCompararPatentes = new EstadoOrdenDeCarga[]
-            {
-                EstadoOrdenDeCarga.Anulada,
-                EstadoOrdenDeCarga.Entregada,
-                EstadoOrdenDeCarga.Vencida
-            };
 
             var hashPatentesCargadas = new Hashtable();
             ordenes
                 .Where(oc =>
-                    !estadosNoPuedeCompararPatentes.Contains(oc.Estado)
+                    !estadosParaNoNotificarChasisRepetido.Contains(oc.Estado)
                 )
                 .ToList()
                 .ForEach(oc =>
@@ -2670,14 +2662,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool VerificarChasisConMultiplesAutorizaciones(OrdenDeCarga orden, Hashtable hashPatentesCargadas)
         {
-            var estadosParaNoNotificar = new List<EstadoOrdenDeCarga>
-            {
-                EstadoOrdenDeCarga.Anulada,
-                EstadoOrdenDeCarga.Vencida,
-                EstadoOrdenDeCarga.Entregada,
-            };
-
-            if (estadosParaNoNotificar.Contains(orden.Estado))
+            if (estadosParaNoNotificarChasisRepetido.Contains(orden.Estado))
             {
                 return false;
             }
