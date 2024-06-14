@@ -284,6 +284,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     onCheckboxChange(item: any) {
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
+        const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
 
         if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
 
@@ -296,6 +297,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         else {
             this.itemIdSelected.push(itemId);
             this.numeroLineaSelected.add(numeroLinea);
+            item.NroSolP = posicion.NumeroSolp;
             this.itemSelected.push(item);
         }
 
@@ -1044,5 +1046,14 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     esItemValidoParaCertificar(item: any): boolean {
         return this.tienePorcentajeACertificar(item) && this.tieneMontoVálidoACertificar(item);
+    }
+
+    obtenerPosicionPorNumero(nroOrdenDeCompra: number, nroPosicion: number): any {
+        const oc = this.obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra);
+        return oc.Posiciones.find(posicion => posicion.NumeroPosicion === nroPosicion);
+    }
+
+    obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra: number): any {
+        return this.tablaPO.find(orden => orden.NumeroOrdenDeCompra === nroOrdenDeCompra, []);
     }
 }

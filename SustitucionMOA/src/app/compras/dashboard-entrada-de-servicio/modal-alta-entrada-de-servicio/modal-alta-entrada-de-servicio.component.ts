@@ -137,14 +137,14 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     agruparItemPorPosicion(items) {
-        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, ...Items }) => {
+        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, NroSolP, ...Items }) => {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
                 prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
                 prev[id].Descripcion.trim();
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe), NroSolP })
             }
             return prev;
         }, []);
@@ -337,7 +337,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
             const entrySheetHeader = {
-                SolPedNumber: this.solPed,
+                SolPedNumber: position.NroSolP,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion.trim(),
