@@ -49,6 +49,8 @@ export class Solp extends CommonResponse {
     public observacionesGeneracion: string = "";
     public listaVisitas: any;
     public usuarioComprasId: number;
+    public requisitoCiberseguridad: boolean;
+
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
@@ -212,6 +214,8 @@ export class Solp extends CommonResponse {
             this.usuarioComprasId = solp.UsuarioCompras.Id || 0;
             this.descripcionTecnica = solp.TieneDescripcionTecnica;
             this.entregaDocumentacion = solp.TieneDocumentacionTecnica;
+            this.requisitoCiberseguridad = solp.RequisitoCiberseguridad;
+
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));

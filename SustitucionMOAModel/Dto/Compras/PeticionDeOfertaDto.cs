@@ -114,6 +114,7 @@ namespace SustitucionMOAModel.Dto
         public bool ChatSinLeer { get; set; }
         public string RolUsuario { get; set; }
         public bool CondEspProveedorAsignado { get; set; }
+        public bool? RequisitoCiberseguridad { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

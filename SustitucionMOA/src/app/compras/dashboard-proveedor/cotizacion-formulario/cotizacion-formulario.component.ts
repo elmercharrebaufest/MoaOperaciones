@@ -18,6 +18,7 @@ import { CotizacionMaterialComponent } from './cotizacion-material/cotizacion-ma
 import { CotizacionDto, CotizacionHoraDto, GuardarCotizacion } from '../../../modelos/cotizacionDto';
 import { CotizacionServicioComponent } from './cotizacion-servicio/cotizacion-servicio.component';
 import { forEach } from '@angular/router/src/utils/collection';
+import { not } from '@angular/compiler/src/output/output_ast';
 
 @Component({
     selector: 'app-cotizacion-formulario',
@@ -88,6 +89,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.peticion = result.data;
+                        console.log("this.peticion", this.peticion)
                         this.posicionesCompra = this.peticion.PeticionDeOfertaPosicion;
                         this.parsearFecha();
                     }
@@ -444,6 +446,11 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                 || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
                         mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
                         breakFor = true;
+                        return mensaje;
+                    }
+                    if (self.peticion.RequisitoCiberseguridad && noTieneArchivoTecnico) {
+                        mensaje = "Debe adjuntar la documentación de ciberseguridad solicitada";
+                        console.log("validacion", self.peticion.RequisitoCiberseguridad, noTieneArchivoTecnico, mensaje) 
                         return mensaje;
                     }
                 }

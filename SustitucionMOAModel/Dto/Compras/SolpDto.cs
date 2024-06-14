@@ -118,6 +118,8 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorAsignadoRazonSocial { get; set; }
         public int? ProveedorAdicional_Id { get; set; }
         public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
+        public bool RequisitoCiberseguridad { get; set; }
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -142,6 +144,7 @@ namespace SustitucionMOAModel.Dto
             TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
             TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
+            RequisitoCiberseguridad = entity.Pliego.RequisitoCiberseguridad.HasValue && entity.Pliego.RequisitoCiberseguridad.Value;
             FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
             ObservacionesGeneracion = entity.Pliego.ObservacionesGeneracion;
             JornadaLaboral = new List<DayOfWeek>();

@@ -41,5 +41,7 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Pliegos")]
         public virtual ICollection<Archivo> Archivos { get; set; }
+        public bool? RequisitoCiberseguridad { get; set; }
+
     }
 }

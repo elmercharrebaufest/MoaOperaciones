@@ -290,6 +290,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
                 pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
                 pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
+                pliegoEntity.RequisitoCiberseguridad = solp.RequisitoCiberseguridad;
                 pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
                 pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
@@ -1333,6 +1334,7 @@ namespace SustitucionMOAUtils.Services
                 TieneFabricacionTallerExterno = solp.Pliego.TieneFabricacionTallerExterno ?? false,
                 TieneDescripcionTecnica = solp.Pliego.TieneDescripcionTecnica ?? false,
                 TieneDocumentacionTecnica = solp.Pliego.TieneDocumentacionTecnica ?? false,
+                RequisitoCiberseguridad = solp.Pliego.RequisitoCiberseguridad ?? false,
                 FechaHoraLimiteConsulta = solp.Pliego.FechaHoraLimiteConsulta,
                 ObservacionesGeneracion = solp.Pliego.ObservacionesGeneracion,
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
@@ -4217,6 +4219,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId); 
             var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
             var peticionPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionDeOfertaId);
@@ -4374,7 +4377,7 @@ namespace SustitucionMOAUtils.Services
                     Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
                     Tipo = peticiondeOfertaUsuarioId == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
                 });
-            }
+            }  
 
             // pdf peticion de oferta materiales
             if (peticion.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
@@ -4859,7 +4862,6 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var prov in usuariosDto.GroupBy(a => a.CUIT))
             {
-
                 proveedores.AddRange(prov.Select(a => a.RazonSocial + " - " + a.Mail).ToList());
 
                 var enviarA = prov.Select(a => a.Mail).ToList();
@@ -4942,6 +4944,17 @@ namespace SustitucionMOAUtils.Services
                                $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
                                "click aquí" +
                                "</a></p> <br />";
+                }
+                if (posicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio) 
+                {
+                    htmlBody += "<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>";
+                    htmlBody += "<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>";
+                    htmlBody += "<ul>";
+                    htmlBody += "<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>";
+                    htmlBody += "<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>";
+                    htmlBody += "<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>";
+                    htmlBody += "</ul>";
+                    htmlBody += "<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>";
                 }
             }
 
