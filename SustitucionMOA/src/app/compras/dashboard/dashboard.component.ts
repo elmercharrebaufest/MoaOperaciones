@@ -255,7 +255,6 @@ export class DashboardComponent extends ListBaseComponent {
     public getColorDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
-
     getListarSolp() {
         try {
             this.spinnerComponent.showIt();

@@ -547,6 +547,7 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: string = this.filtros.nombrePedido,
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -571,6 +572,7 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
@@ -593,7 +595,7 @@ export class ComprasService extends BaseService {
                 }
             );
     }
-
+    
     public getListarPOProveedor(pagina: number,
         itemsPorPagina: number,
         orden: string = this.filtros.orden,

@@ -2329,7 +2329,7 @@ namespace SustitucionMOATest.Services
               .Returns(listaPaginada);
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(new Usuario { Roles = new List<Rol> { new Rol { Codigo = "COMPRADOR" } } });
 
-            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", new DateTime(), new DateTime(), true, false, true, false, false);
+            var result = target.ListarSolp(new UsuarioDto { Id = 1, Permisos = new List<string> { "VER TODAS SOLPS" } }, new Paginacion(), "", "", new DateTime(), new DateTime(), true, false, true, false, false);
 
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result, listaPaginada);
@@ -2900,7 +2900,7 @@ namespace SustitucionMOATest.Services
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
             repositorioMock.Setup(y => y.ListarConsultaPaginada(It.IsAny<ListarSolpConsulta>())).Returns(listaSolp);
 
-            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", null, null, false, false, false, true, false, false);
+            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", "", null, null, false, false, false, true, false, false);
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }
