@@ -6,6 +6,11 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
 declare var $: any;
 
+type Column = {
+    name: string;
+    visible: boolean;
+};
+
 @Component({
     selector: 'app-modal-alta-entrada-de-servicio-proveedor',
     templateUrl: './modal-alta-entrada-de-servicio-proveedor.component.html',
@@ -51,6 +56,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     fechaContabilizacionMin: Date;
     fechaContabilizacionMax: Date;
     documentDateMsg: Message[] = [];
+    colConfigName: string = 'columnasAltaCertificacionesProveedor';
+    colspanMonto: number = 8;
+    colConfig = [];
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -112,26 +120,27 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
         this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
+        this.colConfig = this.getColumnConfig();
     }
 
     ngAfterViewInit(): void {
-
     }
 
     ngAfterContentInit() {
         this.entrySheetObjects = [];
         this.agruparItemPorPosicion(this.itemSelected);
+        this.applyColumnConfig(this.colConfig);
     }
 
     agruparItemPorPosicion(items) {
-        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, ...Items }) => {
+        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, NroSolP, ...Items }) => {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
                 prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
                 prev[id].Descripcion.trim();
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe) })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe), NroSolP })
             }
             return prev;
         }, []);
@@ -306,7 +315,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
             const entrySheetHeader = {
-                SolPedNumber: this.solPed,
+                SolPedNumber: position.NroSolP,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion,
@@ -393,4 +402,82 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         this.documentDateMsg = [];
         return true;
     }
+
+    // --------- CONFIGURACION DE COLUMNAS --------- //
+    /**
+     * Obtiene la configuración de columnas guardada en el session storage,
+     * si no existe devuelve una configuración default.
+     * @returns Array de columnas con sus propiedades.
+     */
+    private getColumnConfig(): Column[] {
+        if (sessionStorage.getItem(this.colConfigName) == null) {
+            const defaultColConfig = [{ name: 'anterior', visible: true }, { name: 'acumulado', visible: true }];
+            this.saveColumnConfig(defaultColConfig);
+        }
+        let storedColConfig = sessionStorage.getItem(this.colConfigName);
+        return JSON.parse(storedColConfig);
+    }
+
+    /**
+     * Guarda la configuración en session storage.
+     * @param colConfig
+     */
+    private saveColumnConfig(colConfig: any): void {
+        sessionStorage.setItem(this.colConfigName, JSON.stringify(colConfig));
+    }
+
+    /**
+    *  Actualiza la configuración de columnas.
+    * @param colName
+    * @param visible
+    */
+    private updateColumnConfig(colName: string, visible: boolean): void {
+        this.colConfig = this.colConfig.map(col => {
+            if (col.name === colName) {
+                return { ...col, visible: visible };
+            }
+            return col;
+        });
+    }
+
+    /**
+     * Aplica la configuración de columnas a la tabla de alta
+     * de certificaciones.
+     * @param colConfig
+     */
+    private applyColumnConfig(colConfig: Column[]): void {
+        setTimeout(() => {
+            colConfig.forEach(col => {
+                this.showHideColumn(col.name, col.visible);
+            });
+        }, 50); // Timeout necesario para que aparezca la tabla.
+    }
+
+    /**
+     * Muestra/Oculta una columna.
+     * @param colName Clase de css que identifica a la columna.
+     * @param visible 
+     */
+    private showHideColumn(colName: string, visible: boolean): void {
+        let colGroups = document.getElementsByClassName(colName) as HTMLCollectionOf<HTMLElement>;
+        Array.from(colGroups).forEach(colGroup => {
+            visible ? colGroup.classList.remove('hidden') : colGroup.classList.add('hidden');
+        });
+
+        // Necesario para mantener la estructura de la tabla
+        if (colName === 'anterior') {
+            this.colspanMonto = visible ? 8 : 5;
+        }
+    }
+
+    toggleColumn(event) {
+        let colName = event.target.value;
+        let visible = event.target.checked;
+
+        this.updateColumnConfig(colName, visible);
+        this.applyColumnConfig(this.colConfig);
+        this.saveColumnConfig(this.colConfig);
+    }
+
+    // --------- FIN CONFIGURACION DE COLUMNAS --------- //
 }

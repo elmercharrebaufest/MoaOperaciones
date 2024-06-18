@@ -310,6 +310,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         else {
             this.itemIdSelected.push(itemId);
             if (!this.numeroLineaSelected.has(numeroLinea)) this.numeroLineaSelected.add(numeroLinea);
+            item.NroSolP = posicion.NumeroSolp;
             if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
 

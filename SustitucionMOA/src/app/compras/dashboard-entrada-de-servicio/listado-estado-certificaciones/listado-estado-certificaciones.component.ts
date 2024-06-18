@@ -21,6 +21,7 @@ export interface autoCompleteObject {
   valor: string;
   CodigoProveedor: string;
 };
+import { certificacionES } from './components/modal-aprobacion/modalAprobacion.interface';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -29,13 +30,22 @@ export interface autoCompleteObject {
 })
 export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
   //#region Variables 
-  subscripciones: Subscription[] = [];
-  protected locale: any;
   @ViewChild("tabla") protected tabla: Table;
   @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
-  private destroy$: Subject<void> = new Subject<void>();
-  @BlockUI() blockUI: NgBlockUI;
+  @ViewChild('paginator') paginator: Paginator;
   @ViewChild(SpinnerComponent) protected spinnerComponent: SpinnerComponent;
+  @BlockUI() blockUI: NgBlockUI;
+  @HostListener('window:resize', ['$event'])
+  innerWidth: number;
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+  }
+
+  subscripciones: Subscription[] = [];
+  entradaServicioSeleccionada: certificacionES[] = [];
+  mostrarModalAprobaciones: boolean = false;
+  protected locale: any;
+  private destroy$: Subject<void> = new Subject<void>();
   nroSolp: string = "";
   ordenAscendente: boolean = false;
   columnaOrden: string = "FechaCreacion";
@@ -43,7 +53,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   length = 0;
   pageSize: number = 10;
   pageIndex: number = 1;
-  @ViewChild('paginator') paginator: Paginator
   subscripcionPO: Subscription
   documentoNumero: string = "";
   expandedRows: any[] = [];
@@ -54,30 +63,37 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   selectedItemIndex: number | null = null;
   checkSelected = false;
   itemIdSelected: Set<string> = new Set();
-  itemSelected: any[] = [];
+  itemSelected: certificacionES[] = [];
   selectedItemId: number | null = null;
   selectedPosicionId: number | null = null;
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   ordenCompraId: string = "";
   proveedorSeleccionado: autoCompleteObject;
   selectedRow: any;
-  innerWidth: number;
+  estadoCertificacion: any = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
+  formularioMotivosRechazo: FormGroup | undefined;
+  formularioSuplente: FormGroup | undefined;
+  mostrarMotivosRechazos: boolean = false;
+  mostrarSuplentes: boolean = false;
   proveedorList: any[] = new Array();
   filtroFechas: Array<DropdownOption> = [
     new DropdownOption("1", "Últimos dos dias"),
     new DropdownOption("2", "Última semana"),
     new DropdownOption("3", "Último mes"),
   ];
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.innerWidth = window.innerWidth;
-  }
-  estadoCertificacion: any = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
-  formularioMotivosRechazo: FormGroup | undefined;
-  formularioSuplente: FormGroup | undefined;
-  mostrarMotivosRechazos: boolean = false;
-  mostrarSuplentes: boolean = false;
   fullscreen: boolean = false;
+  userId: any = '';
+  tablaPO: any[] = [];
+  cols: any[];
+  usuario: string;
+  vendedor: string;
+  allItems: any[];
+  proveedor: string = sessionStorage.getItem("proveedor");
+  msgs: Message[] = [];
+  havePermision: boolean = false;
+  observaciones: string = '';
+  isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
+
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
     { name: 'Error en las cantidades certificadas, porcentajes erróneos', code: '2' },
@@ -91,7 +107,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Estado: Rechazadas', code: 'Rechazado' }
   ];
   listadoAreas: any = [];
-  //Config tabla
   defaultTablesConfig = [
     {
       name: 'Certificaciones',
@@ -129,16 +144,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       ]
     }
   ];
-  userId: any = '';
-  tablaPO: any[] = [];
-  cols: any[];
-  usuario: string;
-  vendedor: string;
-  allItems: any[];
-  proveedor: string = sessionStorage.getItem("proveedor");
-  msgs: Message[] = [];
-  havePermision: boolean = false;
-  observaciones: string = '';
 
   constructor(protected service: ComprasService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -163,7 +168,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.innerWidth = window.innerWidth;
     this.navService.setSeccionActive("Estado certificaciones");
     this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
+
     let permisos = sessionStorage.getItem("permisos");
+
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
       this.havePermision = true;
     }
@@ -246,10 +253,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           this.showContainerTable();
         })
     );
-    this.clear();
+    this.clearMessage();
   }
 
-  clear() {
+  clearMessage() {
     setTimeout(() => {
       this.messageService.clear();
     }, 10000)
@@ -457,16 +464,48 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.formularioMotivosRechazo.updateValueAndValidity();
   }
 
-  enviarAprobacion(nro_es_local: string): any {
-    this.clear();
+  mostrarResumenDeAprobacion(entradaServicio: any): void {
+    this.entradaServicioSeleccionada = [
+      {
+        NroPosicion: entradaServicio.NroPosicion,
+        Descripcion: entradaServicio.Descripcion,
+        MontoTotalACertificar: Number(entradaServicio.MontoTotal.replace(",", ".")),
+        NumeroCertificacion: entradaServicio.NumeroCertificacion,
+        Items: entradaServicio.entradaServicioDetalle.map((item: any) => ({
+          Cantidad: item.Cantidad,
+          CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
+          CantidadReal: item.Cantidad,
+          Importe: item.MontoCertificar,
+          Descripcion: item.TextoBreveServicio,
+          Moneda: entradaServicio.Moneda,
+          MontoACertificar: item.MontoCertificar,
+          NumeroLinea: item.NumeroLinea,
+          Porcentaje: Number(item.PorcentajeCertificar),
+          PorcentajeACertificar: Number(item.PorcentajeCertificar),
+          ServicioNumero: item.CodigoServicio,
+          UM: item.UM
+        }))
+      }
+    ];
+    this.mostrarModalAprobaciones = true;
+  }
+
+  cerrarModalResumen(): void {
+    this.mostrarModalAprobaciones = false;
+  }
+
+  enviarAprobacion(numeroCertificacion: string): void {
+    this.clearMessage();
     this.confirmationService.confirm({
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
       header: 'Confirmar Aprobación',
       icon: 'pi pi-exclamation-triangle',
+      acceptLabel: "Sí",
+      rejectLabel: "No",
       accept: () => {
         this.hideContainerTable();
         this.subscripciones.push(
-          this.service.enviarAprobacionES(nro_es_local).subscribe(
+          this.service.enviarAprobacionES(numeroCertificacion).subscribe(
             resp => {
               let mensajeError: string = "";
               if (!resp.data) {
@@ -477,6 +516,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               switch (resp.data.Type) {
                 case "I": {
                   this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   break;
                 }
@@ -515,8 +555,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       }
     });
   }
-
-  isAll: boolean = false;
 
   SeeAll() {
     this.isAll = true;
