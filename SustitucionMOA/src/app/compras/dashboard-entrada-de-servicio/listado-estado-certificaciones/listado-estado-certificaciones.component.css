@@ -341,12 +341,12 @@ i#btn-filtros {
     transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
 }
 
-.btn.accept-btn {
+.btn-action.accept-btn {
     background-color: #0b880b !important;
     color: #fff;
 }
 
-.btn.reject-btn {
+.btn-action.reject-btn {
     background-color: #e33030 !important;
     color: #fff;
 }

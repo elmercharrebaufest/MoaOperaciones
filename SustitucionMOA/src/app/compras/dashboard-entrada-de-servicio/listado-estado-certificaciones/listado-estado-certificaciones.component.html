@@ -31,11 +31,11 @@
 
                 <div class="filtro-fechas col-md-8">
                     <p>Ver:</p>
-                    <dropdown (select)="setDateByRange($event)" [disabled]="tablaPO.length <= 0" [options]="filtroFechas" class="styled-select" [selectedOption]="'1'"></dropdown>
+                    <dropdown (select)="setDateByRange($event)" [disabled]="spinnerComponent.visible" [options]="filtroFechas" class="styled-select" [selectedOption]="'1'"></dropdown>
                 </div>
 
                 <div class="SearchBtn col-md-4 vertical-align-middle">
-                    <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="tablaPO.length <= 0">Buscar</button>
+                    <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="spinnerComponent.visible">Buscar</button>
                 </div>
             </div>
         </div>
