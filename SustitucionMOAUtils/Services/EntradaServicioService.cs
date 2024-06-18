@@ -434,7 +434,7 @@ namespace SustitucionMOAUtils.Services
                 //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
                 auto = true;
             }
-            else if (detalleSolPed.Posiciones.Count > 0)
+            else if ((string.IsNullOrEmpty(detalleSolPed.FiscalContrato) && string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0])) && detalleSolPed.Posiciones.Count > 0)
             {
                 //2c - Si el solicitante de la SolPed es el mismo que el usuario ingresante
                 foreach (var pos in detalleSolPed.Posiciones)
