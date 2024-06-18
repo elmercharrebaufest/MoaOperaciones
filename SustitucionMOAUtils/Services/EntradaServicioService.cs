@@ -26,6 +26,7 @@ using SustitucionMOAModel.Models.ViewModel;
 using SustitucionMOAModel.Models.WSMapMOA;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAModel.CustomExceptions;
 
 namespace SustitucionMOAUtils.Services
 
@@ -1273,6 +1274,11 @@ namespace SustitucionMOAUtils.Services
             {
                 Aprobaciones esTemporalPendienteAprobacion = repositorio.Obtener<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
 
+                if (esTemporalPendienteAprobacion.NRO_ES_SAP.HasValue || esTemporalPendienteAprobacion.Estado_certificacion != "Pendiente Aprobación")
+                {
+                    throw new ValidationCustomException("Entrada de servicio ya tratada.");
+                }
+
                 var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente).ToList().FirstOrDefault();
 
                 if (esTemporalPendienteAprobacion != null)
@@ -1302,13 +1308,14 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
-                    return "Nro de entrada servicio no encontrado.";
+                    throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
                 }
             }
             catch (Exception e)
             {
                 throw e;
             }
+
             return "Se reasigno el suplente de la Entrada de servicio éxitosamente.";
         }
 

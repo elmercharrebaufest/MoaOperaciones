@@ -390,9 +390,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         (resp: any) => {
           this.getListarPO(this.proveedor, this.documentoNumero);
           this.mostrarSuplentes = false;
-          this.messageService.add({ severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
+          const msj = {severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'};
+
+          if (resp.error) {
+            msj.severity = 'info';
+            msj.summary = resp.error
+          }
+
+          this.messageService.add(msj)
+         
         }, error => {
-          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: error});
         }
       )
     );
