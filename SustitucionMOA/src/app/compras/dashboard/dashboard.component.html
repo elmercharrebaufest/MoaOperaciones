@@ -9,7 +9,10 @@
         <div class="col-xs-12">
             <div class="row">
                 <!--Cards-->
-                <div class="col-md-4" *ngFor="let card of cards" (click)="goToSeccionParam(card.path, card.tipoSolp)">
+                <div class="col-md-4" *ngFor="let card of cards" 
+                     (click)="validarAuditor() ? null : goToSeccionParam(card.path, card.tipoSolp)" 
+                     [style.pointer-events]="validarAuditor() ? 'none' : 'auto'"
+                     [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">
                     <div *ngIf="card.nombre == 'Con pliego'; else sinpliego" class="card cardCompra">
                         <h3 class="cardText">
                             {{card.nombre}}
@@ -18,7 +21,7 @@
                             </h6>
                         </h3>
                     </div>
-
+            
                     <ng-template #sinpliego>
                         <div class="card cardCompra">
                             <h3 class="cardText">
@@ -29,7 +32,7 @@
                             </h3>
                         </div>
                     </ng-template>
-
+            
                 </div>
                 <!--End Cards-->
             </div>
@@ -229,7 +232,7 @@
                                      (click)="generarZipPliego(rowData.Id)" />
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" *ngIf="!validarAuditor()">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
                                      (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
@@ -307,10 +310,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id, rowData)">
+                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="validarAuditor() ? null : obtenerPeticionDeOferta(licitacion.Id, rowData)" [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">               
                                                         Revisión Técnica
                                                     </button>
-                                                    <button class="publicar btn " *ngIf="(rowData.VerCircular == true && licitacion.RevisionFinalizada != true) && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)">
+                                                    <button class="publicar btn " *ngIf="(rowData.VerCircular == true && licitacion.RevisionFinalizada != true) && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="validarAuditor() ? null : obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)" [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">
                                                         Circular
                                                     </button>
                                                 </td>

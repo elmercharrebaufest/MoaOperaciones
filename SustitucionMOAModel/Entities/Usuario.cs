@@ -357,6 +357,7 @@ namespace SustitucionMOAModel.Entities
                 case "VER REPORTE OC": return PermisoEnum.ReporteOC;
                 case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
                 case "VER AGRUPAR PO": return PermisoEnum.AgruparPO;
+                case "VER COMO AUDITOR": return PermisoEnum.VerComoAuditor;
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
             }

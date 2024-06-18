@@ -104,6 +104,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     tieneContratoMarco: boolean = false;
     datosUltimaSolp: any;
     tieneAdjuntos: boolean = false;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -176,6 +178,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     this.obtenerUltimaSolp();
                 }
             }
+
+            this.validarAuditor();
         }
     }
 
@@ -608,6 +612,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
             }
             return false; //<-- Prevent Refresh
         }
+    }
+
+    validarAuditor() {
+        return this.esAuditor ? this.disabledSave = true : this.disabledSave = false;
     }
 
     actualizarPasoCompleto(paso: Paso) {
@@ -1323,7 +1331,4 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
         return puedoGuardar;
     }
-
-
-
 }

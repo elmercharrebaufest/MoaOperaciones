@@ -111,6 +111,7 @@ IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER SOLAPA CERTIFICAC
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER REPORTE OC') BEGIN insert into PermisoPorRol values ('VER REPORTE OC') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER PO MULTIPLE') BEGIN insert into PermisoPorRol values ('VER PO MULTIPLE') END
 IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER AGRUPAR PO') BEGIN insert into PermisoPorRol values ('VER AGRUPAR PO') END
+IF NOT EXISTS(SELECT 1 FROM PermisoPorRol WHERE Permiso = 'VER COMO AUDITOR') BEGIN insert into PermisoPorRol values ('VER COMO AUDITOR') END
 
 
 

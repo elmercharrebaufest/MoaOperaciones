@@ -144,6 +144,7 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
     public chat: ChatsDto;
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
@@ -255,6 +256,12 @@ export class DashboardComponent extends ListBaseComponent {
     public getColorDocumentoSolp(data: any): String {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
+
+    public validarAuditor(): boolean {
+        return this.isAuthorized('VER COMO AUDITOR');
+
+    }
+
     getListarSolp() {
         try {
             this.spinnerComponent.showIt();
