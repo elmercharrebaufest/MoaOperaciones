@@ -15,6 +15,12 @@ import { ComprasService } from '../../compras.service';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.component';
+
+export interface autoCompleteObject {
+  valor: string;
+  CodigoProveedor: string;
+};
 import { certificacionES } from './components/modal-aprobacion/modalAprobacion.interface';
 
 @Component({
@@ -61,12 +67,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   selectedItemId: number | null = null;
   selectedPosicionId: number | null = null;
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
+  ordenCompraId: string = "";
+  proveedorSeleccionado: autoCompleteObject;
   selectedRow: any;
   estadoCertificacion: any = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
   formularioMotivosRechazo: FormGroup | undefined;
   formularioSuplente: FormGroup | undefined;
   mostrarMotivosRechazos: boolean = false;
   mostrarSuplentes: boolean = false;
+  proveedorList: any[] = new Array();
+  filtroFechas: Array<DropdownOption> = [
+    new DropdownOption("1", "Últimos dos dias"),
+    new DropdownOption("2", "Última semana"),
+    new DropdownOption("3", "Último mes"),
+  ];
+  fullscreen: boolean = false;
   userId: any = '';
   tablaPO: any[] = [];
   cols: any[];
@@ -147,15 +162,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   ngOnInit() {
-
+    this.getFecha('1');
     this.getListarPO(this.proveedor, this.documentoNumero);
-
     this.formsCreate();
-
     this.innerWidth = window.innerWidth;
-
     this.navService.setSeccionActive("Estado certificaciones");
-
     this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
 
     let permisos = sessionStorage.getItem("permisos");
@@ -220,7 +231,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   getListarPO(proveedor, documentoNumero) {
-    this.getFecha();
     this.hideContainerTable();
     this.subscripciones.push(
       this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
@@ -256,12 +266,26 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     return !this.spinnerComponent.visible;
   }
 
-  getFecha() {
+  setDateByRange(event: string): void {
+    this.getFecha(event);
+  }
+
+  getFecha(rango: string) {
     var fechaActual = new Date();
-    //fechaActual.setDate(fechaActual.getDate() - 2);
-    //TODO: cambiar cuando se agregue el filtro de fecha.
-    //actualizar
-    fechaActual.setMonth(fechaActual.getMonth() - 2);
+    switch (rango) {
+      case '1':
+        fechaActual.setDate(fechaActual.getDate() - 2);
+        break;
+      case '2':
+        fechaActual.setDate(fechaActual.getDate() - 14);
+        break;
+      case '3':
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+      default:
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+    }
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
@@ -636,4 +660,95 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       .join('')
     return normalizedStr;
   }
+
+  /**
+   * Hacer la pantalla fullscreen.
+   */
+  toggleFullscreen() {
+    this.fullscreen = !this.fullscreen;
+    if (this.fullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }
+
+  /**
+     * Muestra/Oculta un panel según nombre de clase
+     * que lo identifica.
+     * Sólo un panel puede estar activo a la vez.
+     * @param className
+     */
+  togglePanel(className: string): void {
+    let panels = document.getElementsByClassName('aux-panel') as HTMLCollectionOf<HTMLElement>;
+    Array.from(panels).forEach(panel => {
+      if (panel.id === className && panel.classList.contains('hidden')) {
+        panel.classList.remove('hidden');
+      }
+      else {
+        panel.classList.add('hidden');
+      }
+    });
+  }
+
+  autocompleteProveedor(event) {
+    this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
+      (result: any) => {
+        if (result.logout == true) {
+          this.sessionDataService.logout();
+        } else if (result.error != undefined && result.error != "") {
+          this.floatMsgService.setErrorMsg(result.error);
+        } else if (result.info != undefined) {
+          this.floatMsgService.setInfoMsg(result.info);
+        } else {
+          let provisional: any[] = new Array();
+          result.forEach((element) => {
+            let obj: autoCompleteObject;
+            obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
+            obj.CodigoProveedor = element.CodigoProveedor;
+            if (provisional.some(x => x.valor === obj.valor)) {
+            }
+            else {
+              provisional.push(obj);
+            }
+          });
+          this.proveedorList = provisional;
+        }
+      },
+      error => {
+        this.floatMsgService.setErrorMsg(error.message);
+        this.spinnerComponent.hideIt();
+      });
+
+    return false; //<-- Prevent Refresh
+  }
+
+  /**
+     * Colapsa la fila expandida.
+     */
+  collapseExpandedRow() {
+    let elementExpanded = document.querySelector('.pi-chevron-down') as HTMLElement;
+    if (elementExpanded != null) {
+      elementExpanded.click();
+    }
+  }
+
+  /**
+   * filtro de busqueda de las entradas de servicio por rango de fechas.
+   */
+  onBuscar() {
+    // MMSN-519: Colapsar fila expandida al activar un filtro.
+    this.collapseExpandedRow();
+
+    if (this.proveedorSeleccionado !== undefined) {
+      this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
+    }
+    else {
+      this.proveedor = '';
+    }
+
+    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.tabla.first = 0;
+  }
+
 }

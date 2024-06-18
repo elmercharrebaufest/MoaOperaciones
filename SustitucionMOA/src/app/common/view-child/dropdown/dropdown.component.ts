@@ -17,7 +17,7 @@ export type TipoDropdown = "numberItems" | "selectInput"|"periodos"|"filtroVaria
 })
 
 export class DropdownComponent implements OnInit {
-
+    @Input() disabled: boolean = false;
     @Input() tipoDropdown: TipoDropdown;
 
     @Input()
@@ -31,7 +31,7 @@ export class DropdownComponent implements OnInit {
     @Input()
     key: string;
 
-    selectedOption: string;
+    @Input() selectedOption: string;
     selectedOptionLabel: string = "";
 
     constructor() {

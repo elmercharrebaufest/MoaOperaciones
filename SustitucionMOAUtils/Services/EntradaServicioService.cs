@@ -97,7 +97,7 @@ namespace SustitucionMOAUtils.Services
         /// <returns></returns>
         public async Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, SustitucionMOAModel.Dto.UsuarioDto usuario)
         {
-            //Obtiene Cabeceras de Entradas de Servicio
+            // Obtiene Cabeceras de Entradas de Servicio
             List<EntradaServicioCabeceraDto> EntradasServicioCabecera = await new ObtenerCabecerasEntradaServicioConsumerMOA().ObtenerEntradasServicioCabeceraAsync(parametros.FechaInicio);
 
             List<EntradaServicioCabeceraDto> EntradasServicio = new List<EntradaServicioCabeceraDto>();
@@ -107,7 +107,7 @@ namespace SustitucionMOAUtils.Services
 
             // Filtra por número de documento, si se proporciona el parámetro
             if (parametros.DocumentoNumero != null)
-                EntradasServicioCabecera = EntradasServicioCabecera.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
+               EntradasServicioCabecera = EntradasServicioCabecera.Where(orden => orden.EntradaServicio.ToString() == parametros.DocumentoNumero).ToList();
 
             OrderParamsDto ordenParams = new OrderParamsDto();
 
@@ -204,13 +204,14 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
+            DateTime fechaInicioFormateada = DateTime.Parse(parametros.FechaInicio);
             // Busqueda Entrada Servicios cargadas en la tabla aprobaciones.
             List<Aprobaciones> temporales = new List<Aprobaciones>();
             if (parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
             {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && x.Fecha_Carga_ES >= fechaInicioFormateada);
             } else {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && x.Fecha_Carga_ES >= fechaInicioFormateada && (x.Ingresante_CDS == usuario.Mail || x.Fiscal_SOLPED == usuario.Mail || x.Aprobador_CDS == usuario.Mail));
             }
 
             try
