@@ -170,7 +170,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         {
             name: 'Entradas',
             columns: [
-                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'string', sortable: true, required: true, visible: true },
+                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'custom', sortable: true, required: true, visible: true },
                 { id: 'esFechaDoc', header: 'F. de prestación de servicios', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: true, required: false, visible: true },
