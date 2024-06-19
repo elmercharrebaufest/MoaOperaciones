@@ -331,7 +331,7 @@
                                                                         <td *ngIf="col.type === 'string' && col.visible">{{ rowData[col.field] | defaultData }}</td>
                                                                         <td *ngIf="col.type === 'custom' && col.visible">
                                                                             <ng-container *ngIf="col.id==='esNro'">
-                                                                                {{rowData.Id!>0 ? rowData.Id : rowData.TemporalId}}
+                                                                                {{rowData.Id > 0 ? rowData.Id : rowData.TemporalId}}
                                                                             </ng-container>
                                                                             <ng-container *ngIf="col.id==='esAcciones'">
                                                                                 <div *ngIf="rowData.SePuedeBorrar == false else SePuedeBorrar">
