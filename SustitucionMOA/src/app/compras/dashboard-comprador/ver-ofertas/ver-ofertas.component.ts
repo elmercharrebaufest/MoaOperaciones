@@ -77,6 +77,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,

@@ -150,6 +150,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
     dasboardComprador: boolean = true;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,

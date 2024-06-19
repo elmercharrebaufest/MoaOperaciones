@@ -24,7 +24,7 @@
                     &nbsp;<i class="fa fa-arrow-right"></i>
                 </button>
                 <button class="btn btn-success botonesComprasColor" 
-                    *ngIf="(!pasoSiguiente().paso && tipoSolpSap != 2)" 
+                    *ngIf="!pasoSiguiente().paso && tipoSolpSap != 2" 
                     (click)="onShowFinalizarDialog()" 
                     [disabled]="esAuditor">
                     {{pasoSiguiente().descripcion}}
