@@ -876,10 +876,16 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
+                var resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
+                if (solpEntity.TipoSolpSap != 2)
+                {
+                    var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
+                    resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                }
 
-                var resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
                 respuestaGuardarSOLP.Errores = new List<string>();
+
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
                     var mensaje = error.Mensaje.Trim();
