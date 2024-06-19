@@ -23,7 +23,10 @@
                     {{pasoSiguiente().descripcion}}
                     &nbsp;<i class="fa fa-arrow-right"></i>
                 </button>
-                <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso && tipoSolpSap != 2" (click)="onShowFinalizarDialog()">
+                <button class="btn btn-success botonesComprasColor" 
+                    *ngIf="!pasoSiguiente().paso" 
+                    (click)="onShowFinalizarDialog()" 
+                    [disabled]="esAuditor">
                     {{pasoSiguiente().descripcion}}
                 </button>
             </div>
