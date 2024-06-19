@@ -280,7 +280,7 @@ i#btn-filtros {
     display: flex;
     flex-direction: column;
     margin: .5em 0 1em 0;
-    width: 31%;
+    width: 40%;
 }
 
 .aux-panel:has(.columns-config-container) {
@@ -326,6 +326,7 @@ i#btn-filtros {
     font-size: 1.3em;
     padding: .31em 2em;
     margin-top: 1.6em;
+    width: 100%;
 }
 
 /* Search Panel */

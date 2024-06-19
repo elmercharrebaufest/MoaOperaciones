@@ -6,19 +6,19 @@
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
             </div>
             <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
-            <i id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+            <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
         </div>
         <br />
     </section>
     <!-- HEADER END -->
      <!-- SEARCH PANEL -->
-    <section class="aux-panel" id="search">
+    <section class="aux-panel" *ngIf="showOrHideAuxPanel()" id="search">
         <div class="aux-panel-header">
             Refinar resultados
             <i class="pi pi-times" (click)="togglePanel('search')"></i>
         </div>
         <div class="aux-panel-body">
-            <div class="search-filters">
+            <div class="search-filters row">
                 <!-- <div class="filtro-nro-orden col-md-3">
                     <p>Número de OC:</p>
                     <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
@@ -29,12 +29,12 @@
                     <p-autoComplete class="filtro-proveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
                 </div> -->
 
-                <div class="filtro-fechas col-md-8">
+                <div class="filtro-fechas col-md-6 col-sm-12 col-xs-12">
                     <p>Ver:</p>
                     <dropdown (select)="setDateByRange($event)" [disabled]="spinnerComponent.visible" [options]="filtroFechas" class="styled-select" [selectedOption]="'1'"></dropdown>
                 </div>
 
-                <div class="SearchBtn col-md-4 vertical-align-middle">
+                <div class="SearchBtn col-md-6 col-sm-12 col-xs-12 vertical-align-middle">
                     <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="spinnerComponent.visible">Buscar</button>
                 </div>
             </div>
@@ -57,16 +57,16 @@
                         tabla.filterGlobal($event.target.value, 'contains')
                     "
                     placeholder="Busqueda por OC"
-                    [disabled]="tablaPO.length <= 0"
+                    [disabled]="spinnerComponent.visible"
                 />
             </div>
             <div class="filtro-estado-certificacion">
-                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion" (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="tablaPO.length <= 0" [options]="listadoEstadoCertificacion" placeholder="Seleccione un estado de certificación"></p-dropdown>
+                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion" (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="spinnerComponent.visible" [options]="listadoEstadoCertificacion" placeholder="Seleccione un estado de certificación"></p-dropdown>
             </div>
 
             <div *ngIf="havePermision">
-                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="tablaPO.length <= 0">Ver todo</button>
-                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider" [disabled]="tablaPO.length <= 0">Ver por proveedor</button>
+                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="spinnerComponent.visible">Ver todo</button>
+                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider" [disabled]="spinnerComponent.visible">Ver por proveedor</button>
             </div>
         </div>
         <!-- FILTERS END -->
@@ -74,7 +74,7 @@
         <p-table
             #tabla
             class="level1"
-            [value]="tablaPO"
+            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
             dataKey="EntradaServicio"
             [paginator]="true"
             [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"

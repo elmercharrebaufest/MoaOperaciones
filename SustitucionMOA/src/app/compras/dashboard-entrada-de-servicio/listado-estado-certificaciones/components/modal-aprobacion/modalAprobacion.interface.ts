@@ -18,5 +18,6 @@ export interface certificacionItemES {
     Porcentaje: string,
     PorcentajeACertificar: number,
     ServicioNumero: number,
-    UM: string
+    UM: string,
+    NroRemito: string
 }

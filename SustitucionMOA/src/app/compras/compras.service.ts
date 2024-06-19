@@ -209,6 +209,18 @@ export class ComprasService extends BaseService {
             );
     }
 
+    ObtenerESLocales(verTodo: boolean | false) {
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        
+        return this.http
+            .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
     public deleteById(Id,TempId, AccountingDate) {
         //http.delete falla en ambiente QA - cambiado a Post
         var payload = new FormData();

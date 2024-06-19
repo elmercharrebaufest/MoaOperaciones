@@ -117,6 +117,27 @@ export class ModalAprobacionComponent implements OnInit {
     }
 
     /**
+     * Genera el monto total a certificar.
+     * @param monto asociado al monto a certificar.
+     * @returns monto as a string.
+     */
+    generarMontoTotalACertificar(): string {
+        let montoTotalAC: number = 0;
+        let moneda: string = ''
+        moneda = this.entradaServicioSeleccionada[0].Items[0].Moneda;
+        this.entradaServicioSeleccionada.forEach((es) => {
+            es.Items.forEach((item)=> {
+                montoTotalAC += Number(item.MontoACertificar)
+            })
+        });
+        if (moneda === 'ARP') {
+            return `$ ${montoTotalAC.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+            return `${montoTotalAC.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+    }
+
+    /**
      * Calcula el monto total general.
      * @returns 
      */
