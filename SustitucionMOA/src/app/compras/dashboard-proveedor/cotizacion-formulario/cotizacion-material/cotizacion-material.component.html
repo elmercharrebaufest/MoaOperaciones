@@ -23,6 +23,8 @@
                         <tr>
                             <th class="columna" style="width: 43px; background-color: #4760ac !important;
                                     text-transform: none !important;">No disp.</th>
+                            <th class="columna" style="width: 80px; background-color: #4760ac !important;
+                                    text-transform: none !important;">SOLP</th>
                             <th class="columna" style="width: 43px; background-color: #4760ac !important;
                                     text-transform: none !important;">Pos.</th>
                             <th class="columna" style="width: 57px; background-color: #4760ac !important;
@@ -59,6 +61,7 @@
                                  let-editing="editing">
                         <tr>
                             <td class="columna"><p-checkbox name="posicionesCompra" [(ngModel)]="posicionesCompra.Posiciones.CotizacionPosicion.NoDisponible" binary="false" (click)="noDisponible(posicionesCompra.Posiciones.CotizacionPosicion)"></p-checkbox></td>
+                            <td class="columna">{{posicionesCompra?.Posiciones?.NroSolp}}</td>
                             <td class="columna">{{posicionesCompra?.Posiciones?.Indice}}</td>
                             <td class="columna">{{posicionesCompra?.Posiciones?.Codigo}}</td>
                             <td class="columna">{{posicionesCompra?.Posiciones?.Tarea}}</td>

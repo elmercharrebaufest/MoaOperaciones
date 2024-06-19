@@ -12,6 +12,7 @@ import { VerOfertasComponent } from './dashboard-comprador/ver-ofertas/ver-ofert
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ReporteOcComponent } from './reporte-oc/reporte-oc.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 
@@ -31,8 +32,8 @@ const routes: Routes = [
     { path: "dashboard-proveedor/cotizacion/:id", component: CotizacionFormularioComponent },
     { path: "ver-ofertas/:id", component: VerOfertasComponent },
     { path: "reporte-oc", component: ReporteOcComponent },
-    { path: "crear-po-multiple", component: CrearPoMultipleComponent }
-    
+    { path: "crear-po-multiple", component: CrearPoMultipleComponent },
+    { path: "agrupar-po-th", component: AgruparPoThComponent }
 ];
 
 @NgModule({
