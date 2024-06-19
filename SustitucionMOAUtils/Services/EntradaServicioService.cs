@@ -525,7 +525,7 @@ namespace SustitucionMOAUtils.Services
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             try
             {
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, solpedNumber);
                 result.Type = "S";
 
                 result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
