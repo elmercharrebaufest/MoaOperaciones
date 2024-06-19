@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
     public class EntrySheetHeaderSection
     {
-        public string SolPedNumber { get; set; } //MMSN-601
+        public List<string> SolPedNumber { get; set; } //MMSN-601
         //MMSN-602
         public string MontoTotalACertificar { get; set; }
         public string PaqueteNumero { get; set; } // se puede omitir del front

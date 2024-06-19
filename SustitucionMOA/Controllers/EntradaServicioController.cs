@@ -147,23 +147,30 @@ namespace SustitucionMOA.Controllers
                 //MMSN-601
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
+                
+                int index = 0;
+
                 foreach(EntradaServicioCreateParamsDto parametro in parametros)
-                {
-                    var validacion = EntradaServicioService.ValidarIngresante(parametro, userMail);
+                { 
+                    string solpedNumber = parametro.EntrySheetHeader.SolPedNumber[index];
+
+                    var validacion = EntradaServicioService.ValidarIngresante(parametro, userMail, solpedNumber);
                     var result = new EntradaServicioCreateRespuestaDto();
                     if (validacion.Message == "Auto")
                     {
-                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail);
+                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, solpedNumber);
                     }
                     else if (validacion.Message == "Temporal")
                     {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail);
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, solpedNumber);
                     }
                     else
                     {
                         result = validacion;
                     }
                     ret.Add(result);
+
+                    index++;
                 }
 
 

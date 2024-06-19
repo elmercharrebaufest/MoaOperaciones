@@ -337,7 +337,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
             const entrySheetHeader = {
-                SolPedNumber: position.NroSolP,
+                SolPedNumber: this.elementSelected.Posiciones.map(posicion => posicion.NumeroSolp),
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion.trim(),
