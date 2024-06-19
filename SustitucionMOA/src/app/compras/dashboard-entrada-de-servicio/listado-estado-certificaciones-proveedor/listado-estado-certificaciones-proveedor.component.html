@@ -8,7 +8,7 @@
         </div>
         <br />
     </section>
-    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="obtenerESSap(proveedor, documentoNumero)"  
+    <aux-pannel [fechaSeleccionada]="fechaSeleccionadaAux" *ngIf="showOrHideAuxPanel()" (obtenerESSap)="obtenerESSap(proveedor, documentoNumero)"  
         [proveedor]="proveedor" [visible]="spinnerComponent.visible" (getFecha)="getFecha($event)"></aux-pannel>
     <!-- HEADER END -->
     <p-messages [value]="msgs"></p-messages>

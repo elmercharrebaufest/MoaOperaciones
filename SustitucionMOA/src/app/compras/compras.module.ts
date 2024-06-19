@@ -100,8 +100,8 @@ import { ButtonModule } from 'primeng/button';
 import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
 import { CeldaEditableComponent } from './dashboard-entrada-de-servicio/components/celda-editable/celda-editable.component';
 import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/components/spinner-celda/spinner-casilla.component';
-import { ModalAprobacionComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/components/modal-aprobacion/modal-aprobacion.component';
 import { AuxPannelComponent } from './dashboard-entrada-de-servicio/components/aux-pannel/aux-pannel.component';
+import { ModalAprobacionComponent } from './dashboard-entrada-de-servicio/components/modal-aprobacion/modal-aprobacion.component';
 
 @NgModule({
     imports: [

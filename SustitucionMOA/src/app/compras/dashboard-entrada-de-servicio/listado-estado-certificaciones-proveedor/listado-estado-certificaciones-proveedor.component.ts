@@ -64,7 +64,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   innerWidth: number;
   tablaPOSap: any[] = [];
   tablaPOAprobaciones: any[] = [];
-
+  fechaSeleccionadaAux: string = "1";
 
 
   @HostListener('window:resize', ['$event'])
@@ -236,6 +236,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         fechaActual.setMonth(fechaActual.getMonth() - 1);
         break;
     }
+    this.fechaSeleccionadaAux = rango;
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 

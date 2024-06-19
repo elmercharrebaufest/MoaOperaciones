@@ -26,7 +26,7 @@ export interface autoCompleteObject {
   valor: string;
   CodigoProveedor: string;
 };
-import { certificacionES } from './components/modal-aprobacion/modalAprobacion.interface';
+import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -99,6 +99,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   havePermision: boolean = false;
   observaciones: string = '';
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
+  fechaSeleccionadaAux: string = "1";
 
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -304,7 +305,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         fechaActual.setDate(fechaActual.getDate() - 2);
         break;
       case '2':
-        fechaActual.setDate(fechaActual.getDate() - 14);
+        fechaActual.setDate(fechaActual.getDate() - 7);
         break;
       case '3':
         fechaActual.setMonth(fechaActual.getMonth() - 1);
@@ -313,6 +314,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         fechaActual.setMonth(fechaActual.getMonth() - 1);
         break;
     }
+    this.fechaSeleccionadaAux = rango;
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 

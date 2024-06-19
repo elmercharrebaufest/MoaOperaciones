@@ -16,9 +16,10 @@ export class AuxPannelComponent implements OnInit {
     ngOnInit(): void { }
 
     @Input() showOrHideAuxPanel: boolean = false;
-    @Output() obtenerESSap: EventEmitter<boolean> = new EventEmitter<boolean>();
+    @Input() fechaSeleccionada: string = '1';
     @Input() proveedor: string = '';
     @Input() visible: boolean = false;
+    @Output() obtenerESSap: EventEmitter<boolean> = new EventEmitter<boolean>();
     @Output() getFecha: EventEmitter<string> = new EventEmitter<string>();
 
     subscripciones: Subscription[] = [];
