@@ -17,11 +17,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.component';
 
+export interface estadoCertificacion {
+  name: string,
+  code: string
+}
+
 export interface autoCompleteObject {
   valor: string;
   CodigoProveedor: string;
 };
-import { certificacionES } from './components/modal-aprobacion/modalAprobacion.interface';
+import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -70,7 +75,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   ordenCompraId: string = "";
   proveedorSeleccionado: autoCompleteObject;
   selectedRow: any;
-  estadoCertificacion: any = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
+  estadoCertificacion: estadoCertificacion = { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' };
   formularioMotivosRechazo: FormGroup | undefined;
   formularioSuplente: FormGroup | undefined;
   mostrarMotivosRechazos: boolean = false;
@@ -83,7 +88,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   ];
   fullscreen: boolean = false;
   userId: any = '';
-  tablaPO: any[] = [];
+  tablaPOAprobaciones: any[] = [];
+  tablaPOSap: any[] = [];
   cols: any[];
   usuario: string;
   vendedor: string;
@@ -93,6 +99,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   havePermision: boolean = false;
   observaciones: string = '';
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
+  fechaSeleccionadaAux: string = "1";
 
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -101,7 +108,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     { name: 'Falta de presentación de documentación', code: '4' }
   ];
   suplentes: any = [];
-  listadoEstadoCertificacion: any = [
+  listadoEstadoCertificacion: estadoCertificacion[] = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
     { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
     { name: 'Estado: Rechazadas', code: 'Rechazado' }
@@ -163,7 +170,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   ngOnInit() {
     this.getFecha('1');
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO();
     this.formsCreate();
     this.innerWidth = window.innerWidth;
     this.navService.setSeccionActive("Estado certificaciones");
@@ -230,18 +237,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
   }
 
-  getListarPO(proveedor, documentoNumero) {
+  getListarPO() {
     this.hideContainerTable();
     this.subscripciones.push(
-      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+      this.service.ObtenerESLocales(this.isAll).subscribe(
         (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
           } else if (result.info != undefined) {
           } else {
-            this.tablaPO = result.data;
-            this.userId = this.setColumsByUserProfile(this.tablaPO, this.usuario);
+            this.tablaPOAprobaciones = result.data;
+            this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -254,6 +261,27 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         })
     );
     this.clearMessage();
+  }
+
+  obtenerESSap(proveedor, documentoNumero): void {
+    this.hideContainerTable();
+    this.subscripciones.push(
+      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll ).subscribe(
+        (result: {error: any, data: any}) => {
+          this.showContainerTable();
+          if(result.error != null){
+            return;
+          }
+          if(result.data.length > 0){
+            this.tablaPOSap = result.data;
+          }
+          this.tabla.first = 0;
+
+        }, error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.showContainerTable();
+        })
+    );
   }
 
   clearMessage() {
@@ -277,7 +305,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         fechaActual.setDate(fechaActual.getDate() - 2);
         break;
       case '2':
-        fechaActual.setDate(fechaActual.getDate() - 14);
+        fechaActual.setDate(fechaActual.getDate() - 7);
         break;
       case '3':
         fechaActual.setMonth(fechaActual.getMonth() - 1);
@@ -286,6 +314,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         fechaActual.setMonth(fechaActual.getMonth() - 1);
         break;
     }
+    this.fechaSeleccionadaAux = rango;
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
@@ -297,7 +326,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO();
   }
 
   onOrder(columna: string) {
@@ -307,7 +336,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO();
   }
 
   toggleRow(rowData: any): void {
@@ -330,15 +359,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.mostrarMotivosRechazos = true;
   }
 
-  filtrarPorEstado(event: any): void {
+  async filtrarPorEstado(event: any): Promise<void> {
     switch (event.value.code) {
       case 'Aprobada':
+        if(this.tablaPOSap.length < 1){
+          this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }
         this.defaultTablesConfig[0].columns.forEach(col => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' ? false : true;
         });
         break;
       case 'Pendiente Aprobación':
-        this.setColumsByUserProfile(this.tablaPO, this.usuario);
+        this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
         break;
       case 'Rechazado':
         this.defaultTablesConfig[0].columns.forEach(col => {
@@ -388,7 +420,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
-          this.getListarPO(this.proveedor, this.documentoNumero);
+          this.getListarPO();
           this.mostrarSuplentes = false;
           const msj = {severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'};
 
@@ -429,13 +461,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         (resp: any) => {
           if (resp.data.status == "OK") {
             this.resetForm();
-            this.getListarPO(this.proveedor, this.documentoNumero);
+            this.getListarPO();
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
           else {
             this.resetForm();
-            this.getListarPO(this.proveedor, this.documentoNumero);
+            this.getListarPO();
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
           }
@@ -523,7 +555,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               }
               switch (resp.data.Type) {
                 case "I": {
-                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.getListarPO();
                   this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   break;
@@ -537,7 +569,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
                   this.showContainerTable();
                   this.resetForm();
-                  this.getListarPO(this.proveedor, this.documentoNumero);
+                  this.getListarPO();
                   break;
                 }
                 case "E": {
@@ -566,13 +598,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   SeeAll() {
     this.isAll = true;
-    this.getListarPO("", this.documentoNumero);
+    this.getListarPO();
 
   }
 
   SeeForProvider() {
     this.isAll = false;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.getListarPO();
   }
 
   /**
@@ -755,8 +787,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.proveedor = '';
     }
 
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    this.obtenerESSap(this.proveedor, this.documentoNumero);
     this.tabla.first = 0;
+  }
+
+  showOrHideAuxPanel(): boolean {
+    const estadoCertificacion: estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
+    if(this.estadoCertificacion.code === estadoCertificacion.code){
+     return true;
+    }
+    return false;
   }
 
 }
