@@ -8,6 +8,8 @@
         </div>
         <br />
     </section>
+    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="obtenerESSap(proveedor, documentoNumero)"  
+        [proveedor]="proveedor" [visible]="spinnerComponent.visible" (getFecha)="getFecha($event)"></aux-pannel>
     <!-- HEADER END -->
     <p-messages [value]="msgs"></p-messages>
     <spinner></spinner>
@@ -18,20 +20,22 @@
             <div class="filtro-oc">
                 <input class="filtro-oc-input" pInputText type="text" (input)="
                       tabla.filterGlobal($event.target.value, 'contains')
-                  " placeholder="Busqueda por OC" [disabled]="tablaPO.length <= 0" />
+                  " placeholder="Busqueda por OC" [disabled]="spinnerComponent.visible" />
             </div>
             <div class="filtro-estado-certificacion">
                 <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
-                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="tablaPO.length <= 0"
+                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="spinnerComponent.visible"
                     [options]="listadoEstadoCertificacion"
                     placeholder="Seleccione un estado de certificación"></p-dropdown>
             </div>
         </div>
         <!-- FILTERS END -->
         <!-- TABLE 1 -->
-        <p-table #tabla class="level1" [value]="tablaPO" dataKey="EntradaServicio" [paginator]="true"
-            [rows]="innerWidth && innerWidth < 1399 ? 6 : 10" [columns]="columns" [globalFilterFields]="['OrdenCompra']"
-            responsiveLayout="scroll | stack" rowExpandMode="single">
+        <p-table #tabla class="level1"
+            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
+            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
+            rowExpandMode="single">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>

@@ -5,13 +5,15 @@
             <div class="col-xs-12 col-sm-10">
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
             </div>
-            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
-            <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros" (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'"
+                [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
+            <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros"
+                (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
         </div>
         <br />
     </section>
     <!-- HEADER END -->
-     <!-- SEARCH PANEL -->
+    <!-- SEARCH PANEL -->
     <section class="aux-panel" *ngIf="showOrHideAuxPanel()" id="search">
         <div class="aux-panel-header">
             Refinar resultados
@@ -31,11 +33,13 @@
 
                 <div class="filtro-fechas col-md-6 col-sm-12 col-xs-12">
                     <p>Ver:</p>
-                    <dropdown (select)="setDateByRange($event)" [disabled]="spinnerComponent.visible" [options]="filtroFechas" class="styled-select" [selectedOption]="'1'"></dropdown>
+                    <dropdown (select)="setDateByRange($event)" [disabled]="spinnerComponent.visible"
+                        [options]="filtroFechas" class="styled-select" [selectedOption]="'1'"></dropdown>
                 </div>
 
                 <div class="SearchBtn col-md-6 col-sm-12 col-xs-12 vertical-align-middle">
-                    <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="spinnerComponent.visible">Buscar</button>
+                    <button class="btn btn-buscar" (click)="onBuscar()"
+                        [disabled]="spinnerComponent.visible">Buscar</button>
                 </div>
             </div>
         </div>
@@ -43,79 +47,60 @@
 
     <p-messages [value]="msgs"></p-messages>
     <spinner></spinner>
-    
+
     <div class="container-tabla" #elementToToggle>
         <!-- FILTERS -->
         <div class="filters-row">
             <i class="pi pi-filter"></i>
             <div class="filtro-oc">
-                <input
-                    class="filtro-oc-input"
-                    pInputText
-                    type="text"
-                    (input)="
+                <input class="filtro-oc-input" pInputText type="text" (input)="
                         tabla.filterGlobal($event.target.value, 'contains')
-                    "
-                    placeholder="Busqueda por OC"
-                    [disabled]="spinnerComponent.visible"
-                />
+                    " placeholder="Busqueda por OC" [disabled]="spinnerComponent.visible" />
             </div>
             <div class="filtro-estado-certificacion">
-                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion" (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="spinnerComponent.visible" [options]="listadoEstadoCertificacion" placeholder="Seleccione un estado de certificación"></p-dropdown>
+                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
+                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="spinnerComponent.visible"
+                    [options]="listadoEstadoCertificacion"
+                    placeholder="Seleccione un estado de certificación"></p-dropdown>
             </div>
 
             <div *ngIf="havePermision">
-                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="spinnerComponent.visible">Ver todo</button>
-                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider" [disabled]="spinnerComponent.visible">Ver por proveedor</button>
+                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="spinnerComponent.visible">Ver
+                    todo</button>
+                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
+                    [disabled]="spinnerComponent.visible">Ver por proveedor</button>
             </div>
         </div>
         <!-- FILTERS END -->
         <!-- TABLE 1 -->
-        <p-table
-            #tabla
-            class="level1"
+        <p-table #tabla class="level1"
             [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
-            dataKey="EntradaServicio"
-            [paginator]="true"
-            [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
-            [columns]="columns"
-            [globalFilterFields]="['OrdenCompra']"
-            responsiveLayout="scroll | stack"
-            rowExpandMode="single"
-        >
+            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
+            rowExpandMode="single">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
                     <th></th>
                     <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
-                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{
+                            col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
                         <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                     </ng-container>
                 </tr>
             </ng-template>
             <!-- TABLE 1 HEADERS END -->
             <!-- TABLE 1 BODY -->
-            <ng-template
-                pTemplate="body"
-                let-rowData
-                let-columns="columns"
-                let-expanded="expanded"
-            >
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
                     <td>
-                        <a
-                            *ngIf="rowData.entradaServicioDetalle?.length > 0"
-                            href="#"
-                            [pRowToggler]="rowData"
-                            (click)="toggleRow(rowData)"
-                        >
-                            <i
-                                [ngClass]="
+                        <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
+                            (click)="toggleRow(rowData)">
+                            <i [ngClass]="
                                     expanded
                                         ? 'pi pi-chevron-down'
                                         : 'pi pi-chevron-right'
-                                "
-                            ></i>
+                                "></i>
                         </a>
                     </td>
                     <td>{{ rowData.EntradaServicio }}</td>
@@ -127,7 +112,7 @@
                     <td>{{ rowData.Proveedor | defaultData }}</td>
                     <td>{{ rowData.Descripcion | defaultData }}</td>
                     <td>{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
-                    <td> 
+                    <td>
                         <div class="usuario-area">
                             <span>{{ rowData.Ingresante }}</span>
                         </div>
@@ -145,32 +130,21 @@
                     <td class="text-center" *ngIf="rowData.Estado === 'Rechazado'">
                         {{ rowData.FechaRechazo }}
                     </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
-                        <button
-                            type="button"
-                            pButton
-                            icon="pi pi-check"
-                            class="btn-action accept-btn"
+                    <td
+                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
+                        <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
                             (click)="mostrarResumenDeAprobacion(rowData)"
-                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
-                        ></button>
-                        <button
-                            type="button"
-                            pButton
-                            icon="pi pi-times"
-                            class="btn-action reject-btn"
+                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                        <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
                             (click)="verMotivosRechazos(rowData)"
-                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"
-                        ></button>
-                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
-                            type="button"
-                            pButton
-                            icon="pi pi-ellipsis-h"
-                            class="btn-action btn-secondary"
-                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"
-                        ></button>
-                    </td>                    
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{ rowData.Aprobador | defaultData}}</td>
+                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                        <button
+                            *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
+                            type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
+                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
+                        rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
             </ng-template>
@@ -183,118 +157,76 @@
                 </tr>
             </ng-template>
 
-            <ng-template
-                pTemplate="rowexpansion"
-                let-rowData
-                let-columns="columns"
-            >
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
                 <tr>
                     <td colspan="18">
                         <!-- TABLE 2 -->
-                        <p-table
-                            class="level2"
-                            [value]="rowData.entradaServicioDetalle"
-                            responsiveLayout="scroll | stack"
-                            dataKey="NumeroLinea"
-                            [columns]="columns"
-                        >
+                        <p-table class="level2" [value]="rowData.entradaServicioDetalle"
+                            responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header">
                                 <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
-                                    <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                                    <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
-                                </ng-container>
-                            </ng-template>
-                            <!-- TABLE 2 HEADERS END -->
-                            <!-- TABLE 2 BODY -->
-                            <ng-template
-                                pTemplate="body"
-                                let-rowDetalle
-                                let-expanded="expanded"
-                            >
-                                <tr>
-                                    <td>{{ rowDetalle.NumeroLinea }}</td>
-                                    <td>{{ rowDetalle.CodigoServicio }}</td>
-                                    <td>{{ rowDetalle.Descripcion }}</td>
-                                    <td>{{ rowDetalle.Cantidad }}</td>
-                                    <td>{{ rowDetalle.UM }}</td>
-                                    <td>{{ rowDetalle.Monto }}</td>
-                                    <td>{{ rowDetalle.CantidadCertificar }}</td>
-                                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
-                                    <td>{{ rowDetalle.MontoCertificar }}</td>
-                                    <td>{{ rowDetalle.NroRemito }}</td>
-                                </tr>
-                            </ng-template>
-                            <!-- TABLE 2 BODY END -->
-                        </p-table>
-                        <!-- TABLE 2 END -->
-                    </td>
+                    <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header
+                        }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                    <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    </ng-container>
+            </ng-template>
+            <!-- TABLE 2 HEADERS END -->
+            <!-- TABLE 2 BODY -->
+            <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
+                <tr>
+                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                    <td>{{ rowDetalle.CodigoServicio }}</td>
+                    <td>{{ rowDetalle.Descripcion }}</td>
+                    <td>{{ rowDetalle.Cantidad }}</td>
+                    <td>{{ rowDetalle.UM }}</td>
+                    <td>{{ rowDetalle.Monto }}</td>
+                    <td>{{ rowDetalle.CantidadCertificar }}</td>
+                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
+                    <td>{{ rowDetalle.MontoCertificar }}</td>
+                    <td>{{ rowDetalle.NroRemito }}</td>
                 </tr>
             </ng-template>
+            <!-- TABLE 2 BODY END -->
+        </p-table>
+        <!-- TABLE 2 END -->
+        </td>
+        </tr>
+        </ng-template>
         </p-table>
         <!-- TABLE 1 END -->
     </div>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
 </div>
-<p-dialog
-    header="Motivo del rechazo de la certificación"
-    [(visible)]="mostrarMotivosRechazos"
-    [modal]="true" 
-    [responsive]="true"
-    [appendTo]="'body'"
-    [contentStyle]="{'overflow':'visible', 'min-width': '500px'}"
-    [draggable]="false"
-    (onHide)="ocultandoModal()"
->
+<p-dialog header="Motivo del rechazo de la certificación" [(visible)]="mostrarMotivosRechazos" [modal]="true"
+    [responsive]="true" [appendTo]="'body'" [contentStyle]="{'overflow':'visible', 'min-width': '500px'}"
+    [draggable]="false" (onHide)="ocultandoModal()">
     <form [formGroup]="formularioMotivosRechazo">
-        <p-dropdown
-            appendTo="body"
-            [options]="motivos"
-            formControlName="motivo"
-            optionLabel="name"
-            placeholder="Selecciona un motivo"
-        ></p-dropdown>
+        <p-dropdown appendTo="body" [options]="motivos" formControlName="motivo" optionLabel="name"
+            placeholder="Selecciona un motivo"></p-dropdown>
         <div class="input-wrapper" *ngIf="formularioMotivosRechazo.get('motivo').value.name !== null">
-            <textarea 
-                formControlName="observaciones"
-                class="textoLibre" 
-                [disabled]="formularioMotivosRechazo.invalid" 
-                type="text" 
-                placeholder="Escriba una notificación adicional y se notificará al ingresante." 
+            <textarea formControlName="observaciones" class="textoLibre" [disabled]="formularioMotivosRechazo.invalid"
+                type="text" placeholder="Escriba una notificación adicional y se notificará al ingresante."
                 maxlength="80">
             </textarea>
             <p class="char-limit-message">Max. 80 caracteres</p>
         </div>
-        <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()" [disabled]="formularioMotivosRechazo.invalid"></p-button>
+        <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()"
+            [disabled]="formularioMotivosRechazo.invalid"></p-button>
     </form>
 </p-dialog>
-<p-dialog
-    header="Suplente a reasignar"
-    [(visible)]="mostrarSuplentes"
-    [modal]="true" 
-    [responsive]="true"
-    [appendTo]="'body'"
-    [contentStyle]="{'overflow':'visible'}"
-    [draggable]="false"
->
+<p-dialog header="Suplente a reasignar" [(visible)]="mostrarSuplentes" [modal]="true" [responsive]="true"
+    [appendTo]="'body'" [contentStyle]="{'overflow':'visible'}" [draggable]="false">
     <form [formGroup]="formularioSuplente">
-        <input
-            formControlName="suplente"
-            pInputText
-            type="text"
-            readonly
-        />
-        <p-button class="boton-enviar-motivo" label="Reasignar" (onClick)="reasignar()" [disabled]="formularioSuplente.invalid"></p-button>
+        <input formControlName="suplente" pInputText type="text" readonly />
+        <p-button class="boton-enviar-motivo" label="Reasignar" (onClick)="reasignar()"
+            [disabled]="formularioSuplente.invalid"></p-button>
     </form>
 </p-dialog>
 
 <p-confirmDialog [style]="{width: '50vw'}" appendTo="body">
 </p-confirmDialog>
 
-<modal-aprobacion 
-    *ngIf="mostrarModalAprobaciones"
-    [showModal]="mostrarModalAprobaciones"
-    [entradaServicioSeleccionada]="entradaServicioSeleccionada"
-    (aprobarES)="enviarAprobacion($event)"
-    (closeModal)="cerrarModalResumen()"
-></modal-aprobacion>
+<modal-aprobacion *ngIf="mostrarModalAprobaciones" [showModal]="mostrarModalAprobaciones"
+    [entradaServicioSeleccionada]="entradaServicioSeleccionada" (aprobarES)="enviarAprobacion($event)"
+    (closeModal)="cerrarModalResumen()"></modal-aprobacion>

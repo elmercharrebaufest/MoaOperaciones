@@ -62,6 +62,10 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   ordenCompraIdsMostradas: Set<number> = new Set<number>();
   selectedRow: any;
   innerWidth: number;
+  tablaPOSap: any[] = [];
+  tablaPOAprobaciones: any[] = [];
+
+
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -135,7 +139,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   }
 
   //#region Variables 
-  tablaPO: any[] = [];
   cols: any[];
   usuario: string;
   vendedor: string;
@@ -144,6 +147,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   msgs: Message[] = [];
 
   ngOnInit() {
+    this.getFecha('1');
 
     this.getListarPO(this.proveedor, this.documentoNumero);
 
@@ -185,17 +189,16 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   }
 
   getListarPO(proveedor, documentoNumero) {
-    this.getFecha();
     this.hideContainerTable();
     this.unsubscribe();
-    this.subscripcionPO = this.service.getByProveedorAsync(this.fechaInicio, proveedor, this.documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false).subscribe(
+    this.subscripcionPO = this.service.ObtenerESLocales(false).subscribe(
       (result: any) => {
         if (result.logout == true) {
           this.sessionDataService.logout();
         } else if (result.error != undefined && result.error != "") {
         } else if (result.info != undefined) {
         } else {
-          this.tablaPO = result.data;
+          this.tablaPOAprobaciones = result.data;
           this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
           this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
           this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -217,12 +220,22 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     return !this.spinnerComponent.visible;
   }
 
-  getFecha() {
+  getFecha(rango: string) {
     var fechaActual = new Date();
-    //fechaActual.setDate(fechaActual.getDate() - 2);
-    //TODO: cambiar cuando se agregue el filtro de fecha.
-    //actualizar
-    fechaActual.setMonth(fechaActual.getMonth() - 2);
+    switch (rango) {
+      case '1':
+        fechaActual.setDate(fechaActual.getDate() - 2);
+        break;
+      case '2':
+        fechaActual.setDate(fechaActual.getDate() - 7);
+        break;
+      case '3':
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+      default:
+        fechaActual.setMonth(fechaActual.getMonth() - 1);
+        break;
+    }
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
@@ -258,33 +271,36 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   filtrarPorEstado(event: any): void {
     const estado = event.value.code;
 
-  // Determinar qué columnas deben mostrarse u ocultarse según el estado
-  const columnasVisibles = this.obtenerColumnasVisiblesSegunEstado(estado);
+    // Determinar qué columnas deben mostrarse u ocultarse según el estado
+    const columnasVisibles = this.obtenerColumnasVisiblesSegunEstado(estado);
 
-  // Aplicar los cambios de visibilidad a las columnas
-  this.aplicarVisibilidadColumnas(columnasVisibles);
+    // Aplicar los cambios de visibilidad a las columnas
+    this.aplicarVisibilidadColumnas(columnasVisibles);
 
-  // Filtrar la tabla por el estado seleccionado
-  this.tabla.filter(estado, 'Estado', 'contains');
-}
-
-// Método para determinar qué columnas deben mostrarse u ocultarse según el estado
-private obtenerColumnasVisiblesSegunEstado(estado: string): string[] {
-  switch (estado) {
-    case 'Aprobada':
-      return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
-    case 'Pendiente Aprobación':
-      return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
-    case 'Rechazado':
-      return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo'];
+    // Filtrar la tabla por el estado seleccionado
+    this.tabla.filter(estado, 'Estado', 'contains');
   }
-}
 
-// Método para aplicar los cambios de visibilidad a las columnas
-private aplicarVisibilidadColumnas(columnasVisibles: string[]): void {
-  this.defaultTablesConfig[0].columns.forEach(col => {
-    col.visible = columnasVisibles.includes(col.id);
-  });
+  // Método para determinar qué columnas deben mostrarse u ocultarse según el estado
+  private obtenerColumnasVisiblesSegunEstado(estado: string): string[] {
+    switch (estado) {
+      case 'Aprobada':
+        if(this.tablaPOSap.length < 1){
+          this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
+      case 'Pendiente Aprobación':
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
+      case 'Rechazado':
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo'];
+    }
+  }
+
+  // Método para aplicar los cambios de visibilidad a las columnas
+  private aplicarVisibilidadColumnas(columnasVisibles: string[]): void {
+    this.defaultTablesConfig[0].columns.forEach(col => {
+      col.visible = columnasVisibles.includes(col.id);
+    });
   }
 
   verSuplentes(): void {
@@ -303,5 +319,33 @@ private aplicarVisibilidadColumnas(columnasVisibles: string[]): void {
       }
     }, 300)
     return fecha;
+  }
+
+  showOrHideAuxPanel(): boolean {
+    const estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
+    if (this.estadoCertificacion.code === estadoCertificacion.code) {
+      return true;
+    }
+    return false;
+  }
+
+  obtenerESSap(proveedor, documentoNumero): void {
+    this.hideContainerTable();
+
+    this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false).subscribe(
+      (result: { error: any, data: any }) => {
+        this.showContainerTable();
+        if (result.error != null) {
+          return;
+        }
+        if (result.data.length > 0) {
+          this.tablaPOSap = result.data;
+        }
+        this.tabla.first = 0;
+
+      }, error => {
+        this.floatMsgService.setErrorMsg(error.message);
+        this.showContainerTable();
+      })
   }
 }

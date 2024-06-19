@@ -274,6 +274,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           if(result.data.length > 0){
             this.tablaPOSap = result.data;
           }
+          this.tabla.first = 0;
+
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.showContainerTable();
