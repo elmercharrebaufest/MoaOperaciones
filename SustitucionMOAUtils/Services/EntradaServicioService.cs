@@ -642,7 +642,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, completeAp[0].Fiscal_SOLPED);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -746,6 +746,8 @@ namespace SustitucionMOAUtils.Services
         private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, bool auto, string solPedNumber = null)
         {
             Aprobaciones temp = new Aprobaciones();
+            //MMSN-1066 - Derivacion automatica del suplente
+            SustitucionMOAModel.Entities.Usuario user = new SustitucionMOAModel.Entities.Usuario();
 
             #region CargaDatosCabecera
             DateTime dateDocument;
@@ -821,6 +823,7 @@ namespace SustitucionMOAUtils.Services
                                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
                                 if (usuario != null)
                                 {
+                                    user = usuario;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
@@ -831,6 +834,7 @@ namespace SustitucionMOAUtils.Services
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
                                     if (usuario != null)
                                 {
+                                    user = usuario;
                                     temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
@@ -845,6 +849,7 @@ namespace SustitucionMOAUtils.Services
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
                                     if (usuario != null)
                                 {
+                                    user = usuario;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
@@ -855,6 +860,7 @@ namespace SustitucionMOAUtils.Services
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
                                     if (usuario != null)
                                 {
+                                    user = usuario;
                                     temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
@@ -872,20 +878,10 @@ namespace SustitucionMOAUtils.Services
                                         var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante);
                                         if (usuario != null)
                                     {
+                                        user = usuario;
                                         temp.Fiscal_SOLPED = usuario.Mail;
                                         temp.Suplente = usuario.Suplente;
-                                        // Pendiente Carga temp.Area, ya que se necesitan los datos de MMSN-726
-                                        /*
-                                         * Tentativo - Falta Testear y posible optimización
-                                         *                                     * 
-                                         * var idArea = repositorio.Obtener<Usuario_Area>(x => x.Usuario_ID == usuario.Id);
-                                         * if(idArea != null){
-                                         *  var Area = repositorio.Obtener<Area>(x => x.ID_Area == idArea.Area_ID);
-                                         *  if(Area != null) temp.Area_Fiscal = Area.NombreArea
-                                         *  
-                                         * }
-                                         *   
-                                         */
+
                                     }
                                 }
                             }
@@ -904,7 +900,26 @@ namespace SustitucionMOAUtils.Services
             }
             #endregion
 
+            //MMSN-1066 - Derivación automatica del suplente.
+            #region DerivacionAutomatica
+            if(user != null && user.Id != 0)
+            {
+                if (!string.IsNullOrEmpty(user.Suplente))
+                {
+                    UsuarioReasignacion periodo = repositorio.Listar<UsuarioReasignacion>(x => x.Usuario_Id == user.Id).ToList().LastOrDefault();
+                    if(periodo != null)
+                    {
+                        //Comprobar fechaDesde y fechaHasta
+                        if (periodo.FechaDesde <= DateTime.Today && periodo.FechaHasta >= DateTime.Today)
+                        {
+                            temp.Aprobador_CDS = user.Suplente;
+                            temp.Suplente = temp.Fiscal_SOLPED;
+                        }
 
+                    }
+                }
+            }
+            #endregion
 
             //Datos OC
             temp.NRO_OC = parametros.EntrySheetHeader.OrdenCompraNumero;

@@ -222,7 +222,7 @@
                                 <input pInputText formControlName="usuarioSap" (keyup)="validarConExpresionesRegulares('usuarioSap')">
                             </div>
                         </div>
-    
+
                         <div style="margin-top: 10px;">
                             <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
                                 SUPLENTE
@@ -231,7 +231,34 @@
                                 <input pInputText formControlName="suplente" (keyup)="validarConExpresionesRegulares('suplente')">
                             </div>
                         </div>
-    
+
+                        <div style="margin-top: 10px;">
+                            <div class="col-md-3" style="font-weight: 600; margin-top: 10px;">
+                                <p>Periodo de reasignación</p>
+                            </div>
+                            <div style="margin-top: 10px; padding-top: 0.8em;">
+                                <p-calendar [(ngModel)]="rangoReasignacion"
+                                            selectionMode="range"
+                                            formControlName="fechaReasignar1"
+                                            id="fechaReasignar"
+                                            dateFormat="yy-mm-dd"
+                                            [readonlyInput]="true"
+                                            [monthNavigator]="true"
+                                            [yearNavigator]="true"
+                                            [locale]="es"
+                                            autoZIndex="true"
+                                            [minDate]="fechaReasignacionMin"
+                                            [maxDate]="fechaReasignacionMax"
+                                            yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
+                                            [showIcon]="true">
+                                </p-calendar>
+                            </div>
+                            <div *ngIf="validationError">
+                                <p style="color:red; font-size: 0.7em">Por favor, cargue un rango de fechas</p>
+                            </div>                           
+                        </div>
+                                         
+
                         <div class="row" *ngFor="let titulo of titulos">
                             <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>
                             <hr>

@@ -90,6 +90,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
 import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
   imports: [
@@ -105,6 +106,7 @@ import { MessageSpinnerComponent } from "./common/message-spinner/message-spinne
     ReCaptchaModule,
     SharedModule,
     LogPesificacionModule,
+    CalendarModule,
     NgxMaskModule.forRoot(),
     BlockUIModule.forRoot(),
         LoggerModule.forRoot(

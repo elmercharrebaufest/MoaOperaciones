@@ -180,7 +180,7 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
@@ -189,6 +189,36 @@ namespace SustitucionMOAUtils.Services
             usuario.RemoverRolesEditables();
 
             usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
+
+            if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
+            {
+                string dateTimeFormat = "yyyy-MM-dd";
+                DateTime fechaDesdeDT = new DateTime();
+                DateTime fechaHastaDT = new DateTime();
+                DateTime auxFDesde;
+                if(DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                {
+                    fechaDesdeDT = auxFDesde;
+                };
+                DateTime auxFHasta;
+                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFHasta))
+                {
+                    fechaHastaDT = auxFHasta;
+                };
+                //Parsing failsafe
+                if(fechaDesdeDT != fechaHastaDT)
+                {
+                    UsuarioReasignacion periodo = new UsuarioReasignacion
+                    {
+                        Usuario_Id = idUsuario,
+                        FechaDesde = fechaDesdeDT,
+                        FechaHasta = fechaHastaDT
+                    };
+
+                    repositorio.Agregar<UsuarioReasignacion>(periodo);
+                }
+
+            }
 
             foreach (int idRol in idRoles)
             {

@@ -255,6 +255,7 @@
     <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
     <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
+    <Build Include="DBO\Tables\UsuarioReasignacion.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

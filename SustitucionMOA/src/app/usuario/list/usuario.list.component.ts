@@ -13,6 +13,7 @@ import { UsuarioService } from './../usuario.service';
 import { Rol } from '../../common/models/rol';
 import { ModificarDatosComponent } from '../modificar-datos/modificar-datos.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Calendar } from 'primeng/calendar';
 
 @Component({
     selector: 'app-usuario-list',
@@ -55,26 +56,46 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     usuarioSeleccionado: any = {};
     titulos: Array<string> = ["Externo", "Interno", "Contacto"]
     usuarioModificacionSel: string = '';
+    rangoReasignacion: Date[];
+    fechaReasignacionMin: Date = new Date();
+    fechaReasignacionMax: Date = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
+    es: any;
+    validationError: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
     }
 
     ngOnInit() {
+        this.es = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Limpiar',
+            dateFormat: 'yyyy-mm-dd',
+            weekHeader: 'Sem'
+        };
         this.formularioUsuario = new FormGroup({
             usuarioSap: new FormControl('', [
                 Validators.pattern(/^[A-Za-z]+(?:\s[A-Za-z]+)*$/)
             ]),
             suplente: new FormControl('', [
                 Validators.pattern(/^\S+$/)
-            ])
-         });
+            ]),
+            fechaReasignar1: new FormControl('', Validators.required)
+        });
+        
         this.setTabs();
         this.securityService.tienePermisoRedirect("ABM USUARIOS");
         this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios')]);
         //this.navService.setSeccionList([new Seccion('/usuario/list', 'usuario', 'Listado Usuarios'), new Seccion('/usuario/alta', 'usuario', 'Alta Usuario')]);
         this.getUsuario();
         this.getRolesOptions();
+
     }
 
     getRolesOptions() {
@@ -329,38 +350,47 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     guardarRolesUsuario() {
-        const suplente = this.formularioUsuario.controls['suplente'].value;
-        const usuarioSap = this.formularioUsuario.controls['usuarioSap'].value;
-        this.usuarioSeleccionado.Suplente = suplente;
-        this.usuarioSeleccionado.UsuarioSap = usuarioSap;
-        this.spinnerComponent.showIt();
-        this.mensajeComponent.setMsgsEmpty();
-        const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
-   
-        this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles).subscribe(
-            (result:any) => {
-                this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.mensajeComponent.setSuccessMsg(result.data);
-                    this.getUsuario();
-                    
-                    document.getElementById("closeModal").click();
-                    this.mensajeComponent.setSuccessMsg(result.data);
+        if (this.validateReasignacionValues() === true) {
+            const suplente = this.formularioUsuario.controls['suplente'].value;
+            const usuarioSap = this.formularioUsuario.controls['usuarioSap'].value;
+            this.usuarioSeleccionado.Suplente = suplente;
+            this.usuarioSeleccionado.UsuarioSap = usuarioSap;
+            this.spinnerComponent.showIt();
+            this.mensajeComponent.setMsgsEmpty();
+            const idRoles = this.rolesUsuarioSeleccionado.filter(r => r.checked).map(({ Id }) => Id);
 
-                }
-            },
-            error => {
-                this.mensajeComponent.setErrorMsg(error.message);
+            let fDesde = '';
+            let fHasta = '';
+            if (this.rangoReasignacion.length > 0) {
+                fDesde = this.dateFormatter(this.rangoReasignacion[0]);
+                fHasta = this.dateFormatter(this.rangoReasignacion[1]);
             }
-        );
-       
-        return false; //<-- Prevent Refresh
+
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, fDesde, fHasta).subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setSuccessMsg(result.data);
+                        this.getUsuario();
+
+                        document.getElementById("closeModal").click();
+                        this.mensajeComponent.setSuccessMsg(result.data);
+
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+
+            return false; //<-- Prevent Refresh
+        }      
     }
     
     /**
@@ -382,4 +412,25 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             }
         }
     }
+
+    validateReasignacionValues() {
+        if (this.rangoReasignacion[1] === null) {
+            this.validationError = true;
+            return false;
+        }
+        this.validationError = false;
+        return true;
+    }
+
+    dateFormatter(date_Object: Date): string {
+        if (date_Object !== undefined) {
+            const year = date_Object.getFullYear();
+            const month = (date_Object.getMonth() + 1 < 10 ? '0' : '') + (date_Object.getMonth() + 1);
+            const day = (date_Object.getDate() < 10 ? '0' : '') + date_Object.getDate();
+
+            const date_String: string = `${year}-${month}-${day}`;
+            return date_String;
+        }
+    }
+
 }
