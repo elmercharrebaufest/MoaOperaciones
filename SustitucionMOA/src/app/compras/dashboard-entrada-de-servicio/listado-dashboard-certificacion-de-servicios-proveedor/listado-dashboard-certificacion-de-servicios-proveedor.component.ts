@@ -46,9 +46,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     protected locale: any;
 
-    @ViewChild("filtroSolicitantes")
-    protected multiSelectSolicitantes: MultiSelect;
-
     @ViewChild("tabla")
     protected tabla: Table;
 
@@ -369,9 +366,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.collapseExpandedRow();
         // MMSN-689: Desactivar filtro de saldo pendiente al activar búsqueda. 
         this.filtrarTablas(false, []);
-
-        // MMS-804: Limpiar Filtro Solicitantes
-        this.limpiarFiltroPorSolicitantes();
 
         if (this.proveedorSeleccionado !== undefined && this.proveedorSeleccionado !== '') {
             this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -970,11 +964,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         } else {
             return true;
         }
-    }
-
-    limpiarFiltroPorSolicitantes() {
-        this.multiSelectSolicitantes.valuesAsString = 'Solicitantes';
-        this.multiSelectSolicitantes.value = [];
     }
 
     calcularPorcentaje(oc): any[] {
