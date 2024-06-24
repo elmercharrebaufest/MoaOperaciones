@@ -59,8 +59,14 @@
                                       : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
-                    <td>{{rowData.FechaCreacion}}</td>
                     <td>{{rowData.EntradaServicio}}</td>
+                    <td *ngIf="rowData.Estado === 'Aprobada'">
+                        {{ rowData.FechaAprobacion }}
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">
+                        {{ rowData.FechaRechazo }}
+                    </td>
+                    <td>{{rowData.FechaCreacion}}</td>
                     <td>{{rowData.Descripcion | defaultData }}</td>
                     <td>{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>{{rowData.OrdenCompra || ""}}</td>

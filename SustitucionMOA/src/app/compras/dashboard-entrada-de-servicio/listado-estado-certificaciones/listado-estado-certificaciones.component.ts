@@ -119,7 +119,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       name: 'Certificaciones',
       columns: [
         { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
         { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
@@ -128,8 +130,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         // { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
@@ -162,25 +162,30 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     private messageService: MessageService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     this.usuario = sessionStorage.getItem("username");
+    var fechaActual = new Date();
+    fechaActual.setDate(fechaActual.getDate() - 2)
+    this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
   public ngOnDestroy(): void {
     this.subscripciones.forEach(sub => sub.unsubscribe());
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getFecha('1');
-    this.getListarPO();
     this.formsCreate();
     this.innerWidth = window.innerWidth;
     this.navService.setSeccionActive("Estado certificaciones");
     this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
-
+    
     let permisos = sessionStorage.getItem("permisos");
-
+    
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
       this.havePermision = true;
     }
+    this.hideContainerTable();
+    await this.getListarPO();
+    this.obtenerESSap(this.proveedor, this.documentoNumero);
   }
 
 
@@ -237,15 +242,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
   }
 
-  getListarPO() {
-    this.hideContainerTable();
-    this.subscripciones.push(
-      this.service.ObtenerESLocales(this.isAll).subscribe(
+  getListarPO(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const subscription = this.service.ObtenerESLocales(this.isAll).subscribe(
         (result: any) => {
-          if (result.logout == true) {
+          if (result.logout === true) {
             this.sessionDataService.logout();
-          } else if (result.error != undefined && result.error != "") {
-          } else if (result.info != undefined) {
+            reject('Logout required');
+          } else if (result.error !== undefined && result.error !== "") {
+            reject(result.error);
+          } else if (result.info !== undefined) {
+            // Manejo de mensajes informativos, si es necesario
           } else {
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
@@ -255,25 +262,34 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           }
           this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
           this.showContainerTable();
-        }, error => {
+          resolve();
+        },
+        error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.showContainerTable();
-        })
-    );
-    this.clearMessage();
+          reject(error);
+        }
+      );
+
+      this.subscripciones.push(subscription);
+      this.clearMessage();
+    });
   }
+
 
   obtenerESSap(proveedor, documentoNumero): void {
     this.hideContainerTable();
     this.subscripciones.push(
-      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll ).subscribe(
-        (result: {error: any, data: any}) => {
+      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+        (result: { error: any, data: any }) => {
           this.showContainerTable();
-          if(result.error != null){
+          if (result.error != null) {
             return;
           }
-          if(result.data.length > 0){
+          if (result.data.length > 0) {
             this.tablaPOSap = result.data;
+          } else {
+            this.tablaPOSap = [];
           }
           this.tabla.first = 0;
 
@@ -323,20 +339,22 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     //TODO: lógica para cuando se especifique el borrado de una ES
   }
 
-  handlePageEvent(e: any) {
+  async handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    this.getListarPO();
+    this.hideContainerTable();
+    await this.getListarPO();
   }
 
-  onOrder(columna: string) {
+  async onOrder(columna: string) {
     if (this.columnaOrden != columna) {
       this.ordenAscendente = false
     } else {
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    this.getListarPO();
+    this.hideContainerTable();
+    await this.getListarPO();
   }
 
   toggleRow(rowData: any): void {
@@ -362,7 +380,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async filtrarPorEstado(event: any): Promise<void> {
     switch (event.value.code) {
       case 'Aprobada':
-        if(this.tablaPOSap.length < 1){
+        if (this.tablaPOSap.length < 1) {
           this.obtenerESSap(this.proveedor, this.documentoNumero);
         }
         this.defaultTablesConfig[0].columns.forEach(col => {
@@ -419,10 +437,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   reasignar(data): void {
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
-        (resp: any) => {
-          this.getListarPO();
+        async (resp: any) => {
+          this.hideContainerTable();
+          await this.getListarPO();
           this.mostrarSuplentes = false;
-          const msj = {severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.'};
+          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
 
           if (resp.error) {
             msj.severity = 'info';
@@ -430,9 +449,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           }
 
           this.messageService.add(msj)
-         
+
         }, error => {
-          this.messageService.add({severity: 'error', summary: 'Ha ocurrido un error.', detail: error});
+          this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
         }
       )
     );
@@ -458,16 +477,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
-        (resp: any) => {
+        async (resp: any) => {
           if (resp.data.status == "OK") {
             this.resetForm();
-            this.getListarPO();
+            this.hideContainerTable();
+            await this.getListarPO();
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
           else {
             this.resetForm();
-            this.getListarPO();
+            this.hideContainerTable();
+            await this.getListarPO();
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
           }
@@ -546,7 +567,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.hideContainerTable();
         this.subscripciones.push(
           this.service.enviarAprobacionES(numeroCertificacion).subscribe(
-            resp => {
+            async (resp) => {
               let mensajeError: string = "";
               if (!resp.data) {
                 mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
@@ -555,9 +576,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               }
               switch (resp.data.Type) {
                 case "I": {
-                  this.getListarPO();
                   this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
+                  await this.getListarPO();
+                  this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
                 case "S": {
@@ -567,9 +589,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 }
                 case "Desync": {
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
-                  this.showContainerTable();
                   this.resetForm();
-                  this.getListarPO();
+                  await this.getListarPO();
+                  this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
                 case "E": {
@@ -596,15 +618,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     });
   }
 
-  SeeAll() {
+  async SeeAll() {
     this.isAll = true;
-    this.getListarPO();
-
+    this.hideContainerTable();
+    await this.getListarPO();
   }
 
-  SeeForProvider() {
+  async SeeForProvider() {
     this.isAll = false;
-    this.getListarPO();
+    this.hideContainerTable();
+    await this.getListarPO();
   }
 
   /**
@@ -793,8 +816,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   showOrHideAuxPanel(): boolean {
     const estadoCertificacion: estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
-    if(this.estadoCertificacion.code === estadoCertificacion.code){
-     return true;
+    if (this.estadoCertificacion.code === estadoCertificacion.code) {
+      return true;
     }
     return false;
   }
