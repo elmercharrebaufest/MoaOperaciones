@@ -23,6 +23,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string FechaDocumento { get; set; }
         public string FechaContabilizacion { get; set; }
         public string GrabarAceptada { get; set; } // se puede omitir del front
+        public string Proveedor { get; set; }
     }
 
 

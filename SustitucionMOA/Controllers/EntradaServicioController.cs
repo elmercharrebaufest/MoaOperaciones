@@ -193,11 +193,11 @@ namespace SustitucionMOA.Controllers
                     var result = new EntradaServicioCreateRespuestaDto();
                     if (validacion.Message == "Auto")
                     {
-                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, solpedNumber);
+                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else if (validacion.Message == "Temporal")
                     {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, solpedNumber);
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else
                     {

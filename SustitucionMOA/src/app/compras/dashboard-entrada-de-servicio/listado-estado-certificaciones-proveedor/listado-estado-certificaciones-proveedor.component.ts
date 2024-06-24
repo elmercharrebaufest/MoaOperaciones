@@ -195,7 +195,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   getListarPO(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.unsubscribe();
-      this.subscripcionPO = this.service.ObtenerESLocales(false).subscribe(
+      this.subscripcionPO = this.service.ObtenerESLocales(false, this.proveedor).subscribe(
         (result: any) => {
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -351,5 +351,13 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         this.floatMsgService.setErrorMsg(error.message);
         this.showContainerTable();
       })
+  }
+
+  isMoaIntern(usuario){
+
+    let userIntern = '@molinos';
+    
+    return usuario.includes(userIntern) ? 'MOA Interno' : usuario;
+  
   }
 }
