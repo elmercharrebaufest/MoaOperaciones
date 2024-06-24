@@ -108,5 +108,6 @@ namespace SustitucionMOAUtils.Interfaces
         void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto);
         Resultado AgruparPeticionesDeOferta(int usuarioId, string ids);
+        RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
     }
 }

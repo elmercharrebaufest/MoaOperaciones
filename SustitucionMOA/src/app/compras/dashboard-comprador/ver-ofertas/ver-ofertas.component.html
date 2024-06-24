@@ -759,3 +759,20 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog [(visible)]="displayValidacionMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Posiciones en distintas monedas</b>
+    </p-header>
+    <section class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                {{mensajeValidacionMoneda}}
+            </div>
+        </div>
+    </section>
+    <p-footer>
+        <button type="button" class="btn btn-success botonesComprasColor" (click)="onSiguientePasoValidacionMoneda()">Continuar</button>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarValidacionMoneda()">Cancelar</button>
+    </p-footer>
+</p-dialog>

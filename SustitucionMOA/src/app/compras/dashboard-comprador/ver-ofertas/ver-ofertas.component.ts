@@ -57,6 +57,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     centroDireLista: any;
     ordenDeCompra: AdjudicacionDto;
     nroOC: string;
+    displayValidacionMoneda: boolean = false;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -77,6 +78,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
+    mensajeValidacionMoneda: any;
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
@@ -424,13 +426,47 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.displayGenerarOCMoneda = true;
             this.devolverMonedaProveedor(proveedor.CodigoProveedor);
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
+    }
+
+    validarMonedasDiferentes(){
+        if (this.adjudicacion != undefined) {
+        this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    if(result.data.Errores.length > 0){
+                        this.mensajeValidacionMoneda = result.data.Errores[0];
+                        this.displayValidacionMoneda = true;
+                    }else{
+                        this.confirmacionAdjudicar();
+                    }
+                   
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+    }
+
+    onCerrarValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+    }
+
+    onSiguientePasoValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+        this.confirmacionAdjudicar();
     }
 
     onGenerarOC() {
         this.generarOC = false;
-        this.confirmacionAdjudicar();
+        this.validarMonedasDiferentes();
     }
 
     onGenerarOCProveedor() {
@@ -439,7 +475,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
             this.onCerrarMoneda();
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
 
     }

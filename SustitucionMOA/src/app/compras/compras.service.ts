@@ -1280,4 +1280,26 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
     }
+
+    public ValidarPrecioCotizado(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarPrecioCotizado', payload, { headers: this.headers });
+    }
+
 }
