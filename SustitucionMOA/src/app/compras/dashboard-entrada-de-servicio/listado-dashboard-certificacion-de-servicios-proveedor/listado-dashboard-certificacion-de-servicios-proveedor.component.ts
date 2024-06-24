@@ -412,7 +412,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.tablaPO = result.data;
-                        this.obtenerSolicitantes(result.data);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
@@ -963,24 +962,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
      */
     tieneColumnasOpcionales(columnList: any[]): boolean {
         return columnList.some(col => !col.required);
-    }
-
-    obtenerSolicitantes(ocs: any): void {
-        let solicitantesUnicos = new Set<string>();
-        ocs.forEach((oc: any) => {
-            oc.Posiciones.forEach((pos: any) => {
-                if (pos.Solicitante.length === 0) {
-                    pos.Solicitante = '(Vacío)';
-                }
-                solicitantesUnicos.add(pos.Solicitante.toUpperCase());
-
-            });
-        });
-        this.listadoGeneralSolicitantes = Array.from(solicitantesUnicos).map(solicitante => ({ label: solicitante, value: solicitante }));
-    }
-
-    filtrarPorSolicitantes(event: any): void {
-        this.filtrarTablas(this.ocFilterApplied, event.value);
     }
 
     mostrarPosicionSolicitante(posicion: any): any {

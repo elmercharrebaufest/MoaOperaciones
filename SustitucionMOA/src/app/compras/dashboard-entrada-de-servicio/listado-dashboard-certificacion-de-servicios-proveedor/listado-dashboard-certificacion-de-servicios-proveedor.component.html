@@ -89,9 +89,6 @@
                     <label>Saldo pendiente</label>
                 </div>
             </div>
-            <div class="filtro-solicitante">
-                <p-multiSelect #filtroSolicitantes [disabled]="disabledFilter" id="select-solicitante" appendTo="body" [options]="listadoGeneralSolicitantes" defaultLabel="Solicitantes" [maxSelectedLabels]="1" (onChange)="filtrarPorSolicitantes($event)"></p-multiSelect>
-            </div>
         </div>
         <!-- TABLA 1: ORDENES -->
         <p-table #tabla class="level1"
