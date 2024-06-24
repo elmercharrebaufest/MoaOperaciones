@@ -336,8 +336,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         let ref = this.referencia !== undefined ? this.referencia : '';
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
+
+            let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
+
             const entrySheetHeader = {
-                SolPedNumber: this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp),
+                SolPedNumber: solpedNumbers.length > 0 ? solpedNumbers : [this.solPed],
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion.trim(),
