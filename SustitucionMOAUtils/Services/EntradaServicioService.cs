@@ -273,6 +273,10 @@ namespace SustitucionMOAUtils.Services
                     else
                     {
                         documento.Fiscal = correoSolp;
+                        DateTime fecha = DateTime.Parse(documento.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
+                        string fechaFormateada = fecha.ToString("dd/MM/yyyy");
+                        documento.FechaAprobacion = fechaFormateada;
+                        documento.FechaCreacion = fechaFormateada;
                     }
 
                     documento.Estado = "Aprobada";
