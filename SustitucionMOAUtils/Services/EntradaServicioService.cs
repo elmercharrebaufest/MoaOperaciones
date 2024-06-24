@@ -230,7 +230,9 @@ namespace SustitucionMOAUtils.Services
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
-                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales.ToDictionary(detalle => detalle.NRO_ES_SAP.ToString());
+                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales
+                        .GroupBy(detalle => detalle.NRO_ES_SAP.ToString())
+                        .ToDictionary(g => g.Key, g => g.First());
 
                         // Iterar sobre los detalles de la entrada de servicio
                         foreach (EntradaServicioDetalleDto detalleSAP in documento.entradaServicioDetalle)
@@ -255,10 +257,16 @@ namespace SustitucionMOAUtils.Services
                                 documento.Descripcion = string.IsNullOrEmpty(detalle.Texto_breve_servicio) ? "" : detalle.Texto_breve_servicio.Trim();
                                 DateTime fechaAprobacionFormateada = (DateTime)detalle.Fecha_aprobacion;
                                 documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
+                                DateTime FechaCreacion = (DateTime)detalle.Fecha_Carga_ES;
+                                documento.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
                             }
                             else
                             {
                                 documento.Fiscal = correoSolp;
+                                DateTime fecha = DateTime.Parse(documento.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
+                                string fechaFormateada = fecha.ToString("dd/MM/yyyy");
+                                documento.FechaAprobacion = fechaFormateada;
+                                documento.FechaCreacion = fechaFormateada;
                             }
                         }
                     }
@@ -266,10 +274,6 @@ namespace SustitucionMOAUtils.Services
                     {
                         documento.Fiscal = correoSolp;
                     }
-
-                    DateTime fecha = DateTime.Parse(documento.FechaCreacion);
-                    string fechaFormateada = fecha.ToString("dd/MM/yyyy");
-                    documento.FechaCreacion = fechaFormateada;
 
                     documento.Estado = "Aprobada";
 

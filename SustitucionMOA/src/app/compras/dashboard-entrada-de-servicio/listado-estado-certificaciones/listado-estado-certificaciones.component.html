@@ -76,6 +76,12 @@
                         </a>
                     </td>
                     <td>{{ rowData.EntradaServicio }}</td>
+                    <td *ngIf="rowData.Estado === 'Aprobada'">
+                        {{ rowData.FechaAprobacion }}
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">
+                        {{ rowData.FechaRechazo }}
+                    </td>
                     <td>
                         {{ rowData.FechaCreacion }}
                     </td>
@@ -95,12 +101,6 @@
                             <span>Pendiente de aprobación</span>
                         </div>
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
-                    </td>
-                    <td class="text-center" *ngIf="rowData.Estado === 'Aprobada'">
-                        {{ rowData.FechaAprobacion }}
-                    </td>
-                    <td class="text-center" *ngIf="rowData.Estado === 'Rechazado'">
-                        {{ rowData.FechaRechazo }}
                     </td>
                     <td
                         *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">

@@ -99,8 +99,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     {
       name: 'Certificaciones',
       columns: [
-        { id: 'cFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        
         { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFecha', header: 'Fecha', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
@@ -136,6 +139,9 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     private confirmationService: ConfirmationService) {
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     this.usuario = sessionStorage.getItem("username");
+    var fechaActual = new Date();
+    fechaActual.setDate(fechaActual.getDate() - 2)
+    this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
   //#region Variables 
@@ -146,17 +152,14 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   proveedor: string = sessionStorage.getItem("proveedor");
   msgs: Message[] = [];
 
-  ngOnInit() {
+  async ngOnInit() {
     this.getFecha('1');
-
-    this.getListarPO(this.proveedor, this.documentoNumero);
-
     this.innerWidth = window.innerWidth;
-
     this.navService.setSeccionActive("Estado certificaciones");
-
     this.navService.navegarSeccion("compras/listadoEstadoCertificacionesProveedor");
-
+    this.hideContainerTable();
+    await this.getListarPO();
+    this.obtenerESSap(this.proveedor, this.documentoNumero);
   }
 
   showContainerTable(): void {
@@ -188,32 +191,31 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     this.isEntradaDeServicioExpanded = !this.isEntradaDeServicioExpanded;
   }
 
-  getListarPO(proveedor, documentoNumero) {
-    this.hideContainerTable();
-    this.unsubscribe();
-    this.subscripcionPO = this.service.ObtenerESLocales(false).subscribe(
-      (result: any) => {
-        if (result.logout == true) {
-          this.sessionDataService.logout();
-        } else if (result.error != undefined && result.error != "") {
-        } else if (result.info != undefined) {
-        } else {
-          this.tablaPOAprobaciones = result.data;
-          this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-          this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-          this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+  getListarPO(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.unsubscribe();
+      this.subscripcionPO = this.service.ObtenerESLocales(false).subscribe(
+        (result: any) => {
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+          } else if (result.info != undefined) {
+          } else {
+            this.tablaPOAprobaciones = result.data;
+            this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
+            this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
+            this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+          }
+          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.showContainerTable();
+          resolve();
+        }, error => {
+          this.floatMsgService.setErrorMsg(error.message);
+          this.showContainerTable();
+          reject(error);
         }
-        this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-        this.showContainerTable();
-        return true;
-      }, error => {
-        this.floatMsgService.setErrorMsg(error.message);
-        this.showContainerTable();
-        return false;
-      }
-    );
-
-    return false; //<-- Prevent Refresh
+      );
+    });
   }
 
   displayContent() {
@@ -245,20 +247,20 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     //TODO: lógica para cuando se especifique el borrado de una ES
   }
 
-  handlePageEvent(e: any) {
+  async handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    await this.getListarPO();
   }
 
-  onOrder(columna: string) {
+  async onOrder(columna: string) {
     if (this.columnaOrden != columna) {
       this.ordenAscendente = false
     } else {
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    this.getListarPO(this.proveedor, this.documentoNumero);
+    await this.getListarPO();
   }
 
   toggleRow(rowData: any): void {
