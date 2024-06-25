@@ -442,7 +442,7 @@ namespace SustitucionMOAModel.Dto
 
     public class RespuestaCrearOrdenDeCompra
     {
-        public List<string> Errores { get; set; }
+        public List<string> Errores { get; set; } = new List<string>();
         public string Mensaje { get; set; }
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }
