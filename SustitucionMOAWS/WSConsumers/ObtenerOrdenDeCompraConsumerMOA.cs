@@ -448,7 +448,6 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.UnidadId = unidad.Id;
                 pos.UnidadDescripcion = unidad?.Descripcion ?? "";
                 pos.UnidadCodigo = unidad?.CodigoSap ?? "";
-                pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
                 pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
