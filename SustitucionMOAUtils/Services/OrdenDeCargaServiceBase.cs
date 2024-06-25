@@ -44,13 +44,16 @@ namespace SustitucionMOAUtils.Services
         protected readonly int[] BASES_VALIDACION_CUIT = new int[] {
             5, 4, 3, 2, 7, 6, 5, 4, 3, 2
         };
+
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
-            var clientes = scatoConsumer.ObtenerClientesPorCuit(cuit);
+            var clientesScato = scatoConsumer.ObtenerClientesPorCuit(cuit);
+            var clientesValidos = clientesScato.Where(c => !c.Bloqueado && c.Activo).ToArray();
+
             return new ValidarCuitExisteScatoResponse
             {
-                Existe = clientes.Length > 0,
-                RazonSocial = clientes.Length > 0 ? clientes.First().Descripcion : ""
+                Existe = clientesValidos.Length > 0,
+                RazonSocial = clientesValidos.Length > 0 ? clientesValidos.First().Descripcion : ""
             };
         }
 
