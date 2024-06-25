@@ -292,11 +292,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         if(this.tablaPOSap.length < 1){
           this.obtenerESSap(this.proveedor, this.documentoNumero);
         }
-        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion'];
       case 'Pendiente Aprobación':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
       case 'Rechazado':
-        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo'];
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo'];
     }
   }
 
