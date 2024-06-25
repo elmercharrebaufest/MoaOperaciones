@@ -72,7 +72,7 @@
                     <td>{{rowData.OrdenCompra || ""}}</td>
                     <td>
                         <div class="usuario-area">
-                            <span>{{ rowData.Ingresante }}</span>
+                            <span> {{isMoaIntern(rowData.Ingresante)}}</span>
                         </div>
                     </td>
                     <td>{{ rowData.Aprobador | defaultData}}</td>

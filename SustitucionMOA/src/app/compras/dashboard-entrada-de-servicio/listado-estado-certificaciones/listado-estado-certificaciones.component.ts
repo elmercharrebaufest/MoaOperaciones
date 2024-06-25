@@ -244,7 +244,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   getListarPO(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      const subscription = this.service.ObtenerESLocales(this.isAll).subscribe(
+      const subscription = this.service.ObtenerESLocales(this.isAll, '').subscribe(
         (result: any) => {
           if (result.logout === true) {
             this.sessionDataService.logout();

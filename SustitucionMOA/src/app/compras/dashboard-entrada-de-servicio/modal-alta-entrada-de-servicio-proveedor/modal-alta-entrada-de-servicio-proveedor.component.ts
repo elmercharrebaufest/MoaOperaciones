@@ -328,7 +328,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 DocumentoReferenciaNumero: ref,
                 FechaDocumento: fechaDocFormateada,
                 FechaContabilizacion: fechaConFormateada,
-                GrabarAceptada: 'X'
+                GrabarAceptada: 'X',
+                Proveedor: this.elementSelected.Proveedor
             };
 
             const entrySheetServiceItems = position.Items.map((item, index) => ({

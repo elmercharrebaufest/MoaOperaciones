@@ -34,6 +34,7 @@ CREATE TABLE [dbo].[Aprobaciones](
 	[Monto_total] [float] NULL,
 	[Planned_package] NVARCHAR(50) NULL, 
     [Planned_line] NVARCHAR(50) NULL, 
+	[Proveedor] NVARCHAR(50) NULL,
     CONSTRAINT [PK_Aprobaciones] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC

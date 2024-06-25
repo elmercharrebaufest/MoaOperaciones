@@ -209,9 +209,10 @@ export class ComprasService extends BaseService {
             );
     }
 
-    ObtenerESLocales(verTodo: boolean | false) {
+    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '') {
         let params: HttpParams = new HttpParams();
         params = params.set('verTodo', verTodo.toString());
+        params = params.set('vendedor', proveedorId);
         
         return this.http
             .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(

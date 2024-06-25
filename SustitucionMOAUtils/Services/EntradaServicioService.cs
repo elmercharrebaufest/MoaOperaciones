@@ -116,7 +116,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo));
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor));
             }
 
             try
@@ -220,12 +220,12 @@ namespace SustitucionMOAUtils.Services
                             repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
                             && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
                             ? true
-                            : (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo)))
+                            : (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor)))
                         )
                         :
                         (
                             repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo))
+                            && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor))
                         );
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
@@ -601,7 +601,7 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber)
+        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber, string proveedor = null)
         {
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
@@ -611,21 +611,21 @@ namespace SustitucionMOAUtils.Services
             if (result.Type == "I" && result.Id == "SE")
             {
                 int ESNumber = GetESNumber(result.Message);
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, solpedNumber);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, solpedNumber, proveedor);
             }
 
 
             return result;
         }
 
-        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null)
+        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null, string proveedor = null)
         {
 
 
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             try
             {
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, solpedNumber);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, solpedNumber, proveedor);
                 result.Type = "S";
 
                 result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
@@ -751,7 +751,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="parametros"></param>
         /// <param name="userMail"></param>
-        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, bool auto, string solPedNumber = null)
+        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, bool auto, string solPedNumber = null, string proveedor = null)
         {
             Aprobaciones temp = new Aprobaciones();
             //MMSN-1066 - Derivacion automatica del suplente
@@ -784,6 +784,8 @@ namespace SustitucionMOAUtils.Services
             temp.Fecha_Carga_ES = DateTime.Today;
             temp.Notificaciones_enviadas = false;
             temp.Ingresante_CDS = userMail;
+            temp.Proveedor = proveedor;
+
 
             //Datos dependientes de aprobación automatica o no
             if (auto)
