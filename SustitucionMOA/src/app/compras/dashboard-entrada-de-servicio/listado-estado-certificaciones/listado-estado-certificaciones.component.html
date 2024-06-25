@@ -14,8 +14,8 @@
     </section>
     <!-- HEADER END -->
     <!-- SEARCH PANEL -->
-    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="obtenerESSap(proveedor, documentoNumero)"  
-        [proveedor]="proveedor" [visible]="spinnerComponent.visible" (getFecha)="getFecha($event)" [fechaSeleccionada]="fechaSeleccionadaAux"></aux-pannel>
+    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"  
+        [proveedor]="proveedor" [visible]="recalculando" (getFecha)="getFecha($event)" [fechaSeleccionada]="fechaSeleccionadaAux"></aux-pannel>
 
     <p-messages [value]="msgs"></p-messages>
     <spinner></spinner>
@@ -120,11 +120,25 @@
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                 </tr>
             </ng-template>
+
+            <ng-template pTemplate="footer" let-columns>
+                <tr *ngIf="recalculando && estadoCertificacion.code === 'Aprobada'">
+                    <td colspan="12">
+                        <recalculando-spinner [description]="'Cargando nuevas entradas de servicio, espere por favor...'"></recalculando-spinner>
+                    </td>
+                </tr>
+            </ng-template>
+
             <!-- TABLE 1 BODY END -->
             <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td class="emptyData" colspan="15">
-                        No hay ordenes de compra para mostrar
+                <tr *ngIf="!recalculando && estadoCertificacion.code === 'Aprobada'">
+                    <td class="emptyData" colspan="12">
+                        No hay entradas de servicios para mostrar
+                    </td>
+                </tr>
+                <tr *ngIf="estadoCertificacion.code === 'Pendiente Aprobación' || estadoCertificacion.code === 'Rechazado'">
+                    <td class="emptyData" colspan="12">
+                        No hay entradas de servicios para mostrar
                     </td>
                 </tr>
             </ng-template>

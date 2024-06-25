@@ -65,7 +65,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   tablaPOSap: any[] = [];
   tablaPOAprobaciones: any[] = [];
   fechaSeleccionadaAux: string = "1";
-
+  recalculando: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -159,7 +159,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     this.navService.setSeccionActive("Estado certificaciones");
     this.navService.navegarSeccion("compras/listadoEstadoCertificacionesProveedor");
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
     this.obtenerESSap(this.proveedor, this.documentoNumero);
   }
 
@@ -251,7 +251,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   async handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    await this.getListarPO();
+    this.hideContainerTable();
+    await this.getListarPO(); // No mover.
   }
 
   async onOrder(columna: string) {
@@ -261,7 +262,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    await this.getListarPO();
+    this.hideContainerTable();
+    await this.getListarPO(); // No mover.
   }
 
   toggleRow(rowData: any): void {
@@ -289,9 +291,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   private obtenerColumnasVisiblesSegunEstado(estado: string): string[] {
     switch (estado) {
       case 'Aprobada':
-        if(this.tablaPOSap.length < 1){
-          this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion'];
       case 'Pendiente Aprobación':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
@@ -334,10 +333,9 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   }
 
   obtenerESSap(proveedor, documentoNumero): void {
-    this.hideContainerTable();
-
     this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false).subscribe(
       (result: { error: any, data: any }) => {
+        this.recalculando = false;
         this.showContainerTable();
         if (result.error != null) {
           return;
@@ -350,6 +348,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
       }, error => {
         this.floatMsgService.setErrorMsg(error.message);
         this.showContainerTable();
+        this.recalculando = false;
       })
   }
 
@@ -359,5 +358,14 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     
     return usuario.includes(userIntern) ? 'MOA Interno' : usuario;
   
+  }
+
+  /**
+   * filtro de busqueda de las entradas de servicio por rango de fechas.
+   */
+  onBuscar() {
+    this.recalculando = true;
+    this.obtenerESSap(this.proveedor, this.documentoNumero);
+    this.tabla.first = 0;
   }
 }

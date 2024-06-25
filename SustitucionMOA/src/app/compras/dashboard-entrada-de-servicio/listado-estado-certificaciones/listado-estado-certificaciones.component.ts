@@ -100,6 +100,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   observaciones: string = '';
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
   fechaSeleccionadaAux: string = "1";
+  recalculando: boolean = false;
 
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -184,7 +185,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.havePermision = true;
     }
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
     this.obtenerESSap(this.proveedor, this.documentoNumero);
   }
 
@@ -278,10 +279,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
 
   obtenerESSap(proveedor, documentoNumero): void {
-    this.hideContainerTable();
     this.subscripciones.push(
       this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
         (result: { error: any, data: any }) => {
+          this.recalculando = false;
           this.showContainerTable();
           if (result.error != null) {
             return;
@@ -295,6 +296,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
+          this.recalculando = false;
           this.showContainerTable();
         })
     );
@@ -343,7 +345,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
   }
 
   async onOrder(columna: string) {
@@ -354,7 +356,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.columnaOrden = columna;
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
   }
 
   toggleRow(rowData: any): void {
@@ -380,9 +382,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async filtrarPorEstado(event: any): Promise<void> {
     switch (event.value.code) {
       case 'Aprobada':
-        if (this.tablaPOSap.length < 1) {
-          this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }
         this.defaultTablesConfig[0].columns.forEach(col => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' ? false : true;
         });
@@ -439,7 +438,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.service.reasignarSuplente(data).subscribe(
         async (resp: any) => {
           this.hideContainerTable();
-          await this.getListarPO();
+          await this.getListarPO(); // No mover.
           this.mostrarSuplentes = false;
           const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
 
@@ -481,14 +480,14 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           if (resp.data.status == "OK") {
             this.resetForm();
             this.hideContainerTable();
-            await this.getListarPO();
+            await this.getListarPO(); // No mover.
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
           else {
             this.resetForm();
             this.hideContainerTable();
-            await this.getListarPO();
+            await this.getListarPO(); // No mover.
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
           }
@@ -578,7 +577,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 case "I": {
                   this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
-                  await this.getListarPO();
+                  await this.getListarPO(); // No mover.
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
@@ -590,7 +589,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 case "Desync": {
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
                   this.resetForm();
-                  await this.getListarPO();
+                  await this.getListarPO(); // No mover.
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
@@ -621,13 +620,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.isAll = true;
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
   }
 
   async SeeForProvider() {
     this.isAll = false;
     this.hideContainerTable();
-    await this.getListarPO();
+    await this.getListarPO(); // No mover.
   }
 
   /**
@@ -802,6 +801,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   onBuscar() {
     // MMSN-519: Colapsar fila expandida al activar un filtro.
     this.collapseExpandedRow();
+    this.recalculando = true;
 
     if (this.proveedorSeleccionado !== undefined) {
       this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
