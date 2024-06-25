@@ -423,7 +423,7 @@ namespace SustitucionMOAUtils.Services
                 MontoCertificar = temporal.Monto_a_certificar,
                 NroRemito = temporal.Referencia,
                 CodigoServicio = temporal.Nro_servicio,
-                FechaPrestacion = temporal.Fecha_Documento?.ToString("MM/dd/yyyy")
+                FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy")
             };
 
             return detalleEntradaServicioTemp;
