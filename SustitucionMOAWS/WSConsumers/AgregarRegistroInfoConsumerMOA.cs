@@ -110,7 +110,9 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var hoy = DateTime.Now.Date;
             var registrosSap = new List<RegistroInfoSAP>();
-            var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto { Comercial = x.Comercial, UM = x.UM });
+            var unidades = registros.Select(x => x.Unidad).Distinct();
+            var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto 
+            { Comercial = x.Comercial, UM = x.UM }, x => unidades.Contains(x.Comercial));
 
             foreach (var registro in registros)
             {
