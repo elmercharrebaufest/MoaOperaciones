@@ -76,6 +76,7 @@
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
+    <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
