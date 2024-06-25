@@ -62,6 +62,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     colConfig = [];
     monthNavStatus: boolean = false;
     documentDateMsg: Message[] = [];
+    certificarState: boolean = false;
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -264,6 +265,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     certificarPosicion() {
+        this.certificarState = true;
         if (this.validateValues() === true) {
 
             this.buildEntrySheet();
@@ -300,6 +302,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         accept: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
+                    this.certificarState = false;
                 },
                 (error) => {
                     this.confirmationService.confirm({
@@ -310,12 +313,12 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         rejectVisible: false
                     }
                     );
+                    this.certificarState = false;
                 }
             );
 
         }
       
-
     }
 
     buildEntrySheet() {
