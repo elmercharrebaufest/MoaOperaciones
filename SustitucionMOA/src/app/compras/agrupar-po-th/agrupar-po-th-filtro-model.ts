@@ -1,0 +1,28 @@
+export interface FiltroDto {
+    Pagina?: number;
+    ItemsPorPagina?: number;
+    Orden?: string;
+    Columna?: string;
+    NroSolp?: string;
+    NroPo?: string;
+    NombrePedido?: string;
+    FechaDesde?: Date;
+    FechaHasta?: Date;
+    Sap?: boolean;
+    Mantenimiento?: boolean;
+    Web?: boolean;
+    RepoAutomatica?: boolean;
+    ContratoMarco?: boolean;
+    Estados?: string;
+    Usuarios?: string;
+    Centros?: string;
+    GrupoDeCompras?: string;
+    Tratada?: boolean;
+    ClaseDocumento?: string;
+    TipoImputacion?: string;
+    ValorTipoImputacion?: string;
+    CodigoProveedor?: string;
+    ListarPendiente?: boolean;
+    EsServicio?: boolean;
+    Agrupada?: boolean;
+}

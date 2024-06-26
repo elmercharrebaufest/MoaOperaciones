@@ -10,6 +10,7 @@ export interface SolpCompraDto{
 }
 
 export interface PosicionCompra{
+    NroSolp?: string
     TipoPosicionCodigo: string
     PrecioTotal: number
     UnidadId: string

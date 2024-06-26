@@ -239,7 +239,7 @@ namespace SustitucionMOAWS.WSConsumers
                 nroItemPO += 1;
                 var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id).Single();
 
-                numeroDePaquete = posicion.Indice ?? 0;
+                numeroDePaquete++;
                 numeroDeImputacion = "01";// SERIAL_NO por ahora siempre 01 por que no hay imputaciones multiples
                 poItem = $"{nroItemPO:00000}";
 

@@ -30,9 +30,16 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 where po.Id == PeticionOferta_Id
                                 select new PeticionDeOfertaDto
                                 {
-                                    Id = po.Id,  
-                                    SolpDto = new SolpDto{ Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia, TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho, Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
-                                        CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado, ObservacionesCotizacion = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion },
+                                    Id = po.Id,
+                                    SolpDto = new SolpDto
+                                    {
+                                        Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
+                                        TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                        Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
+                                        CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado,
+                                        ObservacionesCotizacionLista = 
+                                        po.Posiciones.Select(p => p.SolpPosicion.Solp.Pliego.ObservacionesCotizacion).Distinct()
+                                    },
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
@@ -40,8 +47,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Observaciones = po.Observaciones,
                                     TienePosicionesEliminadas = po.Posiciones.Any(x => x.SolpPosicion.Estado != true),
                                     FechaCreacionSolp = po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault(),
-                                    FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 
-                                    + SqlFunctions.DatePart("month", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/" 
+                                    FechaCreacionFormateadaSolp = SqlFunctions.DateName("day", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/"
+                                    + SqlFunctions.DatePart("month", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()) + "/"
                                     + SqlFunctions.DateName("year", po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault()),
                                     TipoPosicionCodigo = po.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
                                     NroSolp = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroSolp,
@@ -61,6 +68,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                     PeticionDeOferta_Id = pop.PeticionDeOferta_Id,
                                                                     SolpPosicion_Id = pop.SolpPosicion_Id,
                                                                     EstaEliminado = pop.SolpPosicion.Estado != true,
+                                                                    SolpId = pop.SolpPosicion.Solp_Id,
                                                                     Posicion = new SolpPosicionDto
                                                                     {
                                                                         Id = pop.SolpPosicion.Id,
@@ -242,10 +250,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TieneAdjuntos = cotizacion.Archivos.Any(),
                                                         Adjudicaciones = cotizacion.Adjudicaciones.Select(a => new AdjudicacionDto
                                                         {
-                                                           CondicionesDeEntrega = a.CondicionesDeEntrega,
-                                                           CondicionesDePago = a.CondicionesDePago,
-                                                           Garantias = a.Garantias,
-                                                           TextoDeCabecera = a.TextoDeCabecera
+                                                            CondicionesDeEntrega = a.CondicionesDeEntrega,
+                                                            CondicionesDePago = a.CondicionesDePago,
+                                                            Garantias = a.Garantias,
+                                                            TextoDeCabecera = a.TextoDeCabecera
                                                         }).ToList(),
                                                     } : null,
                                                 }).ToList()

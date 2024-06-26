@@ -3,16 +3,17 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -98,7 +99,7 @@ namespace SustitucionMOA.Controllers
                     Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
                     GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
                     GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
-                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda),
+                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList(),
                     Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
                     EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
                     CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
@@ -180,7 +181,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-       
+
         [HttpGet]
         public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
             bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
@@ -217,14 +218,14 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }   
+        }
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
         {
             try
             {
-                return JsonCustom(new { data = service.ListarUsuarioCompras(ObtenerUsuarioActual()) });
+                return JsonCustom(new { data = service.ListarUsuarioCompras() });
             }
             catch (InfoCustomException e)
             {
@@ -1779,7 +1780,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
@@ -1833,7 +1834,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                List<int> listaId = ids.Replace("[","").Replace("]", "").Split(',').Select(x => int.Parse(x)).ToList();
+                List<int> listaId = ids.Replace("[", "").Replace("]", "").Split(',').Select(x => int.Parse(x)).ToList();
                 SolpCompraDto resultado = service.ObtenerPosicionesMultipleCompras(listaId);
 
                 return JsonCustom(new { data = resultado });
@@ -1889,6 +1890,66 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
 
+        }
+
+        [HttpGet]
+        public ActionResult ListarSolpCondicionEspecial(string filtroJson)
+        {
+            try
+            {
+               var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
+                var ordenar = filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(filtro.Columna) ? filtro.Columna : null), ordenar, (filtro.Pagina == null) ? 0 : filtro.Pagina.Value, (filtro.ItemsPorPagina == 0 || !filtro.ItemsPorPagina.HasValue) ? 10 : filtro.ItemsPorPagina.Value);
+                var resultado = service.ListarSolpCondicionEspecial(filtro);
+                return JsonCustom(new { data = resultado });                
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult AgruparPeticionesDeOferta(string peticionDeOfertaIds)
+        {
+            try
+            {
+                var usuario = ObtenerUsuarioActual();
+                var result = service.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
         }
 
     }

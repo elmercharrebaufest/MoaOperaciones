@@ -44,6 +44,8 @@ namespace SustitucionMOAWS.WSConsumers
                 string IM_SERVICES = "X";
                 string IM_ACCOUNT_ASSIGNMENT = "X";
                 string IM_DELIVERY_ADDRESS = "X";
+                string IM_ITEM_TEXT = "";
+                string IM_HEADER_TEXT = "";
 
                 ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
 
@@ -54,9 +56,9 @@ namespace SustitucionMOAWS.WSConsumers
                             "",
                             "",
                             IM_DELIVERY_ADDRESS,
+                            IM_HEADER_TEXT,
                             "",
-                            "",
-                            "",
+                            IM_ITEM_TEXT,
                             "",
                             IM_PREQ_DATE_F,
                             IM_PREQ_DATE_I,
@@ -64,16 +66,18 @@ namespace SustitucionMOAWS.WSConsumers
                             "",
                             IM_SERVICES,
                             IM_USUARIOS,
+                            out string EX_EXITO,
                             out ZMPES5740[] EX_PRACCOUNT,
-                            out ZMPES5750[] EX_PRADDRDELIVERY,
-                            out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                            out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                            out ZMPES7110[] EX_PRADDRDELIVERY,
+                            out ZMPES7120[] EX_PRCOMPONENTS,
+                            out ZMPES7140[] EX_PRHEADERTEXT,
                             out ZMPES5670[] EX_PRITEM,
-                            out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
+                            out ZMPES7130[] EX_PRIMETEXT,
                             out BAPIRETURN[] EX_RETURN,
                             out ZMPES5770[] EX_SERVICEACCOUNT,
                             out ZMPES5730[] EX_SERVICELINES);
 
+                var DELIV_DATE = EX_PRITEM[0].DELIV_DATE;
 
                 /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
                     •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
@@ -155,7 +159,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             string IM_HEADER_TEXT = "";
             string IM_ITEM_TEXT = "";
-
+            string EX_EXITO = "";
             foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
             {
                 IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
@@ -178,15 +182,17 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_REL_IND,
                         IM_SERVICES,
                         IM_USUARIOS,
+                        out EX_EXITO,
                         out ZMPES5740[] EX_PRACCOUNT,
-                        out ZMPES5750[] EX_PRADDRDELIVERY,
-                        out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                        out ZMPES7110[] EX_PRADDRDELIVERY,
+                        out ZMPES7120[] EX_PRCOMPONENTS,
+                        out ZMPES7140[] EX_PRHEADERTEXT,
                         out ZMPES5670[] EX_PRITEM,
-                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
+                        out ZMPES7130[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
-                        out ZMPES5730[] EX_SERVICELINES);
+                        out ZMPES5730[] EX_SERVICELINES
+                        );
 
 
             /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
@@ -203,8 +209,8 @@ namespace SustitucionMOAWS.WSConsumers
         }
 
         private ObtenerSolpSAPResponse Map(ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
-                                          ZMPES5750[] direccionesPosicion, //EX_PRADDRDELIVERY
-                                          BAPIMEREQCOMPONENT[] eX_PRCOMPONENTS, //eX_PRCOMPONENTS
+                                          ZMPES7110[] direccionesPosicion, //EX_PRADDRDELIVERY
+                                          ZMPES7120[] eX_PRCOMPONENTS, //eX_PRCOMPONENTS
                                           ZMPES5670[] posiciones, //EX_PRITEM
                                           BAPIRETURN[] mensajes, //EX_RETURN
                                           ZMPES5770[] imputacionesSuposiciones, //EX_SERVICEACCOUNT
@@ -401,7 +407,7 @@ namespace SustitucionMOAWS.WSConsumers
                     EstadoSolpSap = posicion.PROCSTAT,
                     EstadoPosicion = posicion.DELETE_IND,
                     FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
-                    Ordered = posicion.ORDERED,              
+                    Ordered = posicion.ORDERED,
                 });
             }
 

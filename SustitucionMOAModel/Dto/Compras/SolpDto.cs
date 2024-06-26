@@ -112,7 +112,12 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<int> PosicionesId { get; set; }
         public bool TieneMensajesChatInterno { get; set; }
         public bool TieneMensajesChatExterno { get; set; }
-
+        public int NroPeticionDeOferta { get; set; }
+        public bool Agrupada { get; set; }
+        public string ProveedorAsignadoCuit { get; set; }
+        public string ProveedorAsignadoRazonSocial { get; set; }
+        public int? ProveedorAdicional_Id { get; set; }
+        public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -270,6 +275,9 @@ namespace SustitucionMOAModel.Dto
         public List<TablaSapDto> UnidadesDeMedida { get; set; }
         public string NroSolp { get; set; }
         public string TipoPosicionCodigo { get; set; }
+        public string CentroCodigoSap { get; set; }
+        public string GrupoComprasCodigoSap { get; set; }
+        public string MaterialDescripcion { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -380,6 +388,8 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto UnidadMedidaCotizacion { get; set; }
         public int? CodigoSolp { get; set; }
         public bool Eliminado { get; set; }
+        public decimal? ValorNeto { get; set; }
+
 
         public SolpSubposicionDto() { }
 

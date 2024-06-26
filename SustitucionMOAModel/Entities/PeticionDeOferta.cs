@@ -17,6 +17,8 @@ namespace SustitucionMOAModel.Entities
         public bool? AdjuntoPliego { get; set; }
         public int? RevisionTecnica_Id { get; set; }
 
+        public bool Agrupada { get; set; }
+
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
 

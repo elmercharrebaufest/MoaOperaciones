@@ -15,7 +15,7 @@ import { BlockUIModule } from 'ng-block-ui';
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
-import { LoggerModule, NgxLoggerLevel } from "ngx-logger"
+import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
 import { MultiSelectModule } from 'primeng/multiselect';
 import { NgxPaginationModule } from "ngx-pagination";
 import { AduanaService } from "./aduana/aduana.service";
