@@ -265,9 +265,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     certificarPosicion() {
-        this.certificarState = true;
         if (this.validateValues() === true) {
-
+            this.certificarState = true;
             this.buildEntrySheet();
             this.service.postCreateAsync(this.entrySheetObjects).subscribe(
                 (response) => {

@@ -423,8 +423,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.service.reasignarSuplente(data).subscribe(
         async (resp: any) => {
           this.recalculando = true;
-          await this.getListarPO(); // No mover.
           this.mostrarSuplentes = false;
+
           const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
 
           if (resp.error) {
@@ -433,7 +433,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           }
 
           this.messageService.add(msj)
-
+          await this.getListarPO(); // No mover.
+          
         }, error => {
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
         }
@@ -462,20 +463,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
         async (resp: any) => {
+
           if (resp.data.status == "OK") {
-            this.resetForm();
-            this.recalculando = true;
-            await this.getListarPO(); // No mover.
-            this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
           else {
-            this.resetForm();
-            this.recalculando = true;
-            await this.getListarPO(); // No mover.
-            this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
           }
+
+          this.resetForm();
+          this.recalculando = true;
+          this.mostrarMotivosRechazos = false;
+          await this.getListarPO(); // No mover.
+          
         }, error => {
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
         }

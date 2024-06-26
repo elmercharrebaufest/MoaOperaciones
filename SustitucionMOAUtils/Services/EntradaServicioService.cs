@@ -29,6 +29,8 @@ using SustitucionMOAUtils.Logger;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using Google.Apis.Drive.v3.Data;
 
 namespace SustitucionMOAUtils.Services
 
@@ -110,13 +112,21 @@ namespace SustitucionMOAUtils.Services
 
             // Busqueda Entrada Servicios cargadas en la tabla aprobaciones.
             List<Aprobaciones> temporales = new List<Aprobaciones>();
-            if (parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
+
+            bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+            if (verTodo)
             {
                 temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
             }
             else
             {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor));
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                    (x.Ingresante_CDS.ToLower() == correo ||
+                    x.Fiscal_SOLPED.ToLower() == correo ||
+                    x.Aprobador_CDS.ToLower() == correo ||
+                    (certExt && x.Proveedor == parametros.Vendedor)));
             }
 
             try
@@ -215,18 +225,23 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = parametros.VerTodo ?
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
-                            ? true
-                            : (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor)))
-                        )
-                        :
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor))
-                        );
+                    List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
+
+                    bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+                    bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+                    if (verTodo)
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                    }
+                    else
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                            (x.Ingresante_CDS.ToLower() == correo ||
+                            x.Fiscal_SOLPED.ToLower() == correo ||
+                            x.Aprobador_CDS.ToLower() == correo ||
+                            (certExt && x.Proveedor == parametros.Vendedor)));
+                    }
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
@@ -1261,8 +1276,7 @@ namespace SustitucionMOAUtils.Services
                     try
                     {
                         rechazo.Importe = ES.Importe.ToString();
-                        rechazo.GeneradoPor = ES.Aprobador_CDS;
-                        _ = NotifyRejection(rechazo);
+                        rechazo.GeneradoPor = ES.Aprobador_CDS;                        
                     }
                     catch (Exception e)
                     {
@@ -1270,6 +1284,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            //MMSN-1158
+            try
+            {
+                _ = NotifyRejection(rechazo);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            
             ret.result = EntradasDeServicioTemp;
 
             return ret;
@@ -1390,44 +1414,52 @@ namespace SustitucionMOAUtils.Services
         public string ReasignarSuplente(string nro_es_local, string suplente) {
             try
             {
-                Aprobaciones esTemporalPendienteAprobacion = repositorio.Obtener<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+                SustitucionMOAModel.Entities.Usuario user = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente);
 
-                if (esTemporalPendienteAprobacion.NRO_ES_SAP.HasValue || esTemporalPendienteAprobacion.Estado_certificacion != "Pendiente Aprobación")
+                List<Aprobaciones> esTemporalPendienteAprobacionList = repositorio.Listar<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+
+                foreach (Aprobaciones esTemporalPendienteAprobacion in esTemporalPendienteAprobacionList)
                 {
-                    throw new ValidationCustomException("Entrada de servicio ya tratada.");
-                }
 
-                var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente).ToList().FirstOrDefault();
-
-                if (esTemporalPendienteAprobacion != null)
-                {
-                    if (suplente == esTemporalPendienteAprobacion.Fiscal_SOLPED)
+                    if (esTemporalPendienteAprobacion.NRO_ES_SAP.HasValue || esTemporalPendienteAprobacion.Estado_certificacion != "Pendiente Aprobación")
                     {
-                        esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Aprobador_CDS;
-                        esTemporalPendienteAprobacion.Aprobador_CDS = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                        throw new ValidationCustomException("Entrada de servicio ya tratada.");
+                    }
+
+                    if (esTemporalPendienteAprobacion != null)
+                    {
+                        if (suplente == esTemporalPendienteAprobacion.Fiscal_SOLPED)
+                        {
+                            esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Aprobador_CDS;
+                            esTemporalPendienteAprobacion.Aprobador_CDS = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                        }
+                        else
+                        {
+                            esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                            esTemporalPendienteAprobacion.Aprobador_CDS = suplente;
+
+                        }
+
                     }
                     else
                     {
-                        esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Fiscal_SOLPED;
-                        esTemporalPendienteAprobacion.Aprobador_CDS = suplente;
-
-                        List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esTemporalPendienteAprobacion.NRO_ES_LOCAL);
-
-                        OrderParamsDto orderParams = new OrderParamsDto();
-                        orderParams.OrdenCompraId = esTemporalPendienteAprobacion.NRO_OC;
-                        Proveedor prov = new Proveedor();
-                        prov = orderService.BuscarProveedor(orderParams);
-
-                        _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacion.Aprobador_CDS);
+                        throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
                     }
-
-                    repositorio.GuardarCambios();
-
                 }
-                else
-                {
-                    throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
-                }
+
+                OrderParamsDto orderParams = new OrderParamsDto();
+                orderParams.OrdenCompraId = esTemporalPendienteAprobacionList[0].NRO_OC;
+                Proveedor prov = new Proveedor();
+                prov = orderService.BuscarProveedor(orderParams);
+
+                string nroEsLocal = esTemporalPendienteAprobacionList[0].NRO_ES_LOCAL;
+
+                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
+
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+
+                repositorio.GuardarCambios();
+
             }
             catch (Exception e)
             {
