@@ -38,17 +38,11 @@
                                 </div>
                             </div>
                         </p-panel>
-                        <div *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
-                            <p class="text-danger">Campo obligatorio</p>
-                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
                                   name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
-                        <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
-                            <p class="text-danger">Campo obligatorio</p>
-                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="inline-flex">
