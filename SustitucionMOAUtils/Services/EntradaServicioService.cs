@@ -29,6 +29,7 @@ using SustitucionMOAUtils.Logger;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 
 namespace SustitucionMOAUtils.Services
 
@@ -110,13 +111,21 @@ namespace SustitucionMOAUtils.Services
 
             // Busqueda Entrada Servicios cargadas en la tabla aprobaciones.
             List<Aprobaciones> temporales = new List<Aprobaciones>();
-            if (parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES"))
+
+            bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+            bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+            if (verTodo)
             {
                 temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
             }
             else
             {
-                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor));
+                temporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                    (x.Ingresante_CDS.ToLower() == correo ||
+                    x.Fiscal_SOLPED.ToLower() == correo ||
+                    x.Aprobador_CDS.ToLower() == correo ||
+                    (certExt && x.Proveedor == parametros.Vendedor)));
             }
 
             try
@@ -215,18 +224,23 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     // Se obtiene detalle de la APROBACIÓN de la Entrada de Servicio
-                    List<Aprobaciones> ESTemporales = parametros.VerTodo ?
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES")
-                            ? true
-                            : (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor)))
-                        )
-                        :
-                        (
-                            repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap
-                            && (x.Ingresante_CDS.ToLower() == correo || x.Fiscal_SOLPED.ToLower() == correo || x.Aprobador_CDS.ToLower() == correo || x.Proveedor == parametros.Vendedor))
-                        );
+                    List<Aprobaciones> ESTemporales = new List<Aprobaciones>();
+
+                    bool verTodo = parametros.VerTodo && usuario.Permisos.Contains("VER TODOS LOS ESTADOS DE ES");
+                    bool certExt = usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA") && !usuario.Permisos.Contains("VER SOLAPA CERTIFICACION DE SERVICIOS");
+
+                    if (verTodo)
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                    }
+                    else
+                    {
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                            (x.Ingresante_CDS.ToLower() == correo ||
+                            x.Fiscal_SOLPED.ToLower() == correo ||
+                            x.Aprobador_CDS.ToLower() == correo ||
+                            (certExt && x.Proveedor == parametros.Vendedor)));
+                    }
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
