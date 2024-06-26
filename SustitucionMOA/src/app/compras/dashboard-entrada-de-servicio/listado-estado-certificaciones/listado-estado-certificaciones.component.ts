@@ -36,7 +36,6 @@ import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.
 export class ListadoEstadoCertificacionesComponent extends ListBaseComponent implements OnInit, OnDestroy {
   //#region Variables 
   @ViewChild("tabla") protected tabla: Table;
-  @ViewChild("elementToToggle") protected elementToToggle: ElementRef<HTMLDivElement>;
   @ViewChild('paginator') paginator: Paginator;
   @ViewChild(SpinnerComponent) protected spinnerComponent: SpinnerComponent;
   @BlockUI() blockUI: NgBlockUI;
@@ -101,6 +100,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
   fechaSeleccionadaAux: string = "1";
   recalculando: boolean = false;
+  recalculandoAprobadas: boolean = false;
 
   motivos = [
     { name: 'Servicio no ejecutado/concluido', code: '1' },
@@ -184,24 +184,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
       this.havePermision = true;
     }
-    this.hideContainerTable();
+    this.recalculando = true;
+    this.recalculandoAprobadas = true;
     await this.getListarPO(); // No mover.
     this.obtenerESSap(this.proveedor, this.documentoNumero);
-  }
-
-
-  showContainerTable(): void {
-    this.spinnerComponent.hideIt();
-    if (this.elementToToggle) {
-      this.elementToToggle.nativeElement.style.display = 'block';
-    }
-  }
-
-  hideContainerTable(): void {
-    this.spinnerComponent.showIt();
-    if (this.elementToToggle) {
-      this.elementToToggle.nativeElement.style.display = 'none';
-    }
   }
 
   formsCreate(): void {
@@ -262,12 +248,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
           this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-          this.showContainerTable();
+          this.recalculando = false;
           resolve();
         },
         error => {
           this.floatMsgService.setErrorMsg(error.message);
-          this.showContainerTable();
+          this.recalculando = false;
           reject(error);
         }
       );
@@ -282,9 +268,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
         (result: { error: any, data: any }) => {
-          this.recalculando = false;
-          this.showContainerTable();
+          this.recalculandoAprobadas = false;
           if (result.error != null) {
+            this.floatMsgService.setErrorMsg(result.error);
             return;
           }
           if (result.data.length > 0) {
@@ -296,8 +282,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
-          this.recalculando = false;
-          this.showContainerTable();
+          this.recalculandoAprobadas = false;
         })
     );
   }
@@ -344,7 +329,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    this.hideContainerTable();
+    this.recalculando = true;
     await this.getListarPO(); // No mover.
   }
 
@@ -355,7 +340,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    this.hideContainerTable();
+    this.recalculando = true;
     await this.getListarPO(); // No mover.
   }
 
@@ -437,7 +422,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         async (resp: any) => {
-          this.hideContainerTable();
+          this.recalculando = true;
           await this.getListarPO(); // No mover.
           this.mostrarSuplentes = false;
           const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
@@ -479,14 +464,14 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         async (resp: any) => {
           if (resp.data.status == "OK") {
             this.resetForm();
-            this.hideContainerTable();
+            this.recalculando = true;
             await this.getListarPO(); // No mover.
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
           else {
             this.resetForm();
-            this.hideContainerTable();
+            this.recalculando = true;
             await this.getListarPO(); // No mover.
             this.mostrarMotivosRechazos = false;
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
@@ -563,7 +548,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       acceptLabel: "Sí",
       rejectLabel: "No",
       accept: () => {
-        this.hideContainerTable();
+        this.recalculando = true;
         this.subscripciones.push(
           this.service.enviarAprobacionES(numeroCertificacion).subscribe(
             async (resp) => {
@@ -571,25 +556,27 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               if (!resp.data) {
                 mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
-                this.showContainerTable();
+                this.recalculando = false;
               }
               switch (resp.data.Type) {
                 case "I": {
                   this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   await this.getListarPO(); // No mover.
+                  this.recalculandoAprobadas = true;
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
                 case "S": {
                   this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
-                  this.showContainerTable();
+                  this.recalculando = false;
                   break;
                 }
                 case "Desync": {
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
                   this.resetForm();
                   await this.getListarPO(); // No mover.
+                  this.recalculandoAprobadas = true;
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
@@ -598,18 +585,18 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                     resp.data.Message.startsWith("Contabilice en ") ?
                     "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
                   this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
-                  this.showContainerTable();
+                  this.recalculando = false;
                   break;
                 }
                 default: {
                   this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-                  this.showContainerTable();
+                  this.recalculando = false;
                   break;
                 }
               }
             }, error => {
               this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-              this.showContainerTable();
+              this.recalculando = false;
             }
           )
         );
@@ -619,13 +606,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
   async SeeAll() {
     this.isAll = true;
-    this.hideContainerTable();
+    this.recalculando = true;
     await this.getListarPO(); // No mover.
   }
 
   async SeeForProvider() {
     this.isAll = false;
-    this.hideContainerTable();
+    this.recalculando = true;
     await this.getListarPO(); // No mover.
   }
 
@@ -801,7 +788,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   onBuscar() {
     // MMSN-519: Colapsar fila expandida al activar un filtro.
     this.collapseExpandedRow();
-    this.recalculando = true;
+    this.recalculandoAprobadas = true;
 
     if (this.proveedorSeleccionado !== undefined) {
       this.proveedor = this.proveedorSeleccionado.CodigoProveedor;
@@ -811,7 +798,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
 
     this.obtenerESSap(this.proveedor, this.documentoNumero);
-    this.tabla.first = 0;
   }
 
   showOrHideAuxPanel(): boolean {

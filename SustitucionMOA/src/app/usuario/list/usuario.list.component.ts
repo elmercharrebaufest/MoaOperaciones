@@ -18,6 +18,9 @@ import { Calendar } from 'primeng/calendar';
 @Component({
     selector: 'app-usuario-list',
     templateUrl: `usuario.list.component.html`,
+    styleUrls: [
+        './usuario.list.component.css',
+    ],
     providers: [UsuarioService]
 })
 export class UsuarioListComponent extends BaseComponent implements OnInit {
@@ -74,9 +77,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-            today: 'Hoy',
             clear: 'Limpiar',
-            dateFormat: 'yyyy-mm-dd',
+            dateFormat: 'dd/mm/yyyy',
             weekHeader: 'Sem'
         };
         this.formularioUsuario = new FormGroup({
@@ -298,6 +300,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioSeleccionado = usuario;
         this.formularioUsuario.controls['usuarioSap'].patchValue(usuario.UsuarioSap);
         this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
+        this.cleanReasignarInput();
         this.rolesUsuarioSeleccionado = new Array<Rol>();
         this.rolOptions = [];
         this.rolOptionsAll.forEach(val => this.rolesUsuarioSeleccionado.push(Object.assign({}, val)));
@@ -361,7 +364,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
             let fDesde = '';
             let fHasta = '';
-            if (this.rangoReasignacion.length > 0) {
+            if (this.rangoReasignacion !== null && this.rangoReasignacion.length > 0) {
                 fDesde = this.dateFormatter(this.rangoReasignacion[0]);
                 fHasta = this.dateFormatter(this.rangoReasignacion[1]);
             }
@@ -414,7 +417,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     validateReasignacionValues() {
-        if (this.rangoReasignacion[1] === null) {
+        if (this.rangoReasignacion !== null && this.rangoReasignacion[1] === null) {
             this.validationError = true;
             return false;
         }
@@ -431,6 +434,18 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             const date_String: string = `${year}-${month}-${day}`;
             return date_String;
         }
+    }
+
+    handleClearClick(event: Event) {
+        this.cleanReasignarInput();
+        this.validationError = false;
+    }
+
+    cleanReasignarInput() {
+        this.formularioUsuario.controls['fechaReasignar1'].setValue(null);
+        this.formularioUsuario.controls['fechaReasignar1'].markAsPristine();
+        this.formularioUsuario.controls['fechaReasignar1'].markAsUntouched();
+        this.formularioUsuario.controls['fechaReasignar1'].updateValueAndValidity();
     }
 
 }

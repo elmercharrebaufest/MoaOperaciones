@@ -440,6 +440,7 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="src\app\usuario\list\usuario.list.component.css" />
     <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.css" />
     <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.html" />
     <Content Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.css" />

@@ -241,7 +241,7 @@
                                             selectionMode="range"
                                             formControlName="fechaReasignar1"
                                             id="fechaReasignar"
-                                            dateFormat="yy-mm-dd"
+                                            dateFormat="dd/mm/yy"
                                             [readonlyInput]="true"
                                             [monthNavigator]="true"
                                             [yearNavigator]="true"
@@ -250,11 +250,14 @@
                                             [minDate]="fechaReasignacionMin"
                                             [maxDate]="fechaReasignacionMax"
                                             yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
-                                            [showIcon]="true">
+                                            [showIcon]="true"
+                                            [showButtonBar]="true"
+                                            (onClearClick)="handleClearClick($event)"
+                                            clearButtonStyleClass="center-clear-button">
                                 </p-calendar>
                             </div>
                             <div *ngIf="validationError">
-                                <p style="color:red; font-size: 0.7em">Por favor, cargue un rango de fechas</p>
+                                <p style="color:red; font-size: 1em">Por favor, cargue un rango de fechas</p>
                             </div>                           
                         </div>
                                          

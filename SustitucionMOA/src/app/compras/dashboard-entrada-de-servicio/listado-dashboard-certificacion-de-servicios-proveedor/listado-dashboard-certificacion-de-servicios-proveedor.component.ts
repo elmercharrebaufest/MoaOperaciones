@@ -155,7 +155,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: true, required: false, visible: true },
                 { id: 'iImporte', header: 'Precio Unitario', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iPorcentaje', header: 'Porc. %', field: 'Porcentaje', type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iCantidadACertificar', header: 'Cant. a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iPorcentajeACertificar', header: '% a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'iMontoACertificar', header: 'Monto a Certificar', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 // { id: 'iMonto', header: 'Monto Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
