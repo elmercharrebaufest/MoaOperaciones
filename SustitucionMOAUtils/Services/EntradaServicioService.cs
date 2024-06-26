@@ -1275,8 +1275,7 @@ namespace SustitucionMOAUtils.Services
                     try
                     {
                         rechazo.Importe = ES.Importe.ToString();
-                        rechazo.GeneradoPor = ES.Aprobador_CDS;
-                        _ = NotifyRejection(rechazo);
+                        rechazo.GeneradoPor = ES.Aprobador_CDS;                        
                     }
                     catch (Exception e)
                     {
@@ -1284,6 +1283,16 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            //MMSN-1158
+            try
+            {
+                _ = NotifyRejection(rechazo);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            
             ret.result = EntradasDeServicioTemp;
 
             return ret;
