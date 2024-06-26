@@ -556,6 +556,15 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                             }
                         });
 
+                        this.solpActual.archivosCotizacionesNuevosCondEsp.splice(0, this.solpActual.archivosCotizacionesNuevosCondEsp.length);
+                        this.solpActual.archivosCotizacionesCondEsp = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolpCondEsp').map(x => {
+                            return {
+                                id: x.Id,
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
+                            }
+                        });
+
                         this.cambiosGuardados = true;
 
                         if (mostrarPreview) {
@@ -1142,7 +1151,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
-        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) ? true : false;
+        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0 || this.solpActual.archivosCotizacionesCondEsp.length > 0) ? true : false;
         this.emailComposeService.show(emailModel);
     }
 
@@ -1167,7 +1176,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     }
 
     validarAdjuntosDescargarSolp() {
-        if (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) {
+        if (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0 || this.solpActual.archivosCotizacionesCondEsp.length > 0) {
             this.tieneAdjuntos = true;
         }
     }

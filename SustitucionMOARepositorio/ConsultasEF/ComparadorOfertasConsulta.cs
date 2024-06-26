@@ -38,7 +38,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                         CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado,
                                         ObservacionesCotizacionLista = 
-                                        po.Posiciones.Select(p => p.SolpPosicion.Solp.Pliego.ObservacionesCotizacion).Distinct()
+                                        po.Posiciones.Select(p => p.SolpPosicion.Solp.Pliego.ObservacionesCotizacionCondEsp).Distinct()
                                     },
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),

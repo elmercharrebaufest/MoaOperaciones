@@ -255,13 +255,15 @@ export class ComprasService extends BaseService {
                 Id: solp.usuarioComprasId
             },
             Adjuntos: solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
-                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
+                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } }))
+                .concat(solp.archivosCotizacionesCondEsp.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
+            ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
@@ -362,6 +364,13 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < solp.archivosCotizacionesNuevos.length; i++) {
                 let fileToUpload = solp.archivosCotizacionesNuevos[i];
                 payload.append("fileCotizaciones", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        if (solp.archivosCotizacionesNuevosCondEsp != null) {
+            for (let i = 0; i < solp.archivosCotizacionesNuevosCondEsp.length; i++) {
+                let fileToUpload = solp.archivosCotizacionesNuevosCondEsp[i];
+                payload.append("fileCotizacionesCondEsp", fileToUpload, fileToUpload.name);
             }
         }
 

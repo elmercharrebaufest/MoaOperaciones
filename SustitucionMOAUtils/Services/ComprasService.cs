@@ -100,7 +100,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailService emailService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
-
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
@@ -298,6 +297,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
+                pliegoEntity.ObservacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
                 pliegoEntity.RevisadoPor = solp.RevisadoPor;
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
@@ -479,7 +479,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         private Solp PosicionesEliminar(Solp solpEntity, SolpDto solp)
         {
@@ -766,6 +765,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             var filesCotizaciones = files.GetMultiple("fileCotizaciones");
+
             for (int i = 0; i < filesCotizaciones.Count; i++)
             {
                 var file = filesCotizaciones[i];
@@ -788,9 +788,33 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(rutaArchivo);
             }
 
+            var fileCotizacionesCondEsp = files.GetMultiple("fileCotizacionesCondEsp");
+
+            for (int i = 0; i < fileCotizacionesCondEsp.Count; i++)
+            {
+                var file = fileCotizacionesCondEsp[i];
+                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
+
+                if (File.Exists(rutaArchivo))
+                {
+                    file.SaveAs(rutaArchivo);
+                    continue;
+                }
+
+                Directory.CreateDirectory(ruta);
+
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp,
+                    Ruta = rutaArchivo,
+                });
+
+                file.SaveAs(rutaArchivo);
+            }
+
             repositorio.GuardarCambios();
 
-            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(x => new ArchivoDto()
+            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(x => new ArchivoDto()
             {
                 Id = x.Id,
                 FileKey = x.FileKey,
@@ -826,7 +850,6 @@ namespace SustitucionMOAUtils.Services
             // Si la ruta no existe, devolver la ruta original
             return nuevaRuta;
         }
-
 
         private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
@@ -1029,8 +1052,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-
         private void ActualizarPeticionDeOfertaAlEditarSolp(Solp solpEntity, bool actualizarEstadoCotizacion = false)
         {
             if (solpEntity.Posiciones.First().TipoPosicion.Codigo == "MATERIALES" && solpEntity.TrabajoYaHecho == false)
@@ -1207,7 +1228,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo != rol))
                                  || x.Posiciones.Any(po => po.Peticiones
                                 .SelectMany(se => se.PeticionDeOferta.Usuarios
@@ -1346,6 +1367,7 @@ namespace SustitucionMOAUtils.Services
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
                 DiasEjecucion = solp.Pliego.DiasEjecucion,
                 ObservacionesCotizacion = solp.Pliego.ObservacionesCotizacion,
+                ObservacionesCotizacionCondEsp = solp.Pliego.ObservacionesCotizacionCondEsp,
                 JornadaLaboral = string.IsNullOrEmpty(solp.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
                                 solp.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
                 JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
@@ -1360,7 +1382,7 @@ namespace SustitucionMOAUtils.Services
                 DeshabilitarAdicional = hayAdjudicacionPosicion,
                 EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || (solp.EstadoSolpSap.CodigoSap != "05" && solp.EstadoSolpSap.CodigoSap != "02")),
 
-                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(s => new ArchivoDto
                 {
                     Id = s.Id,
                     Nombre = s.ObtenerNombre(s.Ruta),
@@ -1732,7 +1754,7 @@ namespace SustitucionMOAUtils.Services
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -1743,7 +1765,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
@@ -2874,7 +2896,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
         public void ActualizarEstadoSolpBulk()
         {
             var lista = repositorio.Listar<TablaSap>(x => x.Tabla == "EstadoSolpSap")
@@ -3323,7 +3344,7 @@ namespace SustitucionMOAUtils.Services
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
-                todasLasOfertas.SolpDto.ObservacionesCotizacion = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
+                todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
@@ -3428,7 +3449,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         private decimal CalcularTipoDeCambio(Dictionary<int, decimal> tipodecambio, TablaSap destino, CotizacionPosicionDto cotizacionPosicion)
         {
@@ -4279,12 +4299,13 @@ namespace SustitucionMOAUtils.Services
 
                 // buscar archivos de la solp y considerar condiciones especiales
                 if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                   (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial))))
+                   (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial)) || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
                             || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                            && (!esProveedor || !tieneCondicionEspecial)) || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
@@ -4303,13 +4324,13 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
+                //mostrar observación de condiciones especielas ingresada en el paso 4 
                 if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
                 {
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = null,
-                        Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacion,
+                        Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp,
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = solp.Id,
                         Fecha = solp.FechaCreacion,
@@ -4629,7 +4650,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             foreach (var archivoSubido in solp.Pliego.Archivos)
                             {
-                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                                 {
                                     string fileName = Path.GetFileName(archivoSubido.Ruta);
                                     archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
@@ -4979,7 +5000,7 @@ namespace SustitucionMOAUtils.Services
         {
             bool tieneCondicionEspecial = posicion.Solp.TrabajoYaHecho == true || posicion.Solp.Urgencia == true || posicion.Solp.Adicional == true || posicion.Solp.CondEspProveedorAsignado == true;
             var casoConPliego = posicion.Solp.TipoSolp?.Codigo == "CON_PLIEGO" || (posicion.Solp.TipoSolp?.Codigo == "SIN_PLIEGO" &&
-                   posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp) && !tieneCondicionEspecial);
+                   posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) && !tieneCondicionEspecial);
             return casoConPliego;
         }
 
@@ -9880,7 +9901,6 @@ namespace SustitucionMOAUtils.Services
             }
             return respuestaGuardarSOLP;
         }
-
     }
 
     public static class SolpTemplateKeys
