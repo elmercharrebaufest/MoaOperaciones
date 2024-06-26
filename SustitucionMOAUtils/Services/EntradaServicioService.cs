@@ -30,6 +30,7 @@ using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using Google.Apis.Drive.v3.Data;
 
 namespace SustitucionMOAUtils.Services
 
@@ -1413,44 +1414,52 @@ namespace SustitucionMOAUtils.Services
         public string ReasignarSuplente(string nro_es_local, string suplente) {
             try
             {
-                Aprobaciones esTemporalPendienteAprobacion = repositorio.Obtener<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+                SustitucionMOAModel.Entities.Usuario user = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente);
 
-                if (esTemporalPendienteAprobacion.NRO_ES_SAP.HasValue || esTemporalPendienteAprobacion.Estado_certificacion != "Pendiente Aprobación")
+                List<Aprobaciones> esTemporalPendienteAprobacionList = repositorio.Listar<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+
+                foreach (Aprobaciones esTemporalPendienteAprobacion in esTemporalPendienteAprobacionList)
                 {
-                    throw new ValidationCustomException("Entrada de servicio ya tratada.");
-                }
 
-                var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente).ToList().FirstOrDefault();
-
-                if (esTemporalPendienteAprobacion != null)
-                {
-                    if (suplente == esTemporalPendienteAprobacion.Fiscal_SOLPED)
+                    if (esTemporalPendienteAprobacion.NRO_ES_SAP.HasValue || esTemporalPendienteAprobacion.Estado_certificacion != "Pendiente Aprobación")
                     {
-                        esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Aprobador_CDS;
-                        esTemporalPendienteAprobacion.Aprobador_CDS = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                        throw new ValidationCustomException("Entrada de servicio ya tratada.");
+                    }
+
+                    if (esTemporalPendienteAprobacion != null)
+                    {
+                        if (suplente == esTemporalPendienteAprobacion.Fiscal_SOLPED)
+                        {
+                            esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Aprobador_CDS;
+                            esTemporalPendienteAprobacion.Aprobador_CDS = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                        }
+                        else
+                        {
+                            esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Fiscal_SOLPED;
+                            esTemporalPendienteAprobacion.Aprobador_CDS = suplente;
+
+                        }
+
                     }
                     else
                     {
-                        esTemporalPendienteAprobacion.Suplente = esTemporalPendienteAprobacion.Fiscal_SOLPED;
-                        esTemporalPendienteAprobacion.Aprobador_CDS = suplente;
-
-                        List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esTemporalPendienteAprobacion.NRO_ES_LOCAL);
-
-                        OrderParamsDto orderParams = new OrderParamsDto();
-                        orderParams.OrdenCompraId = esTemporalPendienteAprobacion.NRO_OC;
-                        Proveedor prov = new Proveedor();
-                        prov = orderService.BuscarProveedor(orderParams);
-
-                        _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacion.Aprobador_CDS);
+                        throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
                     }
-
-                    repositorio.GuardarCambios();
-
                 }
-                else
-                {
-                    throw new ValidationCustomException("Nro de entrada servicio no encontrado.");
-                }
+
+                OrderParamsDto orderParams = new OrderParamsDto();
+                orderParams.OrdenCompraId = esTemporalPendienteAprobacionList[0].NRO_OC;
+                Proveedor prov = new Proveedor();
+                prov = orderService.BuscarProveedor(orderParams);
+
+                string nroEsLocal = esTemporalPendienteAprobacionList[0].NRO_ES_LOCAL;
+
+                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
+
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+
+                repositorio.GuardarCambios();
+
             }
             catch (Exception e)
             {
