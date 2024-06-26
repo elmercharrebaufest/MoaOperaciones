@@ -78,7 +78,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   formularioMotivosRechazo: FormGroup | undefined;
   formularioSuplente: FormGroup | undefined;
   mostrarMotivosRechazos: boolean = false;
-  mostrarSuplentes: boolean = false;
   proveedorList: any[] = new Array();
   filtroFechas: Array<DropdownOption> = [
     new DropdownOption("1", "Últimos dos dias"),
@@ -237,17 +236,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.sessionDataService.logout();
             reject('Logout required');
           } else if (result.error !== undefined && result.error !== "") {
-            reject(result.error);
           } else if (result.info !== undefined) {
             // Manejo de mensajes informativos, si es necesario
           } else {
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
-            this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-            this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-            this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
-          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
           this.recalculando = false;
           resolve();
         },
@@ -321,35 +316,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
-
-  deleteES(item: any) {
-    //TODO: lógica para cuando se especifique el borrado de una ES
-  }
-
-  async handlePageEvent(e: any) {
-    this.pageSize = e.rows;
-    this.pageIndex = e.page + 1;
-    this.recalculando = true;
-    await this.getListarPO(); // No mover.
-  }
-
-  async onOrder(columna: string) {
-    if (this.columnaOrden != columna) {
-      this.ordenAscendente = false
-    } else {
-      this.ordenAscendente = this.ordenAscendente == false ? true : false;
-    }
-    this.columnaOrden = columna;
-    this.recalculando = true;
-    await this.getListarPO(); // No mover.
-  }
-
   toggleRow(rowData: any): void {
     this.selectedRow = this.selectedRow === rowData ? null : rowData;
-  }
-
-  isSelectedRow(rowData: any): boolean {
-    return this.selectedRow === rowData;
   }
 
   verMotivosRechazos(rowData: any): void {
@@ -392,19 +360,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-
     const data = {
       Suplente: suplente,
       NroEsLocal: nro_es_local
     }
-
     let confirmMessage;
 
     if (suplente) {
       confirmMessage = {
         acceptLabel: 'Si',
         message: `Está derivando la certificación Nº ` + nro_es_local + ` al siguiente aprobador ` + suplente + `. <b>¿Desea continuar?</b>`,
-        accept: () => { this.reasignar(data); },
+        accept: () => { 
+          this.recalculando = true;
+          this.deshabilitarAcciones(data.NroEsLocal);
+          this.reasignar(data); 
+        },
         reject: () => { }
       }
     } else {
@@ -422,20 +392,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         async (resp: any) => {
-          this.recalculando = true;
-          this.mostrarSuplentes = false;
-
           const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
-
           if (resp.error) {
             msj.severity = 'info';
             msj.summary = resp.error
           }
-
           this.messageService.add(msj)
           await this.getListarPO(); // No mover.
-          
+          this.habilitarAcciones(data.NroEsLocal);
         }, error => {
+          this.recalculando = false;
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
         }
       )
@@ -463,7 +429,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
         async (resp: any) => {
-
+          this.deshabilitarAcciones(data.NumeroCertificacion);
           if (resp.data.status == "OK") {
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
@@ -475,7 +441,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           this.recalculando = true;
           this.mostrarMotivosRechazos = false;
           await this.getListarPO(); // No mover.
-          
+          this.habilitarAcciones(data.NumeroCertificacion);
         }, error => {
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
         }
@@ -560,11 +526,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
               }
               switch (resp.data.Type) {
                 case "I": {
+                  this.deshabilitarAcciones(numeroCertificacion);
                   this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
                   await this.getListarPO(); // No mover.
                   this.recalculandoAprobadas = true;
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
+                  this.habilitarAcciones(numeroCertificacion);
                   break;
                 }
                 case "S": {
@@ -573,11 +541,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                   break;
                 }
                 case "Desync": {
+                  this.deshabilitarAcciones(numeroCertificacion);
                   this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
                   this.resetForm();
                   await this.getListarPO(); // No mover.
                   this.recalculandoAprobadas = true;
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
+                  this.habilitarAcciones(numeroCertificacion);
                   break;
                 }
                 case "E": {
@@ -808,4 +778,35 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     return false;
   }
 
+  deshabilitarAcciones(nro_es_local: string): void {
+    let buttonIdReasignar: string = nro_es_local + '-reasignar';
+    let buttonIdAprobar: string = nro_es_local + '-aprobar';
+    let buttonIdRechazo: string = nro_es_local + '-rechazo';
+    
+    let botonReasignar = document.getElementById(buttonIdReasignar) as HTMLButtonElement;
+    let botonRechazo = document.getElementById(buttonIdRechazo) as HTMLButtonElement;
+    let botonAprobar = document.getElementById(buttonIdAprobar) as HTMLButtonElement;
+
+    if (botonReasignar && botonRechazo && botonAprobar) {
+      botonReasignar.disabled = true;
+      botonRechazo.disabled = true;
+      botonAprobar.disabled = true;
+    }
+  }
+
+  habilitarAcciones(nro_es_local: string): void {
+    let buttonIdReasignar: string = nro_es_local + '-reasignar';
+    let buttonIdAprobar: string = nro_es_local + '-aprobar';
+    let buttonIdRechazo: string = nro_es_local + '-rechazo';
+    
+    let botonReasignar = document.getElementById(buttonIdReasignar) as HTMLButtonElement;
+    let botonRechazo = document.getElementById(buttonIdRechazo) as HTMLButtonElement;
+    let botonAprobar = document.getElementById(buttonIdAprobar) as HTMLButtonElement;
+
+    if (botonReasignar && botonRechazo && botonAprobar) {
+      botonReasignar.disabled = false;
+      botonRechazo.disabled = false;
+      botonAprobar.disabled = false;
+    }
+  }
 }
