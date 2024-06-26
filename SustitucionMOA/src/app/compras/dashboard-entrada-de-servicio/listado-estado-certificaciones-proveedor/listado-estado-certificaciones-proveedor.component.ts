@@ -28,9 +28,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   @ViewChild("tabla")
   protected tabla: Table;
 
-  @ViewChild("elementToToggle")
-  protected elementToToggle: ElementRef<HTMLDivElement>;
-
   private destroy$: Subject<void> = new Subject<void>();
 
   @BlockUI() blockUI: NgBlockUI;
@@ -65,7 +62,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   tablaPOSap: any[] = [];
   tablaPOAprobaciones: any[] = [];
   fechaSeleccionadaAux: string = "1";
-
+  recalculando: boolean = false;
+  recalculandoAprobadas: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(event) {
@@ -158,23 +156,10 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     this.innerWidth = window.innerWidth;
     this.navService.setSeccionActive("Estado certificaciones");
     this.navService.navegarSeccion("compras/listadoEstadoCertificacionesProveedor");
-    this.hideContainerTable();
-    await this.getListarPO();
+    this.recalculando = true;
+    this.recalculandoAprobadas = true;
+    await this.getListarPO(); // No mover.
     this.obtenerESSap(this.proveedor, this.documentoNumero);
-  }
-
-  showContainerTable(): void {
-    this.spinnerComponent.hideIt();
-    if (this.elementToToggle) {
-      this.elementToToggle.nativeElement.style.display = 'block';
-    }
-  }
-
-  hideContainerTable(): void {
-    this.spinnerComponent.showIt();
-    if (this.elementToToggle) {
-      this.elementToToggle.nativeElement.style.display = 'none';
-    }
   }
 
   toggleTable(data: any) {
@@ -209,11 +194,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
             this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
           this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
-          this.showContainerTable();
+          this.recalculando = false;
           resolve();
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
-          this.showContainerTable();
+          this.recalculando = false;
           reject(error);
         }
       );
@@ -252,7 +237,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   async handlePageEvent(e: any) {
     this.pageSize = e.rows;
     this.pageIndex = e.page + 1;
-    await this.getListarPO();
+    this.recalculando = true;
+    await this.getListarPO(); // No mover.
   }
 
   async onOrder(columna: string) {
@@ -262,7 +248,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
       this.ordenAscendente = this.ordenAscendente == false ? true : false;
     }
     this.columnaOrden = columna;
-    await this.getListarPO();
+    this.recalculando = true;
+    await this.getListarPO(); // No mover.
   }
 
   toggleRow(rowData: any): void {
@@ -290,9 +277,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   private obtenerColumnasVisiblesSegunEstado(estado: string): string[] {
     switch (estado) {
       case 'Aprobada':
-        if(this.tablaPOSap.length < 1){
-          this.obtenerESSap(this.proveedor, this.documentoNumero);
-        }
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion'];
       case 'Pendiente Aprobación':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
@@ -335,12 +319,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   }
 
   obtenerESSap(proveedor, documentoNumero): void {
-    this.hideContainerTable();
-
     this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, false).subscribe(
       (result: { error: any, data: any }) => {
-        this.showContainerTable();
+        this.recalculandoAprobadas = false;
         if (result.error != null) {
+          this.floatMsgService.setErrorMsg(result.error);
           return;
         }
         if (result.data.length > 0) {
@@ -350,7 +333,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
 
       }, error => {
         this.floatMsgService.setErrorMsg(error.message);
-        this.showContainerTable();
+        this.recalculandoAprobadas = false;
       })
   }
 
@@ -360,19 +343,27 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     
     return usuario.includes(userIntern) ? 'MOA Interno' : usuario;
   
+  }
+
+  /**
+   * filtro de busqueda de las entradas de servicio por rango de fechas.
+   */
+  onBuscar() {
+    this.recalculandoAprobadas = true;
+    this.obtenerESSap(this.proveedor, this.documentoNumero);
+  }
+
+  agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
+    if (certificaciones === undefined || certificaciones === null) {
+      return;
     }
 
-    agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
-        if (certificaciones === undefined || certificaciones === null) {
-            return;
-        }
-
-        certificaciones.forEach(certificacion => {
-            if (certificacion.entradaServicioDetalle) {
-                certificacion.entradaServicioDetalle.forEach(detalle => {
-                    detalle.Moneda = certificacion.Moneda;
-                });
-            }
+    certificaciones.forEach(certificacion => {
+      if (certificacion.entradaServicioDetalle) {
+        certificacion.entradaServicioDetalle.forEach(detalle => {
+          detalle.Moneda = certificacion.Moneda;
         });
-    }
+      }
+    });
+  }
 }
