@@ -202,6 +202,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
           } else if (result.error != undefined && result.error != "") {
           } else if (result.info != undefined) {
           } else {
+            this.agregarTipoMonedaEnDetalle(result.data);
             this.tablaPOAprobaciones = result.data;
             this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
             this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
@@ -359,5 +360,19 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     
     return usuario.includes(userIntern) ? 'MOA Interno' : usuario;
   
-  }
+    }
+
+    agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
+        if (certificaciones === undefined || certificaciones === null) {
+            return;
+        }
+
+        certificaciones.forEach(certificacion => {
+            if (certificacion.entradaServicioDetalle) {
+                certificacion.entradaServicioDetalle.forEach(detalle => {
+                    detalle.Moneda = certificacion.Moneda;
+                });
+            }
+        });
+    }
 }

@@ -68,7 +68,7 @@
                     </td>
                     <td>{{rowData.FechaCreacion}}</td>
                     <td>{{rowData.Descripcion | defaultData }}</td>
-                    <td>{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>{{rowData.OrdenCompra || ""}}</td>
                     <td>
                         <div class="usuario-area">
@@ -117,7 +117,7 @@
                     <td>{{rowData.Cantidad}}</td>
                     <td>{{rowData.CantidadCertificar}}</td> <!-- aca va el porcentaje-->
                     <td>{{rowData.PorcentajeCertificar}}</td> <!-- aca va el porcentaje-->
-                    <td>{{rowData.Monto}}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.Monto}}</td>
                     <td>{{rowData.UM}}</td>
                     <td>{{rowData.FechaPrestacion | defaultData}}</td><!-- aca va la fecha de rpestacion-->
                     <td>{{rowData.NroRemito | defaultData}}</td><!-- aca va la referencia-->
