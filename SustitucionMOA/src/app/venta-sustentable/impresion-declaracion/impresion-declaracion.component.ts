@@ -16,7 +16,7 @@ import { VentaSustentableService } from '../venta-sustentable.service';
 export class ImpresionDeclaracionComponent extends BaseComponent {
 
   @Input()
-  pendienteProcesarUcrpoit = false;
+  pendienteProcesarUcropit = false;
   constructor(protected service: VentaSustentableService,
     protected navService: NavService,
     protected securityService: SecurityService,
