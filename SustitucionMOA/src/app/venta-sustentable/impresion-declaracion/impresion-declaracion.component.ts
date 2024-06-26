@@ -15,6 +15,8 @@ import { VentaSustentableService } from '../venta-sustentable.service';
 })
 export class ImpresionDeclaracionComponent extends BaseComponent {
 
+  @Input()
+  pendienteProcesarUcrpoit = false;
   constructor(protected service: VentaSustentableService,
     protected navService: NavService,
     protected securityService: SecurityService,
@@ -48,7 +50,7 @@ export class ImpresionDeclaracionComponent extends BaseComponent {
     this.subscription = this.service
       .imprimirDeclaracion(this.proveedorId, this.cosechaId, this.CUIT)
       .subscribe(
-        (result:CommonResponse) => {
+        (result: CommonResponse) => {
           if (result.error) {
             this.descargando = false;
             this.floatMessage.setErrorMsg(result.error)

@@ -77,6 +77,8 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+            campoProveedor.CampoCosecha.Cosecha = repositorio.Obtener<Cosecha>(campoProveedor.CampoCosecha.Cosecha_Id);
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
@@ -160,17 +162,18 @@ namespace SustitucionMOAUtils.Services
             var allCampos = repositorio.Listar<CampoProveedor, CamposSustentableReporte>
                 (c => new CamposSustentableReporte
                 {
-                    HectareasSoja = c.HectareasSoja.ToString(),
-                    HectareasTotales = c.HectareasTotales.ToString(),
+                    HectareasSoja = c.HectareasSojaUcropit != null ? c.HectareasSojaUcropit.ToString() : c.HectareasSoja.ToString(),
+                    HectareasTotales = c.HectareasTotalesUcropit != null ? c.HectareasTotalesUcropit.ToString() : c.HectareasTotales.ToString(),
                     Localidad = c.CampoCosecha.Campo.Localidad.Nombre,
                     Nombre = c.CampoCosecha.Campo.Nombre,
                     Renspa = c.CampoCosecha.Campo.Renspa,
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
+                    ToneladasAprobadas = c.CampoCosecha.ToneladasAprobadas.ToString(),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas != -1);
 
             var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
 
@@ -557,6 +560,8 @@ namespace SustitucionMOAUtils.Services
             archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ?
                     Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
             archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
+            campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
+            campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
             repositorio.GuardarCambios();
         }
