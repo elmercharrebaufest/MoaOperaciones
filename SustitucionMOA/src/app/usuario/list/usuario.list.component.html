@@ -238,6 +238,7 @@
                             </div>
                             <div style="margin-top: 10px; padding-top: 0.8em;">
                                 <p-calendar [(ngModel)]="rangoReasignacion"
+                                            (ngModelChange)="onCalendarChange($event)"
                                             selectionMode="range"
                                             formControlName="fechaReasignar1"
                                             id="fechaReasignar"

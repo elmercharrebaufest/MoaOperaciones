@@ -206,7 +206,7 @@ namespace SustitucionMOAUtils.Services
                     fechaHastaDT = auxFHasta;
                 };
                 //Parsing failsafe
-                if(fechaDesdeDT != fechaHastaDT)
+                if (fechaDesdeDT != fechaHastaDT)
                 {
                     UsuarioReasignacion periodo = new UsuarioReasignacion
                     {
@@ -215,7 +215,18 @@ namespace SustitucionMOAUtils.Services
                         FechaHasta = fechaHastaDT
                     };
 
-                    repositorio.Agregar<UsuarioReasignacion>(periodo);
+                    //Evitar duplicacion de periodos
+                    var per = GetPeriodoReasignacion(idUsuario);
+
+                    if(per.Id == 0)
+                    {
+                        repositorio.Agregar<UsuarioReasignacion>(periodo);
+                    }
+                    else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
+                    {
+                        repositorio.Agregar<UsuarioReasignacion>(periodo);
+                    }
+                
                 }
 
             }
@@ -304,6 +315,25 @@ namespace SustitucionMOAUtils.Services
                 var rolesDto = usuario.Roles.Select(x => new RolDropdownDto(x)).ToList();
 
                 return rolesDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public UsuarioReasignacionDto GetPeriodoReasignacion(int userId)
+        {
+            try
+            {
+                Entidades.UsuarioReasignacion periodo = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == userId).ToList().LastOrDefault();
+                UsuarioReasignacionDto periodoDto = new UsuarioReasignacionDto();
+                if (periodo != null)
+                {
+                    periodoDto = new UsuarioReasignacionDto(periodo);
+                }
+                 
+                return periodoDto;
             }
             catch (Exception)
             {

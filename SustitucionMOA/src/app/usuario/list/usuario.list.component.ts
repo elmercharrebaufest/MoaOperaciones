@@ -64,6 +64,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     fechaReasignacionMax: Date = new Date(new Date().setFullYear(new Date().getFullYear() + 1));
     es: any;
     validationError: boolean = false;
+    beInfo: boolean = true;
+    userChangedValue: boolean = false;
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -309,6 +311,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
         usuario.Roles = this.obtenerRolesUsuario();
+        this.obtenerReasignacionUsuario();
 /*
         usuario.Roles.forEach(element => {
             let index = this.rolesUsuarioSeleccionado.findIndex(r => r.Id.toString() == element.Id.toString());
@@ -352,6 +355,50 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    obtenerReasignacionUsuario() {
+        try {
+            this.service.obtenerReasignacionUsuario(this.usuarioSeleccionado).subscribe(
+                (result: any) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                        this.beInfo = false;
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                        this.beInfo = false;
+                    } else {
+                        if (result.data.FechaDesde !== '' && result.data.FechaHasta !== '' && result.data.Id !== 0) {
+                            setTimeout(() => {
+                                this.rangoReasignacion = [];
+                                let dateString = result.data.FechaDesde.toString();
+                                let ts = parseInt(dateString.match(/\d+/)[0], 10);
+                                let jsonDate = new Date(ts);
+                                this.rangoReasignacion[0] = jsonDate;
+
+                                dateString = result.data.FechaHasta.toString();
+                                ts = parseInt(dateString.match(/\d+/)[0], 10);
+                                jsonDate = new Date(ts);
+                                this.rangoReasignacion[1] = jsonDate;
+                                this.beInfo = false;
+                            }, 500);
+                        }
+                        else {
+                            this.beInfo = false;
+                        }
+                    }
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
     guardarRolesUsuario() {
         if (this.validateReasignacionValues() === true) {
             const suplente = this.formularioUsuario.controls['suplente'].value;
@@ -364,7 +411,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
             let fDesde = '';
             let fHasta = '';
-            if (this.rangoReasignacion !== null && this.rangoReasignacion.length > 0) {
+            if (this.rangoReasignacion !== null && this.rangoReasignacion.length > 0 && this.userChangedValue) {
                 fDesde = this.dateFormatter(this.rangoReasignacion[0]);
                 fHasta = this.dateFormatter(this.rangoReasignacion[1]);
             }
@@ -446,6 +493,15 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.formularioUsuario.controls['fechaReasignar1'].markAsPristine();
         this.formularioUsuario.controls['fechaReasignar1'].markAsUntouched();
         this.formularioUsuario.controls['fechaReasignar1'].updateValueAndValidity();
+    }
+
+    onCalendarChange(event: Event): void { 
+        if (this.beInfo) {
+            return;
+        }
+        else {
+            this.userChangedValue = true;
+        }
     }
 
 }

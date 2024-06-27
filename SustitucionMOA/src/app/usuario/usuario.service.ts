@@ -136,6 +136,16 @@ export class UsuarioService extends BaseService {
             .get('/api/usuario/ObtenerRolesUsuario', { params: params, headers: this.headers });
     }
 
+    public obtenerReasignacionUsuario(usuarioSeleccionado: any) {
+        let params: HttpParams = new HttpParams();
+        var idUsuario = usuarioSeleccionado.Id;
+
+        params = params.append('idUsuario', idUsuario);
+        return this.http
+            .get('/api/usuario/ObtenerReasignacionUsuario', { params: params, headers: this.headers });
+    }
+
+
     public obtenerRolesUsuarioByEmail(email: string) {
         let json = {
             email: email
