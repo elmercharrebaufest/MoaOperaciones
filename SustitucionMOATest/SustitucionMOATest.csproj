@@ -154,10 +154,6 @@
       <Project>{2DB8712D-EC58-4C1F-9329-E376FE5D8A50}</Project>
       <Name>SustitucionMOAExternalAPI</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
-      <Name>SustitucionMOAModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
       <Project>{17CF0FDF-2900-470D-8F5E-E64A8583B61F}</Project>
       <Name>SustitucionMOARepositorio</Name>

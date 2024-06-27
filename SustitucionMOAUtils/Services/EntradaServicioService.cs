@@ -232,11 +232,11 @@ namespace SustitucionMOAUtils.Services
 
                     if (verTodo)
                     {
-                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
                     }
                     else
                     {
-                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
                             (x.Ingresante_CDS.ToLower() == correo ||
                             x.Fiscal_SOLPED.ToLower() == correo ||
                             x.Aprobador_CDS.ToLower() == correo ||

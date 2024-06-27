@@ -281,10 +281,6 @@
       <Project>{f8d4a064-e19c-4b58-b17e-f516118a6eaf}</Project>
       <Name>SustitucionMOACustomException</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
-      <Name>SustitucionMOAModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
       <Project>{17cf0fdf-2900-470d-8f5e-e64a8583b61f}</Project>
       <Name>SustitucionMOARepositorio</Name>
