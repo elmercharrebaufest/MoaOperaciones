@@ -340,7 +340,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
 
     let userIntern = '@molinos';
     
-    return usuario.includes(userIntern) ? 'MOA Interno' : usuario;
+    return usuario.includes(userIntern) ? 'Ingresado por MOA' : usuario;
   
   }
 

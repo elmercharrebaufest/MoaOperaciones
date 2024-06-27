@@ -282,6 +282,33 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
+
+        public Dictionary<string, string> GetSolicitantes(List<string> nroSolpedList)
+        {
+            Dictionary<string, string> result = new Dictionary<string, string>();
+
+            foreach (var nroSolped in nroSolpedList)
+            {
+                var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolped);
+
+                if (solp != null)
+                {
+                    var pliego = repositorio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
+
+                    var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
+
+                    string solicitante = pliego?.FiscalContrato ?? pliego?.SupervisorTrabajo;
+
+                    if (string.IsNullOrEmpty(solicitante))
+                        solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante).Mail;
+
+                    result.Add(nroSolped, solicitante);
+                }
+            }
+            
+            return result;
+        }
+
         /// <summary>
         /// MMSN-602: Aprobaciones a ESDto para FE
         /// </summary>

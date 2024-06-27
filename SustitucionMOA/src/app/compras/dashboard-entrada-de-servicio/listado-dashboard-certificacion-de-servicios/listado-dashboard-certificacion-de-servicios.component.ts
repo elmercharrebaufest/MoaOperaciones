@@ -319,6 +319,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     loadSolicitantesList(rowData: any) {
+       
         if (this.solicitantes !== undefined && this.solicitantes.length > 0) {
 
             this.solicitantes.length = 0;
@@ -353,6 +354,24 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             }
 
         });
+    }
+
+    loadMailSolicitanteByNroSolp(rowData: any){
+        try {
+
+        let nroSolpedArray = rowData.Posiciones.map(posicion => posicion.NroSolped);
+
+        this.subscripcionPO = this.service.getSolicitantesByNroSolped(nroSolpedArray).subscribe(
+            (result: any) => {
+
+            
+
+            })
+
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+
     }
 
     toggleSolicitanteFilter(): void {

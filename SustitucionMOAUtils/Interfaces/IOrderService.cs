@@ -13,6 +13,6 @@ namespace SustitucionMOAUtils.Interfaces
         //List<OrdenCompraDto> GetByProveedor(string vendedor);
         //List<OrdenCompraDto> ServicioOrdenesCompraFake(string vendedor);
         ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros, string userMail);
-
+        Dictionary<string, string> GetSolicitantes(List<string> nroSolpedList);
     }
 }

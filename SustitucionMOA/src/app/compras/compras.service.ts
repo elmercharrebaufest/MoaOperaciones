@@ -179,6 +179,21 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/Order/GetByProveedor', { params: params, headers: this.headers })
     }
 
+
+    public getSolicitantesByNroSolped(
+        solpList: string[]
+    ): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+
+        solpList.forEach(param => {
+            params = params.append('solpList', param);
+          });
+
+        return this.http
+            .get<any[]>('/api/Order/GetSolicitantesByNroSolped', { params, headers: this.headers })
+    }
+
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
         proveedorId: string, 
