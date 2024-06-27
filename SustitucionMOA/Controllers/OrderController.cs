@@ -16,6 +16,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace SustitucionMOA.Controllers
 {
@@ -76,14 +77,14 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public ActionResult GetSolicitantesByNroSolped(List<string> solpList)
+        public async Task<ActionResult> GetSolicitantesByNroSolped(List<string> solpList)
         {
             try
             {
                 if (solpList.Count == 0)
                     throw new ValidationCustomException("La lista de solped esta vacia");
 
-                var result = orderService.GetSolicitantes(solpList);
+                var result = await orderService.GetSolicitantes(solpList);
 
                 return ContentCustom(new { data = result });
             }

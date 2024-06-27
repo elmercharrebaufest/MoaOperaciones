@@ -14,6 +14,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 
@@ -283,27 +284,50 @@ namespace SustitucionMOAUtils.Services
         }
 
 
-        public Dictionary<string, string> GetSolicitantes(List<string> nroSolpedList)
+        public async Task<List<SolicitantesSolpedDto>> GetSolicitantes(List<string> nroSolpedList)
         {
-            Dictionary<string, string> result = new Dictionary<string, string>();
+            List<SolicitantesSolpedDto> result = new List<SolicitantesSolpedDto>();
+            string solicitante = string.Empty;
+            string suplente = string.Empty;
 
             foreach (var nroSolped in nroSolpedList)
             {
                 var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolped);
-
+                /* 
+                 * Siempre va a haber una solp con numero de solp?
+                 * Tengo que enviar el solicitante tambien para en caso de no encontrar buscar el mail de usuario?
+                 * si no hay solp devolver el msj
+                */
                 if (solp != null)
                 {
                     var pliego = repositorio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
 
-                    var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
-
-                    string solicitante = pliego?.FiscalContrato ?? pliego?.SupervisorTrabajo;
+                    solicitante = pliego?.FiscalContrato ?? pliego?.SupervisorTrabajo;
 
                     if (string.IsNullOrEmpty(solicitante))
-                        solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante).Mail;
+                    {
+                        var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
 
-                    result.Add(nroSolped, solicitante);
+                        solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
+                    }
+
+                    suplente = !string.IsNullOrEmpty(solicitante) ? repositorio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty ;
+
+                    if (string.IsNullOrEmpty(solicitante))
+                    {
+                        solicitante = "Aprobador no encontrado";
+                    }   
                 }
+                else
+                {
+                    solicitante = "No se encontro la Solp";
+                }
+
+                SolicitantesSolpedDto solicitantesSolpedDto = new SolicitantesSolpedDto();
+                solicitantesSolpedDto.NumeroSolp = nroSolped;
+                solicitantesSolpedDto.Solicitante = new SolicitanteDto() { Aprobador = solicitante, Suplente = suplente };
+
+                result.Add(solicitantesSolpedDto);
             }
             
             return result;
