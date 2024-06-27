@@ -97,11 +97,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     {
       name: 'Certificaciones',
       columns: [
-        
-        { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cFecha', header: 'Fecha de carga', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'cID_ES', header: 'ID-ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'DFechaPres', header: 'Fecha de prestación de servicio', field: 'Fechadeprestación', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
@@ -109,7 +109,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
-
 
       ]
     },
@@ -121,8 +120,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         { id: 'DCantidadCertificar', header: 'Cantidad a certificar', field: 'CantidadCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DPorcentajeCertificar', header: 'Porcentaje a certificar', field: 'PorcentajeCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DImporteTotal', header: 'Importe total', field: 'ImporteTotal', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DFechaPres', header: 'Fecha de prestación', field: 'Fechadeprestación', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DNumeroRemito', header: 'Referencia', field: 'NumeroRemito', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DTextoBreve', header: 'Texto Breve', field: 'TextoBreve', type: 'string', sortable: false, required: false, visible: true },
       ]
@@ -279,7 +278,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
       case 'Aprobada':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion'];
       case 'Pendiente Aprobación':
-        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
+        return ['DImporteTotal', 'DFechaPres', 'cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
       case 'Rechazado':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo'];
     }

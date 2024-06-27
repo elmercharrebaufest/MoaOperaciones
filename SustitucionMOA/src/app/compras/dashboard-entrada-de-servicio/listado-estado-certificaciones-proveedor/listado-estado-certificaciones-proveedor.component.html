@@ -58,6 +58,8 @@
                                       : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
+                    <td>{{rowData.FechaCreacion}}</td>
+
                     <td>{{rowData.EntradaServicio}}</td>
                     <td *ngIf="rowData.Estado === 'Aprobada'">
                         {{ rowData.FechaAprobacion }}
@@ -65,7 +67,7 @@
                     <td *ngIf="rowData.Estado === 'Rechazado'">
                         {{ rowData.FechaRechazo }}
                     </td>
-                    <td>{{rowData.FechaCreacion}}</td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación'">{{rowData.entradaServicioDetalle[0].FechaPrestacion | defaultData}}</td><!-- aca va la fecha de rpestacion-->
                     <td>{{rowData.Descripcion | defaultData }}</td>
                     <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>{{rowData.OrdenCompra || ""}}</td>
@@ -124,10 +126,10 @@
                     <td>{{rowData.Descripcion}}</td>
                     <td>{{rowData.Cantidad}}</td>
                     <td>{{rowData.CantidadCertificar}}</td> <!-- aca va el porcentaje-->
-                    <td>{{rowData.PorcentajeCertificar}}</td> <!-- aca va el porcentaje-->
+                    <td>{{rowData.PorcentajeCertificar}} %</td> <!-- aca va el porcentaje-->
                     <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.Monto}}</td>
+                    <td>{{rowData.Monto * rowData.CantidadCertificar | number:'1.2-2'}}</td>
                     <td>{{rowData.UM}}</td>
-                    <td>{{rowData.FechaPrestacion | defaultData}}</td><!-- aca va la fecha de rpestacion-->
                     <td>{{rowData.NroRemito | defaultData}}</td><!-- aca va la referencia-->
                     <td>{{rowData.TextoBreveServicio | defaultData}}</td><!-- aca va el texto breve-->
                 </tr>

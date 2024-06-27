@@ -1016,7 +1016,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                     {
-                        aprobacion.Monto_a_certificar = double.Parse(esItem.CertificationAmount, System.Globalization.CultureInfo.InvariantCulture);
+                        aprobacion.Monto_a_certificar = double.Parse(esItem.Quantity, System.Globalization.CultureInfo.InvariantCulture) * double.Parse(esItem.ItemGrossPrice, System.Globalization.CultureInfo.InvariantCulture);
                         monto_total = (double)(monto_total + aprobacion.Monto_a_certificar);
                     }
                 }
