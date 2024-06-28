@@ -502,7 +502,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
             }
             this.solpActual.Finalizar = enviarSap;
-            this.solpActual.usuarioComprasId = this.selectUsuarioCompras != null ? this.selectUsuarioCompras.Id : null;
+            this.solpActual.usuarioComprasId = this.solpActual.selectUsuarioCompras != null ? this.solpActual.selectUsuarioCompras.Id : null;
 
             if (this.solpActual.especificacionesViewModel.observaciones == null)
                 this.solpActual.especificacionesViewModel.observaciones = "";
@@ -1187,7 +1187,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                 this.solpActual.usuarioComprasList = [];
             }
             // Copiar todos los correos electrónicos de usuarioComprasList a toEmails
-            this.usuarioComprasList.forEach((usuario, index) => {
+            this.solpActual.usuarioComprasList.forEach((usuario, index) => {
                 if (index !== 0) {
                     toEmails.push(usuario.CodigoDescripcion);
                 }
@@ -1239,7 +1239,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     private get emailTo(): string {
         let emailTo = "";
         if (this.solpActual.usuarioComprasId != null) {
-            let usuarioCompras = this.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
+            let usuarioCompras = this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId);
             if (usuarioCompras != null) {
                 emailTo = usuarioCompras.CodigoDescripcion;
             }
