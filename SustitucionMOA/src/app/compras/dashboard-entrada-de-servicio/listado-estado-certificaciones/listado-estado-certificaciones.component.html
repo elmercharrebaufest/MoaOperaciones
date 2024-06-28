@@ -88,7 +88,7 @@
                     <td>{{ rowData.CUIT | defaultData }}</td>
                     <td>{{ rowData.Proveedor | defaultData }}</td>
                     <td>{{ rowData.Descripcion | defaultData }}</td>
-                    <td>{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>
                         <div class="usuario-area">
                             <span>{{ rowData.Ingresante }}</span>
@@ -159,10 +159,10 @@
                     <td>{{ rowDetalle.Descripcion }}</td>
                     <td>{{ rowDetalle.Cantidad }}</td>
                     <td>{{ rowDetalle.UM }}</td>
-                    <td>{{ rowDetalle.Monto }}</td>
+                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.Monto }}</td>
                     <td>{{ rowDetalle.CantidadCertificar }}</td>
                     <td>{{ rowDetalle.PorcentajeCertificar }}</td>
-                    <td>{{ rowDetalle.MontoCertificar }}</td>
+                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.MontoCertificar }}</td>
                     <td>{{ rowDetalle.NroRemito }}</td>
                 </tr>
             </ng-template>
