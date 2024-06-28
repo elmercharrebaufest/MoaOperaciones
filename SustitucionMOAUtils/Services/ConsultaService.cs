@@ -517,7 +517,7 @@ namespace SustitucionMOAUtils.Services
                         Nombre = x.Categoria.Nombre
                     },
                     SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
-                    SubCategoria = x.SubCategoria != null && x.SubCategoria_Id != null ? new SubCategoriaDto
+                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
                     {
                         Id = x.SubCategoria.Id,
                         Code = x.SubCategoria.Code,

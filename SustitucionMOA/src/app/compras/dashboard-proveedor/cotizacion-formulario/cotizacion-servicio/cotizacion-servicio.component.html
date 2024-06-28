@@ -37,7 +37,7 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios1" name="respetaServicios"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaServicios" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
@@ -80,9 +80,9 @@
                     </p-fileUpload>
                 </div>
 
-                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
-                    <p-panel *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
-                             header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                <div *ngIf="peticion?.Cotizacion?.ArchivosCotizacion?.length > 0 || archivosTecnico?.length > 0"
+                     class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                    <p-panel header="Anexos agregados" [toggleable]="true" [collapsed]="false">
                         <div class="row myRow">
 
                             <!-- Archivos que ya fueron guardados-->

@@ -67,7 +67,7 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (tipoLegajo == "Petici�n de Oferta") {
+        } else if (tipoLegajo == "Petición de Oferta") {
             this.blockUI.start("Generando...");
             this.service.getPdfPeticionDeOfertaUsuario(archivoId)
                 .subscribe(

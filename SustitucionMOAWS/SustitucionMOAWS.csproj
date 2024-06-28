@@ -496,16 +496,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\OrdenCargaEstadoEntregadaV2SAP\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
-    <Compile Include="Service References\OrdenCargaEstadoEntregadaV3SAP\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
     <Compile Include="Service References\OrdenCargaVisualizarCliente\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -2576,8 +2566,6 @@
     <WCFMetadataStorage Include="Service References\ObtenerServiciosSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerSolPEDWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\ObtenerSolpWebServiceMOA\" />
-    <WCFMetadataStorage Include="Service References\OrdenCargaEstadoEntregadaV2SAP\" />
-    <WCFMetadataStorage Include="Service References\OrdenCargaEstadoEntregadaV3SAP\" />
     <WCFMetadataStorage Include="Service References\OrdenCargaVisualizarCliente\" />
     <WCFMetadataStorage Include="Service References\OrdenesDeCompraParaSolpWebServiceMOA\" />
     <WCFMetadataStorage Include="Service References\PagoComprobantesWebServiceMOA\" />
@@ -3671,30 +3659,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ModificarEntregaOrdenFasV2WebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ModificarEntregaOrdenFasV2WebServiceMOA\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ModificarEntregaOrdenFasV2WebServiceMOA\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OrdenCargaEstadoEntregadaV2SAP\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OrdenCargaEstadoEntregadaV2SAP\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OrdenCargaEstadoEntregadaV2SAP\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\AplicacionCartaPortePendienteAplicarWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -3708,20 +3672,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ObtenerOrdenesDeCompraWebServiceMOA\configuration91.svcinfo" />
-    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ObtenerOrdenesDeCompraWebServiceMOA\configuration.svcinfo" />
-    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\configuration.svcinfo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Service References\ObtenerOrdenesDeCompraWebServiceMOA\Reference.svcmap">
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\OrdenCargaEstadoEntregadaV3SAP\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

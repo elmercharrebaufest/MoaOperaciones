@@ -7211,9 +7211,9 @@ namespace SustitucionMOAUtils.Services
                 Proveedor = adjudicacion.Cabecera.RazonSocialProveedor,
                 MonedaDescripcion = adjudicacion.Cabecera.Moneda,
                 PrecioFinal = adjudicacion.Cabecera.MontoTotal,
-                //PrecioBruto = adjudicacion.Cabecera.MontoBruto,
-                //EstadoLiberacionCodigo = adjudicacion.Cabecera.EstadoLiberacionCodigo,
-                //EstadoLiberacionDetalle = estados.SingleOrDefault(a => a.CodigoSap == adjudicacion.Cabecera.EstadoLiberacionCodigo)?.Descripcion ?? "",
+                PrecioBruto = adjudicacion.Cabecera.MontoBruto,
+                EstadoLiberacionCodigo = adjudicacion.Cabecera.EstadoLiberacionCodigo,
+                EstadoLiberacionDetalle = estados.SingleOrDefault(a => a.CodigoSap == adjudicacion.Cabecera.EstadoLiberacionCodigo)?.Descripcion ?? "",
 
             }).OrderBy(fc => fc.FechaCreacion).ToList();
 
