@@ -20,6 +20,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
@@ -141,6 +142,29 @@ namespace SustitucionMOA.Controllers
             try
             {
                 return JsonCustom(new { data = _usuarioService.GetRolesUsuario(idUsuario) });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_USUARIOS)]
+        public ActionResult ObtenerReasignacionUsuario(int idUsuario)
+        {
+            try
+            {
+                return JsonCustom(new { data = _usuarioService.GetPeriodoReasignacion(idUsuario) });
             }
             catch (InfoCustomException e)
             {
@@ -732,8 +756,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);           
-                var result = _usuarioService.GrabarProveedor(proveedor);
+                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);
+                var result = _usuarioService.GrabarProveedor(proveedor, EstadoAprobacion.AltaIncompleta);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

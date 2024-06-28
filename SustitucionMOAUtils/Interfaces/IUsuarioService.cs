@@ -22,13 +22,14 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
+        UsuarioReasignacionDto GetPeriodoReasignacion(int idUsuario);
         List<Rol> GetRolesApiKey(string apikey);
         void SeccionVisitada(string mailUsuario, string seccion);
         ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario);
         ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);
         string ObtenerNuevoApiKey(string usuario);
         List<ProveedorDto> ListarProveedores(string filtro);
-        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.DocumentacionPendiente);
+        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta);
         UsuarioDto GetUsuarioPorId(int id);
         List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario);
         List<TipoUsuarioDto> GetTipoUsuario();

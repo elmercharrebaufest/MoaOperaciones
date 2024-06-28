@@ -8,7 +8,7 @@
 GO
 
 ALTER TABLE [dbo].[PeticionDeOfertaArchivo]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PeticionDeOfertaArchivo_dbo.PeticionDeOferta_PeticionDeOferta_Id] FOREIGN KEY([PeticionDeOferta_Id])
-REFERENCES [dbo].[PeticionDeOferta] ([Id])
+REFERENCES [dbo].[PeticionDeOferta] ([Id]) 
 ON DELETE CASCADE
 GO
 

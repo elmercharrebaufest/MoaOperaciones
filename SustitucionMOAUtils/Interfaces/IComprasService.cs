@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<ProveedorDto> AutocompleteProveedor(string valor);
         void ActualizarEstadoSolpBulk();
-        List<UsuarioComprasRelacionConUsuariosDto> ListarUsuarioCompras(UsuarioDto usuarioActual);
+        List<UsuarioComprasDto> ListarUsuarioCompras();
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
         List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
@@ -108,5 +108,7 @@ namespace SustitucionMOAUtils.Interfaces
         ChatsDto ObtenerChatProveedor(int peticionDeOfertaUsuarioId, int usuarioActualId);
         void MarcarChatProveedorComoLeido(ChatProveedoresDto proveedor);
         void ExecuteObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
+        List<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto);
+        Resultado AgruparPeticionesDeOferta(int usuarioId, string ids);
     }
 }

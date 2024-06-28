@@ -5,6 +5,6 @@ namespace Molinos.Scato.Repositorio
 {
     public interface IConsulta<TEntidad>
     {
-       List<TEntidad> Ejecutar(DbContext contexto);
+        List<TEntidad> Ejecutar(DbContext contexto);
     }
 }

@@ -128,7 +128,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [class.purple-row]="totalesBloqueadasEliminadas(rowData)" [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadMailSolicitanteByNroSolp(rowData);loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -149,7 +149,11 @@
             <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns" let-orderIndex="rowIndex">
                 <tr [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))">
                     <td [attr.colspan]="cantidadColumnasTabla('ordenes')">
+
+                        <div *ngIf="loading" class="spinner"></div>
+
                         <p-table #tablaPosiciones
+                                *ngIf="!loading"
                                  id="posiciones"
                                  class="level2"
                                  [value]="rowData.Posiciones"
@@ -277,7 +281,7 @@
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
                                                                    type="text"
-                                                                   name="porcentaje"
+                                                                   id="porcentaje_{{rowData.Id}}_{{rowData.LINE_NO}}"
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem,$event);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"

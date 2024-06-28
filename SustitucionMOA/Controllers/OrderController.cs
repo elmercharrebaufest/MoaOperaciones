@@ -16,6 +16,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using System.Threading.Tasks;
 
 namespace SustitucionMOA.Controllers
 {
@@ -52,6 +53,38 @@ namespace SustitucionMOA.Controllers
                     result.Items.FirstOrDefault().ItemPorPagina = result.ItemsPorPagina;
 
                 }
+
+                return ContentCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
+        public async Task<ActionResult> GetSolicitantesByNroSolped(List<string> solpList)
+        {
+            try
+            {
+                if (solpList.Count == 0)
+                    throw new ValidationCustomException("La lista de solped esta vacia");
+
+                var result = await orderService.GetSolicitantes(solpList);
 
                 return ContentCustom(new { data = result });
             }

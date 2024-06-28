@@ -70,7 +70,6 @@ export class VisualizarMovimientoComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {                       
-                        debugger;
                         this.historialDeFechas = result.data;
                         if( this.spinnerComponent != undefined){
                         this.spinnerComponent.hideIt();

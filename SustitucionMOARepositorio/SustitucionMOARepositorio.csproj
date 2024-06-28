@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Cache.cs" />
+    <Compile Include="ConsultasEF\ListarSolpCondicionEspecialConsulta.cs" />
     <Compile Include="ConsultasEF\ObtenerPosicionesMultipleComprasConsulta.cs" />
     <Compile Include="ConsultasEF\TraerCotizacionConsulta.cs" />
     <Compile Include="ConsultasEF\ComparadorOfertasConsulta.cs" />

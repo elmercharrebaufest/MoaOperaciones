@@ -16,7 +16,7 @@
     [TercerPlazoDeOferta] INT NULL, 
     [TerceraCantidad] DECIMAL(18, 2) NULL, 
     CONSTRAINT [PK_CotizacionPosicion] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [FK.CotizacionPosicion_Cotizacion_Cotizacion_Id] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]),
+    CONSTRAINT [FK.CotizacionPosicion_Cotizacion_Cotizacion_Id] FOREIGN KEY ([Cotizacion_Id]) REFERENCES [Cotizacion]([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK.CotizacionPosicion_PeticionDeOfertaSolpPosicion_PeticionDeOfertaSolpPosicion_Id] FOREIGN KEY ([PeticionDeOfertaSolpPosicion_Id]) REFERENCES [PeticionDeOfertaSolpPosicion]([Id]),
     CONSTRAINT [FK.CotizacionPosicion_Unidad_UnidadDeMedida_Id] FOREIGN KEY ([UnidadDeMedida_Id]) REFERENCES [TablaSap]([Id]),
     CONSTRAINT [FK.CotizacionPosicion_Moneda_Moneda_Id] FOREIGN KEY ([Moneda_Id]) REFERENCES [TablaSap]([Id]),
