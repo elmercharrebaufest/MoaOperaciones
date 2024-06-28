@@ -63,7 +63,7 @@
             <!-- TABLE 1 HEADERS END -->
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData">
+                <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
                     <td>
                         <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
                             (click)="toggleRow(rowData)">
@@ -109,8 +109,7 @@
                         <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
                             (click)="verMotivosRechazos(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
-                        <button
-                            *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
                     </td>
@@ -193,14 +192,6 @@
         </div>
         <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()"
             [disabled]="formularioMotivosRechazo.invalid"></p-button>
-    </form>
-</p-dialog>
-<p-dialog header="Suplente a reasignar" [(visible)]="mostrarSuplentes" [modal]="true" [responsive]="true"
-    [appendTo]="'body'" [contentStyle]="{'overflow':'visible'}" [draggable]="false">
-    <form [formGroup]="formularioSuplente">
-        <input formControlName="suplente" pInputText type="text" readonly />
-        <p-button class="boton-enviar-motivo" label="Reasignar" (onClick)="reasignar()"
-            [disabled]="formularioSuplente.invalid"></p-button>
     </form>
 </p-dialog>
 
