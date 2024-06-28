@@ -117,6 +117,7 @@
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
     <Compile Include="Dto\SeleccionarVendedorResponseDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
+    <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Entities\Almacen.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />

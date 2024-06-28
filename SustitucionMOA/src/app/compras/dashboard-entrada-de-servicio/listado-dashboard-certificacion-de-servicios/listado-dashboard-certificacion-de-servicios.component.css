@@ -393,7 +393,7 @@ i#btn-fullscreen {
 /* Positions Table */
 #pSolicitante {
     overflow: hidden;
-    white-space: normal;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 

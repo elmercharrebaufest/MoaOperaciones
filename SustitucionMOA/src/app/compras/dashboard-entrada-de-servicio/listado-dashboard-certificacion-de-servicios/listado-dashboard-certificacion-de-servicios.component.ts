@@ -162,7 +162,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'pAlmacen', header: 'Almacén', field: 'Almacen', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pSolped', header: 'NRO_SOLPED', field: 'NumeroSolp', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pContrato', header: 'Contrato', field: 'Contrato', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'pSolicitante', header: 'Solicitante', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
+                { id: 'pSolicitante', header: 'Aprobador', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
             ],
         },
         {
@@ -319,6 +319,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     loadSolicitantesList(rowData: any) {
+       
         if (this.solicitantes !== undefined && this.solicitantes.length > 0) {
 
             this.solicitantes.length = 0;
@@ -354,6 +355,47 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         });
     }
+
+    loading: boolean = false;
+
+
+    async loadMailSolicitanteByNroSolp(rowData: any) {
+        
+        this.loading = true;
+        
+        rowData.expanded = !rowData.expanded;
+    
+        try 
+        {
+            
+            if (rowData.expanded)
+            { 
+                let nroSolpedArray = rowData.Posiciones
+                //.map(posicion => ({ nroSolped: posicion.NumeroSolp, solicitanteSap: posicion.Solicitante }))
+                .map(posicion => posicion.NumeroSolp)
+                .filter((value, index, self) => self.indexOf(value) === index);
+
+                const result = await this.service.getSolicitantesByNroSolped(nroSolpedArray).toPromise();
+
+                rowData.Posiciones.forEach(posicion => {
+                    const solicitanteInfo = result.data.find(s => s.NumeroSolp === posicion.NumeroSolp);
+                    if (solicitanteInfo) {
+                        posicion.Solicitante = solicitanteInfo.Solicitante.Aprobador;
+                        //En caso de necesitarse el suplente el objeto solicitanteInfo.Solicitante ya lo devuelve
+                    }
+                });
+
+                return rowData;
+            }
+
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+        finally {
+            this.loading = false;
+        }
+    }
+    
 
     toggleSolicitanteFilter(): void {
         this.filterSolicitante = !this.filterSolicitante;
