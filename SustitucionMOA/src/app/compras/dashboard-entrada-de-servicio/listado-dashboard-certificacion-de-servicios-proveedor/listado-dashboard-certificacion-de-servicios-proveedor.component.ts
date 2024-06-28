@@ -169,8 +169,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             columns: [
                 { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'custom', sortable: true, required: true, visible: true },
                 { id: 'esFechaDoc', header: 'F. de prestación de servicios', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
-                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: true, required: false, visible: true },
+                //{ id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
+                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
