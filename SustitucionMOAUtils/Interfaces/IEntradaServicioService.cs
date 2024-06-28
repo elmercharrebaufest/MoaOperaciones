@@ -33,7 +33,7 @@ namespace SustitucionMOAUtils.Interfaces
         Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local);
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
-        string ReasignarSuplente(string nro_es_local, string mail);
+        EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
     }
 }

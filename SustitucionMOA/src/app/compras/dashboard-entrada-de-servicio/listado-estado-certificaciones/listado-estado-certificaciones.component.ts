@@ -78,7 +78,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   formularioMotivosRechazo: FormGroup | undefined;
   formularioSuplente: FormGroup | undefined;
   mostrarMotivosRechazos: boolean = false;
-  mostrarSuplentes: boolean = false;
   proveedorList: any[] = new Array();
   filtroFechas: Array<DropdownOption> = [
     new DropdownOption("1", "Últimos dos dias"),
@@ -121,7 +120,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       columns: [
         { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
         { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
@@ -237,17 +236,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.sessionDataService.logout();
             reject('Logout required');
           } else if (result.error !== undefined && result.error !== "") {
-            reject(result.error);
           } else if (result.info !== undefined) {
             // Manejo de mensajes informativos, si es necesario
           } else {
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
-            this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
-            this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-            this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
           }
-          this.tabla.filter(["Pendiente Aprobación"], "Estado", "in");
+          this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
           this.recalculando = false;
           resolve();
         },
@@ -278,8 +273,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else {
             this.tablaPOSap = [];
           }
-          this.tabla.first = 0;
-
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.recalculandoAprobadas = false;
@@ -321,35 +314,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
 
-
-  deleteES(item: any) {
-    //TODO: lógica para cuando se especifique el borrado de una ES
-  }
-
-  async handlePageEvent(e: any) {
-    this.pageSize = e.rows;
-    this.pageIndex = e.page + 1;
-    this.recalculando = true;
-    await this.getListarPO(); // No mover.
-  }
-
-  async onOrder(columna: string) {
-    if (this.columnaOrden != columna) {
-      this.ordenAscendente = false
-    } else {
-      this.ordenAscendente = this.ordenAscendente == false ? true : false;
-    }
-    this.columnaOrden = columna;
-    this.recalculando = true;
-    await this.getListarPO(); // No mover.
-  }
-
   toggleRow(rowData: any): void {
     this.selectedRow = this.selectedRow === rowData ? null : rowData;
-  }
-
-  isSelectedRow(rowData: any): boolean {
-    return this.selectedRow === rowData;
   }
 
   verMotivosRechazos(rowData: any): void {
@@ -372,6 +338,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         break;
       case 'Pendiente Aprobación':
+        if(this.tablaPOAprobaciones.length < 1){
+          this.recalculando = true;
+          this.getListarPO();
+        }
         this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
         break;
       case 'Rechazado':
@@ -381,6 +351,16 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         break;
     }
     this.tabla.filter(event.value.code, 'Estado', 'contains');
+    this.showAllESRows();
+  }
+
+  showAllESRows(): void {
+    this.tablaPOAprobaciones.forEach(es => {
+      const element = document.getElementById(es.EntradaServicio);
+      if (element) {
+        element.style.display = 'table-row';
+      }
+    });
   }
 
   filtrarPorArea(event: any): void {
@@ -392,19 +372,21 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   verSuplentes(suplente: string, nro_es_local: string): void {
-
     const data = {
       Suplente: suplente,
       NroEsLocal: nro_es_local
     }
-
     let confirmMessage;
 
     if (suplente) {
       confirmMessage = {
         acceptLabel: 'Si',
         message: `Está derivando la certificación Nº ` + nro_es_local + ` al siguiente aprobador ` + suplente + `. <b>¿Desea continuar?</b>`,
-        accept: () => { this.reasignar(data); },
+        accept: () => {
+          this.messageService.clear();
+          this.blockUI.start('Cargando...');
+          this.reasignar(data); 
+        },
         reject: () => { }
       }
     } else {
@@ -421,28 +403,31 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   reasignar(data): void {
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
-        async (resp: any) => {
-          this.recalculando = true;
-          this.mostrarSuplentes = false;
-
+        (resp: any) => {
           const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
-
           if (resp.error) {
-            msj.severity = 'info';
+            msj.severity = 'error';
             msj.summary = resp.error
+            msj.detail = '';
           }
-
-          this.messageService.add(msj)
-          await this.getListarPO(); // No mover.
-          
+          this.messageService.add(msj);
+          if(!resp.error){
+            this.updateApprover(data.NroEsLocal, resp.data);
+          }
+          this.blockUI.stop();
+          this.clearMessage();
         }, error => {
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
+          this.blockUI.stop();
+          this.clearMessage();
         }
       )
     );
   }
 
   enviarMotivo() {
+    this.messageService.clear();
+    this.blockUI.start('Cargando...');
     const data = {
       Destinatario: this.formularioMotivosRechazo.get('destinatario').value,
       MotivoRechazo: this.formularioMotivosRechazo.get('observaciones').value != null ? this.formularioMotivosRechazo.get('motivo').value.name + '. Observación:' + this.formularioMotivosRechazo.get('observaciones').value : this.formularioMotivosRechazo.get('motivo').value.name,
@@ -462,8 +447,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
-        async (resp: any) => {
-
+        (resp: any) => {
           if (resp.data.status == "OK") {
             this.messageService.add({ severity: 'success', summary: 'Rechazo exitoso!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' });
           }
@@ -471,23 +455,25 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.messageService.add({ severity: 'error', summary: '', detail: resp.data.status });
           }
 
-          this.resetForm();
-          this.recalculando = true;
+          this.resetRejectForm();
           this.mostrarMotivosRechazos = false;
-          await this.getListarPO(); // No mover.
-          
+          this.updateStateFromPending(data.NumeroCertificacion, 'Rechazar', {es: resp.data.result[0], dateReject: resp.data.Fecha_rechazo_string});
+          this.blockUI.stop();
+          this.clearMessage();
         }, error => {
           this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
+          this.blockUI.stop();
+          this.clearMessage();
         }
       )
     );
   }
 
   ocultandoModal(): void {
-    this.resetForm();
+    this.resetRejectForm();
   }
 
-  resetForm() {
+  resetRejectForm() {
     this.formularioMotivosRechazo.reset({
       motivo: { name: null, code: null },
       destinatario: null,
@@ -540,7 +526,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   enviarAprobacion(numeroCertificacion: string): void {
-    this.clearMessage();
+    this.messageService.clear();
     this.confirmationService.confirm({
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
       header: 'Confirmar Aprobación',
@@ -548,55 +534,49 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       acceptLabel: "Sí",
       rejectLabel: "No",
       accept: () => {
-        this.recalculando = true;
+        this.blockUI.start('Cargando...');
+        this.cerrarModalResumen();
         this.subscripciones.push(
           this.service.enviarAprobacionES(numeroCertificacion).subscribe(
-            async (resp) => {
+            (resp) => {
               let mensajeError: string = "";
               if (!resp.data) {
                 mensajeError = 'del servidor, vuelva a intentarlo más tarde.'
                 this.messageService.add({ severity: 'error', summary: 'Error', detail: mensajeError });
-                this.recalculando = false;
               }
               switch (resp.data.Type) {
                 case "I": {
-                  this.mostrarModalAprobaciones = false;
                   this.messageService.add({ severity: 'success', summary: 'Aprobado', detail: resp.data.Message });
-                  await this.getListarPO(); // No mover.
+                  this.updateStateFromPending(numeroCertificacion, 'Aprobar');
                   this.recalculandoAprobadas = true;
+                  this.getFecha("1");
                   this.obtenerESSap(this.proveedor, this.documentoNumero);
                   break;
                 }
-                case "S": {
+                case "S":
+                case "Desync":
                   this.messageService.add({ severity: 'info', summary: '', detail: resp.data.Message });
-                  this.recalculando = false;
                   break;
-                }
-                case "Desync": {
-                  this.messageService.add({ severity: 'error', summary: '', detail: resp.data.Message });
-                  this.resetForm();
-                  await this.getListarPO(); // No mover.
-                  this.recalculandoAprobadas = true;
-                  this.obtenerESSap(this.proveedor, this.documentoNumero);
-                  break;
-                }
                 case "E": {
                   mensajeError = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
                     resp.data.Message.startsWith("Contabilice en ") ?
                     "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
                   this.messageService.add({ severity: 'warning', summary: '', detail: mensajeError });
-                  this.recalculando = false;
                   break;
                 }
                 default: {
                   this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-                  this.recalculando = false;
                   break;
                 }
               }
+              this.mostrarModalAprobaciones = false;
+              this.blockUI.stop();
+              this.clearMessage();
             }, error => {
+              this.mostrarModalAprobaciones = false;
+              this.blockUI.stop();
               this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: 'Hemos dectectado un error por favor intentelo de nuevo.' });
-              this.recalculando = false;
+              this.clearMessage();
             }
           )
         );
@@ -605,15 +585,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   async SeeAll() {
+    this.blockUI.start('Cargando...');
     this.isAll = true;
-    this.recalculando = true;
     await this.getListarPO(); // No mover.
+    this.blockUI.stop();
   }
 
   async SeeForProvider() {
+    this.blockUI.start('Cargando...');
     this.isAll = false;
-    this.recalculando = true;
     await this.getListarPO(); // No mover.
+    this.blockUI.stop();
   }
 
   /**
@@ -740,38 +722,6 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     });
   }
 
-  autocompleteProveedor(event) {
-    this.subscription = this.service.autocompleteProveedor(event.query).subscribe(
-      (result: any) => {
-        if (result.logout == true) {
-          this.sessionDataService.logout();
-        } else if (result.error != undefined && result.error != "") {
-          this.floatMsgService.setErrorMsg(result.error);
-        } else if (result.info != undefined) {
-          this.floatMsgService.setInfoMsg(result.info);
-        } else {
-          let provisional: any[] = new Array();
-          result.forEach((element) => {
-            let obj: autoCompleteObject;
-            obj.valor = element.CodigoProveedor + ' - ' + element.RazonSocial;
-            obj.CodigoProveedor = element.CodigoProveedor;
-            if (provisional.some(x => x.valor === obj.valor)) {
-            }
-            else {
-              provisional.push(obj);
-            }
-          });
-          this.proveedorList = provisional;
-        }
-      },
-      error => {
-        this.floatMsgService.setErrorMsg(error.message);
-        this.spinnerComponent.hideIt();
-      });
-
-    return false; //<-- Prevent Refresh
-  }
-
   /**
      * Colapsa la fila expandida.
      */
@@ -800,6 +750,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.obtenerESSap(this.proveedor, this.documentoNumero);
   }
 
+  /**
+   * metodo para mostrar u ocultar el panel auxiliar de filtro por fecha.
+   * @returns boolen
+   */
   showOrHideAuxPanel(): boolean {
     const estadoCertificacion: estadoCertificacion = { name: 'Estado: Aprobadas', code: 'Aprobada' };
     if (this.estadoCertificacion.code === estadoCertificacion.code) {
@@ -808,4 +762,41 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     return false;
   }
 
+  /**
+   * Metodo para actualizar el aprobador en la lista de la tabla al ejecutar la accion de reasignar.
+   * @param es Nro entrada de servicio
+   */
+  updateApprover(es: string, esUpdated: any): void {
+    this.tablaPOAprobaciones.filter(e => e.EntradaServicio === es)
+      .forEach(x => {
+        x.Suplente = esUpdated.newSubstitute;
+        x.Aprobador = esUpdated.newApprover;
+      })
+  }
+
+  /**
+   * Metodo para actualizar la tabla luego de ejecutar una acción sin llamar al servicio que lista los registros.
+   * @param es Nro entrada de servicio
+   * @param action accion ejecutada
+   * @param esRejected entrada de servicio rechaza solo para los casos de rechazo.
+   */
+  updateStateFromPending(es: string, action: string, esRejected?: any): void {
+    if(action === 'Aprobar'){
+      const indices = this.tablaPOAprobaciones
+        .map((ap, index) => ap.EntradaServicio === es ? index : -1)
+        .filter(index => index !== -1);
+
+      // Eliminar los elementos desde el final hacia el inicio para evitar problemas de reindexación
+      indices.reverse().forEach(index => {
+        this.tablaPOAprobaciones.splice(index, 1);
+      });
+    } else {
+      this.tablaPOAprobaciones.filter(ap => ap.EntradaServicio === es).forEach(x => {
+        x.Estado = esRejected.es.Estado_certificacion;
+        x.MotivoRechazo = esRejected.es.Motivo_rechazo;
+        x.FechaRechazo = esRejected.dateReject;
+      });
+    }
+    document.getElementById(es).style.display = 'none';
+  }
 }
