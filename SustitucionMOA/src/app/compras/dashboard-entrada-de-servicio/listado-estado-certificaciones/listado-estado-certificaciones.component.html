@@ -63,7 +63,7 @@
             <!-- TABLE 1 HEADERS END -->
             <!-- TABLE 1 BODY -->
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-                <tr [pSelectableRow]="rowData">
+                <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
                     <td>
                         <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
                             (click)="toggleRow(rowData)">
@@ -103,15 +103,13 @@
                     </td>
                     <td
                         *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
-                        <button [id]="rowData.EntradaServicio + '-aprobar'" type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
+                        <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
                             (click)="mostrarResumenDeAprobacion(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
-                        <button [id]="rowData.EntradaServicio + '-rechazo'" type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
+                        <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
                             (click)="verMotivosRechazos(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
-                        <button
-                            [id]="rowData.EntradaServicio + '-reasignar'"
-                            *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
                     </td>

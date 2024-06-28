@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
-    public class EntradaServicioRejectRespuestaDto
+    public class EntradaServicioReasignacionRespuestaDto
     {
-      public List<Aprobaciones> result {  get; set; }
+        public string newApprover {  get; set; }
 
-      public string status { get; set; }
-        public string Fecha_rechazo_string { get; set; }
+        public string newSubstitute { get; set; }
+
+        public string status { get; set; }
     }
 }

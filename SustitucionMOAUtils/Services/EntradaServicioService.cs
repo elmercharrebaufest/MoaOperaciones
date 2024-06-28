@@ -131,22 +131,19 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = new Dictionary<string, EntradaServicioCabeceraDto>();
-
-                foreach (Aprobaciones temporal in temporales)
-                {
-                    string nroEsLocal = temporal.NRO_ES_LOCAL;
-
-                    if (!diccionarioES.ContainsKey(nroEsLocal))
+                Dictionary<string, EntradaServicioCabeceraDto> diccionarioES = temporales
+                .GroupBy(temporal => temporal.NRO_ES_LOCAL)
+                .ToDictionary(
+                    grupo => grupo.Key,
+                    grupo =>
                     {
-                        ordenParams.OrdenCompraId = temporal.NRO_OC;
-                        EntradaServicioCabeceraDto entradaServicioTemp = MapEntradaServicioCabecera(temporal, ordenParams);
-                        diccionarioES.Add(nroEsLocal, entradaServicioTemp);
-                    }
-
-                    EntradaServicioDetalleDto detalleEntradaServicioTemp = MapEntradaServicioDetalle(temporal);
-                    diccionarioES[nroEsLocal].entradaServicioDetalle.Add(detalleEntradaServicioTemp);
-                }
+                        ordenParams.OrdenCompraId = grupo.First().NRO_OC;
+                        var entradaServicioTemp = MapEntradaServicioCabecera(grupo.First(), ordenParams);
+                        entradaServicioTemp.entradaServicioDetalle = grupo
+                            .Select(MapEntradaServicioDetalle)
+                            .ToList();
+                        return entradaServicioTemp;
+                    });
 
                 foreach (var kvp in diccionarioES)
                 {
@@ -232,11 +229,11 @@ namespace SustitucionMOAUtils.Services
 
                     if (verTodo)
                     {
-                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null);
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap);
                     }
                     else
                     {
-                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == null &&
+                        ESTemporales = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_SAP == nro_es_sap &&
                             (x.Ingresante_CDS.ToLower() == correo ||
                             x.Fiscal_SOLPED.ToLower() == correo ||
                             x.Aprobador_CDS.ToLower() == correo ||
@@ -250,9 +247,9 @@ namespace SustitucionMOAUtils.Services
                         .ToDictionary(g => g.Key, g => g.First());
 
                         // Iterar sobre los detalles de la entrada de servicio
-                        foreach (EntradaServicioDetalleDto detalleSAP in documento.entradaServicioDetalle)
+                        documento.entradaServicioDetalle = documento.entradaServicioDetalle
+                        .Select(detalleSAP =>
                         {
-                            // Verificar si hay detalles de aprobación correspondientes
                             if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out Aprobaciones detalle))
                             {
                                 detalleSAP.NumeroLinea = detalle.Nro_linea;
@@ -283,7 +280,8 @@ namespace SustitucionMOAUtils.Services
                                 documento.FechaAprobacion = fechaFormateada;
                                 documento.FechaCreacion = fechaFormateada;
                             }
-                        }
+                            return detalleSAP;
+                        }).ToList();
                     }
                     else
                     {
@@ -1293,7 +1291,9 @@ namespace SustitucionMOAUtils.Services
             {
                 throw e;
             }
-            
+
+            DateTime fechaRechazoFormateada = (DateTime)EntradasDeServicioTemp[0].Fecha_rechazo;
+            ret.Fecha_rechazo_string = fechaRechazoFormateada.ToString("dd/MM/yyyy");
             ret.result = EntradasDeServicioTemp;
 
             return ret;
@@ -1411,12 +1411,14 @@ namespace SustitucionMOAUtils.Services
         /// <param name="nro_es_local"></param>
         /// <param name="suplente"></param>
         /// <returns></returns>
-        public string ReasignarSuplente(string nro_es_local, string suplente) {
+        public EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string suplente) {
+            EntradaServicioReasignacionRespuestaDto resp = new EntradaServicioReasignacionRespuestaDto();
+            List<Aprobaciones> esTemporalPendienteAprobacionList = repositorio.Listar<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
+
             try
             {
                 SustitucionMOAModel.Entities.Usuario user = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == suplente);
 
-                List<Aprobaciones> esTemporalPendienteAprobacionList = repositorio.Listar<Aprobaciones>(t => t.NRO_ES_LOCAL == nro_es_local);
 
                 foreach (Aprobaciones esTemporalPendienteAprobacion in esTemporalPendienteAprobacionList)
                 {
@@ -1466,7 +1468,11 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
-            return "Se reasigno el suplente de la Entrada de servicio éxitosamente.";
+            resp.newApprover = esTemporalPendienteAprobacionList[0].Aprobador_CDS;
+            resp.newSubstitute = esTemporalPendienteAprobacionList[0].Suplente;
+            resp.status = "Se reasigno el suplente de la Entrada de servicio éxitosamente.";
+
+            return resp;
         }
 
         public string ActualizarInformacionIngresante(IngresanteInfoEditableDto info)

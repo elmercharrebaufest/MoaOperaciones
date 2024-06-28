@@ -93,6 +93,7 @@
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraMocDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateParamsDto.cs" />
+    <Compile Include="Dto\OrdenesCompra\EntradaServicioReasignacionRespuestaDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioRejectRespuestaDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCreateRespuestaDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDetalleDto.cs" />
