@@ -116,8 +116,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     pasos: Paso[];
 
-    selectUsuarioCompras: any;
-    usuarioComprasList: any[] = [];
 
     titulo: string = "";
     tituloNroSolp: string = "";
@@ -985,11 +983,11 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.usuarioComprasList = [];
+                        this.solpActual.usuarioComprasList = [];
                         result.data.forEach(element => {
-                            this.usuarioComprasList.push({
-                                Id: element.UsuarioCompras.Id,
-                                CodigoDescripcion: element.UsuarioCompras.Mail
+                            this.solpActual.usuarioComprasList.push({
+                                Id: element.Id,
+                                CodigoDescripcion: element.Mail
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
@@ -1063,7 +1061,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
-        this.selectUsuarioCompras = selectUsuarioCompras;
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
         this.cabecera.validarTabCompleto();

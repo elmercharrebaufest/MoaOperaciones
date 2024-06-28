@@ -338,6 +338,8 @@
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.html" />
+    <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.css" />
+    <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.html" />
     <Content Include="src\app\compras\crear-po-multiple\crear-po-multiple.component.css" />
@@ -1067,6 +1069,7 @@
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="Template\NuevaConsultaInterna.html" />
+    <Content Include="Template\ReporteAltaES.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -1162,6 +1165,7 @@
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
     <Compile Include="Controllers\ReporteContratoController.cs" />
+    <Compile Include="Controllers\ReporteESController.cs" />
     <Compile Include="Controllers\ReportesController.cs" />
     <Compile Include="Controllers\RYDController.cs" />
     <Compile Include="Controllers\RYDMantenimientoController.cs" />
@@ -1241,6 +1245,10 @@
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.spec.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th-filtro-model.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th-model.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.ts" />
     <TypeScriptCompile Include="src\app\compras\campo-obligatorio-viewModel.ts" />
     <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\chat-interno\chat-interno.component.ts" />
@@ -1641,6 +1649,7 @@
     <Folder Include="Views\LogPesificacion\" />
     <Folder Include="Views\OrdenDeCarga\" />
     <Folder Include="Views\ReporteContrato\" />
+    <Folder Include="Views\ReporteES\" />
     <Folder Include="Views\TicketPesada\" />
   </ItemGroup>
   <ItemGroup>
@@ -1661,7 +1670,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

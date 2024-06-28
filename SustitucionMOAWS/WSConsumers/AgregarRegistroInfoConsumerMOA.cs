@@ -46,14 +46,15 @@ namespace SustitucionMOAWS.WSConsumers
             MEWIEINE MEWIEINEE = new MEWIEINE();
 
             var registrosSap = DevolverDatosSapRegistro(registrosInfo);
-
-            //var serxml = new System.Xml.Serialization.XmlSerializer(registrosSap.GetType());
-            //var ms = new MemoryStream();
-            //serxml.Serialize(ms, registrosSap);
             string xml = "";
 
             foreach (var item in registrosSap)
             {
+                BAPIRETURNE = new BAPIRETURN[] { };
+                MEWIPIRTEXTE = new MEWIPIRTEXT[] { };
+                MEWISCALEQUANE = new MEWISCALEQUAN[] { };
+                MEWISCALEVALE = new MEWISCALEVAL[] { };
+                MEWIEINEE = new MEWIEINE();
 
                 MEWICONDITION[] CONDITIONE = item.CONDITION != null ? item.CONDITION.ToArray() : new MEWICONDITION[] { };
                 MEWIVALIDITY[] MEWIVALIDITYE = item.MEWIVALIDITY != null ? item.MEWIVALIDITY.ToArray() : new MEWIVALIDITY[] { };
@@ -67,8 +68,6 @@ namespace SustitucionMOAWS.WSConsumers
                 var xmlReturn = new System.Xml.Serialization.XmlSerializer(BAPIRETURNE.GetType());
                 xmlReturn.Serialize(ms, BAPIRETURNE);
                 xml += Encoding.UTF8.GetString(ms.ToArray());
-
-
             }
 
             var respuesta = new CrearSolpConsumerMOAResponse();
@@ -111,6 +110,10 @@ namespace SustitucionMOAWS.WSConsumers
         {
             var hoy = DateTime.Now.Date;
             var registrosSap = new List<RegistroInfoSAP>();
+            var unidades = registros.Select(x => x.Unidad).Distinct();
+            var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto 
+            { Comercial = x.Comercial, UM = x.UM }, x => unidades.Contains(x.Comercial));
+
             foreach (var registro in registros)
             {
                 var registroInfoSAP = new RegistroInfoSAP
@@ -119,7 +122,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         MATERIAL = registro.MaterialCodigo,
                         VENDOR = registro.Cuit,
-                        PO_UNIT = registro.Unidad
+                        PO_UNIT = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM
                     },
                     MEWIEINAX = new MEWIEINAX
                     {
@@ -132,7 +135,7 @@ namespace SustitucionMOAWS.WSConsumers
                         PURCH_ORG = registro.OrganizacionDeCompra,
                         INFO_TYPE = "0",
                         PUR_GROUP = registro.GrupoDeCompras,
-                        PLANT = "",
+                        PLANT = registro.Centro,
                         CURRENCY = registro.Moneda,
                         MIN_PO_QTY = 0,
                         NRM_PO_QTY = 1,
@@ -142,7 +145,7 @@ namespace SustitucionMOAWS.WSConsumers
                         NET_PRICE = registro.Precio,
                         EFF_PRICE = registro.Precio,
                         PRICE_UNIT = 1,
-                        ORDERPR_UN = registro.Unidad,
+                        ORDERPR_UN = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM,
                         PRICE_DATE = registro.FechaVigencia,
                         PERIOD_IND_EXPIRATION_DATE = "D",
                         PRICE_UNITSpecified = true,
@@ -156,7 +159,7 @@ namespace SustitucionMOAWS.WSConsumers
                     {
                         PURCH_ORG = "X",
                         INFO_TYPE = "X",
-                        PLANT = "",
+                        PLANT = string.IsNullOrEmpty(registro.Centro) ? "" : "X",
                         PUR_GROUP = "X",
                         CURRENCY = "X",
                         MIN_PO_QTY = "X",
@@ -185,7 +188,7 @@ namespace SustitucionMOAWS.WSConsumers
                         CURRENCY = registro.Moneda,
                         NUMERATOR = 1,
                         DENOMINATOR = 1,
-                        BASE_UOM = registro.Unidad,
+                        BASE_UOM = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM,
                         LOWERLIMIT = 0,
                         UPPERLIMIT = 0,
                         DENOMINATORSpecified = true,

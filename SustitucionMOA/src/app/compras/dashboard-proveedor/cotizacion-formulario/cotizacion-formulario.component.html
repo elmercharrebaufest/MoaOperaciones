@@ -34,7 +34,7 @@
             </button>&nbsp;
         </div>
         <div class="col-xs-8 col-md-8" style="text-align: center;">
-            <button class="btn btn-primary botonesComprasColor" (click)="guardarCotizacion()" style="margin-right: 50px;">GUARDAR BORRADOR</button>
+            <button *ngIf="peticion.CotizacionEstado_Id == 2 || peticion.CotizacionEstado_Id == 0" class="btn btn-primary botonesComprasColor" (click)="guardarCotizacion()" style="margin-right: 50px;">GUARDAR BORRADOR</button>
             <button class="btn btn-success botonesComprasColor" (click)="onShowFinalizarDialog()">FINALIZAR Y ENVIAR</button>
         </div>
     </div>

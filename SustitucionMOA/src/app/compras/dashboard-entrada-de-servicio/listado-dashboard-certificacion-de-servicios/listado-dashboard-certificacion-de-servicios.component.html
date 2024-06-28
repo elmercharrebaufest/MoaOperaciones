@@ -281,7 +281,7 @@
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
                                                                    type="text"
-                                                                   name="porcentaje"
+                                                                   id="porcentaje_{{rowData.Id}}_{{rowData.LINE_NO}}"
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem,$event);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"

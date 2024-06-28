@@ -2,9 +2,9 @@
 {
     public enum EstadoDocumentoSolp
     {
-        Incompleto,
-        Creado,
-        Finalizado
+        Incompleto = 1,
+        Creado = 2,
+        Finalizado = 3
     }
 
     public enum TipoSolpSap

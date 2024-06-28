@@ -19,7 +19,7 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("Cosecha_Id")]
         public virtual Cosecha Cosecha { get; set; }
-
+        [InverseProperty("CampoCosecha")]
         public ICollection<CampoProveedor> Proveedores { get; set; }
         public double ToneladasAprobadas { get; set; }
         public string MotivoRechazo { get; set; }

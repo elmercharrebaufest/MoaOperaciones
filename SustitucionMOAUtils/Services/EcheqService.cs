@@ -152,7 +152,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        if (repositorio.Existe<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido))
+                        if (ObtenerNegocio(request)!= null)
                         {
                             this.UpdateEcheq(request, true, echeqNegocio);
                         }
@@ -176,7 +176,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    if (repositorio.Existe<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido))
+                    if (ObtenerNegocio(request) != null)
                     {
                         this.UpdateEcheq(request, true, echeqNegocio);
                     }
@@ -290,7 +290,7 @@ namespace SustitucionMOAUtils.Services
 
                 //1- Obtener contrato desde la RFC y setear echeq
 
-                EcheqNegocio negocioDB = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
+                EcheqNegocio negocioDB = ObtenerNegocio(request);
 
                 if (negocioDB != null)
                 {
@@ -493,7 +493,7 @@ namespace SustitucionMOAUtils.Services
         private int UpdateEcheq(EcheqRequestModel request, bool marcaCheck, EcheqNegocioDto echeqNegocio)
         {
 
-            EcheqNegocio echeqExistente = repositorio.Obtener<EcheqNegocio>(x => x.Contrato == request.Contrato && x.ProveedorId == request.ProveedorId && x.Pedido == request.Pedido);
+            EcheqNegocio echeqExistente = ObtenerNegocio(request);
 
             if (echeqExistente == null)
             {
@@ -747,6 +747,14 @@ namespace SustitucionMOAUtils.Services
                 throw new WSCustomException(ErrorMsg.ErrorWS, e);
             }
 
+        }
+        private EcheqNegocio ObtenerNegocio(EcheqRequestModel request)
+        {
+            var proveedor = repositorio.Obtener<Proveedor>(request.ProveedorId);
+            return repositorio.Obtener<EcheqNegocio>(
+                x => x.Contrato == request.Contrato &&
+                x.Proveedor.CodigoProveedor == proveedor.CodigoProveedor &&
+                x.Pedido == request.Pedido);
         }
     }
 

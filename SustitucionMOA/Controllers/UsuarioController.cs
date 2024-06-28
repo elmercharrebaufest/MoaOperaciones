@@ -20,6 +20,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
@@ -755,8 +756,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);           
-                var result = _usuarioService.GrabarProveedor(proveedor);
+                var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);
+                var result = _usuarioService.GrabarProveedor(proveedor, EstadoAprobacion.AltaIncompleta);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

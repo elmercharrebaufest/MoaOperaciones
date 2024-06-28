@@ -109,39 +109,39 @@ namespace SustitucionMOAWS.WSConsumers
 
     public class SolpSAPDto
     {
-        public List<ZMPES5690> IM_PRACCOUNTList { get; set; } //OK
-        public List<ZMPES5680> IM_PRACCOUNTXList { get; set; } //OK
-        public List<ZMPES5750> IM_PRADDRDELIVERYList { get; set; } //OK
+        public List<BAPIMEREQACCOUNT> IM_PRACCOUNTList { get; set; } //OK
+        public List<BAPIMEREQACCOUNTX> IM_PRACCOUNTXList { get; set; } //OK
+        public List<ZMPES7110> IM_PRADDRDELIVERYList { get; set; } //OK
         public List<BAPIMEREQHEADTEXT> IM_PRHEADERTEXTList { get; set; } //OK
-        public List<ZMPES5700> IM_PRITEMList { get; set; } //OK
+        public List<ZMPES7090> IM_PRITEMList { get; set; } //OK
         public List<BAPIMEREQITEMTEXT> IM_PRITEMTEXTList { get; set; }
-        public List<ZMPES5660> IM_PRITEMXList { get; set; } //OK?
+        public List<ZMPES8000> IM_PRITEMXList { get; set; } //OK?
         public string IM_PR_TYPE { get; set; } //OK
-        public List<ZMPES5790> IM_SERVICEACCOUNTList { get; set; } //OK
+        public List<BAPI_SRV_ACC_DATA> IM_SERVICEACCOUNTList { get; set; } //OK
         public List<BAPI_SRV_ACC_DATAX> IM_SERVICEACCOUNTXList { get; set; } //OK
-        public List<ZMPES5780> IM_SERVICELINESList { get; set; } //OK
-        public List<ZMPES5720> IM_SERVICELINESXList { get; set; } //OK?
+        public List<BAPI_SRV_SERVICE_LINE> IM_SERVICELINESList { get; set; } //OK
+        public List<BAPI_SRV_SERVICE_LINEX> IM_SERVICELINESXList { get; set; } //OK?
         public string NroSolp { get; set; }
         public int Id { get; set; }
 
         public SolpSAPDto()
         {
             IM_PR_TYPE = "";
-            IM_PRACCOUNTList = new List<ZMPES5690>();
-            IM_PRACCOUNTXList = new List<ZMPES5680>();
+            IM_PRACCOUNTList = new List<BAPIMEREQACCOUNT>();
+            IM_PRACCOUNTXList = new List<BAPIMEREQACCOUNTX>();
 
-            IM_PRADDRDELIVERYList = new List<ZMPES5750>();
+            IM_PRADDRDELIVERYList = new List<ZMPES7110>();
             IM_PRHEADERTEXTList = new List<BAPIMEREQHEADTEXT>();
 
-            IM_PRITEMList = new List<ZMPES5700>();
+            IM_PRITEMList = new List<ZMPES7090>();
             IM_PRITEMTEXTList = new List<BAPIMEREQITEMTEXT>();
 
-            IM_PRITEMXList = new List<ZMPES5660>();
+            IM_PRITEMXList = new List<ZMPES8000>();
 
-            IM_SERVICEACCOUNTList = new List<ZMPES5790>();
+            IM_SERVICEACCOUNTList = new List<BAPI_SRV_ACC_DATA>();
             IM_SERVICEACCOUNTXList = new List<BAPI_SRV_ACC_DATAX>();
-            IM_SERVICELINESList = new List<ZMPES5780>();
-            IM_SERVICELINESXList = new List<ZMPES5720>();
+            IM_SERVICELINESList = new List<BAPI_SRV_SERVICE_LINE>();
+            IM_SERVICELINESXList = new List<BAPI_SRV_SERVICE_LINEX>();
         }
     }
 

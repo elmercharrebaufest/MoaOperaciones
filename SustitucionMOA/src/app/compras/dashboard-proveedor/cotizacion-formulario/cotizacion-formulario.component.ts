@@ -232,43 +232,43 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
                     if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.UnidadDeMedidaId == 0) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - La Um. cotizada es obligatoria";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Um. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.MonedaId == 0) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - La Moneda es obligatoria";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Moneda es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Precio <= 0) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
                     }
                     const decimalPart = (cotizacion.Precio % 1).toFixed(2);
                     if (decimalPart != '0.00' && cotizacion.monedaCompras == "CLP") {
-                        mensaje = "Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.FechaDeEntrega == null) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.FechaDeVigencia == null) {
-                        mensaje = "Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
@@ -294,7 +294,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                 || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                            mensaje = "Pos. " + cotizacion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
+                            mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
                             breakFor = true;
                             return mensaje;
                         }
@@ -310,7 +310,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     const sumaCorrecta = sumaCantidades === cotizacion.Cantidad;
 
                     if (!sumaCorrecta) {
-                        mensaje = "Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
+                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
                         breakFor = true;
                         return mensaje;
                     }
@@ -325,6 +325,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 mensaje = "El campo respeta servicios es obligatorio";
                 return mensaje;
             }
+            
             var count = 0;
             this.posicionesCompra.forEach(function (posicionServicio, i) {
                 count++;
@@ -395,6 +396,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             }
 
             var self = this;
+            console.log(this.cotizacionSubposiciones);
             this.cotizacionSubposiciones.forEach(function (subposicion, i) {
                 if (!breakFor) {
                     if (subposicion.Cantidad <= 0 || subposicion.Cantidad == undefined) {
@@ -402,12 +404,12 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                         breakFor = true;
                         return mensaje;
                     }
-                    if (subposicion.UnidadDeMedidaId == 0) {
+                    if (subposicion.UnidadDeMedidaId == 0 || subposicion.UnidadDeMedidaId == null) {
                         mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": La Um. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
-                    if (subposicion.MonedaId == 0) {
+                    if (subposicion.MonedaId == 0 || subposicion.MonedaId == null) {
                         mensaje = "Propuesta Económica - " + "Pos. " + subposicion.Posicion + ": La Moneda es obligatoria";
                         breakFor = true;
                         return mensaje;
@@ -453,7 +455,6 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
 
     public RevalidarGrillaHoras() {
         this.ObtenerCotizacion();
-        debugger;
         this.cambioDeGrillaOk = false;
         if (this.cotizacion.EsNuevaCotizacion) {
             if (!this.confirmoHoras && !this.hayCambiosEnGrillaDeHoras(this.cotizacion.CotizacionesHoras, this.cotizacion.CotizacionesHorasOriginal)) {

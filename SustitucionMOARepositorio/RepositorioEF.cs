@@ -386,5 +386,10 @@ namespace SustitucionMOARepositorio
         {
             return context.Set<TEntidad>();
         }
+
+        public List<TEntidad> ListarConsulta<TEntidad>(IConsulta<TEntidad> consulta) where TEntidad : class
+        {
+            return consulta.Ejecutar(context);
+        }
     }
 }

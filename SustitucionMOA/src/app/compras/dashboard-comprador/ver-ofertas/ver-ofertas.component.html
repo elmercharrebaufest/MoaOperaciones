@@ -2,7 +2,13 @@
     <div class="row titleSection1">
         <div class="col-sm-8 letraTitulo">
             <strong>
-                {{ this.esTipoPOMultiple ? 'Ver ofertas MATERIALES | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
+                {{ this.esTipoPOMultiple ? 'Ver ofertas | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
+                <b *ngIf="tablaOfertas.TipoPosicionCodigo == 'SERVICIO'">
+                    | SERVICIOS
+                </b>
+                <b *ngIf="tablaOfertas.TipoPosicionCodigo != 'SERVICIO'">
+                    | MATERIALES
+                </b>
                 <b *ngIf="tablaOfertas.Id">
                     | PO #{{tablaOfertas.Id}}
                 </b>

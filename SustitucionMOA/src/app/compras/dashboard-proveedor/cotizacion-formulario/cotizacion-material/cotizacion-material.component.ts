@@ -326,6 +326,7 @@ export class CotizacionMaterialComponent extends ListBaseComponent implements On
             return {
                 PeticionDeOfertaSolpPosicionId: cotizacion.Posiciones.Id,
                 Posicion: cotizacion.Posiciones.Indice,
+                SOLP: cotizacion.Posiciones.NroSolp,
                 Cantidad: cotizacion.Posiciones.CotizacionPosicion.Cantidad != null ? cotizacion.Posiciones.CotizacionPosicion.Cantidad : 0,
                 Precio: cotizacion.Posiciones.CotizacionPosicion.Precio != null ? cotizacion.Posiciones.CotizacionPosicion.Precio : 0,
                 MonedaId: cotizacion.Posiciones.CotizacionPosicion.Moneda_Id != 0 ?

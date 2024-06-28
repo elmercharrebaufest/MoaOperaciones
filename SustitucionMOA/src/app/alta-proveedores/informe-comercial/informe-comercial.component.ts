@@ -202,11 +202,11 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
 
   validarInforme() {
     if (this.informe.direccion == "" || !this.informe.direccion) {
-      this.mensajeError = "No completo la direccion.";
+      this.mensajeError = "No completó la dirección.";
       return true;
     }
     if (!this.informe.codigoPostal || this.informe.codigoPostal == "") {
-      this.mensajeError = "No completo el codigo postal.";
+      this.mensajeError = "No completó el código postal.";
       return true;
     }
     if (
@@ -215,39 +215,39 @@ export class InformeComercialComponent extends BaseComponent implements OnInit {
       this.informe.localidadId == 0
     ) {
       this.mensajeError =
-        "No completo la Localidad en Domicilio Actividad.";
+        "No completó la Localidad en Domicilio Actividad.";
       return true;
     }
     if (
       !this.informe.ContactoComercial.Apellido ||
       this.informe.ContactoComercial.Apellido == ""
     ) {
-      this.mensajeError = "No completo el Apellido del contacto.";
+      this.mensajeError = "No completó el Apellido del contacto.";
       return true;
     }
     if (
       !this.informe.ContactoComercial.Nombres ||
       this.informe.ContactoComercial.Nombres == ""
     ) {
-      this.mensajeError = "No completo el Nombre del contacto.";
+      this.mensajeError = "No completó el Nombre del contacto.";
       return true;
     }
     if (
       !this.informe.ContactoComercial.Puesto ||
       this.informe.ContactoComercial.Puesto == ""
     ) {
-      this.mensajeError = "No completo el Puesto del contacto.";
+      this.mensajeError = "No completó el Puesto del contacto.";
       return true;
     }
     if (
       !this.informe.ContactoComercial.Telefono1 ||
       this.informe.ContactoComercial.Telefono1 == ""
     ) {
-      this.mensajeError = "No completo el Telefono del contacto.";
+      this.mensajeError = "No completó el Teléfono del contacto.";
       return true;
     }
     if (this.informe.CampaniaId == 0 || !this.informe.direccion) {
-      this.mensajeError = "No completo la Campaña Actual.";
+      this.mensajeError = "No completó la Campaña Actual.";
       return true;
     }
     var filaError = 0;

@@ -40,9 +40,14 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 using (var client = new HttpClient())
                 {
-                    string _UrlServicio = System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCrear"];
+                    string _UrlServicio = SAPCredential.DevolverEndpoint(System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCrear"]).ToString();
                     string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
-                    string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
+
+                    string Authorization = service.ClientCredentials.UserName.UserName + ":" + service.ClientCredentials.UserName.Password;
+                    byte[] userNameBytes = System.Text.Encoding.UTF8.GetBytes(Authorization);
+                    string authorizationBase64 = System.Convert.ToBase64String(userNameBytes);
+
+                    string _Authorization = "Basic " + authorizationBase64;
 
                     HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
                     request.Headers.Add("SOAPAction", _SOAPAction);

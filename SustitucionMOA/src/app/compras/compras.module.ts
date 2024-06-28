@@ -86,6 +86,8 @@ import { PosicionPlazoComponent } from './dashboard-comprador/ver-ofertas/posici
 import { EditarOrdenDeCompraComponent } from './dashboard-comprador/listado-dashboard-comprador/editar-orden-de-compra/editar-orden-de-compra.component';
 import { CotizacionHistorialComponent } from './dashboard-comprador/ver-ofertas/cotizacion-historial/cotizacion-historial.component';
 import { CrearPoMultipleComponent } from './crear-po-multiple/crear-po-multiple.component';
+import { VisualizarMovimientoComponent } from './dashboard-comprador/ver-ofertas/visualizar-movimiento/visualizar-movimiento.component';
+import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
@@ -197,6 +199,8 @@ import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/co
         CustomDecimalPipe,
         ListadoEstadoCertificacionesProveedorComponent,
         ModalAltaEntradaDeServicioComponent,
+        VisualizarMovimientoComponent,
+        AgruparPoThComponent,
         ModalAltaEntradaDeServicioProveedorComponent,
         CeldaEditableComponent,
         SpinnerCeldaComponent,

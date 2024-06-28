@@ -337,7 +337,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">
@@ -349,7 +349,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>

@@ -14,7 +14,7 @@
     CONSTRAINT [PK_Cotizacion] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK.Cotizacion_Cotizacion_CotizacionEstado_Id] FOREIGN KEY ([CotizacionEstado_Id]) REFERENCES [CotizacionEstado]([Id]),
     CONSTRAINT [FK.Cotizacion_Cotizacion_UsuarioCreador_Id] FOREIGN KEY ([UsuarioCreador_Id]) REFERENCES [Usuario]([Id]),
-    CONSTRAINT [FK.Cotizacion_Cotizacion_PeticionDeOfertaUsuario_Id] FOREIGN KEY ([PeticionDeOfertaUsuario_Id]) REFERENCES [PeticionDeOfertaUsuario]([Id]),
+    CONSTRAINT [FK.Cotizacion_Cotizacion_PeticionDeOfertaUsuario_Id] FOREIGN KEY ([PeticionDeOfertaUsuario_Id]) REFERENCES [PeticionDeOfertaUsuario]([Id]) ON DELETE CASCADE,
 
 );
 

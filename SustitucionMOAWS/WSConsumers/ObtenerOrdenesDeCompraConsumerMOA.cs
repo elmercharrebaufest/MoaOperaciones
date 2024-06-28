@@ -25,7 +25,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerOrdenesDeCompraConsumerMOA()
         {
-            service = new BAPI_PO_GETITEMSPortTypeClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETITEMS&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions";
+            service = new BAPI_PO_GETITEMSPortTypeClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
