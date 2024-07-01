@@ -169,8 +169,12 @@
 
                                         <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="hidePositionCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllPositionsLines($event,rowData)" [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true"/>
-
+                                            <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)"
+                                                   #seleccionarPosicionCheckbox
+                                                   type="checkbox"
+                                                   [(ngModel)]="rowData.isSelected"
+                                                   (change)="selectAllPositionsLines($event,rowData)"
+                                                   [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true" />
                                             <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
@@ -217,7 +221,12 @@
                                             <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                                                 <tr>
                                                     <th>
-                                                        <input *ngIf="hideCheckboxToAll(rowData)" type="checkbox" [(ngModel)]="rowData.isSelected" (change)="selectAllItems($event, rowData.Items)">
+                                                        <input *ngIf="mostrarCheckboxDeSeleccionarTodosItems(rowData)"
+                                                               #seleccionarTodosItemsCheckbox
+                                                               type="checkbox"
+                                                               [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true"
+                                                               [(ngModel)]="rowData.isSelected"
+                                                               (change)="selectAllItems($event, rowData)">
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
