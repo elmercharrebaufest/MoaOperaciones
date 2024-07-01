@@ -504,4 +504,24 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    dontAllowCertificationRol(event: any): void {
+        if(event.target.value === '126'){
+            this.rolesUsuarioSeleccionado.filter(r => r.Id.toString() === '123').forEach(r => {
+                if(r.checked){
+                    r.checked = false;
+                    document.getElementById("rol_123").click();
+                }
+            })
+        }
+
+        if(event.target.value === '123'){
+            this.rolesUsuarioSeleccionado.filter(r => r.Id.toString() === '126').forEach(r => {
+                if(r.checked){
+                    r.checked = false;
+                    document.getElementById("rol_126").click();
+                }
+            })
+        }
+    }
+
 }
