@@ -123,6 +123,7 @@ export class Generacion2Component extends ListBaseComponent {
                 fabricacionTallerExterno: [{ value: true, disabled: true }, [Validators.required]],
                 descripcionTecnica: [{ value: true, disabled: false }, [Validators.required]],
                 entregaDocumentacion: [{ value: true, disabled: false }, [Validators.required]],
+                requisitoCiberseguridad: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteFecha: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteHora: [{ value: true, disabled: true }, [Validators.required]]
             });
@@ -140,6 +141,8 @@ export class Generacion2Component extends ListBaseComponent {
                 fabricacionTallerExterno: [{ value: true, disabled: false }, []],
                 descripcionTecnica: [{ value: true, disabled: false }, []],
                 entregaDocumentacion: [{ value: true, disabled: false }, []],
+                requisitoCiberseguridad: [{ value: true, disabled: false }, []],
+
             });
         }
 

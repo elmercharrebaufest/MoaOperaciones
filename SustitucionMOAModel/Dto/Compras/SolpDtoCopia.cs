@@ -34,6 +34,7 @@ namespace SustitucionMOAModel.Dto
         public string EspecificacionesTecnicas { get; set; }
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
+        public string ObservacionesCotizacionCondEsp { get; set; }
         public List<DayOfWeek> JornadaLaboral { get; set; }
         public DateTimeOffset? JornadaLaboralDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHasta { get; set; }

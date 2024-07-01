@@ -66,7 +66,7 @@ export class DashboardComponent extends ListBaseComponent {
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
-
+    nombrePedido: string = "";
     filtrosSolicitante: {
         nroSolp: string;
         sap: boolean;
@@ -85,8 +85,10 @@ export class DashboardComponent extends ListBaseComponent {
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
+        nombrePedido: string;
     } = {
             nroSolp: "",
+            nombrePedido: "",
             sap: false,
             mantenimiento: false,
             web: false,
@@ -142,6 +144,7 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+
     public chat: ChatsDto;
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
@@ -254,11 +257,16 @@ export class DashboardComponent extends ListBaseComponent {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
+    public validarAuditor(): boolean {
+        return this.isAuthorized('VER COMO AUDITOR');
+
+    }
+
     getListarSolp() {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
                 multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
             ).subscribe(
                 (result: any) => {
@@ -718,6 +726,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
+        this.filtrosSolicitante.nombrePedido = this.nombrePedido;
         this.paginator.changePage(0);
         this.cerrarExpansiones();
         this.getListarSolp();
@@ -922,6 +931,7 @@ export class DashboardComponent extends ListBaseComponent {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
         if (filtrosGuardados) {
             this.nroSolp = filtrosGuardados.nroSolp;
+            this.nombrePedido = filtrosGuardados.nombrePedido;
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;

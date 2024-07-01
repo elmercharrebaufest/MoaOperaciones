@@ -160,14 +160,24 @@ export class CotizacionComponent extends ListBaseComponent {
 
     uploadHandler(filesUpload: any): void {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
-        var archivoWeb = this.model.archivosCotizacionesNuevos.reduce((sum, file) => sum + file.size, 0);
-        if (archivoWeb > 10000000) {
-            if (this.model.archivosCotizacionesNuevos.length > 0) {
-                this.eliminarAdjuntoNuevo(this.model.archivosCotizacionesNuevos[this.model.archivosCotizacionesNuevos.length - 1])
-            }
-            this.floatMsgService.setErrorMsg("El archivo adjunto no debe superar los 10Mb");
-        }
+        this.verificarTamanoYEliminarSiEsNecesario(this.model.archivosCotizacionesNuevos, "El archivo adjunto no debe superar los 10Mb");
         this.validarChecks();
+    }
+    
+    uploadHandlerCondEsp(filesUpload: any): void {
+        this.model.archivosCotizacionesNuevosCondEsp = filesUpload["files"];
+        this.verificarTamanoYEliminarSiEsNecesario(this.model.archivosCotizacionesNuevosCondEsp, "El archivo adjunto no debe superar los 10Mb");
+        this.validarChecks();
+    }
+
+    private verificarTamanoYEliminarSiEsNecesario(modeloArchivos: any[], mensajeError: string): void {
+        const tamanoTotal = modeloArchivos.reduce((sum, file) => sum + file.size, 0);
+        if (tamanoTotal > 10000000) {
+            if (modeloArchivos.length > 0) {
+                this.eliminarAdjuntoNuevo(modeloArchivos[modeloArchivos.length - 1]);
+            }
+            this.floatMsgService.setErrorMsg(mensajeError);
+        }
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -222,14 +232,34 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     eliminarAdjuntoNuevo(archivo): void {
-        var indice = this.model.archivosCotizacionesNuevos.indexOf(archivo)
-        this.model.archivosCotizacionesNuevos.splice(indice, 1)
+        this.eliminarAdjuntoNuevoGenerico(archivo, 'archivosCotizacionesNuevos');
+    }
+    
+    eliminarAdjuntoNuevoCondEsp(archivo): void {
+        this.eliminarAdjuntoNuevoGenerico(archivo, 'archivosCotizacionesNuevosCondEsp');
+    }
+
+    eliminarAdjuntoNuevoGenerico(archivo, claveModelo: string): void {
+        const indice = this.model[claveModelo].indexOf(archivo);
+        if (indice > -1) {
+            this.model[claveModelo].splice(indice, 1);
+        }
         this.validarChecks();
     }
 
     eliminarAdjuntoGuardado(archivo): void {
-        var indice = this.model.archivosCotizaciones.indexOf(archivo)
-        this.model.archivosCotizaciones.splice(indice, 1)
+        this.eliminarAdjuntoGuardadoGenerico(archivo, 'archivosCotizaciones');
+    }
+    
+    eliminarAdjuntoGuardadoCondEsp(archivo): void {
+        this.eliminarAdjuntoGuardadoGenerico(archivo, 'archivosCotizacionesCondEsp');
+    }
+
+    eliminarAdjuntoGuardadoGenerico(archivo, claveModelo: string): void {
+        const indice = this.model[claveModelo].indexOf(archivo);
+        if (indice > -1) {
+            this.model[claveModelo].splice(indice, 1);
+        }
         this.validarChecks();
     }
 
@@ -238,6 +268,19 @@ export class CotizacionComponent extends ListBaseComponent {
             message: '¿Está seguro de que desea eliminar el archivo?',
             accept: () => {
                 esAdjuntoNuevo ? this.eliminarAdjuntoNuevo(archivo) : this.eliminarAdjuntoGuardado(archivo)
+            },
+            reject: () => {
+
+            }
+        });
+        this.validarChecks();
+    }
+
+    eliminarArchivoCondEsp(esAdjuntoNuevo: boolean, archivo: any) {
+        this.confirmationService.confirm({
+            message: '¿Está seguro de que desea eliminar el archivo?',
+            accept: () => {
+                esAdjuntoNuevo ? this.eliminarAdjuntoNuevoCondEsp(archivo) : this.eliminarAdjuntoGuardadoCondEsp(archivo)
             },
             reject: () => {
 
@@ -284,13 +327,13 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
 
-            if ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0)) {
+            if ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.observacionesCotizacion == "" || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null) {
+            if (this.model.observacionesCotizacionCondEsp == "" || this.model.observacionesCotizacionCondEsp == undefined || this.model.observacionesCotizacionCondEsp == null) {
                 this.model.mensajeCotizacion = "Debe agregar una observación en el paso #4";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
@@ -506,5 +549,24 @@ export class CotizacionComponent extends ListBaseComponent {
         } else {
             this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
     }
+
+    // Método que se llama cada vez que cambia el estado de cualquiera de las condiciones especiales
+    verificarCondicionesEspeciales(): void {
+        // Verifica si todas las condiciones especiales están deseleccionadas
+        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho) {
+        // Si todas las condiciones especiales están deseleccionadas, borra los archivos
+        this.borrarArchivosCargados();
+        }
+    }
+  
+  // Método para borrar todos los archivos cargados
+  borrarArchivosCargados(): void {
+    // Borra los archivos de los modelos correspondientes
+    this.model.archivosCotizacionesNuevosCondEsp = [];
+    this.model.archivosCotizacionesCondEsp = [];
+    
+    // Aquí puedes agregar cualquier otra lógica necesaria para reflejar el cambio en la vista,
+    // como actualizar estados de componentes de UI o enviar notificaciones al usuario.
+  }
 
 };

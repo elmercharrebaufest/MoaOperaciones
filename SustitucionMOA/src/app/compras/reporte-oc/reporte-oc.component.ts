@@ -77,7 +77,8 @@ export class ReporteOcComponent extends ListBaseComponent {
         if (permisos) {
             if (permisos.includes("ABM SOL")
                 || permisos.includes("VER TODAS SOLPS")
-                || permisos.includes("VER SOLPS COMPRADOR")
+                || permisos.includes("VER SOLPS COMPRADOR") 
+                || permisos.includes("VER COMO AUDITOR")
             ) {
                 this.usuarioInterno = true;
             }

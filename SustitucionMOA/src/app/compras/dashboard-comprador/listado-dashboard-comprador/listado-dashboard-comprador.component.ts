@@ -40,6 +40,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     protected model: Solp;
     protected tabla: Table;
     nroSolp: string = "";
+    nombrePedido: string = "";
     sap: boolean = false;
     mantenimiento: boolean = false;
     web: boolean = false;
@@ -90,6 +91,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     rangeDates: Date[];
     filtrosComprador: {
         nroSolp: string;
+        nombrePedido: string;
         sap: boolean;
         mantenimiento: boolean;
         web: boolean;
@@ -109,6 +111,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         pageIndex: number;
     } = {
             nroSolp: "",
+            nombrePedido: "",
             sap: false,
             mantenimiento: false,
             web: false,
@@ -147,6 +150,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
     dasboardComprador: boolean = true;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -224,7 +228,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido,this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
             this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendiente, this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
     }
 
@@ -801,6 +805,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.pageIndex = 1;
         this.spinnerComponent.showIt();
         this.filtrosComprador.nroSolp = this.nroSolp;
+        this.filtrosComprador.nombrePedido = this.nombrePedido;
         this.filtrosComprador.sap = this.sap;
         this.filtrosComprador.mantenimiento = this.mantenimiento;
         this.filtrosComprador.web = this.web;
@@ -845,6 +850,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
         if (filtrosGuardados) {
             this.nroSolp = filtrosGuardados.nroSolp;
+            this.nombrePedido = filtrosGuardados.nombreDePedido;
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;

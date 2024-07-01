@@ -25,7 +25,8 @@
                 </button>
                 <button class="btn btn-success botonesComprasColor" 
                     *ngIf="!pasoSiguiente().paso" 
-                    (click)="onShowFinalizarDialog()">
+                    (click)="onShowFinalizarDialog()" 
+                    [disabled]="esAuditor">
                     {{pasoSiguiente().descripcion}}
                 </button>
             </div>

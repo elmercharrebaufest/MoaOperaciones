@@ -112,6 +112,10 @@
         ModificarEstadoProveedor,
         ArchivosBoletos,
         CertificacionDeServicios,
+        ReporteOC,
+        POMultiple,
+        AgruparPO,
+        VerComoAuditor
         // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerPermisoEnum
     }
 }

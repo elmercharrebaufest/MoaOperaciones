@@ -24,6 +24,7 @@ export class FiltroFechaComponent implements OnInit {
     periodo: string;
     fecha_inicio: string;
     fecha_fin: string;
+    nombrePedido: string;
 
     constructor() {
         this.dropdownComponent = new DropdownComponent();

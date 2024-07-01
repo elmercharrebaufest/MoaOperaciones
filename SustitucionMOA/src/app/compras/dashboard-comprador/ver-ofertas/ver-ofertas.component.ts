@@ -57,6 +57,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     centroDireLista: any;
     ordenDeCompra: AdjudicacionDto;
     nroOC: string;
+    displayValidacionMoneda: boolean = false;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -77,6 +78,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
+    mensajeValidacionMoneda: any;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -423,13 +426,47 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.displayGenerarOCMoneda = true;
             this.devolverMonedaProveedor(proveedor.CodigoProveedor);
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
+    }
+
+    validarMonedasDiferentes(){
+        if (this.adjudicacion != undefined) {
+        this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    if(result.data.Errores.length > 0){
+                        this.mensajeValidacionMoneda = result.data.Errores[0];
+                        this.displayValidacionMoneda = true;
+                    }else{
+                        this.confirmacionAdjudicar();
+                    }
+                   
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+    }
+
+    onCerrarValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+    }
+
+    onSiguientePasoValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+        this.confirmacionAdjudicar();
     }
 
     onGenerarOC() {
         this.generarOC = false;
-        this.confirmacionAdjudicar();
+        this.validarMonedasDiferentes();
     }
 
     onGenerarOCProveedor() {
@@ -438,7 +475,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
             this.onCerrarMoneda();
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
 
     }
@@ -532,7 +569,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
-            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`)) {
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`)) {
             this.textoRacionalIncompleto = true;
             this.textoRacionalModal = "No se completó ningún racional.";
         }
@@ -698,9 +735,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     setTextoCondicionEspecial() {
         if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true) {
-            this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacion ?
-                this.adjudicacion.TextoDeCabecera = `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
-                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
+            this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp ?
+                this.adjudicacion.TextoDeCabecera = `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`
+                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
         }
     }
 

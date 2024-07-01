@@ -19,6 +19,8 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Input() displayLegajo: boolean;
     @Input() usuarioProveedor: boolean;
     @Input() legajo: any;
+    @Input() esAuditor: boolean;
+
 
     @Output() cerrarLegajoEmitter = new EventEmitter();
     @Output() descargarLegajoEmitter = new EventEmitter();
