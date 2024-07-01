@@ -7,17 +7,16 @@ import { NavService } from './../common/services/NavService';
 import { ModalService } from './../common/services/ModalService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { SecurityService } from './../common/services/SecurityService';
-import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mensaje-modal.component';
 import { LoginGuard } from './../common/security/login-guard';
-import { ok } from 'assert';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { BuscadorComponent } from './../common/shared-components/buscador/buscador.component'
+import { Observable } from 'rxjs';
 declare var $: any;
 
 @Component({
     selector: 'app-layout',
     templateUrl: `layout.component.html`,
+    styleUrls: ['layout.component.css'],
     providers: [LayoutService]
 })
 
@@ -32,7 +31,7 @@ export class LayoutComponent implements OnDestroy {
     granosSelected: string;
     tipoUsuario: string;
     noticias: any;
-    quantityCommunications:number = 0;
+    quantityCommunications: number = 0;
     modalHeader: any;
     showLiquidaciones = false;
     showComprobantes = false;
@@ -68,6 +67,7 @@ export class LayoutComponent implements OnDestroy {
     showComunicaciones: boolean = true;
     comunicacionesIsOpen: boolean = false;
 
+    $sidebarVisible: Observable<boolean>;
 
     @ViewChild("myModal") modal: any;
 
@@ -75,20 +75,20 @@ export class LayoutComponent implements OnDestroy {
     protected mensajeModalComponent: MensajeModalComponent;
 
     @HostListener('window:resize', ['$event'])
-        onResize(event) {
+    onResize(event) {
         this.validarSreen();
     }
 
     @HostListener('document:click', ['$event'])
     clickout(event) {
-        const allowedIds = ["notificationBell", "UserNotification", "openNotification", "notificationClose", "notificationOpenSmall","notificationCloseSmall" ];
+        const allowedIds = ["notificationBell", "UserNotification", "openNotification", "notificationClose", "notificationOpenSmall", "notificationCloseSmall"];
         const notAllowedIds = ["unread-button", "comunicacion-target", "body-message-comunicaciones"];
         const targetId = event.target.id || (event.target.parentElement ? event.target.parentElement.id : null);
 
         if (notAllowedIds.includes(event.target.id)) {
             return;
         }
-        
+
         if (allowedIds.includes(targetId)) {
             this.showComunicaciones = true;
             this.comunicacionesIsOpen = true;
@@ -98,14 +98,14 @@ export class LayoutComponent implements OnDestroy {
         }
 
         if (this.showComunicaciones) {
-            $("#notificationSmall, #notificationClose").css({ "display" : "block" });
-            $("#notificationOpen").css({ "display" : "none" });
-            $("#notificationSmall").css({ "right" : "0" });
+            $("#notificationSmall, #notificationClose").css({ "display": "block" });
+            $("#notificationOpen").css({ "display": "none" });
+            $("#notificationSmall").css({ "right": "0" });
             $("#coverAll").fadeIn();
         } else {
             $("#notificationClose, #notificationSmall").css({ "display": "none" });
             $("#notificationOpen").css({ "display": "block" });
-            $("#notificationSmall").css({ "right" : "-270px" });
+            $("#notificationSmall").css({ "right": "-270px" });
             $("#coverAll").fadeOut();
         }
 
@@ -114,13 +114,13 @@ export class LayoutComponent implements OnDestroy {
 
     //se porque al usuario comercial se le asigno el nuevo rol de 
     //alta empresa granos y solo deberia acceder desde el listado
-    esUsuarioComercial : boolean = false;
+    esUsuarioComercial: boolean = false;
 
     constructor(private service: LayoutService, private sessionDataService: SessionDataService,
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
-    private cd: ChangeDetectorRef) {
-        
+        private cd: ChangeDetectorRef) {
+
         this.renderer.setElementClass(document.body, 'wrapper', true);
 
         this.titulo = 'Moa Operaciones';
@@ -177,7 +177,7 @@ export class LayoutComponent implements OnDestroy {
 
                 this.cd.detectChanges();
             });
-    
+
         navService.seccionActive$.subscribe(
             seccionActive => {
                 this.seccionActive = seccionActive;
@@ -263,7 +263,7 @@ export class LayoutComponent implements OnDestroy {
                         this.textoTooltip = 'Instructivo Productor: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqProductor.mp4" target="_blank">Click aqui</a>.';
                         this.textoTooltip2 = 'Instructivo Acopiador: <a href="https://b2cmoagro.blob.core.windows.net/moaopublic/echeqAcopiador.mp4" target="_blank">Click aqui</a>.';
                         break;
-                        case 'Mis Echeq':
+                    case 'Mis Echeq':
                         this.auxiliarSeccionesVisitadas = 'Mis Echeq';
                         this.textoTooltip = 'En esta categoría podrás cargar tus echeqs';
                         this.textoTooltip2 = '';
@@ -295,11 +295,11 @@ export class LayoutComponent implements OnDestroy {
                         break;
                     case 'Ingresar certificación':
                         this.auxiliarSeccionesVisitadas = 'Ingresar certificación';
-                        this.textoTooltip = '¡Bienvenido! Aquí tienes una guía rápida para utilizar esta página: <br/><br/>' + 
-                                            '1. Utiliza los filtros para afinar tu búsqueda.<br/>' + 
-                                            '2. La grilla muestra los detalles de las órdenes de compra filtradas.<br/>' +
-                                            '3. Las flechas en la primera columna te permiten expandir y ver más información sobre las posiciones de cada orden de compra.<br/>' +
-                                            '4. Al seleccionar uno o varios ítems, se activará el botón para certificar las entradas de servicios correspondientes.<br/>';
+                        this.textoTooltip = '¡Bienvenido! Aquí tienes una guía rápida para utilizar esta página: <br/><br/>' +
+                            '1. Utiliza los filtros para afinar tu búsqueda.<br/>' +
+                            '2. La grilla muestra los detalles de las órdenes de compra filtradas.<br/>' +
+                            '3. Las flechas en la primera columna te permiten expandir y ver más información sobre las posiciones de cada orden de compra.<br/>' +
+                            '4. Al seleccionar uno o varios ítems, se activará el botón para certificar las entradas de servicios correspondientes.<br/>';
                         this.textoTooltip2 = '';
                         break;
                     default:
@@ -425,7 +425,9 @@ export class LayoutComponent implements OnDestroy {
                 this.setMsjSuccess(successMsj);
             });
 
-         this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
+        this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
+
+        this.$sidebarVisible = service.$sidebarVisible;
     }
 
     ngAfterViewInit() {
@@ -439,22 +441,22 @@ export class LayoutComponent implements OnDestroy {
         return false; // <- Prevent href del a
     }
 
-    isSeccionVisitada(){
+    isSeccionVisitada() {
         return this.seccionesVisitadas.includes(this.auxiliarSeccionesVisitadas);
     }
 
-    actualizarSeccionVisitada(){
+    actualizarSeccionVisitada() {
         this.seccionesVisitadas += this.seccionActive;
-        
+
         this.subscription = this.service.seccionVisitada(this.auxiliarSeccionesVisitadas).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.status)
                     return result.status;
                 else
                     throw new console.error("Ocurrio un error al actualizar la seccion.");
             },
         )
-        
+
         this.isSeccionVisitada();
     }
 
@@ -471,7 +473,7 @@ export class LayoutComponent implements OnDestroy {
         return this.granosFlag == "A" && this.isAuthorized('CONSULTAR HOME') && this.isAuthorized('CONSULTAR HOME NG');
     }
 
-    isCliente(){
+    isCliente() {
         return sessionStorage.getItem('tipoUsuario') == 'CLI'
     }
 
@@ -581,7 +583,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.downloadVinculacion(contrato, secuencia).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -616,7 +618,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.downloadProcedencia(contrato).subscribe(
-            (result:any) => {
+            (result: any) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
                 } else if (result.error != undefined && result.error != "") {
@@ -689,7 +691,7 @@ export class LayoutComponent implements OnDestroy {
         this.setMsjErrorModal("");
         this.unsubscribe();
         this.subscription = this.service.goToDataAgro().subscribe(
-            (result:any) => {
+            (result: any) => {
                 this.setMsjErrorModal("");
                 if (result.logout == true) {
                     this.sessionDataService.logout();
@@ -720,29 +722,34 @@ export class LayoutComponent implements OnDestroy {
         }
     }
 
-    validarSreen(){
+    validarSreen() {
         var size = window.innerWidth;
 
-        if (size <= 950) {
+        if (size <= 988) {
             this.menuSmall = true;
+            this.toggleSidebar(true);
         }
-        else{
+        else {
             this.menuSmall = false;
         }
     }
 
     updateQuantity(quantity: number) {
         this.quantityCommunications = quantity;
-      }
+    }
 
-    ngOnInit(){
+    ngOnInit() {
         this.validarSreen();
     }
 
-    cerrarComunicaciones(): void{
+    cerrarComunicaciones(): void {
         $("#notificationClose, #notificationSmall").css({ "display": "none" });
         $("#notificationOpen").css({ "display": "block" });
-        $("#notificationSmall").css({ "right" : "-270px" });
+        $("#notificationSmall").css({ "right": "-270px" });
         $("#coverAll").fadeOut();
+    }
+
+    toggleSidebar(value = null) {
+        this.service.toggleSidebar(value);
     }
 }
