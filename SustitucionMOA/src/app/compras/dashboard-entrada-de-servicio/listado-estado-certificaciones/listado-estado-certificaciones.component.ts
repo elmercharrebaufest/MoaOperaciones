@@ -239,6 +239,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else if (result.info !== undefined) {
             // Manejo de mensajes informativos, si es necesario
           } else {
+            this.agregarTipoMonedaEnDetalle(result.data);
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
           }
@@ -798,5 +799,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       });
     }
     document.getElementById(es).style.display = 'none';
+  }
+
+  agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
+    if (certificaciones === undefined || certificaciones === null) {
+      return;
+    }
+
+    certificaciones.forEach(certificacion => {
+      if (certificacion.entradaServicioDetalle) {
+        certificacion.entradaServicioDetalle.forEach(detalle => {
+          detalle.Moneda = certificacion.Moneda;
+        });
+      }
+    });
   }
 }
