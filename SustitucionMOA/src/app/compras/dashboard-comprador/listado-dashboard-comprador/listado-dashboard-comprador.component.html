@@ -243,7 +243,8 @@
                     <td colspan="2" class="columna" style="text-align: center;">
                         <button *ngIf="rowData.VerPublicar && !rowData.TodasLasPosicionesBorradas"
                                 class="publicar btn btn-success" style="font-size: 12px;"
-                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)" disabled="esAuditor">
+                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)"
+                                [disabled]="esAuditor">
                             Publicar
                         </button>
                     </td>

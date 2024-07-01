@@ -83,5 +83,6 @@ export interface AltaNuevoProveedor{
     Id?: number,
     CUIT?: number,
     Mail?: string,
-    RazonSocial?: string
+    RazonSocial?: string,
+    EsProveedorExterior?: boolean
 }
