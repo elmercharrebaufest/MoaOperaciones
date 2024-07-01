@@ -10,7 +10,6 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }
-        public int Solp_Id { get; set; }
         public string NumeroOrdenDeCompra { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int UsuarioCreador_Id { get; set; }
@@ -25,10 +24,7 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
-
-        [ForeignKey("Solp_Id")]
-        public virtual Solp Solp { get; set; }
-
+        
         [ForeignKey("Cotizacion_Id")]
         public virtual Cotizacion Cotizacion { get; set; }
 
