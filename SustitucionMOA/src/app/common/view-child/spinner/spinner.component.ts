@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'spinner',
@@ -7,7 +7,7 @@
 
 export class SpinnerComponent {
 
-    visible = false;
+    @Input()visible = false;
 
     showIt() {
         this.visible = true;

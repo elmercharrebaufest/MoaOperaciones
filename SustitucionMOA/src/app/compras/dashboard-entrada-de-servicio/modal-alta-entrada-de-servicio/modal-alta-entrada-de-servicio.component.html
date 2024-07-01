@@ -6,20 +6,28 @@
           [responsive]="true"
           [style]="{ 'width': '450px', 'height': '400px' }"
           [maximizable]="true"
-          draggable="true"
+          draggable="false"
           (onHide)="this.closeModal.emit();">
+
+    <div id="col-select">
+        Ver columnas:
+        <ng-container *ngFor="let col of colConfig">
+            <input type="checkbox" [id]="col.name" [name]="col.name" [value]="col.name" (click)="toggleColumn($event)" [(ngModel)]="col.visible">
+            <label [for]="col.name">{{ col.name | titlecase }}</label><br>
+        </ng-container>
+    </div>
 
     <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index">
         <p-header>
             <span id="title" class="ui-panel-title">Posicion {{ position.NroPosicion }}</span>
-            <input id="description" pInputText type="text" [(ngModel)]="position.Descripcion" maxlength="40">
+            <input id="description" pInputText type="text" [(ngModel)]="position.Descripcion" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)">
         </p-header>
 
         <p-table id="items-list"
                  [value]="position.Items"
                  dataKey="NumeroLinea"
-                 [paginator]="position.Items.length > 5"
-                 [rows]="5">
+                 [scrollable]="true" 
+                 scrollHeight="300px">
             <!-- TABLE HEADERS-->
             <ng-template pTemplate="header">
                 <tr>
@@ -30,14 +38,14 @@
                     <th rowspan="2">UM</th>
                     <th rowspan="2">Precio Unitario</th>
                     <th rowspan="2">Monto Total</th>
-                    <th colspan="3" class="anteriores">Anterior</th>
+                    <th colspan="3" class="anterior">Anterior</th>
                     <th colspan="3" class="acertificar">A Certificar</th>
                     <th colspan="3" class="acumulado">Acumulado</th>
                 </tr>
                 <tr>
-                    <th class="anteriores">Cant.</th>
-                    <th class="anteriores">%</th>
-                    <th class="anteriores">Monto</th>
+                    <th class="anterior">Cant.</th>
+                    <th class="anterior">%</th>
+                    <th class="anterior">Monto</th>
 
                     <th class="acertificar">Cant.</th>
                     <th class="acertificar">%</th>
@@ -57,37 +65,63 @@
                     <td>{{ rowData.Descripcion | defaultData }}</td>
                     <td>{{ rowData.Cantidad | defaultData }}</td>
                     <td>{{ rowData.UM | defaultData }}</td>
-                    <td>{{ rowData.Importe | number:'1.0-2':'es' | defaultData }}</td>
-                    <td class="text-right">{{ rowData.Cantidad * rowData.Importe | number:'1.0-2':'es' }}</td>
+                    <td class="text-right">
+                        {{
+                            rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.2-2' | defaultData)) : (rowData.Importe | number:'1.2-2' | defaultData)
+                        }}
+                    </td>
+
+                    <td class="text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.2-2')) : (rowData.Cantidad * rowData.Importe | number:'1.2-2'))
+                        }}
+                    </td>
 
                     <!-- Anteriores -->
                     <!-- * 1  is just to turn it into a number -->
-                    <td>{{ rowData.CantidadReal * 1 | number:'1.0-3':'es' }}</td>
-                    <td>{{ rowData.Porcentaje | number:'1.0-2':'es' }}%</td>
-                    <td class="text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
+                    <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-3' }}</td>
+                    <td class="anterior">{{ rowData.Porcentaje | number:'1.0-3' }}%</td>
+                    <td class="anterior text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.2-2') : (calcularMontoAnterior(rowData) | number:'1.2-2'))
+                        }}
+                    </td>
 
                     <!-- A certificar -->
-                    <td>{{ rowData.CantidadACertificar | number:'1.0-3':'es' }}</td>
-                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-2':'es' }}%</td>
-                    <td class="text-right">{{ rowData.CantidadACertificar * rowData.Importe  | number:'1.0-2':'es' }}</td>
+                    <td>{{ rowData.CantidadACertificar | number:'1.0-3' }}</td>
+                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-3' }}%</td>
+                    <td class="text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2') : (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2'))
+                        }}
+                    </td>
 
                     <!-- Acumulado -->
-                    <td>{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3':'es'}}</td>
-                    <td>{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-2':'es' }}%</td>
-                    <td class="text-right">{{ calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2':'es' }}</td>
+                    <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3'}}</td>
+                    <td class="acumulado">{{ calcularPorcentajeAcumulado(rowData) | number:'1.0-3' }}%</td>
+                    <td class="acumulado text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2') : (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2'))
+                        }}
+                    </td>
                 </tr>
             </ng-template>
             <!-- TABLE BODY END -->
 
             <ng-template pTemplate="footer">
                 <tr class="footer">
-                    <td colspan="10"></td>
+                    <td [attr.colspan]="colspanMonto"></td>
                     <td colspan="2" class="text-right">MONTO TOTAL</td>
-                    <td class="text-right">{{ position.MontoTotalACertificar | number:'1.0-2':'es' }}</td>
+                    <td class="text-right">
+                        {{
+                            (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.2-2') : (position.MontoTotalACertificar | number:'1.2-2'))
+                        }}
+                    </td>
+                    <td colspan="3" class="acumulado"></td>
                 </tr>
             </ng-template>
 
-            
+
 
             <ng-template pTemplate="emptymessage">
                 <tr>
@@ -97,7 +131,7 @@
         </p-table>
     </p-panel>
     <br>
-    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() | number:'1.0-2':'es' }}</strong></div>
+    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() }}</strong></div>
 
     <section class="alta-form">
         <div class="row fields">
@@ -115,8 +149,11 @@
                             [maxDate]="fechaDocMax"
                             yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
                             autoZIndex="true"
-                            [showIcon]="true">
+                            [showIcon]="true"
+                            [required]="true"
+                            appendTo="body">
                 </p-calendar>
+                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
 
             <div class="col-md-3">
@@ -127,9 +164,11 @@
                             dateFormat="yy-mm-dd"
                             [locale]="es"
                             [readonlyInput]="true"
+                            [monthNavigator]="monthNavStatus"
                             [minDate]="fechaContabilizacionMin"
                             [maxDate]="fechaContabilizacionMax"
-                            [showIcon]="true">
+                            [showIcon]="true"
+                            appendTo="body">
                 </p-calendar>
             </div>
 
@@ -151,13 +190,8 @@
             </div>-->
         </div>
 
-        <div class="d-flex justify-content-end">
-            <div class="form-actions">
-                <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()">Certificar</button>
-            </div>
-            <div class="form-actions ml-2">
-                <button type="submit" class="btn btn-success btn-certificar" (click)="BuildReport()">Generar Reporte</button>
-            </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
         </div>
     </section>
 

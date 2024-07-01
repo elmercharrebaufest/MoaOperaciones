@@ -23,6 +23,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     u.Habilitado,
                     u.CUITRegistro,
                     u.UsuarioSap,
+                    u.Suplente,
                     TipoUsuario = new TipoUsuarioDto
                     {
                         Id = u.TipoUsuario.Id,
@@ -43,6 +44,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     Habilitado = u.Habilitado,
                     CUIT = u.CUITRegistro,
                     UsuarioSap = string.IsNullOrEmpty(u.UsuarioSap) ? "" : u.UsuarioSap,
+                    Suplente = string.IsNullOrEmpty(u.Suplente) ? "" : u.Suplente,
                     TipoUsuario = u.TipoUsuario,
                     Tipo = (
                         (u.TipoUsuario.NombreCorto == "G" || u.TipoUsuario.NombreCorto == "NG" || u.TipoUsuario.NombreCorto == "A") ? "Proveedor" :

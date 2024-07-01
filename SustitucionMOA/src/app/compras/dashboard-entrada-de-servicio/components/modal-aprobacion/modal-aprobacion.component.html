@@ -1,0 +1,105 @@
+<div style="z-index: 10;" class="ui-widget-overlay ui-dialog-mask"></div>
+    
+<p-dialog id="alta-certificaciones"
+    header="Alta ES - Aprobación de Entrada de Servicio"
+    [(visible)]="showModal"
+    [responsive]="true"
+    [style]="{ 'width': '450px', 'height': '400px' }"
+    [maximizable]="true"
+    draggable="false"
+    (onHide)="closeModal.emit()">
+    <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of entradaServicioSeleccionada; let i = index">
+        <p-header>
+            <span id="title" class="ui-panel-title">Posicion {{ position.NroPosicion }}</span>
+            <input id="description" pInputText type="text" [(ngModel)]="position.Descripcion" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)" disabled>
+        </p-header>
+
+        <p-table id="items-list"
+                [value]="position.Items"
+                dataKey="NumeroLinea"
+                [scrollable]="true" 
+                scrollHeight="300px">
+            <!-- TABLE HEADERS-->
+            <ng-template pTemplate="header">
+                <tr>
+                    <th rowspan="2">N° LINEA</th>
+                    <th rowspan="2">N° Servicio</th>
+                    <th rowspan="2">Txt. Breve</th>
+                    <th rowspan="2">Cant.</th>
+                    <th rowspan="2">UM</th>
+                    <th rowspan="2">Precio Unitario</th>
+                    <th rowspan="2">Monto Total</th>
+                    <th rowspan="2">Nro Remito</th>
+                    <th colspan="3" class="acertificar">A Certificar</th>
+                </tr>
+                <tr>
+                    <th class="acertificar">Cant.</th>
+                    <th class="acertificar">%</th>
+                    <th class="acertificar">Monto</th>
+                </tr>
+            </ng-template>
+            <!-- TABLE HEADERS END-->
+            <!-- TABLE BODY -->
+            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
+                <tr>
+                    <td>{{ rowData.NumeroLinea | defaultData }}</td>
+                    <td>{{ rowData.ServicioNumero | defaultData }}</td>
+                    <td>{{ rowData.Descripcion | defaultData }}</td>
+                    <td>{{ rowData.Cantidad | defaultData }}</td>
+                    <td>{{ rowData.UM | defaultData }}</td>
+                    <td class="text-right">
+                        {{
+                            rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.2-2' | defaultData)) : (rowData.Importe | number:'1.2-2' | defaultData)
+                        }}
+                    </td>
+
+                    <td class="text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.2-2')) : (rowData.Cantidad * rowData.Importe | number:'1.2-2'))
+                        }}
+                    </td>
+                    <td>
+                        {{ rowData.NroRemito | defaultData }}
+                    </td>
+                    <!-- A certificar -->
+                    <td>{{ rowData.CantidadACertificar | defaultData }}</td>
+                    <td>{{ rowData.PorcentajeACertificar | defaultData }}%</td>
+                    <td class="text-right">
+                        {{
+                            (rowData.Moneda === 'ARP' ? '$ ' + (rowData.MontoACertificar | defaultData) : (rowData.MontoACertificar | defaultData) )
+                        }}
+                    </td>
+                </tr>
+            </ng-template>
+            <!-- TABLE BODY END -->
+
+            <ng-template pTemplate="footer">
+                <tr class="footer">
+                    <td [attr.colspan]="16"></td>
+                    <td colspan="2" class="text-right">MONTO TOTAL</td>
+                    <td colspan="2" class="text-right">
+                        {{ generarMontoTotalACertificar() }}
+                        <!-- {{
+                            (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.2-2') : (position.MontoTotalACertificar | number:'1.2-2'))
+                        }} -->
+                    </td>
+                </tr>
+            </ng-template>
+
+
+
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td class="emptyData" colspan="12">No hay items para mostrar</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </p-panel>
+    <br>
+    <!-- <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() }}</strong></div> -->
+    <section>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="aprobarES.emit(entradaServicioSeleccionada[0].NumeroCertificacion);">Aprobar</button>
+        </div>
+    </section>
+</p-dialog>

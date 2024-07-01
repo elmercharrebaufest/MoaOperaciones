@@ -31,7 +31,7 @@ namespace SustitucionMOAModel.Dto
 
         public string RazonSocialCorredor { get; set; }
         public int IdTipoUsuario { get; set; }
-        public int IdTipoProveedor { get; set; }
+        public int? IdTipoProveedor { get; set; }
 
         public bool? IngresoAPlanta { get; set; }
 

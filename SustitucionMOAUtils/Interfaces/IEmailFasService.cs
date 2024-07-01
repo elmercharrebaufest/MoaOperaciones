@@ -31,5 +31,7 @@ namespace SustitucionMOAUtils.Interfaces
 
         void EnviarMailSolicitudAnulacion(OrdenDeCarga ordenDeCarga);
 
+        //void EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov);
+
     }
 }

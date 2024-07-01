@@ -1,106 +1,402 @@
-#solicitudes {
-  margin: 0;
-  padding-top: 2rem;
-  padding-right: 1.2rem;
+#solicitudes.content-wraper {
+    margin: 0;
+    padding-top: 2rem;
+    padding-right: 1.2rem;
+    margin-top: 0;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
 }
 
-  #solicitudes .filter {
-    width: 50%;
-    margin: 0 auto;
-    font-size: 1.3rem;
-  }
+.content-wraper {
+    overflow: hidden;
+}
+
+.fullscreen {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
+.fullscreen.show-scrollbar {
+    display: block; /* Forzar la barra de desplazamiento visible */
+    
+}
+
+.usuario-area {
+    display: inline-block;
+}
+
+.usuario-area span {
+    color: blue;
+}
+
+.filtro-oc-input {
+    margin-left: 0.4em;
+    height: 1.8em;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.boton-enviar-motivo {
+    padding: 10px;
+    justify-content: center;
+    display: flex;
+}
+
+/* FILTERS */
+.filters-row {
+    padding: 4px 8px;
+    border-top: 0.5px solid #959595;
+    border-left: 0.5px solid #959595;
+    border-right: 0.5px solid #959595;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: max-content;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filters-row > div + div:before {
+    content: "|";
+    padding: 0.6em;
+    color: #959595;
+    position: inherit;
+    bottom: 0.3em;
+    font-size: 1.3em;
+}
+
+:host
+    ::ng-deep
+    .filtro-estado-certificacion
+    > p-dropdown#select-estado-certificacion
+    > .ui-dropdown {
+    height: 1.8em;
+    width: 17em !important;
+    position: relative;
+}
+
+:host
+    ::ng-deep
+    .filtro-estado-certificacion
+    > p-dropdown#select-estado-certificacion
+    > .ui-dropdown
+    > .ui-dropdown-label {
+    font-size: 0.9em !important;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+    padding: 0.2em 0.4em;
+    margin-bottom: 0;
+}
+
+:host
+    ::ng-deep
+    .filtro-estado-certificacion
+    > p-dropdown#select-estado-certificacion
+    > .ui-dropdown.ui-dropdown-open
+    > .ui-dropdown-panel
+    > .ui-dropdown-items-wrapper
+    > .ui-dropdown-items {
+    font-size: 0.9em !important;
+}
+
+/* TABLE */
+.container-table {
+    margin-top: 1em;
+}
+
+.aprobada {
+    width: 180px;
+    background-color: green;
+    color: white;
+    padding: 5px;
+    height: 35px;
+    text-align: center;
+    align-content: center;
+    display: grid;
+    font-weight: bold;
+    margin: auto;
+}
+
+.pendiente-aprobacion {
+    width: 180px;
+    background-color: #ff701a;
+    color: white;
+    padding: 5px;
+    height: 35px;
+    text-align: center;
+    align-content: center;
+    display: grid;
+    font-weight: bold;
+    margin: auto;
+}
+
+.rechazada {
+    width: 180px;
+    background-color: #b90d0d;
+    color: white;
+    padding: 5px;
+    height: 35px;
+    text-align: center;
+    align-content: center;
+    display: grid;
+    font-weight: bold;
+    margin: auto;
+}
 
 /* TABLE */
 .emptyData {
-  text-align: center !important;
+    text-align: center !important;
 }
 
 ::ng-deep #solicitudes .ui-table-wrapper {
-  overflow: auto;
+    overflow: auto;
 }
 
 ::ng-deep #solicitudes .ui-table table {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: auto;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
 }
 
 ::ng-deep #solicitudes table th {
-  word-wrap: normal;
-  white-space: nowrap;
-  width: max-content;
-  color: #fff !important;
-  text-align: center;
+    word-wrap: normal;
+    white-space: nowrap;
+    width: max-content;
+    color: #fff !important;
+    text-align: center;
 }
 
 ::ng-deep #solicitudes .ui-table .ui-table-thead > tr > th {
-  padding: 0.3em 1em !important;
-  font-size: 1.3rem;
+    padding: 0.3em 1em !important;
+    font-size: 1.3rem;
 }
 
 ::ng-deep #solicitudes .ui-table tr {
-  width: max-content;
+    width: max-content;
 }
 
 ::ng-deep #solicitudes .level1 th,
 ::ng-deep #solicitudes .ui-sortable-column.ui-state-highlight {
-  background-color: #666 !important;
+    background-color: #666 !important;
 }
 
 ::ng-deep #solicitudes .level2 th {
-  background-color: #075088 !important;
-  font-size: 1.3rem !important;
+    background-color: #075088 !important;
+    font-size: 1.3rem !important;
 }
 
 ::ng-deep #solicitudes .level1 tr th:first-child {
-  min-width: 4rem;
+    min-width: 4rem;
 }
 
 ::ng-deep #solicitudes table td {
-  text-align: left;
-  white-space: nowrap;
-  font-size: 1.3rem;
+    text-align: left;
+    white-space: nowrap;
+    font-size: 1.3rem;
 }
 
-  ::ng-deep #solicitudes table td:first-child {
+::ng-deep #solicitudes table td:first-child {
     max-width: 0;
-  }
+}
 
 ::ng-deep #solicitudes .level2 tr td:first-child {
-  width: 8%;
+    width: 8%;
 }
 
 ::ng-deep #solicitudes .level1 th:first-child {
-  max-width: 6rem;
+    max-width: 6rem;
 }
 
 ::ng-deep #solicitudes i.ui-sortable-column-icon {
-  color: white;
-  font-size: 1.3rem;
-  padding-left: .8rem;
+    color: white;
+    font-size: 1.3rem;
+    padding-left: 0.8rem;
 }
 
-.btn {
-  width: 30px !important;
-  border: none;
-  margin: 0.3rem;
-  transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
+::ng-deep .filtro-fechas #btnAplicar {
+    display: none !important;
+    visibility: hidden !important;
 }
 
-  .btn.accept-btn {
+i#btn-fullscreen {
+    transform: rotate(-90deg);
+}
+
+i#btn-fullscreen,
+i#btn-filtros {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.filtro-nro-orden>input[type=text],
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text] {
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    height: 2.69em;
+    width: 100%;
+    height: 2.68em;
+    padding: 0.429em;
+    font-family: Roboto Regular;
+    font-size: 15px;
+    line-height: 21.4333px;
+}
+
+.filtro-nro-orden>input:active,
+.filtro-nro-orden>input:hover,
+.filtro-nro-orden>input:focus,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:active,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:hover,
+:host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text]:focus {
+    border: 1px solid #ddd;
+}
+
+::ng-deep p-autocomplete.filtro-proveedor .ui-autocomplete-loader.pi.pi-spinner.pi-spin {
+    margin: auto !important;
+}
+
+:host ::ng-deep p-autocomplete.filtro-proveedor>span.ui-autocomplete {
+    top: -10px !important;
+}
+
+.aux-panel {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    display: flex;
+    flex-direction: column;
+    margin: .5em 0 1em 0;
+    width: 40%;
+}
+
+.aux-panel:has(.columns-config-container) {
+    background-color: rgba(255, 255, 255, .93) !important;
+}
+
+.aux-panel-header {
+    padding: 10px;
+    background-color: #959595;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: white;
+    text-transform: uppercase;
+    padding-left: 15px;
+    min-height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.aux-panel-header>.pi-times {
+    cursor: pointer;
+}
+
+.aux-panel-body {
+    margin: 1em;
+}
+
+/* Columns Config Panel */
+.aux-panel-body:has(> .columns-config-container) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 0 0 1em 0;
+}
+
+.search-filters .btn-buscar {
+    background-color: #1C7CD5;
+    border-color: #1C7CD5;
+    color: white;
+    font-size: 1.3em;
+    padding: .31em 2em;
+    margin-top: 1.6em;
+    width: 100%;
+}
+
+/* Search Panel */
+.search-filters p {
+    color: #075088;
+    font-weight: bold !important;
+}
+
+.btn-action {
+    width: 30px !important;
+    border: none;
+    margin: 0.3rem;
+    transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
+}
+
+.btn-action.accept-btn {
     background-color: #0b880b !important;
     color: #fff;
-  }
+}
 
-  .btn.reject-btn {
+.btn-action.reject-btn {
     background-color: #e33030 !important;
     color: #fff;
-  }
+}
 
 /* Rules here apply to devices from 1280px and up */
 @media (min-width: 1279px) {
-  ::ng-deep #solicitudes .ui-table tr th:first-child {
-    font-size: 1.3rem !important;
-    min-width: 4rem;
-  }
+    ::ng-deep #solicitudes .ui-table tr th:first-child {
+        font-size: 1.3rem !important;
+        min-width: 4rem;
+    }
 }
+
+.text-center {
+  text-align: center !important;
+}
+
+.see-all {
+    color: white;
+    background-color: #1c7cd5;
+    border: none;
+    border-radius: 6px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.see-provider {
+    color: white;
+    background-color: rgb(76, 173, 76);
+    border: none;
+    border-radius: 6px;
+    font-weight: bolder;
+    text-align: center;
+}
+
+.input-wrapper {
+    position: relative;
+    top: 5px;
+}
+
+.char-limit-message {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    color: gray;
+    font-size: 12px;
+}
+
+.textoLibre {
+    margin-bottom: 20px;
+    resize: none;
+    overflow-wrap: break-word;
+}
+

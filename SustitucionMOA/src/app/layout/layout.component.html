@@ -652,9 +652,20 @@
                                 </a>
                             </div>
 
-                            <div  *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS')">
-
+                            <div *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS') && isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA')">
                                 <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS
+                                </a>
+                            </div>
+                            
+                            <div *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS') && !isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA')">
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
+                                    CERTIFICACIÓN DE SERVICIOS
+                                </a>
+                            </div>
+                            
+                            <div *ngIf="!isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS') && isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA')">
+                                <a (click)="goToSeccion('/compras/dashboardCertificacionDeServiciosProveedores')" href="#">
                                     CERTIFICACIÓN DE SERVICIOS
                                 </a>
                             </div>

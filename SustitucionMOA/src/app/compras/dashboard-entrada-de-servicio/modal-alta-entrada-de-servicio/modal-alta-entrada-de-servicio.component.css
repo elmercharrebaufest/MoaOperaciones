@@ -37,10 +37,22 @@
   font-size: .7em;
 }
 
+::ng-deep .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
+    font-size: 0.7em;
+}
+
+::ng-deep .ui-messages-icon.pi.pi-times {
+    font-size: 1.3em;
+}
+
+::ng-deep body .ui-messages.ui-messages-error .ui-messages-icon {
+    color: #c0392b;
+}
+
 .alta-form input#ref {
-  height: 2.4em;
-  border-radius: 3px;
-  width: 100%;
+    height: 2.4em;
+    border-radius: 3px;
+    width: 100%;
 }
 .alta-form .row {
   margin-bottom: 2rem;
@@ -76,23 +88,23 @@ p-calendar.smallCal div {
 }
 
 :host ::ng-deep p-calendar.smallCal .ui-datepicker-title {
-  font-size: .78em;
+  font-size: .15em;
 }
 
 :host ::ng-deep p-calendar.smallCal .ui-datepicker-title select {
-  font-size: 1em;
-  margin: .125em 0;
-  margin-top: 0.125em;
+  font-size: 10pt;
+  margin: .100em 0;
+  margin-top: 0.100em;
   margin-right: 0px;
-  margin-bottom: 0.125em;
+  margin-bottom: 0.100em;
   vertical-align: middle;
   background-color: white;
   border: 1px solid #959595;
   border-radius: 4px;
   font-family: san-serif;
   font-family: "Open Sans", "Helvetica Neue", sans-serif;
-
 }
+
 
 :host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-prev,
 :host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-next {
@@ -137,7 +149,7 @@ p-table#items-list th {
     color: white;
 }
 
-p-table#items-list th.anteriores {
+p-table#items-list th.anterior {
     border-color: white;
     background-color: #F9C834 !important;
     color: #333 !important;
@@ -167,6 +179,11 @@ p-table#items-list th.acumulado {
 :host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:first-child { 
     border-bottom: none;
     border-left: none;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:last-child { 
+    border-bottom: none;
+    border-right: none;
 }
 
 /* Calendar end */
@@ -211,6 +228,17 @@ p-panel#positions-panel #ui-panel-0-label {
 }
 
 /* POSITIONS PANEL END */
+
+/* COLS CONFIG */
+div#col-select {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 1em;
+    padding: .1em .3em;
+    gap: 10px;
+}
+/* END COLS CONFIG */
 
 @media screen and (max-width: 600px) {
   .modal-container {

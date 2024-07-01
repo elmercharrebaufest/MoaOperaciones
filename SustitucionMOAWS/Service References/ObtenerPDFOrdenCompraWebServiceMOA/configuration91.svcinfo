@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="uL0XZ/7dy6OXfvM2g4w0NXj6A2o+QbcUuUhn9qTvHmk=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="PcEVTCSbWGUQkmCn84Oor1JUXV7rsLxQmyBuevogIFE=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_ENVIAR_PDF_OCBinding">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_ENVIAR_PDF_OCBinding2">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding</serializedValue>
+          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding2</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -110,10 +110,10 @@
         </property>
       </properties>
     </bindingConfiguration>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_ENVIAR_PDF_OCBinding1">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_ENVIAR_PDF_OCBinding3">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding1</serializedValue>
+          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding3</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port85" contract="ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_ENVIAR_PDF_OCBinding">
+    <endpoint name="HTTP_Port92" contract="ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_ENVIAR_PDF_OCBinding2">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -233,7 +233,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding</serializedValue>
+          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding2</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC</serializedValue>
@@ -296,7 +296,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTP_Port85</serializedValue>
+          <serializedValue>HTTP_Port92</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port83" contract="ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_ENVIAR_PDF_OCBinding1">
+    <endpoint name="HTTPS_Port90" contract="ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_ENVIAR_PDF_OCBinding3">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_ENVIAR_PDF_OC&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -318,7 +318,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding1</serializedValue>
+          <serializedValue>SI_MMRFC_ENVIAR_PDF_OCBinding3</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ObtenerPDFOrdenCompraWebServiceMOA.SI_MMRFC_ENVIAR_PDF_OC</serializedValue>
@@ -381,7 +381,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTPS_Port83</serializedValue>
+          <serializedValue>HTTPS_Port90</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

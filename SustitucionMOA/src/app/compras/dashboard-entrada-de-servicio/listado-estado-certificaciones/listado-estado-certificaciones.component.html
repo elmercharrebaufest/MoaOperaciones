@@ -1,131 +1,203 @@
-<div id="solicitudes" class="content-wraper">
-  
-  <!-- HEADER -->
-  <section class="container-fluid clearfix">
-    <div class="row titleSection">
-      <div class="col-xs-12 col-sm-10"> <strong>Dashboard - Solicitudes de certificaciones</strong></div>
-    </div>
-    <br>
-  </section>
-  <!-- HEADER END -->
+<div id="solicitudes" class="content-wraper" [class.fullscreen]="fullscreen">
+    <!-- HEADER -->
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10">
+                <strong>Dashboard - Solicitudes de certificaciones</strong>
+            </div>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'"
+                [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
+            <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros"
+                (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+        </div>
+        <br />
+    </section>
+    <!-- HEADER END -->
+    <!-- SEARCH PANEL -->
+    <aux-pannel *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"  
+        [proveedor]="proveedor" [visible]="recalculandoAprobadas" (getFecha)="getFecha($event)" [fechaSeleccionada]="fechaSeleccionadaAux"></aux-pannel>
 
-  <spinner></spinner>
+    <p-messages [value]="msgs"></p-messages>
 
-  <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
-  <!-- TABLE 1 -->
-  <p-table #tabla *ngIf="displayContent()"
-           class="level1"
-           [value]="tablaPO"
-           dataKey="EntradaServicio"
-           [paginator]="true"
-           [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
-           [columns]="columns"
-           [globalFilterFields]="['OrdenCompra','ProveedorNombre']"
-           responsiveLayout="scroll | stack"
-           rowExpandMode="single">
+    <div class="container-tabla">
+        <!-- FILTERS -->
+        <div class="filters-row">
+            <i class="pi pi-filter"></i>
+            <div class="filtro-oc">
+                <input class="filtro-oc-input" pInputText type="text" (input)="
+                        tabla.filterGlobal($event.target.value, 'contains')
+                    " placeholder="Busqueda por OC" [disabled]="recalculando" />
+            </div>
+            <div class="filtro-estado-certificacion">
+                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
+                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="recalculando"
+                    [options]="listadoEstadoCertificacion"
+                    placeholder="Seleccione un estado de certificación"></p-dropdown>
+            </div>
 
-    <!-- FILTERS -->
-    <ng-template pTemplate="caption">
-      <div class="p-d-flex filter">
-        <span class="p-input-icon-left p-ml-auto">
-          <i class="pi pi-search" style="padding-right: 0.5em;"></i>
-          <input class="filter" pInputText type="text" (input)="tabla.filterGlobal($event.target.value, 'contains')" placeholder="Busqueda por OC" />
-        </span>
-      </div>
-    </ng-template>
+            <div *ngIf="havePermision">
+                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="recalculando">Ver
+                    todo</button>
+                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
+                    [disabled]="recalculando">Ver por proveedor</button>
+            </div>
+        </div>
+        <!-- FILTERS END -->
+        <!-- TABLE 1 -->
+        <p-table #tabla class="level1"
+            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
+            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
+            rowExpandMode="single">
+            <!-- TABLE 1 HEADERS -->
+            <ng-template pTemplate="header" let-columns class="lista-header">
+                <tr>
+                    <th></th>
+                    <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{
+                            col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <!-- TABLE 1 HEADERS END -->
+            <!-- TABLE 1 BODY -->
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+                <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
+                    <td>
+                        <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
+                            (click)="toggleRow(rowData)">
+                            <i [ngClass]="
+                                    expanded
+                                        ? 'pi pi-chevron-down'
+                                        : 'pi pi-chevron-right'
+                                "></i>
+                        </a>
+                    </td>
+                    <td>{{ rowData.EntradaServicio }}</td>
+                    <td *ngIf="rowData.Estado === 'Aprobada'">
+                        {{ rowData.FechaAprobacion }}
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">
+                        {{ rowData.FechaRechazo }}
+                    </td>
+                    <td>
+                        {{ rowData.FechaCreacion }}
+                    </td>
+                    <td>{{ rowData.OrdenCompra || "" }}</td>
+                    <td>{{ rowData.CUIT | defaultData }}</td>
+                    <td>{{ rowData.Proveedor | defaultData }}</td>
+                    <td>{{ rowData.Descripcion | defaultData }}</td>
+                    <td>{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>
+                        <div class="usuario-area">
+                            <span>{{ rowData.Ingresante }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="aprobada" *ngIf="rowData.Estado === 'Aprobada'"><span>Aprobada</span> </div>
+                        <div class="pendiente-aprobacion" *ngIf="rowData.Estado === 'Pendiente Aprobación'">
+                            <span>Pendiente de aprobación</span>
+                        </div>
+                        <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
+                    </td>
+                    <td
+                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
+                        <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
+                            (click)="mostrarResumenDeAprobacion(rowData)"
+                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                        <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
+                            (click)="verMotivosRechazos(rowData)"
+                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
+                            type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
+                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
+                        rowData.Aprobador | defaultData}}</td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
+                </tr>
+            </ng-template>
 
-    <!-- FILTERS END -->
-    <!-- TABLE 1 HEADERS -->
-    <ng-template pTemplate="header" let-columns class="lista-header">
-      <tr>
-        <th title="Detalle"></th>
-        <th title="ID_ES">ID_ES</th>
-        <th title="Fecha" pSortableColumn="FechaCreacion">Fecha<p-sortIcon field="FechaCreacion"></p-sortIcon></th>
-        <th title="Número de OC" pSortableColumn="OrdenCompra">Número OC<p-sortIcon field="OrdenCompra"></p-sortIcon></th>
-        <th title="Descripción">Descripción</th>
-        <th title="Monto total">Monto total</th>
-        <th title="Usuario">Usuario o Área</th>
-        <th title="Estado">Estado</th>
-        <th title="Facturado">Facturado</th>
-        <th title="Acciones">Acciones</th>
-        <th title="Reasignar">Reasignar</th>
-        <!--
-        <th title="Vendedor">Vendedor</th>
-        -->
-      </tr>
-    </ng-template>
-    <!-- TABLE 1 HEADERS END -->
-    <!-- TABLE 1 BODY -->
-    <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
-      <tr [pSelectableRow]="rowData">
-        <td>
-          <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData" (click)="toggleRow(rowData)">
-            <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-          </a>
-        </td>
-        <td>{{rowData.EntradaServicio}}</td>
-        <td>{{rowData.FechaCreacion | date: 'd/M/yyyy' }}</td>
-        <td>{{rowData.OrdenCompra || ""}}</td>
-        <td>{{rowData.Descripcion | defaultData }}</td>
-        <td>{{rowData.MontoTotal | currency }}</td>
-        <td>{{rowData.Area | defaultData}}</td>
-        <td>{{rowData.Estado | defaultData}}</td>
-        <td>{{rowData.Facturado | defaultData}}</td>
-        <td>{{rowData.Acciones | defaultData}}</td>
-        <td>
-          <button type="button" pButton icon="pi pi-check" class="btn accept-btn"></button>
-          <button type="button" pButton icon="pi pi-times" class="btn reject-btn"></button>
-        </td>
-        <!--<td>
-          <div class="styled-select" style="max-width: fit-content;">
-            <dropdown [tipoDropdown]="'filtroSC'" [options]="filtroVendedor"></dropdown>
-          </div>
-        </td>-->
-      </tr>
-    </ng-template>
-    <!-- TABLE 1 BODY END -->
+            <ng-template pTemplate="footer" let-columns>
+                <tr *ngIf="recalculando || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                    <td colspan="12">
+                        <recalculando-spinner [description]="'Cargando las entradas de servicio, espere por favor...'"></recalculando-spinner>
+                    </td>
+                </tr>
+            </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-      <tr>
-        <td class="emptyData" colspan="12">No hay ordenes de compra para mostrar</td>
-      </tr>
-    </ng-template>
+            <!-- TABLE 1 BODY END -->
+            <ng-template pTemplate="emptymessage">
+                <tr *ngIf="(!recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (!recalculando && estadoCertificacion.code === 'Rechazado') || (!recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                    <td class="emptyData" colspan="12">
+                        No hay entradas de servicios para mostrar
+                    </td>
+                </tr>
+            </ng-template>
 
-    <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
-      <tr>
-        <td colspan="12">
-          <!-- TABLE 2 -->
-          <p-table class="level2" [value]="rowData.entradaServicioDetalle" responsiveLayout="scroll | stack" dataKey="NumeroLinea">
-            <!-- TABLE 2 HEADERS -->
-            <ng-template pTemplate="header">
-              <tr>
-                <th title="Posicion">N° de Ítem</th>
-                <th title="Material">N° de Servicio</th>
-                <th title="TxtBrev">Descripción</th>
-                <th title="CtdPedido">Cantidad</th>
-                <th title="U">UM</th>
-                <th title="T">Monto</th>
-              </tr>
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                <tr>
+                    <td colspan="18">
+                        <!-- TABLE 2 -->
+                        <p-table class="level2" [value]="rowData.entradaServicioDetalle"
+                            responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
+                            <!-- TABLE 2 HEADERS -->
+                            <ng-template pTemplate="header">
+                                <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
+                    <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header
+                        }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                    <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    </ng-container>
             </ng-template>
             <!-- TABLE 2 HEADERS END -->
             <!-- TABLE 2 BODY -->
-            <ng-template pTemplate="body" let-rowData let-expanded="expanded">
-              <tr>
-                <td>{{rowData.NumeroLinea }}</td>
-                <td>{{rowData.CodigoServicio}}</td>
-                <td>{{rowData.Descripcion}}</td>
-                <td>{{rowData.Cantidad}}</td>
-                <td>{{rowData.UM}}</td>
-                <td>{{rowData.Monto}}</td>
-              </tr>
+            <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
+                <tr>
+                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                    <td>{{ rowDetalle.CodigoServicio }}</td>
+                    <td>{{ rowDetalle.Descripcion }}</td>
+                    <td>{{ rowDetalle.Cantidad }}</td>
+                    <td>{{ rowDetalle.UM }}</td>
+                    <td>{{ rowDetalle.Monto }}</td>
+                    <td>{{ rowDetalle.CantidadCertificar }}</td>
+                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
+                    <td>{{ rowDetalle.MontoCertificar }}</td>
+                    <td>{{ rowDetalle.NroRemito }}</td>
+                </tr>
             </ng-template>
             <!-- TABLE 2 BODY END -->
-          </p-table>
-          <!-- TABLE 2 END -->
+        </p-table>
+        <!-- TABLE 2 END -->
         </td>
-      </tr>
-    </ng-template>
-
-  </p-table>
-  <!-- TABLE 1 END -->
+        </tr>
+        </ng-template>
+        </p-table>
+        <!-- TABLE 1 END -->
+    </div>
+    <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
 </div>
+<p-dialog header="Motivo del rechazo de la certificación" [(visible)]="mostrarMotivosRechazos" [modal]="true"
+    [responsive]="true" [appendTo]="'body'" [contentStyle]="{'overflow':'visible', 'min-width': '500px'}"
+    [draggable]="false" (onHide)="ocultandoModal()">
+    <form [formGroup]="formularioMotivosRechazo">
+        <p-dropdown appendTo="body" [options]="motivos" formControlName="motivo" optionLabel="name"
+            placeholder="Selecciona un motivo"></p-dropdown>
+        <div class="input-wrapper" *ngIf="formularioMotivosRechazo.get('motivo').value.name !== null">
+            <textarea formControlName="observaciones" class="textoLibre" [disabled]="formularioMotivosRechazo.invalid"
+                type="text" placeholder="Escriba una notificación adicional y se notificará al ingresante."
+                maxlength="80">
+            </textarea>
+            <p class="char-limit-message">Max. 80 caracteres</p>
+        </div>
+        <p-button class="boton-enviar-motivo" label="Enviar" (onClick)="enviarMotivo()"
+            [disabled]="formularioMotivosRechazo.invalid"></p-button>
+    </form>
+</p-dialog>
+
+<p-confirmDialog [style]="{width: '50vw'}" appendTo="body">
+</p-confirmDialog>
+
+<modal-aprobacion *ngIf="mostrarModalAprobaciones" [showModal]="mostrarModalAprobaciones"
+    [entradaServicioSeleccionada]="entradaServicioSeleccionada" (aprobarES)="enviarAprobacion($event)"
+    (closeModal)="cerrarModalResumen()"></modal-aprobacion>

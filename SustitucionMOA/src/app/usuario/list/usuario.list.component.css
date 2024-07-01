@@ -1,0 +1,9 @@
+.ui-calendar .ui-datepicker-buttonbar {
+    display: flex;
+    justify-content: center;
+}
+
+/* Ensure the button itself does not override the centering */
+.center-clear-button {
+    margin: 0 auto;
+}

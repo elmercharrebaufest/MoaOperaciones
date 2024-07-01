@@ -620,4 +620,20 @@ BEGIN
 		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'API ORDENES RESIDUOS'))
 END
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'ADMINISTRACION' and PermisoPorRol.Permiso = 'MODIFICAR ESTADO PROVEEDOR') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'ADMINISTRACION'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'MODIFICAR ESTADO PROVEEDOR')) END
+
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'VER TODOS LOS ESTADOS DE ES' and PermisoPorRol.Permiso = 'VER TODOS LOS ESTADOS DE ES') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'VER TODOS LOS ESTADOS DE ES'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'VER TODOS LOS ESTADOS DE ES')) END
+
+IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'ADMIN CONTABILIZACION MES ANTERIOR' and PermisoPorRol.Permiso = 'ADMIN CONTABILIZACION MES ANTERIOR') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'ADMIN CONTABILIZACION MES ANTERIOR'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'ADMIN CONTABILIZACION MES ANTERIOR')) END
+
+
 IF NOT EXISTS(SELECT 1 FROM RolPermisoPorRol inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id WHERE Rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS' and PermisoPorRol.Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS') BEGIN insert into RolPermisoPorRol values ((select id from rol where rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS'),(select id from PermisoPorRol where PermisoPorRol.Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS')) END
+
+IF NOT EXISTS(
+SELECT 1 FROM RolPermisoPorRol 
+inner join PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id 
+inner join Rol on Rol.Id = RolPermisoPorRol.Rol_Id 
+WHERE PermisoPorRol.Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA' and (Rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS' or Rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS EXT')) 
+BEGIN 
+	insert into RolPermisoPorRol values (
+	(select id from rol where ROL.Codigo = 'CERTIFICACION EXTERNA' and (rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS' or rol.Nombre = 'CERTIFICACIÓN DE SERVICIOS EXT')),
+	(select id from PermisoPorRol where PermisoPorRol.Permiso = 'VER SOLAPA CERTIFICACION DE SERVICIOS EXTERNA')) END

@@ -278,7 +278,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOACustomException\SustitucionMOACustomException.csproj">
-      <Project>{F8D4A064-E19C-4B58-B17E-F516118A6EAF}</Project>
+      <Project>{f8d4a064-e19c-4b58-b17e-f516118a6eaf}</Project>
       <Name>SustitucionMOACustomException</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">

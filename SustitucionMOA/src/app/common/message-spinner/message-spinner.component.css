@@ -1,0 +1,11 @@
+.spinner-container{
+    display: block;
+    margin: auto;
+    width: auto;
+}
+
+h4{
+    font-family: Sans-serif;
+    text-align: center;
+    color: #302987;
+}
