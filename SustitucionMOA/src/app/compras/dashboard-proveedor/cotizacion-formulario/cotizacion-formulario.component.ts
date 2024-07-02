@@ -334,6 +334,10 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     mensaje = "Propuesta Económica - " + "Pos. " + count + " - El plazo de entrega es obligatorio: Debe indicar la cantidad de días.";
                     breakFor = true;
                     return mensaje;
+                } else if (posicionServicio.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta > 1000) {
+                    mensaje = "Propuesta Económica - " + "Pos. " + count + " - El plazo de entrega superó el límite máximo de días permitidos.";
+                    breakFor = true;
+                    return mensaje;
                 }
             });
 
