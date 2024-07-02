@@ -273,9 +273,9 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                            Observaciones
+                            Justificación
                             <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacionCondEsp" (ngModelChange)="validarChecks()"
-                                    name="observacionesCondEsp" id="observacionesCondEsp" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
+                                    name="observacionesCondEsp" id="observacionesCondEsp" cols="30" rows="5" placeholder="Texto de justificacion visible solo para el comprador"></textarea>
                             <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacionCondEsp == ''  || this.model.observacionesCotizacionCondEsp == undefined || this.model.observacionesCotizacionCondEsp == null)">
                                 <p class="text-danger">Campo obligatorio</p>
                             </div>
