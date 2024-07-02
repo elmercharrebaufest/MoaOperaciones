@@ -1199,6 +1199,11 @@ namespace SustitucionMOAUtils.Services
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
 
+                if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                {
+                    nroSolp = "0" + nroSolp;
+                }
+
                 Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
 
                 if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
@@ -3089,6 +3094,12 @@ namespace SustitucionMOAUtils.Services
                 if (!string.IsNullOrEmpty(nroSolp))
                 {
                     nroSolp = nroSolp.Trim();
+
+                    if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                    {
+                        nroSolp = "0" + nroSolp;
+                    }
+
                     solps.Add(nroSolp);
                 }
             }
@@ -3170,6 +3181,12 @@ namespace SustitucionMOAUtils.Services
             {
                 var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
                 string[] palabras = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                {
+                    nroSolp = "0" + nroSolp;
+                }
+
                 var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
                 var listId = todasLasPO.ToList().Select(y => y.Id);
 
