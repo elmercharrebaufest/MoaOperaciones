@@ -65,6 +65,7 @@
     <Folder Include="scripts\PreDeployment" />
     <Folder Include="scripts\PostDeployment" />
     <Folder Include="scripts\Comunicacion" />
+    <Folder Include="scripts\Notificaciones\" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />

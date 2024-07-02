@@ -6,6 +6,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
+import { reference } from '@angular/core/src/render3';
 declare var $: any;
 
 type Column = {
@@ -264,11 +265,19 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
     }
 
-    certificarPosicion() {
+    async certificarPosicion() {
+
         if (this.validateValues() === true) {
+            
             this.certificarState = true;
             this.buildEntrySheet();
-            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+
+            let items = this.itemSelected.map(element => {
+                element.EntradasServicio = null;
+                return element;
+            });
+
+            this.service.postCreateAsync(this.entrySheetObjects, items).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -295,7 +304,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     });
 
                     this.mensajeError = resultMsj.join("");
-
+                    
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
@@ -318,6 +327,40 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         }
       
+    }
+
+    tituloArchivoPDF = "Reporte";
+    BuildReport(){
+
+        this.service.buildReportES(this.itemSelected).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivoPDF + new Date() + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            });
     }
 
     buildEntrySheet() {

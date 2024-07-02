@@ -112,7 +112,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
   </ItemGroup>
