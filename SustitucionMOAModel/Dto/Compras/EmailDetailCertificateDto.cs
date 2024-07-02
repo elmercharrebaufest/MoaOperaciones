@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace SustitucionMOAModel.Dto.Compras
 {
     public class EmailDetailCertificateDto
-    { 
+    {
         public string Destinatario { get; set; }
         public string MotivoRechazo { get; set; } = null;
         public string Proveedor { get; set; }
@@ -22,6 +22,7 @@ namespace SustitucionMOAModel.Dto.Compras
         public string Importe { get; set; }
         public string MontoTotal { get; set; }
         public string GeneradoPor { get; set; } = null;
+        public string NroOC { get; set; }
         public List<ServiceDetailDto> DetalleServicio { get; set; }
     }
 
