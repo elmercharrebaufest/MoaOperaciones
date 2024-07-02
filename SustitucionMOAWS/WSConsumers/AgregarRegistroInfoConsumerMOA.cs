@@ -220,6 +220,11 @@ namespace SustitucionMOAWS.WSConsumers
         private int CalcularFecha(DateTime fechaVigencia, DateTime hoy)
         {
             TimeSpan diferencia = fechaVigencia - hoy;
+
+            if (diferencia.Days < 30) 
+            {
+                return 30;
+            }
             return diferencia.Days;
         }
     }
