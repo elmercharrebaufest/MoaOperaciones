@@ -194,6 +194,7 @@
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IEntradaServicioService.cs" />
+    <Compile Include="Interfaces\IReporteESService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
     <Compile Include="Interfaces\IPDFService.cs" />
@@ -302,6 +303,7 @@
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
+    <Compile Include="Services\ReporteESService.cs" />
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />

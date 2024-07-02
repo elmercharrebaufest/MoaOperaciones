@@ -6,6 +6,7 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
+import { reference } from '@angular/core/src/render3';
 declare var $: any;
 
 type Column = {
@@ -264,11 +265,25 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
     }
 
-    certificarPosicion() {
+    async certificarPosicion() {
+
         if (this.validateValues() === true) {
+            
             this.certificarState = true;
             this.buildEntrySheet();
-            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+
+            //let reference = await this.BuildReport();
+
+            let items = this.itemSelected.map(element => {
+                element.EntradasServicio = null;
+                return element;
+            });
+
+            let entrySheetObjectsList = this.entrySheetObjects.map(item => {
+                return { ...item, reference : "ref"};
+            });
+
+            this.service.postCreateAsync(this.entrySheetObjects, items).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -295,7 +310,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     });
 
                     this.mensajeError = resultMsj.join("");
-
+                    
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
@@ -318,6 +333,23 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         }
       
+    }
+
+    tituloArchivoPDF = "Reporte";
+
+    async BuildReport() {
+        try {
+            let items = this.itemSelected.map(element => {
+                element.EntradasServicio = null;
+                return element;
+            });
+            
+            const result = await this.service.buildReportES(items).toPromise();
+            
+            return result.reference;
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     buildEntrySheet() {
