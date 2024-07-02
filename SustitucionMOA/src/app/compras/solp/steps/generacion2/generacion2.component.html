@@ -108,11 +108,6 @@
                             </div>
                             
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
-                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.requisitoCiberseguridad" formControlName="requisitoCiberseguridad"
-                                            label="Requisito de Ciberseguridad MOA" binary="true"></p-checkbox>
-                            </div>
-
-                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.modoElevacion" label="Medio de elevación" formControlName="modoElevacion"
                                             binary="true"></p-checkbox>
                             </div>
@@ -147,6 +142,11 @@
                             <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
                                 <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.entregaDocumentacion" formControlName="entregaDocumentacion"
                                             label="Entrega de documentación técnica" binary="true" [disabled]="!model.descripcionTecnica"></p-checkbox>
+                            </div>
+
+                            <div class="col-xs-12 col-sm-12 col-md-12 margenInput">
+                                <p-checkbox [ngModelOptions]="{standalone:true}" [(ngModel)]="model.requisitoCiberseguridad" formControlName="requisitoCiberseguridad"
+                                            label="Requisito de Ciberseguridad MOA" binary="true"></p-checkbox>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 inputRight margenInput">
