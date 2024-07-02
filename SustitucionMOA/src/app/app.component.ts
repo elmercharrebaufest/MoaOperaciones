@@ -51,12 +51,12 @@ export class AppComponent implements OnDestroy {
     @HostListener('window:keydown', ['$event'])
     keyEvent(event: KeyboardEvent) {
         if (event.altKey == true && event.ctrlKey == true && event.key == "b") {
-            document.getElementById("aboutScreenBTN").click();
+           // document.getElementById("aboutScreenBTN").click();
         };
     }
 
     closeAboutScreen() {
-        document.getElementById("aboutScreenBTN").click();
+       // document.getElementById("aboutScreenBTN").click();
     }
 
     ngOnInit() {
