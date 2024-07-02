@@ -272,15 +272,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             this.certificarState = true;
             this.buildEntrySheet();
 
-            //let reference = await this.BuildReport();
-
             let items = this.itemSelected.map(element => {
                 element.EntradasServicio = null;
                 return element;
-            });
-
-            let entrySheetObjectsList = this.entrySheetObjects.map(item => {
-                return { ...item, reference : "ref"};
             });
 
             this.service.postCreateAsync(this.entrySheetObjects, items).subscribe(
@@ -336,20 +330,37 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     tituloArchivoPDF = "Reporte";
+    BuildReport(){
 
-    async BuildReport() {
-        try {
-            let items = this.itemSelected.map(element => {
-                element.EntradasServicio = null;
-                return element;
+        this.service.buildReportES(this.itemSelected).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivoPDF + new Date() + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
             });
-            
-            const result = await this.service.buildReportES(items).toPromise();
-            
-            return result.reference;
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     buildEntrySheet() {
