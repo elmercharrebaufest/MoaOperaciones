@@ -99,12 +99,6 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
-                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                        <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa"
-                                            [disabled]="true"></p-checkbox>
-                                    </div>
-
                                     <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
@@ -145,6 +139,12 @@
                                         <p class="blue"><strong>Destino</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}}
                                             ({{ordenDeCarga.CUITDestino}})</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12"
+                                        *ngIf="validaCPEDG && ordenDeCarga.CUITRemitenteComercial">
+                                        <p class="blue"><strong>CUIT remitente comercial</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.CUITRemitenteComercial}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">

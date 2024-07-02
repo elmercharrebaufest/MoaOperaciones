@@ -855,8 +855,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        if (!this.editando)
-            this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
     }
 
     onPatenteSeleccionada() {
@@ -1136,6 +1134,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     this.gestiona[campo] = false;
                 }
 
+                if (campo === 'CUITDestino')
+                    this.asignarRemitenteComercial();
             })
     }
 
@@ -1460,7 +1460,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     setearDefaultEnCPEDG() {
-        this.ordenDeCarga.Reventa = false;
         this.ordenDeCarga.CUITDestinatario = undefined;
         this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestinatario');
         this.ordenDeCarga.CUITDestino = undefined;
@@ -1656,6 +1655,19 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     abrirModalEdicionInterno() {
         document.getElementById("openEdicionOrdenInterno").click();
+    }
+
+    asignarRemitenteComercial() {
+        this.ordenDeCarga.CUITRemitenteComercial = this.usaRemitenteComercial ? this.ordenDeCarga.CUITCliente : null;
+        if (!this.ordenDeCarga.CUITRemitenteComercial) {
+            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
+        } else {
+            this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
+        }
+    }
+
+    get usaRemitenteComercial() {
+        return this.ordenDeCarga.CUITCliente.toString() != this.ordenDeCarga.CUITDestino;
     }
 }
 

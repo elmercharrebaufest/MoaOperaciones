@@ -1777,7 +1777,6 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("Las patentes de chasis y acoplado no pueden ser iguales.");
             }
             ValidarCuilChofer(orden);
-            ValidarReventa(orden);
         }
 
         private void ValidarCuilChofer(OrdenDeCarga orden)
@@ -1798,23 +1797,6 @@ namespace SustitucionMOAUtils.Services
             }
             Log.Debug(this.GetType().Name, "Agregar", $" chofer en Scato: {choferRes.Data.ToJson()}");
         }
-
-        private void ValidarReventa(OrdenDeCarga orden)
-        {
-            if (orden.Cliente != null)
-            {
-                var puedeSeleccionarReventa = orden.Cliente.EsRevendedor;
-                if (!puedeSeleccionarReventa && orden.Reventa)
-                {
-                    throw new ValidationCustomException($"Cliente {orden.Cliente.RazonSocial}({orden.Cliente.CUIT}) no es revendedor. No puede modificar campo reventa");
-                }
-            }
-            else
-            {
-                throw new Exception("Error en validación de reventa. No está cargado el Cliente para la Orden");
-            }
-        }
-
         private void LlenarOrdenAlta(OrdenDeCarga ordenDeCarga, Usuario usuario)
         {
             ordenDeCarga.Estado = EstadoOrdenDeCarga.ErrorDeCarga;
@@ -1856,6 +1838,7 @@ namespace SustitucionMOAUtils.Services
                     UsarCUITClienteParaDestinatario(ordenDeCarga);
                 }
                 ordenDeCarga.DestinoMercaderia = null;
+                ordenDeCarga.Reventa = ordenDeCarga.CUITCliente != ordenDeCarga.CUITDestino;
             }
             ordenDeCarga.TransporteExiste = TransporteExiste(ordenDeCarga);
             ordenDeCarga.FechaVencimiento = CalcularFechaVencimiento(DateTime.Now);
