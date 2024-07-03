@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.Importe};
+                emailDetail.Descripcion, emailDetail.Importe, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }

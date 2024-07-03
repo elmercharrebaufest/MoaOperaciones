@@ -1158,6 +1158,7 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.Proveedor = "";
                     emailDetailCertificateDto.Importe = EntradasDeServicioTemp[0].Importe.ToString();
                     emailDetailCertificateDto.MontoTotal = EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {
