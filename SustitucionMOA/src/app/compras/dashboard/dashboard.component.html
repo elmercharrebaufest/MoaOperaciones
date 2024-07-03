@@ -189,7 +189,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData">
                     <td (dblclick)="onRowDblClick($event, rowData)">
-                        <div *ngIf="rowData.TienePeticionDeOferta">
+                        <div>
                             <a href="#" [pRowToggler]="rowData" (click)="listarExpand(); listarPeticiones(rowData)">
                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
