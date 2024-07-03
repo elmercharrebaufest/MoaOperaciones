@@ -216,8 +216,9 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerPDFOrdenCompraConsumerMOA>().To(typeof(ObtenerPDFOrdenCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IListarSolpPendientesConsumerMOA>().To(typeof(ListarSolpPendientesConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerAdjuntosSOLPEDConsumerMOA>().To(typeof(ObtenerAdjuntosSOLPEDConsumerMOA)).InScope(ctx => OperationContext.Current);
 
-
+            
             #endregion
 
             // Scato WebApi

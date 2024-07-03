@@ -57,6 +57,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
         private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
+        private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
 
 
         private readonly GuardarCotizacion guardarCotizacion = new GuardarCotizacion
@@ -657,83 +658,6 @@ namespace SustitucionMOATest.Services
             Finalizada = true
         };
 
-        //private readonly ChatsDto chatsDto = new ChatsDto
-        //{
-        //    ChatCompras = { 
-        //        Mensajes = new List<ChatInternoComprasDto> {
-        //            new ChatInternoComprasDto { 
-        //                Id = 1,
-        //                Usuario_Id = 5776,
-        //                RolUsuario = "SOLP",
-        //                Solp_Id = 1,
-        //                FechaEnvio = "12-04-2024",
-        //                FechaEnvioDate = DateTime.Now,
-        //                Leido = true,
-        //                Mensaje = "Hola",
-        //                FechaDiaEnvio = "12-04-2024"
-        //            }
-        //        },
-        //        Solp_Id = 1, 
-        //        FechaCreacion = "12-04-2024", 
-        //        FechaCreacionDate = DateTime.Now, 
-        //        UsuarioActualId = 5776, 
-        //        RazonSocialComprador = "Aca" 
-        //    },
-        //    ChatProveedores = new List<ChatProveedoresDto> { 
-        //        new ChatProveedoresDto {
-        //            Mensajes = new List<ChatExternoComprasDto> {
-        //                 new ChatExternoComprasDto {
-        //                    Id = 1,
-        //                    PeticionDeOferta_Id = 1,
-        //                    Usuario_Id = 5776,
-        //                    FechaEnvioDate = DateTime.Now,
-        //                    Leido = true,
-        //                    Mensaje = "Hola",
-        //                    PeticionDeOfertaUsuario_Id = 1,
-        //                    RolUsuario = "SOLP",
-        //                    FechaEnvio = "12-04-2024",
-        //                    Mail = "rorlando@baufest.com",
-        //                    FechaDiaEnvio = "12-04-2024"
-        //                }
-        //            }, 
-        //            PeticionDeOferta_Id = 1, 
-        //            FechaCreacion = "12-04-2024", 
-        //            FechaCreacionDate = DateTime.Now, 
-        //            UsuarioActualId = 5776, 
-        //            RazonSocialProveedor = "Aca", 
-        //            CuitProveedor = "20043159381",
-        //            PeticionDeOfertaUsuario_Id = 1    
-        //        }
-        //    }            
-        //};
-
-        //private readonly ChatExternoComprasDto chatExternoComprasDto = new ChatExternoComprasDto
-        //{
-        //    Id = 1,
-        //    PeticionDeOferta_Id = 1,
-        //    Usuario_Id = 5776,
-        //    FechaEnvioDate = DateTime.Now,
-        //    Leido = true,
-        //    Mensaje = "Hola",
-        //    PeticionDeOfertaUsuario_Id = 1,
-        //    RolUsuario = "SOLP",
-        //    FechaEnvio = "12-04-2024",
-        //    Mail = "rorlando@baufest.com",
-        //    FechaDiaEnvio = "12-04-2024"
-        //};
-
-        //private readonly ChatInternoComprasDto chatInternoComprasDto = new ChatInternoComprasDto
-        //{
-        //    Id = 1,
-        //    Usuario_Id = 5776,
-        //    RolUsuario = "SOLP",
-        //    Solp_Id = 1,
-        //    FechaEnvio = "12-04-2024",
-        //    FechaEnvioDate = DateTime.Now,
-        //    Leido = true,
-        //    Mensaje = "Hola",
-        //    FechaDiaEnvio = "12-04-2024"
-        //};
 
         [SetUp]
         public void SetUp()
@@ -766,6 +690,7 @@ namespace SustitucionMOATest.Services
             obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
             listarSolpPendientesConsumerMOAMock = new Mock<IListarSolpPendientesConsumerMOA>();
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
+            obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
@@ -797,7 +722,8 @@ namespace SustitucionMOATest.Services
                 reporteOrdenDeCompraConsumerMOAMock.Object,
                 obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object,
                 listarSolpPendientesConsumerMOAMock.Object,
-                obtenerPDFOrdenCompraConsumerMOAMock.Object
+                obtenerPDFOrdenCompraConsumerMOAMock.Object,
+                obtenerAdjuntosSOLPEDConsumerMOA.Object
                 );
         }
 

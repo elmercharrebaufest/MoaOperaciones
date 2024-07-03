@@ -371,7 +371,9 @@
     <Content Include="Templates\EncabezadoSolpPreview.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Templates\images\logo.png" />
+    <Content Include="Templates\images\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\images\logoEndosado.png" />
     <Content Include="Templates\NewPliegoSolpSinCondicionesTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

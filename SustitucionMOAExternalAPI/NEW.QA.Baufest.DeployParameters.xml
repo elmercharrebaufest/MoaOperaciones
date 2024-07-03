@@ -3,6 +3,7 @@
 	<setParameter name="IIS Web Application Name" value="MOABaufestOperaciones/externalApi" />
 	<setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQA;Pooling=False" />
   <setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;Initial Catalog=MoaOperacionesHangfireQA;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
+  <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
 
   <setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
   <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />

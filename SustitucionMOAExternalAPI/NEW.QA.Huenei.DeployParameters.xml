@@ -7,6 +7,7 @@
   <setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
   <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
   <setParameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address" value="http://gsloaccesos01.molinosagro.ad:8080/Pedidos_QA/Servicios/ServicioSuscriptor.svc" />
+  <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
 
   <setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
   <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />

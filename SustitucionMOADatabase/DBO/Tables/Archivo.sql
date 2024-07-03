@@ -3,6 +3,7 @@ CREATE TABLE [dbo].[Archivo](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[FileKey] [nvarchar](max) NULL,
 	[Ruta] [nvarchar](max) NULL,
+	[ArchivoSap] BIT NULL DEFAULT 0,
 	[Proveedor_Id] [int] NULL,
  CONSTRAINT [PK_dbo.Archivo] PRIMARY KEY CLUSTERED 
 (

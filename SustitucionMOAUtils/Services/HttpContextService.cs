@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerPathLogoMail()
         {
-            return System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            return GetDirectory("Templates/images/logo.png");
         }
 
         public string GetDirectory(string path)
