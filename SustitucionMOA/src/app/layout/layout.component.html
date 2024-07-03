@@ -198,7 +198,7 @@
     </modal-footer>
 </modal>
 
-<div class="main-panel">
+<div class="main-panel" [ngClass]="{'w-full':!($sidebarVisible|async)}">
     <!--User-->
     <div class="header">
         <div class="logo">
@@ -233,18 +233,7 @@
                                 </div>
                             </li>
                         </ng-template>
-                        <!-- <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
-                                (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
-                                    class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
-                        <li><a (click)="editarCuenta()" href="#" class="animate"><span
-                                    class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>
-                        <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
-                                (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
-                                    class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>
-                        <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
-                                    aria-hidden="true"></span>Cerrar sesión</a></li> -->
                         <li>
-
                             <div id="UserNotification" class="clearfix"> <span id="notificationOpen"
                                     onClick="notificationOpen()"> <span class="fa fa-bell-o" aria-hidden="true"></span>
                                     <span class="badge">{{cantidadNot()}}</span>
@@ -252,6 +241,10 @@
                                         class="fa fa-bell-o" aria-hidden="true"></span> <span
                                         class="badge">{{cantidadNot()}}</span> </span>
                             </div>
+                        </li>
+                        <li class="p-4 pr-8">
+                            <i class="fa fa-bars scale-2 cursor-pointer" aria-hidden="true"
+                                (click)="toggleSidebar()"></i>
                         </li>
                         <li id="liUser"><span id="userOpenSmall" onClick="userOpenSmall()" class="fa fa-user-circle-o"
                                 aria-hidden="true"></span> <span id="userCloseSmall" onClick="userCloseSmall()"
@@ -296,7 +289,7 @@
         <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
     <!-- Navegación -->
-    <barra-nav id="mySidenav" class="sidebar">
+    <barra-nav id="mySidenav" class="sidebar" [ngClass]="{'hidden':!($sidebarVisible|async)}">
         <div class="sidebar-wrapper">
             <div class="switch" *ngIf="isAmbos()">
                 <input type="radio" class="switch-input" name="view" value="week" id="week"
@@ -468,8 +461,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="documentacion">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
-                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
+                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span
+                                class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
@@ -494,7 +488,8 @@
                                     <!--data-toggle="tab">-->Documentos e Informaci&oacute;n &uacute;til
                                 </a>
                             </div>
-                            <div *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
+                            <div
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
@@ -504,7 +499,8 @@
                                     <!--data-toggle="tab">-->Alta Proveedor
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div
+                                *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
                                     <!--data-toggle="tab">-->Estado solicitud
                                 </a>
@@ -541,19 +537,19 @@
 
     <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
                 <div class="panel panel-default"
-                     *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse"
-                           (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
+                            (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
                 </div>
                 <div class="panel panel-default"
-                     *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
-                           href="#" data-parent="#accordionMenu">
+                            href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
@@ -569,18 +565,18 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
-                           data-parent="#accordionMenu">
+                            data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Preguntas Frecuentes
                         </a>
                     </div>
                 </div>
                 <div class="panel panel-default"
-                     *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) ">
+                    *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) ">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
                             Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down"
-                                                        aria-hidden="true"></span>
+                                aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
@@ -621,9 +617,9 @@
 
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="compras"
-                         *ngIf="isAuthorized('VER SOLAPA COMPRA')">
+                        *ngIf="isAuthorized('VER SOLAPA COMPRA')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
+                            href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -652,7 +648,7 @@
                                 </a>
                             </div>
 
-                            <div  *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS')">
+                            <div *ngIf="isAuthorized('VER SOLAPA CERTIFICACION DE SERVICIOS')">
 
                                 <a (click)="goToSeccion('/compras/dashboardCertificacionDeServicios')" href="#">
                                     CERTIFICACIÓN DE SERVICIOS
@@ -672,12 +668,12 @@
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="apikey" *ngIf="isAuthorized('APIKEY')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
+                            href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
                             API <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseApikey" class="collapse" aria-labelledby="apikey" role="tabpanel"
-                         *ngIf="isAuthorized('APIKEY')">
+                        *ngIf="isAuthorized('APIKEY')">
                         <div class="panel-body">
                             <div>
                                 <a (click)="goToSeccion('/apikey')" href="#">

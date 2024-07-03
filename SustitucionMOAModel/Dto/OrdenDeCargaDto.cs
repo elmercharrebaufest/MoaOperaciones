@@ -222,6 +222,7 @@ namespace SustitucionMOAModel.Dto
         public string DestinoMercaderia { get; set; }
         public List<int> OrdenesConPatentesRepetidas { get; set; }
         public bool FleteMOA { get; set; }
+        public string CUITRemitenteComercial { get; set; }
         public OrdenDeCargaDetalleDto() { }
 
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
@@ -281,6 +282,7 @@ namespace SustitucionMOAModel.Dto
             NecesitaVerificarCuitsTerceros = orden.Producto.ValidaSisaRuca && !orden.CuitTerceroExisteScato;
             DestinoMercaderia = orden.DestinoMercaderia;
             FleteMOA = orden.FleteMOA ?? false;
+            CUITRemitenteComercial = orden.Producto.ValidaSisaRuca && orden.Reventa ? orden.CUITCliente : null;
         }
 
         public override bool Equals(object obj)

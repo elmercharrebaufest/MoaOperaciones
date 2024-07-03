@@ -555,7 +555,7 @@ namespace SustitucionMOAUtils.Services
         public string AgregarApertura(EcheqRequestModel request)
         {
             string mensajeErrorBloqueo = "bloqueado por";
-            string mensajeErrorBloqueoReemplazo = "El Contrato esta siendo tratado, espere un momentos.";
+            string mensajeErrorBloqueoReemplazo = "Error al aperturar el contrato, por favor vuelva a intentar más tarde";
             string mensaje = string.Empty;
             EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x =>
             x.Documento == request.Documento &&

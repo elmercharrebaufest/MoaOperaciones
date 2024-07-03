@@ -1,0 +1,19 @@
+.w-full {
+    width: 100%;
+}
+
+.p-4 {
+    padding: 1rem;
+}
+
+.pr-8 {
+    padding-right: 2.5rem;
+}
+
+.scale-2 {
+    transform: scale(2.5);
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
