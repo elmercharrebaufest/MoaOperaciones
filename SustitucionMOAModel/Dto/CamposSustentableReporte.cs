@@ -10,6 +10,7 @@
         public string HectareasTotales { get; set; }
         public string HectareasSoja { get; set; }
         public string Coordenadas { get; set; }
+        public string ToneladasAprobadas { get; set; }
         public string Partido { get; set; }
         public string ToneladasAprobadas { get; set; }
     }

@@ -30,6 +30,7 @@ using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive;
+using SustitucionMOAUtils.Export.CampoSustentable;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -174,6 +175,8 @@ namespace SustitucionMOA.App_Start
                 }
             }
             #endregion
+
+            kernel.Bind<ICampoSustentablePdfGenerator>().To(typeof(CampoSustentablePdfGenerator)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
