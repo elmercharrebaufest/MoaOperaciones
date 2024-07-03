@@ -12,6 +12,5 @@
         public string Coordenadas { get; set; }
         public string ToneladasAprobadas { get; set; }
         public string Partido { get; set; }
-        public string ToneladasAprobadas { get; set; }
     }
 }
