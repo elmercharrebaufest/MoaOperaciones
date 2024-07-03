@@ -101,6 +101,17 @@
                             <ng-container *ngIf="validaCPEDG">
                                 <div class="col-xs-12 col-md-12">
                                     <div class="formulario-label">
+                                        CUIT Remitente Comercial:
+                                    </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" [(ngModel)]="ordenDeCarga.CUITRemitenteComercial"
+                                                mask="00-00000000-0" disabled="true" placeholder="Automático">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
                                         CUIT Destinatario:
                                     </div>
                                     <div class="styled-select">
@@ -352,17 +363,6 @@
                                     <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
                                         {{ mensajesGestionCuit.CUITIntermediarioFlete }}
                                     </p>
-                                </div>
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="formulario-label">
-                                        CUIT remitente comercial:
-                                    </div>
-                                    <div class="styled-select">
-                                        <div class="ui-inputgroup">
-                                            <input type="text" [(ngModel)]="ordenDeCarga.CUITRemitenteComercial"
-                                                mask="00-00000000-0" disabled="true" placeholder="Automático">
-                                        </div>
-                                    </div>
                                 </div>
                             </ng-container>
                         </div>

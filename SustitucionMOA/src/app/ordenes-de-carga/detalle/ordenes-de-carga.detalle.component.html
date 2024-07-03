@@ -129,6 +129,12 @@
                                         <p style="width:100%">{{ordenDeCarga.ContratoSAP || '-'}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12"
+                                        *ngIf="validaCPEDG && ordenDeCarga.CUITRemitenteComercial">
+                                        <p class="blue"><strong>Remitente comercial</strong></p>
+                                        <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}
+                                            ({{ordenDeCarga.CUITRemitenteComercial}})</p>
+                                    </div>
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Destinatario</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}}
@@ -139,12 +145,6 @@
                                         <p class="blue"><strong>Destino</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialDestino}}
                                             ({{ordenDeCarga.CUITDestino}})</p>
-                                    </div>
-
-                                    <div class="col-xs-12 col-md-12"
-                                        *ngIf="validaCPEDG && ordenDeCarga.CUITRemitenteComercial">
-                                        <p class="blue"><strong>CUIT remitente comercial</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.CUITRemitenteComercial}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
