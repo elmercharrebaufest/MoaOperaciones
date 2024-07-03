@@ -248,7 +248,13 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     certificarPosicion() {
         if (this.validateValues() === true) {
             this.buildEntrySheet();
-            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+
+            let items = this.itemSelected.map(element => {
+                element.EntradasServicio = null;
+                return element;
+            });
+
+            this.service.postCreateAsync(this.entrySheetObjects, items).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
