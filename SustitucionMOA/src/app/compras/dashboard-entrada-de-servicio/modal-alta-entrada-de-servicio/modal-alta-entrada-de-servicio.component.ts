@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
@@ -7,6 +7,9 @@ import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
 import { reference } from '@angular/core/src/render3';
+import { SessionDataService } from '../../../common/services/SessionDataService';
+import { FloatMsgService } from '../../../common/services/FloatMsgService';
+
 declare var $: any;
 
 type Column = {
@@ -103,7 +106,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     totalMontoCertificar!: number;
 
     constructor(protected service: ComprasService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService
     ) { }
 
     ngOnInit() {
