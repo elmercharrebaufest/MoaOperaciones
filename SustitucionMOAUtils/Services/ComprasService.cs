@@ -4316,13 +4316,13 @@ namespace SustitucionMOAUtils.Services
 
                 // buscar archivos de la solp y considerar condiciones especiales
                 if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                   (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial)) || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
+                   x.FileKey == FileKeys.AdjuntoCotizacionesSolp || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
-                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
-                            && (!esProveedor || !tieneCondicionEspecial)) || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
+                            || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp 
+                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
