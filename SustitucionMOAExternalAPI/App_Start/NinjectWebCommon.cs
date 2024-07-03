@@ -36,6 +36,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.WSConsumers;
     using SustitucionMOAWS.GoogleDrive;
     using SustitucionMOAWS.GoogleDrive.Interfaces;
+    using SustitucionMOAUtils.Export.CampoSustentable;
 
     public static class NinjectWebCommon
     {
@@ -179,6 +180,8 @@ namespace SustitucionMOAExternalAPI.App_Start
                 }
             }
             #endregion
+
+            kernel.Bind<ICampoSustentablePdfGenerator>().To(typeof(CampoSustentablePdfGenerator)).InScope(ctx => OperationContext.Current);
 
 
             #region InterfacesSAP
