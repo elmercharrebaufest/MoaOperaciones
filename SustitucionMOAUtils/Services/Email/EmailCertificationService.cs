@@ -152,6 +152,7 @@ namespace SustitucionMOAUtils.Services.Email
                 string importe = string.Empty;
                 //MMSN-928 - Agregar OC al email.
                 string OC = string.Empty;
+                string NroPosicion = string.Empty;
                 StringBuilder tabla = new StringBuilder();
                 if (apList.Count > 0)
                 {
@@ -163,6 +164,7 @@ namespace SustitucionMOAUtils.Services.Email
                     importe = "$ " + apList[0].Monto_total.ToString();
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(apList);
+                    NroPosicion = apList[0].NRO_POS;
                 }
 
 
@@ -170,7 +172,7 @@ namespace SustitucionMOAUtils.Services.Email
                 string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
                 string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
+                var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion);
 
                 ms.Position = 0;
 
