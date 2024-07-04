@@ -256,8 +256,8 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
-        return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
+    public postCreateAsync(parametros : any, report : any): Observable<any> {
+        return this.http.post('/api/EntradaServicio/CreateAsync', {parametros, report})
           .pipe(
             timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
           );

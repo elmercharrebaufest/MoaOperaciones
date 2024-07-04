@@ -44,10 +44,15 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IEmailFasService emailFasService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
+        private readonly IReporteESService _reporteESService;
+
         //private readonly ILiquidacionService _liquidacionService;
         //private OrderParamsDto parametros;
 
-        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService, IComprasService comprasService, IEmailCertificationService emailCertificationService, IEmailFasService emailFasService, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA)
+        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService, 
+            IComprasService comprasService, IEmailCertificationService emailCertificationService, 
+            IEmailFasService emailFasService, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
+            IReporteESService reporteESService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorio = repositorio;
@@ -56,6 +61,8 @@ namespace SustitucionMOAUtils.Services
             this.comprasService = comprasService;
             this.emailCertificationService = emailCertificationService;
             this.emailFasService = emailFasService;
+            this._reporteESService = reporteESService;
+
             //_liquidacionService = liquidacionService;
         }
 
@@ -614,7 +621,8 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber, string proveedor = null)
+        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, 
+            string userMail, List<ReporteDto> reporte, string solpedNumber,  string proveedor = null)
         {
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
@@ -624,21 +632,22 @@ namespace SustitucionMOAUtils.Services
             if (result.Type == "I" && result.Id == "SE")
             {
                 int ESNumber = GetESNumber(result.Message);
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, solpedNumber, proveedor);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, reporte, solpedNumber, proveedor);
             }
 
 
             return result;
         }
 
-        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null, string proveedor = null)
+        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, 
+            string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null)
         {
 
 
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             try
             {
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, solpedNumber, proveedor);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, reporte, solpedNumber, proveedor);
                 result.Type = "S";
 
                 result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
@@ -688,9 +697,9 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, string reference = null)
         {
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario);
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reference);
             return true;
         }
 
@@ -764,7 +773,8 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="parametros"></param>
         /// <param name="userMail"></param>
-        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, bool auto, string solPedNumber = null, string proveedor = null)
+        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, 
+            bool auto, List<ReporteDto> reporte, string solPedNumber = null, string proveedor = null)
         {
             Aprobaciones temp = new Aprobaciones();
             //MMSN-1066 - Derivacion automatica del suplente
@@ -964,6 +974,7 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
+            string newESLocal = string.Empty;
 
             if (ultimoRegistro == null || String.IsNullOrEmpty(ultimoRegistro.NRO_ES_LOCAL))
             {
@@ -978,7 +989,7 @@ namespace SustitucionMOAUtils.Services
 
                 number++;
 
-                string newESLocal = "T_" + number.ToString("D10");
+                newESLocal = "T_" + number.ToString("D10");
 
                 temp.NRO_ES_LOCAL = newESLocal;
 
@@ -1049,9 +1060,18 @@ namespace SustitucionMOAUtils.Services
 
             }
 
+            GenerateAndSaveReportInBlob(reporte, newESLocal);
             //Para mensaje de retorno de ES Temporal (sin aprobación automatica) se necesita mostrar datos de NRO_ES_LOCAL y estado.
             return temp;
 
+        }
+
+        private void GenerateAndSaveReportInBlob(List<ReporteDto> reporte, string blobReference)
+        {
+            if (reporte.Count > 0)
+            {
+                this._reporteESService.BuildReportES(reporte, blobReference).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1138,6 +1158,7 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.Proveedor = "";
                     emailDetailCertificateDto.Importe = EntradasDeServicioTemp[0].Importe.ToString();
                     emailDetailCertificateDto.MontoTotal = EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {
@@ -1215,7 +1236,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             try {
-                _ = NotifyApproval(emailDetailCertificateDto);
+                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
             }
             catch (Exception e)
             {
@@ -1226,9 +1247,9 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyApproval(EmailDetailCertificateDto emailDetailCertificateDto)
+        private async Task<bool> NotifyApproval(EmailDetailCertificateDto emailDetailCertificateDto, string blobReference)
         {
-            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
+            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto, blobReference);
             return true;
         }
 

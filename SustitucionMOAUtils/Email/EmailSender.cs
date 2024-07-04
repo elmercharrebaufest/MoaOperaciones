@@ -301,13 +301,14 @@ namespace SustitucionMOAUtils.Email
 
                 oMensaje.BodyEncoding = Encoding.UTF8;
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+
                 if (emailSenderData.Archivo != null)
                 {
-                    using (var stream = new MemoryStream(emailSenderData.Archivo))
-                    {
-                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
-                        oMensaje.Attachments.Add(attachment);
-                    }
+                    var stream = new MemoryStream(emailSenderData.Archivo);
+                    stream.Position = 0;
+                    Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
+                    oMensaje.Attachments.Add(attachment);
+                    
                 }
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
