@@ -11,13 +11,17 @@ import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mens
 import { LoginGuard } from './../common/security/login-guard';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Observable } from 'rxjs';
+import { sidebarAnimation } from '../common/animations/sidebar.animatino';
+import { mainAnimation } from '../common/animations/main.animation';
+import { fadeInAnimation } from '../common/animations/fade-in.animation';
 declare var $: any;
 
 @Component({
     selector: 'app-layout',
     templateUrl: `layout.component.html`,
     styleUrls: ['layout.component.css'],
-    providers: [LayoutService]
+    providers: [LayoutService],
+    animations: [sidebarAnimation, mainAnimation, fadeInAnimation]
 })
 
 export class LayoutComponent implements OnDestroy {
@@ -727,7 +731,6 @@ export class LayoutComponent implements OnDestroy {
 
         if (size <= 988) {
             this.menuSmall = true;
-            this.toggleSidebar(true);
         }
         else {
             this.menuSmall = false;
@@ -749,7 +752,16 @@ export class LayoutComponent implements OnDestroy {
         $("#coverAll").fadeOut();
     }
 
+    mainSidebarToggle = true;
     toggleSidebar(value = null) {
-        this.service.toggleSidebar(value);
+        let val = value;
+        if (value === null) {
+            this.mainSidebarToggle = !this.mainSidebarToggle;
+            val = this.mainSidebarToggle;
+        } else {
+            console.log(value, this.mainSidebarToggle)
+            val = (this.mainSidebarToggle && !value) || (!this.mainSidebarToggle && value);
+        }
+        this.service.toggleSidebar(val);
     }
 }

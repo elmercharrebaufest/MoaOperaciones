@@ -55,6 +55,8 @@ import { CustomFilterEstados } from './pipes/customFilterEstados';
 
 import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
 import { DefaultNumberParser } from './pipes/defaultNumber';
+import { HoverLeftBorderDirective } from './directive/hover-left-border.directive';
+import { MouseLeaveDirective } from './directive/on-mouse-leave.directive';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -94,7 +96,9 @@ const declaredAndExported = [
     CustomFilterEstados
     ,
     CustomDefaultDataPipe,
-    DefaultNumberParser
+    DefaultNumberParser,
+    HoverLeftBorderDirective,
+    MouseLeaveDirective,
 ];
 @NgModule({
     imports: [CommonModule,

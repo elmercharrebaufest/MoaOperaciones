@@ -198,7 +198,7 @@
     </modal-footer>
 </modal>
 
-<div class="main-panel" [ngClass]="{'w-full':!($sidebarVisible|async)}">
+<div class="main-panel w-full">
     <!--User-->
     <div class="header">
         <div class="logo">
@@ -242,10 +242,6 @@
                                         class="badge">{{cantidadNot()}}</span> </span>
                             </div>
                         </li>
-                        <li class="p-4 pr-8">
-                            <i class="fa fa-bars scale-2 cursor-pointer" aria-hidden="true"
-                                (click)="toggleSidebar()"></i>
-                        </li>
                         <li id="liUser"><span id="userOpenSmall" onClick="userOpenSmall()" class="fa fa-user-circle-o"
                                 aria-hidden="true"></span> <span id="userCloseSmall" onClick="userCloseSmall()"
                                 class="fa fa-user-circle-o" aria-hidden="true"></span>
@@ -288,10 +284,23 @@
     <div *ngIf="menuSmall" class="col-xs-12 col-md-12">
         <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
+    <div *ngIf="!($sidebarVisible | async) && !menuSmall" [@fadeIn]
+        class="sidebar h-full w-fit p-8 pt-10px pl-75px ml-2 pr-2 border-hover" appHoverLeftBorder
+        (hoverLeftBorder)="toggleSidebar(true)">
+        <i class="fa fa-toggle-right cursor-pointer scale-17" (click)="toggleSidebar()" aria-hidden="true"></i>
+    </div>
     <!-- Navegación -->
-    <barra-nav id="mySidenav" class="sidebar" [ngClass]="{'hidden':!($sidebarVisible|async)}">
+    <barra-nav id="mySidenav" class="sidebar h-80vh"
+        [@animateSidebar]="($sidebarVisible | async) || menuSmall ? 'open' : 'closed'" appMouseLeave
+        (mouseLeave)="toggleSidebar(false)">
         <div class="sidebar-wrapper">
-            <div class="switch" *ngIf="isAmbos()">
+            <div class="switch mb-0 mt-0 bg-transparent pt-10px" *ngIf="!menuSmall">
+                <i class="fa cursor-pointer scale-17" [ngClass]="{
+                'fa-toggle-left ':mainSidebarToggle,
+                'fa-toggle-right ':!mainSidebarToggle
+               }" (click)="toggleSidebar()" aria-hidden="true"></i>
+            </div>
+            <div class="switch" [ngClass]="{'mt-0':!menuSmall}" *ngIf="isAmbos()">
                 <input type="radio" class="switch-input" name="view" value="week" id="week"
                     [checked]="isGranosSelected()" (click)="setGranos()">
                 <label for="week" class="switch-label switch-label-off">GRANOS</label>
@@ -742,68 +751,74 @@
             </div>
         </div>
     </barra-nav>
-    <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
-            type="button" class="close" (click)="mensajeError = ''"><span aria-hiden="true">&times;</span></button><i
-            class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{mensajeError}}</div>
-    <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
-        <button type="button" class="close" (click)="mensajeInfo = ''"><span aria-hiden="true">&times;</span></button><i
-            class="fa fa-thumbs-o-down" aria-hidden="true"></i>{{mensajeInfo}}
-    </div>
-    <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
-        <button type="button" class="close" (click)="mensajeSuccess = ''"><span
-                aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
-            aria-hidden="true"></i>{{mensajeSuccess}}
-    </div>
-    <!-- Tab panes -->
-    <div class="SubMenu-wrapper row">
-        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
-            <div class="tab-content ">
-                <div class="tab-pane fade active in" id="Inicio">
-                    <ul class="nav">
-                        <li *ngFor="let seccion of seccionList"><a class="animate"
-                                [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
-                                (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+    <div [@animateMain]="($sidebarVisible | async) && !menuSmall ? 'openMain' : 'closedMain'">
+        <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeError = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
+                aria-hidden="true"></i>{{mensajeError}}
+        </div>
+        <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeInfo = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-down"
+                aria-hidden="true"></i>{{mensajeInfo}}
+        </div>
+        <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeSuccess = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
+                aria-hidden="true"></i>{{mensajeSuccess}}
+        </div>
+        <!-- Tab panes -->
+        <div class="SubMenu-wrapper row">
+            <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
+                <div class="tab-content ">
+                    <div class="tab-pane fade active in" id="Inicio">
+                        <ul class="nav">
+                            <li *ngFor="let seccion of seccionList"><a class="animate"
+                                    [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
+                                    (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
 
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
-            style="float: right;">
-            <div class="tooltipAyuda">
-                <img src="Content/images/buttons/information.svg" />
-                <span>Ayuda</span>
+            <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
+                style="float: right;">
+                <div class="tooltipAyuda">
+                    <img src="Content/images/buttons/information.svg" />
+                    <span>Ayuda</span>
+                </div>
+                <span class="tooltiptexto" aria-hidden="true">
+                    <label [innerHTML]="textoTooltip"></label>
+                    <br>
+                    <label [innerHTML]="textoTooltip2"></label>
+                </span>
             </div>
-            <span class="tooltiptexto" aria-hidden="true">
-                <label [innerHTML]="textoTooltip"></label>
-                <br>
-                <label [innerHTML]="textoTooltip2"></label>
-            </span>
-        </div>
 
 
-        <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
-            style="float: right;">
-            <div class="tooltipAyuda">
-                <img src="Content/images/buttons/information.svg" />
-                <span>Ayuda</span>
+            <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
+                style="float: right;">
+                <div class="tooltipAyuda">
+                    <img src="Content/images/buttons/information.svg" />
+                    <span>Ayuda</span>
+                </div>
+                <span class="tooltiptextoPrimerLog" aria-hidden="true">
+                    <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
+                            class="glyphicon glyphicon-remove"></i></button>
+                    <br>
+                    <label [innerHTML]="textoTooltip"></label>
+                    <br>
+                    <label [innerHTML]="textoTooltip2"></label>
+                </span>
             </div>
-            <span class="tooltiptextoPrimerLog" aria-hidden="true">
-                <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
-                        class="glyphicon glyphicon-remove"></i></button>
-                <br>
-                <label [innerHTML]="textoTooltip"></label>
-                <br>
-                <label [innerHTML]="textoTooltip2"></label>
-            </span>
         </div>
+
+        <!-- END Tab panes -->
+
+
+        <router-outlet></router-outlet>
+
     </div>
-
-    <!-- END Tab panes -->
-
-
-    <router-outlet></router-outlet>
 </div>
 <header-user id="userSmall" style="display:none; margin-right: 25px;">
     <usuario-small id="usuarioSmall" class="clearfix">
