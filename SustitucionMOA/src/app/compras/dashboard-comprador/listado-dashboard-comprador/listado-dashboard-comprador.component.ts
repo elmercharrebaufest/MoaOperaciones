@@ -228,7 +228,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
 
     listarSolp() {
         this.spinnerComponent.showIt();
-        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido,this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
+        this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
             this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendiente, this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
     }
 
@@ -850,7 +850,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
         if (filtrosGuardados) {
             this.nroSolp = filtrosGuardados.nroSolp;
-            this.nombrePedido = filtrosGuardados.nombreDePedido;
+            this.nombrePedido = filtrosGuardados.nombrePedido;
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;
