@@ -230,6 +230,28 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
+            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            {
+                //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
+                List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
+                if(periodos.Count > 0)
+                {
+                    int[] periodosIds = new int[periodos.Count];
+
+                    for (int i = 0; i < periodos.Count; i++)
+                    {
+                        periodosIds[i] = periodos[i].Id;
+                    }
+
+                    foreach (int id in periodosIds)
+                    {
+                        UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
+                        repositorio.Remover<UsuarioReasignacion>(per);
+                    }
+                    
+                }
+
+            }
 
             foreach (int idRol in idRoles)
             {
