@@ -129,11 +129,15 @@
                                         <p style="width:100%">{{ordenDeCarga.ContratoSAP || '-'}}</p>
                                     </div>
 
-                                    <div class="col-xs-12 col-md-12"
-                                        *ngIf="validaCPEDG && ordenDeCarga.CUITRemitenteComercial">
+                                    <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Remitente comercial</strong></p>
-                                        <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}
-                                            ({{ordenDeCarga.CUITRemitenteComercial}})</p>
+                                        <p style="width:100%">
+                                            <ng-container *ngIf="ordenDeCarga.CUITRemitenteComercial; else emptyField">
+                                                {{ordenDeCarga.RazonSocialCliente}}
+                                                ({{ordenDeCarga.CUITRemitenteComercial}})
+                                            </ng-container>
+                                            <ng-template #emptyField>-</ng-template>
+                                        </p>
                                     </div>
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Destinatario</strong></p>
