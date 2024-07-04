@@ -11,7 +11,7 @@ export const mainAnimation = trigger('animateMain', [
         width: 'calc(100% - 25px)',
         position: 'relative',
         left:'25px',
-        top: '-4rem',
+        top: '-1rem',
     })),
     transition('openMain <=> closedMain', animate('450ms ease')),
 ])
