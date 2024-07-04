@@ -97,6 +97,7 @@
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th></th>
+                        <th></th>
                         <th>Seleccionar</th>
                         <th>Nro PO</th>
                         <th>Nro Solp</th>
@@ -113,6 +114,12 @@
                             <a (click)="solp.expanded = !solp.expanded">
                                 <i [ngClass]="solp.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
+                        </td>
+                        <td>
+                            <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
+                                <i class="pi pi-download" style="font-size: 3rem; color: grey;"></i>
+                                <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: grey;"></i>
+                            </span>
                         </td>
                         <td>
                           <p-checkbox 
