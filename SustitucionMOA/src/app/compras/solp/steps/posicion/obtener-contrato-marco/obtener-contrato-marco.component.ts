@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContratoMarco, ContratoMarcoPosicion, ObtenerContratoMarco } from './contrato-marco.model';
 import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
@@ -9,10 +9,11 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco.service';
   styleUrls: ['./obtener-contrato-marco.component.css']
 })
 export class ObtenerContratoMarcoComponent implements OnInit {
+  defaultCentroEntrega: any;
 
   @Input()
   set centroEntrega(value: Array<any>) {
-      this.centrosEntrega = value;
+    this.centrosEntrega = value.filter(x => x.FiltroComprador == true);
   }
 
   @Input() 
@@ -42,12 +43,14 @@ export class ObtenerContratoMarcoComponent implements OnInit {
         this.onClear();
     });
   }
-
+  
   ngOnInit() {
     this.formGroup = this.formBuilder.group({
       centroEntrega: new FormControl('', Validators.required),
       numeroContrato: new FormControl('', Validators.required)
     });
+    
+    this.defaultCentroEntrega = this.centrosEntrega.find(centro => centro.Codigo === "1029");
   }
 
   showInputError(fieldName: string): boolean {
@@ -147,6 +150,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     this.onClear();
     this.obtenerContratoMarcoService.close();
     this.primerBusqueda = true;
+    this.defaultCentroEntrega = this.centrosEntrega.find(centro => centro.Codigo === "1029");
   }
   
   onAgregarPosiciones() {
