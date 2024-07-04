@@ -614,6 +614,23 @@ export class TabSubposicionComponent extends ListBaseComponent {
         }
     }
 
+    duplicarSubposicion(rowIndex: number) {
+        let subPosicion = this.listadoSubposiciones[rowIndex];
+        let nuevaSubPosicion = new SubPosicionViewModel(this.listadoSubposiciones.length + 1);
+        nuevaSubPosicion.codigoServicio = { ...subPosicion.codigoServicio };
+        nuevaSubPosicion.tareaSubcontratarObj = { ...subPosicion.tareaSubcontratarObj };        
+        nuevaSubPosicion.tareaSubcontratar = subPosicion.tareaSubcontratar; 
+        nuevaSubPosicion.cuentaTd = subPosicion.cuentaTd;
+        nuevaSubPosicion.unidadSeleccionada = subPosicion.unidadSeleccionada;
+        nuevaSubPosicion.precioBruto = subPosicion.precioBruto;
+        nuevaSubPosicion.valorNeto = subPosicion.valorNeto;
+        nuevaSubPosicion.cuentaMayor = { ...subPosicion.cuentaMayor };
+        nuevaSubPosicion.tipoImputacion = { ...subPosicion.tipoImputacion };
+    
+        this.listadoSubposiciones.push(nuevaSubPosicion);
+        this.calcularTotalSubPosicion();
+    }
+
     public get monedaPosicion(): string {
 
         let codigoMoneda = '';

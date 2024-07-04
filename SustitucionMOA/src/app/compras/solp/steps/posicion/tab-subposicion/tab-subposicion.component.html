@@ -8,7 +8,7 @@
                  (onEditInit)="nuevaPosicion($event)">
             <ng-template pTemplate="header">
                 <tr>
-                    <th [hidden]="model.vincularAPliego" style="text-align: center;">
+                    <th [hidden]="model.vincularAPliego" style="text-align: center;width: 50px;">
                         <img (click)="eliminarSubPosicion()" src="../../../../../Content/images/icons/trashWhite.svg" alt="trashWhite" class="pointer" />
                     </th>
                     <th data-toggle="tooltip" title="Servicio">#</th>
@@ -30,9 +30,11 @@
             </ng-template>
             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                 <tr *ngIf="!model.vincularAPliego; else elseBlock" style="text-align: center;" class="tabla-grid-subposiciones">
-                    <td style="padding: revert;">
-                        <img (click)="eliminarSubPosicionSolpValidate(rowIndex);" style="width: 18px;" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
-                        <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
+                    <td style="padding: revert; min-width: 50px;">
+                        <img (click)="eliminarSubPosicionSolpValidate(rowIndex);" style="width: 18px;margin-top: -3px" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
+                        <span>
+                            <i (click)="duplicarSubposicion(rowIndex);" class="fa fa-copy pointer" style="font-size: 17px;color:gray"></i>
+                        </span>
                     </td>
                     <td>
                         {{posicion.subPosicion}}
