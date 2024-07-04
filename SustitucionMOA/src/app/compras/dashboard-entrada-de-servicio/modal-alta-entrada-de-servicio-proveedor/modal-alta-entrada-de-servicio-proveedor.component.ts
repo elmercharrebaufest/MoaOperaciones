@@ -249,8 +249,10 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         if (this.validateValues() === true) {
             this.buildEntrySheet();
 
-            let items = this.itemSelected.map(element => {
-                element.EntradasServicio = null;
+            let items = this.itemSelected;
+
+            items = items.map(element => {
+                element.EntradasServicio = [];
                 return element;
             });
 
