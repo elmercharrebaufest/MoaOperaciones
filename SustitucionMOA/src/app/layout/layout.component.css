@@ -73,3 +73,7 @@
 .border-hover {
     border-left: black solid 3.5px;
 }
+
+.left-0 {
+    left: 0!important;
+}

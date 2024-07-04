@@ -751,7 +751,8 @@
             </div>
         </div>
     </barra-nav>
-    <div [@animateMain]="($sidebarVisible | async) && !menuSmall ? 'openMain' : 'closedMain'">
+    <div [@animateMain]="($sidebarVisible | async) && !menuSmall ? 'openMain' : 'closedMain'"
+        [ngClass]="{'left-0':menuSmall}">
         <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert">
             <button type="button" class="close" (click)="mensajeError = ''"><span
                     aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"

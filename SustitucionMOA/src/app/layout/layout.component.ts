@@ -11,7 +11,7 @@ import { MensajeModalComponent } from './../common/view-child/mensaje-modal/mens
 import { LoginGuard } from './../common/security/login-guard';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Observable } from 'rxjs';
-import { sidebarAnimation } from '../common/animations/sidebar.animatino';
+import { sidebarAnimation } from '../common/animations/sidebar.animation';
 import { mainAnimation } from '../common/animations/main.animation';
 import { fadeInAnimation } from '../common/animations/fade-in.animation';
 declare var $: any;
@@ -731,6 +731,8 @@ export class LayoutComponent implements OnDestroy {
 
         if (size <= 988) {
             this.menuSmall = true;
+            if (!this.mainSidebarToggle)
+                this.toggleSidebar();
         }
         else {
             this.menuSmall = false;
@@ -759,7 +761,6 @@ export class LayoutComponent implements OnDestroy {
             this.mainSidebarToggle = !this.mainSidebarToggle;
             val = this.mainSidebarToggle;
         } else {
-            console.log(value, this.mainSidebarToggle)
             val = (this.mainSidebarToggle && !value) || (!this.mainSidebarToggle && value);
         }
         this.service.toggleSidebar(val);

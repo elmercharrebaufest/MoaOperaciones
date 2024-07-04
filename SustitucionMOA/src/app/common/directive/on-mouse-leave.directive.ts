@@ -9,7 +9,6 @@ export class MouseLeaveDirective {
 
     @HostListener('mouseleave', ['$event'])
     onMouseLeave(event: MouseEvent) {
-        console.log('leave?')
         this.mouseLeave.emit(false);
     }
 }
