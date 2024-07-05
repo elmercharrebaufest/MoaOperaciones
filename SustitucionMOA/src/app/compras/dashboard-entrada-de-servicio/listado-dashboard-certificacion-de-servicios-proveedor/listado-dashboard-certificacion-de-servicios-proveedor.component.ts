@@ -283,22 +283,19 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
 
-        if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
-
+        if (!item.isSelected) {
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
             this.numeroLineaSelected.delete(numeroLinea);
-
-            this.itemSelected = this.itemSelected.filter((selectedItem: any) =>
-                selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+            this.itemSelected = this.itemSelected.filter((selectedItem: any) => selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
         }
         else {
             this.itemIdSelected.push(itemId);
-            this.numeroLineaSelected.add(numeroLinea);
+            if (!this.numeroLineaSelected.has(numeroLinea)) this.numeroLineaSelected.add(numeroLinea);
             item.NroSolP = posicion.NumeroSolp;
-            this.itemSelected.push(item);
+            if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
 
-        this.actionCheckPosition(item);
+        posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
@@ -483,6 +480,11 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             } else if (result.data != undefined) {
                 this.recalculando = true;
                 this.disabledFilter = true;
+
+                this.numeroLineaSelected.clear();
+                this.itemSelected = [];
+                this.itemIdSelected = [];
+
                 this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
@@ -700,9 +702,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return item.Porcentaje === '100';
     }
 
-    selectAllItems(event: any, items: any): void {
+    selectAllItems(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item));
             if (itemsFiltered.length > 0) {
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
@@ -1019,4 +1021,61 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra: number): any {
         return this.tablaPO.find(orden => orden.NumeroOrdenDeCompra === nroOrdenDeCompra, []);
     }
+
+    tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
+        return posicion.Items.filter(item => this.esItemValidoParaCertificar(item)).every(item => item.isSelected);
+    }
+
+
+    ordenEsPendienteDeLiberacion(nroOrdenDeCompra: number): boolean {
+        const oc = this.obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra);
+        return oc.SubjToR === 'X';
+    }
+
+    posicionEsConEntregaFinal(nroOrdenDeCompra: number, nroPosicion: number): boolean {
+        const posicion = this.obtenerPosicionPorNumero(nroOrdenDeCompra, nroPosicion);
+        return posicion.NoMoreGR === 'X';
+    }
+
+    /**
+     * Evalúa si mostar o no el checkbox para seleccionar la posición.
+     * @param posicion 
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarPosicion(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneSaldoACertificar = this.tieneItemsACertificar(posicion);
+        let mostrarCheckboxDeSeleccionarPosicion = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneSaldoACertificar;
+        return mostrarCheckboxDeSeleccionarPosicion;
+    }
+
+    /**
+     * Evalúa si mostrar o no el checkbox para seleccionar todos los items.
+     * @param posicion
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarTodosItems(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
+        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar && !posicion.Bloqueada;
+        return mostrarCheckboxDeSeleccionarTodosItems;
+    }
+
+    /**
+     * Evalúa si el checkbox para seleccionar un item debe o no estar habilitado.
+     * @param item
+     * @returns {boolean}
+     */
+    deshabilitarCheckboxDeItem(item: any): boolean {
+        let ordenPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(item.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
+        let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
+        let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
+        return deshabilitarCheckboxDeItem;
+    }
+
+
 }

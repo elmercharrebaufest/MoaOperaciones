@@ -23,9 +23,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         //List<EntradaServicioCabeceraDto> ObtenerEntradasServicioConDetalle(EntradaServicioParamsDto parametros);
         //Task<EntradaServicioCabeceraDto>CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros);
-        Task <EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null, string proveedor = null);
+        Task <EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null);
 
-        EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null, string proveedor = null);
+        EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null);
 
         EntradaServicioCreateRespuestaDto ValidarIngresante(EntradaServicioCreateParamsDto parametros, string userMail, string nroSolped);
         Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto);

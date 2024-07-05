@@ -170,7 +170,7 @@ namespace SustitucionMOA.Controllers
         //}
 
         
-        public async Task<ActionResult> CreateAsync(List<EntradaServicioCreateParamsDto> parametros)
+        public async Task<ActionResult> CreateAsync(CreateEntradaServicioDto createEntradaServicioDto)
         {
             try
             {
@@ -185,7 +185,7 @@ namespace SustitucionMOA.Controllers
                 
                 int index = 0;
 
-                foreach(EntradaServicioCreateParamsDto parametro in parametros)
+                foreach(EntradaServicioCreateParamsDto parametro in createEntradaServicioDto.parametros)
                 { 
                     string solpedNumber = parametro.EntrySheetHeader.SolPedNumber[index];
 
@@ -193,11 +193,11 @@ namespace SustitucionMOA.Controllers
                     var result = new EntradaServicioCreateRespuestaDto();
                     if (validacion.Message == "Auto")
                     {
-                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, createEntradaServicioDto.report, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else if (validacion.Message == "Temporal")
                     {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, createEntradaServicioDto.report, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else
                     {
