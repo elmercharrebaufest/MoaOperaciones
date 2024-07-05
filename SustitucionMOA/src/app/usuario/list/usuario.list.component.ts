@@ -513,20 +513,23 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     }
 
     dontAllowCertificationRol(event: any): void {
-        if(event.target.value === '126'){
-            this.rolesUsuarioSeleccionado.filter(r => r.Id.toString() === '123').forEach(r => {
+        const certServ: string = 'CERTIFICACIÓN DE SERVICIOS';
+        const certExt: string = 'CERTIFICACIÓN DE SERVICIOS EXT';
+
+        if(event.target.value === certServ){
+            this.rolesUsuarioSeleccionado.filter(r => r.Nombre === certExt).forEach(r => {
                 if(r.checked){
                     r.checked = false;
-                    document.getElementById("rol_123").click();
+                    document.getElementById("rol_" + certExt).click();
                 }
             })
         }
 
-        if(event.target.value === '123'){
-            this.rolesUsuarioSeleccionado.filter(r => r.Id.toString() === '126').forEach(r => {
+        if(event.target.value === certExt){
+            this.rolesUsuarioSeleccionado.filter(r => r.Nombre === certServ).forEach(r => {
                 if(r.checked){
                     r.checked = false;
-                    document.getElementById("rol_126").click();
+                    document.getElementById("rol_" + certServ).click();
                 }
             })
         }
