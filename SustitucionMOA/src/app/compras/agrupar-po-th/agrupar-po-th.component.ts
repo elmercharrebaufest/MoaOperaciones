@@ -228,10 +228,11 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     onBuscar() {
-        this.filtrosPOAgrupada.Orden = this.orden,
+        this.filtrosPOAgrupada.Orden = this.orden,       
         this.filtrosPOAgrupada.Columna = this.columna,
         this.filtrosPOAgrupada.CodigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
         this.filtrosPOAgrupada.NombrePedido = this.nombrePedido;
+        this.filtrosPOAgrupada.NroPo = this.nroPo;
         this.filtrosPOAgrupada.GrupoDeCompras = this.selectGrupoCompras.join(",");
         this.filtrosPOAgrupada.Centros = this.selectCentro.join(",");
         this.filtrosPOAgrupada.ClaseDocumento = this.selectClaseDocumento.join(",");
@@ -311,6 +312,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.selectValorTipoImputacion = filtrosGuardados.ValorTipoImputacion ? filtrosGuardados.ValorTipoImputacion.split(",") : [];
             this.codigoProveedor = filtrosGuardados.CodigoProveedor;
             this.nombrePedido = filtrosGuardados.NombrePedido;
+            this.nroPo = filtrosGuardados.NroPo;
             this.fechaInicio = new Date(filtrosGuardados.FechaDesde);
             this.fechaFin = new Date(filtrosGuardados.FechaHasta == undefined ? filtrosGuardados.FechaDesde : filtrosGuardados.FechaHasta);
             this.selectAgrupada = filtrosGuardados.Agrupada;

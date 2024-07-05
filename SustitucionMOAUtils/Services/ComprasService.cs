@@ -9858,7 +9858,7 @@ namespace SustitucionMOAUtils.Services
                 Paginacion = new Paginacion(filtro.Columna, filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc,
                     filtro.Pagina ?? 0, filtro.ItemsPorPagina ?? 0),
                 CodigoProveedor = filtro.CodigoProveedor,
-                NroSolp = filtro.NroSolp,
+                NroSolp = !string.IsNullOrEmpty(filtro.NroSolp) ? filtro.NroSolp.Trim() : "",
                 FechaDesde = filtro.FechaDesde,
                 FechaHasta = filtro.FechaHasta,
                 Sap = filtro.Sap ?? false,
@@ -9879,7 +9879,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoLicitacion = filtro.EstadoLicitacion,
                 EstadoCotizacion = filtro.EstadoCotizacion,
                 Agrupada = filtro.Agrupada,
-                NroPo = filtro.NroPo
+                NroPo = !string.IsNullOrEmpty(filtro.NroPo) ? filtro.NroPo.Trim() : "",
+                
             };
         }
 
