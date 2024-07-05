@@ -1242,8 +1242,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Logger.Log.Info(e.Message);
             }
-            //await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
-
+            
             return result;
         }
 

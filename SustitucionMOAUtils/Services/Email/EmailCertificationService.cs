@@ -84,17 +84,12 @@ namespace SustitucionMOAUtils.Services.Email
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR);
 
             (List<string> emails, string subject, string body) emailParts = BuildApprovedEmail(emailDetailCertificateDto, bodyTemplate);
-            
-            var report = await GetReportES(reference).ConfigureAwait(false);
 
             var emailSenderData = new EmailSenderData
             {
                 Mails = emailParts.emails,
                 Asunto = emailParts.subject,
                 Cuerpo = emailParts.body,
-                Archivo = report.GetBuffer(),
-                NombreArchivo = "Reporte.pdf"
-
             };
 
             Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
