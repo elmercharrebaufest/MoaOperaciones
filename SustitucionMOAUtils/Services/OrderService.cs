@@ -293,16 +293,12 @@ namespace SustitucionMOAUtils.Services
             foreach (var nroSolped in nroSolpedList)
             {
                 var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolped);
-                /* 
-                 * Siempre va a haber una solp con numero de solp?
-                 * Tengo que enviar el solicitante tambien para en caso de no encontrar buscar el mail de usuario?
-                 * si no hay solp devolver el msj
-                */
+                
                 if (solp != null)
                 {
                     var pliego = repositorio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
 
-                    solicitante = pliego?.FiscalContrato ?? pliego?.SupervisorTrabajo;
+                    solicitante = !string.IsNullOrEmpty(pliego?.FiscalContrato) ? pliego?.FiscalContrato : pliego?.SupervisorTrabajo;
 
                     if (string.IsNullOrEmpty(solicitante))
                     {
