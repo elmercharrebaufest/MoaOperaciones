@@ -723,7 +723,7 @@ namespace SustitucionMOATest.Services
                 obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object,
                 listarSolpPendientesConsumerMOAMock.Object,
                 obtenerPDFOrdenCompraConsumerMOAMock.Object,
-                obtenerAdjuntosSOLPEDConsumerMOA.Object
+                obtenerAdjuntosSOLPEDConsumerMOAMock.Object
                 );
         }
 
