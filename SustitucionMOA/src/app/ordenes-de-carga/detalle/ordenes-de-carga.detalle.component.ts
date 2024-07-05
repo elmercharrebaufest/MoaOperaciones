@@ -35,6 +35,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
 
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild('spinnerModalAnulacion')
+    protected spinnerModalAnulacion: SpinnerComponent;
+    @ViewChild('spinnerModalAnulacionVencimiento')
+    protected spinnerModalAnulacionVencimiento: SpinnerComponent;
+    @ViewChild('spinnerModalEdicion')
+    protected spinnerModalEdicion: SpinnerComponent;
 
     ordenDeCarga: OrdenDeCarga = new OrdenDeCarga();
     mensajeError: string = "";
@@ -99,6 +105,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     esAnulador: boolean = this.isAuthorized('ANULAR ORDEN DE CARGA');
 
     navegandoADetalle = false;
+    validandoEstadoScato = false;
 
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService, protected navService: NavService,
@@ -332,8 +339,8 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         else {
             if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida &&
                 this.ordenDeCarga.FechaVencimientoAmpliada == false) {
-                    this.mostrarBotonActivarOC = true;
-                }
+                this.mostrarBotonActivarOC = true;
+            }
         }
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
@@ -677,17 +684,18 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     abrirModalAnular() {
-        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString());
+        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString(), this.spinnerModalAnulacion);
         document.getElementById("openAnularOrden").click();
     }
     abrirModalAnularVencimiento() {
+        this.verificarOrdenActivaScato(this.ordenDeCarga.Id.toString(), this.spinnerModalAnulacionVencimiento);
         document.getElementById("openAnularOrdenVencimiento").click();
     }
     abrirModalActivarOC() {
         document.getElementById("openModalActivarOC").click();
     }
     abrirModalEdicionFinalizada() {
-        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString());
+        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString(), this.spinnerModalEdicion);
         document.getElementById("openEdicionFinalizada").click();
     }
 
@@ -947,13 +955,14 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             sessionStorage.removeItem(VOLVER_A_DETALLE_REPORTE)
     }
 
-    verificarOrdenActivaScato(ordenId: string) {
+    verificarOrdenActivaScato(ordenId: string, spinner: SpinnerComponent) {
         this.mensajeValidacionScato = undefined;
-        this.spinnerComponent.showIt();
+        this.validandoEstadoScato = true;
+        spinner.showIt();
         this.unsubscribe();
         try {
             this.service.validarOrdenActivaScato(ordenId).pipe(
-                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt() })
+                finalize(() => { this.blockUI.stop(); spinner.hideIt(); this.validandoEstadoScato = false; })
             ).subscribe(
                 result => {
                     if (result.logout == true) {
@@ -974,7 +983,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 }
             );
         } catch (e) {
-            this.spinnerComponent.hideIt();
+            spinner.hideIt();
             this.blockUI.stop();
             this.mensajeValidacionScato = "No se pudo validar si la orden esta activa en Scato."
         }

@@ -733,6 +733,7 @@
                     <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
                 </div>
                 <div class="modal-body">
+                    <spinner #spinnerModalAnulacion></spinner>
                     <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
                         {{mensajeValidacionScato}}
                     </div>
@@ -746,7 +747,7 @@
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
-                        style="display: inline-flex;">
+                        style="display: inline-flex;" [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
 
@@ -770,6 +771,10 @@
                     <h4 class="modal-title" id="modalAnularOrdenVencimiento">Anular orden</h4>
                 </div>
                 <div class="modal-body">
+                    <spinner #spinnerModalAnulacionVencimiento></spinner>
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+                        {{mensajeValidacionScato}}
+                    </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
                     </div>
@@ -780,7 +785,8 @@
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano"
-                        (click)="anularOrdenPorVencimiento()" style="display: inline-flex;">
+                        (click)="anularOrdenPorVencimiento()" style="display: inline-flex;"
+                        [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
                 </div>
@@ -803,6 +809,7 @@
                     <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
                 </div>
                 <div class="modal-body">
+                    <spinner #spinnerModalEdicion></spinner>
                     <div *ngIf="mensajeValidacionScato" class="row"
                         class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
                         {{mensajeValidacionScato}}
@@ -818,7 +825,7 @@
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-success btn-mediano" (click)="edicionFinalizada('A')"
-                        style="display: inline-flex;">
+                        style="display: inline-flex;" [disabled]="validandoEstadoScato">
                         Aprobar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="edicionFinalizada('R')"

@@ -287,7 +287,7 @@
     <div *ngIf="!($sidebarVisible | async) && !menuSmall" [@fadeIn]
         class="sidebar h-full w-fit p-8 pt-10px pl-75px ml-2 pr-2 border-hover" appHoverLeftBorder
         (hoverLeftBorder)="toggleSidebar(true)">
-        <i class="fa fa-toggle-right cursor-pointer scale-17" (click)="toggleSidebar()" aria-hidden="true"></i>
+        <i class="pi pi-angle-double-right cursor-pointer scale-17" (click)="toggleSidebar()" aria-hidden="true"></i>
     </div>
     <!-- Navegación -->
     <barra-nav id="mySidenav" class="sidebar h-80vh"
@@ -295,9 +295,9 @@
         (mouseLeave)="toggleSidebar(false)">
         <div class="sidebar-wrapper">
             <div class="switch mb-0 mt-0 bg-transparent pt-10px" *ngIf="!menuSmall">
-                <i class="fa cursor-pointer scale-17" [ngClass]="{
-                'fa-toggle-left ':mainSidebarToggle,
-                'fa-toggle-right ':!mainSidebarToggle
+                <i class="pi cursor-pointer scale-17" [ngClass]="{
+                'pi-angle-double-left ':mainSidebarToggle,
+                'pi-angle-double-right ':!mainSidebarToggle
                }" (click)="toggleSidebar()" aria-hidden="true"></i>
             </div>
             <div class="switch" [ngClass]="{'mt-0':!menuSmall}" *ngIf="isAmbos()">
