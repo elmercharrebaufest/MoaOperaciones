@@ -11,8 +11,8 @@
         <b>Adjuntos </b> <span>Solp #{{nroSolp}}</span>
     </p-header>
     <div class="col-md-12 row myRow alinearTitulo margenInput" *ngIf="adjuntosSolpDto != null">
-        <div class="col-md-12 titulosModal" *ngIf="adjuntosSolpDto?.Pliego != null" style="margin-right: 1em;">
-          <div>
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+          <div *ngIf="adjuntosSolpDto?.Pliego != null">
             <h3>Pliego</h3>
             <ul>
               <li>
