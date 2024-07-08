@@ -93,6 +93,7 @@ import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-e
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
+import { AdjuntosSolpComponent } from './agrupar-po-th/adjuntos-solp/adjuntos-solp.component';
 
 
 @NgModule({
@@ -185,7 +186,8 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
         ListadoEstadoCertificacionesComponent,
         ModalAltaEntradaDeServicioComponent,
         VisualizarMovimientoComponent,
-        AgruparPoThComponent
+        AgruparPoThComponent,
+        AdjuntosSolpComponent
     ],
     providers: [
         ComprasService,

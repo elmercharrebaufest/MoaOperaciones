@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
@@ -109,5 +110,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<SolpDto> ListarSolpCondicionEspecial(FiltroDto filtroDto);
         Resultado AgruparPeticionesDeOferta(int usuarioId, string ids);
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
+        AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
     }
 }

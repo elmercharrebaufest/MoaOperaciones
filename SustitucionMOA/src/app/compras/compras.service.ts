@@ -18,6 +18,7 @@ import { timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
+import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 
 @Injectable({
     providedIn: 'root'
@@ -1311,4 +1312,14 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/ValidarPrecioCotizado', payload, { headers: this.headers });
     }
 
+    public obtenerAdjuntosSolpAgrupar(nroSolp: string): Observable<AdjuntosSolpDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+    
+        return this.http
+            .get<AdjuntosSolpDto>("/api/compras/ObtenerAdjuntosSolpAgrupar", {
+                params: params,
+                headers: this.headers
+            });
+    }
 }

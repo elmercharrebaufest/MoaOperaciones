@@ -15,6 +15,8 @@ import { SolpDto } from './agrupar-po-th-model';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
+import { Adjuntos } from '../../common/models/adjuntos';
+import { AdjuntosSolpDto } from './adjuntos-solp-model';
 
 @Component({
     selector: 'app-agrupar-po-th',
@@ -38,6 +40,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     deshabilitarCheck: boolean;
     resultadoAgrupar: any;
     displayPeticionAgrupada: boolean = false;
+    adjuntosSolpDto: AdjuntosSolpDto = {} as AdjuntosSolpDto;
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -90,6 +93,8 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     columna: string = "NroSolp";
     proveedorSeleccionado: any = {};
     proveedores: any[] = new Array();
+    displayAdjuntosSolp: boolean = false;
+
 
     Agrupada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
     selectAgrupada: boolean | null = null;
@@ -441,4 +446,44 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.displayPeticionAgrupada = false;
         this.onBuscar();
     }
+
+    obtenerAdjuntosSolpAgrupar(nroSolp: string) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.obtenerAdjuntosSolpAgrupar(nroSolp).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.adjuntosSolpDto = result.data;
+                        console.log("solps adjuntos", this.adjuntosSolpDto);
+                        this.abrirModalAdjuntos(nroSolp)
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+    
+    cerrarAdjuntos() {
+        this.displayAdjuntosSolp = false;
+    }
+
+    abrirModalAdjuntos(nroSolp) {
+        this.displayAdjuntosSolp = true;
+        this.nroSolp = nroSolp;
+    }
+
 }

@@ -124,7 +124,7 @@
                             </a>
                         </td>
                         <td>
-                            <span style="cursor:pointer;" (click)="mostrarPanelHs(p)">
+                            <span style="cursor:pointer;" (click)="obtenerAdjuntosSolpAgrupar(solp.NroSolp)">
                                 <i class="pi pi-download" style="font-size: 3rem; color: grey;"></i>
                                 <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: grey;"></i>
                             </span>
@@ -147,7 +147,7 @@
                         <td>{{solp.Agrupada ? "Si":"No"}}</td>
                     </tr>
                     <tr *ngIf="solp.expanded && solp.PosicionCompras.length > 0">
-                        <td [attr.colspan]="9">
+                        <td [attr.colspan]="10">
                             <p-table [value]="solp.PosicionCompras" dataKey="Id">
                                 <ng-template pTemplate="header">
                                     <tr>
@@ -248,3 +248,10 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUp()">Aceptar</button>
     </p-footer>
 </p-dialog>
+
+<app-adjuntos-solp 
+    [(displayAdjuntosSolp)]="displayAdjuntosSolp"
+    (cerrarModalAdjuntosEmitter)="cerrarAdjuntos()" 
+    [(adjuntosSolpDto)]="adjuntosSolpDto"
+    [(nroSolp)]="nroSolp">
+</app-adjuntos-solp>

@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />

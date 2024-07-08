@@ -62,6 +62,7 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using Org.BouncyCastle.Crypto;
 using System.Data.Common.CommandTrees;
+using SustitucionMOAModel.Dto.Compras;
 
 
 namespace SustitucionMOAUtils.Services
@@ -1325,20 +1326,6 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se encontró la SOLP.");
             }
 
-            //if (!String.IsNullOrEmpty(x.NroSolp))
-            //{
-            //    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-            //    {
-            //        FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
-            //        FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
-            //        CreadoPorUsuarios = new List<string>(),
-            //        NumeroSolp = x.NroSolp
-            //    };
-
-            //    //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-
-            //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
-            //}
             var hayAdjudicacionPosicion = repositorio.Existe<AdjudicacionPosicion>(posi => posi.Posicion.Solp.NroSolp.Contains(solp.NroSolp));
             var solpDevuelta = new SolpDto()
             {
@@ -1403,11 +1390,6 @@ namespace SustitucionMOAUtils.Services
                 RevisadoPor = solp.Pliego.RevisadoPor,
                 EstadoSolpSap_Id = solp.EstadoSolpSap_Id,
                 EstadoDocumento_Id = solp.EstadoDocumento_Id,
-
-                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || x.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica) ? 
-                //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
-                //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
-
                 Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
@@ -10240,6 +10222,39 @@ namespace SustitucionMOAUtils.Services
             return resultado;
         }
 
+        public AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp) 
+        {
+            var solp = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
+
+            var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
+            var adjuntosSolpDto = new AdjuntosSolpDto 
+            { 
+                Pliego = solp.TipoSolp.Codigo == "CON_PLIEGO" ? pdfFilename : null,
+                PDF = Convert.ToBase64String(GenerarSolpPdf(solp.Id)),
+                ArchivosEspecificacionesTecnicas = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ArchivosCotizacion = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ArchivosCondicionesEspeciales = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ObservacionCondicionesEspeciales = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp
+            };
+            return adjuntosSolpDto;
+        }
     }
 
     public static class SolpTemplateKeys

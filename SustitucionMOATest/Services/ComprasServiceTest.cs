@@ -20,6 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
+using System.Text;
 using System.Web;
 using System.Web.Security;
 
@@ -321,8 +322,25 @@ namespace SustitucionMOATest.Services
         private readonly Solp solp = new Solp
         {
             Id = 1,
+            NroSolp = "123",
             ProveedorAsignado_Id = 1,
-            UsuarioCreacion = new Usuario { Id = 1, Mail = "bmelgarejo@prueba.com" },
+            UsuarioCreacion = new Usuario { 
+                Id = 1, 
+                Mail = "bmelgarejo@prueba.com",
+                TipoUsuario = new TipoUsuario
+                {
+                    Id = 1,
+                    Nombre = "",
+                    NombreCorto = ""
+                },
+                Roles = new List<Rol> {
+                    new Rol
+                    {
+                        Nombre = "COMPRADOR",
+                        PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "COMPRADOR" }}
+                    }
+                }
+            },
             UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
             UsuarioCreacion_Id = 1,
             UsuarioCompras_Id = 1,
@@ -418,15 +436,24 @@ namespace SustitucionMOATest.Services
                 FechaHoraLimiteConsulta = new DateTime(),
                 ObservacionesGeneracion = "",
                 ObservacionesCotizacion = "",
-                Archivos = new List<Archivo> { new Archivo { FileKey = "fileKey" } },
+                Archivos = new List<Archivo>
+                {
+                    new Archivo { Id = 1, FileKey = FileKeys.AdjuntoSolp, Ruta = "ruta1" },
+                    new Archivo { Id = 2, FileKey = FileKeys.AdjuntoCotizacionesSolp, Ruta = "ruta2" },
+                    new Archivo { Id = 3, FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp, Ruta = "ruta3" }
+                },
+                ObservacionesCotizacionCondEsp = "ObservacionesTest"
             },
             EstadoSolpSap_Id = 1,
             EstadoDocumento_Id = 1,
             EstadoDocumento = new TablaEstado(),
             EstadoPasos = "",
             LiberadoresSapSolp = new List<LiberadorSapSolp> { new LiberadorSapSolp { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } },
-            ClaseDocumento_Id = 1
-        };
+            ClaseDocumento_Id = 1,
+            TipoSolp = new TablaGeneral { Codigo = "CON_PLIEGO" },
+            EstadoSolpSap = new TablaSap { CodigoSap = "05" },
+
+    };
         private readonly SolpDto solpDto = new SolpDto
         {
             TipoSolp = new TablaGeneralDto
@@ -646,7 +673,6 @@ namespace SustitucionMOATest.Services
             },
             Agrupada = false
         };
-
         private readonly PeticionDeOfertaRevisionTecnicaDto peticionDeOfertaRevisionTecnica = new PeticionDeOfertaRevisionTecnicaDto
         {
             Id = 1,
@@ -657,7 +683,6 @@ namespace SustitucionMOATest.Services
             ObservacionRecotizacion = "Observacion",
             Finalizada = true
         };
-
 
         [SetUp]
         public void SetUp()
@@ -3173,6 +3198,121 @@ namespace SustitucionMOATest.Services
 
         }
 
+        [Test]
+        public void ListarUsuarioCompras_DebeRetornarListaDeUsuarioComprasDto()
+        {
+            // Arrange
+            var usuariosComprasMockData = new List<UsuarioCompras>
+            {
+                new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+            };
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+
+            // Act
+            var resultado = target.ListarUsuarioCompras();
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.AreEqual(usuariosComprasMockData.Count, resultado.Count);
+        }
+
+        //[Test]
+        //public void GenerarSolpPdf_DebeRetornarArrayDeBytes()
+        //{
+        //    // Arrange
+        //    int idSolp = 1;
+        //    var solpLocal = solp;
+
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal);
+        //    repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
+
+        //    var usuariosComprasMockData = new List<UsuarioCompras>
+        //    {
+        //        new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+        //    };
+
+        //    repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+           
+
+        //    var templateHtml = "<html><body>{{NOMBRE_OBRA}}</body></html>";
+        //    var templateCss = "body { font-family: Arial; }";
+
+        //    using (var htmlStream = new MemoryStream(Encoding.UTF8.GetBytes(templateHtml)))
+        //    using (var cssStream = new MemoryStream(Encoding.UTF8.GetBytes(templateCss)))
+        //    {
+        //        httpContextServiceMock.Setup(h => h.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html"))
+        //            .Returns("Templates/NewPliegoSolpSinCondicionesTemplate.html");
+        //        httpContextServiceMock.Setup(h => h.GetDirectory("Templates/PliegoSolpTemplate.css"))
+        //            .Returns("Templates/PliegoSolpTemplate.css");
+
+        //        repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
+        //        repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
+
+        //        // Act
+        //        var resultado = target.GenerarSolpPdf(1);
+
+        //        // Assert
+        //        Assert.IsNotNull(resultado);
+        //        Assert.IsInstanceOf<byte[]>(resultado);
+        //        Assert.Greater(resultado.Length, 0); // Verifica que el array de bytes no esté vacío
+        //                                             // Aquí puedes añadir más aserciones para verificar las llamadas a los métodos mockeados con los parámetros esperados
+        //    }
+        //}
+
+        //[Test]
+        //public void ObtenerAdjuntosSolpAgrupar_RetornaAdjuntosCorrectamente()
+        //{
+
+        //    var solpLocal = solp;
+        //    solpLocal.Id = 1;
+        //    solpLocal.EstadoSolpSap = new TablaSap { CodigoSap = "05" };
+        //    solpLocal.UsuarioCompras = new UsuarioCompras();
+        //    solpLocal.UsuarioCreacion = new Usuario
+        //    {
+        //        Id = 1,
+        //        Mail = "bmelgarejo@prueba.com",
+        //        TipoUsuario = new TipoUsuario
+        //        {
+        //            Id = 1,
+        //            Nombre = "",
+        //            NombreCorto = ""
+        //        },
+        //        Roles = new List<Rol> {
+        //            new Rol
+        //            {
+        //                Nombre = "COMPRADOR",
+        //                PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "COMPRADOR" }}
+        //            }
+        //        },
+
+        //    };
+        //    solpLocal.UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" };
+
+        //    var usuariosComprasMockData = new List<UsuarioCompras>
+        //    {
+        //        new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+        //    };
+
+        //    repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal);
+        //    repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>()))
+        //     .Returns(solpLocal);
+
+
+
+        //    // Act
+        //    var resultado = target.ObtenerAdjuntosSolpAgrupar("123");
+
+        //    // Assert
+        //    Assert.IsNotNull(resultado);
+        //    Assert.AreEqual("Solp-123-pliego-" + DateTime.Now.ToString("yyyyMMdd") + ".pdf", resultado.Pliego);
+        //    Assert.IsNotNull(resultado.ArchivosEspecificacionesTecnicas);
+        //    Assert.AreEqual(1, resultado.ArchivosEspecificacionesTecnicas.Count);
+        //    Assert.AreEqual(1, resultado.ArchivosEspecificacionesTecnicas.First().Id);
+        //    Assert.AreEqual("ruta1", resultado.ArchivosEspecificacionesTecnicas.First().Nombre); // Asumiendo que ObtenerNombre retorna la ruta
+        //                                                                                         // Continúa con más aserciones según sea necesario
+        //}
     }
 }

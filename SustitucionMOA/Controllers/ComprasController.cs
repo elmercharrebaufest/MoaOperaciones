@@ -727,7 +727,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult ListarAsociarContrato(string solpJson)
         {
@@ -991,7 +990,6 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         [HttpPost]
         public ActionResult CrearOrdenDeCompra(string json)
@@ -1973,5 +1971,18 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ObtenerAdjuntosSolpAgrupar(string nroSolp)
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ObtenerAdjuntosSolpAgrupar(nroSolp) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
