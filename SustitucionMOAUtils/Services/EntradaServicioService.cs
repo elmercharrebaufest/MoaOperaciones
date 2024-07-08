@@ -330,9 +330,9 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp != null)
                 {
-                    if (!string.IsNullOrEmpty(solp.Pliego.FiscalContrato) && solp.Pliego.FiscalContrato.Contains("@"))
+                    if (!string.IsNullOrEmpty(solp.Pliego.Email) && solp.Pliego.Email.Contains("@"))
                     {
-                        email = solp.Pliego.FiscalContrato;
+                        email = solp.Pliego.Email;
                     }
                     else if (!string.IsNullOrEmpty(solp.Pliego.SupervisorTrabajo) && solp.Pliego.SupervisorTrabajo.Contains("@"))
                     {
@@ -544,7 +544,7 @@ namespace SustitucionMOAUtils.Services
             bool difSolicitante = false;
 
             //2a - Comparar Fiscal/Email con usuario FE
-            if (userMail == detalleSolPed.FiscalContrato || userMail == detalleSolPed.Email)
+            if (userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -554,7 +554,7 @@ namespace SustitucionMOAUtils.Services
                 //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
                 auto = true;
             }
-            else if (string.IsNullOrEmpty(detalleSolPed.FiscalContrato) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0 
+            else if (string.IsNullOrEmpty(detalleSolPed.Email) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0 
                 && string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0]) && detalleSolPed.Posiciones != null 
                 && detalleSolPed.Posiciones.Count > 0)
             {
@@ -711,7 +711,7 @@ namespace SustitucionMOAUtils.Services
         private bool EmptySolPedValues(SolpESDto detalleSolPed)
         {
             bool result = false;
-            if (detalleSolPed.FiscalContrato.IsNullOrWhiteSpace())
+            if (detalleSolPed.Email.IsNullOrWhiteSpace())
             {
                 if (detalleSolPed.SupervisorTrabajo == null || detalleSolPed.SupervisorTrabajo.Count == 0 || (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo[0].IsNullOrWhiteSpace()))
                 {
@@ -848,27 +848,15 @@ namespace SustitucionMOAUtils.Services
                     if (!EmptySolPedValues(detalleSolPed))
                     {
                         //Busqueda Fiscal Contrato
-                        if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
+                        if (!string.IsNullOrEmpty(detalleSolPed.Email))
                         {
-                            if (detalleSolPed.FiscalContrato.Contains("@"))
+                            if (detalleSolPed.Email.Contains("@"))
                             {
-                                temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
+                                temp.Fiscal_SOLPED = detalleSolPed.Email;
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.Email);
                                 if (usuario != null)
                                 {
                                     user = usuario;
-                                    temp.Suplente = usuario.Suplente;
-                                }
-                            }
-                            else
-                            {
-                                string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
-                                    fiscal = fiscal.ToUpper();
-                                    var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
-                                    if (usuario != null)
-                                {
-                                    user = usuario;
-                                    temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
