@@ -2868,7 +2868,7 @@ namespace SustitucionMOAUtils.Services
 
                 solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
 
-                repositorio.GuardarCambios();
+               
                 GrabarArchivosSapEnPliego(solp, result.Archivos);
                 if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                 {
@@ -2880,6 +2880,7 @@ namespace SustitucionMOAUtils.Services
                     EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
                     ReiniciarCondicionEspecial(solp);
                 }
+                repositorio.GuardarCambios();
                 ValidarSolpAnulada(obtenerSolpRequest.NumeroSolp);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
 
@@ -3038,20 +3039,22 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var asunto = "";
+                var asunto = $"Solp condición especial - {solp.NroSolp} ";
                 var enviarA = new List<string>();
                 var usuario = repositorio.Obtener<Usuario>(x => x.Mail == solp.UsuarioCreacion.Mail);
-                if (usuario == null)
+
+                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "QA";
+
+                if (usuario == null || esAmbienteQA)
                 {
                     enviarA.Add(ConfigurationManager.AppSettings["EmailMantenimiento"]);
                 }
-                else
+                if (usuario != null && !esAmbienteQA)
                 {
                     enviarA.Add(usuario.Mail);
                 }
-                asunto += $"Solp condición especial - {solp.NroSolp} ";
-                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorCondicionEspecial(solp, mensaje));
 
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorCondicionEspecial(solp, mensaje));
             }
             catch (Exception e)
             {
@@ -3059,6 +3062,7 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
             }
         }
+
 
         private AlternateView CuerpoEnviarMailErrorCondicionEspecial(Solp solp, string mensaje)
         {
