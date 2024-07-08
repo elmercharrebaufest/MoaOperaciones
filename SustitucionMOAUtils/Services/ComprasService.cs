@@ -3034,7 +3034,9 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "QA";
-           
+
+                Logger.Log.Info($"Ambiente {ConfigurationManager.AppSettings["EmailAsuntoPrefijo"]}");
+
                 if (usuario == null || esAmbienteQA)
                 {
                     enviarA.Add(ConfigurationManager.AppSettings["EmailMantenimiento"]);
