@@ -76,5 +76,11 @@
                            /@value" />
   </parameter>
   
+  <parameter name="EmailAsuntoPrefijo Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
+                           /@value" />
+  </parameter>
+  
 </parameters>
 
