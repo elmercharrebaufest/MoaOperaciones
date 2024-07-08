@@ -298,7 +298,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     var pliego = repositorio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
 
-                    solicitante = !string.IsNullOrEmpty(pliego?.Email) ? pliego?.FiscalContrato : pliego?.SupervisorTrabajo;
+                    solicitante = !string.IsNullOrEmpty(pliego?.Email) ? pliego?.Email : pliego?.SupervisorTrabajo;
 
                     if (string.IsNullOrEmpty(solicitante))
                     {
