@@ -3044,10 +3044,15 @@ namespace SustitucionMOAUtils.Services
             {
                 var asunto = $"Solp condición especial - {solp.NroSolp} ";
                 var enviarA = new List<string>();
-                var usuario = repositorio.Obtener<Usuario>(x => x.Mail == solp.UsuarioCreacion.Mail);
+                Usuario usuario = null;
+
+                if (solp?.UsuarioCreacion?.Mail != null)
+                {
+                    usuario = repositorio.Obtener<Usuario>(x => x.Mail == solp.UsuarioCreacion.Mail);
+                }
 
                 bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "QA";
-
+           
                 if (usuario == null || esAmbienteQA)
                 {
                     enviarA.Add(ConfigurationManager.AppSettings["EmailMantenimiento"]);
@@ -3057,14 +3062,17 @@ namespace SustitucionMOAUtils.Services
                     enviarA.Add(usuario.Mail);
                 }
 
+                Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
+
                 emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorCondicionEspecial(solp, mensaje));
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"EnviarMailErrorCondicionEspecial {solp.NroSolp}");
+                Logger.Log.Info($"EnviarMailErrorCondicionEspecial {solp?.NroSolp}");
                 Logger.Log.Error(e);
             }
         }
+
 
 
         private AlternateView CuerpoEnviarMailErrorCondicionEspecial(Solp solp, string mensaje)
