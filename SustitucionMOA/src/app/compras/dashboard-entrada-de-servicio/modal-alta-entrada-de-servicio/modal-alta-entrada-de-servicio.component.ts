@@ -277,7 +277,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         if (this.validateValues() === true) {
             
             this.certificarState = true;
-            this.buildEntrySheet(); let items = this.itemSelected;
+            this.buildEntrySheet();
+
+            let items = this.itemSelected;
 
             items = items.map(element => {
                 element.EntradasServicio = [];

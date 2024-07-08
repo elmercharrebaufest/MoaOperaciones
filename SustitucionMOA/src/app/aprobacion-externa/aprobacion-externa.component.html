@@ -70,11 +70,11 @@
 
         <spinner></spinner>
         <div *ngIf="approvalSuccess === true" class="center-container">
-            <p class="center-text"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
+            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
             <br />
         </div>
         <div *ngIf="approvalError === true" class="center-container">
-            <p class="center-text"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
+            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
             <br />
         </div>
 
@@ -83,7 +83,7 @@
 
             </div>
             <ng-template #elseState>
-                <p class="center-text"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
+                <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
             </ng-template>
         </div>
         <br />

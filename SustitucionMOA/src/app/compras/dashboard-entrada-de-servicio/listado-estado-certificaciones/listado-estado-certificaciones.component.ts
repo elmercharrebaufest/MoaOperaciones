@@ -94,7 +94,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   allItems: any[];
   proveedor: string = sessionStorage.getItem("proveedor");
   msgs: Message[] = [];
-  havePermision: boolean = false;
+  havePermission: boolean = false;
   observaciones: string = '';
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
   fechaSeleccionadaAux: string = "1";
@@ -183,7 +183,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     let permisos = sessionStorage.getItem("permisos");
     
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
-      this.havePermision = true;
+      this.havePermission = true;
     }
     this.recalculando = true;
     this.recalculandoAprobadas = true;
@@ -245,7 +245,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
           }
-          this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
+          if(this.estadoCertificacion.code === 'Pendiente Aprobación'){
+            this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
+          }
           this.recalculando = false;
           resolve();
         },
@@ -262,25 +264,24 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
 
-  obtenerESSap(proveedor, documentoNumero): void {
-    this.subscripciones.push(
-      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+  obtenerESSap(proveedor, documentoNumero): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const subscription = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
         (result: { error: any, data: any }) => {
           this.recalculandoAprobadas = false;
           if (result.error != null) {
             this.floatMsgService.setErrorMsg(result.error);
             return;
           }
-          if (result.data.length > 0) {
-            this.tablaPOSap = result.data;
-          } else {
-            this.tablaPOSap = [];
-          }
+          this.tablaPOSap = result.data; 
+          resolve();
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.recalculandoAprobadas = false;
+          reject(error);
         })
-    );
+        this.subscripciones.push(subscription);
+    });
   }
 
   clearMessage() {
@@ -348,6 +349,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
         break;
       case 'Rechazado':
+        if(this.tablaPOAprobaciones.length < 1){
+          this.recalculando = true;
+          this.getListarPO();
+        }
         this.defaultTablesConfig[0].columns.forEach(col => {
           col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' ? false : true;
         });
@@ -590,15 +595,37 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.blockUI.start('Cargando...');
     this.isAll = true;
-    await this.getListarPO(); // No mover.
-    this.blockUI.stop();
+    if(this.estadoCertificacion.code === 'Aprobada'){ 
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      this.blockUI.stop();
+      this.recalculando = true;
+      await this.getListarPO();
+    } else {
+      this.recalculando = true;
+      await this.getListarPO();
+      this.blockUI.stop();
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+    }
   }
 
   async SeeForProvider() {
     this.blockUI.start('Cargando...');
     this.isAll = false;
-    await this.getListarPO(); // No mover.
-    this.blockUI.stop();
+    if(this.estadoCertificacion.code === 'Aprobada'){ 
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      this.blockUI.stop();
+      this.recalculando = true;
+      await this.getListarPO();
+    } else {
+      this.recalculando = true;
+      await this.getListarPO();
+      this.blockUI.stop();
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+    }
   }
 
   /**

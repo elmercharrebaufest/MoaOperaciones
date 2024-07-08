@@ -237,7 +237,8 @@
                                 <p>Periodo de reasignación</p>
                             </div>
                             <div style="margin-top: 10px; padding-top: 0.8em;">
-                                <p-calendar [(ngModel)]="rangoReasignacion"
+                                <!--<p-calendar #fechaReasignar
+                                            [(ngModel)]="rangoReasignacion"
                                             (ngModelChange)="onCalendarChange($event)"
                                             selectionMode="range"
                                             formControlName="fechaReasignar1"
@@ -254,7 +255,31 @@
                                             [showIcon]="true"
                                             [showButtonBar]="true"
                                             (onClearClick)="handleClearClick($event)"
-                                            clearButtonStyleClass="center-clear-button">
+                                            clearButtonStyleClass="center-clear-button"
+                                            todayButtonStyleClass="center-today-button">
+                                </p-calendar>-->
+                                <p-calendar #fechaReasignar
+                                            [(ngModel)]="rangoReasignacion"
+                                            (ngModelChange)="onCalendarChange($event)"
+                                            selectionMode="range"
+                                            formControlName="fechaReasignar1"
+                                            id="fechaReasignar"
+                                            dateFormat="dd/mm/yy"
+                                            [readonlyInput]="true"
+                                            [monthNavigator]="true"
+                                            [yearNavigator]="true"
+                                            [locale]="es"
+                                            autoZIndex="true"
+                                            [minDate]="fechaReasignacionMin"
+                                            [maxDate]="fechaReasignacionMax"
+                                            yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
+                                            [showIcon]="true">
+                                    <p-footer>
+                                        <div class="calendar-footer">
+                                            <button type="button" class="btn btn-primary btn-style center-today-button" (click)="onCustomAcceptClick()">Aceptar</button>
+                                            <button type="button" class="btn btn-primary btn-style center-clear-button" (click)="handleClearClick()">Limpiar</button>
+                                        </div>
+                                    </p-footer>
                                 </p-calendar>
                             </div>
                             <div *ngIf="validationError">
@@ -268,10 +293,10 @@
                             <hr>
                             <ng-container *ngFor="let rol of rolesUsuarioSeleccionado" class="col-xs-12 col-sm-12 col-md-6">
                                 <span class="col-md-6" *ngIf="rol.Code == titulo">
-                                    <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Id}}" value="{{rol.Id}}"
+                                    <input type="checkbox" name="rolesSeleccionados" id="rol_{{rol.Nombre}}" value="{{rol.Nombre}}"
                                            [(ngModel)]="rol.checked" [ngModelOptions]="{standalone: true}" (click)="dontAllowCertificationRol($event)">
                                     &nbsp;
-                                    <label for="rol_{{rol.Id}}">{{rol.Nombre}}</label>
+                                    <label for="rol_{{rol.Nombre}}">{{rol.Nombre}}</label>
                                 </span>
                             </ng-container>
                         </div>

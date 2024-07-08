@@ -7,3 +7,24 @@
 .center-clear-button {
     margin: 0 auto;
 }
+
+.center-today-button {
+    margin: 0 auto;
+}
+
+.btn-style {
+    color: #ffffff;
+    background-color: #007ad9;
+    border: 1px solid #007ad9;
+    -moz-transition: background-color 0.2s;
+    -o-transition: background-color 0.2s;
+    -webkit-transition: background-color 0.2s;
+    transition: background-color 0.2s;
+}
+
+.calendar-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2em;
+}
+
