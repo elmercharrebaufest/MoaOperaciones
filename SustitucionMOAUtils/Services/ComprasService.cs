@@ -3033,9 +3033,7 @@ namespace SustitucionMOAUtils.Services
                     usuario = repositorio.Obtener<Usuario>(x => x.Mail == solp.UsuarioCreacion.Mail);
                 }
 
-                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "QA";
-
-                Logger.Log.Info($"Ambiente {ConfigurationManager.AppSettings["EmailAsuntoPrefijo"]}");
+                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "[QA]";
 
                 if (usuario == null || esAmbienteQA)
                 {
