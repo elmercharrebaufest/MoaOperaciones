@@ -144,16 +144,16 @@ export class DetalleComponent extends ListBaseComponent implements OnInit {
     }
     navegarDetalleOrdenCarga(det: DetalleReporteContrato) {
         this.service.getOrdenDeCarga(det).subscribe({
-            next: (res) => {
-                if (res.error) {
-                    this.floatMsgService.setErrorMsg(res.error)
+            next: ({ info, error, data }) => {
+                if (error) {
+                    this.floatMsgService.setErrorMsg(error)
                 }
-                else if (res.info) {
-                    this.floatMsgService.setInfoMsg(res.info)
+                else if (info) {
+                    this.floatMsgService.setInfoMsg(info)
                 } else {
                     this.navegarDetalle.emit();
                     sessionStorage.setItem(VOLVER_A_DETALLE_REPORTE, 'true')
-                    this.goToSeccionParam('/ordenes-de-carga/detalle', '2433');
+                    this.goToSeccionParam('/ordenes-de-carga/detalle', data.Id.toString());
                 }
             }
             ,
