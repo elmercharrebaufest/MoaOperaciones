@@ -48,7 +48,7 @@ namespace SustitucionMOAModel.Entities
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
         public bool FleteMOA { get; set; }
-        public bool Reventa { get; set; }
+        public bool ClienteComoRemitenteComercial { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
@@ -69,7 +69,8 @@ namespace SustitucionMOAModel.Entities
         public double? PesadaTara { get; set; }
         public double? PesadaNeto { get; set; }
 
-        public bool CuitsTerceroExisten { 
+        public bool CuitsTerceroExisten
+        {
             get
             {
                 if (Producto.ValidaSisaRuca)
@@ -79,7 +80,7 @@ namespace SustitucionMOAModel.Entities
                     return existeDestino && existeDestinatario;
                 }
                 return true;
-            } 
+            }
         }
 
         public OrdenDeCargaFason() { }
@@ -104,7 +105,8 @@ namespace SustitucionMOAModel.Entities
             FleteMOA = request.FleteMOA;
             CUITIntermediarioFlete = request.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
-            Reventa = request.Reventa;
+            ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
+                request.CUITDestino != request.CUITCliente.ToString();
             PlantaCodigo = request.PlantaCodigo;
             DomicilioTipo = request.DomicilioTipo;
             DomicilioOrden = request.DomicilioOrden;
@@ -140,7 +142,7 @@ namespace SustitucionMOAModel.Entities
                 CorredorId == carga.CorredorId &&
                 KmARecorrer == carga.KmARecorrer &&
                 FleteMOA == carga.FleteMOA &&
-                Reventa == carga.Reventa &&
+                ClienteComoRemitenteComercial == carga.ClienteComoRemitenteComercial &&
                 CUITIntermediarioFlete == carga.CUITIntermediarioFlete &&
                 RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete &&
                 PlantaCodigo == carga.PlantaCodigo &&

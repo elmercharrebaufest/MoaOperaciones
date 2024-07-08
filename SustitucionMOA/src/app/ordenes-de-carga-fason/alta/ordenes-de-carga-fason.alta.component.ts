@@ -677,7 +677,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap == CODIGO_PELLET_GIRASOL_INTEGRAL ? CANTIDAD_PELLET_GIRASOL : CANTIDAD_DEFAULT;
     }
     setearDefaultEnCPEDG() {
-        this.ordenDeCargaFason.Reventa = false;
+        this.ordenDeCargaFason.RemitenteComercial = false;
         this.ordenDeCargaFason.CUITIntermediarioFlete = null;
         this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
         this.validarIntermediarioFlete();
@@ -817,6 +817,8 @@ export class OrdenesDeCargaFasonAltaComponent
                 else {
                     this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
                 }
+
+                this.asignarRemitenteComercial();
             })
     }
 
@@ -1158,5 +1160,18 @@ export class OrdenesDeCargaFasonAltaComponent
         this.ordenDeCargaFason[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         this.displayModal = null;
         this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCargaFason[campo]}`;
+    }
+
+    asignarRemitenteComercial() {
+        this.ordenDeCargaFason.RemitenteComercial = this.usaRemitenteComercial;
+        if (!this.ordenDeCargaFason.RemitenteComercial) {
+            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
+        } else {
+            this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
+        }
+    }
+
+    get usaRemitenteComercial() {
+        return this.ordenDeCargaFason.CUITCliente.toString() != this.ordenDeCargaFason.CUITDestino;
     }
 }

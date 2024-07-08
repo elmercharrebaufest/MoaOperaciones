@@ -30,6 +30,7 @@ namespace SustitucionMOAModel.Dto
         public string KmARecorrer { get; set; }
         public bool FleteMOA { get; set; }
         public bool Reventa { get; set; }
+        public bool ClienteComoRemitenteComercial { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
@@ -88,7 +89,7 @@ namespace SustitucionMOAModel.Dto
             KmARecorrer = ordenFason.KmARecorrer;
             TipoOrden = TipoOrdenes.FASON;
             FleteMOA = ordenFason.FleteMOA;
-            Reventa = ordenFason.Reventa;
+            ClienteComoRemitenteComercial = ordenFason.ClienteComoRemitenteComercial;
             PlantaCodigo = ordenFason.PlantaCodigo;
             DomicilioTipo = ordenFason.DomicilioTipo;
             DomicilioOrden = ordenFason.DomicilioOrden;
@@ -163,7 +164,7 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                if(Reventa && CUITDestino != CUITCliente && TipoOrden==TipoOrdenes.FASON)
+                if(ClienteComoRemitenteComercial && CUITDestino != CUITCliente && TipoOrden==TipoOrdenes.FASON)
                 {
                     return CUITCliente;
                 }

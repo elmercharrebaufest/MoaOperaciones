@@ -48,7 +48,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string LocalidadDescripcion { get; set; }
         public Models.DataAgro.MaterialDto ProductoSeleccionado { get; set; }
         public int Producto_Id { get; set; }
-        public bool Reventa { get; set; }
+        public bool RemitenteComercial { get; set; }
         public bool Escalable { get; set; }
 
         public bool ValidaSisaRuca { get; set; }
@@ -102,7 +102,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             CUITIntermediarioFlete = orden.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = orden.RazonSocialIntermediarioFlete;
             FleteMOA = orden.FleteMOA;
-            Reventa = orden.Reventa;
+            RemitenteComercial = orden.ClienteComoRemitenteComercial;
             Escalable = orden.Escalable;
             ValidaSisaRuca = orden.Producto.ValidaSisaRuca;
             CUITDestino = orden.CUITDestino;

@@ -42,7 +42,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool FleteMOA { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
-        public bool Reventa { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }

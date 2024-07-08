@@ -254,7 +254,8 @@ namespace SustitucionMOAUtils.Services
                 orden.FleteMOA = request.FleteMOA;
                 orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
                 orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
-                orden.Reventa = request.Reventa;
+                orden.ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
+                    request.CUITDestino != request.CUITCliente.ToString();
                 orden.PlantaCodigo = request.PlantaCodigo;
                 orden.DomicilioTipo = request.DomicilioTipo;
                 orden.DomicilioOrden = request.DomicilioOrden;

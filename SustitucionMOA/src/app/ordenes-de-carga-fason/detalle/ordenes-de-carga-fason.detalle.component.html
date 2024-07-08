@@ -82,12 +82,6 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
-                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                        <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true"
-                                            [(ngModel)]="ordenDeCargaFason.Reventa" [disabled]="true"></p-checkbox>
-                                    </div>
-
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.RazonSocialCliente}}</p>
@@ -106,6 +100,17 @@
                                     <div class="col-xs-12 col-md-12" [hidden]="!esAdmin && !esCorredor">
                                         <p class=" blue"><strong>Corredor</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.Corredor}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Remitente Comercial</strong></p>
+                                        <p style="width:100%">
+                                            <ng-container *ngIf="ordenDeCargaFason.RemitenteComercial;else empty">
+                                                {{ordenDeCargaFason.RazonSocialCliente}}
+                                                ({{ordenDeCargaFason.CUITCliente}})
+                                            </ng-container>
+                                            <ng-template #empty>-</ng-template>
+                                        </p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">

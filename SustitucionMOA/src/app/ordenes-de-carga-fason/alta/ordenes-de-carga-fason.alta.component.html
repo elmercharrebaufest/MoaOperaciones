@@ -77,14 +77,13 @@
                             </div>
 
                             <ng-container *ngIf="validaCPEDG">
-                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado.EsRevendedor">
-                                    <div class="formulario-label" style="margin-bottom: 8px;">
-                                        <p-checkbox name="reventa" [binary]="true"
-                                            [(ngModel)]="ordenDeCargaFason.Reventa"></p-checkbox>
-                                        <label class="ml-2 pointer mySearch bold"
-                                            (click)="ordenDeCargaFason.Reventa = !ordenDeCargaFason.Reventa">
-                                            Reventa
-                                        </label>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Remitente Comercial:
+                                    </div>
+                                    <div class="styled-select">
+                                        <input [disabled]="true" type="text"
+                                            [value]="ordenDeCargaFason.RemitenteComercial? clienteSeleccionado.RazonSocial: ''">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">

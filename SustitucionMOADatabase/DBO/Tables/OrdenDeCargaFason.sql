@@ -26,7 +26,7 @@
     [CUITIntermediarioFlete] VARCHAR(15) NULL,
     [RazonSocialIntermediarioFlete] VARCHAR(100) NULL, 
     [FleteMOA] BIT NOT NULL DEFAULT 0, 
-    [Reventa] BIT NOT NULL DEFAULT 0, 
+    [ClienteComoRemitenteComercial] BIT NOT NULL DEFAULT 0, 
 	[PlantaCodigo] VARCHAR(6) NULL, 
     [DomicilioTipo] VARCHAR NULL, 
     [DomicilioOrden] SMALLINT NULL, 

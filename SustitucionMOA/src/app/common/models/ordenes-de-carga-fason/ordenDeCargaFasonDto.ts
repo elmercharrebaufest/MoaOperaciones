@@ -39,6 +39,7 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public Observacion: string;
     public LocalidadDescripcion: string;
 
+    public RemitenteComercial?: boolean;
     constructor() {
         super();
         this.FechaRetiro = new Date();
