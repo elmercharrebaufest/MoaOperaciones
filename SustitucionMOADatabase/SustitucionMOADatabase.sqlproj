@@ -245,6 +245,7 @@
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
     <Build Include="DBO\Tables\UsuarioReasignacion.sql" />
     <Build Include="DBO\Tables\ArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\AdjuntosEntradasDeServicio.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

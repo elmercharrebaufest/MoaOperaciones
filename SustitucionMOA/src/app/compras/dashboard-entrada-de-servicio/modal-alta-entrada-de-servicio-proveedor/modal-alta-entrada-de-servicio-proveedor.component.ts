@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
@@ -48,6 +48,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     @Output() closeDialog = new EventEmitter<void>();
 
     @Output() enviarMensajeGrilla = new EventEmitter();
+
+    @ViewChild('fileInput') fileInput: any;
+
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -245,16 +248,22 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         }
     }
 
-    certificarPosicion() {
+    async certificarPosicion() {
         if (this.validateValues() === true) {
             this.buildEntrySheet();
 
-            let items = this.itemSelected.map(element => {
-                element.EntradasServicio = null;
+            let items = this.itemSelected;
+
+            items = items.map(element => {
+                element.EntradasServicio = [];
                 return element;
             });
 
-            this.service.postCreateAsync(this.entrySheetObjects, items).subscribe(
+            const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
+            const respIdAdjuntos = adjuntarArchivosResult.data;
+
+
+            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -491,4 +500,54 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     // --------- FIN CONFIGURACION DE COLUMNAS --------- //
+
+    //---------- ARCHIVOS ADJUNTOS---------//
+    uploadedFiles: File[] = [];
+    maxSizeFile = 10 * 1024 * 1024; // 10 MB
+    allowedTypes = ['application/pdf', 'application/vnd.ms-excel', 'application/vnd.ms-outlook'];
+
+    onFileSelected(event: any) {
+      const files: FileList = event.target.files;
+      let totalSize = this.uploadedFiles.reduce((acc, file) => acc + file.size, 0);
+  
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!this.isValidFileType(file)) {
+          alert(`${file.name} Archivo invalido.`);
+          continue;
+        }
+        if (totalSize + file.size > this.maxSizeFile) {
+          alert('Tamaño excedido 10 MB.');
+          continue;
+        }
+        this.uploadedFiles.push(file);
+        totalSize += file.size;
+      }
+  
+      this.updateFileInput();
+    }
+  
+    isValidFileType(file: File): boolean {
+      return this.allowedTypes.includes(file.type);
+    }
+  
+    removeFile(index: number) {
+      this.uploadedFiles.splice(index, 1);
+      this.updateFileInput();
+    }
+  
+    updateFileInput() {
+      const dt = new DataTransfer();
+      this.uploadedFiles.forEach(file => dt.items.add(file));
+      this.fileInput.nativeElement.files = dt.files;
+    }
+  
+    uploadFiles() {
+      const formData = new FormData();
+      for (let file of this.uploadedFiles) {
+        formData.append('files', file, file.name);
+      }
+    }
+
+    //----------FIN ARCHIVOS ADJUNTOS---------//
 }

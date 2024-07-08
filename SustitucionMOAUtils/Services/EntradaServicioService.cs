@@ -31,6 +31,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using Google.Apis.Drive.v3.Data;
+using System.Web;
 
 namespace SustitucionMOAUtils.Services
 
@@ -45,14 +46,15 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailFasService emailFasService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
         private readonly IReporteESService _reporteESService;
+        private readonly IAdjuntosCertificacionesService _adjuntosCertificacionesService;
 
         //private readonly ILiquidacionService _liquidacionService;
         //private OrderParamsDto parametros;
 
-        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService, 
-            IComprasService comprasService, IEmailCertificationService emailCertificationService, 
+        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService,
+            IComprasService comprasService, IEmailCertificationService emailCertificationService,
             IEmailFasService emailFasService, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
-            IReporteESService reporteESService)
+            IReporteESService reporteESService, IAdjuntosCertificacionesService adjuntosCertificacionesService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorio = repositorio;
@@ -62,6 +64,7 @@ namespace SustitucionMOAUtils.Services
             this.emailCertificationService = emailCertificationService;
             this.emailFasService = emailFasService;
             this._reporteESService = reporteESService;
+            this._adjuntosCertificacionesService = adjuntosCertificacionesService;
 
             //_liquidacionService = liquidacionService;
         }
@@ -622,7 +625,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, 
-            string userMail, List<ReporteDto> reporte, string solpedNumber,  string proveedor = null)
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber,  string proveedor = null)
         {
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
@@ -633,6 +636,9 @@ namespace SustitucionMOAUtils.Services
             {
                 int ESNumber = GetESNumber(result.Message);
                 Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, reporte, solpedNumber, proveedor);
+
+                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+
             }
 
 
@@ -640,7 +646,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, 
-            string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null)
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null)
         {
 
 
@@ -648,6 +654,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, reporte, solpedNumber, proveedor);
+
+                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+
                 result.Type = "S";
 
                 result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
@@ -695,6 +704,23 @@ namespace SustitucionMOAUtils.Services
 
 
             return result;
+        }
+
+        private void ActualizarAdjuntosConES(List<string> idAdjuntos, string nroESTemporal)
+        {
+            if (idAdjuntos != null && idAdjuntos.Count > 0)
+            {
+                var adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(x => idAdjuntos.Contains(x.NombreEnBlob));
+
+                foreach (var adjunto in adjuntos)
+                {
+                    adjunto.NroESTemporal = nroESTemporal;
+                }
+
+                repositorio.GuardarCambios();
+            }
+            
+
         }
 
         private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, string reference = null)

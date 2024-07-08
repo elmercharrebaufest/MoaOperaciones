@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 
 namespace SustitucionMOAModel.Dto.OrdenesCompra
 {
@@ -8,6 +9,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
     {
         public List<EntradaServicioCreateParamsDto> parametros { get; set; }
         public List<ReporteDto> report { get; set; }
+        public List<string> IdAdjuntos {  get; set; }
     }
 
     public class EntradaServicioCreateParamsDto

@@ -190,6 +190,15 @@
             </div>-->
         </div>
 
+        <input type="file" #fileInput multiple (change)="onFileSelected($event)">
+
+        <div *ngFor="let file of uploadedFiles; let i = index">
+            <span>{{ file.name }}</span>&nbsp;
+            <button class="btn btn-danger" (click)="removeFile(i)">Eliminar</button>
+            <br/>
+        </div>
+
+
         <div class="form-actions">
             <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
         </div>

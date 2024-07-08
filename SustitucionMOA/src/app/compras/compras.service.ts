@@ -256,12 +256,39 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(parametros : any, report : any): Observable<any> {
-        return this.http.post('/api/EntradaServicio/CreateAsync', {parametros, report})
+    public postCreateAsync(parametros : any, report : any, IdAdjuntos): Observable<any> {
+
+           
+
+        return this.http.post('/api/EntradaServicio/CreateAsync', {parametros, report, IdAdjuntos})
           .pipe(
             timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
           );
       }
+
+
+
+      public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
+
+        var payload = new FormData();
+
+        for (let i = 0; i < archivos.length; i++) {
+            let fileToUpload = archivos[i];
+            payload.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        return this.http
+            .post<any>('/api/AdjuntosCertificaciones/Adjuntar', payload, { headers: this.headers });
+    }
+
+    public GetAdjuntosByES(idES): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        params = params.set("idES", idES.toString());
+
+        return this.http
+            .get<any>('/api/AdjuntosCertificaciones/GetAdjuntos',{ params : params, headers: this.headers });
+    }
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
@@ -1368,4 +1395,6 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
     }
+
+   
 }

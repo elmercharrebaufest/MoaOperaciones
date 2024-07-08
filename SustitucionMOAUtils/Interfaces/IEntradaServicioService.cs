@@ -7,6 +7,7 @@ using SustitucionMOAModel.Models.ViewModel.Notificacion;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Web;
 using static SustitucionMOAWS.WSConsumers.CrearEntradaDeServicioConsumerMOA;
 //C:\Users\jizaguirre\source\repos\MoaOperaciones\SustitucionMOAUtils\Interfaces\IOrderService.cs
 //C:\Users\jizaguirre\source\repos\MoaOperaciones\SustitucionMOAUtils\Interfaces\IEntradaServicioService.cs
@@ -23,9 +24,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         //List<EntradaServicioCabeceraDto> ObtenerEntradasServicioConDetalle(EntradaServicioParamsDto parametros);
         //Task<EntradaServicioCabeceraDto>CrearEntradaServicioAsync(EntradaServicioCreateParamsDto parametros);
-        Task <EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null);
+        Task <EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null);
 
-        EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, string solpedNumber = null, string proveedor = null);
+        EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null);
 
         EntradaServicioCreateRespuestaDto ValidarIngresante(EntradaServicioCreateParamsDto parametros, string userMail, string nroSolped);
         Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto);
