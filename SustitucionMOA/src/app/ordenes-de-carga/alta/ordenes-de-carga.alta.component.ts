@@ -1559,10 +1559,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         });
     }
     get patenteAcopladoValida() {
-        return this.ordenDeCarga.PatenteAcoplado && this.ordenDeCarga.PatenteAcoplado.trim().length >= 6
+        return (
+            this.ordenDeCarga.PatenteAcoplado &&
+            this.ordenDeCarga.PatenteAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCarga.PatenteAcoplado));
     }
+    
     get chasisAcopladoValido() {
-        return this.ordenDeCarga.ChasisAcoplado && this.ordenDeCarga.ChasisAcoplado.trim().length >= 6
+        return (
+            this.ordenDeCarga.ChasisAcoplado &&
+            this.ordenDeCarga.ChasisAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCarga.ChasisAcoplado));
     }
 
     displayModalEscalable = false;
@@ -1668,6 +1675,13 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
 
     get usaRemitenteComercial() {
         return this.ordenDeCarga.CUITCliente.toString() != this.ordenDeCarga.CUITDestino;
+    }
+
+    esPatenteValida(patente: string) {
+        const exprReg = /[A-Z]{3}[0-9]{3}|[A-Z]{2}[0-9]{3}[A-Z]{2}/;
+        const esValida = exprReg.test(patente);
+        // console.log("Patente " + patente + " es válida? -> " + esValida);
+        return esValida;
     }
 }
 
