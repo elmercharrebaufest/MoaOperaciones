@@ -140,12 +140,11 @@
                             fileKey: parametros.get("fileKey"),
                             mail: parametros.get("mail"),
                             archivoId: parametros.get("archivoId"),
-                            proveedorId: parametros.get("proveedorId"),
-                            urlApi: parametros.get("urlApi"),
+                            proveedorId: parametros.get("proveedorId")
                         };
                         $.ajax({
                             async: false,
-                            url: datos.urlApi,
+                            url: parametros.get("urlApi"),
                             type: 'GET',
                             data: datos,
                             dataType: "json",
