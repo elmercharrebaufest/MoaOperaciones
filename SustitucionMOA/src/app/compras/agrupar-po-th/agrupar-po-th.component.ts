@@ -41,6 +41,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     resultadoAgrupar: any;
     displayPeticionAgrupada: boolean = false;
     adjuntosSolpDto: AdjuntosSolpDto = {} as AdjuntosSolpDto;
+    displayConfirmacionAgrupar: boolean = false;
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -408,6 +409,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         
         if (idsSeleccionados.length > 1) {
             this.agruparPeticionesDeOferta(idsSeleccionados);
+            this.displayConfirmacionAgrupar = false;
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar al menos dos peticiones de oferta diferentes para agruparlas.");
         }
@@ -486,4 +488,11 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.nroSolp = nroSolp;
     }
 
+    abrirConfimarcionAgrupar() {
+        this.displayConfirmacionAgrupar = true;
+    }
+
+    cerrarConfimarcionAgrupar() {
+        this.displayConfirmacionAgrupar = false;
+    }
 }
