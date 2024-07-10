@@ -504,7 +504,14 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     //---------- ARCHIVOS ADJUNTOS---------//
     uploadedFiles: File[] = [];
     maxSizeFile = 10 * 1024 * 1024; // 10 MB
-    allowedTypes = ['application/pdf', 'application/vnd.ms-excel', 'application/vnd.ms-outlook'];
+    allowedTypes = ['application/pdf', 
+        'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'application/vnd.ms-outlook',
+        'application/octet-stream', 
+        'application/x-msg'];
+
+    allowedExtensions = ['.pdf', '.xls', '.xlsx', '.msg'];
 
     onFileSelected(event: any) {
       const files: FileList = event.target.files;
@@ -528,7 +535,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
   
     isValidFileType(file: File): boolean {
-      return this.allowedTypes.includes(file.type);
+        const fileTypeValid = this.allowedTypes.includes(file.type);
+        const fileExtensionValid = this.allowedExtensions.some(ext => file.name.endsWith(ext));
+        return fileTypeValid || fileExtensionValid;
     }
   
     removeFile(index: number) {

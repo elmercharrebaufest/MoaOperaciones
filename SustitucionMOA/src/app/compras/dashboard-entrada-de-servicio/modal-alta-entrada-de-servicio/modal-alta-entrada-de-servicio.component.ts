@@ -589,7 +589,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     uploadedFiles: File[] = [];
     maxSizeFile = 10 * 1024 * 1024; // 10 MB
-    allowedTypes = ['application/pdf', 'application/vnd.ms-excel', 'application/vnd.ms-outlook', 'application/octet-stream', 'application/x-msg'];
+    allowedTypes = ['application/pdf', 
+        'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'application/vnd.ms-outlook', 
+        'application/octet-stream', 
+        'application/x-msg'];
+
     allowedExtensions = ['.pdf', '.xls', '.xlsx', '.msg'];
 
     onFileSelected(event: any) {
