@@ -14,7 +14,7 @@
                 <!-- Button trigger modal -->
                 <button *ngIf="botones.editar" type="button"
                     class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                    id="modalToggleButton" [disabled]="activaEnScato && !esAdmin">
+                    id="modalToggleButton" [disabled]="(activaEnScato || validandoEstadoScato) && !esAdmin">
                     Editar
                 </button>
             </div>
@@ -44,6 +44,8 @@
                 <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
                     [responsive]="true" appendTo="body">
                     <p-footer>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
                         <button type="button" pButton label="No" class="ui-button-info botonModal"
                             (click)="dialogoConfirmarAnular.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
@@ -277,11 +279,12 @@
                                 <input type="button" (click)="confirmarRechazarSolicitudEdicion(false)"
                                     class="btn-custom btn-remove btn-grande" value="Rechazar edición">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="botones.solicitarAnulacion && !activaEnScato">
+                            <div class="col-xs-5 col-md-3"
+                                *ngIf="botones.solicitarAnulacion && !(activaEnScato || validandoEstadoScato)">
                                 <input type="button" (click)="confirmarSolicitudAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="botones.anular && !activaEnScato">
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.anular">
                                 <input type="button" (click)="confirmarAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Anular">
                             </div>

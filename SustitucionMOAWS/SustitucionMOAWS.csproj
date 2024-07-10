@@ -1307,6 +1307,9 @@
     <None Include="Service References\ScatoWebService\ServicioRepositorio15.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio16.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Service References\ScatoWebService\ServicioRepositorio2.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -3698,10 +3701,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ObtenerPDFOrdenCompraWebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ObtenerPDFOrdenCompraWebServiceMOA\configuration.svcinfo" />
     <None Include="Service References\ObtenerEntradaDeServicioPorNumeroWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>

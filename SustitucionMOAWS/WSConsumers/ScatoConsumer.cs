@@ -165,12 +165,11 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        public RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroIdFason(int ordenId)
+        public RecorridoDto ObtenerRecorridoNoRechazadoPorNumeroIdFason(long ordenId)
         {
             try
             {
-                throw new Exception("Prueba");
-                var recorridos = service.ObtenerRecorridoNoRechazadoPorIdOperaciones(ordenId);
+                var recorridos = service.ObtenerRecorridoNoRechazadoPorIdOperaciones(ordenId.ToString());
                 Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. ordenFasonId: {0}",
                     ordenId));
                 return recorridos;

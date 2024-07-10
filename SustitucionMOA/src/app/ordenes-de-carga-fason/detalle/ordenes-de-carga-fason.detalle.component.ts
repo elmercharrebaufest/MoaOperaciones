@@ -14,7 +14,6 @@ import { ListBaseComponent } from '../../common/base-components/list-base-compon
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 import { Rol } from '../../common/enums/Roles';
 import { Permiso } from '../../common/enums/Permisos';
-import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
 import { finalize } from 'rxjs/operators';
 
 export interface BotonesDetalleFason {

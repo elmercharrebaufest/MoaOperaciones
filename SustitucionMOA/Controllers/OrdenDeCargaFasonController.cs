@@ -8,11 +8,9 @@ using SustitucionMOAAssets;
 using SustitucionMOAUtils.Logger;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
-using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Controllers
 {
@@ -691,7 +689,7 @@ namespace SustitucionMOA.Controllers
             }
         }
         [HttpGet]
-        public ActionResult ValidarOrdenActivaScato(int ordenId)
+        public ActionResult ValidarOrdenActivaScato(long ordenId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try

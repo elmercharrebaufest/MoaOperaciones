@@ -264,7 +264,12 @@ namespace SustitucionMOAUtils.Services
                 orden.Escalable = request.Escalable;
                 ActualizarOrdenDeCarga(orden);
 
-                if (!usuario.TieneRol(RolEnum.FasonAdmin))
+                var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+                if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
+                {
+                    throw new ValidationCustomException("La orden está en activa, imposible editar.");
+                }
+                if (!esAdmin)
                     orden.Estado = EstadoOrdenDeCargaFason.EdicionSolicitada;
 
                 repositorio.GuardarCambios();
@@ -328,8 +333,11 @@ namespace SustitucionMOAUtils.Services
             if (orden.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada)
                 throw new InfoCustomException("La anulación de esta orden ya fue solicitada.");
             var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
-            if (usuario.TieneRol(RolEnum.FasonAdmin))
-                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+            if (esAdmin)
+                throw new InfoCustomException("Usuario administrador, debería anular directamente.");
+            if (ValidarOrdenActivaScato(ordenId))
+                throw new InfoCustomException("La orden está en activa, imposible editar.");
 
             orden.Estado = EstadoOrdenDeCargaFason.AnulacionSolicitada;
 
@@ -475,11 +483,11 @@ namespace SustitucionMOAUtils.Services
             return OrdenDeCargaFasonDto(orden, usuario);
         }
 
-        public bool ValidarOrdenActivaScato(int ordenId)
+        public bool ValidarOrdenActivaScato(long ordenId)
         {
             
             Log.Info($"Obteniendo estado de la orden fason {ordenId} en Scato con nro Entrega");
-            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId).FirstOrDefault();
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId);
             if (result == null)
                 return false;
             Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
