@@ -474,6 +474,17 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
         }
+
+        public bool ValidarOrdenActivaScato(int ordenId)
+        {
+            
+            Log.Info($"Obteniendo estado de la orden fason {ordenId} en Scato con nro Entrega");
+            var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId).FirstOrDefault();
+            if (result == null)
+                return false;
+            Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
+            return !result.Terminado;
+        }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool enviarNotificaciones = false)
         {
             var detalleAActualizar = ObtenerDetallesActualizar(orden);

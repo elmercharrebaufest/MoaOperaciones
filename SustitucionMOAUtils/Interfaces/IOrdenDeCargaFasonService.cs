@@ -27,5 +27,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario);
         bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
         OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
+        bool ValidarOrdenActivaScato(int ordenId);
     }
 }

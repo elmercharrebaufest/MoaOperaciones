@@ -14,7 +14,7 @@
                 <!-- Button trigger modal -->
                 <button *ngIf="botones.editar" type="button"
                     class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                    id="modalToggleButton">
+                    id="modalToggleButton" [disabled]="activaEnScato && !esAdmin">
                     Editar
                 </button>
             </div>
@@ -277,11 +277,11 @@
                                 <input type="button" (click)="confirmarRechazarSolicitudEdicion(false)"
                                     class="btn-custom btn-remove btn-grande" value="Rechazar edición">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="botones.solicitarAnulacion">
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.solicitarAnulacion && !activaEnScato">
                                 <input type="button" (click)="confirmarSolicitudAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="botones.anular">
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.anular && !activaEnScato">
                                 <input type="button" (click)="confirmarAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Anular">
                             </div>

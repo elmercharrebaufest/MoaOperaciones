@@ -14,6 +14,8 @@ import { ListBaseComponent } from '../../common/base-components/list-base-compon
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 import { Rol } from '../../common/enums/Roles';
 import { Permiso } from '../../common/enums/Permisos';
+import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
+import { finalize } from 'rxjs/operators';
 
 export interface BotonesDetalleFason {
     editar: boolean;
@@ -52,6 +54,9 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     estadoOrdenDeCargaFason = EstadoOrdenDeCargaFason;
 
     validaCPEDG = false;
+    validandoEstadoScato = false;
+
+    activaEnScato = false;
 
     estadosPermitenEdicion = [
         EstadoOrdenDeCargaFason.Generada,
@@ -82,6 +87,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.navService.setSeccionList([]);
         this.obtenerOrdenDeCargaFason();
 
+        this.verificarOrdenActivaScato()
     }
 
     verificarBotones() {
@@ -366,6 +372,28 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    verificarOrdenActivaScato() {
+        this.validandoEstadoScato = true;
+        this.spinnerComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.service.validarOrdenActivaScato(this.ordenDeCargaFasonId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt(); this.validandoEstadoScato = false; })
+            ).subscribe(
+                result => {
+                    const estadoEnScato = this.manejarApiResponse(result, this.sessionDataService, this.mensajeComponent)
+                    this.activaEnScato = !!estadoEnScato
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
         }
     }
 }
