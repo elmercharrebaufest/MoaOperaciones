@@ -1124,6 +1124,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
+    <Compile Include="Controllers\AdjuntosCertificacionesController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
@@ -1639,6 +1640,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
     <Folder Include="src\app\echeq\gestion\" />
+    <Folder Include="Views\AdjuntosCertificaciones\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />

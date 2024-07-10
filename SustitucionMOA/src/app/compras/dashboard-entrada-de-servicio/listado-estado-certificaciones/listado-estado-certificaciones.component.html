@@ -116,7 +116,11 @@
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
                         rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
+                    <td>                                                                                
+                        <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                    </td>
                 </tr>
+                
             </ng-template>
 
             <ng-template pTemplate="footer" let-columns>

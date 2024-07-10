@@ -400,6 +400,9 @@
                                                                                     </i>
                                                                                 </ng-template>
                                                                             </ng-container>
+                                                                            <ng-container *ngIf="col.id==='esAdjuntos'">                                                                                
+                                                                                <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                                                                            </ng-container>
                                                                         </td>
                                                                     </ng-container>
                                                                 </tr>

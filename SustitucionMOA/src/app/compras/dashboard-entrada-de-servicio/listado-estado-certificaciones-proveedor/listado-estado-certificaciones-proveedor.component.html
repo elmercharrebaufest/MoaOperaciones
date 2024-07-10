@@ -85,6 +85,9 @@
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
                     </td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
+                    <td>                                                                                
+                        <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                    </td>
                 </tr>
             </ng-template>
             <!-- TABLE 1 BODY END -->

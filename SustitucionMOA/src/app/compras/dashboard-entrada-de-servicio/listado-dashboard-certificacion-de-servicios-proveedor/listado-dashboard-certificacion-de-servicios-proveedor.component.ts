@@ -174,7 +174,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
+                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
             ]
         }
     ];
@@ -1077,5 +1079,57 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return deshabilitarCheckboxDeItem;
     }
 
+
+
+    fileTypes: { [key: string]: string } = {
+        ".pdf": 'application/pdf',
+        ".csv": "text/csv",
+        ".msg": "application/vnd.ms-outlook"
+    };
+    
+    
+    descargarArchivos(rowData: any) {
+
+        let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
+
+
+        this.service.GetAdjuntosByES(id).subscribe(result => {
+            if (result.data.length > 0) {
+                
+                result.data.forEach((archivo) => {
+                    this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+                });
+            }
+            else{
+           
+              this.confirmationService.confirm({
+                message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+                rejectVisible: false
+              });
+
+            }
+        });
+
+      }
+
+      descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+        const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+        var byteArray = new Uint8Array(archivo);
+        var blob = new Blob([byteArray], { type: typeExtension });
+
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = nombreArchivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+        }
+      }
 
 }

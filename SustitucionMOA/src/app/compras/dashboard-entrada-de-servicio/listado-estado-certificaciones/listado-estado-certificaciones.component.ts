@@ -133,6 +133,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
+        { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
       ]
     },
     {
@@ -840,5 +842,54 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
       }
     });
+  }
+
+
+  fileTypes: { [key: string]: string } = {
+    ".pdf": 'application/pdf',
+    ".csv": "text/csv",
+    ".msg": "application/vnd.ms-outlook"
+};
+
+
+descargarArchivos(rowData: any) {
+
+    this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
+        if (result.data.length > 0) {
+            
+            result.data.forEach((archivo) => {
+                this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+            });
+        }
+        else{
+       
+          this.confirmationService.confirm({
+            message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+            rejectVisible: false
+          });
+
+        }
+    });
+
+  }
+
+  descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+    const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+    var byteArray = new Uint8Array(archivo);
+    var blob = new Blob([byteArray], { type: typeExtension });
+
+    if (window.navigator.msSaveOrOpenBlob) {
+        // IE11
+        window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+    } else {
+        var url = window.URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = nombreArchivo;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+    }
   }
 }
