@@ -304,7 +304,8 @@ namespace SustitucionMOAUtils.Services
                     {
                         var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
 
-                        solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
+                        if (solpPosicion != null)
+                           solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
                     }
 
                     suplente = !string.IsNullOrEmpty(solicitante) ? repositorio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty ;
