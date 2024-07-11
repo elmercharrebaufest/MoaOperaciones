@@ -29,6 +29,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     showAllTables: boolean = false;
     data: any;
     errorResponseMessage: string = "";
+    errorCallService: string = "Actualmente estamos experimentando problemas técnicos con nuestro servicio. Nuestro equipo ya está trabajando para resolverlo lo antes posible.Por favor, intente nuevamente más tarde.";
     showError: boolean = false;
     cantidad: number = 0;
     mensajeError: string = "";
@@ -327,8 +328,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.certificarState = false;
                 },
                 (error) => {
+
+                    console.log(error);
+
                     this.confirmationService.confirm({
-                        message: error.error.Message,
+                        message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
                             this.closeDialog.emit();
                         },

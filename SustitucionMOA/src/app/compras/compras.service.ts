@@ -18,6 +18,7 @@ import { catchError, timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
+import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
 
 @Injectable({
     providedIn: 'root'
@@ -258,9 +259,23 @@ export class ComprasService extends BaseService {
 
     public postCreateAsync(parametros : any, report : any, IdAdjuntos): Observable<any> {
 
-           
+        var payload = new FormData();
 
-        return this.http.post('/api/EntradaServicio/CreateAsync', {parametros, report, IdAdjuntos})
+        let request: CreateEntradaServicioDto = {
+            parametros: parametros,
+            report: report,
+            IdAdjuntos: IdAdjuntos
+            // Asegúrate de incluir todos los campos requeridos por la interfaz
+        };
+
+
+        
+
+        payload.append('request', JSON.stringify(request));
+        //payload.append('report', JSON.stringify(report));
+        //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
+
+        return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
           .pipe(
             timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
           );

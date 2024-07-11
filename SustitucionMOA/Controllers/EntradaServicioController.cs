@@ -49,6 +49,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+
                 // Este debe combinarse con permisos de usuario.
                 //if (parametros.vendedor == "" || parametros.vendedor == null)
                 //{
@@ -169,11 +170,14 @@ namespace SustitucionMOA.Controllers
         //    }
         //}
 
-        
-        public async Task<ActionResult> CreateAsync(CreateEntradaServicioDto payload)
+        [ValidateInput(false)]
+        public async Task<ActionResult> CreateAsync(string request)
         {
             try
             {
+
+                var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
+
                 // Este debe combinarse con permisos de usuario.
                 //if (parametros.vendedor == "" || parametros.vendedor == null)
                 //{
@@ -230,7 +234,6 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
         [HttpPost]
         public ActionResult RechazarEntradaDeServicio(string json)
         {
@@ -288,7 +291,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpPost]
         public ActionResult ReasignarSuplente(string nro_es_local, string suplente)
         {
             try
