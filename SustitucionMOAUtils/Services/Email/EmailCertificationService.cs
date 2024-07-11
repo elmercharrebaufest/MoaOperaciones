@@ -131,9 +131,16 @@ namespace SustitucionMOAUtils.Services.Email
 
                 string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} ";
 
-                var report = await GetReportES(apList[0].NRO_ES_LOCAL).ConfigureAwait(false);
+                try
+                {
+                    var report = await GetReportES(apList[0].NRO_ES_LOCAL).ConfigureAwait(false);
 
-                await report.CopyToAsync(ms);
+                    await report.CopyToAsync(ms);
+                }
+                catch(Exception e)
+                {
+                    //Continue
+                }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
