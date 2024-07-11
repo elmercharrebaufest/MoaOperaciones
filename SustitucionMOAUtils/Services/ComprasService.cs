@@ -7232,6 +7232,26 @@ namespace SustitucionMOAUtils.Services
             return total;
         }
 
+        private decimal DevolverMontoServicioSolicitado(string monedaSolicitada, string monedaCotizada, List<SolpSubposicion> subpos)
+        {
+            decimal total = 0;
+            var fecha = DateTime.Now;
+            decimal tipoDeCambio = 1;
+
+            if (monedaSolicitada != monedaCotizada)
+            {
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), monedaCotizada, monedaSolicitada).TipoCambio;
+            }
+
+            foreach (var item in subpos)
+            {
+                total += item.Cantidad.Value * item.PrecioBruto.Value * tipoDeCambio;
+            }
+
+
+            return total;
+        }
+
         private RespuestaCrearOrdenDeCompra ValidarAdjudicarSubposicionMoneda(List<int> cotizacionPosicionIds, List<CotizacionPosicion> cotizacionPosiciones, RespuestaCrearOrdenDeCompra respuestaGuardarSOLP)
         {
             var posicionesAValidar = cotizacionPosiciones.Where(posicion => cotizacionPosicionIds.Contains(posicion.Id));
@@ -10050,62 +10070,53 @@ namespace SustitucionMOAUtils.Services
         public RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto)
         {
             var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
-            var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionDto.Cotizacion_Id);
-            var esServicios = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
-
-            if (esServicios)
+            var posicionesId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.SolpPosicion_Id);
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(x => posicionesId.Contains(x.Id));
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta);
+            var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
+            var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
+            
+            if (esServicios && !trabajoYaHecho)
             {
-
                 respuestaGuardarSOLP.Errores = new List<String>();
                 var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var adjudicacionResultDto = new AdjudicacionResultDto { Cotizacion_Id = adjudicacionDto.Cotizacion_Id };
-
+                var monedaCodigo = "";
                 if (adjudicacionDto.EsMonedaProveedor)
                 {
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
                     if (!string.IsNullOrEmpty(monedaProv))
                     {
-                        var monedaId = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv)?.Id;
-                        adjudicacionDto.Moneda_Id = monedaId ?? 0;
-                        adjudicacionDto.MonedaCodigo = monedaProv;
-                        adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaId = monedaId);
-                        adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaCodigo = monedaProv);
+                        monedaCodigo = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
                     }
                 }
 
-                foreach (var posicionDto in adjudicacionDto.AdjudicacionPosiciones)
+                foreach (var posicion in posicionesSolp)
                 {
-                    var cotizacionPosicion = cotizacion.CotizacionPosiciones.FirstOrDefault(x => x.Id == posicionDto.CotizacionPosicion_Id);
+                    var cotizacionPosicion = cotizacionPosiciones.FirstOrDefault(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
                     decimal monto = 0;
-                    posicionDto.MonedaCodigo = tablasap.FirstOrDefault(moneda => moneda.Id == posicionDto.MonedaId)?.CodigoSap;
+                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.FirstOrDefault(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
 
                     if (esServicios)
                     {
-                        monto = DevolverMontoServicio(cotizacion.CotizacionPosiciones.FirstOrDefault().CotizacionSubPosiciones.ToList(),
-                            posicionDto.MonedaCodigo);
+                        monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.CodigoSap, posicion.Subposiciones.ToList());
                     }
 
-                    var posicionResultDto = new AdjudicacionPosicionResultDto
-                    {
-                        SolpPosicion_Id = posicionDto.SolpPosicion_Id,
-                        CotizacionPosicion_Id = posicionDto.CotizacionPosicion_Id,
-                        Cantidad = posicionDto.Cantidad,
-                        Monto = monto,
-                        MonedaId = posicionDto.MonedaId,
-                        MonedaCodigo = posicionDto.MonedaCodigo,
-                    };
-
-                    adjudicacionResultDto.Posiciones.Add(posicionResultDto);
-
-                    var totalAdjudicado = adjudicacionResultDto.Posiciones.Sum(p => p.Monto);
+                    var totalSolicitado = monto;
                     var totalCotizado = cotizacionPosicion.CotizacionSubPosiciones.Sum(cp => cp.Precio.Value * cp.Cantidad) ?? 0;
-                    var monedaAdjudicada = posicionDto.MonedaCodigo;
+                    var monedaAdjudicada = moneda;
                     var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
 
-
-                    if (totalAdjudicado != totalCotizado)
+                    if(monedaAdjudicada != monedaCotizada)
                     {
-                        respuestaGuardarSOLP.Errores.Add($"El monto total adjudicado ({monedaAdjudicada} {totalAdjudicado.ToString("n2")}) no coincide con el monto total cotizado ({monedaCotizada} {totalCotizado.ToString("n2")}).");
+                        respuestaGuardarSOLP.Errores.Add($"Algunas posiciones no tienen el mismo precio que lo solicitado." +
+                            $" La moneda solicitada ({monedaAdjudicada}) no coincide con la moneda cotizada ({monedaCotizada})");
+                        return respuestaGuardarSOLP;
+                    }
+
+                    if (totalSolicitado != totalCotizado)
+                    {
+                        respuestaGuardarSOLP.Errores.Add($"Algunas posiciones no tienen el mismo precio que lo solicitado. El monto solicitado ({monedaAdjudicada} {totalSolicitado.ToString("n2")}) no coincide con el monto cotizado ({monedaCotizada} {totalCotizado.ToString("n2")}).");
                         return respuestaGuardarSOLP;
                     }
                 }

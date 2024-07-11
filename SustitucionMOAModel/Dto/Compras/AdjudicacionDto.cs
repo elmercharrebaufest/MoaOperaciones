@@ -48,6 +48,8 @@ namespace SustitucionMOAModel.Dto
         public decimal PagoEn1Porcentaje { get; set; }
         public decimal PagoEn2Porcentaje { get; set; }
         public string NroSolp { get; set; }
+
+        public int PeticionDeOferta { get; set; }
     }
 
     public class AdjudicacionResultDto

@@ -309,7 +309,7 @@ namespace SustitucionMOATest.Services
                                 Cantidad = 1,
                                 Moneda_Id = 1,
                                 Moneda = new TablaSap{ Codigo = "ARP", Id = 1},
-                                Precio = 89,
+                                Precio = 449999,
                                 UnidadDeMedida_Id = 1,
                                 UnidadDeMedida = new TablaSap{ Codigo = "ARP", Id = 1},
                                 CotizacionPosicion_Id = 1,
@@ -352,6 +352,7 @@ namespace SustitucionMOATest.Services
                                 new SolpPosicion
                                 {
                                     Id = 1,
+                                    Moneda_Id = 1,
                                     Peticiones = new List<PeticionDeOfertaSolpPosicion> {
                                         new PeticionDeOfertaSolpPosicion {
                                             PeticionDeOferta = new PeticionDeOferta {
@@ -3141,11 +3142,20 @@ namespace SustitucionMOATest.Services
                 Solp_Id = 1,
                 CondicionesDeEntrega = "Condiciones"
             };
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+           It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(solp.Posiciones.ToList());
+
+            var cotizacionPosicion = cotizacion.CotizacionPosiciones.ToList();
+            cotizacionPosicion.ForEach(x => x.Cotizacion = cotizacion);
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionPosicion, bool>>>(),
+           It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionPosicion);
+
             obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo = "SERVICIOS";
-            repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))
-                .Returns(cotizacion);
+            
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
@@ -3185,6 +3195,16 @@ namespace SustitucionMOATest.Services
                 Solp_Id = 1,
                 CondicionesDeEntrega = "Condiciones"
             };
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(),
+           It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(solp.Posiciones.ToList());
+
+            var cotizacionPosicion = cotizacion.CotizacionPosiciones.ToList();
+            cotizacionPosicion.ForEach(x => x.Cotizacion = cotizacion);
+            cotizacionPosicion.FirstOrDefault().CotizacionSubPosiciones.ToList().ForEach(x => x.Precio = 1000);
+
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionPosicion, bool>>>(),
+           It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionPosicion);
+
             obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo = "SERVICIOS";

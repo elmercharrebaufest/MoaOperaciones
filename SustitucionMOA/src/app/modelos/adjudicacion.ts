@@ -1,4 +1,5 @@
 export interface AdjudicacionDto{
+    PeticionDeOferta?: any
     EsMonedaProveedor?: boolean  
     Id?: number  
     Cotizacion_Id?: number
