@@ -377,7 +377,6 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     verificarOrdenActivaScato() {
         this.validandoEstadoScato = true;
         this.spinnerComponent.showIt();
-        this.unsubscribe();
         try {
             this.service.validarOrdenActivaScato(this.ordenDeCargaFasonId).pipe(
                 finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt(); this.validandoEstadoScato = false; })

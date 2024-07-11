@@ -266,11 +266,7 @@ namespace SustitucionMOAUtils.Services
 
                 var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
                 if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
-                {
                     throw new ValidationCustomException("La orden está en activa, imposible editar.");
-                }
-                if (!esAdmin)
-                    orden.Estado = EstadoOrdenDeCargaFason.EdicionSolicitada;
 
                 repositorio.GuardarCambios();
 
