@@ -243,3 +243,10 @@ div#col-select {
     width: 95vw;
   }
 }
+
+input[type=file]::file-selector-button {
+  padding: .2em .4em;
+  background-color: #007AD9;
+  border:  #007AD9;
+  color: white;
+}

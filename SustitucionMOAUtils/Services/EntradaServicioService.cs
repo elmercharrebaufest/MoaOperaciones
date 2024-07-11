@@ -32,6 +32,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using Google.Apis.Drive.v3.Data;
 using System.Web;
+using SustitucionMOAUtils.Email;
 
 namespace SustitucionMOAUtils.Services
 
@@ -313,7 +314,7 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
-            EntradasServicio = EntradasServicio.Where(x => x.Fiscal.ToLower() == correo || x.Ingresante.ToLower() == correo || x.Aprobador.ToLower() == correo).ToList();
+            EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
 
             return EntradasServicio;
         }
@@ -1070,21 +1071,20 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw e;
                 }
-
-
             }
 
-            GenerateAndSaveReportInBlob(reporte, newESLocal);
+            Task.Run(() => GenerateAndSaveReportInBlob(reporte, newESLocal));
+
             //Para mensaje de retorno de ES Temporal (sin aprobación automatica) se necesita mostrar datos de NRO_ES_LOCAL y estado.
             return temp;
 
         }
 
-        private void GenerateAndSaveReportInBlob(List<ReporteDto> reporte, string blobReference)
+        private async Task GenerateAndSaveReportInBlob(List<ReporteDto> reporte, string blobReference)
         {
             if (reporte.Count > 0)
             {
-                this._reporteESService.BuildReportES(reporte, blobReference).ConfigureAwait(false);
+                await this._reporteESService.BuildReportES(reporte, blobReference).ConfigureAwait(false);
             }
         }
 
