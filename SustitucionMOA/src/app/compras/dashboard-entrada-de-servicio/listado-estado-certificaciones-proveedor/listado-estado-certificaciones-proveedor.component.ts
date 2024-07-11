@@ -277,11 +277,11 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   private obtenerColumnasVisiblesSegunEstado(estado: string): string[] {
     switch (estado) {
       case 'Aprobada':
-        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion'];
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cFechaAprobacion','esAdjuntos'];
       case 'Pendiente Aprobación':
-        return ['DImporteTotal', 'DFechaPres', 'cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador'];
+        return ['DImporteTotal', 'DFechaPres', 'cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador','esAdjuntos'];
       case 'Rechazado':
-        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo'];
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo','esAdjuntos'];
     }
   }
 
