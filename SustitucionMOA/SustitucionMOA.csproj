@@ -1378,6 +1378,9 @@
     <TypeScriptCompile Include="src\app\modelos\area.ts" />
     <TypeScriptCompile Include="src\app\modelos\circular-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\cotizacionDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\CreateEntradaServicioDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\Report.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\EntrySheet.ts" />
     <TypeScriptCompile Include="src\app\modelos\legajoDto.ts" />
     <TypeScriptCompile Include="src\app\modelos\legajoExternoDto.ts" />
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
