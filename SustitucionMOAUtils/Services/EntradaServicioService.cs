@@ -314,7 +314,7 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
-            EntradasServicio = EntradasServicio.Where(x => x.Fiscal.ToLower() == correo || x.Ingresante.ToLower() == correo || x.Aprobador.ToLower() == correo).ToList();
+            EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
 
             return EntradasServicio;
         }
