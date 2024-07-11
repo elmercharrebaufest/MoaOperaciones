@@ -136,6 +136,16 @@
     <section class="alta-form">
         <div class="row fields">
             <div class="col-md-3">
+                <p>Adjuntos</p>
+                <input type="file" #fileInput multiple (change)="onFileSelected($event)">
+    
+                <div *ngFor="let file of uploadedFiles; let i = index">
+                    <span>{{ file.name }}</span>&nbsp;
+                    <button class="btn btn-danger" (click)="removeFile(i)">Eliminar</button>
+                    <br/>
+                </div>
+            </div>
+            <div class="col-md-3">
                 <p>Fecha Documento</p>
                 <p-calendar [(ngModel)]="fechaDocumento"
                             class="smallCal"
@@ -189,15 +199,7 @@
               <p-dropdown [options]="['Aprobador 1','Aprobador 2']" [(ngModel)]="aprobador" optionLabel="name" [showClear]="true" placeholder="Seleccionar aprobador..."></p-dropdown>
             </div>-->
         </div>
-
-        <input type="file" #fileInput multiple (change)="onFileSelected($event)">
-
-        <div *ngFor="let file of uploadedFiles; let i = index">
-            <span>{{ file.name }}</span>&nbsp;
-            <button class="btn btn-danger" (click)="removeFile(i)">Eliminar</button>
-            <br/>
-        </div>
-
+        
 
         <div class="form-actions">
             <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
