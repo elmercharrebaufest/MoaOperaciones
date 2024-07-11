@@ -128,7 +128,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [class.purple-row]="totalesBloqueadasEliminadas(rowData)" [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadMailSolicitanteByNroSolp(rowData);loadSolicitantesList(rowData);clearCheckboxes(rowData)">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>

@@ -216,6 +216,25 @@ namespace SustitucionMOAUtils.Services
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
                 detalleOrdendeCompra.SubjToR = ordenCompra.SUBJ_TO_R;
 
+
+                var numeroSolpList = detalleOrdendeCompra.Posiciones
+                .Select(p => p.NumeroSolp)
+                .Distinct()
+                .ToList();
+
+                List<SolicitantesSolpedDto> solicitantes = GetSolicitantes(numeroSolpList).GetAwaiter().GetResult(); ;
+
+                var solicitanteDiccionario = solicitantes.ToDictionary(s => s.NumeroSolp);
+
+                foreach (var posicion in detalleOrdendeCompra.Posiciones)
+                {
+                    if (solicitanteDiccionario.TryGetValue(posicion.NumeroSolp, out var solicitante))
+                    {
+                        posicion.Solicitante = solicitante.Solicitante.Aprobador;
+                    }
+                }
+
+
                 //MMSN-602
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && x.Estado_certificacion == "Pendiente Aprobación");
                 if(aprobaciones != null && aprobaciones.Count > 0)
@@ -231,8 +250,15 @@ namespace SustitucionMOAUtils.Services
                         //Buscar posición correspondiente a ES Temporal
                         var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
 
+                        
+
                         if (position != null)
                         {
+                            
+                            List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
+
+
+                            position.Solicitante = solicitante[0].Solicitante.Aprobador;
                             //Encontrar item correspondiente a ES Temporal
 
                             var item = position.Items.First(x => x.NumeroLinea == nroLinea);
