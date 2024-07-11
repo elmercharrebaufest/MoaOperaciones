@@ -60,6 +60,7 @@
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarChoferResponse.cs" />
     <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ReporteDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\OrdenResiduosApiDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
