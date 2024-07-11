@@ -42,7 +42,8 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     displayPeticionAgrupada: boolean = false;
     adjuntosSolpDto: AdjuntosSolpDto = {} as AdjuntosSolpDto;
     displayConfirmacionAgrupar: boolean = false;
-
+    resultadoDesagrupar: any;
+    displayPeticionDesagrupada: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -449,6 +450,11 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.onBuscar();
     }
 
+    cerrarPopUpDesagrupar() {
+        this.displayPeticionDesagrupada = false;
+        this.onBuscar();
+    }    
+
     obtenerAdjuntosSolpAgrupar(nroSolp: string) {
         try {
             this.blockUI.start('Cargando...');
@@ -488,11 +494,52 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.nroSolp = nroSolp;
     }
 
-    abrirConfimarcionAgrupar() {
+    abrirConfirmacionAgrupar() {
         this.displayConfirmacionAgrupar = true;
     }
 
     cerrarConfimarcionAgrupar() {
         this.displayConfirmacionAgrupar = false;
     }
+
+    desagruparPO(nroSolp: string, po: number) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.desagruparPeticionDeOferta(nroSolp.toString(), po.toString()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.resultadoDesagrupar = result.data.IdEntidad;
+                        console.log(result.data.IdEntidad);
+                        this.displayPeticionDesagrupada = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false; 
+    }
+
+    abrirModalDesagruparPO(nroSolp: string, po: number) {
+        this.confirmationService.confirm({
+            key: 'desagruparPo',
+            message: `¿Está seguro que desea desagrupar la solp #${nroSolp} de la petición de oferta #${po}?`,
+            accept: () => {
+                this.desagruparPO(nroSolp, po)
+            }
+        });
+    }
+
 }

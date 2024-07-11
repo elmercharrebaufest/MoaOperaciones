@@ -111,5 +111,6 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado AgruparPeticionesDeOferta(int usuarioId, string ids);
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
+        Resultado DesagruparPO(string nroSolp, string po);
     }
 }

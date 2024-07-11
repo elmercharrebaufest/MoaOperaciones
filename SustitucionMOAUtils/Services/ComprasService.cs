@@ -7462,7 +7462,7 @@ namespace SustitucionMOAUtils.Services
             return ordenDeCompraSAP;
         }
 
-        public void CrearCotizacionConTrabajoYaHecho(Solp solp)
+        public PeticionDeOferta CrearCotizacionConTrabajoYaHecho(Solp solp)
         {
             try
             {
@@ -7483,6 +7483,7 @@ namespace SustitucionMOAUtils.Services
                 };
                 peticionEntidad.PlazoDeOferta = DateTime.Now;
                 repositorio.GuardarCambios();
+                return peticionEntidad;
             }
             catch (Exception e)
             {
@@ -9923,6 +9924,8 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
+                Log.Info($"Error al AgruparPeticionesDeOferta");
+                Log.Error(ex);
                 throw;
             }
         }
@@ -9990,6 +9993,28 @@ namespace SustitucionMOAUtils.Services
                 Usuario_Id = usuarioId,
                 Finalizada = true,
             };
+        }
+
+        public Resultado DesagruparPO(string nroSolp, string po)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var posiciones = repositorio.Listar<SolpPosicion>(x => x.Solp.NroSolp == nroSolp);
+                var posicionesIds = posiciones.Select(x => x.Id);
+                var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => x.PeticionDeOferta_Id.ToString() == po && posicionesIds.Contains(x.SolpPosicion_Id));
+                repositorio.RemoverTodos(peticionDeOfertaSolpPosicion);
+                repositorio.GuardarCambios();
+                var peticion = CrearCotizacionConTrabajoYaHecho(posiciones.FirstOrDefault().Solp);
+                resultado.IdEntidad = peticion.Id;
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                Log.Info($"Error al DesagruparPO");
+                Log.Error(ex);
+                throw;
+            }
         }
 
         private void CrearCotizacionEnTH(int usuarioId, List<Cotizacion> cotizaciones, PeticionDeOferta peticion)

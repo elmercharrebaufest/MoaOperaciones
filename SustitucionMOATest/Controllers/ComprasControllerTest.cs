@@ -706,5 +706,25 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
         }
 
+
+        [Test]
+        public void DesagruparPeticionDeOfertaOk()
+        {
+            // Arrange
+            var usuario = new UsuarioDto { Id = 1 };
+            var expectedResult = new { data = "success" };
+
+            comprasServiceMock.Setup(x => x.DesagruparPO(It.IsAny<string>(), It.IsAny<string>())).Returns(new Resultado { IdEntidad = 78 });
+
+            // Act
+            var result = target.DesagruparPeticionDeOferta(It.IsAny<string>(), It.IsAny<string>());
+
+            // Assert
+            Assert.IsNotNull(result);
+            var jsonResult = (JsonResult)result;
+            Assert.IsNotNull(jsonResult.Data);
+            comprasServiceMock.Verify(x => x.DesagruparPO(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+        }
+
     }
 }

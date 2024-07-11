@@ -1285,6 +1285,15 @@ export class ComprasService extends BaseService {
             .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
     }
 
+    public desagruparPeticionDeOferta(nroSolp: string, po: string) {
+        var payload = new FormData();
+        payload.append('po', po.toString());
+        payload.append('nroSolp', nroSolp.toString());
+
+        return this.http
+            .post<SolpDto>('/api/compras/DesagruparPeticionDeOferta', payload, { headers: this.headers });
+    }
+
     public buildReportES(report : any): Observable<any> {
 
         return this.http

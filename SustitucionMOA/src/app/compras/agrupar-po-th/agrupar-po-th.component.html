@@ -123,10 +123,12 @@
                                 <i [ngClass]="solp.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
                         </td>
-                        <td>
-                            <span style="cursor:pointer;" (click)="obtenerAdjuntosSolpAgrupar(solp.NroSolp)">
-                                <i class="pi pi-download" style="font-size: 3rem; color: grey;"></i>
-                                <i class="pi pi-exclamation-triangle" style="font-size: 3rem; color: grey;"></i>
+                        <td style="text-align: center;">
+                            <span style="cursor:pointer;" pTooltip="Adjuntos SOLP" (click)="obtenerAdjuntosSolpAgrupar(solp.NroSolp)">
+                                <img src="./Content/images/icons/descargar.svg" />                      
+                            </span>
+                            <span *ngIf="solp.Agrupada" style="margin-left: 14px;  cursor: pointer;" pTooltip="Desagrupar" (click)="abrirModalDesagruparPO(solp.NroSolp, solp.NroPeticionDeOferta)">                              
+                              <img src="Content/images/buttons/unlink.svg" />
                             </span>
                         </td>
                         <td>
@@ -230,7 +232,7 @@
     <div class="row">
         <div class="col-xs-8 col-md-12" style="display: flex; justify-content: flex-end;">
             <div class="col-xs-2 col-md-2">
-                <button class="btn btn-success botonesComprasColor" (click)="abrirConfimarcionAgrupar()">
+                <button class="btn btn-success botonesComprasColor" (click)="abrirConfirmacionAgrupar()">
                     AGRUPAR
                 </button>
             </div>
@@ -251,9 +253,9 @@
 
 <p-dialog [(visible)]="displayPeticionAgrupada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
-        ¡Peticion de oferta agrupada!
+        ¡Petición de oferta agrupada!
     </p-header>
-    <br> La peticion #{{resultadoAgrupar?.IdEntidad}} se agrupo correctamente.
+    <br> La petición #{{resultadoAgrupar?.IdEntidad}} se agrupó correctamente.
     <br>
     <p-footer>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUp()">Aceptar</button>
@@ -266,7 +268,7 @@
     </p-header>
     <br />
     <br />
-    ¿Desea continuar con la agrupacion de las PO?
+    ¿Desea continuar con la agrupación de las PO?
     <br />
     <br />
     <p-footer>
@@ -274,6 +276,24 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="agruparPO()">Sí</button>
     </p-footer>
 </p-dialog>
+
+<p-dialog [(visible)]="displayPeticionDesagrupada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Petición desagrupada!
+    </p-header>
+    <br> Se creó la petición #{{resultadoDesagrupar}} correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUpDesagrupar()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #dialogo key="desagruparPo" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
 
 <app-adjuntos-solp 
     [(displayAdjuntosSolp)]="displayAdjuntosSolp"
