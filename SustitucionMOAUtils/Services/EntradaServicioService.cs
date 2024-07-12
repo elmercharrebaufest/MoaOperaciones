@@ -1026,7 +1026,7 @@ namespace SustitucionMOAUtils.Services
                 aprobacion = DeepCopy(temp);
                 try
                 {
-                    if (!string.IsNullOrEmpty(esItem.ItemQuantity)) aprobacion.Cantidad = int.Parse(esItem.ItemQuantity, System.Globalization.CultureInfo.InvariantCulture);
+                    if (!string.IsNullOrEmpty(esItem.ItemQuantity)) aprobacion.Cantidad = double.Parse(esItem.ItemQuantity, System.Globalization.CultureInfo.InvariantCulture);
                     if (!string.IsNullOrEmpty(esItem.ItemGrossPrice)) aprobacion.Monto = double.Parse(esItem.ItemGrossPrice, System.Globalization.CultureInfo.InvariantCulture);
 
                     aprobacion.Nro_linea = esItem.ExternalLineNumber;
