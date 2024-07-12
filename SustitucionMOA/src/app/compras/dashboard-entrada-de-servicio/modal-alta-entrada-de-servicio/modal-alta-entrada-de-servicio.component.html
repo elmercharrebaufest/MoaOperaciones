@@ -141,7 +141,7 @@
     
                 <div *ngFor="let file of uploadedFiles; let i = index">
                     <span>{{ file.name }}</span>&nbsp;
-                    <button class="btn btn-danger" (click)="removeFile(i)">Eliminar</button>
+                    <button class="btn btn-danger" (click)="removeFile(i)"><i class="fa fa-trash"></i></button>
                     <br/>
                 </div>
             </div>
