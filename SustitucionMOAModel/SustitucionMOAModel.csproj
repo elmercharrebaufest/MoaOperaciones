@@ -61,6 +61,8 @@
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonApiDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaNoResiduoApiDto.cs" />
     <Compile Include="Dto\OrdenDeCarga\ValidarChoferResponse.cs" />
     <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />

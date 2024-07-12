@@ -24,8 +24,16 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
-                var ordenes = _ordenesCargaApi.ObtenerOrdenes(patenteChasis, fason, fas);
-                return Json(ordenes);
+                if (fason)
+                {
+                    var ordenesFason = _ordenesCargaApi.ObtenerOrdenesFason(patenteChasis);
+                    return Json(ordenesFason);
+                }
+                else
+                {
+                    var ordenesFas = _ordenesCargaApi.ObtenerOrdenesFas(patenteChasis, fason, fas);
+                    return Json(ordenesFas);
+                }
             }
             catch (Exception ex)
             {
