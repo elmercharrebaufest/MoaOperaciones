@@ -6,7 +6,7 @@ CREATE TABLE [dbo].[Aprobaciones](
 	[Fecha_Documento] [date] NULL,
 	[Fecha_Contabilizacion] [date] NULL,
 	[Referencia] [nvarchar](50) NULL,
-	[Cantidad] [int] NULL,
+	[Cantidad] [float] NULL,
 	[Descripcion_ES] [nvarchar](max) NULL,
 	[Importe] [float] NULL,
 	[Estado_certificacion] [nvarchar](30) NULL,

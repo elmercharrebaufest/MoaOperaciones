@@ -366,7 +366,7 @@ namespace SustitucionMOAUtils.Services
             EntradaServicioDto es = new EntradaServicioDto();
 
             es.TemporalId = ap.NRO_ES_LOCAL;
-            es.Cantidad = decimal.Parse(ap.Cantidad_a_certificar);
+            es.Cantidad = decimal.Parse(ap.Cantidad_a_certificar, CultureInfo.InvariantCulture);
             es.itemNumero = ap.Planned_package;
             es.ESS_LINE_NO = ap.Planned_line;
             es.ESS_PCKG_NO = ap.Planned_package;
