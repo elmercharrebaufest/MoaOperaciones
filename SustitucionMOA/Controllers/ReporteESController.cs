@@ -12,6 +12,7 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAUtils.Logger;
 using System.Text;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using System.Globalization;
 
 namespace SustitucionMOA.Controllers
 {
@@ -109,6 +110,9 @@ namespace SustitucionMOA.Controllers
 
             foreach (ReporteDto report in reports)
             {
+                decimal PorcentajeACertificar;
+                decimal.TryParse(report.PorcentajeACertificar, NumberStyles.Any, CultureInfo.InvariantCulture, out PorcentajeACertificar);
+
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.NumeroLinea.ToString()}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.ServicioNumero.ToString() ?? "N/A"}</td>");
@@ -125,12 +129,12 @@ namespace SustitucionMOA.Controllers
 
                 // A certificar
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.PorcentajeACertificar:0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{PorcentajeACertificar:0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.CantidadACertificar * report.Importe).ToString("N2")}</td>");
 
                 // Acumulado
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje) + report.PorcentajeACertificar):0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje) + PorcentajeACertificar):0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2")}</td>");
                 sb.AppendLine("</tr>");
 
