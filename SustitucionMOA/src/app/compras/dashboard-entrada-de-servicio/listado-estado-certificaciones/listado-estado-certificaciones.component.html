@@ -151,7 +151,7 @@
                                 <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
                     <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header
                         }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                    <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    <th [id]="col.id" *ngIf="!col.sortable && col.visible" [ngClass]="{'limitHeadersSize': col.field === 'PorcentajeCertificar' || col.field === 'CantidadCertificar' || col.field === 'MontoCertificar' || col.field === 'NumeroRemito'}">{{ col.header }}</th>
                     </ng-container>
             </ng-template>
             <!-- TABLE 2 HEADERS END -->
@@ -165,9 +165,9 @@
                     <td>{{ rowDetalle.UM }}</td>
                     <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.Monto }}</td>
                     <td>{{ rowDetalle.CantidadCertificar }}</td>
-                    <td>{{ rowDetalle.PorcentajeCertificar }}</td>
+                    <td class="center-content">{{ rowDetalle.PorcentajeCertificar }}</td>
                     <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.MontoCertificar }}</td>
-                    <td>{{ rowDetalle.NroRemito }}</td>
+                    <td class="center-content">{{ rowDetalle.NroRemito }}</td>
                 </tr>
             </ng-template>
             <!-- TABLE 2 BODY END -->

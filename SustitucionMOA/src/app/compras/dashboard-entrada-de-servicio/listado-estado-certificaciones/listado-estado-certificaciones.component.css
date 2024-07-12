@@ -228,6 +228,15 @@
     visibility: hidden !important;
 }
 
+/*Second table headers*/
+.limitHeadersSize {
+    max-width:9em;
+}
+
+.center-content {
+    text-align:center !important;
+}
+
 i#btn-fullscreen {
     transform: rotate(-90deg);
 }
