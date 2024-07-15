@@ -1,14 +1,16 @@
-<div id="solicitudes" class="content-wraper">
+
+<div id="solicitudes" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
     <!-- HEADER -->
     <section class="container-fluid clearfix">
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10">
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
             </div>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
         </div>
         <br />
     </section>
-    <aux-pannel [fechaSeleccionada]="fechaSeleccionadaAux" *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"  
+    <aux-pannel [fechaSeleccionada]="fechaSeleccionadaAux" *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"
         [proveedor]="proveedor" [visible]="recalculandoAprobadas" (getFecha)="getFecha($event)"></aux-pannel>
     <!-- HEADER END -->
     <p-messages [value]="msgs"></p-messages>
@@ -85,13 +87,13 @@
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
                     </td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
-                    <td>                                                                                
+                    <td>
                         <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
                     </td>
                 </tr>
             </ng-template>
             <!-- TABLE 1 BODY END -->
-             
+
             <ng-template pTemplate="footer" let-columns>
                 <tr *ngIf="recalculando || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
                     <td colspan="12">

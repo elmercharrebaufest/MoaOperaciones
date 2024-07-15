@@ -413,5 +413,17 @@ descargarArchivos(rowData: any) {
         document.body.removeChild(link);
         setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
     }
-  }
+    }
+
+    showScrollbar: boolean = false;
+    fullscreen: boolean = false;
+
+    toggleFullscreen() {
+        this.fullscreen = !this.fullscreen;
+        if (this.fullscreen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
 }
