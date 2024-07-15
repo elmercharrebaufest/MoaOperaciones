@@ -163,7 +163,6 @@
                             [required]="true"
                             appendTo="body">
                 </p-calendar>
-                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
 
             <div class="col-md-3">
@@ -187,7 +186,7 @@
                 <input type="text"
                        id="ref"
                        (keyup)="validarReferenciaRemito($event)"
-                       pattern="[0-9]{4}R[0-9]{8}"
+                       pattern="^([0-9]{4})(R|r{1})([0-9]{8})$"
                        maxlength="13"
                        [(ngModel)]="referencia">
                 <div class="hint">Formato 4 dígitos + R + 8 dígitos.</div>
