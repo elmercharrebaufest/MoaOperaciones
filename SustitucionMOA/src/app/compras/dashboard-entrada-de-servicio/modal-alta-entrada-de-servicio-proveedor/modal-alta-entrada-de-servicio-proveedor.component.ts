@@ -414,12 +414,21 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     validateValues() {
-        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
             this.documentDateMsg = [];
+
+        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
             this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una fecha de prestación del servicio' });
             return false;
         }
-        this.documentDateMsg = [];
+
+        if (this.referencia != undefined && this.referencia != null && this.referencia.length > 0) {
+            this.referencia = this.referencia.replace('r', 'R');
+            if (!(/^([0-9]{4})(R{1})([0-9]{8})$/i.test(this.referencia))) {
+                this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una referencia remito válida: 4 dígitos + R + 8 dígitos.' });
+                return false;
+            }
+        }
+
         return true;
     }
 
