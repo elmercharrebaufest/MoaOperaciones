@@ -627,18 +627,17 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === posicion.NroOrdenCompra).forEach(order => {
             order.Posiciones.filter(positions => positions.NumeroPosicion === posicion.NumeroPosicion).forEach(position => {
                 position.Items.forEach(item => {
-                    const monto = item.Importe;
                     const cantidad = item.Cantidad;
                     item.CantidadACertificar = cantidad - item.CantidadReal;
                     item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
-                    item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
+                    item.MontoACertificar = (item.CantidadACertificar * item.Importe);
                 });
             });
         });
     }
 
     calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
+        const montoActualizado = (item.CantidadACertificar * item.Importe);
         item.MontoACertificar = montoActualizado;
     }
 
