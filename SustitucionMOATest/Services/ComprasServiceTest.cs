@@ -324,8 +324,9 @@ namespace SustitucionMOATest.Services
             Id = 1,
             NroSolp = "123",
             ProveedorAsignado_Id = 1,
-            UsuarioCreacion = new Usuario { 
-                Id = 1, 
+            UsuarioCreacion = new Usuario
+            {
+                Id = 1,
                 Mail = "bmelgarejo@prueba.com",
                 TipoUsuario = new TipoUsuario
                 {
@@ -454,7 +455,7 @@ namespace SustitucionMOATest.Services
             TipoSolp = new TablaGeneral { Codigo = "CON_PLIEGO" },
             EstadoSolpSap = new TablaSap { CodigoSap = "05" },
 
-    };
+        };
         private readonly SolpDto solpDto = new SolpDto
         {
             TipoSolp = new TablaGeneralDto
@@ -1571,7 +1572,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-           var result = target.CrearCotizacionConTrabajoYaHecho(solp);
+            var result = target.CrearCotizacionConTrabajoYaHecho(solp);
 
             repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Exactly(2));
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
@@ -3155,7 +3156,7 @@ namespace SustitucionMOATest.Services
             obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo = "SERVICIOS";
-            
+
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
@@ -3253,7 +3254,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaSolpPosicion, bool>>>(),
            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(peticionDeOferta.Posiciones.ToList());
 
-           
+
 
             var peticionDeOfertaUsuario = new PeticionDeOfertaUsuario
             {
@@ -3300,7 +3301,102 @@ namespace SustitucionMOATest.Services
 
             var resultado = target.DesagruparPO(It.IsAny<string>(), It.IsAny<string>());
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));
-        }       
-            
+        }
+
+        //[Test]
+        //public void GenerarSolpPdf_DebeRetornarArrayDeBytes()
+        //{
+        //    // Arrange
+        //    int idSolp = 1;
+        //    var solpLocal = solp;
+
+        //    // Mock para la obtención de la imagen
+        //    var imagenMock = new Mock<Image>();
+        //    imagenMock.Setup(x => x.GetInstance(It.IsAny<string>())).Returns(new Image()); // Aquí retornas un objeto Image simulado
+
+
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal);
+        //    repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
+
+        //    var usuariosComprasMockData = new List<UsuarioCompras>
+        //    {
+        //        new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+        //    };
+
+        //    repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+
+        //    var templateHtml = "<html><body>{{NOMBRE_OBRA}}</body></html>";
+        //    var templateCss = "body { font-family: Arial; }";
+
+        //    httpContextServiceMock.Setup(y => y.GetDirectory(It.IsAny<string>())).Returns(TestContext.CurrentContext.TestDirectory + "\\Templates\\NewPliegoSolpSinCondicionesTemplate.html");
+
+        //    // Act
+        //    var resultado = target.GenerarSolpPdf(1);
+
+        //    // Assert
+        //    Assert.IsNotNull(resultado);
+        //    Assert.IsInstanceOf<byte[]>(resultado);
+        //    Assert.Greater(resultado.Length, 0); // Verifica que el array de bytes no esté vacío
+
+        //}
+
+        //[Test]
+        //public void ObtenerAdjuntosSolpAgrupar_RetornaAdjuntosCorrectamente()
+        //{
+
+        //    var solpLocal = solp;
+        //    solpLocal.Id = 1;
+        //    solpLocal.EstadoSolpSap = new TablaSap { CodigoSap = "05" };
+        //    solpLocal.UsuarioCompras = new UsuarioCompras();
+        //    solpLocal.UsuarioCreacion = new Usuario
+        //    {
+        //        Id = 1,
+        //        Mail = "bmelgarejo@prueba.com",
+        //        TipoUsuario = new TipoUsuario
+        //        {
+        //            Id = 1,
+        //            Nombre = "",
+        //            NombreCorto = ""
+        //        },
+        //        Roles = new List<Rol> {
+        //            new Rol
+        //            {
+        //                Nombre = "COMPRADOR",
+        //                PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "COMPRADOR" }}
+        //            }
+        //        },
+
+        //    };
+        //    solpLocal.UsuarioCompras = new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" };
+
+        //    var usuariosComprasMockData = new List<UsuarioCompras>
+        //    {
+        //        new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+        //    };
+
+        //    repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<IEnumerable<Expression<Func<Solp, object>>>>(), It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solpLocal);
+        //    repositorioMock.Setup(y => y.Obtener<Usuario>(It.IsAny<int>())).Returns(new Usuario { Proveedores = new List<Proveedor>() });
+        //    repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>()))
+        //     .Returns(solpLocal);
+
+        //    repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>())).Returns(cotizacion);
+
+        //    repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
+        //        It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
+        //    repositorioMock.Setup(x => x.Listar<Usuario>(null, 0, null, DirOrden.Asc, null)).Returns(new List<Usuario> { new Usuario { Id = 1, Mail = "drodriguez@prueba.com" } });
+
+        //    // Act
+        //    var resultado = target.ObtenerAdjuntosSolpAgrupar("123");
+
+        //    // Assert
+        //    Assert.IsNotNull(resultado);
+        //    Assert.AreEqual("Solp-123-pliego-" + DateTime.Now.ToString("yyyyMMdd") + ".pdf", resultado.Pliego);
+        //    Assert.IsNotNull(resultado.ArchivosEspecificacionesTecnicas);
+        //    Assert.AreEqual(1, resultado.ArchivosEspecificacionesTecnicas.Count);
+        //    Assert.AreEqual(1, resultado.ArchivosEspecificacionesTecnicas.First().Id);
+        //    Assert.AreEqual("ruta1", resultado.ArchivosEspecificacionesTecnicas.First().Nombre); // Asumiendo que ObtenerNombre retorna la ruta
+        //                                                                                         // Continúa con más aserciones según sea necesario
+        //}
     }
 }

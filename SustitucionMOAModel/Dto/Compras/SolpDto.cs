@@ -120,7 +120,7 @@ namespace SustitucionMOAModel.Dto
         public int? ProveedorAdicional_Id { get; set; }
         public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
         public bool RequisitoCiberseguridad { get; set; }
-
+        public string CodigoProveedorSap { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

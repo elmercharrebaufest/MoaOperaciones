@@ -129,7 +129,8 @@ export class CotizacionComponent extends ListBaseComponent {
         if (this.model.proveedorAsignado_Id) {
             this.proveedorSeleccionado = {
                 Id: this.model.proveedorAsignado_Id,
-                RazonSocial: this.model.proveedorAsignado
+                RazonSocial: this.model.proveedorAsignado,
+                CodigoProveedorSap: this.model.codigoProveedorSap
             }
         }
 
@@ -142,6 +143,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.nroSolp) {
             this.estaFinalizada = true
+            this.adjustFormControlsBasedOnConditions();
         } else {
             this.estaFinalizada = false
         }
@@ -151,6 +153,8 @@ export class CotizacionComponent extends ListBaseComponent {
         if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
             this.onRadioButtonChange("Servicio permanente");
         }
+
+        
     }
 
     ngOnDestroy() {
@@ -441,6 +445,10 @@ export class CotizacionComponent extends ListBaseComponent {
                                         ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
                                         : this.model.usuarioComprasList[0];
 
+                                    if(this.model.editarCondicionesEspeciales == false){
+                                        this.validarProveedorSeleccionado();
+                                    }
+
                                 }
                             }
                         }
@@ -559,14 +567,87 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
   
-  // Método para borrar todos los archivos cargados
-  borrarArchivosCargados(): void {
-    // Borra los archivos de los modelos correspondientes
-    this.model.archivosCotizacionesNuevosCondEsp = [];
-    this.model.archivosCotizacionesCondEsp = [];
-    
-    // Aquí puedes agregar cualquier otra lógica necesaria para reflejar el cambio en la vista,
-    // como actualizar estados de componentes de UI o enviar notificaciones al usuario.
-  }
+    // Método para borrar todos los archivos cargados
+    borrarArchivosCargados(): void {
+        // Borra los archivos de los modelos correspondientes
+        this.model.archivosCotizacionesNuevosCondEsp = [];
+        this.model.archivosCotizacionesCondEsp = [];
+    }
+
+    // Step 1: Define the method to check the conditions and enable/disable form controls
+    private adjustFormControlsBasedOnConditions(): void {
+        const condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
+        
+        
+
+        if(this.model.editarCondicionesEspeciales == false){
+
+            // Disable all form controls initially
+            this.formularioCotizacion.controls['urgencia'].disable();
+            this.formularioCotizacion.controls['jefes'].disable();
+            this.formularioCotizacion.controls['gerentes'].disable();
+            this.formularioCotizacion.controls['directores'].disable();
+            this.formularioCotizacion.controls['servicioPermanente'].disable();
+            this.formularioCotizacion.controls['ajustePolinomica'].disable();
+            this.formularioCotizacion.controls['proveedorDirecto'].disable();    
+            this.formularioCotizacion.controls['adicional'].disable();
+            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+
+            switch (condicionEspecial) {
+                case this.model.trabajoHecho == true:
+                    this.formularioCotizacion.controls['urgencia'].enable();
+                    this.formularioCotizacion.controls['jefes'].enable();
+                    this.formularioCotizacion.controls['gerentes'].enable();
+                    this.formularioCotizacion.controls['directores'].enable();
+                    this.formularioCotizacion.controls['servicioPermanente'].enable();
+                    this.formularioCotizacion.controls['ajustePolinomica'].enable();
+                    this.formularioCotizacion.controls['proveedorDirecto'].enable();
+                    this.formularioCotizacion.controls['adicional'].enable();
+                    break;
+                case this.model.trabajoHecho == true && this.model.adicional == true:
+                    this.formularioCotizacion.controls['urgencia'].enable();
+                    this.formularioCotizacion.controls['jefes'].enable();
+                    this.formularioCotizacion.controls['gerentes'].enable();
+                    this.formularioCotizacion.controls['directores'].enable();
+                    this.formularioCotizacion.controls['servicioPermanente'].enable();
+                    this.formularioCotizacion.controls['ajustePolinomica'].enable();
+                    this.formularioCotizacion.controls['proveedorDirecto'].enable();   
+                    break;
+                case this.model.adicional == true:
+                    this.formularioCotizacion.controls['urgencia'].enable();
+                    this.formularioCotizacion.controls['jefes'].enable();
+                    this.formularioCotizacion.controls['gerentes'].enable();
+                    this.formularioCotizacion.controls['directores'].enable();
+                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                    break;
+                case this.model.urgencia == true:
+                    break;
+                case this.model.condEspProveedorAsignado == true:
+                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                    break;
+            }
+        }       
+    }
+  
+    // Example of how to call this method when the condition changes
+    onConditionChange(): void {
+        this.adjustFormControlsBasedOnConditions();
+    }
+
+    // cuando es un trabajo hecho y se selecciona el check de adicional, tengo que validar que el proveedor seleccionado sea el mismo proveedor que el de la OC
+    validarProveedorSeleccionado(): void {
+        if (this.model.trabajoHecho == true && this.model.adicional == true) {
+            if (this.proveedorSeleccionado.Id != this.ordenDeCompraSap.Cabecera.Usuario_Id) {
+                this.floatMsgService.setErrorMsg("El proveedor seleccionado debe ser el mismo que el de la OC");
+                this.proveedorSeleccionado = null;
+            }
+
+            if (this.model.adicional == true && !this.model.posiciones.every(x => x.monedaSeleccionada.Codigo == this.model.monedaOC)) {
+                this.floatMsgService.setErrorMsg("La moneda de la OC debe ser la misma que la de la SOLP");
+                this.proveedorSeleccionado = null;
+            }
+        }
+    }
+
 
 };

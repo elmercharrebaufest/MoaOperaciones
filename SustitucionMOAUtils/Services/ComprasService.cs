@@ -1422,6 +1422,7 @@ namespace SustitucionMOAUtils.Services
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
                     solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
                     solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
+                    solpDevuelta.CodigoProveedorSap = ordenDeCompraSAPDto.Cabecera.CodigoProveedor;
                 }
             }
 
@@ -1429,6 +1430,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignado_Id);
                 solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
+                solpDevuelta.CodigoProveedorSap = usuario.ObtenerCodigoProveedor();
             }
 
             return solpDevuelta;

@@ -278,6 +278,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: solp.posiciones.map(x => {
 
                 return {
