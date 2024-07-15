@@ -68,10 +68,8 @@ namespace SustitucionMOA.Controllers
                     }
                 }
 
-
-
                 string proveedorName = !string.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : "";
-                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName, aprobador = isApprover, versionAnt = oldES };
+                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName, aprobador = isApprover, versionAnt = oldES, nroOc = aprobacionesListdb[0].NRO_OC };
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

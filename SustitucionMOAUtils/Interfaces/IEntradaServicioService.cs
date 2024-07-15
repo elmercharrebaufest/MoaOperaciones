@@ -31,7 +31,7 @@ namespace SustitucionMOAUtils.Interfaces
         EntradaServicioCreateRespuestaDto ValidarIngresante(EntradaServicioCreateParamsDto parametros, string userMail, string nroSolped);
         Task<bool> NotifyRejection(EmailDetailCertificateDto emailDetailCertificateDto);
         EntradaServicioRejectRespuestaDto RechazarEntradaDeServicio(EmailDetailCertificateDto rechazo);
-        Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local);
+        Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda);
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
         EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);

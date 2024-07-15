@@ -48,7 +48,7 @@ namespace SustitucionMOAUtils.Services.Email
             string subjectFormat = "Asunto: Rechazo de servicio - Certificación nro {0}";
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.MotivoRechazo,
                 emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.Importe};
+                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.Importe, emailDetail.NroOC};
+                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -106,7 +106,7 @@ namespace SustitucionMOAUtils.Services.Email
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Descripcion}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Cantidad}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.UM}</td>");
-                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcetaje}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcentaje}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Monto}</td>");
                 bodyTable.Append("</tr>");
             }
