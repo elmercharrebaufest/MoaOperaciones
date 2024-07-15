@@ -356,7 +356,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 ItemQuantity: item.Cantidad,
                 UM: item.UM,
                 ItemGrossPrice: item.ImporteString,
-                GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
+                GrossPrice: this.round(parseFloat((item.Importe).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
