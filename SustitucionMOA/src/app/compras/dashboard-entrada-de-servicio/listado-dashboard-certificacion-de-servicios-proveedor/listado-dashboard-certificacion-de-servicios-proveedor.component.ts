@@ -440,6 +440,25 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return false; //<-- Prevent Refresh
     }
 
+    formatImport(columna: string, valor: any): string {
+
+        if (columna === 'esImporte') {
+            
+            let startsWith = valor.startsWith('$');
+
+            let numero = valor.replace(/\$|\s/g, '');
+            // Convierte a número
+            let valorNumerico = parseInt(numero, 10);
+            // Formatea como número con separadores de miles y dos decimales
+            let formattedValue = valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+            return (startsWith ? '$ ' : '') + formattedValue;
+
+        }
+
+        return valor;
+    }
+
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;

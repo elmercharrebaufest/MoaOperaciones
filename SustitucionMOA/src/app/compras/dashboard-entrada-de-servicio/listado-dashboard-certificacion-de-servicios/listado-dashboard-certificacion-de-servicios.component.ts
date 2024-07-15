@@ -1176,6 +1176,25 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return valor;
     }
 
+    formatESImport(columna: string, valor: any): string {
+
+        if (columna === 'esImporte') {
+            let numero = valor.replace(/\$|\s/g, '');
+            // Convierte a número
+            let valorNumerico = parseFloat(numero);
+            // Formatea como número con separadores de miles y dos decimales
+
+            if (this.isARP) {
+                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            else{
+                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+
+        return valor;
+    }
+
     /**
      * Metodo para cargar un array de booleanos que corresponden a las celdas editables como usuario ingresante.
      * @param pendienteAprobacion 
