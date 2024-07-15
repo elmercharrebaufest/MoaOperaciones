@@ -206,7 +206,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       importe: new FormControl(null),
       montoTotal: new FormControl(null),
       detalleServicio: new FormControl(null),
-      observaciones: new FormControl(null)
+      observaciones: new FormControl(null),
+      moneda: new FormControl(null)
     });
 
     this.formularioSuplente = new FormGroup({
@@ -326,11 +327,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Ingresante);
     this.formularioMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
     this.formularioMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
-    this.formularioMotivosRechazo.controls['importe'].patchValue(rowData.Importe);
     this.formularioMotivosRechazo.controls['montoTotal'].patchValue(rowData.MontoTotal);
     this.formularioMotivosRechazo.controls['detalleServicio'].patchValue(rowData.entradaServicioDetalle);
     this.formularioMotivosRechazo.controls['numeroCertificacion'].patchValue(rowData.NumeroCertificacion);
     this.formularioMotivosRechazo.controls['fechaCertificacion'].patchValue(rowData.FechaCreacion);
+    this.formularioMotivosRechazo.controls['moneda'].patchValue(rowData.Moneda);
     this.mostrarMotivosRechazos = true;
   }
 
@@ -443,15 +444,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
       FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
       Descripcion: this.formularioMotivosRechazo.get('descripcion').value,
-      Importe: this.formularioMotivosRechazo.get('importe').value,
       MontoTotal: this.formularioMotivosRechazo.get('montoTotal').value,
       DetalleServicio: this.formularioMotivosRechazo.get('detalleServicio').value.map((item: any) => ({
         Descripcion: item.Descripcion,
         Cantidad: item.Cantidad,
         UM: item.UM,
-        Porcentaje: item.Porcentaje,
-        Monto: item.Monto
-      }))
+        Porcentaje: item.PorcentajeCertificar,
+        Monto: this.formularioMotivosRechazo.get('moneda').value === 'ARP' ? '$ ' + item.MontoCertificar : item.MontoCertificar
+      })),
+      Moneda: this.formularioMotivosRechazo.get('moneda').value
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
@@ -496,7 +497,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       importe: null,
       montoTotal: null,
       detalleServicio: null,
-      observaciones: null
+      observaciones: null,
+      moneda: null
     });
     this.formularioMotivosRechazo.markAsPristine();
     this.formularioMotivosRechazo.markAsUntouched();
@@ -534,6 +536,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   enviarAprobacion(numeroCertificacion: string): void {
+    const moneda: string = this.entradaServicioSeleccionada[0].Items[0].Moneda;
     this.messageService.clear();
     this.confirmationService.confirm({
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
@@ -545,7 +548,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.blockUI.start('Cargando...');
         this.cerrarModalResumen();
         this.subscripciones.push(
-          this.service.enviarAprobacionES(numeroCertificacion).subscribe(
+          this.service.enviarAprobacionES(numeroCertificacion, moneda).subscribe(
             (resp) => {
               let mensajeError: string = "";
               if (!resp.data) {

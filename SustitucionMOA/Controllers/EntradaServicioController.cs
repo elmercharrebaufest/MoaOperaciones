@@ -264,11 +264,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local)
+        public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
             try
             {
-                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local);
+                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local, Moneda);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

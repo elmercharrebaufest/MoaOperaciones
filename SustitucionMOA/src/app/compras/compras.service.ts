@@ -1333,9 +1333,10 @@ export class ComprasService extends BaseService {
         return this.http.post<any>("/api/EntradaServicio/RechazarEntradaDeServicio", payload, { headers: this.headers });
     }
 
-    public enviarAprobacionES(NRO_ES_LOCAL: string): Observable<any> {
+    public enviarAprobacionES(NRO_ES_LOCAL: string, moneda: string): Observable<any> {
         var payload = new FormData();
         payload.append('nro_es_local', NRO_ES_LOCAL);
+        payload.append('Moneda', moneda);
         return this.http.post<any>("/api/EntradaServicio/AprobarEntradaDeServicio", payload, { headers: this.headers })
             .pipe(
                 timeoutWith(30000, throwError(new Error('Se excedio el tiempo de espera, por favor inténtelo más tarde'))),

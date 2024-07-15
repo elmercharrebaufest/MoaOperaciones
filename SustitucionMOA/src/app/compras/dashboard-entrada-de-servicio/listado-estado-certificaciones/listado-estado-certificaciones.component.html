@@ -125,7 +125,7 @@
 
             <ng-template pTemplate="footer" let-columns>
                 <tr *ngIf="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
-                    <td colspan="12">
+                    <td colspan="13">
                         <recalculando-spinner [description]="'Cargando las entradas de servicio, espere por favor...'"></recalculando-spinner>
                     </td>
                 </tr>
@@ -134,7 +134,7 @@
             <!-- TABLE 1 BODY END -->
             <ng-template pTemplate="emptymessage">
                 <tr *ngIf="(!recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (!recalculando && estadoCertificacion.code === 'Rechazado') || (!recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
-                    <td class="emptyData" colspan="12">
+                    <td class="emptyData" colspan="13">
                         No hay entradas de servicios para mostrar
                     </td>
                 </tr>

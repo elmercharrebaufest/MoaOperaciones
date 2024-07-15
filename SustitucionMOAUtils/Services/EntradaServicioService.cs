@@ -1123,7 +1123,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="nro_es_local"></param>
         /// <returns></returns>
-        public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local)
+        public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
@@ -1166,12 +1166,11 @@ namespace SustitucionMOAUtils.Services
                         DocumentoReferenciaNumero = EntradasDeServicioTemp[0].Referencia
                     };
 
-                    emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Descripcion_ES;
+                    emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Texto_breve_servicio;
                     emailDetailCertificateDto.FechaCertificacion = EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd");
                     emailDetailCertificateDto.Destinatario = EntradasDeServicioTemp[0].Ingresante_CDS;
                     emailDetailCertificateDto.Proveedor = "";
-                    emailDetailCertificateDto.Importe = EntradasDeServicioTemp[0].Importe.ToString();
-                    emailDetailCertificateDto.MontoTotal = EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.MontoTotal = Moneda == "ARP" ? "$ " + EntradasDeServicioTemp[0].Monto_total.ToString() : EntradasDeServicioTemp[0].Monto_total.ToString();
                     emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
@@ -1200,9 +1199,9 @@ namespace SustitucionMOAUtils.Services
 
                         serviceDetailDto.UM = ES.UM;
                         serviceDetailDto.Descripcion = ES.Descripcion_ES;
-                        serviceDetailDto.Porcetaje = ES.Porcentaje_a_certificar;
+                        serviceDetailDto.Porcentaje = ES.Porcentaje_a_certificar;
                         serviceDetailDto.Cantidad = ES.Cantidad.ToString();
-                        serviceDetailDto.Monto = ES.Monto.ToString();
+                        serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : ES.Monto_a_certificar.ToString();
 
 
                         serviceDetailDtoList.Add(serviceDetailDto);
@@ -1307,8 +1306,9 @@ namespace SustitucionMOAUtils.Services
 
                     try
                     {
-                        rechazo.Importe = ES.Importe.ToString();
-                        rechazo.GeneradoPor = ES.Aprobador_CDS;                        
+                        rechazo.GeneradoPor = ES.Aprobador_CDS;
+                        rechazo.NroOC = ES.NRO_OC;
+                        rechazo.MontoTotal = rechazo.Moneda == "ARP" ? "$ " + ES.Monto_total.ToString() : ES.Monto_total.ToString();
                     }
                     catch (Exception e)
                     {
@@ -1370,8 +1370,6 @@ namespace SustitucionMOAUtils.Services
 
             if (emailDetailCertificateDto != null && !string.IsNullOrEmpty(emailDetailCertificateDto.Destinatario))
             {
-                emailDetailCertificateDto.GeneradoPor = aprobaciones.Aprobador_CDS;
-
                 await emailCertificationService.SendNotifyRejectionEmail(emailDetailCertificateDto);
 
                 if (aprobaciones.Notificaciones_enviadas == false)
