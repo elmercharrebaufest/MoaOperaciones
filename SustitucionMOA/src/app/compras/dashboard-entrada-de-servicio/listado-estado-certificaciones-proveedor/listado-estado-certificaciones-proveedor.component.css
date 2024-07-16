@@ -1,10 +1,10 @@
-#solicitudes {
+#solicitudes-estado-proveedor {
   margin: 0;
   padding-top: 2rem;
   padding-right: 1.2rem;
 }
 
-#solicitudes.content-wraper {
+#solicitudes-estado-proveedor.content-wraper {
     margin-top: 0;
     position: relative;
     font-family: "Roboto Condensed", Arial, sans-serif !important;
@@ -123,11 +123,10 @@ i#btn-fullscreen {
 
 
 .aprobada{
-  width: 180px;
+  width: fit-content;
   background-color: green;
   color: white;
-  padding: 5px;
-  height: 35px;
+  padding: .2em 1em;
   text-align: center;
   align-content: center;
   display: grid;
@@ -136,11 +135,10 @@ i#btn-fullscreen {
 }
 
 .pendiente-aprobacion{
-  width: 180px;
+  width: fit-content;
   background-color: #ff701a;
   color: white;
-  padding: 5px;
-  height: 35px;
+  padding: .2em 1em;
   text-align: center;
   align-content: center;
   display: grid;
@@ -149,11 +147,10 @@ i#btn-fullscreen {
 }
 
 .rechazada {
-  width: 180px;
+  width: fit-content;
   background-color: #b90d0d;
   color: white;
-  padding: 5px;
-  height: 35px;
+  padding: .2em 1em;
   text-align: center;
   align-content: center;
   display: grid;
@@ -166,17 +163,17 @@ i#btn-fullscreen {
   text-align: center !important;
 }
 
-::ng-deep #solicitudes .ui-table-wrapper {
+::ng-deep #solicitudes-estado-proveedor .ui-table-wrapper {
   overflow: auto;
 }
 
-::ng-deep #solicitudes .ui-table table {
+::ng-deep #solicitudes-estado-proveedor .ui-table table {
   border-collapse: collapse;
   width: 100%;
   table-layout: auto;
 }
 
-::ng-deep #solicitudes table th {
+::ng-deep #solicitudes-estado-proveedor table th {
   word-wrap: normal;
   white-space: nowrap;
   width: max-content;
@@ -184,47 +181,47 @@ i#btn-fullscreen {
   text-align: center;
 }
 
-::ng-deep #solicitudes .ui-table .ui-table-thead > tr > th {
+:host ::ng-deep #solicitudes-estado-proveedor .ui-table .ui-table-thead > tr > th {
   padding: 0.3em 1em !important;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 
-::ng-deep #solicitudes .ui-table tr {
+:host ::ng-deep #solicitudes-estado-proveedor .ui-table tr {
   width: max-content;
 }
 
-::ng-deep #solicitudes .level1 th,
-::ng-deep #solicitudes .ui-sortable-column.ui-state-highlight {
+::ng-deep #solicitudes-estado-proveedor .level1 th,
+::ng-deep #solicitudes-estado-proveedor .ui-sortable-column.ui-state-highlight {
   background-color: #666 !important;
 }
 
-::ng-deep #solicitudes .level2 th {
+::ng-deep #solicitudes-estado-proveedor .level2 th {
   background-color: #075088 !important;
   font-size: 1.3rem !important;
 }
 
-::ng-deep #solicitudes .level1 tr th:first-child {
+::ng-deep #solicitudes-estado-proveedor .level1 tr th:first-child {
   min-width: 4rem;
 }
 
-::ng-deep #solicitudes table td {
+::ng-deep #solicitudes-estado-proveedor table td {
   text-align: left;
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 
-  ::ng-deep #solicitudes table td:first-child {
-    max-width: 0;
-  }
+::ng-deep #solicitudes-estado-proveedor table td:first-child {
+  max-width: 0;
+}
 
-::ng-deep #solicitudes .level2 tr td:first-child {
+::ng-deep #solicitudes-estado-proveedor .level2 tr td:first-child {
   width: 8%;
 }
 
-::ng-deep #solicitudes .level1 th:first-child {
+::ng-deep #solicitudes-estado-proveedor .level1 th:first-child {
   max-width: 6rem;
 }
 
-::ng-deep #solicitudes i.ui-sortable-column-icon {
+::ng-deep #solicitudes-estado-proveedor i.ui-sortable-column-icon {
   color: white;
   font-size: 1.3rem;
   padding-left: .8rem;
@@ -247,10 +244,44 @@ i#btn-fullscreen {
     color: #fff;
   }
 
-/* Rules here apply to devices from 1280px and up */
-@media (min-width: 1279px) {
-  ::ng-deep #solicitudes .ui-table tr th:first-child {
-    font-size: 1.3rem !important;
-    min-width: 4rem;
+  td.aprobador {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+    cursor: pointer;
+    max-width: 12em;
   }
+
+  td.aprobador:hover {
+    overflow: visible;
+    white-space: normal;
+    height: auto;
+  }
+
+  td:has(> div.usuario-area) {
+    max-width: 12em;
+    overflow: hidden;
+  }
+
+  .usuario-area > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 11em;
+    display: block;
+  }
+
+.usuario-area:hover > span {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-all;
+  height: auto;
 }
+
+  /* Rules here apply to devices from 1280px and up */
+  @media (min-width: 1279px) {
+    ::ng-deep #solicitudes-estado-proveedor .ui-table tr th:first-child {
+      font-size: 1.3rem !important;
+      min-width: 4rem;
+    }
+  }
