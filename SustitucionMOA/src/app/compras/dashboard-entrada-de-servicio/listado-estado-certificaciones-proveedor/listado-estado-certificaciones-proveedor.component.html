@@ -32,7 +32,7 @@
         </div>
         <!-- FILTERS END -->
         <!-- TABLE 1 -->
-        <p-table #tabla class="level1 estado-proveedor"
+        <p-table #tabla class="level1"
             [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
             dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
             [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
@@ -113,7 +113,7 @@
                 <tr>
                     <td colspan="18">
                         <!-- TABLE 2 -->
-                        <p-table class="level2 estado-proveedor" [value]="rowData.entradaServicioDetalle"
+                        <p-table class="level2" [value]="rowData.entradaServicioDetalle"
                             responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header">
