@@ -401,19 +401,20 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     agruparPO() {
+        var idsSeleccionados = this.devolverIdsSeleccionados();
+        if (idsSeleccionados.length <= 1) {
+            this.floatMsgService.setInfoMsg("Debe seleccionar al menos dos peticiones de oferta diferentes para agruparlas.");
+        } else {
+            this.displayConfirmacionAgrupar = true;
+        }
+    }
+
+    devolverIdsSeleccionados() {
         let idsSeleccionados = this.listaSolp
             .filter(solp => solp.Selected)
             .map(solp => solp.NroPeticionDeOferta);
-
-        // Hacer un "distinct" de idsSeleccionados
         idsSeleccionados = idsSeleccionados.filter((value, index, self) => self.indexOf(value) === index);
-        
-        if (idsSeleccionados.length > 1) {
-            this.agruparPeticionesDeOferta(idsSeleccionados);
-            this.displayConfirmacionAgrupar = false;
-        } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar al menos dos peticiones de oferta diferentes para agruparlas.");
-        }
+        return idsSeleccionados;
     }
 
     agruparPeticionesDeOferta(ids) {
@@ -494,8 +495,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.nroSolp = nroSolp;
     }
 
-    abrirConfirmacionAgrupar() {
-        this.displayConfirmacionAgrupar = true;
+    aceptarAgrupacion() {
+        this.cerrarConfimarcionAgrupar();
+        var idsSeleccionados = this.devolverIdsSeleccionados();
+        this.agruparPeticionesDeOferta(idsSeleccionados);      
     }
 
     cerrarConfimarcionAgrupar() {
