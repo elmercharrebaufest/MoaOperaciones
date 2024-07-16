@@ -135,7 +135,7 @@
 
     <section class="alta-form">
         <div class="row fields">
-            <div class="col-md-3">
+            <div class="col-md-3 field">
                 <p>Adjuntos</p>
                 <input type="file" #fileInput multiple (change)="onFileSelected($event)">
     
@@ -145,7 +145,7 @@
                     <br/>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 field">
                 <p>Fecha Documento</p>
                 <p-calendar [(ngModel)]="fechaDocumento"
                             class="smallCal"
@@ -163,10 +163,9 @@
                             [required]="true"
                             appendTo="body">
                 </p-calendar>
-                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3 field">
                 <p>Fecha Contabilización</p>
                 <p-calendar [(ngModel)]="fechaContabilizacion"
                             id="fechaContabilizacion"
@@ -182,12 +181,12 @@
                 </p-calendar>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3 field">
                 <p>Referencia Remito</p>
                 <input type="text"
                        id="ref"
                        (keyup)="validarReferenciaRemito($event)"
-                       pattern="[0-9]{4}R[0-9]{8}"
+                       pattern="^([0-9]{4})(R|r{1})([0-9]{8})$"
                        maxlength="13"
                        [(ngModel)]="referencia">
                 <div class="hint">Formato 4 dígitos + R + 8 dígitos.</div>
@@ -202,6 +201,9 @@
         
 
         <div class="form-actions">
+            <div class="message-wrapper">
+                <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
+            </div>
             <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
         </div>
     </section>
