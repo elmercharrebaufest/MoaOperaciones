@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.WSConsumers
         public AgregarRegistroInfoConsumerMOA(IRepositorio repositorio)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MANTENER_REGINFO&amp;interfaceNamespace=urn%3AOPERACIONES";
-          
+
             service = new SI_MMRFC_MANTENER_REGINFOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
@@ -111,7 +111,7 @@ namespace SustitucionMOAWS.WSConsumers
             var hoy = DateTime.Now.Date;
             var registrosSap = new List<RegistroInfoSAP>();
             var unidades = registros.Select(x => x.Unidad).Distinct();
-            var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto 
+            var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto
             { Comercial = x.Comercial, UM = x.UM }, x => unidades.Contains(x.Comercial));
 
             foreach (var registro in registros)
@@ -141,18 +141,18 @@ namespace SustitucionMOAWS.WSConsumers
                         NRM_PO_QTY = 1,
                         PLND_DELRY = CalcularFecha(registro.FechaVigenciaFormateada, hoy), //es la fecha de vigencia
                         QUOTATION = "LICITACION",
-                        QUOT_DATE = registro.FechaVigencia,
+                        QUOT_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha de vigencia
                         NET_PRICE = registro.Precio,
                         EFF_PRICE = registro.Precio,
                         PRICE_UNIT = 1,
                         ORDERPR_UN = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM,
-                        PRICE_DATE = registro.FechaVigencia,
+                        PRICE_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha de vigencia
                         PERIOD_IND_EXPIRATION_DATE = "D",
                         PRICE_UNITSpecified = true,
                         NRM_PO_QTYSpecified = true,
                         MIN_PO_QTYSpecified = true,
                         PLND_DELRYSpecified = true,
-                        NET_PRICESpecified = true,  
+                        NET_PRICESpecified = true,
                         EFF_PRICESpecified = true
                     },
                     EINEX = new MEWIEINEX
@@ -170,10 +170,10 @@ namespace SustitucionMOAWS.WSConsumers
                         NET_PRICE = "X",
                         PRICE_UNIT = "X",
                         ORDERPR_UN = "X",
-                        PRICE_DATE = "X",       
-                        
+                        PRICE_DATE = "X",
+
                     },
-                };               
+                };
 
                 if (registro.EsModificar)
                 {
@@ -206,7 +206,7 @@ namespace SustitucionMOAWS.WSConsumers
                         SERIAL_ID = "1",
                         PLANT = registro.Centro,
                         VALID_FROM = hoy.ToString("yyyy-MM-dd"),
-                        VALID_TO = registro.FechaVigencia
+                        VALID_TO = CalcularFechaString(registro.FechaVigenciaFormateada, hoy)
                         }
                     };
                 }
@@ -220,7 +220,22 @@ namespace SustitucionMOAWS.WSConsumers
         private int CalcularFecha(DateTime fechaVigencia, DateTime hoy)
         {
             TimeSpan diferencia = fechaVigencia - hoy;
+
+            if (diferencia.Days < 30)
+            {
+                return 30;
+            }
             return diferencia.Days;
+        }
+        private string CalcularFechaString(DateTime fechaVigencia, DateTime hoy)
+        {
+            TimeSpan diferencia = fechaVigencia - hoy;
+
+            if (diferencia.Days < 30)
+            {
+                return SAPFormatter.PrepararFecha(hoy.AddDays(30));
+            }
+            return SAPFormatter.PrepararFecha(fechaVigencia);
         }
     }
 

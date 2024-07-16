@@ -2824,8 +2824,7 @@ namespace SustitucionMOAUtils.Services
                                 var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacion.CuentaContableImputada).FirstOrDefault();
                                 posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
 
-                                var centrodecosto = centrosDeCosto.Where(a => a.Codigo == tipoImputacion.CentroDeCosto).FirstOrDefault();
-                                posicionEntity.ValorTipoImputacion_Id = centrodecosto?.Id;
+                                CompletarTipoImputacion(ordenes, centrosDeCosto, centrosDeBeneficio, tipoImputacion, tipoImputacionPosicion, posicionEntity);
                             }
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
@@ -2978,6 +2977,28 @@ namespace SustitucionMOAUtils.Services
             {
                 Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);
                 throw;
+            }
+        }
+
+        private static void CompletarTipoImputacion(List<TablaSap> ordenes, List<TablaSap> centrosDeCosto, List<TablaSap> centrosDeBeneficio, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion, SustitucionMOAModel.Entities.TipoImputacionSAP tipoImputacionPosicion, SolpPosicion posicionEntity)
+        {
+            switch (tipoImputacionPosicion.Descripcion)
+            {
+                case "ordenDeOt":
+                case "ordenDeInversion":
+                    var orden = ordenes.Where(a => a.Codigo == tipoImputacion.IdOrden).FirstOrDefault();
+                    posicionEntity.ValorTipoImputacion_Id = orden?.Id;
+                    break;
+                case "centroDeCosto": //Centro de costo
+                    var centrodecost = centrosDeCosto.Where(a => a.Codigo == tipoImputacion.CentroDeCosto).FirstOrDefault();
+                    posicionEntity.ValorTipoImputacion_Id = centrodecost?.Id;
+                    break;
+                case "siniestroBeneficio":
+                    var centroBeneficio = centrosDeBeneficio.Where(a => a.Codigo == tipoImputacion.CentroDeBeneficio).FirstOrDefault();
+                    posicionEntity.ValorTipoImputacion_Id = centroBeneficio?.Id;
+                    break;
+                default:
+                    break;
             }
         }
 

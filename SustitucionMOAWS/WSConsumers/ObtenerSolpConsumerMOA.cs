@@ -77,8 +77,6 @@ namespace SustitucionMOAWS.WSConsumers
                             out ZMPES5770[] EX_SERVICEACCOUNT,
                             out ZMPES5730[] EX_SERVICELINES);
 
-                var DELIV_DATE = EX_PRITEM[0].DELIV_DATE;
-
                 /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
                     •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
                     •	Datos de imputación a nivel posición de la SOLPED (EX_PRACCOUNT)
