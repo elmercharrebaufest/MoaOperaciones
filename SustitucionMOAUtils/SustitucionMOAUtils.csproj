@@ -185,6 +185,7 @@
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IEntradaServicioService.cs" />
+    <Compile Include="Interfaces\IReporteESService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
     <Compile Include="Interfaces\IPDFService.cs" />
@@ -248,6 +250,7 @@
     <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdjuntosCertificacionesService.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
@@ -302,6 +305,7 @@
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
+    <Compile Include="Services\ReporteESService.cs" />
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />
@@ -337,7 +341,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
+      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

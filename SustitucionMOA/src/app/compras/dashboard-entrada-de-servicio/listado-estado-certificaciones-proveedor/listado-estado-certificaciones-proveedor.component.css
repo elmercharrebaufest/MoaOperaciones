@@ -4,6 +4,56 @@
   padding-right: 1.2rem;
 }
 
+#solicitudes.content-wraper {
+    margin-top: 0;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.fullscreen {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
+.content-wraper {
+    overflow: hidden;
+}
+
+.fullscreen.show-scrollbar {
+    display: block; /* Forzar la barra de desplazamiento visible */
+}
+
+i#btn-fullscreen,
+i#btn-table,
+i#btn-filtros {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.i-disabled {
+    pointer-events: none;
+    color: #959595;
+}
+
+i#btn-fullscreen {
+    background-color: transparent;
+    cursor: pointer;
+    transform: rotate(-90deg);
+}
+
 .usuario-area {
   display: inline-block;
 }

@@ -31,6 +31,8 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using Google.Apis.Drive.v3.Data;
+using System.Web;
+using SustitucionMOAUtils.Email;
 
 namespace SustitucionMOAUtils.Services
 
@@ -44,10 +46,16 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailCertificationService emailCertificationService;
         private readonly IEmailFasService emailFasService;
         private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
+        private readonly IReporteESService _reporteESService;
+        private readonly IAdjuntosCertificacionesService _adjuntosCertificacionesService;
+
         //private readonly ILiquidacionService _liquidacionService;
         //private OrderParamsDto parametros;
 
-        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService, IComprasService comprasService, IEmailCertificationService emailCertificationService, IEmailFasService emailFasService, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA)
+        public EntradaServicioService(IConsultaService consultaService, IRepositorio repositorio, OrderService orderService,
+            IComprasService comprasService, IEmailCertificationService emailCertificationService,
+            IEmailFasService emailFasService, IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
+            IReporteESService reporteESService, IAdjuntosCertificacionesService adjuntosCertificacionesService)
         {
             this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
             this.repositorio = repositorio;
@@ -56,6 +64,9 @@ namespace SustitucionMOAUtils.Services
             this.comprasService = comprasService;
             this.emailCertificationService = emailCertificationService;
             this.emailFasService = emailFasService;
+            this._reporteESService = reporteESService;
+            this._adjuntosCertificacionesService = adjuntosCertificacionesService;
+
             //_liquidacionService = liquidacionService;
         }
 
@@ -303,7 +314,7 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
-            EntradasServicio = EntradasServicio.Where(x => x.Fiscal.ToLower() == correo || x.Ingresante.ToLower() == correo || x.Aprobador.ToLower() == correo).ToList();
+            EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
 
             return EntradasServicio;
         }
@@ -323,9 +334,9 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp != null)
                 {
-                    if (!string.IsNullOrEmpty(solp.Pliego.FiscalContrato) && solp.Pliego.FiscalContrato.Contains("@"))
+                    if (!string.IsNullOrEmpty(solp.Pliego.Email) && solp.Pliego.Email.Contains("@"))
                     {
-                        email = solp.Pliego.FiscalContrato;
+                        email = solp.Pliego.Email;
                     }
                     else if (!string.IsNullOrEmpty(solp.Pliego.SupervisorTrabajo) && solp.Pliego.SupervisorTrabajo.Contains("@"))
                     {
@@ -537,7 +548,7 @@ namespace SustitucionMOAUtils.Services
             bool difSolicitante = false;
 
             //2a - Comparar Fiscal/Email con usuario FE
-            if (userMail == detalleSolPed.FiscalContrato || userMail == detalleSolPed.Email)
+            if (userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -547,7 +558,7 @@ namespace SustitucionMOAUtils.Services
                 //2b - Si el supervisor del trabajo es el mismo que el usuario ingresante
                 auto = true;
             }
-            else if (string.IsNullOrEmpty(detalleSolPed.FiscalContrato) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0 
+            else if (string.IsNullOrEmpty(detalleSolPed.Email) && detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo.Count > 0 
                 && string.IsNullOrEmpty(detalleSolPed.SupervisorTrabajo[0]) && detalleSolPed.Posiciones != null 
                 && detalleSolPed.Posiciones.Count > 0)
             {
@@ -614,7 +625,8 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber, string proveedor = null)
+        public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto parametros, 
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber,  string proveedor = null)
         {
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
@@ -624,21 +636,28 @@ namespace SustitucionMOAUtils.Services
             if (result.Type == "I" && result.Id == "SE")
             {
                 int ESNumber = GetESNumber(result.Message);
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, solpedNumber, proveedor);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, ESNumber, true, reporte, solpedNumber, proveedor);
+
+                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+
             }
 
 
             return result;
         }
 
-        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, string userMail, string solpedNumber = null, string proveedor = null)
+        public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto parametros, 
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null)
         {
 
 
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
             try
             {
-                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, solpedNumber, proveedor);
+                Aprobaciones ap = GuardarDatosES(parametros, userMail, 0, false, reporte, solpedNumber, proveedor);
+
+                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+
                 result.Type = "S";
 
                 result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
@@ -688,9 +707,26 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
+        private void ActualizarAdjuntosConES(List<string> idAdjuntos, string nroESTemporal)
         {
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario);
+            if (idAdjuntos != null && idAdjuntos.Count > 0)
+            {
+                var adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(x => idAdjuntos.Contains(x.NombreEnBlob));
+
+                foreach (var adjunto in adjuntos)
+                {
+                    adjunto.NroESTemporal = nroESTemporal;
+                }
+
+                repositorio.GuardarCambios();
+            }
+            
+
+        }
+
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, string reference = null)
+        {
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reference);
             return true;
         }
 
@@ -702,7 +738,7 @@ namespace SustitucionMOAUtils.Services
         private bool EmptySolPedValues(SolpESDto detalleSolPed)
         {
             bool result = false;
-            if (detalleSolPed.FiscalContrato.IsNullOrWhiteSpace())
+            if (detalleSolPed.Email.IsNullOrWhiteSpace())
             {
                 if (detalleSolPed.SupervisorTrabajo == null || detalleSolPed.SupervisorTrabajo.Count == 0 || (detalleSolPed.SupervisorTrabajo != null && detalleSolPed.SupervisorTrabajo[0].IsNullOrWhiteSpace()))
                 {
@@ -764,7 +800,8 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="parametros"></param>
         /// <param name="userMail"></param>
-        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, bool auto, string solPedNumber = null, string proveedor = null)
+        private Aprobaciones GuardarDatosES(EntradaServicioCreateParamsDto parametros, string userMail, int ESNumber, 
+            bool auto, List<ReporteDto> reporte, string solPedNumber = null, string proveedor = null)
         {
             Aprobaciones temp = new Aprobaciones();
             //MMSN-1066 - Derivacion automatica del suplente
@@ -838,27 +875,15 @@ namespace SustitucionMOAUtils.Services
                     if (!EmptySolPedValues(detalleSolPed))
                     {
                         //Busqueda Fiscal Contrato
-                        if (!string.IsNullOrEmpty(detalleSolPed.FiscalContrato))
+                        if (!string.IsNullOrEmpty(detalleSolPed.Email))
                         {
-                            if (detalleSolPed.FiscalContrato.Contains("@"))
+                            if (detalleSolPed.Email.Contains("@"))
                             {
-                                temp.Fiscal_SOLPED = detalleSolPed.FiscalContrato;
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.FiscalContrato);
+                                temp.Fiscal_SOLPED = detalleSolPed.Email;
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.Email);
                                 if (usuario != null)
                                 {
                                     user = usuario;
-                                    temp.Suplente = usuario.Suplente;
-                                }
-                            }
-                            else
-                            {
-                                string fiscal = detalleSolPed.FiscalContrato.Replace(" ", "");
-                                    fiscal = fiscal.ToUpper();
-                                    var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == fiscal);
-                                    if (usuario != null)
-                                {
-                                    user = usuario;
-                                    temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
@@ -964,6 +989,7 @@ namespace SustitucionMOAUtils.Services
                 throw e;
             }
 
+            string newESLocal = string.Empty;
 
             if (ultimoRegistro == null || String.IsNullOrEmpty(ultimoRegistro.NRO_ES_LOCAL))
             {
@@ -978,7 +1004,7 @@ namespace SustitucionMOAUtils.Services
 
                 number++;
 
-                string newESLocal = "T_" + number.ToString("D10");
+                newESLocal = "T_" + number.ToString("D10");
 
                 temp.NRO_ES_LOCAL = newESLocal;
 
@@ -1000,7 +1026,7 @@ namespace SustitucionMOAUtils.Services
                 aprobacion = DeepCopy(temp);
                 try
                 {
-                    if (!string.IsNullOrEmpty(esItem.ItemQuantity)) aprobacion.Cantidad = int.Parse(esItem.ItemQuantity, System.Globalization.CultureInfo.InvariantCulture);
+                    if (!string.IsNullOrEmpty(esItem.ItemQuantity)) aprobacion.Cantidad = double.Parse(esItem.ItemQuantity, System.Globalization.CultureInfo.InvariantCulture);
                     if (!string.IsNullOrEmpty(esItem.ItemGrossPrice)) aprobacion.Monto = double.Parse(esItem.ItemGrossPrice, System.Globalization.CultureInfo.InvariantCulture);
 
                     aprobacion.Nro_linea = esItem.ExternalLineNumber;
@@ -1045,13 +1071,21 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw e;
                 }
-
-
             }
+
+            Task.Run(() => GenerateAndSaveReportInBlob(reporte, newESLocal));
 
             //Para mensaje de retorno de ES Temporal (sin aprobación automatica) se necesita mostrar datos de NRO_ES_LOCAL y estado.
             return temp;
 
+        }
+
+        private async Task GenerateAndSaveReportInBlob(List<ReporteDto> reporte, string blobReference)
+        {
+            if (reporte.Count > 0)
+            {
+                await this._reporteESService.BuildReportES(reporte, blobReference).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -1089,7 +1123,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="nro_es_local"></param>
         /// <returns></returns>
-        public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local)
+        public async Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
             List<Aprobaciones> EntradasDeServicioTemp = repositorio.Listar<SustitucionMOAModel.Entities.Aprobaciones>(x => x.NRO_ES_LOCAL == nro_es_local);
             EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
@@ -1132,12 +1166,12 @@ namespace SustitucionMOAUtils.Services
                         DocumentoReferenciaNumero = EntradasDeServicioTemp[0].Referencia
                     };
 
-                    emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Descripcion_ES;
+                    emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Texto_breve_servicio;
                     emailDetailCertificateDto.FechaCertificacion = EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd");
                     emailDetailCertificateDto.Destinatario = EntradasDeServicioTemp[0].Ingresante_CDS;
                     emailDetailCertificateDto.Proveedor = "";
-                    emailDetailCertificateDto.Importe = EntradasDeServicioTemp[0].Importe.ToString();
-                    emailDetailCertificateDto.MontoTotal = EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.MontoTotal = Moneda == "ARP" ? "$ " + EntradasDeServicioTemp[0].Monto_total.ToString() : EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {
@@ -1165,9 +1199,9 @@ namespace SustitucionMOAUtils.Services
 
                         serviceDetailDto.UM = ES.UM;
                         serviceDetailDto.Descripcion = ES.Descripcion_ES;
-                        serviceDetailDto.Porcetaje = ES.Porcentaje_a_certificar;
+                        serviceDetailDto.Porcentaje = ES.Porcentaje_a_certificar;
                         serviceDetailDto.Cantidad = ES.Cantidad.ToString();
-                        serviceDetailDto.Monto = ES.Monto.ToString();
+                        serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : ES.Monto_a_certificar.ToString();
 
 
                         serviceDetailDtoList.Add(serviceDetailDto);
@@ -1215,20 +1249,19 @@ namespace SustitucionMOAUtils.Services
             }
 
             try {
-                _ = NotifyApproval(emailDetailCertificateDto);
+                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
             }
             catch (Exception e)
             {
                 Logger.Log.Info(e.Message);
             }
-            //await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
-
+            
             return result;
         }
 
-        private async Task<bool> NotifyApproval(EmailDetailCertificateDto emailDetailCertificateDto)
+        private async Task<bool> NotifyApproval(EmailDetailCertificateDto emailDetailCertificateDto, string blobReference)
         {
-            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto);
+            await emailCertificationService.SendAprobalProviderEmail(emailDetailCertificateDto, blobReference);
             return true;
         }
 
@@ -1273,8 +1306,9 @@ namespace SustitucionMOAUtils.Services
 
                     try
                     {
-                        rechazo.Importe = ES.Importe.ToString();
-                        rechazo.GeneradoPor = ES.Aprobador_CDS;                        
+                        rechazo.GeneradoPor = ES.Aprobador_CDS;
+                        rechazo.NroOC = ES.NRO_OC;
+                        rechazo.MontoTotal = rechazo.Moneda == "ARP" ? "$ " + ES.Monto_total.ToString() : ES.Monto_total.ToString();
                     }
                     catch (Exception e)
                     {
@@ -1336,8 +1370,6 @@ namespace SustitucionMOAUtils.Services
 
             if (emailDetailCertificateDto != null && !string.IsNullOrEmpty(emailDetailCertificateDto.Destinatario))
             {
-                emailDetailCertificateDto.GeneradoPor = aprobaciones.Aprobador_CDS;
-
                 await emailCertificationService.SendNotifyRejectionEmail(emailDetailCertificateDto);
 
                 if (aprobaciones.Notificaciones_enviadas == false)

@@ -18,6 +18,7 @@ import { catchError, timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
+import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
 
 @Injectable({
     providedIn: 'root'
@@ -256,12 +257,53 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
-        return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
+    public postCreateAsync(parametros : any, report : any, IdAdjuntos): Observable<any> {
+
+        var payload = new FormData();
+
+        let request: CreateEntradaServicioDto = {
+            parametros: parametros,
+            report: report,
+            IdAdjuntos: IdAdjuntos
+            // Asegúrate de incluir todos los campos requeridos por la interfaz
+        };
+
+
+        
+
+        payload.append('request', JSON.stringify(request));
+        //payload.append('report', JSON.stringify(report));
+        //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
+
+        return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
           .pipe(
             timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
           );
       }
+
+
+
+      public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
+
+        var payload = new FormData();
+
+        for (let i = 0; i < archivos.length; i++) {
+            let fileToUpload = archivos[i];
+            payload.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        return this.http
+            .post<any>('/api/AdjuntosCertificaciones/Adjuntar', payload, { headers: this.headers });
+    }
+
+    public GetAdjuntosByES(idES): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        params = params.set("idES", idES.toString());
+
+        return this.http
+            .get<any>('/api/AdjuntosCertificaciones/GetAdjuntos',{ params : params, headers: this.headers });
+    }
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
@@ -1291,9 +1333,10 @@ export class ComprasService extends BaseService {
         return this.http.post<any>("/api/EntradaServicio/RechazarEntradaDeServicio", payload, { headers: this.headers });
     }
 
-    public enviarAprobacionES(NRO_ES_LOCAL: string): Observable<any> {
+    public enviarAprobacionES(NRO_ES_LOCAL: string, moneda: string): Observable<any> {
         var payload = new FormData();
         payload.append('nro_es_local', NRO_ES_LOCAL);
+        payload.append('Moneda', moneda);
         return this.http.post<any>("/api/EntradaServicio/AprobarEntradaDeServicio", payload, { headers: this.headers })
             .pipe(
                 timeoutWith(30000, throwError(new Error('Se excedio el tiempo de espera, por favor inténtelo más tarde'))),
@@ -1368,4 +1411,6 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
     }
+
+   
 }

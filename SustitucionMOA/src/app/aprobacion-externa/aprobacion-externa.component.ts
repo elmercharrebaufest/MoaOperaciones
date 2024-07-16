@@ -30,6 +30,7 @@ export class AprobacionExternaComponent implements OnInit {
     fechaCarga: string = "";
     desc: string = "";
     importe: string = "";
+    ordenCompra: string = "";
 
     //TableData
     tableBody: string = "";
@@ -98,6 +99,7 @@ export class AprobacionExternaComponent implements OnInit {
                         if (this.isApprover && !this.oldES) {
                             this.prov = result.data.proveedor;
                             this.aprobacionesList = result.data.aprobacionesList;
+                            this.ordenCompra = result.data.nroOc;
                             if (this.aprobacionesList.length > 0) {
                                 this.usuario = this.aprobacionesList[0].Ingresante_CDS;
                                 this.cert = this.aprobacionesList[0].NRO_ES_LOCAL;
@@ -109,7 +111,7 @@ export class AprobacionExternaComponent implements OnInit {
                                 const month = ('0' + (jsonDate.getMonth() + 1)).slice(-2);
                                 const year = jsonDate.getFullYear();
                                 this.fechaCarga = `${day}/${month}/${year}`;
-                                this.desc = this.aprobacionesList[0].Descripcion_ES;
+                                this.desc = this.aprobacionesList[0].Texto_breve_servicio;
                                 this.aprobacionesList[0].Monto_total = this.round(this.aprobacionesList[0].Monto_total, 2);
                                 this.importe = '$ ' + this.aprobacionesList[0].Monto_total.toString();
                                 this.aprobacionesList.forEach(ap => {
@@ -119,8 +121,8 @@ export class AprobacionExternaComponent implements OnInit {
                                         Descripcion: ap.Descripcion_ES,
                                         Cantidad: ap.Cantidad_a_certificar.toString(),
                                         UM: ap.UM,
-                                        Porcetaje: ap.Porcentaje_a_certificar,
-                                        Monto: this.round(ap.Monto_a_certificar, 2).toString(),
+                                        Porcentaje: ap.Porcentaje_a_certificar,
+                                        Monto: "$ " + this.round(ap.Monto_a_certificar, 2).toString(),
                                     };
 
                                     this.detalleServicios.push(detServicio);
@@ -151,7 +153,7 @@ export class AprobacionExternaComponent implements OnInit {
     //Aprobar Btn
     aprobarES() {
         try {
-            this.comprasService.enviarAprobacionES(this.cert).subscribe((resp: any) => {
+            this.comprasService.enviarAprobacionES(this.cert, "ARP").subscribe((resp: any) => {
                 this.certSap = resp.data.NroESSap;
                 this.approvalSuccess = true;
             },
@@ -180,7 +182,7 @@ export class AprobacionExternaComponent implements OnInit {
             NumeroCertificacion: this.cert,
             FechaCertificacion: this.fechaCarga,
             Descripcion: this.desc,
-            Importe: this.importe,
+            Importe: "$ " + this.importe,
             MontoTotal: this.importe,
             DetalleServicio: this.detalleServicios,
         };

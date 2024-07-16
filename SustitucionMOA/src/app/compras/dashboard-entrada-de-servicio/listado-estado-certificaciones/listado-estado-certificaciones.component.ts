@@ -94,7 +94,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   allItems: any[];
   proveedor: string = sessionStorage.getItem("proveedor");
   msgs: Message[] = [];
-  havePermision: boolean = false;
+  havePermission: boolean = false;
   observaciones: string = '';
   isAll: boolean = false; // Permiso para ver todos los registros en la tabla aprobaciones.
   fechaSeleccionadaAux: string = "1";
@@ -133,6 +133,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
+        { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
       ]
     },
     {
@@ -181,7 +183,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     let permisos = sessionStorage.getItem("permisos");
     
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
-      this.havePermision = true;
+      this.havePermission = true;
     }
     this.recalculando = true;
     this.recalculandoAprobadas = true;
@@ -204,7 +206,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       importe: new FormControl(null),
       montoTotal: new FormControl(null),
       detalleServicio: new FormControl(null),
-      observaciones: new FormControl(null)
+      observaciones: new FormControl(null),
+      moneda: new FormControl(null)
     });
 
     this.formularioSuplente = new FormGroup({
@@ -239,10 +242,13 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           } else if (result.info !== undefined) {
             // Manejo de mensajes informativos, si es necesario
           } else {
+            this.agregarTipoMonedaEnDetalle(result.data);
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
           }
-          this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
+          if(this.estadoCertificacion.code === 'Pendiente Aprobación'){
+            this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
+          }
           this.recalculando = false;
           resolve();
         },
@@ -259,25 +265,24 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
 
-  obtenerESSap(proveedor, documentoNumero): void {
-    this.subscripciones.push(
-      this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
+  obtenerESSap(proveedor, documentoNumero): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      const subscription = this.service.getByProveedorAsync(this.fechaInicio, proveedor, documentoNumero, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize, this.isAll).subscribe(
         (result: { error: any, data: any }) => {
           this.recalculandoAprobadas = false;
           if (result.error != null) {
             this.floatMsgService.setErrorMsg(result.error);
             return;
           }
-          if (result.data.length > 0) {
-            this.tablaPOSap = result.data;
-          } else {
-            this.tablaPOSap = [];
-          }
+          this.tablaPOSap = result.data; 
+          resolve();
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.recalculandoAprobadas = false;
+          reject(error);
         })
-    );
+        this.subscripciones.push(subscription);
+    });
   }
 
   clearMessage() {
@@ -322,11 +327,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.formularioMotivosRechazo.controls['destinatario'].patchValue(rowData.Ingresante);
     this.formularioMotivosRechazo.controls['proveedor'].patchValue(rowData.Proveedor);
     this.formularioMotivosRechazo.controls['descripcion'].patchValue(rowData.Descripcion);
-    this.formularioMotivosRechazo.controls['importe'].patchValue(rowData.Importe);
     this.formularioMotivosRechazo.controls['montoTotal'].patchValue(rowData.MontoTotal);
     this.formularioMotivosRechazo.controls['detalleServicio'].patchValue(rowData.entradaServicioDetalle);
     this.formularioMotivosRechazo.controls['numeroCertificacion'].patchValue(rowData.NumeroCertificacion);
     this.formularioMotivosRechazo.controls['fechaCertificacion'].patchValue(rowData.FechaCreacion);
+    this.formularioMotivosRechazo.controls['moneda'].patchValue(rowData.Moneda);
     this.mostrarMotivosRechazos = true;
   }
 
@@ -345,6 +350,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
         break;
       case 'Rechazado':
+        if(this.tablaPOAprobaciones.length < 1){
+          this.recalculando = true;
+          this.getListarPO();
+        }
         this.defaultTablesConfig[0].columns.forEach(col => {
           col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' ? false : true;
         });
@@ -435,15 +444,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       NumeroCertificacion: this.formularioMotivosRechazo.get('numeroCertificacion').value,
       FechaCertificacion: this.formularioMotivosRechazo.get('fechaCertificacion').value,
       Descripcion: this.formularioMotivosRechazo.get('descripcion').value,
-      Importe: this.formularioMotivosRechazo.get('importe').value,
       MontoTotal: this.formularioMotivosRechazo.get('montoTotal').value,
       DetalleServicio: this.formularioMotivosRechazo.get('detalleServicio').value.map((item: any) => ({
         Descripcion: item.Descripcion,
         Cantidad: item.Cantidad,
         UM: item.UM,
-        Porcentaje: item.Porcentaje,
-        Monto: item.Monto
-      }))
+        Porcentaje: item.PorcentajeCertificar,
+        Monto: this.formularioMotivosRechazo.get('moneda').value === 'ARP' ? '$ ' + item.MontoCertificar : item.MontoCertificar
+      })),
+      Moneda: this.formularioMotivosRechazo.get('moneda').value
     }
     this.subscripciones.push(
       this.service.enviarMotivoRechazoES(data).subscribe(
@@ -488,7 +497,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       importe: null,
       montoTotal: null,
       detalleServicio: null,
-      observaciones: null
+      observaciones: null,
+      moneda: null
     });
     this.formularioMotivosRechazo.markAsPristine();
     this.formularioMotivosRechazo.markAsUntouched();
@@ -526,6 +536,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   enviarAprobacion(numeroCertificacion: string): void {
+    const moneda: string = this.entradaServicioSeleccionada[0].Items[0].Moneda;
     this.messageService.clear();
     this.confirmationService.confirm({
       message: '¿Esta seguro que desea aprobar esta Entrada de Servicio?',
@@ -537,7 +548,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         this.blockUI.start('Cargando...');
         this.cerrarModalResumen();
         this.subscripciones.push(
-          this.service.enviarAprobacionES(numeroCertificacion).subscribe(
+          this.service.enviarAprobacionES(numeroCertificacion, moneda).subscribe(
             (resp) => {
               let mensajeError: string = "";
               if (!resp.data) {
@@ -587,15 +598,37 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.blockUI.start('Cargando...');
     this.isAll = true;
-    await this.getListarPO(); // No mover.
-    this.blockUI.stop();
+    if(this.estadoCertificacion.code === 'Aprobada'){ 
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      this.blockUI.stop();
+      this.recalculando = true;
+      await this.getListarPO();
+    } else {
+      this.recalculando = true;
+      await this.getListarPO();
+      this.blockUI.stop();
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+    }
   }
 
   async SeeForProvider() {
     this.blockUI.start('Cargando...');
     this.isAll = false;
-    await this.getListarPO(); // No mover.
-    this.blockUI.stop();
+    if(this.estadoCertificacion.code === 'Aprobada'){ 
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      this.blockUI.stop();
+      this.recalculando = true;
+      await this.getListarPO();
+    } else {
+      this.recalculando = true;
+      await this.getListarPO();
+      this.blockUI.stop();
+      this.recalculandoAprobadas = true;
+      await this.obtenerESSap(this.proveedor, this.documentoNumero);
+    }
   }
 
   /**
@@ -798,5 +831,68 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       });
     }
     document.getElementById(es).style.display = 'none';
+  }
+
+  agregarTipoMonedaEnDetalle(certificaciones: any[]): void {
+    if (certificaciones === undefined || certificaciones === null) {
+      return;
+    }
+
+    certificaciones.forEach(certificacion => {
+      if (certificacion.entradaServicioDetalle) {
+        certificacion.entradaServicioDetalle.forEach(detalle => {
+          detalle.Moneda = certificacion.Moneda;
+        });
+      }
+    });
+  }
+
+
+  fileTypes: { [key: string]: string } = {
+    ".pdf": 'application/pdf',
+    ".csv": "text/csv",
+    ".msg": "application/vnd.ms-outlook"
+};
+
+
+descargarArchivos(rowData: any) {
+
+    this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
+        if (result.data.length > 0) {
+            
+            result.data.forEach((archivo) => {
+                this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+            });
+        }
+        else{
+       
+          this.confirmationService.confirm({
+            message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+            rejectVisible: false
+          });
+
+        }
+    });
+
+  }
+
+  descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+    const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+    var byteArray = new Uint8Array(archivo);
+    var blob = new Blob([byteArray], { type: typeExtension });
+
+    if (window.navigator.msSaveOrOpenBlob) {
+        // IE11
+        window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+    } else {
+        var url = window.URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = nombreArchivo;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+    }
   }
 }

@@ -174,7 +174,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
+                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
             ]
         }
     ];
@@ -283,22 +285,19 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
 
-        if (this.itemIdSelected.includes(itemId) && this.numeroLineaSelected.has(numeroLinea)) {
-
+        if (!item.isSelected) {
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
             this.numeroLineaSelected.delete(numeroLinea);
-
-            this.itemSelected = this.itemSelected.filter((selectedItem: any) =>
-                selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
+            this.itemSelected = this.itemSelected.filter((selectedItem: any) => selectedItem.PosicionId !== item.PosicionId || selectedItem.NumeroLinea !== item.NumeroLinea);
         }
         else {
             this.itemIdSelected.push(itemId);
-            this.numeroLineaSelected.add(numeroLinea);
+            if (!this.numeroLineaSelected.has(numeroLinea)) this.numeroLineaSelected.add(numeroLinea);
             item.NroSolP = posicion.NumeroSolp;
-            this.itemSelected.push(item);
+            if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
 
-        this.actionCheckPosition(item);
+        posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
 
@@ -441,6 +440,25 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return false; //<-- Prevent Refresh
     }
 
+    formatImport(columna: string, valor: any): string {
+
+        if (columna === 'esImporte') {
+            
+            let startsWith = valor.startsWith('$');
+
+            let numero = valor.replace(/\$|\s/g, '');
+            // Convierte a número
+            let valorNumerico = parseInt(numero, 10);
+            // Formatea como número con separadores de miles y dos decimales
+            let formattedValue = valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2 });
+
+            return (startsWith ? '$ ' : '') + formattedValue;
+
+        }
+
+        return valor;
+    }
+
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
@@ -483,6 +501,11 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             } else if (result.data != undefined) {
                 this.recalculando = true;
                 this.disabledFilter = true;
+
+                this.numeroLineaSelected.clear();
+                this.itemSelected = [];
+                this.itemIdSelected = [];
+
                 this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
@@ -623,18 +646,17 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.tablaPO.filter(orders => orders.NumeroOrdenDeCompra === posicion.NroOrdenCompra).forEach(order => {
             order.Posiciones.filter(positions => positions.NumeroPosicion === posicion.NumeroPosicion).forEach(position => {
                 position.Items.forEach(item => {
-                    const monto = item.Importe;
                     const cantidad = item.Cantidad;
                     item.CantidadACertificar = cantidad - item.CantidadReal;
                     item.PorcentajeACertificar = (item.CantidadACertificar * 100) / cantidad;
-                    item.MontoACertificar = (item.CantidadACertificar * monto) / cantidad;
+                    item.MontoACertificar = (item.CantidadACertificar * item.Importe);
                 });
             });
         });
     }
 
     calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
+        const montoActualizado = (item.CantidadACertificar * item.Importe);
         item.MontoACertificar = montoActualizado;
     }
 
@@ -700,9 +722,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return item.Porcentaje === '100';
     }
 
-    selectAllItems(event: any, items: any): void {
+    selectAllItems(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item));
             if (itemsFiltered.length > 0) {
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
@@ -1019,4 +1041,113 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra: number): any {
         return this.tablaPO.find(orden => orden.NumeroOrdenDeCompra === nroOrdenDeCompra, []);
     }
+
+    tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
+        return posicion.Items.filter(item => this.esItemValidoParaCertificar(item)).every(item => item.isSelected);
+    }
+
+
+    ordenEsPendienteDeLiberacion(nroOrdenDeCompra: number): boolean {
+        const oc = this.obtenerOrdenDeCompraPorNumero(nroOrdenDeCompra);
+        return oc.SubjToR === 'X';
+    }
+
+    posicionEsConEntregaFinal(nroOrdenDeCompra: number, nroPosicion: number): boolean {
+        const posicion = this.obtenerPosicionPorNumero(nroOrdenDeCompra, nroPosicion);
+        return posicion.NoMoreGR === 'X';
+    }
+
+    /**
+     * Evalúa si mostar o no el checkbox para seleccionar la posición.
+     * @param posicion 
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarPosicion(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneSaldoACertificar = this.tieneItemsACertificar(posicion);
+        let mostrarCheckboxDeSeleccionarPosicion = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneSaldoACertificar;
+        return mostrarCheckboxDeSeleccionarPosicion;
+    }
+
+    /**
+     * Evalúa si mostrar o no el checkbox para seleccionar todos los items.
+     * @param posicion
+     * @returns {boolean}
+     */
+    mostrarCheckboxDeSeleccionarTodosItems(posicion: any): boolean {
+        let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
+        let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
+        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar && !posicion.Bloqueada;
+        return mostrarCheckboxDeSeleccionarTodosItems;
+    }
+
+    /**
+     * Evalúa si el checkbox para seleccionar un item debe o no estar habilitado.
+     * @param item
+     * @returns {boolean}
+     */
+    deshabilitarCheckboxDeItem(item: any): boolean {
+        let ordenPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(item.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
+        let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
+        let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
+        return deshabilitarCheckboxDeItem;
+    }
+
+
+
+    fileTypes: { [key: string]: string } = {
+        ".pdf": 'application/pdf',
+        ".csv": "text/csv",
+        ".msg": "application/vnd.ms-outlook"
+    };
+    
+    
+    descargarArchivos(rowData: any) {
+
+        let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
+
+
+        this.service.GetAdjuntosByES(id).subscribe(result => {
+            if (result.data.length > 0) {
+                
+                result.data.forEach((archivo) => {
+                    this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+                });
+            }
+            else{
+           
+              this.confirmationService.confirm({
+                message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+                rejectVisible: false
+              });
+
+            }
+        });
+
+      }
+
+      descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+        const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+        var byteArray = new Uint8Array(archivo);
+        var blob = new Blob([byteArray], { type: typeExtension });
+
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = nombreArchivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+        }
+      }
+
 }

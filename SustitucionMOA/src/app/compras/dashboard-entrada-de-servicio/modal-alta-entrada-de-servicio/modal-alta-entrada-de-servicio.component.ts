@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
@@ -6,6 +6,10 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
+import { reference } from '@angular/core/src/render3';
+import { SessionDataService } from '../../../common/services/SessionDataService';
+import { FloatMsgService } from '../../../common/services/FloatMsgService';
+
 declare var $: any;
 
 type Column = {
@@ -25,6 +29,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     showAllTables: boolean = false;
     data: any;
     errorResponseMessage: string = "";
+    errorCallService: string = "Actualmente estamos experimentando problemas técnicos con nuestro servicio. Nuestro equipo ya está trabajando para resolverlo lo antes posible.Por favor, intente nuevamente más tarde.";
     showError: boolean = false;
     cantidad: number = 0;
     mensajeError: string = "";
@@ -50,6 +55,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     @Output() closeDialog = new EventEmitter<void>();
 
     @Output() enviarMensajeGrilla = new EventEmitter();
+
+    @ViewChild('fileInput') fileInput: any;
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -102,7 +109,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     totalMontoCertificar!: number;
 
     constructor(protected service: ComprasService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        protected sessionDataService: SessionDataService,
+        protected floatMsgService: FloatMsgService,
     ) { }
 
     ngOnInit() {
@@ -264,11 +273,26 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         }
     }
 
-    certificarPosicion() {
+    async certificarPosicion() {
+
         if (this.validateValues() === true) {
+            
             this.certificarState = true;
             this.buildEntrySheet();
-            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+
+            let items = this.itemSelected;
+
+            items = items.map(element => {
+                element.EntradasServicio = [];
+                return element;
+            });
+
+            const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
+            const respIdAdjuntos = adjuntarArchivosResult.data;
+
+           
+
+            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -304,8 +328,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.certificarState = false;
                 },
                 (error) => {
+
+                    console.log(error);
+
                     this.confirmationService.confirm({
-                        message: error.error.Message,
+                        message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
                             this.closeDialog.emit();
                         },
@@ -318,6 +345,41 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         }
       
+    }
+
+    tituloArchivoPDF = "Reporte";
+    BuildReport(){
+
+        this.service.buildReportES(this.itemSelected).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.floatMsgService.setErrorMsg(result.error);
+                } else if (result.info != undefined) {
+                    this.floatMsgService.setInfoMsg(result.info);
+                } else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: 'application/pdf' });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName + ".pdf");
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = this.tituloArchivoPDF + new Date() + ".pdf"
+                        link.click();
+                        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+                        return false;
+                    }
+
+                }
+            },
+            error => {
+                this.floatMsgService.setErrorMsg(error.message);
+            });
     }
 
     buildEntrySheet() {
@@ -520,12 +582,78 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     validateValues() {
+        this.documentDateMsg = [];
+
         if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
-            this.documentDateMsg = [];
             this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Por favor, ingrese una fecha de documento' });
             return false;
         }
-        this.documentDateMsg = [];
+
+        if (this.referencia != undefined && this.referencia != null && this.referencia.length > 0) {
+            this.referencia = this.referencia.replace('r', 'R');
+            if (!(/^([0-9]{4})(R{1})([0-9]{8})$/i.test(this.referencia))) {
+                this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una referencia remito válida: 4 dígitos + R + 8 dígitos.' });
+                return false;
+            }
+        }
+
         return true;
+    }
+
+    uploadedFiles: File[] = [];
+    maxSizeFile = 10 * 1024 * 1024; // 10 MB
+    allowedTypes = ['application/pdf', 
+        'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'application/vnd.ms-outlook', 
+        'application/octet-stream', 
+        'application/x-msg'];
+
+    allowedExtensions = ['.pdf', '.xls', '.xlsx', '.msg'];
+
+    onFileSelected(event: any) {
+      const files: FileList = event.target.files;
+      let totalSize = this.uploadedFiles.reduce((acc, file) => acc + file.size, 0);
+  
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!this.isValidFileType(file)) {
+          alert(`${file.name} Archivo invalido.`);
+          continue;
+        }
+        if (totalSize + file.size > this.maxSizeFile) {
+          alert('Tamaño excedido 10 MB.');
+          continue;
+        }
+        this.uploadedFiles.push(file);
+        totalSize += file.size;
+      }
+  
+      this.updateFileInput();
+    }
+  
+
+    isValidFileType(file: File): boolean {
+        const fileTypeValid = this.allowedTypes.includes(file.type);
+        const fileExtensionValid = this.allowedExtensions.some(ext => file.name.endsWith(ext));
+        return fileTypeValid || fileExtensionValid;
+    }
+  
+    removeFile(index: number) {
+      this.uploadedFiles.splice(index, 1);
+      this.updateFileInput();
+    }
+  
+    updateFileInput() {
+      const dt = new DataTransfer();
+      this.uploadedFiles.forEach(file => dt.items.add(file));
+      this.fileInput.nativeElement.files = dt.files;
+    }
+  
+    uploadFiles() {
+      const formData = new FormData();
+      for (let file of this.uploadedFiles) {
+        formData.append('files', file, file.name);
+      }
     }
 }

@@ -22,10 +22,12 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
 
         private readonly IEmailService emailService;
+        protected readonly IAzureService azureService;
 
-        public EmailCertificationService(IEmailService emailService)
+        public EmailCertificationService(IEmailService emailService, IAzureService azureService)
         {
             this.emailService = emailService;
+            this.azureService = azureService;
         }
 
         private (List<string>, string, string) BuildEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate, string subjectFormat, params object[] subjectArgs)
@@ -46,7 +48,7 @@ namespace SustitucionMOAUtils.Services.Email
             string subjectFormat = "Asunto: Rechazo de servicio - Certificación nro {0}";
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.MotivoRechazo,
                 emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.Importe};
+                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -55,7 +57,7 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.Importe};
+                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -77,7 +79,7 @@ namespace SustitucionMOAUtils.Services.Email
             await emailSendTask;
         }
 
-        public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto)
+        public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference)
         {
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR);
 
@@ -104,7 +106,7 @@ namespace SustitucionMOAUtils.Services.Email
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Descripcion}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Cantidad}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.UM}</td>");
-                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcetaje}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcentaje}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Monto}</td>");
                 bodyTable.Append("</tr>");
             }
@@ -117,8 +119,10 @@ namespace SustitucionMOAUtils.Services.Email
             return bodyTable;
         }
 
-        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario)
+        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, string reference)
         {
+            var ms = new MemoryStream();
+
             try
             {
                 string dateTimeFormat = "dd/MM/yyyy";
@@ -127,6 +131,16 @@ namespace SustitucionMOAUtils.Services.Email
 
                 string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} ";
 
+                try
+                {
+                    var report = await GetReportES(apList[0].NRO_ES_LOCAL).ConfigureAwait(false);
+
+                    await report.CopyToAsync(ms);
+                }
+                catch(Exception e)
+                {
+                    //Continue
+                }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
                 var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
@@ -140,6 +154,7 @@ namespace SustitucionMOAUtils.Services.Email
                 string importe = string.Empty;
                 //MMSN-928 - Agregar OC al email.
                 string OC = string.Empty;
+                string NroPosicion = string.Empty;
                 StringBuilder tabla = new StringBuilder();
                 if (apList.Count > 0)
                 {
@@ -151,6 +166,7 @@ namespace SustitucionMOAUtils.Services.Email
                     importe = "$ " + apList[0].Monto_total.ToString();
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(apList);
+                    NroPosicion = apList[0].NRO_POS;
                 }
 
 
@@ -158,14 +174,17 @@ namespace SustitucionMOAUtils.Services.Email
                 string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
                 string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
 
-                var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC);
+                var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion);
 
+                ms.Position = 0;
 
                 var emailSenderData = new EmailSenderData()
                 {
                     Mails = dest,
                     Asunto = asunto,
-                    Cuerpo = cuerpo
+                    Cuerpo = cuerpo,
+                    Archivo = ms.GetBuffer(),
+                    NombreArchivo = "Reporte.pdf"
                 };
 
 
@@ -198,6 +217,13 @@ namespace SustitucionMOAUtils.Services.Email
                 $"</tr>");
 
             return aprStrBuilder;
+        }
+
+        private async Task<MemoryStream> GetReportES(string reference)
+        {
+            var blobResult = await azureService.ObtenerArchivoBlobStorageAsync(reference, "certificaciones").ConfigureAwait(false);
+                
+            return blobResult;
         }
     }
 }

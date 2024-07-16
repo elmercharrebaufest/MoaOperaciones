@@ -24,7 +24,7 @@
             <div class="search-filters">
                 <div class="filtro-nro-orden col-md-3">
                     <p>Número de OC:</p>
-                    <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+                    <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" maxlength="10" />
                 </div>
 
                 <div class="filtro-proveedor col-md-3">
@@ -128,7 +128,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [class.purple-row]="totalesBloqueadasEliminadas(rowData)" [class.orange-row]="isPendingRelease(rowData)" [pSelectableRow]="rowData" *ngIf="!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones))" [class.highlighted]="expanded">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadMailSolicitanteByNroSolp(rowData);loadSolicitantesList(rowData);clearCheckboxes(rowData)">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -281,6 +281,7 @@
 
                                                             <input *ngIf="col.id === 'iPorcentajeACertificar'"
                                                                    type="text"
+                                                                   name="porcentaje"
                                                                    id="porcentaje_{{rowData.Id}}_{{rowData.LINE_NO}}"
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem,$event);"
@@ -344,7 +345,10 @@
                                                                 <tr>
                                                                     <ng-container *ngFor="let col of userTablesConfig[3].columns">
                                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
-                                                                        <td *ngIf="col.type === 'string' && col.visible && col.id !== esNro">{{ rowData[col.field] | defaultData }}</td>
+                                                                        <td *ngIf="col.type === 'string' && col.visible && col.id !== esNro">
+                                                                            {{ col.id === 'esImporte' ? formatESImport(col.id, rowData[col.field]) : rowData[col.field] | defaultData }}
+                                                                        </td>                                                                        
+
                                                                         <td *ngIf="col.type === 'custom' && col.visible" [style.max-width]="(col.field === 'Referencia' || col.field === 'TextoBreve' || col.field === 'FechaDocumentoString') && rowData.Ingresante === usuario ? 'max-content' : '8em'">
                                                                             <ng-container *ngIf="col.id === 'esFechaDoc'">
                                                                                 <compras-celda-editable-ingresante 
@@ -399,6 +403,9 @@
                                                                                         <img (click)="deleteES(rowData.Id, rowData.TemporalId, rowData.FechaContabilizacion)" src="../../../../../Content/images/icons/trashRed.svg" alt="trashRed" class="delete-icon" />
                                                                                     </i>
                                                                                 </ng-template>
+                                                                            </ng-container>
+                                                                            <ng-container *ngIf="col.id==='esAdjuntos'">                                                                                
+                                                                                <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
                                                                             </ng-container>
                                                                         </td>
                                                                     </ng-container>

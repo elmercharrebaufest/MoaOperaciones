@@ -10,12 +10,16 @@
 
 /* FORM CERTIFICACION */
 .alta-form {
-  padding: 3em 0;
+  padding: 3em;
 }
 
 .alta-form .fields {
   display: flex;
   justify-content: center;
+}
+
+.alta-form .fields > .field {
+   width: 24%; 
 }
 
 .alta-form p {
@@ -25,8 +29,8 @@
 }
 
 :host ::ng-deep .alta-form p-calendar.smallCal > span > input,
-.alta-form textarea,
-.alta-form input {
+.alta-form textarea, 
+.alta-form input[type=file] {
   border: 1px solid #a6a6a6 !important;
   font-size: .87em !important;
   color: #333 !important;
@@ -37,22 +41,41 @@
   font-size: .7em;
 }
 
-::ng-deep .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
-    font-size: 0.7em;
+#alta-certificaciones .alta-form .message-wrapper {
+    max-width: fit-content;
+    margin: 0 auto;
+    height: 3em;
 }
 
-::ng-deep .ui-messages-icon.pi.pi-times {
-    font-size: 1.3em;
+:host ::ng-deep #alta-certificaciones .message-wrapper .small-message .ui-messages ul {
+    padding-right: 3em;
 }
 
-::ng-deep body .ui-messages.ui-messages-error .ui-messages-icon {
+:host ::ng-deep #alta-certificaciones .message-wrapper .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
+    font-size: 0.95em;
+    color: #842029;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages-icon.pi.pi-times {
+    font-size: 1.4em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages.ui-messages-error .ui-messages-close {
+    font-size: 1.1em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages.ui-messages-error .ui-messages-icon {
     color: #c0392b;
 }
 
 .alta-form input#ref {
     height: 2.4em;
     border-radius: 3px;
-    width: 100%;
+    width: 15em;
+    border: 1px solid #a6a6a6;
+    font-size: .87em !important;
+    color: #333 !important;
+    font-family: "Roboto", Arial, sans-serif;
 }
 .alta-form .row {
   margin-bottom: 2rem;
@@ -250,4 +273,11 @@ div#col-select {
   .modal-container {
     width: 95vw;
   }
+}
+
+input[type=file]::file-selector-button {
+  padding: .2em .4em;
+  background-color: #007AD9;
+  border:  #007AD9;
+  color: white;
 }

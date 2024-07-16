@@ -230,13 +230,12 @@
 
 /*Second table headers*/
 .limitHeadersSize {
-    max-width: 9em;
+    max-width:9em;
 }
 
 .center-content {
-    text-align: center !important;
+    text-align:center !important;
 }
-
 
 i#btn-fullscreen {
     transform: rotate(-90deg);

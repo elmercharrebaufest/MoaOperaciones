@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
@@ -48,6 +48,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     @Output() closeDialog = new EventEmitter<void>();
 
     @Output() enviarMensajeGrilla = new EventEmitter();
+
+    @ViewChild('fileInput') fileInput: any;
+
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -245,10 +248,22 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         }
     }
 
-    certificarPosicion() {
+    async certificarPosicion() {
         if (this.validateValues() === true) {
             this.buildEntrySheet();
-            this.service.postCreateAsync(this.entrySheetObjects).subscribe(
+
+            let items = this.itemSelected;
+
+            items = items.map(element => {
+                element.EntradasServicio = [];
+                return element;
+            });
+
+            const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
+            const respIdAdjuntos = adjuntarArchivosResult.data;
+
+
+            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -341,7 +356,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 ItemQuantity: item.Cantidad,
                 UM: item.UM,
                 ItemGrossPrice: item.ImporteString,
-                GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
+                GrossPrice: this.round(parseFloat((item.Importe).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
                 ShortText: position.Descripcion,
@@ -399,12 +414,21 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     validateValues() {
-        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
             this.documentDateMsg = [];
+
+        if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
             this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una fecha de prestación del servicio' });
             return false;
         }
-        this.documentDateMsg = [];
+
+        if (this.referencia != undefined && this.referencia != null && this.referencia.length > 0) {
+            this.referencia = this.referencia.replace('r', 'R');
+            if (!(/^([0-9]{4})(R{1})([0-9]{8})$/i.test(this.referencia))) {
+                this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una referencia remito válida: 4 dígitos + R + 8 dígitos.' });
+                return false;
+            }
+        }
+
         return true;
     }
 
@@ -485,4 +509,63 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     // --------- FIN CONFIGURACION DE COLUMNAS --------- //
+
+    //---------- ARCHIVOS ADJUNTOS---------//
+    uploadedFiles: File[] = [];
+    maxSizeFile = 10 * 1024 * 1024; // 10 MB
+    allowedTypes = ['application/pdf', 
+        'application/vnd.ms-excel', 
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+        'application/vnd.ms-outlook',
+        'application/octet-stream', 
+        'application/x-msg'];
+
+    allowedExtensions = ['.pdf', '.xls', '.xlsx', '.msg'];
+
+    onFileSelected(event: any) {
+      const files: FileList = event.target.files;
+      let totalSize = this.uploadedFiles.reduce((acc, file) => acc + file.size, 0);
+  
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!this.isValidFileType(file)) {
+          alert(`${file.name} Archivo invalido.`);
+          continue;
+        }
+        if (totalSize + file.size > this.maxSizeFile) {
+          alert('Tamaño excedido 10 MB.');
+          continue;
+        }
+        this.uploadedFiles.push(file);
+        totalSize += file.size;
+      }
+  
+      this.updateFileInput();
+    }
+  
+    isValidFileType(file: File): boolean {
+        const fileTypeValid = this.allowedTypes.includes(file.type);
+        const fileExtensionValid = this.allowedExtensions.some(ext => file.name.endsWith(ext));
+        return fileTypeValid || fileExtensionValid;
+    }
+  
+    removeFile(index: number) {
+      this.uploadedFiles.splice(index, 1);
+      this.updateFileInput();
+    }
+  
+    updateFileInput() {
+      const dt = new DataTransfer();
+      this.uploadedFiles.forEach(file => dt.items.add(file));
+      this.fileInput.nativeElement.files = dt.files;
+    }
+  
+    uploadFiles() {
+      const formData = new FormData();
+      for (let file of this.uploadedFiles) {
+        formData.append('files', file, file.name);
+      }
+    }
+
+    //----------FIN ARCHIVOS ADJUNTOS---------//
 }

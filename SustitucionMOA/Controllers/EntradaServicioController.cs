@@ -49,6 +49,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+
                 // Este debe combinarse con permisos de usuario.
                 //if (parametros.vendedor == "" || parametros.vendedor == null)
                 //{
@@ -169,11 +170,14 @@ namespace SustitucionMOA.Controllers
         //    }
         //}
 
-        
-        public async Task<ActionResult> CreateAsync(List<EntradaServicioCreateParamsDto> parametros)
+        [ValidateInput(false)]
+        public async Task<ActionResult> CreateAsync(string request)
         {
             try
             {
+
+                var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
+
                 // Este debe combinarse con permisos de usuario.
                 //if (parametros.vendedor == "" || parametros.vendedor == null)
                 //{
@@ -185,7 +189,7 @@ namespace SustitucionMOA.Controllers
                 
                 int index = 0;
 
-                foreach(EntradaServicioCreateParamsDto parametro in parametros)
+                foreach(EntradaServicioCreateParamsDto parametro in payload.parametros)
                 { 
                     string solpedNumber = parametro.EntrySheetHeader.SolPedNumber[index];
 
@@ -193,11 +197,11 @@ namespace SustitucionMOA.Controllers
                     var result = new EntradaServicioCreateRespuestaDto();
                     if (validacion.Message == "Auto")
                     {
-                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, payload.report, payload.IdAdjuntos, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else if (validacion.Message == "Temporal")
                     {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, payload.report, payload.IdAdjuntos, solpedNumber, parametro.EntrySheetHeader.Proveedor);
                     }
                     else
                     {
@@ -230,7 +234,6 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
         [HttpPost]
         public ActionResult RechazarEntradaDeServicio(string json)
         {
@@ -261,11 +264,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local)
+        public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
             try
             {
-                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local);
+                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local, Moneda);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
@@ -288,7 +291,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        [HttpPost]
         public ActionResult ReasignarSuplente(string nro_es_local, string suplente)
         {
             try

@@ -71,6 +71,7 @@
     <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
+    <Compile Include="Dto\Compras\ESAdjuntosDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
+    <Compile Include="Entities\AdjuntosEntradasDeServicio.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasiva.cs" />
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />

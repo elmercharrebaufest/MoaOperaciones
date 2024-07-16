@@ -105,6 +105,7 @@ import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/component
 import { AuxPannelComponent } from './dashboard-entrada-de-servicio/components/aux-pannel/aux-pannel.component';
 import { ModalAprobacionComponent } from './dashboard-entrada-de-servicio/components/modal-aprobacion/modal-aprobacion.component';
 import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/components/recalculando-spinner/recalculando-spinner.component';
+import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/file-modal.component';
 
 @NgModule({
     imports: [
@@ -206,7 +207,8 @@ import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/co
         SpinnerCeldaComponent,
         ModalAprobacionComponent,
         AuxPannelComponent,
-        RecalculandoSpinnerComponent
+        RecalculandoSpinnerComponent,
+        FileModalComponent
     ],
     providers: [
         ComprasService,

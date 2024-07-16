@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp.text.html.simpleparser;
@@ -12,21 +11,33 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAUtils.Logger;
 using System.Text;
 using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAUtils.Interfaces;
+using System.Threading.Tasks;
 
-namespace SustitucionMOA.Controllers
+
+namespace SustitucionMOAUtils.Services
 {
-    public class ReporteESController : BaseController
+    public class ReporteESService : IReporteESService
     {
 
         private static readonly string TEMPLATE_REPORTE_ALTA_ES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteAltaES.html");
-        
-        public ActionResult BuildReportES(List<ReporteDto> report)
+        protected readonly IAzureService azureService;
+
+
+        public ReporteESService(IAzureService azureService)
         {
+            this.azureService = azureService;
+        }
+
+        public async Task BuildReportES(List<ReporteDto> report, string blobReference)
+        {
+            var ms = new MemoryStream();
+            string templateContent = string.Empty;
+            string htmlTable = string.Empty;
+
             try
             {
-                string templateContent = string.Empty;
-                string htmlTable = string.Empty;
-
+               
                 var groupedReportsForPosition = report.GroupBy(r => r.PosicionId);
                 
                 using (StreamReader reader = new StreamReader(TEMPLATE_REPORTE_ALTA_ES))
@@ -46,29 +57,33 @@ namespace SustitucionMOA.Controllers
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
                 fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
 
-                using (var ms = new MemoryStream())
+                
+                var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f);
+                
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, ms);
+                writer.CloseStream = false;
+
+                pdfDoc.Open();
+
+                using (var stringReader = new StringReader(fullHtml))
                 {
-                    using (var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f))
-                    {
-                        PdfWriter writer = PdfWriter.GetInstance(pdfDoc, ms);
-                        pdfDoc.Open();
-
-                        using (var stringReader = new StringReader(fullHtml))
-                        {
-                            XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, stringReader);
-                        }
-
-                        pdfDoc.Close();
-                    }
-
-                    return JsonCustom(File(ms.ToArray(), "application/pdf", $"Reporte-{DateTime.Now}.pdf"));
-
+                    XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, stringReader);
                 }
+                
+                pdfDoc.Close();
+
+                ms.Position = 0;
+
+                await azureService.SubirArchivoABlobStorageAsync(ms, blobReference, "certificaciones");
 
             }
-            catch (InfoCustomException e)
+            catch (Exception e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                throw new Exception(e.Message);
+            }
+            finally
+            {
+                ms.Close();
             }
            
         }

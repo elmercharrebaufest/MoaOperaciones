@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { Seccion } from './../../common/models/seccion';
@@ -36,6 +36,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     @ViewChild(ModificarDatosComponent)
     protected modificarDatosComponent: ModificarDatosComponent;
+
+    @ViewChild('fechaReasignar') calendar: Calendar;
 
     constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(navService, securityService, floatMsgService, modalService);
@@ -79,6 +81,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sá"],
             monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
             monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Confirmar',
             clear: 'Limpiar',
             dateFormat: 'dd/mm/yyyy',
             weekHeader: 'Sem'
@@ -100,6 +103,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.getUsuario();
         this.getRolesOptions();
 
+    }
+
+
+    closeCalendar() {
+        this.calendar.overlayVisible = false;
     }
 
     getRolesOptions() {
@@ -483,7 +491,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
-    handleClearClick(event: Event) {
+    handleClearClick() {
         this.cleanReasignarInput();
         this.validationError = false;
     }
@@ -502,6 +510,36 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         else {
             this.userChangedValue = true;
         }
+    }
+
+    dontAllowCertificationRol(event: any): void {
+        const certServ: string = 'CERTIFICACIÓN DE SERVICIOS';
+        const certExt: string = 'CERTIFICACIÓN DE SERVICIOS EXT';
+
+        if(event.target.value === certServ){
+            this.rolesUsuarioSeleccionado.filter(r => r.Nombre === certExt).forEach(r => {
+                if(r.checked){
+                    r.checked = false;
+                    document.getElementById("rol_" + certExt).click();
+                }
+            })
+        }
+
+        if(event.target.value === certExt){
+            this.rolesUsuarioSeleccionado.filter(r => r.Nombre === certServ).forEach(r => {
+                if(r.checked){
+                    r.checked = false;
+                    document.getElementById("rol_" + certServ).click();
+                }
+            })
+        }
+    }
+
+    
+
+    onCustomAcceptClick() {
+        this.closeCalendar();
+        this.validationError = false;
     }
 
 }
