@@ -943,7 +943,7 @@ export class ComprasService extends BaseService {
 
     public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
         let json = JSON.stringify({
-            PeticionDeOferta: adjudicacion.PeticionDeOferta,
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
             Solp_Id: adjudicacion.Solp_Id,
@@ -1304,7 +1304,7 @@ export class ComprasService extends BaseService {
 
     public ValidarPrecioCotizado(adjudicacion: AdjudicacionDto) {
         let json = JSON.stringify({
-            PeticionDeOferta: adjudicacion.PeticionDeOferta,
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
             Solp_Id: adjudicacion.Solp_Id,

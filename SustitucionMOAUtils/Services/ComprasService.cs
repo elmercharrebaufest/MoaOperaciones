@@ -10095,7 +10095,7 @@ namespace SustitucionMOAUtils.Services
             var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
             var posicionesId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.SolpPosicion_Id);
             var posicionesSolp = repositorio.Listar<SolpPosicion>(x => posicionesId.Contains(x.Id));
-            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta);
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta_Id);
             var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
             var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
             

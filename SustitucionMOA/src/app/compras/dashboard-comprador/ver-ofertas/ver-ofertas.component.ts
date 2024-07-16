@@ -283,7 +283,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
                             this.lista.push({
-                                PeticionDeOferta: this.tablaOfertas.Id,
+                                PeticionDeOferta_Id: this.tablaOfertas.Id,
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 PlazoDeEntrega: peticion.Posicion.FechaEntregaServicio,
@@ -433,7 +433,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     validarMonedasDiferentes(){
         if (this.adjudicacion != undefined) {
-            this.adjudicacion.PeticionDeOferta = this.tablaOfertas.Id;
+            this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
             console.log(this.adjudicacion);
         this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
