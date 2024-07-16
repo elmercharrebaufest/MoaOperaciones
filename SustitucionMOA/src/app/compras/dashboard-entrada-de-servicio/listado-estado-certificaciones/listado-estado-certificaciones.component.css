@@ -362,7 +362,6 @@ td.aprobador {
   text-overflow: ellipsis;
   word-break: break-all;
   white-space: nowrap;
-  cursor: pointer;
   max-width: 12em;
 }
 

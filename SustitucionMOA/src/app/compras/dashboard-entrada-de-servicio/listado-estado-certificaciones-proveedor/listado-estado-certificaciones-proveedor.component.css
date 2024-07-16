@@ -249,7 +249,6 @@ i#btn-fullscreen {
     text-overflow: ellipsis;
     word-break: break-all;
     white-space: nowrap;
-    cursor: pointer;
     max-width: 12em;
   }
 
@@ -264,12 +263,12 @@ i#btn-fullscreen {
     overflow: hidden;
   }
 
-  .usuario-area > span {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    width: 11em;
-    display: block;
-  }
+.usuario-area > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 11em;
+  display: block;
+}
 
 .usuario-area:hover > span {
   overflow: visible;
