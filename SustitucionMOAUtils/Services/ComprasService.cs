@@ -862,11 +862,23 @@ namespace SustitucionMOAUtils.Services
             //var crearSolpComsumer = crearSolp(solpEntity);
             //var modificarSolpConsumer = modificarSolp(solpEntity);
             //var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
+          
+            var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
+            resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
+            respuestaGuardarSOLP.Errores = new List<string>();
             if (string.IsNullOrEmpty(solpEntity.NroSolp))
             {
                 var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
 
-                var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                try
+                {
+                   resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                }
+                catch (Exception e)
+                {
+                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E"});
+                }
+               
                 respuestaGuardarSOLP.Errores = new List<string>();
 
                 foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -904,14 +916,22 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
+                resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
                 if (solpEntity.TipoSolpSap != 2)
                 {
-                    var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
-                    resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
-                }
+                    try
+                    {
+                        var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
+                        resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                    }
+                    catch (Exception e)
+                    {
+                        ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
+                        respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
+                        resultadoEditarSolp.Errores.Add(new ModificarSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
+                    }
 
-                resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
-                respuestaGuardarSOLP.Errores = new List<string>();
+                }               
 
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
