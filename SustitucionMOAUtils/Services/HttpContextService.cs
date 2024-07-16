@@ -20,5 +20,10 @@ namespace SustitucionMOAUtils.Services
         {
             return Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, path);
         }
+
+        public iTextSharp.text.Image ObtenerLogoImagen()
+        {
+            return iTextSharp.text.Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
+        }
     }
 }
