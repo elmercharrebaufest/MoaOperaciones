@@ -1176,14 +1176,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return valor;
     }
 
-    formatESImport(columna: string, valor: any): string {
+    formatESImport(columna: string, rowData: any): string {
 
-        if (columna === 'esImporte') {
-            let numero = valor.replace(/\$|\s/g, '');
+        if (rowData.TemporalId !== null) {
+            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
             // Convierte a número
             let valorNumerico = parseFloat(numero);
             // Formatea como número con separadores de miles y dos decimales
-
+    
             if (this.isARP) {
                 return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
@@ -1191,8 +1191,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
         }
-
-        return valor;
+        return rowData.ImporteARPUSD;
     }
 
     /**
