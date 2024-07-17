@@ -161,6 +161,7 @@ namespace SustitucionMOAModel.Dto
         public string THCategoria { get; set; }
         public bool? VisibleSolicitante { get; set; }
         public bool Deshabilitado { get; set; }
+        public List<MonedaTotalDto> TotalesPorMoneda { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto

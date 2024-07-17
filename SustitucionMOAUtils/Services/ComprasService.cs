@@ -2936,7 +2936,7 @@ namespace SustitucionMOAUtils.Services
             solp.THServicioPermanente = false;
             solp.THAjustePolinomica = false;
             solp.THProveedorDirecto = false;
-        }        
+        }
 
         private void ProcesarCondicionEspecial(PosicionSolpSAP posicion, Solp solp, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion)
         {
@@ -2989,7 +2989,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             solp.NroOrdenDeCompraAdicional = tipoImputacion.NumeroOrdenDeCompra;
-            solp.ProveedorAsignado_Id = ordenDeCompra.Cabecera.Usuario_Id;           
+            solp.ProveedorAsignado_Id = ordenDeCompra.Cabecera.Usuario_Id;
         }
 
 
@@ -3531,15 +3531,15 @@ namespace SustitucionMOAUtils.Services
                     unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
                 }
                 CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
-                foreach (var item in todasLasOfertas.Usuarios)
+                foreach (var usuarioPO in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
-                    if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones != null)
                     {
-                        if (item.Cotizacion.RespetaMateriales == false)
+                        if (usuarioPO.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
+                        foreach (var cotizacionPosicion in usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
                         {
                             if (cotizacionPosicion.Completado)
                             {
@@ -3556,32 +3556,31 @@ namespace SustitucionMOAUtils.Services
                             cotizacionPosicion.TodasTotalPesos = cambio * cotizacionPosicion.PrecioTotal;
                             cotizacionPosicion.TodasTotalARPCotizacionPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
 
-
                         }
-                        item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
-                        item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
-                        item.Cotizacion.TodasTotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
-                        item.Cotizacion.TodasTotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
+                        usuarioPO.Cotizacion.TotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
+                        usuarioPO.Cotizacion.TotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
+                        usuarioPO.Cotizacion.TodasTotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
+                        usuarioPO.Cotizacion.TodasTotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
 
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
-                    item.VerImportes = true;
-                    if (item.Cotizacion == null)
+                    usuarioPO.VerImportes = true;
+                    if (usuarioPO.Cotizacion == null)
                     {
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    if (item.Cotizacion != null && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    if (item.Cotizacion != null && item.PropuestaTecnicaAprobada == false)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.PropuestaTecnicaAprobada == false)
                     {
                         mensaje = "Propuesta técnica Rechazada";
                         verAdjudicar = false;
@@ -3590,22 +3589,22 @@ namespace SustitucionMOAUtils.Services
                     {
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    var fechaFinPlazo = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
-                    item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
-                    item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
-                    item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
+                    var fechaFinPlazo = (usuarioPO.PlazoDeOfertaCierre == null && usuarioPO.FechaCircular == null) ? usuarioPO.PlazoDeOfertaOriginal :
+                    usuarioPO.PlazoDeOfertaCierre == null ? usuarioPO.PlazoDeOfertaCircular.Value :
+                    usuarioPO.FechaCircular == null ? usuarioPO.PlazoDeOfertaCierre.Value :
+                    usuarioPO.PlazoDeOfertaCierre.Value > usuarioPO.FechaCircular.Value ? usuarioPO.PlazoDeOfertaCierre.Value : usuarioPO.PlazoDeOfertaCircular.Value;
 
 
-                    if (item.Cotizacion != null && fechaFinPlazo >= hoy && todasLasOfertas.Urgencia != true)
+                    if (usuarioPO.Cotizacion != null && fechaFinPlazo >= hoy && todasLasOfertas.Urgencia != true)
                     {
                         mensaje = "Plazo de oferta sin finalizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
 
-                    if (!item.EstaHabilitado)
+                    if (!usuarioPO.EstaHabilitado)
                     {
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
@@ -3616,7 +3615,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
-                            item.VerImportes = false;
+                            usuarioPO.VerImportes = false;
                         }
                     }
                     else
@@ -3625,16 +3624,42 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
-                            item.VerImportes = false;
+                            usuarioPO.VerImportes = false;
                         }
                     }
 
                     if (esAdmin && !noSolicitoVerPrecios)
                     {
-                        item.VerImportes = true;
+                        usuarioPO.VerImportes = true;
                     }
-                    item.MensajeAdjudicar = mensaje;
-                    item.VerAdjudicar = verAdjudicar;
+                    usuarioPO.MensajeAdjudicar = mensaje;
+                    usuarioPO.VerAdjudicar = verAdjudicar;
+
+                    if (usuarioPO.Cotizacion.CotizacionPosiciones.Any(d => d.MonedaDescripcion != "ARP")) 
+                    {
+                        if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
+                        {
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.GroupBy(x => x.MonedaDescripcion)
+                                                          .Select(grupo => new MonedaTotalDto
+                                                          {
+                                                              Moneda = grupo.Key.ToString(),
+                                                              Total = grupo.Sum(x => x.PrecioTotal).ToString("N2")
+                                                          }).ToList();
+                        }
+                        else
+                        {
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones
+                                                            .SelectMany(pos => pos.CotizacionSubPosiciones)
+                                                            .GroupBy(sub => sub.MonedaDescripcion)
+                                                            .Select(grupo => new MonedaTotalDto
+                                                            {
+                                                                Moneda = grupo.Key.ToString(),
+                                                                Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
+                                                            }).ToList();
+
+                        }
+                    }
+                   
                 }
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
@@ -4599,7 +4624,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
-                            || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp 
+                            || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
                             || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
@@ -9940,7 +9965,7 @@ namespace SustitucionMOAUtils.Services
                 EstadoCotizacion = filtro.EstadoCotizacion,
                 Agrupada = filtro.Agrupada,
                 NroPo = !string.IsNullOrEmpty(filtro.NroPo) ? filtro.NroPo.Trim() : "",
-                
+
             };
         }
 
@@ -10117,7 +10142,7 @@ namespace SustitucionMOAUtils.Services
             var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta_Id);
             var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
             var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
-            
+
             if (esServicios && !trabajoYaHecho)
             {
                 respuestaGuardarSOLP.Errores = new List<String>();
@@ -10149,7 +10174,7 @@ namespace SustitucionMOAUtils.Services
                     var monedaAdjudicada = moneda;
                     var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
 
-                    if(monedaAdjudicada != monedaCotizada)
+                    if (monedaAdjudicada != monedaCotizada)
                     {
                         respuestaGuardarSOLP.Errores.Add($"Algunas posiciones no tienen el mismo precio que lo solicitado." +
                             $" La moneda solicitada ({monedaAdjudicada}) no coincide con la moneda cotizada ({monedaCotizada})");
@@ -10166,15 +10191,15 @@ namespace SustitucionMOAUtils.Services
             return respuestaGuardarSOLP;
         }
 
-        public AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp) 
+        public AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp)
         {
             var solp = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
 
             var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
             var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
-            var adjuntosSolpDto = new AdjuntosSolpDto 
-            { 
+            var adjuntosSolpDto = new AdjuntosSolpDto
+            {
                 Pliego = solp.TipoSolp.Codigo == "CON_PLIEGO" ? pdfFilename : null,
                 PDF = Convert.ToBase64String(GenerarSolpPdf(solp.Id)),
                 ArchivosEspecificacionesTecnicas = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp).Select(s => new ArchivoDto

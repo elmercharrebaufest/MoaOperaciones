@@ -435,7 +435,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.adjudicacion != undefined) {
             this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
-            console.log(this.adjudicacion);
         this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
             (result) => {
                 if (result.logout == true) {
@@ -526,7 +525,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     guardarAdjudicacion() {
         this.blockUI.start("Grabando...");
         this.adjudicacion.EsMonedaProveedor = this.generarOC;
-        console.log(this.adjudicacion);
         try {
             this.guardarAdjudicacionTextos();
             this.subscription = this.service.GrabarAdjudicacion(this.adjudicacion).subscribe(
@@ -806,26 +804,28 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayHistorial = false;
     }
 
-getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
-    const preciosPorMoneda: { [key: string]: number } = {};
-    for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-        if (!subpos.MonedaDescripcion) {
-            continue;
+    getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+        const preciosPorMoneda: { [key: string]: number } = {};
+        for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+            
+            if (!subpos.MonedaDescripcion) {
+                continue;
+            }
+            if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+                preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+            }
+            preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
         }
-        if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
-            preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+        this.resultado = '';
+        for (const moneda in preciosPorMoneda) {
+            if (preciosPorMoneda.hasOwnProperty(moneda)) {
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
+                this.resultado += `${moneda} ${precioFormateado}<br>`;
+            }
         }
-        preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
+        return this.resultado;
     }
-    this.resultado = '';
-    for (const moneda in preciosPorMoneda) {
-        if (preciosPorMoneda.hasOwnProperty(moneda)) {
-            const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
-            this.resultado += `${moneda} ${precioFormateado}<br>`;
-        }
-    }
-    return this.resultado;
-}
+   
 
 
 }
