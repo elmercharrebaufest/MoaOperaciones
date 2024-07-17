@@ -187,21 +187,21 @@ namespace SustitucionMOA.Controllers
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
                 
-                int index = 0;
+                //int index = 0;
 
-                foreach(EntradaServicioCreateParamsDto parametro in payload.parametros)
+                foreach(EntradaServicioCreateParamsDto posicion in payload.Posiciones)
                 { 
-                    string solpedNumber = parametro.EntrySheetHeader.SolPedNumber[index];
+                    string solpedNumber = posicion.EntrySheetHeader.SolPedNumber.FirstOrDefault();
 
-                    var validacion = EntradaServicioService.ValidarIngresante(parametro, userMail, solpedNumber);
+                    var validacion = EntradaServicioService.ValidarIngresante(posicion, userMail, solpedNumber);
                     var result = new EntradaServicioCreateRespuestaDto();
                     if (validacion.Message == "Auto")
                     {
-                        result = await EntradaServicioService.CrearEntradaServicio(parametro, userMail, payload.report, payload.IdAdjuntos, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = await EntradaServicioService.CrearEntradaServicio(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
                     }
                     else if (validacion.Message == "Temporal")
                     {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(parametro, userMail, payload.report, payload.IdAdjuntos, solpedNumber, parametro.EntrySheetHeader.Proveedor);
+                        result = EntradaServicioService.CrearEntradaServicioTemporal(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
                     }
                     else
                     {
@@ -209,7 +209,7 @@ namespace SustitucionMOA.Controllers
                     }
                     ret.Add(result);
 
-                    index++;
+                    //index++;
                 }
 
 
@@ -217,21 +217,21 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = ErrorMsg.ErrorWS, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = ErrorMsg.Error, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
         }
         [HttpPost]
