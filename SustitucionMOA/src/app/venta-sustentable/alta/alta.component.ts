@@ -257,7 +257,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
     onChangeCosecha() {
 
         if (this.cosechaId > 0) {
-            if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+            if (!this.esCorredor || (this.esCorredor && (this.operarComo == 2 || !this.sePreseleccionoProveedor))) {
+                this.mensajeComponent.setMsgsEmpty();
                 if (this.CUIT == "" || this.CUIT.length != 11) {
                     this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
                     setTimeout(() => {
@@ -521,7 +522,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     revisarProveedorSeleccionado() {
-        console.log("Run blur")
         if (this.proveedorSeleccionado)
             return;
 
