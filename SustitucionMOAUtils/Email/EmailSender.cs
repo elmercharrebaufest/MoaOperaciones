@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
+using SustitucionMOAUtils.Logger;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -6,9 +10,6 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Spreadsheet;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
-using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -50,7 +51,7 @@ namespace SustitucionMOAUtils.Email
             }
 
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
         }
 
         public static void sendFleteEmail(string nroProveedor, string nroFactura, string nroProforma, string importe, byte[] file, string fileName)
@@ -78,7 +79,7 @@ namespace SustitucionMOAUtils.Email
             }
 
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
 
         }
 
@@ -120,7 +121,7 @@ namespace SustitucionMOAUtils.Email
                 mail.To.Add(reporte.Destinatario);
             }
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
 
         }
 
@@ -131,7 +132,7 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-               // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
+                // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
                 Host = EmailConfig.getEmailHost()
             };
             return client;
@@ -177,12 +178,12 @@ namespace SustitucionMOAUtils.Email
                     + "Importe: $" + importe;
         }
 
-        public static void EnviarMail(List<string> enviarA, 
-            string asunto, 
-            string cuerpo, 
-            List<string> copia = null, 
-            AlternateView vistaAlternativa = null, 
-            byte[] archivo = null, 
+        public static void EnviarMail(List<string> enviarA,
+            string asunto,
+            string cuerpo,
+            List<string> copia = null,
+            AlternateView vistaAlternativa = null,
+            byte[] archivo = null,
             string nombreArchivo = null,
             string enviarDesde = null,
             List<string> copiaOculta = null,
@@ -243,7 +244,7 @@ namespace SustitucionMOAUtils.Email
                         Attachment data = new Attachment(new MemoryStream(archi.Value), archi.Key);
                         oMensaje.Attachments.Add(data);
                     }
-                   
+
                 }
 
                 //if (archivo != null)
@@ -254,9 +255,9 @@ namespace SustitucionMOAUtils.Email
                 //        oMensaje.Attachments.Add(data);
                 //    }
                 //}
-                SmtpClient oCliente = GetSmtpClient();
+                SmtpClient client = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                oCliente.Send(oMensaje);
+                SendMail(oMensaje, client);
             }
             catch (Exception ex)
             {
@@ -310,14 +311,13 @@ namespace SustitucionMOAUtils.Email
                 }
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                oCliente.Send(oMensaje);
+                SendMail(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
 
         public static async Task EnviarMailAsync(List<string> enviarA,
             string asunto,
@@ -404,7 +404,7 @@ namespace SustitucionMOAUtils.Email
                 //}
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                await oCliente.SendMailAsync(oMensaje);
+                await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
@@ -479,13 +479,43 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
 
                 // Enviar el correo de forma asíncrona
-                await oCliente.SendMailAsync(oMensaje);
+                await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
+
+        private static async Task SendMailAsync(MailMessage oMensaje, SmtpClient oCliente)
+        {
+            LogMail(oMensaje);
+            await oCliente.SendMailAsync(oMensaje);
+        }
+
+        private static void SendMail(MailMessage mail, SmtpClient client)
+        {
+            LogMail(mail);
+            client.Send(mail);
+        }
+        private static void LogMail(MailMessage mail) {
+            try
+            {
+                Log.Info($"SendMail Subject: {mail.Subject}");
+                Log.Info($"SendMail To: {mail.To}");
+                Log.Info($"SendMail Cc: {mail.CC}");
+                Log.Info($"SendMail Bcc: {mail.Bcc}");
+                Log.Info($"SendMail BodyIsHtml: {mail.IsBodyHtml}");
+                Log.Info($"SendMail Body: {mail.Body}");
+                Log.Info($"SendMail HasAttachments: {mail.Attachments?.Count > 0}");
+                Log.Info($"SendMail Attachments: {string.Join(",", mail.Attachments?.Select(a => a.Name).ToList())}");
+
+            }
+            catch (Exception)
+            {
+            }
+        }
+
     }
 
     public class EmailSenderData
