@@ -1,4 +1,4 @@
-<div id="solicitudes" class="content-wraper" [class.fullscreen]="fullscreen">
+<div id="solicitudes-estado-solicitante" class="content-wraper" [class.fullscreen]="fullscreen">
     <!-- HEADER -->
     <section class="container-fluid clearfix">
         <div class="row titleSection">
@@ -113,7 +113,7 @@
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
                     </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
+                    <td class="aprobador" *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
                         rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>                                                                                
