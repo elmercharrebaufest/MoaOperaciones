@@ -238,6 +238,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
                     item.isSelected = true;
+                    item.posicionDescripcion = positions.Descripcion;
                     this.onCheckboxPositionChange(item);
                 }
             });
