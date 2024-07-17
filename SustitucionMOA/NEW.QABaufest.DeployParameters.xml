@@ -199,4 +199,6 @@
 
 
 	<setParameter name="MailsDisconformidadCalidades Config" value="moaoperaciones@molinosagro.com.ar;carina.scasso@molinosagro.com.ar;adalberto.fratini@molinosagro.com.ar;marcelo.valoni@molinosagro.com.ar;Nicolas.Gullini@molinosagro.com.ar;carlos.cortina@molinosagro.com.ar" />
+
+	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />
 </parameters>
