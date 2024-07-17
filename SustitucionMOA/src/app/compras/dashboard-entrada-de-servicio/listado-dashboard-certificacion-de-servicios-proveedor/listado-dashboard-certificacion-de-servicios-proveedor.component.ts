@@ -440,23 +440,24 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         return false; //<-- Prevent Refresh
     }
 
-    formatImport(columna: string, valor: any): string {
+    formatImport(columna: string, rowData: any): string {
 
-        if (columna === 'esImporte') {
-            
-            let startsWith = valor.startsWith('$');
 
-            let numero = valor.replace(/\$|\s/g, '');
+        if (rowData.TemporalId !== null) {
+            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
             // Convierte a número
-            let valorNumerico = parseInt(numero, 10);
+            let valorNumerico = parseFloat(numero);
             // Formatea como número con separadores de miles y dos decimales
-            let formattedValue = valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-            return (startsWith ? '$ ' : '') + formattedValue;
-
+    
+            if (rowData.ImporteARPUSD.startsWith('$')) {
+                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            else{
+                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
         }
-
-        return valor;
+        
+        return rowData.ImporteARPUSD;
     }
 
     esPosicionCompleta(posicion): boolean {
