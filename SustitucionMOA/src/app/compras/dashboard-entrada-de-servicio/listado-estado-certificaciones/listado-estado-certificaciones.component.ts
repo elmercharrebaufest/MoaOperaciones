@@ -413,7 +413,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
-          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
+          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Se reasigno al nuevo aprobador.' };
           if (resp.error) {
             msj.severity = 'error';
             msj.summary = resp.error

@@ -33,6 +33,8 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using Google.Apis.Drive.v3.Data;
 using System.Web;
 using SustitucionMOAUtils.Email;
+using System.Globalization;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace SustitucionMOAUtils.Services
 
@@ -682,7 +684,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte, false);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -724,12 +726,75 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, string reference = null)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, bool reasignar)
         {
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reference);
+            if (reasignar)
+            {
+                var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+                List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+                List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
+                reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
+            }
+
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
+
             return true;
         }
 
+        private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra)
+        {
+            const string pendienteAprobacion = "Pendiente Aprobación";
+            List<ReporteDto> nuevoReporte = new List<ReporteDto>();
+            foreach (Aprobaciones ap in esTemp)
+            {
+                ReporteDto reporte = new ReporteDto();
+                int nroLinea = int.Parse(ap.Nro_linea);
+                long nroPosicion = long.Parse(ap.NRO_POS);
+                decimal cantidadACertificar = Convert.ToDecimal(ap.Cantidad_a_certificar, CultureInfo.InvariantCulture);
+                decimal porcentajeACertificar = Convert.ToDecimal(ap.Porcentaje_a_certificar, CultureInfo.InvariantCulture);
+
+                decimal totalACertificar = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == ap.NRO_OC && x.NRO_POS == ap.NRO_POS && x.Nro_linea == ap.Nro_linea && x.Estado_certificacion == pendienteAprobacion)
+                    .Select(a => new { Cantidad = Convert.ToDecimal(a.Cantidad_a_certificar, CultureInfo.InvariantCulture) })
+                    .Sum(a => a.Cantidad);
+
+                var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
+                var item = position.Items.First(x => x.NumeroLinea == nroLinea);
+
+                if (totalACertificar > cantidadACertificar)
+                {
+                    item.CantidadReal = item.CantidadReal + (totalACertificar - cantidadACertificar);
+                } else if(totalACertificar < cantidadACertificar)
+                {
+                    item.CantidadReal = item.CantidadReal + (cantidadACertificar - totalACertificar);
+                } else if(totalACertificar == cantidadACertificar)
+                {
+                    item.CantidadReal = item.CantidadReal + totalACertificar;
+                }
+
+                double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
+                item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
+                if (item.Porcentaje.EndsWith(".00"))
+                {
+                    var redondeo = Math.Round(res);
+                    item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                }
+
+                reporte.NumeroLinea = nroLinea;
+                reporte.ServicioNumero = int.Parse(ap.Nro_servicio);
+                reporte.Descripcion = ap.Descripcion_ES;
+                reporte.Cantidad = (double)ap.Cantidad;
+                reporte.UM = ap.UM;
+                reporte.Importe = (decimal)item.Importe;
+                reporte.NroPosicion = nroPosicion.ToString();
+                reporte.Porcentaje = item.Porcentaje;
+                reporte.CantidadReal = (decimal)item.CantidadReal;
+                reporte.CantidadACertificar = cantidadACertificar;
+                reporte.PorcentajeACertificar = porcentajeACertificar;
+                nuevoReporte.Add(reporte);
+            }
+            return nuevoReporte;
+        }
 
         /// <summary>
         /// MMSN-601: Metodo para validar si los valores de detalleSolPed estan vacios 
@@ -1489,8 +1554,8 @@ namespace SustitucionMOAUtils.Services
                 string nroEsLocal = esTemporalPendienteAprobacionList[0].NRO_ES_LOCAL;
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
-
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
+                List<ReporteDto> reporte = new List<ReporteDto>();
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte, true);
 
                 repositorio.GuardarCambios();
 
