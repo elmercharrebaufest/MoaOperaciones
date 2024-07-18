@@ -439,7 +439,8 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 Cantidad = temporal.Cantidad.ToString(),
-                NumeroLinea = temporal.Nro_linea,
+                NumeroLinea = int.Parse(temporal.Nro_linea).ToString(),
+                NroPosicion = int.Parse(temporal.NRO_POS).ToString(),
                 UM = temporal.UM,
                 Descripcion = string.IsNullOrEmpty(temporal.Descripcion_ES) ? "" : temporal.Descripcion_ES.Trim(),
                 TextoBreveServicio = temporal.Texto_breve_servicio.Trim(),

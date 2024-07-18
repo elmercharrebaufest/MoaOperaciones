@@ -140,7 +140,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     {
       name: 'ESDetalle',
       columns: [
-        { id: 'DPosicion', header: 'N° de Ítem', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DItem', header: 'N° de Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DMaterial', header: 'N° de Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cantidad', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
