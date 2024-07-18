@@ -3626,6 +3626,12 @@ namespace SustitucionMOAUtils.Services
                             verAdjudicar = false;
                             usuarioPO.VerImportes = false;
                         }
+
+                        if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
+                        {
+                            mensaje = "La cotización tiene subposiciones sin cotizar";
+                            verAdjudicar = false;
+                        }
                     }
 
                     if (esAdmin && !noSolicitoVerPrecios)
