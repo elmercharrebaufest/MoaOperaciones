@@ -20,7 +20,7 @@
     <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index">
         <p-header>
             <span id="title" class="ui-panel-title">Posicion {{ position.NroPosicion }}</span>
-            <input id="description" pInputText type="text" [(ngModel)]="position.Descripcion" maxlength="40">
+            <input id="description" pInputText type="text" [(ngModel)]="position.Items[0].posicionDescripcion" maxlength="40">
         </p-header>
 
         <p-table id="items-list"

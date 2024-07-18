@@ -263,6 +263,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
                     item.isSelected = true;
+                    item.posicionDescripcion = posicion.Descripcion;
                     this.onCheckboxPositionChange(item);
                 }
             });
