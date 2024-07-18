@@ -1261,7 +1261,6 @@ namespace SustitucionMOAUtils.Services
                                 Service = ES.Nro_servicio,
                                 Quantity = ES.Cantidad_a_certificar,
                                 ShortText = ES.Texto_breve_servicio,
-                                GrossPrice = (decimal)DividirConDosDecimales((double)ES.Monto, (int)ES.Cantidad),
                                 PlannedPackage = ES.Planned_package,
                                 PlannedLine = ES.Planned_line
                             };
