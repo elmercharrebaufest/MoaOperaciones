@@ -230,7 +230,16 @@
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible && col.id !== 'iAcciones'">{{ col.header }}</th>
+
+                                                        <th *ngIf="col.id === 'iAcciones'">
+                                                            {{ col.header }}
+                                                            <button class="btn btn-primary"
+                                                            (click)="habilitarTodosCampoDeValorACertificar(i)"
+                                                            [disabled]="!hayElementosParaCertificar()">
+                                                                <i class="fa fa-refresh"></i>
+                                                            </button>
+                                                        </th>
                                                     </ng-container>
                                                 </tr>
                                             </ng-template>
