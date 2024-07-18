@@ -53,6 +53,7 @@ using System.Text;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAModel.Dto.Compras;
+using System.Data.Entity.SqlServer;
 
 
 namespace SustitucionMOAUtils.Services
