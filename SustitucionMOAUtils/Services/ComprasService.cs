@@ -37,7 +37,6 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -52,15 +51,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Web;
-using System.Web.Security;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using DocumentFormat.OpenXml.Office2010.Excel;
-using System.Data.Entity.SqlServer;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
-using Org.BouncyCastle.Crypto;
-using System.Data.Common.CommandTrees;
 using SustitucionMOAModel.Dto.Compras;
 
 
@@ -3627,7 +3618,7 @@ namespace SustitucionMOAUtils.Services
                             usuarioPO.VerImportes = false;
                         }
 
-                        if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
+                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
                         {
                             mensaje = "La cotización tiene subposiciones sin cotizar";
                             verAdjudicar = false;
