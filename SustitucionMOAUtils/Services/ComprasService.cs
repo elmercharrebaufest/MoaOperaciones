@@ -3630,10 +3630,11 @@ namespace SustitucionMOAUtils.Services
                     {
                         usuarioPO.VerImportes = true;
                     }
+
                     usuarioPO.MensajeAdjudicar = mensaje;
                     usuarioPO.VerAdjudicar = verAdjudicar;
 
-                    if (usuarioPO.Cotizacion.CotizacionPosiciones.Any(d => d.MonedaDescripcion != "ARP")) 
+                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Any(d => d.MonedaDescripcion != "ARP")) 
                     {
                         if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                         {
