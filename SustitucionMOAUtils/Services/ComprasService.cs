@@ -3638,7 +3638,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.GroupBy(x => x.MonedaDescripcion)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true).GroupBy(x => x.MonedaDescripcion)
                                                           .Select(grupo => new MonedaTotalDto
                                                           {
                                                               Moneda = grupo.Key.ToString(),
@@ -3647,11 +3647,14 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.GroupBy(pos => pos.MonedaDescripcion)                                                                                                                   
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true)
+                                                            .SelectMany(pos => pos.CotizacionSubPosiciones)
+                                                            .Where(x => x.Completado == true)
+                                                            .GroupBy(sub => sub.MonedaDescripcion)
                                                             .Select(grupo => new MonedaTotalDto
                                                             {
                                                                 Moneda = grupo.Key.ToString(),
-                                                                Total = grupo.SelectMany(sub => sub.CotizacionSubPosiciones).Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
+                                                                Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
                                                             }).ToList();
 
                         }
