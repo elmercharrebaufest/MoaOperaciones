@@ -172,7 +172,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
                             <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia" [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
-                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.condEspProveedorAsignado || model.tipoSolpSap == 1" (ngModelChange)="verificarCondicionesEspeciales()"></p-checkbox>
+                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.condEspProveedorAsignado" (ngModelChange)="verificarCondicionesEspeciales()"></p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
