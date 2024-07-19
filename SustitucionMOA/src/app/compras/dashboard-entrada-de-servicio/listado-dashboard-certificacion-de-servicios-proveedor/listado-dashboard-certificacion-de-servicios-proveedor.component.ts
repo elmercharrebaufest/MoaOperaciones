@@ -657,36 +657,54 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         });
     }
 
-    calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe);
-        item.MontoACertificar = montoActualizado;
+  eliminarFormatoNumeroLocal(value: any): number {
+    if (!value) value = 0;
+    if (typeof value === 'string') {
+      value = parseFloat(value.replace(',', ''));
+    }
+    return value;
+  }
+
+  private calcularMontoACertificar(cantidadACertificar: number, importe: number): number{
+      const montoActualizado = (cantidadACertificar * importe);
+      return montoActualizado;
+  }
+
+  private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
+    const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
+    return porcentajeACertificar;
+  }
+
+  actualizarValoresACertificarPorCantidad(item: any): void {
+    const cantidadACertificar = item.CantidadACertificar;
+    const cantidadDisponible = item.Cantidad - item.CantidadReal;
+
+    if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && !cantidadACertificar)) {
+      item.CantidadACertificar = cantidadDisponible;
+      cantidadACertificar = cantidadDisponible;
     }
 
-    actualizarValoresACertificarPorCantidad(item: any): void {
-        const cantidadACertificar = item.CantidadACertificar;
-        const cantidadDisponible = item.Cantidad - item.CantidadReal;
+    const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
+    item.PorcentajeACertificar = porcentajeACertificar;
+    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+  }
 
-        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
-            item.CantidadACertificar = cantidadDisponible;
-        }
+  actualizarValoresACertificarPorPorcentaje(item: any): void {
+    let porcentajeACertificar = item.PorcentajeACertificar;
+    const porcentajeDisponible = (100 - item.Porcentaje);
 
-        const percentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
-        item.PorcentajeACertificar = Number(percentajeACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+    if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && !porcentajeACertificar)) {
+        item.PorcentajeACertificar = porcentajeDisponible;
     }
 
-    actualizarValoresACertificarPorPorcentaje(item: any): void {
-        const porcentajeDisponible = (100 - item.Porcentaje);
-        const porcentajeACertificar = item.PorcentajeACertificar;
+    const cantidadACertificar = (porcentajeACertificar * item.Cantidad) / 100;
+    item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
+    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+  }
 
-        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
-            item.PorcentajeACertificar = porcentajeDisponible;
-        }
-
-        const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
-        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
-    }
+  deshabilitarItemCheckbox(item: any): boolean {
+    return item.PorcentajeACertificar < 0.01 || item.Porcentaje >= 100 || item.MontoACertificar <= 0 || item.CantidadACertificar <= 0;
+  }
 
     validarMantenerItemSeleccionado(item: any) {
         if (item.CantidadACertificar == 0) {
@@ -695,21 +713,21 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     }
 
     numbersOnly(event): boolean {
-        const charCode = (event.which) ? event.which : event.keyCode;
-        // Verificar si el valor ingresado ya contiene .
-        if (charCode === 46) {
-            return event.target.value.indexOf('.') === -1;
-        }
+      const charCode = (event.which) ? event.which : event.keyCode;
+      // Verificar si el valor ingresado ya contiene .
+      if (charCode === 46) {
+        return event.target.value.indexOf('.') === -1;
+      }
 
-        // Verificar que sean un número
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
-        }
+      // Verificar que sean un número
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+      }
 
-        // Verificar que no se acepten más de 2 decimales
-        if (event.target.value.includes('.')) {
-            return event.target.value.split('.')[1].length <= 2;
-        }
+      // Verificar que no se acepten más de 2 decimales
+      if (event.target.value.includes('.')) {
+        return event.target.value.split('.')[1].length <= 2;
+      }
     }
 
     clearCheckbox(item: any): void {
