@@ -161,7 +161,7 @@ namespace SustitucionMOAUtils.Services.Email
                     cert = apList[0].NRO_ES_LOCAL;
                     DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
                     FechaCert = fechaCarga.ToString(dateTimeFormat);
-                    desc = apList[0].Descripcion_ES;
+                    desc = apList[0].Texto_breve_servicio;
                     importe = "$ " + apList[0].Monto_total.ToString();
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(reports);
