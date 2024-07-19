@@ -1,7 +1,7 @@
 CREATE TABLE [dbo].[Aprobaciones](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[Ingresante_CDS] [nvarchar](100) NULL,
-	[NRO_ES_LOCAL] [nvarchar](20) NULL,
+    [NRO_ES_LOCAL] [nvarchar](20) NULL UNIQUE,
 	[NRO_ES_SAP] [int] NULL,
 	[Fecha_Documento] [date] NULL,
 	[Fecha_Contabilizacion] [date] NULL,
