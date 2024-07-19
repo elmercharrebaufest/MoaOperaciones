@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -47,8 +43,8 @@ namespace SustitucionMOAModel.Dto
 
     internal static class TipoOrdenes
     {
-        internal static string FAS = "FAS";
-        internal static string FASON = "FASON";
-        internal static string RESIDUOS = "RESIDUOS";
+        internal static readonly string FAS = "FAS";
+        internal static readonly string FASON = "FASON";
+        internal static readonly string RESIDUOS = "RESIDUOS";
     }
 }

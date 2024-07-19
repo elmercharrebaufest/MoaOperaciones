@@ -1,14 +1,9 @@
-﻿
-namespace SustitucionMOAModel.Dto
+﻿namespace SustitucionMOAModel.Dto
 {
     public class OrdenesDeCargaApiDto : OrdenDeCargaNoResiduoApiDto
     {
         public string Contrato { get; set; }
-        //public string EstadoDescripcion { get; set; }
         public string Pedido { get; set; }
-        //public string RazonSocialCorredor { get; set; }
-        //public bool Reventa { get; set; }
-
 
         public OrdenesDeCargaApiDto(Entities.OrdenDeCarga ordenFas)
         {
@@ -29,34 +24,9 @@ namespace SustitucionMOAModel.Dto
             PatenteChasis = ordenFas.ChasisAcoplado;
             Pedido = ordenFas.NumeroPedido;
             RazonSocialTransporte = ordenFas.RazonSocialTransporte;
+            FleteMOA = ordenFas.FleteMOA??false;
+            ClienteComoRemitenteComercial = ordenFas.Reventa;
             TipoOrden = TipoOrdenes.FAS;
         }
-
-        //public string RemitenteComercial
-        //{
-        //    get
-        //    {
-        //        if(ClienteComoRemitenteComercial && CUITDestino != CUITCliente && TipoOrden==TipoOrdenes.FASON)
-        //        {
-        //            return CUITCliente;
-        //        }
-        //        return null;
-        //    }
-        //}
-        //public string PagadorFlete
-        //{
-        //    get
-        //    {
-        //        if (FleteMOA && TipoOrden == TipoOrdenes.FASON)
-        //        {
-        //            string cUIT_MOA = CUIT_MOA;
-
-        //            return cUIT_MOA;
-        //        }
-        //        return CUITCliente;
-        //    }
-        //}
-
-        //private readonly string CUIT_MOA = "30715118773";
     }
 }

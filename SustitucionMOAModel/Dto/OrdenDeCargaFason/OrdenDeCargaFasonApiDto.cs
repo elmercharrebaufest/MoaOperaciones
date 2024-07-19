@@ -1,27 +1,9 @@
-﻿using Entities = SustitucionMOAModel.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
+﻿namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 {
     public class OrdenDeCargaFasonApiDto : OrdenDeCargaNoResiduoApiDto
     {
-        public bool ClienteComoRemitenteComercial { get; set; }
-        public string CUITDestinatario { get; set; }
-        public string CUITDestino { get; set; }
-        public string CUITIntermediarioFlete { get; set; }
-        public string DestinoMercaderia { get; set; }
-        public bool Escalable { get; set; }
         public string FechaRetiro { get; set; }
-        public bool FleteMOA { get; set; }
         public string KmARecorrer { get; set; }
-        public string RazonSocialDestinatario { get; set; }
-        public string RazonSocialDestino { get; set; }
-        public string RazonSocialIntermediarioFlete { get; set; }
-
 
         public OrdenDeCargaFasonApiDto(Entities.OrdenDeCargaFason ordenFason)
         {
