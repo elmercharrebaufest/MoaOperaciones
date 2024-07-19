@@ -1,4 +1,4 @@
-<div id="solicitudes" class="content-wraper" [class.fullscreen]="fullscreen">
+<div id="solicitudes-estado-solicitante" class="content-wraper" [class.fullscreen]="fullscreen">
     <!-- HEADER -->
     <section class="container-fluid clearfix">
         <div class="row titleSection">
@@ -113,7 +113,7 @@
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
                     </td>
-                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
+                    <td class="aprobador" *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
                         rowData.Aprobador | defaultData}}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>                                                                                
@@ -149,33 +149,34 @@
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header">
                                 <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
-                    <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header
-                        }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                    <th [id]="col.id" *ngIf="!col.sortable && col.visible" [ngClass]="{'limitHeadersSize': col.field === 'PorcentajeCertificar' || col.field === 'CantidadCertificar' || col.field === 'MontoCertificar' || col.field === 'NumeroRemito'}">{{ col.header }}</th>
-                    </ng-container>
-            </ng-template>
-            <!-- TABLE 2 HEADERS END -->
-            <!-- TABLE 2 BODY -->
-            <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
-                <tr>
-                    <td>{{ rowDetalle.NumeroLinea }}</td>
-                    <td>{{ rowDetalle.CodigoServicio }}</td>
-                    <td>{{ rowDetalle.Descripcion }}</td>
-                    <td>{{ rowDetalle.Cantidad }}</td>
-                    <td>{{ rowDetalle.UM }}</td>
-                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.Monto }}</td>
-                    <td>{{ rowDetalle.CantidadCertificar }}</td>
-                    <td class="center-content">{{ rowDetalle.PorcentajeCertificar }}</td>
-                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.MontoCertificar }}</td>
-                    <td class="center-content">{{ rowDetalle.NroRemito }}</td>
+                                    <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header
+                                        }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                                    <th [id]="col.id" *ngIf="!col.sortable && col.visible" [ngClass]="{'limitHeadersSize': col.field === 'PorcentajeCertificar' || col.field === 'CantidadCertificar' || col.field === 'MontoCertificar' || col.field === 'NumeroRemito'}">{{ col.header }}</th>
+                                    </ng-container>
+                            </ng-template>
+                            <!-- TABLE 2 HEADERS END -->
+                            <!-- TABLE 2 BODY -->
+                            <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
+                                <tr>
+                                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                                    <td>{{ rowDetalle.NroPosicion }}</td>
+                                    <td>{{ rowDetalle.CodigoServicio }}</td>
+                                    <td>{{ rowDetalle.Descripcion }}</td>
+                                    <td>{{ rowDetalle.Cantidad }}</td>
+                                    <td>{{ rowDetalle.UM }}</td>
+                                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.Monto }}</td>
+                                    <td>{{ rowDetalle.CantidadCertificar }}</td>
+                                    <td class="center-content">{{ rowDetalle.PorcentajeCertificar }}</td>
+                                    <td>{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.MontoCertificar }}</td>
+                                    <td class="center-content">{{ rowDetalle.NroRemito }}</td>
+                                </tr>
+                            </ng-template>
+                            <!-- TABLE 2 BODY END -->
+                        </p-table>
+                        <!-- TABLE 2 END -->
+                    </td>
                 </tr>
             </ng-template>
-            <!-- TABLE 2 BODY END -->
-        </p-table>
-        <!-- TABLE 2 END -->
-        </td>
-        </tr>
-        </ng-template>
         </p-table>
         <!-- TABLE 1 END -->
     </div>

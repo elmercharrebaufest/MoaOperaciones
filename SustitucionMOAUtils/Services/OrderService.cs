@@ -206,7 +206,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             foreach (var ordenCompra in ocFiltradas)
-            {               
+            {
                 string nroOC = ordenCompra.Id.ToString();
 
                 // Obtengo detalle de una OC //
@@ -234,9 +234,8 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-
                 //MMSN-602
-                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && x.Estado_certificacion == "Pendiente Aprobación");
+                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
                 if(aprobaciones != null && aprobaciones.Count > 0)
                 {
                     foreach (Aprobaciones ap in aprobaciones)
@@ -249,56 +248,71 @@ namespace SustitucionMOAUtils.Services
 
                         //Buscar posición correspondiente a ES Temporal
                         var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
-
                         
-
-                        if (position != null)
+                        if (ap.Estado_certificacion == "Aprobada")
                         {
-                            
-                            List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
+                            var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
+
+                            var Es = itemPosicion.EntradasServicio.FirstOrDefault(x => x.Id == ap.NRO_ES_SAP);
 
 
-                            position.Solicitante = solicitante[0].Solicitante.Aprobador;
-                            //Encontrar item correspondiente a ES Temporal
-
-                            var item = position.Items.First(x => x.NumeroLinea == nroLinea);
-
-                            if (item != null)
+                            if (Es != null)
                             {
-                                if(item.EntradasServicio == null)
+                                Es.TextoBreve = ap.Texto_breve_servicio;
+
+                            }
+
+                        }
+
+                        if (ap.Estado_certificacion == "Pendiente Aprobación")
+                        {
+                            if (position != null)
+                            {
+
+                                List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
+
+
+                                position.Solicitante = solicitante[0].Solicitante.Aprobador;
+                                //Encontrar item correspondiente a ES Temporal
+
+                                var item = position.Items.First(x => x.NumeroLinea == nroLinea);
+
+                                if (item != null)
                                 {
-                                    item.EntradasServicio = new List<EntradaServicioDto>();
-                                    item.EntradasServicio.Add(es);
-                                    //Recalcular Porcentaje y C. Real
-                                    item.CantidadReal = item.CantidadReal + es.Cantidad;
-
-                                    double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
-                                    item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
-
-                                    if (item.Porcentaje.EndsWith(".00"))
+                                    if (item.EntradasServicio == null)
                                     {
-                                        var redondeo = Math.Round(res);
-                                        item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                                        item.EntradasServicio = new List<EntradaServicioDto>();
+                                        item.EntradasServicio.Add(es);
+                                        //Recalcular Porcentaje y C. Real
+                                        item.CantidadReal = item.CantidadReal + es.Cantidad;
+
+                                        double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
+                                        item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
+
+                                        if (item.Porcentaje.EndsWith(".00"))
+                                        {
+                                            var redondeo = Math.Round(res);
+                                            item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                                        }
                                     }
-                                }
-                                else
-                                {
-                                    item.EntradasServicio.Add(es);
-                                    //Recalcular Porcentaje y C. Real
-                                    item.CantidadReal = item.CantidadReal + es.Cantidad;
-
-                                    double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
-                                    item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
-
-                                    if (item.Porcentaje.EndsWith(".00"))
+                                    else
                                     {
-                                        var redondeo = Math.Round(res);
-                                        item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                                        item.EntradasServicio.Add(es);
+                                        //Recalcular Porcentaje y C. Real
+                                        item.CantidadReal = item.CantidadReal + es.Cantidad;
+
+                                        double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
+                                        item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
+
+                                        if (item.Porcentaje.EndsWith(".00"))
+                                        {
+                                            var redondeo = Math.Round(res);
+                                            item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
+                                        }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
 

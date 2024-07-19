@@ -122,7 +122,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
-        { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
+        { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
@@ -132,7 +132,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
-        { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
+        { id: 'cMotivoRechazo', header: 'Motivo Rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
         { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
       ]
@@ -140,7 +140,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     {
       name: 'ESDetalle',
       columns: [
-        { id: 'DPosicion', header: 'N° de Ítem', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DItem', header: 'N° de Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DMaterial', header: 'N° de Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cantidad', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
@@ -413,7 +414,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.subscripciones.push(
       this.service.reasignarSuplente(data).subscribe(
         (resp: any) => {
-          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Estamos refrescando los datos para que puedas ver los cambios.' };
+          const msj = { severity: 'success', summary: 'Reasignación exitosa!', detail: 'Se reasigno al nuevo aprobador.' };
           if (resp.error) {
             msj.severity = 'error';
             msj.summary = resp.error

@@ -97,14 +97,14 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     {
       name: 'Certificaciones',
       columns: [
-        { id: 'cFecha', header: 'Fecha de carga', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'cFecha', header: 'Fecha Carga', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
         { id: 'cID_ES', header: 'ID-ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFechaRechazo', header: 'Fecha Rechazada', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'DFechaPres', header: 'Fecha de prestación de servicio', field: 'Fechadeprestación', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DFechaPres', header: 'Fecha Prestación', field: 'Fechadeprestación', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cOrdenCompra', header: 'Número de OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
+        { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },

@@ -66,6 +66,7 @@
     <Folder Include="scripts\PostDeployment" />
     <Folder Include="scripts\Comunicacion" />
     <Folder Include="scripts\Notificaciones\" />
+    <Folder Include="DBO\Sequence" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -246,6 +247,8 @@
     <Build Include="DBO\Tables\UsuarioReasignacion.sql" />
     <Build Include="DBO\Tables\ArchivoBoleto.sql" />
     <Build Include="DBO\Tables\AdjuntosEntradasDeServicio.sql" />
+    <Build Include="DBO\Sequence\SecuenciaNumeroTemporal.sql" />
+    <Build Include="DBO\Stored Procedures\ObtenerSiguienteValorSecuencia.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

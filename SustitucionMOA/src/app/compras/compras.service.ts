@@ -262,7 +262,7 @@ export class ComprasService extends BaseService {
         var payload = new FormData();
 
         let request: CreateEntradaServicioDto = {
-            parametros: parametros,
+            Posiciones: parametros,
             report: report,
             IdAdjuntos: IdAdjuntos
             // Asegúrate de incluir todos los campos requeridos por la interfaz

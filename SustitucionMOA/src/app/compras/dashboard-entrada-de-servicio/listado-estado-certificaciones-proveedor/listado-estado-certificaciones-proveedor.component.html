@@ -1,5 +1,5 @@
 
-<div id="solicitudes" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
+<div id="solicitudes-estado-proveedor" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
     <!-- HEADER -->
     <section class="container-fluid clearfix">
         <div class="row titleSection">
@@ -42,8 +42,7 @@
                 <tr>
                     <th></th>
                     <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
-                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{
-                            col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
                         <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                     </ng-container>
                 </tr>
@@ -75,10 +74,10 @@
                     <td>{{rowData.OrdenCompra || ""}}</td>
                     <td>
                         <div class="usuario-area">
-                            <span> {{isMoaIntern(rowData.Ingresante)}}</span>
+                            <span>{{ isMoaIntern(rowData.Ingresante) }}</span>
                         </div>
                     </td>
-                    <td>{{ rowData.Aprobador | defaultData}}</td>
+                    <td class="aprobador">{{ rowData.Aprobador | defaultData }}</td>
                     <td>
                         <div class="aprobada" *ngIf="rowData.Estado === 'Aprobada'"><span>Aprobada</span> </div>
                         <div class="pendiente-aprobacion" *ngIf="rowData.Estado === 'Pendiente Aprobación'">
