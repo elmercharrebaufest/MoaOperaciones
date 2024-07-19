@@ -3647,13 +3647,11 @@ namespace SustitucionMOAUtils.Services
                         }
                         else
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones
-                                                            .SelectMany(pos => pos.CotizacionSubPosiciones)
-                                                            .GroupBy(sub => sub.MonedaDescripcion)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.GroupBy(pos => pos.MonedaDescripcion)                                                                                                                   
                                                             .Select(grupo => new MonedaTotalDto
                                                             {
                                                                 Moneda = grupo.Key.ToString(),
-                                                                Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
+                                                                Total = grupo.SelectMany(sub => sub.CotizacionSubPosiciones).Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
                                                             }).ToList();
 
                         }
