@@ -558,27 +558,19 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['ordenDeCompra'].disable();        }
     }
 
-    // Método que se llama cada vez que cambia el estado de cualquiera de las condiciones especiales
     verificarCondicionesEspeciales(): void {
-        // Verifica si todas las condiciones especiales están deseleccionadas
         if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho) {
-        // Si todas las condiciones especiales están deseleccionadas, borra los archivos
-        this.borrarArchivosCargados();
+            this.borrarArchivosCargados();
         }
     }
   
-    // Método para borrar todos los archivos cargados
     borrarArchivosCargados(): void {
-        // Borra los archivos de los modelos correspondientes
         this.model.archivosCotizacionesNuevosCondEsp = [];
         this.model.archivosCotizacionesCondEsp = [];
     }
 
-    // Step 1: Define the method to check the conditions and enable/disable form controls
     private adjustFormControlsBasedOnConditions(): void {
         const condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
-        
-        
 
         if(this.model.editarCondicionesEspeciales == false){
 
@@ -592,6 +584,8 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['proveedorDirecto'].disable();    
             this.formularioCotizacion.controls['adicional'].disable();
             this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+            this.formularioCotizacion.controls['trabajoHecho'].disable();
+            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
 
             switch (condicionEspecial) {
                 case this.model.trabajoHecho == true:
@@ -624,6 +618,9 @@ export class CotizacionComponent extends ListBaseComponent {
                     break;
                 case this.model.condEspProveedorAsignado == true:
                     this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                    this.formularioCotizacion.controls['adicional'].enable();
+                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
+
                     break;
             }
         }       
