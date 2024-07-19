@@ -205,6 +205,9 @@
                 <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
             <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
+            <div class="form-actions ml-2">
+                <button type="submit" class="btn btn-success btn-certificar" (click)="BuildReport()">Generar Reporte</button>
+            </div>
         </div>
     </section>
 
