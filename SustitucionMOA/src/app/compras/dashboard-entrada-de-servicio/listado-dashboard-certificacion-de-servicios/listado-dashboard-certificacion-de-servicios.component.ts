@@ -309,6 +309,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+        item.posicionDescripcion = posicion.Descripcion;
 
         if (!item.isSelected) {
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1); 
