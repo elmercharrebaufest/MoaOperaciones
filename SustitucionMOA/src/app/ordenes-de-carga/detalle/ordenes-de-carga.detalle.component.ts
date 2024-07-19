@@ -20,6 +20,7 @@ import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContra
 import { Factura } from '../../common/models/ordenes-de-carga/Factura';
 import { finalize } from 'rxjs/operators';
 import { SendDataService } from '../../consulta/send-data.service';
+import { ApiResponse } from '../../common/models/response';
 
 @Component({
     selector: 'app-ordenes-de-carga.detalle',
@@ -134,12 +135,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         }
     }
 
-    confirmarSA(Id) {
+    confirmarSA(Id: number) {
         this.confirmationService.confirm({
             key: 'confirmarSA',
             message: '¿Desea solicitar anulación?',
             accept: () => {
-                this.solicitarAnulacion(Id)
+                this.validarSolicitudAnulacion(Id);
             },
             reject: () => {
             }
@@ -190,6 +191,68 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    validarSolicitudAnulacion(ordenId: number) {
+        try {
+            this.mensajeComponent.setMsgsEmpty();
+            this.spinnerComponent.showIt();
+            this.unsubscribe();
+            this.blockUI.start();
+
+            this.subscription = this.service.validarClienteSolicitaAnulacion(ordenId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    let puedeSolicitarAnulacion = this.manejarErroresApiResponse(result);
+                    if (puedeSolicitarAnulacion) {
+                        this.solicitarAnulacion(ordenId);
+                    }
+                    else {
+                        if (puedeSolicitarAnulacion === false) {
+                            this.mensajeComponent.setErrorMsg("La orden no se puede anular por estar el camión en planta");
+                            this.mostrarBotonSolicitarAnulacion = false;
+                        }
+                    }
+                }
+            )
+        }
+        catch (err) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(err);
+        }
+        finally { return false; }
+    }
+
+    validarSolicitudEdicion(ordenId: number) {
+        try {
+            this.mensajeComponent.setMsgsEmpty();
+            this.spinnerComponent.showIt();
+            this.unsubscribe();
+            this.blockUI.start();
+
+            this.subscription = this.service.validarClienteSolicitaEdicion(ordenId).subscribe(
+                result => {
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                    let puedeSolicitarEdicion = this.manejarErroresApiResponse(result);
+                    if (puedeSolicitarEdicion) {
+                        this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+                    }
+                    else {
+                        if (puedeSolicitarEdicion === false) {
+                            this.mensajeComponent.setErrorMsg("La orden no se puede editar por estar el camión en planta");
+                            this.mostrarBotonEditar = false;
+                        }
+                    }
+                }
+            )
+        }
+        catch (err) {
+            this.spinnerComponent.hideIt();
+            this.mensajeComponent.setErrorMsg(err);
+        }
+        finally { return false; }
     }
 
     solicitarAnulacion(Id) {
@@ -836,7 +899,12 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     }
 
     editarOrden() {
-        this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+        if (this.esTercero || this.esCliente() || this.esCorredor) {
+            this.validarSolicitudEdicion(this.ordenDeCarga.Id);
+        }
+        else {
+            this.goToSeccion('/ordenes-de-carga/alta/' + this.ordenDeCarga.Id);
+        }
     }
 
 
@@ -1028,5 +1096,21 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
         this.router.navigate(['/consulta/crear-consulta-interna'], {
         });
+    }
+
+    manejarErroresApiResponse<T>({logout, error, info, data}: ApiResponse<T>): T | null | undefined {
+        this.mensajeComponent.setMsgsEmpty();
+        if (logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (error) {
+            this.mensajeComponent.setErrorMsg(error);
+            return null;
+        }
+        if (info) {
+            this.mensajeComponent.setInfoMsg(info);
+        }
+        return data;
     }
 }

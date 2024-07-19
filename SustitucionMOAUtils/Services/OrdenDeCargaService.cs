@@ -1703,6 +1703,50 @@ namespace SustitucionMOAUtils.Services
                 .Any(oc => oc.CUITCliente != cuitCliente);
         }
 
+        public bool ValidarClienteSolicitaAnulacion(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId) ?? throw new Exception("No se encontró Orden de carga " + ordenId);
+            var camionEstaEnPlanta = CamionEstaEnPlanta(orden);
+            if (camionEstaEnPlanta)
+            {
+                try
+                {
+                    emailFasService.EnviarMailSolicitudAnulacionCamionEnPlanta(orden);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Error al enviar mail de cliente que intenta anular orden {ordenId} estando el camión en planta", ex);
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool ValidarClienteSolicitaEdicion(int ordenId)
+        {
+            var orden = repositorio.Obtener<OrdenDeCarga>(ordenId) ?? throw new Exception("No se encontró Orden de carga " + ordenId);
+            var camionEstaEnPlanta = CamionEstaEnPlanta(orden);
+            if (camionEstaEnPlanta)
+            {
+                try
+                {
+                    emailFasService.EnviarMailSolicitudEdicionCamionEnPlanta(orden);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"Error al enviar mail de cliente que intenta editar orden {ordenId} estando el camión en planta", ex);
+                }
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         private List<OrdenDeCarga> OrdenesConPatentesRepetidas(string patenteChasis)
         {
             return repositorio.Listar<OrdenDeCarga>(oc =>
@@ -3064,6 +3108,16 @@ namespace SustitucionMOAUtils.Services
         private void LlenarOrdenDeCargaFleteMOA(OrdenDeCarga orden, Result contratoSAP)
         {
             orden.FleteMOA = contratoSAP.PrecioFlete > 0;
+        }
+
+        private bool CamionEstaEnPlanta(OrdenDeCarga orden)
+        {
+            if (string.IsNullOrEmpty(orden.NumeroEntrega))
+            {
+                return false;
+            }
+            var recorridosScato = scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento(orden.NumeroEntrega);
+            return recorridosScato != null && recorridosScato.Any();
         }
     }
 }

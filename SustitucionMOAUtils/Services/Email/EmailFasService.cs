@@ -113,6 +113,46 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
+        public void EnviarMailSolicitudAnulacionCamionEnPlanta(OrdenDeCarga orden)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var titulo = $"Se informa que el día {DateTime.Now} se ha intentado solicitar la anulación de una orden de carga estando el camión en planta:";
+            var cabecera = "Orden:";
+            var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { orden });
+
+            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, orden.Id, ordenes, titulo, cabecera);
+
+            var emailSenderData = new EmailSenderData()
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Asunto = $"Intento de solicitud de anulación. Orden de carga N° {orden.Id}",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailSolicitudEdicionCamionEnPlanta(OrdenDeCarga orden)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var titulo = $"Se informa que el día {DateTime.Now} se ha intentado solicitar la edición de una orden de carga estando el camión en planta:";
+            var cabecera = "Orden:";
+            var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { orden });
+
+            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, orden.Id, ordenes, titulo, cabecera);
+
+            var emailSenderData = new EmailSenderData()
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Asunto = $"Intento de solicitud de edición. Orden de carga N° {orden.Id}",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
+
         public void EnviarMailTransporteNoExiste(OrdenDeCarga ordenDeCarga)
         {
             var cuerpo = $"Razón social: {ordenDeCarga.RazonSocialTransporte} <br> CUIT: {ordenDeCarga.CUITTransporte}";
@@ -255,7 +295,6 @@ namespace SustitucionMOAUtils.Services.Email
 
         public void EnviarMailSolicitudAnulacion(OrdenDeCarga orden)
         {
-
             var detallesOrden = new StringBuilder();
             var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
 

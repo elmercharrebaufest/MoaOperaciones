@@ -91,6 +91,24 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
+    public validarClienteSolicitaAnulacion(ordenId: number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append('ordenId', ordenId.toString())
+
+        return this.http
+            .get<ApiResponse<boolean>>('/api/OrdenDeCarga/ValidarClienteSolicitaAnulacion', { params: params })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    public validarClienteSolicitaEdicion(ordenId: number): Observable<ApiResponse<boolean>> {
+        let params: HttpParams = new HttpParams()
+            .append('ordenId', ordenId.toString())
+
+        return this.http
+            .get<ApiResponse<boolean>>('/api/OrdenDeCarga/ValidarClienteSolicitaEdicion', { params: params })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
     public rechazarSolicitudAnulacion(ordenDeCargaId: Number): Observable<any> {
         let params: HttpParams = new HttpParams()
             .append('ordenDeCargaId', ordenDeCargaId.toString())

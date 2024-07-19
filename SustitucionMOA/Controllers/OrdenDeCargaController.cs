@@ -989,6 +989,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult FacturasDisponibles(string numeroContrato)
         {
@@ -1012,6 +1013,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
@@ -1036,6 +1038,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult VerificarCompensacion(int ordenId)
         {
@@ -1108,7 +1111,6 @@ namespace SustitucionMOA.Controllers
 
         }
 
-
         [HttpGet]
         public ActionResult ValidarOrdenActivaScato(string ordenId)
         {
@@ -1132,6 +1134,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
@@ -1177,6 +1180,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ContentResult ValidarExistenciaPatentes(string patenteChasis, string cuitCliente)
         {
@@ -1201,5 +1205,52 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
+        [HttpGet]
+        public ContentResult ValidarClienteSolicitaAnulacion(int ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarClienteSolicitaAnulacion(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ValidarClienteSolicitaEdicion(int ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarClienteSolicitaEdicion(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
     }
 }

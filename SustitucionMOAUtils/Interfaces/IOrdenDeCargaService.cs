@@ -60,5 +60,7 @@ namespace SustitucionMOAUtils.Interfaces
         void VerificarOrdenesFacturaCompensadaJob();
         ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente);
         bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente);
+        bool ValidarClienteSolicitaAnulacion(int ordenId);
+        bool ValidarClienteSolicitaEdicion(int ordenId);
     }
 }

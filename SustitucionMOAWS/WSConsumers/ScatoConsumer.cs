@@ -170,7 +170,7 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
                 var recorridos = service.ObtenerRecorridoNoRechazadoPorIdOperaciones(ordenId.ToString());
-                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento. ordenFasonId: {0}",
+                Log.Info(string.Format("ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason. ordenFasonId: {0}",
                     ordenId));
                 return recorridos;
             }
