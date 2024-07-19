@@ -259,7 +259,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     seleccionarPosicion(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = posicion.Items.filter(item => this.esItemValidoParaCertificar(item));
+            const itemsFiltered = posicion.Items.filter(item => this.esItemValidoParaCertificar(item) && Number(item.PorcentajeACertificar) >= 0.001);
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
                     item.isSelected = true;
@@ -439,6 +439,187 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                      result.data = [{
+                        "NumeroOrdenDeCompra": "4124000043",
+                        "FechaCreacion": "20/05/2024",
+                        "Proveedor": "0057984261",
+                        "UsuarioCreador_Id": 0,
+                        "UsuarioCreador": "RABELLATM",
+                        "Moneda_Id": 0,
+                        "MonedaDescripcion": "ARP",
+                        "MontoTotal": 104000,
+                        "PrecioFinal": 0,
+                        "TipoPosicionCodigo": null,
+                        "TextoDeCabecera": null,
+                        "CondicionesDeEntrega": null,
+                        "CondicionesDePago": null,
+                        "Garantias": null,
+                        "Centro": null,
+                        "CalleEntrega": null,
+                        "CodigoPostal": null,
+                        "ItemPorPagina": 0,
+                        "Pagina": 0,
+                        "ItemsTotales": 0,
+                        "NombreProveedor": "ARROYITO MAQUINARIAS S R L",
+                        "Cuit": "34-57984261-1",
+                        "SubjToR": "",
+                        "MontoTotalString": "10,400,000.00",
+                        "Posiciones": [
+                          {
+                            "Id": 3201179,
+                            "NumeroPosicion": 1,
+                            "CotizacionPosicion_Id": 0,
+                            "Cantidad": 1,
+                            "SolpPosicion_Id": 0,
+                            "CodigoMaterial": "",
+                            "Indice": null,
+                            "Descripcion": "ser 1",
+                            "CentroComprasDescripcion": null,
+                            "TextoSuministro": null,
+                            "Modelo": null,
+                            "UnidadDescripcion": null,
+                            "MonedaDescripcion": "ARP",
+                            "PrecioUnidad": 10,
+                            "MonedaId": null,
+                            "PrecioTotal": 10,
+                            "FechaEntregaServicio": null,
+                            "PlazoDeOferta": null,
+                            "MaterialComprasDescripcion": null,
+                            "MonedaCodigo": null,
+                            "CentroComprasCodigo": "1029",
+                            "MaterialTextoAmpliado": null,
+                            "UM": "LE",
+                            "GrupoArticulos": "30015",
+                            "Centro": "1029-Planta San Lorenzo",
+                            "Almacen": "4700-Terceros",
+                            "NumeroSolp": "0212400167",
+                            "Contrato": "",
+                            "Solicitante": "No se encontro la Solp",
+                            "PrecioUnidadString": "10.00",
+                            "Items": [
+                              {
+                                "Id": "0003201180",
+                                "LINE_NO": "0000000006",
+                                "PosicionId": 3201180,
+                                "NumeroLinea": 20,
+                                "Cantidad": 1000000,
+                                "Descripcion": "HR COPA OBRA OFICIAL",
+                                "Campo_I": null,
+                                "ServicioNumero": 3000043,
+                                "UnidadMedida": null,
+                                "PrecioBruto": 10,
+                                "Monto": 0,
+                                "Toler": null,
+                                "ItemNumero": null,
+                                "SUBPCKG_NO": null,
+                                "UM": "H",
+                                "Importe": 10,
+                                "Moneda": "ARP",
+                                "CantidadReal": 0,
+                                "Porcentaje": "0",
+                                "Solicitante": null,
+                                "ImporteString": "10.00",
+                                "EntradasServicio": [],
+                                "NroOrdenCompra": "4124000043",
+                                "NroPosicion": "1"
+                              },
+                              {
+                                "Id": "0003201180",
+                                "LINE_NO": "0000000007",
+                                "PosicionId": 3201180,
+                                "NumeroLinea": 50,
+                                "Cantidad": 90,
+                                "Descripcion": "HR COPA OBRA MEDIO OFICIAL",
+                                "Campo_I": null,
+                                "ServicioNumero": 3000044,
+                                "UnidadMedida": null,
+                                "PrecioBruto": 1000,
+                                "Monto": 0,
+                                "Toler": null,
+                                "ItemNumero": null,
+                                "SUBPCKG_NO": null,
+                                "UM": "H",
+                                "Importe": 1000,
+                                "Moneda": "ARP",
+                                "CantidadReal": 0,
+                                "Porcentaje": "0",
+                                "Solicitante": null,
+                                "ImporteString": "1,000.00",
+                                "EntradasServicio": [],
+                                "NroOrdenCompra": "4124000043",
+                                "NroPosicion": "1"
+                              }
+                            ],
+                            "NroOrdenCompra": "4124000043",
+                            "NoMoreGR": "",
+                            "Bloqueada": false
+                          },
+                          {
+                            "Id": 3201181,
+                            "NumeroPosicion": 2,
+                            "CotizacionPosicion_Id": 0,
+                            "Cantidad": 1,
+                            "SolpPosicion_Id": 0,
+                            "CodigoMaterial": "",
+                            "Indice": null,
+                            "Descripcion": "ser 2",
+                            "CentroComprasDescripcion": null,
+                            "TextoSuministro": null,
+                            "Modelo": null,
+                            "UnidadDescripcion": null,
+                            "MonedaDescripcion": "ARP",
+                            "PrecioUnidad": 4000,
+                            "MonedaId": null,
+                            "PrecioTotal": 4000,
+                            "FechaEntregaServicio": null,
+                            "PlazoDeOferta": null,
+                            "MaterialComprasDescripcion": null,
+                            "MonedaCodigo": null,
+                            "CentroComprasCodigo": "1029",
+                            "MaterialTextoAmpliado": null,
+                            "UM": "LE",
+                            "GrupoArticulos": "30015",
+                            "Centro": "1029-Planta San Lorenzo",
+                            "Almacen": "4700-Terceros",
+                            "NumeroSolp": "0212400167",
+                            "Contrato": "",
+                            "Solicitante": "No se encontro la Solp",
+                            "PrecioUnidadString": "4,000.00",
+                            "Items": [
+                              {
+                                "Id": "0003201182",
+                                "LINE_NO": "0000000008",
+                                "PosicionId": 3201182,
+                                "NumeroLinea": 20,
+                                "Cantidad": 4,
+                                "Descripcion": "HR COPA PLANTA MEDIO OFICIAL",
+                                "Campo_I": null,
+                                "ServicioNumero": 3000047,
+                                "UnidadMedida": null,
+                                "PrecioBruto": 1000,
+                                "Monto": 0,
+                                "Toler": null,
+                                "ItemNumero": null,
+                                "SUBPCKG_NO": null,
+                                "UM": "H",
+                                "Importe": 1000,
+                                "Moneda": "ARP",
+                                "CantidadReal": 0,
+                                "Porcentaje": "0",
+                                "Solicitante": null,
+                                "ImporteString": "1,000.00",
+                                "EntradasServicio": [],
+                                "NroOrdenCompra": "4124000043",
+                                "NroPosicion": "2"
+                              }
+                            ],
+                            "NroOrdenCompra": "4124000043",
+                            "NoMoreGR": "",
+                            "Bloqueada": false
+                          }
+                        ]
+                      }
+                      ];
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
@@ -684,22 +865,35 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         });
     }
 
-    calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe) / item.Cantidad;
-        item.MontoACertificar = montoActualizado;
+  eliminarFormatoNumeroLocal(value: any): number {
+    if (!value) value = 0;
+    if (typeof value === 'string') {
+      value = parseFloat(value.replace(',', ''));
     }
+    return value;
+  }
+
+  private calcularMontoACertificar(cantidadACertificar: number, importe: number, cantidad: number): number {
+    const montoActualizado = (cantidadACertificar * importe) / cantidad;
+    return montoActualizado;
+  }
+
+  private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
+    const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
+    return porcentajeACertificar;
+  }
 
     actualizarValoresACertificarPorCantidad(item: any): void {
-        const cantidadACertificar = item.CantidadACertificar;
-        const cantidadDisponible = item.Cantidad - item.CantidadReal;
+      let cantidadACertificar = item.CantidadACertificar;
+      const cantidadDisponible = item.Cantidad - item.CantidadReal;
 
-        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
-            item.CantidadACertificar = cantidadDisponible;
-        }
-
-        const percentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
-        item.PorcentajeACertificar = Number(percentajeACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+      if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
+        item.CantidadACertificar = cantidadDisponible;
+        cantidadACertificar = cantidadDisponible;
+      }
+      const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
+      item.PorcentajeACertificar = Number(porcentajeACertificar.toFixed(3));
+      item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
     }
 
     Number = Number;
@@ -718,13 +912,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
                 const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
                 item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-                this.calcularMontoACertificar(item);
+                item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
 
                 if (porcentajeACertificar != '' && porcentajeACertificar > 0 &&
                     (item.CantidadACertificar.toFixed(3) === cantidadDisponible.toFixed(3) || Number(item.MontoACertificar.toFixed(2)) < 0.01)) {
                     item.PorcentajeACertificar = porcentajeDisponible;
                     item.CantidadACertificar = cantidadDisponible;
-                    this.calcularMontoACertificar(item);
+                    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
                 }
             }
         }, 500);
@@ -769,7 +963,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     selectAllItems(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item));
+            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item) && Number(item.PorcentajeACertificar) >= 0.001);
             if (itemsFiltered.length > 0) {
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
@@ -849,7 +1043,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
         let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
         let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
-        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal || Number(item.PorcentajeACertificar) < 0.001;
         return deshabilitarCheckboxDeItem;
     }
 

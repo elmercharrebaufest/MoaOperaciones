@@ -272,10 +272,10 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorCantidad(rowItem);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"
-                                                                   (ngModelChange)="rowItem.CantidadACertificar=Number($event)"
-                                                                   [ngModel]="rowItem.CantidadACertificar | number:'1.0-3'"
+                                                                   (ngModelChange)="rowItem.CantidadACertificar=eliminarFormatoNumeroLocal($event)"
+                                                                   [ngModel]="rowItem.CantidadACertificar | customNumberFormatter:3"
                                                                    required
-                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
+                                                                   pattern="^(\d{1,3}(?:,\d{3})*)(?:.\d{1,3})?$"
                                                                    [disabled]="rowItem.Porcentaje==100"
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}" />
 
@@ -286,7 +286,7 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem,$event);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"
-                                                                   (ngModelChange)="rowItem.PorcentajeACertificar=Number($event)"
+                                                                   (ngModelChange)="rowItem.PorcentajeACertificar=eliminarFormatoNumeroLocal($event)"
                                                                    [ngModel]="rowItem.PorcentajeACertificar | number:'1.0-3'"
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required
