@@ -233,7 +233,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     selectAllPositionsLines(event: any, positions: any): void {
         if (event.target.checked) {
-            const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0 && Number(row.PorcentajeACertificar) > 0.01);
 
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
@@ -297,7 +297,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             item.NroSolP = posicion.NumeroSolp;
             if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
-
         posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
@@ -676,7 +675,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
   }
 
   actualizarValoresACertificarPorCantidad(item: any): void {
-    const cantidadACertificar = item.CantidadACertificar;
+    let cantidadACertificar = item.CantidadACertificar;
     const cantidadDisponible = item.Cantidad - item.CantidadReal;
 
     if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && !cantidadACertificar)) {
@@ -694,7 +693,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     const porcentajeDisponible = (100 - item.Porcentaje);
 
     if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && !porcentajeACertificar)) {
-        item.PorcentajeACertificar = porcentajeDisponible;
+      item.PorcentajeACertificar = porcentajeDisponible;
+      porcentajeACertificar = porcentajeDisponible;
     }
 
     const cantidadACertificar = (porcentajeACertificar * item.Cantidad) / 100;
@@ -707,7 +707,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
   }
 
     validarMantenerItemSeleccionado(item: any) {
-        if (item.CantidadACertificar == 0) {
+        if (item.CantidadACertificar == 0 || Number(item.PorcentajeACertificar < 0.01) || Number(item.MontoACertificar < 0.01)) {
             this.clearCheckbox(item);
         }
     }
