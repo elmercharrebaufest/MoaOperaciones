@@ -2,6 +2,7 @@
     margin-top: 0;
     position: relative;
     font-family: "Roboto Condensed", Arial, sans-serif !important;
+    overflow: hidden;
 }
 
 /* HEADER */
