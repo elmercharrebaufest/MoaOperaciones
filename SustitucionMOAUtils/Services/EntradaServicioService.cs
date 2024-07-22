@@ -729,14 +729,13 @@ namespace SustitucionMOAUtils.Services
 
         private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, bool reasignar)
         {
-            if (reasignar)
-            {
-                var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
-                List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-                List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
-                reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
-            }
+        
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
+            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
+            
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
 
