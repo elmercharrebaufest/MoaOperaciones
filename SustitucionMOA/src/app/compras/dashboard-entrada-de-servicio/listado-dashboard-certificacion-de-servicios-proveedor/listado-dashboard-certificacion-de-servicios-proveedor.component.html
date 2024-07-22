@@ -242,7 +242,7 @@
                                                         <input type="checkbox"
                                                                [(ngModel)]="rowData.isSelected"
                                                                (change)="onCheckboxChange(rowData)"
-                                                               [attr.disabled]="isGet100(rowData) || rowData.MontoACertificar === 0 || !hidePositionCheckboxToAll(rowData) ? true : null" />
+                                                               [attr.disabled]="deshabilitarItemCheckbox(rowData) || !hidePositionCheckboxToAll(rowData) ? true : null" />
                                                         <a href="#" [pRowToggler]="rowData" *ngIf="rowData.EntradasServicio.length > 0">
                                                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                                         </a>
@@ -259,10 +259,10 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorCantidad(rowData);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowData)"
-                                                                   (ngModelChange)="rowData.CantidadACertificar=$event"
-                                                                   [ngModel]="rowData.CantidadACertificar | number:'1.0-3'"
+                                                                   (ngModelChange)="rowData.CantidadACertificar=eliminarFormatoNumeroLocal($event)"
+                                                                   [ngModel]="rowData.CantidadACertificar | customNumberFormatter:3"
                                                                    required
-                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
+                                                                   pattern="^(\d{1,3}(?:,\d{3})*)(?:.\d{1,3})?$"
                                                                    [disabled]="rowData.Porcentaje==100"
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}" />
 
@@ -272,7 +272,7 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowData);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowData)"
-                                                                   (ngModelChange)="rowData.PorcentajeACertificar=$event"
+                                                                   (ngModelChange)="rowData.PorcentajeACertificar=eliminarFormatoNumeroLocal($event)"
                                                                    [ngModel]="rowData.PorcentajeACertificar | number:'1.0-3'"
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required
@@ -289,7 +289,7 @@
                                                                 {{ rowData.Cantidad * rowData.Importe | number:'1.0-2' }}
                                                             </span>
                                                             <span *ngIf="col.id === 'iMontoACertificar'">
-                                                                {{ rowData.CantidadACertificar * rowData.Importe | number:'1.0-2' }}
+                                                                {{ rowData.MontoACertificar | number:'1.0-2' }}
                                                             </span>
 
                                                             <button *ngIf="col.id === 'iAcciones'"
