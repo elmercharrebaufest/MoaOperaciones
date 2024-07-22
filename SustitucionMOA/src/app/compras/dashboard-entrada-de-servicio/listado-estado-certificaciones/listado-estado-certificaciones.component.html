@@ -39,7 +39,7 @@
                 <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver
                     todo</button>
                 <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
-                    [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver por proveedor</button>
+                    [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver Propias</button>
             </div>
         </div>
         <!-- FILTERS END -->
