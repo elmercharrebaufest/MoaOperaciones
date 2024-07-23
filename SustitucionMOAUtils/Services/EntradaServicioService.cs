@@ -450,7 +450,8 @@ namespace SustitucionMOAUtils.Services
                 MontoCertificar = temporal.Monto_a_certificar,
                 NroRemito = temporal.Referencia,
                 CodigoServicio = temporal.Nro_servicio,
-                FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy")
+                FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy"),
+                CantidadAnterior = Convert.ToDouble(temporal.Cantidad_Anterior)
             };
 
             return detalleEntradaServicioTemp;
@@ -1109,7 +1110,13 @@ namespace SustitucionMOAUtils.Services
                     aprobacion.Porcentaje_a_certificar = esItem.Percentage;
                     aprobacion.Planned_package = esItem.PlannedPackage;
                     aprobacion.Planned_line = esItem.PlannedLine;
-
+                    
+                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage);
+                    if (itemReport != null)
+                    {
+                        aprobacion.Cantidad_Anterior = Decimal.ToDouble(itemReport.CantidadReal);
+                    }
+                    
                     if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                     {
                         aprobacion.Monto_a_certificar = double.Parse(esItem.Quantity, System.Globalization.CultureInfo.InvariantCulture) * double.Parse(esItem.ItemGrossPrice, System.Globalization.CultureInfo.InvariantCulture);
