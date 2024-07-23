@@ -474,7 +474,7 @@ namespace SustitucionMOAUtils.Services
         /// Actualmente hay varias incognicas con respecto a las condiciones que debe cumplir una ES para poder ser borrada
         /// </summary>
         /// <returns></returns>
-        public string BorrarEntradaServicio(EntradaServicioParamsDto parametros)
+        public string BorrarEntradaServicio(EntradaServicioParamsDto parametros, SustitucionMOAModel.Dto.UsuarioDto usuario)
         {
             string result = "";
             if (parametros.DocumentoNumero.Contains("\""))
@@ -487,7 +487,8 @@ namespace SustitucionMOAUtils.Services
                 List<Aprobaciones> apToDelete = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == parametros.DocumentoNumero);
                 foreach (Aprobaciones ap in apToDelete)
                 {
-                    repositorio.Remover<Aprobaciones>(ap);
+                    ap.Estado_certificacion = "Anulada";
+                    ap.Anulado_por = usuario.Mail;
                 }
                 repositorio.GuardarCambios();
                 result = "Se ha eliminado la entrada de servicio " + parametros.DocumentoNumero;

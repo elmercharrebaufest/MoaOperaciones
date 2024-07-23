@@ -35,6 +35,7 @@ CREATE TABLE [dbo].[Aprobaciones](
 	[Planned_package] NVARCHAR(50) NULL, 
     [Planned_line] NVARCHAR(50) NULL, 
 	[Proveedor] NVARCHAR(50) NULL,
+    [Anulado_por] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_Aprobaciones] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
