@@ -662,6 +662,38 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
 
+    habilitarTodosCampoDeValorACertificar(): void {
+        if (this.expandedPositionRow) { // Verifica si hay una posición expandida
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow)); 
+          if (posicionExpandida) { 
+            posicionExpandida.Items.forEach(item => {
+              const rowIndex = this.tablaItems.value.indexOf(item);
+              if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {
+                this.habilitarCampoDeValorACertificar(rowIndex);
+              }
+            });
+          }
+        }
+      }
+
+      hayElementosParaCertificar(): boolean {
+        if (this.expandedPositionRow) {
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
+          if (posicionExpandida) {
+            return posicionExpandida.Items.some(item => item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0);
+          }
+        } else {
+          return this.tablaPO.some(ordenCompra =>
+            ordenCompra.Posiciones.some(posicion =>
+              posicion.Items.some(item => 
+                (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0) && 
+                (!this.ocFilterApplied || this.tienePorcentajeACertificar(item))
+              )
+            )
+          );
+        }
+        return false; 
+      }
 
 
     /**
