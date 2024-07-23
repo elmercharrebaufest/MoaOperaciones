@@ -118,8 +118,6 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
       columns: [
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cantidad Total', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DCantidadCertificar', header: 'Cantidad a certificar', field: 'CantidadCertificar', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'DPorcentajeCertificar', header: 'Porcentaje a certificar', field: 'PorcentajeCertificar', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DImporteTotal', header: 'Importe total', field: 'ImporteTotal', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DU', header: 'UM', field: 'U', type: 'string', sortable: false, required: false, visible: true },
