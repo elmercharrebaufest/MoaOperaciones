@@ -34,6 +34,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                string nulled = "Anulada";
                 string ES = "";
                 string User = "";               
                 bool oldES = false;
@@ -61,7 +62,7 @@ namespace SustitucionMOA.Controllers
                     if (!string.IsNullOrEmpty(User))
                     {
                         var Usuario = usuarioService.GetUsuarioPorId(int.Parse(User));
-                        if (aprobacionesListdb[0].Aprobador_CDS == Usuario.Mail)
+                        if (aprobacionesListdb[0].Aprobador_CDS == Usuario.Mail && aprobacionesListdb[0].Estado_certificacion != nulled)
                         {
                             isApprover = true;
                         }
