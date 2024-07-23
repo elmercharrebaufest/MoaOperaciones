@@ -13,6 +13,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.AgregarRegistroInfoServiceWebMOA;
 using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -20,7 +21,6 @@ namespace SustitucionMOAWS.WSConsumers
     {
         private readonly IRepositorio repositorio;
         private readonly SI_MMRFC_MANTENER_REGINFOClient service;
-        private readonly string rutaArchivosXmls = ConfigurationManager.AppSettings["RutaArchivosCompras"];
 
         public AgregarRegistroInfoConsumerMOA(IRepositorio repositorio)
         {
@@ -35,10 +35,6 @@ namespace SustitucionMOAWS.WSConsumers
 
         public CrearSolpConsumerMOAResponse AgregarRegistroInfo(List<RegistroInfoDto> registrosInfo)
         {
-            var fecha = DateTime.Now.ToString("yyyy-MM-dd");
-            var nombreArchivoLlamada = string.Concat(fecha, " - llamada agregarRegistro.xml");
-            var rutaArchivoLlamada = Path.Combine(rutaArchivosXmls, "Registros Info XML", nombreArchivoLlamada);
-
             BAPIRETURN[] BAPIRETURNE = new BAPIRETURN[] { };
             MEWIPIRTEXT[] MEWIPIRTEXTE = new MEWIPIRTEXT[] { };
             MEWISCALEQUAN[] MEWISCALEQUANE = new MEWISCALEQUAN[] { };
@@ -85,24 +81,7 @@ namespace SustitucionMOAWS.WSConsumers
                 respuesta.Errores.Add(error);
             }
 
-
-            try
-            {
-                if (!File.Exists(rutaArchivoLlamada))
-                {
-                    FileInfo fileCrear = new FileInfo(rutaArchivoLlamada);
-                    fileCrear.Directory.Create();
-                    File.WriteAllText(fileCrear.FullName, xml);
-                }
-                else
-                {
-                    File.AppendAllText(rutaArchivoLlamada, xml);
-                }
-            }
-            catch (Exception)
-            {
-                //TODO - revisar por que da error de que no se puede acceder al archivo.
-            }
+            Log.ComprasRegistroInfo(xml);
             return respuesta;
         }
 
