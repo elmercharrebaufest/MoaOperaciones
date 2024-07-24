@@ -265,7 +265,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out Aprobaciones detalle))
                             {
-                                detalleSAP.NumeroLinea = detalle.Nro_linea;
+                                detalleSAP.NumeroLinea = int.Parse(detalle.Nro_linea).ToString();
                                 detalleSAP.Descripcion = string.IsNullOrEmpty(detalle.Descripcion_ES) ? "" : detalle.Descripcion_ES.Trim();
                                 detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
@@ -273,6 +273,8 @@ namespace SustitucionMOAUtils.Services
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
                                 detalleSAP.NroRemito = detalle.Referencia;
                                 detalleSAP.CodigoServicio = detalle.Nro_servicio;
+                                detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
+                                detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
                                 documento.MotivoRechazo = detalle.Motivo_rechazo;
                                 documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
                                 documento.Ingresante = detalle.Ingresante_CDS;
