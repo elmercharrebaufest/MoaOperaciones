@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-import { ConfirmationService, Message } from 'primeng/api';
+import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
@@ -101,7 +101,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     totalMontoCertificar!: number;
 
     constructor(protected service: ComprasService,
-        private confirmationService: ConfirmationService
+        private confirmationService: ConfirmationService,
+        private messageService: MessageService
     ) { }
 
     ngOnInit() {
@@ -529,11 +530,11 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (!this.isValidFileType(file)) {
-          alert(`${file.name} Archivo invalido.`);
+            this.messageService.add({ severity: 'error', summary: `${file.name} Archivo invalido.`, detail: 'Solo se permiten archivos .pdf, .xls, .msg.' })
           continue;
         }
         if (totalSize + file.size > this.maxSizeFile) {
-          alert('Tamaño excedido 10 MB.');
+            this.messageService.add({ severity: 'error', summary: 'Tamaño excedido 10 MB.', detail: 'El limite de carga de archivos es de 10 MB.' })
           continue;
         }
         this.uploadedFiles.push(file);

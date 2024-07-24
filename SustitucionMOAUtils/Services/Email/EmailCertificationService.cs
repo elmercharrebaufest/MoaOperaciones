@@ -138,7 +138,8 @@ namespace SustitucionMOAUtils.Services.Email
                 }
                 catch(Exception e)
                 {
-                    //Continue
+                    Log.AzureError(e);
+                    Log.Error("EnviarMailAprobacion: error al obtener archivo ",e);
                 }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
@@ -183,7 +184,7 @@ namespace SustitucionMOAUtils.Services.Email
                     Mails = dest,
                     Asunto = asunto,
                     Cuerpo = cuerpo,
-                    Archivo = ms.GetBuffer(),
+                    Archivo = ms.Length > 0 ? ms.GetBuffer(): null,
                     NombreArchivo = "Reporte.pdf"
                 };
 

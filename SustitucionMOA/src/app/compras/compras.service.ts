@@ -268,9 +268,6 @@ export class ComprasService extends BaseService {
             // Asegúrate de incluir todos los campos requeridos por la interfaz
         };
 
-
-        
-
         payload.append('request', JSON.stringify(request));
         //payload.append('report', JSON.stringify(report));
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
@@ -300,10 +297,10 @@ export class ComprasService extends BaseService {
 
         let params: HttpParams = new HttpParams();
         params = params.set("idES", idES.toString());
-
-        return this.http
-            .get<any>('/api/AdjuntosCertificaciones/GetAdjuntos',{ params : params, headers: this.headers });
+        let resp = this.http.post<any>('/api/AdjuntosCertificaciones/GetAdjuntos', params ,{ headers: this.headers });
+        return resp;
     }
+
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({

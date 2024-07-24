@@ -21,6 +21,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public int NumeroServicio { get; set; }
         public string TextoBreveServicio { get; set;}
         public double CantidadReal { get; set; }
+        public double CantidadAnterior { get; set; }
         public double Porcentaje { get; set; }
         public string CantidadCertificar { get; set; }
         public string PorcentajeCertificar { get; set; }
