@@ -267,7 +267,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 detalleSAP.NumeroLinea = int.Parse(detalle.Nro_linea).ToString();
                                 detalleSAP.Descripcion = string.IsNullOrEmpty(detalle.Descripcion_ES) ? "" : detalle.Descripcion_ES.Trim();
-                                detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) ? "" : detalle.Texto_breve_servicio.Trim();
+                                detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
                                 detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
@@ -689,7 +689,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte, false);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -731,7 +731,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, bool reasignar)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte)
         {
         
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
@@ -1570,7 +1570,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
                 List<ReporteDto> reporte = new List<ReporteDto>();
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte, true);
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte);
 
                 repositorio.GuardarCambios();
 
