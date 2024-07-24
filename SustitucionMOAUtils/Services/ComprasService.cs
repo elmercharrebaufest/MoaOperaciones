@@ -2835,7 +2835,7 @@ namespace SustitucionMOAUtils.Services
                         continue;
                     }
                 }
-                SetNombreDePedido(solp);
+            
 
 
                 if (subPosicionesBorradas.Count() > 0)
@@ -2855,7 +2855,8 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
+                //solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
+                solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
 
 
                 if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
@@ -2863,6 +2864,7 @@ namespace SustitucionMOAUtils.Services
                     ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
                 }
                 repositorio.GuardarCambios();
+                SetNombreDePedido(solp);
 
                 GrabarArchivosSapEnPliego(solp, result.Archivos);
                 if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
