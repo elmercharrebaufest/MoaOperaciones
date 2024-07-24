@@ -144,6 +144,7 @@
             <!-- TABLE 2 BODY -->
             <ng-template pTemplate="body" let-rowData let-expanded="expanded">
                 <tr>
+                    <td>{{ rowData.NroPosicion }}</td>
                     <td>{{rowData.Descripcion}}</td>
                     <td>{{rowData.Cantidad}}</td>
                     <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.Monto}}</td>
