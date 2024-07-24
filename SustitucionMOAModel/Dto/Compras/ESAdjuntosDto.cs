@@ -11,5 +11,6 @@ namespace SustitucionMOAModel.Dto.Compras
         public byte[] Adjuntos { get; set; }
         public string NombreArchivo { get; set; }
         public string Extension { get; set; }
+        public string Url { get; set; }
     }
 }

@@ -54,6 +54,7 @@ import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
 import { CustomFilterEstados } from './pipes/customFilterEstados';
 
 import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
+import { CustomNumberFormatterPipe } from './pipes/customNumberFormatter.pipe'
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -90,9 +91,9 @@ const declaredAndExported = [
     CustomNumberPipe,
     FormatNumericDirective,
     CustomTipoProveedorFilter,
-    CustomFilterEstados
-    ,
-    CustomDefaultDataPipe
+    CustomFilterEstados,
+    CustomDefaultDataPipe,
+    CustomNumberFormatterPipe
 ];
 @NgModule({
     imports: [CommonModule,

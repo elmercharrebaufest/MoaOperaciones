@@ -233,7 +233,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     selectAllPositionsLines(event: any, positions: any): void {
         if (event.target.checked) {
-            const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0);
+            const itemsFiltered = positions.Items.filter((row: any) => !this.isGet100(row) && row.MontoACertificar != 0 && Number(row.PorcentajeACertificar) > 0.01);
 
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
@@ -285,6 +285,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+        item.posicionDescripcion = posicion.Descripcion;
 
         if (!item.isSelected) {
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1);
@@ -297,7 +298,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             item.NroSolP = posicion.NumeroSolp;
             if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
-
         posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     }
@@ -657,59 +657,78 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         });
     }
 
-    calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe);
-        item.MontoACertificar = montoActualizado;
+  eliminarFormatoNumeroLocal(value: any): number {
+    if (!value) value = 0;
+    if (typeof value === 'string') {
+      value = parseFloat(value.replace(',', ''));
+    }
+    return value;
+  }
+
+  private calcularMontoACertificar(cantidadACertificar: number, importe: number): number{
+      const montoActualizado = (cantidadACertificar * importe);
+      return montoActualizado;
+  }
+
+  private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
+    const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
+    return porcentajeACertificar;
+  }
+
+  actualizarValoresACertificarPorCantidad(item: any): void {
+    let cantidadACertificar = item.CantidadACertificar;
+    const cantidadDisponible = item.Cantidad - item.CantidadReal;
+
+    if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && !cantidadACertificar)) {
+      item.CantidadACertificar = cantidadDisponible;
+      cantidadACertificar = cantidadDisponible;
     }
 
-    actualizarValoresACertificarPorCantidad(item: any): void {
-        const cantidadACertificar = item.CantidadACertificar;
-        const cantidadDisponible = item.Cantidad - item.CantidadReal;
+    const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
+    item.PorcentajeACertificar = porcentajeACertificar;
+    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+  }
 
-        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
-            item.CantidadACertificar = cantidadDisponible;
-        }
+  actualizarValoresACertificarPorPorcentaje(item: any): void {
+    let porcentajeACertificar = item.PorcentajeACertificar;
+    const porcentajeDisponible = (100 - item.Porcentaje);
 
-        const percentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
-        item.PorcentajeACertificar = Number(percentajeACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+    if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && !porcentajeACertificar)) {
+      item.PorcentajeACertificar = porcentajeDisponible;
+      porcentajeACertificar = porcentajeDisponible;
     }
 
-    actualizarValoresACertificarPorPorcentaje(item: any): void {
-        const porcentajeDisponible = (100 - item.Porcentaje);
-        const porcentajeACertificar = item.PorcentajeACertificar;
+    const cantidadACertificar = (porcentajeACertificar * item.Cantidad) / 100;
+    item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
+    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+  }
 
-        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
-            item.PorcentajeACertificar = porcentajeDisponible;
-        }
-
-        const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
-        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
-    }
+  deshabilitarItemCheckbox(item: any): boolean {
+    return item.PorcentajeACertificar < 0.01 || item.Porcentaje >= 100 || item.MontoACertificar <= 0 || item.CantidadACertificar <= 0;
+  }
 
     validarMantenerItemSeleccionado(item: any) {
-        if (item.CantidadACertificar == 0) {
+        if (item.CantidadACertificar == 0 || Number(item.PorcentajeACertificar < 0.01) || Number(item.MontoACertificar < 0.01)) {
             this.clearCheckbox(item);
         }
     }
 
     numbersOnly(event): boolean {
-        const charCode = (event.which) ? event.which : event.keyCode;
-        // Verificar si el valor ingresado ya contiene .
-        if (charCode === 46) {
-            return event.target.value.indexOf('.') === -1;
-        }
+      const charCode = (event.which) ? event.which : event.keyCode;
+      // Verificar si el valor ingresado ya contiene .
+      if (charCode === 46) {
+        return event.target.value.indexOf('.') === -1;
+      }
 
-        // Verificar que sean un número
-        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-            return false;
-        }
+      // Verificar que sean un número
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+      }
 
-        // Verificar que no se acepten más de 2 decimales
-        if (event.target.value.includes('.')) {
-            return event.target.value.split('.')[1].length <= 2;
-        }
+      // Verificar que no se acepten más de 2 decimales
+      if (event.target.value.includes('.')) {
+        return event.target.value.split('.')[1].length <= 2;
+      }
     }
 
     clearCheckbox(item: any): void {
@@ -1112,7 +1131,6 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
 
-
         this.service.GetAdjuntosByES(id).subscribe(result => {
             if (result.data.length > 0) {
                 
@@ -1150,6 +1168,39 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             document.body.removeChild(link);
             setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
         }
+      }
+
+      habilitarTodosCampoDeValorACertificar(): void {
+        if (this.expandedPositionRow) { // Verifica si hay una posición expandida
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow)); 
+          if (posicionExpandida) { 
+            posicionExpandida.Items.forEach(item => {
+              const rowIndex = this.tablaItems.value.indexOf(item);
+              if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {
+                this.habilitarCampoDeValorACertificar(rowIndex);
+              }
+            });
+          }
+        }
+      }
+
+      hayElementosParaCertificar(): boolean {
+        if (this.expandedPositionRow) {
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
+          if (posicionExpandida) {
+            return posicionExpandida.Items.some(item => item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0);
+          }
+        } else {
+          return this.tablaPO.some(ordenCompra =>
+            ordenCompra.Posiciones.some(posicion =>
+              posicion.Items.some(item => 
+                (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0) && 
+                (!this.ocFilterApplied || this.tienePorcentajeACertificar(item))
+              )
+            )
+          );
+        }
+        return false; 
       }
 
 }

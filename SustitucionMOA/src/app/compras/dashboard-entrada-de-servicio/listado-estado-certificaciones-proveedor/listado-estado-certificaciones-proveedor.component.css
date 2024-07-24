@@ -197,7 +197,32 @@ i#btn-fullscreen {
 
 ::ng-deep #solicitudes-estado-proveedor .level2 th {
   background-color: #075088 !important;
-  font-size: 1.3rem !important;
+  font-size: 1.1rem !important;
+  white-space: wrap;
+  max-width: 6em;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.anterior {
+  border-color: white;
+  background-color: #F9C834 !important;
+  color: #333 !important;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.acertificar {
+  border-color: white;
+  background-color: #2269c4 !important;
+  color: #fff;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.acumulado {
+  border-color: white;
+  background-color: #00B050 !important;
+  color: #fff;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 td.descripcion {
+  max-width: 10em;
+  white-space: wrap;
 }
 
 ::ng-deep #solicitudes-estado-proveedor .level1 tr th:first-child {

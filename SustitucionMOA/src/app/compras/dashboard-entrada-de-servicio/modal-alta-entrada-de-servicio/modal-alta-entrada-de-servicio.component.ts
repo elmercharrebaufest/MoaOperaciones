@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
-import { ConfirmationService, Message } from 'primeng/api';
+import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
 import { FormsModule } from '@angular/forms';
@@ -112,6 +112,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         private confirmationService: ConfirmationService,
         protected sessionDataService: SessionDataService,
         protected floatMsgService: FloatMsgService,
+        private messageService: MessageService
     ) { }
 
     ngOnInit() {
@@ -274,14 +275,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     async certificarPosicion() {
-
         if (this.validateValues() === true) {
-            
             this.certificarState = true;
             this.buildEntrySheet();
-
+            
             let items = this.itemSelected;
-
             items = items.map(element => {
                 element.EntradasServicio = [];
                 return element;
@@ -290,14 +288,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
             const respIdAdjuntos = adjuntarArchivosResult.data;
 
-           
-
             this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
                     let msjTypes: string[] = [];
-
                     response.data.forEach(element => {
                         if (!element) {
                             this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
@@ -315,14 +310,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                             }
 
                         }
-
-                       
-
-                      
                     });
-
                     this.mensajeError = resultMsj.join("");
-
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
@@ -331,9 +320,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.certificarState = false;
                 },
                 (error) => {
-
-                    console.log(error);
-
                     this.confirmationService.confirm({
                         message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
@@ -432,7 +418,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
-                ShortText: position.Descripcion,
+                ShortText: item.posicionDescripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO,
                 Descripcion: item.Descripcion,
@@ -621,11 +607,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         if (!this.isValidFileType(file)) {
-          alert(`${file.name} Archivo invalido.`);
+            this.messageService.add({ severity: 'error', summary: `${file.name} Archivo invalido.`, detail: 'Solo se permiten archivos .pdf, .xls, .msg.' })
           continue;
         }
         if (totalSize + file.size > this.maxSizeFile) {
-          alert('Tamaño excedido 10 MB.');
+            this.messageService.add({ severity: 'error', summary: 'Tamaño excedido 10 MB.', detail: 'El limite de carga de archivos es de 10 MB.' })
           continue;
         }
         this.uploadedFiles.push(file);

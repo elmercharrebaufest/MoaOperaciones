@@ -118,5 +118,6 @@ namespace SustitucionMOAModel.Entities
 
         public string Planned_line { get; set; }
         public string Proveedor { get; set; }
+        public string Anulado_por {  get; set; }
     }
 }

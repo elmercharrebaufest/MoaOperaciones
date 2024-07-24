@@ -243,7 +243,16 @@
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
-                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                                        <th [id]="col.id" *ngIf="!col.sortable && col.visible && col.id !== 'iAcciones'">{{ col.header }}</th>
+
+                                                        <th *ngIf="col.id === 'iAcciones'">
+                                                            {{ col.header }}
+                                                            <button class="btn btn-primary"
+                                                            (click)="habilitarTodosCampoDeValorACertificar(i)"
+                                                            [disabled]="!hayElementosParaCertificar()">
+                                                                <i class="fa fa-refresh"></i>
+                                                            </button>
+                                                        </th>
                                                     </ng-container>
                                                 </tr>
                                             </ng-template>
@@ -272,10 +281,10 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorCantidad(rowItem);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"
-                                                                   (ngModelChange)="rowItem.CantidadACertificar=Number($event)"
-                                                                   [ngModel]="rowItem.CantidadACertificar | number:'1.0-3'"
+                                                                   (ngModelChange)="rowItem.CantidadACertificar=eliminarFormatoNumeroLocal($event)"
+                                                                   [ngModel]="rowItem.CantidadACertificar | customNumberFormatter:3"
                                                                    required
-                                                                   pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
+                                                                   pattern="^(\d{1,3}(?:,\d{3})*)(?:.\d{1,3})?$"
                                                                    [disabled]="rowItem.Porcentaje==100"
                                                                    [ngClass]="{'input-border-color': !isCantidadDisabled}" />
 
@@ -286,7 +295,7 @@
                                                                    (keypress)="numbersOnly($event)"
                                                                    (keyup)="actualizarValoresACertificarPorPorcentaje(rowItem,$event);"
                                                                    (blur)="validarMantenerItemSeleccionado(rowItem)"
-                                                                   (ngModelChange)="rowItem.PorcentajeACertificar=Number($event)"
+                                                                   (ngModelChange)="rowItem.PorcentajeACertificar=eliminarFormatoNumeroLocal($event)"
                                                                    [ngModel]="rowItem.PorcentajeACertificar | number:'1.0-3'"
                                                                    pattern="^(?=.*[1-9])[0-9]*[.]?[0-9]{1,3}$"
                                                                    required

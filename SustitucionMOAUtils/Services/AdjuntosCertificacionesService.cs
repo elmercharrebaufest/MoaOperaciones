@@ -81,10 +81,9 @@ namespace SustitucionMOAUtils.Services
                     {
                         ESAdjuntosDto adjuntoDto = new ESAdjuntosDto();
 
-                        
                         var blobAdjunto = await _azureService.ObtenerArchivoBlobStorageAsync(adjunto.NombreEnBlob, "certificaciones");
                         blobAdjunto.Position = 0;
-                        adjuntoDto.Adjuntos = blobAdjunto.GetBuffer();
+                        adjuntoDto.Adjuntos = blobAdjunto.ToArray();
                         adjuntoDto.Extension = adjunto.Extension;
                         adjuntoDto.NombreArchivo = adjunto.NombreArchivo;
 
