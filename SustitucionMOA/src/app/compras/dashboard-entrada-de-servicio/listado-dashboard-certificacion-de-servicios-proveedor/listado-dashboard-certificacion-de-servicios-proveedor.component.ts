@@ -1131,9 +1131,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
 
-
         this.service.GetAdjuntosByES(id).subscribe(result => {
-            if (result.data.length > 0) {
+            if (result.data) {
                 
                 result.data.forEach((archivo) => {
                     this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
