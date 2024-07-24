@@ -34,6 +34,7 @@ import { EmailComposeModel } from '../../common/email-compose/email-compose.mode
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
+import { CondicionesEspecialesOriginales } from './steps/cotizacion/condiciones-especiales-originales';
 
 @Component({
     selector: 'app-solp',
@@ -105,6 +106,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     datosUltimaSolp: any;
     tieneAdjuntos: boolean = false;
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+    condEspOriginales: CondicionesEspecialesOriginales;
 
 
     set pasoActual(value: Paso) {
@@ -300,7 +302,15 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.solpActual = new Solp(result.data)
+                        this.solpActual = new Solp(result.data);
+                        this.condEspOriginales = {
+                            trabajoHecho: this.solpActual.trabajoHecho,
+                            adicional: this.solpActual.adicional,
+                            proveedorAsignado: this.solpActual.condEspProveedorAsignado,
+                            urgencia: this.solpActual.urgencia,
+                            proveedorSeleccionado: this.solpActual.proveedorAsignado_Id,
+                            ordenDecompra: this.solpActual.ordenDeCompra
+                        }
                         let estadosPasos = this.solpActual.estadoPasos.split(',');
 
                         let count = 0;

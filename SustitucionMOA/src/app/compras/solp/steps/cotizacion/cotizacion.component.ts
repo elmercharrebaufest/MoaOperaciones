@@ -13,6 +13,7 @@ import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
 import { OrdenDeCompraSap } from '../../../../modelos/ordenDeCompraSap';
+import { CondicionesEspecialesOriginales } from './condiciones-especiales-originales';
 
 declare var $: any;
 
@@ -28,6 +29,9 @@ export class CotizacionComponent extends ListBaseComponent {
     protected model: Solp;
     @Input('locale')
     protected locale: any;
+
+    @Input('condEspOriginales')
+    protected condEspOriginales: CondicionesEspecialesOriginales;
 
     @Output() ordenDeCompraSap: OrdenDeCompraSap;
     @Output() onEstCompleto = new EventEmitter<any>();
@@ -48,7 +52,8 @@ export class CotizacionComponent extends ListBaseComponent {
     selectGerentes: number[] = [];
     selectDirectores: number[] = [];
     hoy: Date = new Date();
-    
+    condicionEspecial: boolean;
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
         protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router
@@ -143,18 +148,17 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.nroSolp) {
             this.estaFinalizada = true
-            this.adjustFormControlsBasedOnConditions();
         } else {
             this.estaFinalizada = false
         }
-
+        
         this.listarLiberadorSap();
-
+        
         if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
             this.onRadioButtonChange("Servicio permanente");
         }
-
         
+        this.adjustFormControlsBasedOnConditions();
     }
 
     ngOnDestroy() {
@@ -231,7 +235,6 @@ export class CotizacionComponent extends ListBaseComponent {
         }
         else {
             this.downloadArchivoLocal(archivo, archivo.name);
-
         }
     }
 
@@ -444,11 +447,6 @@ export class CotizacionComponent extends ListBaseComponent {
                                     this.model.selectUsuarioCompras = this.model.usuarioComprasId > 0
                                         ? this.model.usuarioComprasList.find(x => x.Id === this.model.usuarioComprasId)
                                         : this.model.usuarioComprasList[0];
-
-                                    if(this.model.editarCondicionesEspeciales == false){
-                                        this.validarProveedorSeleccionado();
-                                    }
-
                                 }
                             }
                         }
@@ -565,86 +563,105 @@ export class CotizacionComponent extends ListBaseComponent {
     }
   
     borrarArchivosCargados(): void {
-        this.model.archivosCotizacionesNuevosCondEsp = [];
-        this.model.archivosCotizacionesCondEsp = [];
-    }
+        if(this.model.editarCondicionesEspeciales){
+            this.model.archivosCotizacionesNuevosCondEsp = [];
+            this.model.archivosCotizacionesCondEsp = [];
 
-    private adjustFormControlsBasedOnConditions(): void {
-        const condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
-
-        if(this.model.editarCondicionesEspeciales == false){
-
-            // Disable all form controls initially
-            this.formularioCotizacion.controls['urgencia'].disable();
-            this.formularioCotizacion.controls['jefes'].disable();
-            this.formularioCotizacion.controls['gerentes'].disable();
-            this.formularioCotizacion.controls['directores'].disable();
-            this.formularioCotizacion.controls['servicioPermanente'].disable();
-            this.formularioCotizacion.controls['ajustePolinomica'].disable();
-            this.formularioCotizacion.controls['proveedorDirecto'].disable();    
-            this.formularioCotizacion.controls['adicional'].disable();
-            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
-            this.formularioCotizacion.controls['trabajoHecho'].disable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
-
-            switch (condicionEspecial) {
-                case this.model.trabajoHecho == true:
-                    this.formularioCotizacion.controls['urgencia'].enable();
-                    this.formularioCotizacion.controls['jefes'].enable();
-                    this.formularioCotizacion.controls['gerentes'].enable();
-                    this.formularioCotizacion.controls['directores'].enable();
-                    this.formularioCotizacion.controls['servicioPermanente'].enable();
-                    this.formularioCotizacion.controls['ajustePolinomica'].enable();
-                    this.formularioCotizacion.controls['proveedorDirecto'].enable();
-                    this.formularioCotizacion.controls['adicional'].enable();
-                    break;
-                case this.model.trabajoHecho == true && this.model.adicional == true:
-                    this.formularioCotizacion.controls['urgencia'].enable();
-                    this.formularioCotizacion.controls['jefes'].enable();
-                    this.formularioCotizacion.controls['gerentes'].enable();
-                    this.formularioCotizacion.controls['directores'].enable();
-                    this.formularioCotizacion.controls['servicioPermanente'].enable();
-                    this.formularioCotizacion.controls['ajustePolinomica'].enable();
-                    this.formularioCotizacion.controls['proveedorDirecto'].enable();   
-                    break;
-                case this.model.adicional == true:
-                    this.formularioCotizacion.controls['urgencia'].enable();
-                    this.formularioCotizacion.controls['jefes'].enable();
-                    this.formularioCotizacion.controls['gerentes'].enable();
-                    this.formularioCotizacion.controls['directores'].enable();
-                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-                    break;
-                case this.model.urgencia == true:
-                    break;
-                case this.model.condEspProveedorAsignado == true:
-                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-                    this.formularioCotizacion.controls['adicional'].enable();
-                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
-
-                    break;
-            }
-        }       
-    }
-  
-    // Example of how to call this method when the condition changes
-    onConditionChange(): void {
-        this.adjustFormControlsBasedOnConditions();
-    }
-
-    // cuando es un trabajo hecho y se selecciona el check de adicional, tengo que validar que el proveedor seleccionado sea el mismo proveedor que el de la OC
-    validarProveedorSeleccionado(): void {
-        if (this.model.trabajoHecho == true && this.model.adicional == true) {
-            if (this.proveedorSeleccionado.Id != this.ordenDeCompraSap.Cabecera.Usuario_Id) {
-                this.floatMsgService.setErrorMsg("El proveedor seleccionado debe ser el mismo que el de la OC");
-                this.proveedorSeleccionado = null;
-            }
-
-            if (this.model.adicional == true && !this.model.posiciones.every(x => x.monedaSeleccionada.Codigo == this.model.monedaOC)) {
-                this.floatMsgService.setErrorMsg("La moneda de la OC debe ser la misma que la de la SOLP");
-                this.proveedorSeleccionado = null;
-            }
         }
     }
 
+    habilitarCondicionesEspeciales(condicionEspecial){
+        if (!condicionEspecial && this.model.editarCondicionesEspeciales == true) {
+            this.formularioCotizacion.controls['urgencia'].enable();
+            this.formularioCotizacion.controls['adicional'].enable();
+            this.formularioCotizacion.controls['trabajoHecho'].enable();
+            this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+            
+        }
+    }
+
+    private adjustFormControlsBasedOnConditions(): void {
+        this.condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
+        
+        this.habilitarCondicionesEspeciales(this.condicionEspecial)
+
+        if(this.model.editarCondicionesEspeciales == false){
+
+            this.formularioCotizacion.controls['urgencia'].disable();
+            this.formularioCotizacion.controls['adicional'].disable();
+            this.formularioCotizacion.controls['trabajoHecho'].disable();
+            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+            
+            if(this.condEspOriginales.trabajoHecho || (this.condEspOriginales.trabajoHecho && this.condEspOriginales.adicional)){
+                this.formularioCotizacion.controls['trabajoHecho'].disable();
+                this.formularioCotizacion.controls['adicional'].enable();
+                this.formularioCotizacion.controls['urgencia'].enable();
+                this.verificarMismoProveedor();
+            } else if(this.condEspOriginales.proveedorAsignado || this.condEspOriginales.adicional){
+                this.formularioCotizacion.controls['trabajoHecho'].disable();
+
+                if(this.model.condEspProveedorAsignado == true){
+                    this.formularioCotizacion.controls['adicional'].disable();
+                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                } 
+
+                if(this.model.adicional == true){
+                    this.formularioCotizacion.controls['adicional'].enable();
+                    this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+                } 
+
+                if(this.model.condEspProveedorAsignado != true && this.model.adicional != true){
+                    this.formularioCotizacion.controls['adicional'].enable();
+                    this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                } 
+                this.verificarMismoProveedor();
+
+            } else if(this.condEspOriginales.urgencia){
+                this.formularioCotizacion.controls['adicional'].disable();
+                this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+                this.formularioCotizacion.controls['trabajoHecho'].disable();
+            }
+
+            if(this.condicionEspecial != true){
+                this.validarCondicionEspecial()
+            }
+
+        } else {
+            this.condicionesEspecialesSolpSinLiberar();
+        }     
+    }
+
+    condicionesEspecialesSolpSinLiberar() {
+        if (this.model.trabajoHecho == true || this.model.adicional == true) {
+            this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+        } else {
+            this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+        }
+
+        if (this.model.condEspProveedorAsignado == true) {
+            this.formularioCotizacion.controls['trabajoHecho'].disable();
+            this.formularioCotizacion.controls['adicional'].disable();
+        } else {
+            this.formularioCotizacion.controls['trabajoHecho'].enable();
+            this.formularioCotizacion.controls['adicional'].enable();
+        }
+    }
+
+    onConditionChange(): void {
+        this.adjustFormControlsBasedOnConditions();
+        if(this.condicionEspecial){
+            this.verificarMismoProveedor();
+        } 
+    }
+
+    verificarMismoProveedor(){
+        if (this.ordenDeCompraSap != undefined && this.condEspOriginales.proveedorSeleccionado != this.ordenDeCompraSap.Cabecera.Usuario_Id) {
+            this.floatMsgService.setErrorMsg("El proveedor seleccionado debe ser el mismo que el proveedor asignado");
+        }
+    }
+
+    validarCondicionEspecial(){
+        this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
+    }
 
 };
