@@ -138,7 +138,8 @@ namespace SustitucionMOAUtils.Services.Email
                 }
                 catch(Exception e)
                 {
-                    //Continue
+                    Log.AzureError(e);
+                    Log.Error("EnviarMailAprobacion: error al obtener archivo ",e);
                 }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
