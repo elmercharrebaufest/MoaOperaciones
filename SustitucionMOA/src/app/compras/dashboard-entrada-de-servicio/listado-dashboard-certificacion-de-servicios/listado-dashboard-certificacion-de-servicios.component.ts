@@ -1401,6 +1401,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             link.click();
             document.body.removeChild(link);
             setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+            
         }
       }
 

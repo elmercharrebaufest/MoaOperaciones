@@ -15,6 +15,7 @@ using System.Net;
 using System.IO;
 using SustitucionMOAModel.Entities;
 using System.IO.Compression;
+using Newtonsoft.Json;
 
 namespace SustitucionMOA.Controllers
 {
@@ -62,7 +63,7 @@ namespace SustitucionMOA.Controllers
             {
                 var result = await _adjuntosCertificacionesService.GetAdjuntos(idES);
 
-                return Json(new { data = result }, JsonRequestBehavior.AllowGet);
+                return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
             {
