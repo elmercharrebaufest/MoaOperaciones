@@ -274,14 +274,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     }
 
     async certificarPosicion() {
-
         if (this.validateValues() === true) {
-            
             this.certificarState = true;
             this.buildEntrySheet();
-
+            
             let items = this.itemSelected;
-
             items = items.map(element => {
                 element.EntradasServicio = [];
                 return element;
@@ -290,14 +287,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
             const respIdAdjuntos = adjuntarArchivosResult.data;
 
-           
-
             this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
                     let msjTypes: string[] = [];
-
                     response.data.forEach(element => {
                         if (!element) {
                             this.mensajeError = "Ha ocurrido un error por favor inténtelo nuevamente más tarde."
@@ -315,14 +309,8 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                             }
 
                         }
-
-                       
-
-                      
                     });
-
                     this.mensajeError = resultMsj.join("");
-
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
@@ -331,9 +319,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.certificarState = false;
                 },
                 (error) => {
-
-                    console.log(error);
-
                     this.confirmationService.confirm({
                         message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
@@ -432,7 +417,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 GrossPrice: this.round(parseFloat((item.PrecioBruto / item.Cantidad).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
-                ShortText: position.Descripcion,
+                ShortText: item.posicionDescripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO,
                 Descripcion: item.Descripcion,

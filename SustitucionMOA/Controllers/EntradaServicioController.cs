@@ -124,8 +124,8 @@ namespace SustitucionMOA.Controllers
                 //{
                 //    parametros.vendedor = SessionPersister.Proveedor;
                 //}
-
-                string result = EntradaServicioService.BorrarEntradaServicio(parametros);
+                UsuarioDto usuarioActual = ObtenerUsuarioActual();
+                string result = EntradaServicioService.BorrarEntradaServicio(parametros, usuarioActual);
 
                 return JsonCustom(new { data = result });
             }

@@ -19,7 +19,7 @@ namespace SustitucionMOAUtils.Interfaces
         //List<OrdenCompraDto> GetByProveedor(string vendedor);
         //List<OrdenCompraDto> ServicioOrdenesCompraFake(string vendedor);
         Task<List<EntradaServicioCabeceraDto>> ObtenerEntradasServicioCompleta(EntradaServicioParamsDto parametros, UsuarioDto usuario);
-        string BorrarEntradaServicio(EntradaServicioParamsDto parametros);
+        string BorrarEntradaServicio(EntradaServicioParamsDto parametros, UsuarioDto usuarioActual);
         Task<List<EntradaServicioCabeceraDto>> ServicioSAP_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         List<EntradaServicioCabeceraDto> ServicioAprobaciones_EntradasServicioCabecera(EntradaServicioParamsDto parametros, UsuarioDto usuario);
         //List<EntradaServicioCabeceraDto> ObtenerEntradasServicioConDetalle(EntradaServicioParamsDto parametros);

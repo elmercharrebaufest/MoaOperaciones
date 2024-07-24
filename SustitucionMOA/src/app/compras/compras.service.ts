@@ -268,9 +268,6 @@ export class ComprasService extends BaseService {
             // Asegúrate de incluir todos los campos requeridos por la interfaz
         };
 
-
-        
-
         payload.append('request', JSON.stringify(request));
         //payload.append('report', JSON.stringify(report));
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));

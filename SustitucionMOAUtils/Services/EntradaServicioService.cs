@@ -439,7 +439,8 @@ namespace SustitucionMOAUtils.Services
             {
                 ID = temporal.ID,
                 Cantidad = temporal.Cantidad.ToString(),
-                NumeroLinea = temporal.Nro_linea,
+                NumeroLinea = int.Parse(temporal.Nro_linea).ToString(),
+                NroPosicion = int.Parse(temporal.NRO_POS).ToString(),
                 UM = temporal.UM,
                 Descripcion = string.IsNullOrEmpty(temporal.Descripcion_ES) ? "" : temporal.Descripcion_ES.Trim(),
                 TextoBreveServicio = temporal.Texto_breve_servicio.Trim(),
@@ -449,7 +450,8 @@ namespace SustitucionMOAUtils.Services
                 MontoCertificar = temporal.Monto_a_certificar,
                 NroRemito = temporal.Referencia,
                 CodigoServicio = temporal.Nro_servicio,
-                FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy")
+                FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy"),
+                CantidadAnterior = Convert.ToDouble(temporal.Cantidad_Anterior)
             };
 
             return detalleEntradaServicioTemp;
@@ -473,7 +475,7 @@ namespace SustitucionMOAUtils.Services
         /// Actualmente hay varias incognicas con respecto a las condiciones que debe cumplir una ES para poder ser borrada
         /// </summary>
         /// <returns></returns>
-        public string BorrarEntradaServicio(EntradaServicioParamsDto parametros)
+        public string BorrarEntradaServicio(EntradaServicioParamsDto parametros, SustitucionMOAModel.Dto.UsuarioDto usuario)
         {
             string result = "";
             if (parametros.DocumentoNumero.Contains("\""))
@@ -486,7 +488,8 @@ namespace SustitucionMOAUtils.Services
                 List<Aprobaciones> apToDelete = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == parametros.DocumentoNumero);
                 foreach (Aprobaciones ap in apToDelete)
                 {
-                    repositorio.Remover<Aprobaciones>(ap);
+                    ap.Estado_certificacion = "Anulada";
+                    ap.Anulado_por = usuario.Mail;
                 }
                 repositorio.GuardarCambios();
                 result = "Se ha eliminado la entrada de servicio " + parametros.DocumentoNumero;
@@ -728,14 +731,13 @@ namespace SustitucionMOAUtils.Services
 
         private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, bool reasignar)
         {
-            if (reasignar)
-            {
-                var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
-                List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-                List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
-                reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
-            }
+        
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
+            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
+            
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
 
@@ -1108,7 +1110,13 @@ namespace SustitucionMOAUtils.Services
                     aprobacion.Porcentaje_a_certificar = esItem.Percentage;
                     aprobacion.Planned_package = esItem.PlannedPackage;
                     aprobacion.Planned_line = esItem.PlannedLine;
-
+                    
+                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage);
+                    if (itemReport != null)
+                    {
+                        aprobacion.Cantidad_Anterior = Decimal.ToDouble(itemReport.CantidadReal);
+                    }
+                    
                     if (!string.IsNullOrEmpty(esItem.CertificationAmount))
                     {
                         aprobacion.Monto_a_certificar = double.Parse(esItem.Quantity, System.Globalization.CultureInfo.InvariantCulture) * double.Parse(esItem.ItemGrossPrice, System.Globalization.CultureInfo.InvariantCulture);
