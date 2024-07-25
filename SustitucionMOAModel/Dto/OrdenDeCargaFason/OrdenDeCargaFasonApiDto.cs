@@ -10,7 +10,7 @@
             Id = ordenFason.Id;
             Cantidad = ordenFason.Cantidad;
             Cliente = ordenFason.Cliente.RazonSocial;
-            ClienteComoRemitenteComercial = ordenFason.ClienteComoRemitenteComercial;
+            Reventa = ordenFason.ClienteComoRemitenteComercial;
             CodigoProducto = ordenFason.Producto.CodigoSap;
             CUILChofer = ordenFason.CUILChofer;
             CUITCliente = ordenFason.Cliente.CUIT;

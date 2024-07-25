@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Dto
 
         public int Cantidad { get; set; }
         public string CUITCorredor { get; set; }
-        public bool ClienteComoRemitenteComercial { get; set; }
+        public bool Reventa { get; set; }
         public bool FleteMOA { get; set; }
         public string CUITDestinatario { get; set; }
         public string CUITDestino { get; set; }
@@ -26,7 +26,7 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                if (ClienteComoRemitenteComercial && CUITDestino != CUITCliente && TipoOrden == TipoOrdenes.FASON)
+                if (Reventa && CUITDestino != CUITCliente && TipoOrden == TipoOrdenes.FASON)
                 {
                     return CUITCliente;
                 }
