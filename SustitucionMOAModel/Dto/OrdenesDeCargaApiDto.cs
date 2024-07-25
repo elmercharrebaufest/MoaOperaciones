@@ -25,7 +25,7 @@
             Pedido = ordenFas.NumeroPedido;
             RazonSocialTransporte = ordenFas.RazonSocialTransporte;
             FleteMOA = ordenFas.FleteMOA??false;
-            ClienteComoRemitenteComercial = ordenFas.Reventa;
+            Reventa = ordenFas.Reventa;
             TipoOrden = TipoOrdenes.FAS;
         }
     }
