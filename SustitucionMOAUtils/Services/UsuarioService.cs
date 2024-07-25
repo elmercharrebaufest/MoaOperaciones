@@ -814,8 +814,10 @@ namespace SustitucionMOAUtils.Services
         public bool PuedeEliminarseUsuario(Entidades.Usuario usuario)
         {
             var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
+            var proveedor = usuario.ObtenerProveedorAsignado();
+            var altaProveedorIniciada = proveedor != null && proveedor.HistorialAprobaciones.Count > 1;
 
-            return !tieneActividad && usuario.Proveedores.Count() <= 1;
+            return !tieneActividad && usuario.Proveedores.Count() <= 1 && !altaProveedorIniciada;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
