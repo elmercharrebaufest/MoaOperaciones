@@ -329,13 +329,48 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
         let ref = this.referencia !== undefined ? this.referencia : '';
 
+        //Se declara para definir el array de SolPeds
+        class PositionData {
+            positionId: string;
+            SolPedNumber: string;
+        }
+
+        let ArrayOfSolpeds: PositionData[] = [];
+
+        this.elementSelected.Posiciones.forEach((posicion) => {
+            let hasSelectedItems = false;
+            let positionData: PositionData = {
+                positionId: "",
+                SolPedNumber: "",
+            };
+
+            for (let item of posicion.Items) {
+                if (item.isSelected) {
+                    hasSelectedItems = true;
+                    break;
+                }
+            }
+
+            if (hasSelectedItems) {
+                positionData.positionId = posicion.NumeroPosicion.toString();
+                positionData.SolPedNumber = posicion.NumeroSolp;
+                ArrayOfSolpeds.push(positionData);
+            }
+        });
+
         this.itemsAgrupadosPorPosicion.forEach(position => {
 
-            let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
+            //let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
+            //Encontrar SolPed desde ArrayOfSolpeds
+            let matchedPosition = ArrayOfSolpeds.find(x => x.positionId === position.NroPosicion);
 
+            let solPedAsociada = "";
+            if (matchedPosition) {
+                solPedAsociada = matchedPosition.SolPedNumber;
+            }
 
             const entrySheetHeader = {
-                SolPedNumber: solpedNumbers.length > 0 ? solpedNumbers : [this.solPed],
+                SolPedNumber: solPedAsociada,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion,

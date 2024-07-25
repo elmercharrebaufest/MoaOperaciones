@@ -541,6 +541,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     detalleSolPed = comprasService.TraerSolpPorNumero(nroSolped);
                 }
+                else
+                {
+                    EntradaServicioCreateRespuestaDto response = new EntradaServicioCreateRespuestaDto();
+                    response.Type = "S";
+                    response.Message = "No se encontro la SOLP";
+                    return response;
+                }
             }
             catch (Exception e)
             {
@@ -949,7 +956,6 @@ namespace SustitucionMOAUtils.Services
                             if (detalleSolPed.Email.Contains("@"))
                             {
                                 temp.Fiscal_SOLPED = detalleSolPed.Email;
-                                temp.Aprobador_CDS = detalleSolPed.Email;
                                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.Email);
                                 if (usuario != null)
                                 {
@@ -964,7 +970,7 @@ namespace SustitucionMOAUtils.Services
                             //Busqueda por Supervisor Trabajo
                             if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
                             {
-                                temp.Aprobador_CDS = detalleSolPed.SupervisorTrabajo[0];
+                                    temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
                                     if (usuario != null)
                                 {
@@ -980,7 +986,7 @@ namespace SustitucionMOAUtils.Services
                                     if (usuario != null)
                                 {
                                     user = usuario;
-                                    temp.Aprobador_CDS = usuario.Mail;
+                                    temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
@@ -998,7 +1004,7 @@ namespace SustitucionMOAUtils.Services
                                         if (usuario != null)
                                     {
                                         user = usuario;
-                                        temp.Aprobador_CDS = usuario.Mail;
+                                        temp.Fiscal_SOLPED = usuario.Mail;
                                         temp.Suplente = usuario.Suplente;
 
                                     }
@@ -1007,10 +1013,10 @@ namespace SustitucionMOAUtils.Services
                         }
 
                     }
-                    //if (!auto)
-                    //{
-                    //    temp.Aprobador_CDS = temp.Fiscal_SOLPED;
-                    //}
+                    if (!auto)
+                    {
+                        temp.Aprobador_CDS = temp.Fiscal_SOLPED;
+                    }
                 }
             }
             catch(Exception e)
