@@ -68,7 +68,8 @@ namespace SustitucionMOAUtils.Services
 
             if (!idESTemporal.StartsWith("T_"))
             {
-                idESTemporal = _repositorio.Obtener<Aprobaciones>(x => x.NRO_ES_SAP.ToString() == idESTemporal).NRO_ES_LOCAL;
+                var aprobaciones = _repositorio.Obtener<Aprobaciones>(x => x.NRO_ES_SAP.ToString() == idESTemporal);
+                idESTemporal = aprobaciones != null ?  aprobaciones.NRO_ES_LOCAL.ToString() : string.Empty;
             }
 
             if (!string.IsNullOrEmpty(idESTemporal))
