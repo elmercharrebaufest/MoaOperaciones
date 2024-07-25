@@ -4226,8 +4226,22 @@ namespace SustitucionMOAUtils.Services
             }
 
             //Este metodo lo usamos para enviar el texto de observaciones. Solo se pueden enviar 132 caracteres por linea
+           
+            var textosObservacion = "";
 
-            var linesObservacion = getLinesFromTextoSuministro(solpActual.Pliego.ObservacionesGeneracion);
+            //Enviar observaciones del paso 2 o las observaciones de las condiciones especiales segun prioridad
+            if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesGeneracion))
+            {
+                // Si ObservacionesGeneracion tiene algún valor, se envía este.
+                textosObservacion = solpActual.Pliego.ObservacionesGeneracion;
+            }
+            else if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesCotizacionCondEsp))
+            {
+                // Si ObservacionesGeneracion está vacío y ObservacionesCotizacionCondEsp tiene algún valor, se envía este.
+                textosObservacion = solpActual.Pliego.ObservacionesCotizacionCondEsp;
+            }
+
+            var linesObservacion = getLinesFromTextoSuministro(textosObservacion);
 
             linesObservacion.ForEach(texto =>
             {
