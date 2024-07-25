@@ -200,7 +200,7 @@
                                         (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                             </p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true && model.condEspProveedorAsignado != true">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                 <strong>Elija a los liberadores de esta SOLP e incluya al menos un jefe *</strong>
                             </div>
@@ -252,7 +252,7 @@
                                         (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                             </p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.urgencia && !model.adicional && !model.trabajoHecho">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.adicional && !model.trabajoHecho">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                 <strong>Selección de proveedores *</strong>
                             </div>
