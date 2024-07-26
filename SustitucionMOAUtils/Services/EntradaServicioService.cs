@@ -286,6 +286,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                                 DateTime FechaCreacion = (DateTime)detalle.Fecha_Carga_ES;
                                 documento.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
+                                documento.AnuladaPor = detalle.Anulado_por;
                             }
                             else
                             {
@@ -405,7 +406,8 @@ namespace SustitucionMOAUtils.Services
                 Fiscal = temporal.Fiscal_SOLPED,
                 FechaContabilizacion = fechaContabilizacionFormateada.ToString("dd/MM/yyyy"),
                 FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy"),
-                NroPosicion = temporal.NRO_POS
+                NroPosicion = temporal.NRO_POS,
+                AnuladaPor = temporal.Anulado_por
             };
 
             if (temporal.Estado_certificacion == "Aprobada")

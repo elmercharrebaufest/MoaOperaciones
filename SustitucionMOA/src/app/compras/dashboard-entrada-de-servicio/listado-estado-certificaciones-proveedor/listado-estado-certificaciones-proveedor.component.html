@@ -84,7 +84,9 @@
                             <span>Pendiente de aprobación</span>
                         </div>
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
+                        <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
                     </td>
+                    <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>
                         <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
