@@ -46,7 +46,7 @@ namespace SustitucionMOAWS.WSConsumers
                 string IM_ACCOUNT_ASSIGNMENT = "X";
                 string IM_DELIVERY_ADDRESS = "X";
                 string IM_ITEM_TEXT = "";
-                string IM_HEADER_TEXT = "";
+                string IM_HEADER_TEXT = "X";
 
                 ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
 

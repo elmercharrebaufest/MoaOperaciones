@@ -2855,9 +2855,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
-
-
                 if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
                 {
                     ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
@@ -2865,17 +2862,18 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 SetNombreDePedido(solp);
 
-                //solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
+                string observaciones = result.ObservacionesGeneracion;
+
                 if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
                 {
-                    solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
 
                     if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
                     {
                         ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
                     }
-                    repositorio.GuardarCambios();                
+                    repositorio.GuardarCambios();
 
+                    CompletarObservacionSegunCondEspOT(solp, observaciones);
                     GrabarArchivosSapEnPliego(solp, result.Archivos);
 
                     if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
@@ -2889,6 +2887,10 @@ namespace SustitucionMOAUtils.Services
                         EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
                         ReiniciarCondicionEspecial(solp);
                     }
+                }
+                else
+                {
+                    CompletarObservacionSegunCondEsp(solp, observaciones);
                 }
 
                 repositorio.GuardarCambios();
@@ -2909,6 +2911,29 @@ namespace SustitucionMOAUtils.Services
             {
                 Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);
                 throw;
+            }
+        }
+
+        private void CompletarObservacionSegunCondEsp(Solp solp, string observaciones)
+        {
+            if (string.IsNullOrEmpty(observaciones) && ValidarCondicionEspecial(solp))
+            {
+                solp.Pliego.ObservacionesCotizacionCondEsp = observaciones;
+            }
+            else
+            {
+                solp.Pliego.ObservacionesGeneracion = observaciones;
+            }
+        }
+        private void CompletarObservacionSegunCondEspOT(Solp solp, string observaciones)
+        {
+            if (!ValidarCondicionEspecial(solp))
+            {
+                solp.Pliego.ObservacionesGeneracion = observaciones;
+            }
+            else
+            {
+                solp.Pliego.ObservacionesCotizacionCondEsp = observaciones;
             }
         }
 
