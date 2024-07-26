@@ -576,7 +576,6 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['adicional'].enable();
             this.formularioCotizacion.controls['trabajoHecho'].enable();
             this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
-            
         }
     }
 
