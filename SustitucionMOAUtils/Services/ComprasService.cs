@@ -2096,7 +2096,7 @@ namespace SustitucionMOAUtils.Services
                         if (solp.TrabajoYaHecho != true)
                         {
                             solp.TieneModificaciones = false;
-                            EnviarCircularAutomatico(solp);
+                            //EnviarCircularAutomatico(solp);
                         }
                         else
                         {
