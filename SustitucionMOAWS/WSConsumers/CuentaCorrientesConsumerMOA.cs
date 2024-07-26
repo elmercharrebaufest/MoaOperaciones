@@ -8,38 +8,44 @@ using SustitucionMOAModel.Models;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.CuentaCorrienteWebServiceMOA;
+using SustitucionMOAWS.Logger;
 
 namespace SustitucionMOAWS.WSConsumers
 {
-    public class CuentaCorrientesConsumerMOA
+    public abstract class CuentaCorrientesConsumerMOABase<T>
     {
-        SI_MPMF_MOAOP_CUENTA_CORRIENTEClient service = new SI_MPMF_MOAOP_CUENTA_CORRIENTEClient();
+        private readonly SI_MPMF_MOAOP_CUENTA_CORRIENTEClient service = new SI_MPMF_MOAOP_CUENTA_CORRIENTEClient();
 
-        public object request(string compensa, string proveedor, string sociedad, FechaWS fecha, string contrato, string pago, string retencion)
+        public T Request(string compensa, string proveedor, string sociedad, FechaWS fecha, string contrato, string pago, string retencion)
         {
             try
             {
-                ZMPES6120[] salidas = new ZMPES6120[] { };
-                ZMPES4100 fechaSAP = new ZMPES4100()
+                var fechaSAP = new ZMPES4100
                 {
                     FECHA_OP = SAPFormatter.PrepararFecha(fecha.fechaInicio),
                     FECHA_OP_HASTA = SAPFormatter.PrepararFecha(fecha.fechaFin)
-                };        
+                };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                ZMPES4910 error = service.SI_MPMF_MOAOP_CUENTA_CORRIENTE(compensa, contrato, fechaSAP, pago, proveedor, retencion, sociedad, out salidas);
-                return map(salidas, error, fecha.fechaFin);
+                
+                var error = service.SI_MPMF_MOAOP_CUENTA_CORRIENTE(compensa, contrato, fechaSAP, pago, proveedor, retencion, sociedad, out ZMPES6120[] salidas);
+                return Map(salidas, error, fecha.fechaFin);
             }
             catch (Exception e)
             {
+                Log.Error(e, $"Error en llamada SAP SI_MPMF_MOAOP_CUENTA_CORRIENTE [{compensa}, {contrato}, {pago}, {proveedor}, {retencion}, {sociedad}].");
                 throw e;
             }
-
         }
 
-        protected virtual object map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
+        protected abstract T Map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin);
+    }
+
+    public class CuentaCorrientesConsumerMOA : CuentaCorrientesConsumerMOABase<CuentaCorrienteWSMOAResponse>
+    {
+        protected override CuentaCorrienteWSMOAResponse Map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
         {
-            CuentaCorrienteWSMOAResponse result = new CuentaCorrienteWSMOAResponse();
+            var result = new CuentaCorrienteWSMOAResponse();
             if (error != null)
             {
                 result.error.codigo = error.CODIGO;
@@ -47,36 +53,43 @@ namespace SustitucionMOAWS.WSConsumers
                 result.error.tipo = error.TIPO;
             }
 
-            int i = 1;
+            var orden = 1;
 
             foreach (ZMPES6120 cuentaCorrienteInfo in salidas)
             {
-                result.cuentasCorrientes.Add(new MovimientoView()
+                if (string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP) || string.IsNullOrEmpty(cuentaCorrienteInfo.DOC_PAGO_DIF_ARP))
                 {
-                    agrupador = cuentaCorrienteInfo.AGRUPADOR,
-                    augbl = cuentaCorrienteInfo.AUGBL,
-                    contrato = cuentaCorrienteInfo.CONTRATO,
-                    debe = cuentaCorrienteInfo.DEBE,
-                    debeString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.DEBE, "$"),
-                    descripcion = cuentaCorrienteInfo.DESCRIP,
-                    docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
-                    docDateDate = SAPFormatter.GetDateTime(cuentaCorrienteInfo.DOC_DATE),
-                    docNo = cuentaCorrienteInfo.DOC_NO,
-                    fecVto = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.FEC_VTO),
-                    fecVtoDate = SAPFormatter.GetDateTime(cuentaCorrienteInfo.FEC_VTO),
-                    fiscYear = cuentaCorrienteInfo.FISC_YEAR,
-                    haber = cuentaCorrienteInfo.HABER,
-                    haberString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.HABER, "$"),
-                    importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
-                    importeArgString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.IMPORTE_ARP, "$"),
-                    saldo = cuentaCorrienteInfo.SALDO,
-                    saldoString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.SALDO, "$"),
-                    moneda = cuentaCorrienteInfo.MONEDA,
-                    orden = i++,
-                    ukurs = cuentaCorrienteInfo.UKURS,
-                    ukursString = SAPFormatter.FormatearTipoCambio(cuentaCorrienteInfo.UKURS),
-                    xblnr = cuentaCorrienteInfo.XBLNR
-                });
+                    var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
+                        ? cuentaCorrienteInfo.FEC_VTO
+                        : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
+
+                    result.cuentasCorrientes.Add(new MovimientoView()
+                    {
+                        agrupador = cuentaCorrienteInfo.AGRUPADOR,
+                        augbl = cuentaCorrienteInfo.AUGBL,
+                        contrato = cuentaCorrienteInfo.CONTRATO,
+                        debe = cuentaCorrienteInfo.DEBE,
+                        debeString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.DEBE, "$"),
+                        descripcion = cuentaCorrienteInfo.DESCRIP,
+                        docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
+                        docDateDate = SAPFormatter.GetDateTime(cuentaCorrienteInfo.DOC_DATE),
+                        docNo = cuentaCorrienteInfo.DOC_NO,
+                        fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
+                        fecVtoDate = SAPFormatter.GetDateTime(fechaVencimientoStr),
+                        fiscYear = cuentaCorrienteInfo.FISC_YEAR,
+                        haber = cuentaCorrienteInfo.HABER,
+                        haberString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.HABER, "$"),
+                        importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
+                        importeArgString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.IMPORTE_ARP, "$"),
+                        saldo = cuentaCorrienteInfo.SALDO,
+                        saldoString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.SALDO, "$"),
+                        moneda = cuentaCorrienteInfo.MONEDA,
+                        orden = orden++,
+                        ukurs = cuentaCorrienteInfo.UKURS,
+                        ukursString = SAPFormatter.FormatearTipoCambio(cuentaCorrienteInfo.UKURS),
+                        xblnr = cuentaCorrienteInfo.XBLNR
+                    });
+                }
             }
 
             return result;
@@ -84,11 +97,11 @@ namespace SustitucionMOAWS.WSConsumers
 
     }
 
-    public class CuentaCorrientesExcelConsumerMOA : CuentaCorrientesConsumerMOA
+    public class CuentaCorrientesExcelConsumerMOA : CuentaCorrientesConsumerMOABase<CuentaCorrienteExcelWSMOAResponse>
     {
-        protected override object map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
+        protected override CuentaCorrienteExcelWSMOAResponse Map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
         {
-            CuentaCorrienteExcelWSMOAResponse result = new CuentaCorrienteExcelWSMOAResponse();
+            var result = new CuentaCorrienteExcelWSMOAResponse();
             if (error != null)
             {
                 result.error.codigo = error.CODIGO;
@@ -98,24 +111,31 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (ZMPES6120 cuentaCorrienteInfo in salidas)
             {
-                result.cuentasCorrientes.Add(new Movimiento()
+                if (string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP) || string.IsNullOrEmpty(cuentaCorrienteInfo.DOC_PAGO_DIF_ARP))
                 {
-                    agrupador = cuentaCorrienteInfo.AGRUPADOR,
-                    augbl = cuentaCorrienteInfo.AUGBL,
-                    contrato = cuentaCorrienteInfo.CONTRATO,
-                    moneda = cuentaCorrienteInfo.MONEDA,
-                    debe = cuentaCorrienteInfo.DEBE,
-                    descripcion = cuentaCorrienteInfo.DESCRIP,
-                    docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
-                    docNo = cuentaCorrienteInfo.DOC_NO,
-                    fecVto = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.FEC_VTO),
-                    fiscYear = cuentaCorrienteInfo.FISC_YEAR,
-                    saldo = cuentaCorrienteInfo.SALDO,
-                    haber = cuentaCorrienteInfo.HABER,
-                    importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
-                    ukurs= cuentaCorrienteInfo.UKURS,
-                    xblnr = cuentaCorrienteInfo.XBLNR
-                });
+                    var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
+                        ? cuentaCorrienteInfo.FEC_VTO
+                        : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
+
+                    result.cuentasCorrientes.Add(new Movimiento()
+                    {
+                        agrupador = cuentaCorrienteInfo.AGRUPADOR,
+                        augbl = cuentaCorrienteInfo.AUGBL,
+                        contrato = cuentaCorrienteInfo.CONTRATO,
+                        moneda = cuentaCorrienteInfo.MONEDA,
+                        debe = cuentaCorrienteInfo.DEBE,
+                        descripcion = cuentaCorrienteInfo.DESCRIP,
+                        docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
+                        docNo = cuentaCorrienteInfo.DOC_NO,
+                        fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
+                        fiscYear = cuentaCorrienteInfo.FISC_YEAR,
+                        saldo = cuentaCorrienteInfo.SALDO,
+                        haber = cuentaCorrienteInfo.HABER,
+                        importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
+                        ukurs = cuentaCorrienteInfo.UKURS,
+                        xblnr = cuentaCorrienteInfo.XBLNR
+                    });
+                }
             }
 
             return result;
@@ -123,11 +143,11 @@ namespace SustitucionMOAWS.WSConsumers
 
     }
 
-    public class CuentaCorrientesAgrupadaConsumerMOA : CuentaCorrientesConsumerMOA
+    public class CuentaCorrientesAgrupadaConsumerMOA : CuentaCorrientesConsumerMOABase<CuentaCorrienteAgrupadaWSMOAResponse>
     {
-        protected override object map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
+        protected override CuentaCorrienteAgrupadaWSMOAResponse Map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
         {
-            CuentaCorrienteAgrupadaWSMOAResponse result = new CuentaCorrienteAgrupadaWSMOAResponse();
+            var result = new CuentaCorrienteAgrupadaWSMOAResponse();
             if (error != null)
             {
                 result.error.codigo = error.CODIGO;
@@ -137,7 +157,11 @@ namespace SustitucionMOAWS.WSConsumers
 
             result.fechaSaldo = SAPFormatter.FormatearFecha(fechaFin);
 
-            result.cuentasCorrientesSinAgrupar = salidas.Where(x => x.AGRUPADOR == "")
+            result.cuentasCorrientesSinAgrupar = salidas
+                .Where(x =>
+                    x.AGRUPADOR == "" &&
+                    (string.IsNullOrEmpty(x.PAGO_DIF_ARP) || string.IsNullOrEmpty(x.DOC_PAGO_DIF_ARP))
+                )
                 .GroupBy(x => x.AGRUPADOR)
                 .Select(x => new CuentaCorrienteAgrupadaView
                 {
@@ -153,8 +177,12 @@ namespace SustitucionMOAWS.WSConsumers
                         docDate = SAPFormatter.FormatearFecha(z.DOC_DATE),
                         docDateDate = SAPFormatter.GetDateTime(z.DOC_DATE),
                         docNo = z.DOC_NO,
-                        fecVto = SAPFormatter.FormatearFecha(z.FEC_VTO),
-                        fecVtoDate = SAPFormatter.GetDateTime(z.FEC_VTO),
+                        fecVto = string.IsNullOrEmpty(z.PAGO_DIF_ARP)
+                            ? SAPFormatter.FormatearFecha(z.FEC_VTO)
+                            : SAPFormatter.FormatearFecha(z.FECHA_PAGO_DIF_ARP),
+                        fecVtoDate = string.IsNullOrEmpty(z.PAGO_DIF_ARP)
+                            ? SAPFormatter.GetDateTime(z.FEC_VTO)
+                            : SAPFormatter.GetDateTime(z.FECHA_PAGO_DIF_ARP),
                         fiscYear = z.FISC_YEAR,
                         haber = z.HABER,
                         haberString = SAPFormatter.FormatearMonto(z.HABER, z.MONEDA),
@@ -211,11 +239,11 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-    public class CuentaCorrientesAgrupadaExcelConsumerMOA : CuentaCorrientesConsumerMOA
+    public class CuentaCorrientesAgrupadaExcelConsumerMOA : CuentaCorrientesConsumerMOABase<CuentaCorrienteAgrupadaExcelWSMOAResponse>
     {
-        protected override object map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
+        protected override CuentaCorrienteAgrupadaExcelWSMOAResponse Map(ZMPES6120[] salidas, ZMPES4910 error, DateTime fechaFin)
         {
-            CuentaCorrienteAgrupadaExcelWSMOAResponse result = new CuentaCorrienteAgrupadaExcelWSMOAResponse();
+            var result = new CuentaCorrienteAgrupadaExcelWSMOAResponse();
             if (error != null)
             {
                 result.error.codigo = error.CODIGO;
@@ -225,7 +253,11 @@ namespace SustitucionMOAWS.WSConsumers
 
             result.fechaSaldo = SAPFormatter.FormatearFecha(fechaFin);
 
-            result.cuentasCorrientesSinAgrupar = salidas.Where(x => x.AGRUPADOR == "")
+            result.cuentasCorrientesSinAgrupar = salidas
+                .Where(x =>
+                    x.AGRUPADOR == "" &&
+                    (string.IsNullOrEmpty(x.PAGO_DIF_ARP) || string.IsNullOrEmpty(x.DOC_PAGO_DIF_ARP))
+                )
                 .GroupBy(x => x.AGRUPADOR)
                 .Select(x => new CuentaCorrienteAgrupada
                 {
@@ -239,7 +271,9 @@ namespace SustitucionMOAWS.WSConsumers
                         descripcion = z.DESCRIP,
                         docDate = SAPFormatter.FormatearFecha(z.DOC_DATE),
                         docNo = z.DOC_NO,
-                        fecVto = SAPFormatter.FormatearFecha(z.FEC_VTO),
+                        fecVto = string.IsNullOrEmpty(z.PAGO_DIF_ARP)
+                            ? SAPFormatter.FormatearFecha(z.FEC_VTO)
+                            : SAPFormatter.FormatearFecha(z.FECHA_PAGO_DIF_ARP),
                         fiscYear = z.FISC_YEAR,
                         haber = z.HABER,
                         importeArg = z.IMPORTE_ARP,

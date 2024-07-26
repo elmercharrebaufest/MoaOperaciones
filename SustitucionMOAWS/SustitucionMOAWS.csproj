@@ -910,15 +910,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\CuentaCorrienteWebServiceMOA\SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" />
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.SI_MPMF_MOAOP_CUENTA_CORRIENTEResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES4910.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES6120.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.wsdl" />
     <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.xsd">
       <SubType>Designer</SubType>
@@ -2964,18 +2955,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\ContratoDetalleWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -3774,6 +3753,12 @@
     <None Include="Service References\ObtenerSolPEDWebServiceMOA\configuration91.svcinfo" />
     <None Include="Service References\ObtenerSolPEDWebServiceMOA\configuration.svcinfo" />
     <None Include="Service References\ObtenerSolPEDWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
