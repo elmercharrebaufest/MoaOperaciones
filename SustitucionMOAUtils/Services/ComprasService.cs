@@ -54,6 +54,7 @@ using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAModel.Dto.Compras;
 using System.Data.Entity.SqlServer;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 
 
 namespace SustitucionMOAUtils.Services
@@ -2315,26 +2316,42 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
-                Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
-                foreach (var adjudicacionOC in adjudicaciones)
+                var configuracion = repositorio.Obtener<Configuracion>(x => x.Code == "EnvioMailLiberacionOC");
+                if (configuracion != null && configuracion.Value == "1")
                 {
-                    adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
-                }
+                    var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
+                    Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
+                    foreach (var adjudicacionOC in adjudicaciones)
+                    {
+                        adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
+                    }
 
-                if (adjudicaciones.Count > 0)
-                {
-                    repositorio.GuardarCambios();
+                    if (adjudicaciones.Count > 0)
+                    {
+                        repositorio.GuardarCambios();
 
-                    //try
-                    //{
-                    //    EnviarMailOrdenCompra(adjudicaciones.Last(), "");
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
-                    //    Log.Error(e);
-                    //}
+                        try
+                        {
+                            EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
+                            Log.Error(e);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            EnviarMailOrdenCompraSAP(nroOc);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(new Exception($"Error al enviar mail EnviarMailOrdenCompraSAP ActualizarFechaLiberacionOC. Adjudicacion_Id: " + nroOc));
+                            Log.Error(e);
+                        }
+                    }
                 }
             }
             catch (Exception)
@@ -2342,6 +2359,42 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public void EnviarMailOrdenCompraSAP(string nroOc)
+        {
+            var adjudicacionMail = ObtenerDatosParaEnviarMailOrdenCompraSAP(nroOc);
+            var asunto = $"Nueva OC creada - {nroOc} - {adjudicacionMail.RazonSocial}";         
+            var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
+            emailService.EnviarMail(adjudicacionMail.EnviarA, asunto, "", adjudicacionMail.Copia, CuerpoMailOrdenCompra(nroOc, ""), pdf, $"Orden de Compra {nroOc}.pdf");
+        }
+
+        public AdjudicacionMailDto ObtenerDatosParaEnviarMailOrdenCompraSAP(string nroOc)
+        {
+            var ordenDeCompra = ObtenerOrdenDeCompra(nroOc);
+            var nroSolps = ordenDeCompra.Posiciones.Select(x => x.NroSolp).ToList();
+            var solps = repositorio.Listar<Solp>(x => nroSolps.Contains(x.NroSolp));
+            var copia = new List<string> { };
+            var enviarA = new List<string> { };
+
+            var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList() ?? new List<string>();
+            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
+            var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList() ?? new List<string>();        
+
+            copia.AddRange(mailPliego.Where(x => x != null));
+            copia.AddRange(mailCreador.Where(x => x != null));
+
+            enviarA.Add(ordenDeCompra.Cabecera.MailProveedor);
+
+            var adjudicacionMail = new AdjudicacionMailDto
+            {
+                Copia = copia.Distinct().ToList(),
+                EnviarA = enviarA?.Distinct().ToList(),
+                RazonSocial = ordenDeCompra.Cabecera.RazonSocialProveedor,
+            };
+
+            return adjudicacionMail;
+        }
+
 
         public void ActualizarServiciosSolp()
         {
@@ -5666,7 +5719,7 @@ namespace SustitucionMOAUtils.Services
 
                 var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(adjudicacion.NumeroOrdenDeCompra);
 
-                emailService.EnviarMail(enviarA, asunto, "", copia.Distinct().ToList(), CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
+                emailService.EnviarMail(enviarA, asunto, "", copia.Distinct().ToList(), CuerpoMailOrdenCompra(adjudicacion.NumeroOrdenDeCompra, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
             }
             catch (Exception e)
             {
@@ -5675,13 +5728,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private AlternateView CuerpoMailOrdenCompra(Adjudicacion adjudicacion, string mensaje)
+        private AlternateView CuerpoMailOrdenCompra(string nroOc, string mensaje)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
-            htmlBody += $"En el presente mail se informa la nueva OC {adjudicacion.NumeroOrdenDeCompra} generada con Molinos Agro S.A. <br />";
+            htmlBody += $"En el presente mail se informa la nueva OC {nroOc} generada con Molinos Agro S.A. <br />";
             htmlBody += mensaje + "<br/>";
 
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
@@ -7813,6 +7866,7 @@ namespace SustitucionMOAUtils.Services
                     result.Cabecera.CUITProveedor = proveedor.CUIT;
                     result.Cabecera.CodigoProveedor = proveedor.CodigoProveedor;
                     result.Cabecera.Usuario_Id = proveedor.Usuario_Id;
+                    result.Cabecera.MailProveedor = proveedor.Mail;
                 }
                 catch (Exception e)
                 {
@@ -7861,7 +7915,8 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedorMoa.NAME,
                     CodigoProveedor = codigoProveedor,
                     CUIT = cuit,
-                    Usuario_Id = resultado.ProveedorDto.Id
+                    Usuario_Id = resultado.ProveedorDto.Id,
+                    Mail = resultado.ProveedorDto.Mail
                 };
             }
             else
@@ -7879,7 +7934,8 @@ namespace SustitucionMOAUtils.Services
                     CodigoProveedor = codigoProveedor,
                     CUIT = cuit,
                     Usuario_Id = usuarioDb.Id,
-                    Proveedor_Id = proveedor.Id
+                    Proveedor_Id = proveedor.Id,
+                    Mail = proveedor.Mail
                 };
             }
         }
