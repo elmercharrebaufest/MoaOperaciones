@@ -2873,13 +2873,13 @@ namespace SustitucionMOAUtils.Services
                     if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
                         EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
-                        ReiniciarCondicionEspecial(solp);
+                        //ReiniciarCondicionEspecial(solp);
                     }
 
                     if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
                         EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
-                        ReiniciarCondicionEspecial(solp);
+                        //ReiniciarCondicionEspecial(solp);
                     }
                 }
 
@@ -2945,7 +2945,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar un proveedor");
-                ReiniciarCondicionEspecial(solp);
+                //ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -2964,7 +2964,7 @@ namespace SustitucionMOAUtils.Services
             catch (WSCustomException ex)
             {
                 EnviarMailErrorCondicionEspecial(solp, ex.Message);
-                ReiniciarCondicionEspecial(solp);
+                //ReiniciarCondicionEspecial(solp);
             }
         }
 
@@ -2973,7 +2973,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(tipoImputacion.NumeroOrdenDeCompra) && solp.Adicional == true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar una orden de compra");
-                ReiniciarCondicionEspecial(solp);
+                //ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -2982,7 +2982,7 @@ namespace SustitucionMOAUtils.Services
             if (!solp.Posiciones.All(x => x.Moneda.CodigoSap == ordenDeCompra.Cabecera.Moneda))
             {
                 EnviarMailErrorCondicionEspecial(solp, $"La moneda de la OC {ordenDeCompra.Cabecera.Moneda} no es compatible con la moneda de la SOLP {solp.Posiciones.FirstOrDefault().Moneda.CodigoSap}");
-                ReiniciarCondicionEspecial(solp);
+                //ReiniciarCondicionEspecial(solp);
                 return;
             }
 
