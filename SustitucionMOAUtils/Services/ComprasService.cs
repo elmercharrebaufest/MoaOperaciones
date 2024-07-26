@@ -2863,18 +2863,32 @@ namespace SustitucionMOAUtils.Services
                     ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
                 }
                 repositorio.GuardarCambios();
+                SetNombreDePedido(solp);
 
-                GrabarArchivosSapEnPliego(solp, result.Archivos);
-                if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
+                //solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
                 {
-                    EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
-                    ReiniciarCondicionEspecial(solp);
-                }
+                    solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
 
-                if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
-                {
-                    EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
-                    ReiniciarCondicionEspecial(solp);
+                    if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
+                    {
+                        ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
+                    }
+                    repositorio.GuardarCambios();                
+
+                    GrabarArchivosSapEnPliego(solp, result.Archivos);
+
+                    if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
+                    {
+                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
+                        ReiniciarCondicionEspecial(solp);
+                    }
+
+                    if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
+                    {
+                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
+                        ReiniciarCondicionEspecial(solp);
+                    }
                 }
 
                 repositorio.GuardarCambios();
