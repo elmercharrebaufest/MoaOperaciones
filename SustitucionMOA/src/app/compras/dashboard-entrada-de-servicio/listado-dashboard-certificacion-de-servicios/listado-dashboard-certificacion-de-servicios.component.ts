@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -38,6 +38,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
         private location: Location,
+        private cdr: ChangeDetectorRef
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
@@ -1360,11 +1361,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         ".msg": "application/vnd.ms-outlook"
     };
     
-    
-    descargarArchivos(rowData: any) {
+    loadingRows = new Map<number, boolean>();
+
+    descargarArchivos(rowData: any, index: number) {
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
-
+        
+        this.loadingRows[index] = true;
+        this.cdr.detectChanges();
+        
         this.service.GetAdjuntosByES(id).subscribe(result => {
             if (result.data.length > 0) {
                 
@@ -1373,16 +1378,18 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 });
             }
             else{
-           
               this.confirmationService.confirm({
                 message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
                 rejectVisible: false
               });
 
             }
+
+            this.loadingRows[index] = false;
+            this.cdr.detectChanges();
         });
 
-      }
+    }
 
       descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
         const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";

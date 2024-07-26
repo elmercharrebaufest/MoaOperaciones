@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -35,7 +35,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
-        private location: Location) {
+        private location: Location,
+        private cdr: ChangeDetectorRef) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
         this.vendedor = sessionStorage.getItem("proveedor");
@@ -227,7 +228,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.itemIdSelected.push(itemId);
         this.numeroLineaSelected.add(numeroLinea);
         this.itemSelected.push(item);
-        this.actionCheckPosition(item);
+        //this.actionCheckPosition(item);
         this.itemSelected.sort((a, b) => a.NumeroLinea > b.NumeroLinea ? 1 : -1);
     };
 
@@ -1126,10 +1127,14 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         ".msg": "application/vnd.ms-outlook"
     };
     
+    loadingRows = new Map<number, boolean>();
     
-    descargarArchivos(rowData: any) {
+    descargarArchivos(rowData: any, index: number) {
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
+
+        this.loadingRows[index] = true;
+        this.cdr.detectChanges();
 
         this.service.GetAdjuntosByES(id).subscribe(result => {
             if (result.data.length > 0) {
@@ -1146,6 +1151,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
               });
 
             }
+
+            this.loadingRows[index] = false;
+            this.cdr.detectChanges();
         });
 
       }
