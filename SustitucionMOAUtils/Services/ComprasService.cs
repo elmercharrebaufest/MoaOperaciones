@@ -6707,6 +6707,10 @@ namespace SustitucionMOAUtils.Services
 
         private void CrearRegistroInfo(Cotizacion cotizacion, List<RegistroInfoDto> registros)
         {
+            if (registros.First() == null || !ProveedorExisteEnSAP(registros.First().Codigo))
+            {
+                return;
+            }
             var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
             if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
             {
@@ -10332,6 +10336,10 @@ namespace SustitucionMOAUtils.Services
                 ObservacionCondicionesEspeciales = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp
             };
             return adjuntosSolpDto;
+        }
+        private bool ProveedorExisteEnSAP(string codigoProveedor)
+        {
+            return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
         }
     }
 
