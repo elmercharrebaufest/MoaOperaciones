@@ -173,7 +173,9 @@
 
                     <div class="row myRow">
                         <div class="col-xs-12 col-sm-12 col-md-12">
-                            <label class="labelCompras" for="editorTexto"> Observaciones:</label>
+                            <label class="labelCompras" for="editorTexto"> Observaciones
+                                <small style="font-size: 75%;">(pasa a SAP)</small>:
+                            </label>
                             <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesGeneracion"
                                       name="observaciones" id="observaciones" cols="30" rows="5"
                                       placeholder="Indique sus observaciones">
