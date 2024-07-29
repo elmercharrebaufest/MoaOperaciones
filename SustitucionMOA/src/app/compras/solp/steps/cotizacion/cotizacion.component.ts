@@ -605,16 +605,19 @@ export class CotizacionComponent extends ListBaseComponent {
                 if(this.model.condEspProveedorAsignado == true){
                     this.formularioCotizacion.controls['adicional'].disable();
                     this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
                 } 
 
                 if(this.model.adicional == true){
                     this.formularioCotizacion.controls['adicional'].enable();
                     this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+                    this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
                 } 
 
                 if(this.model.condEspProveedorAsignado != true && this.model.adicional != true){
                     this.formularioCotizacion.controls['adicional'].enable();
                     this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+                    this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
                 } 
                 this.verificarMismoProveedor();
 
