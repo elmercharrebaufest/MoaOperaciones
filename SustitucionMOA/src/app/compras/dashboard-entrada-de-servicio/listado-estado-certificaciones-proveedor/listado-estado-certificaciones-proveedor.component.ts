@@ -87,7 +87,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   listadoEstadoCertificacion: any = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
     { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
-    { name: 'Estado: Rechazadas', code: 'Rechazado' }
+    { name: 'Estado: Rechazadas', code: 'Rechazado' },
+    { name: 'Estado: Anuladas', code: 'Anulada' }
   ];
   listadoAreas: any = [];
 
@@ -108,6 +109,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cAnulador', header: 'Anulado Por', field: 'AnuladoPor', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
         { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -281,6 +283,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         return ['DImporteTotal', 'DFechaPres', 'cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador','esAdjuntos'];
       case 'Rechazado':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo','esAdjuntos'];
+      case 'Anulada':
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cAnulador','esAdjuntos']
     }
   }
 

@@ -54,11 +54,11 @@ i#btn-fullscreen {
     transform: rotate(-90deg);
 }
 
-.usuario-area {
+.ingresante {
   display: inline-block;
 }
 
-.usuario-area span {
+.ingresante span {
   color: blue;
 }
 
@@ -149,6 +149,18 @@ i#btn-fullscreen {
 .rechazada {
   width: fit-content;
   background-color: #b90d0d;
+  color: white;
+  padding: .2em 1em;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.anulada {
+  width: fit-content;
+  background-color: #6d6b6b;
   color: white;
   padding: .2em 1em;
   text-align: center;
@@ -283,21 +295,36 @@ i#btn-fullscreen {
     height: auto;
   }
 
-  td:has(> div.usuario-area) {
+  td:has(> div.ingresante) {
     max-width: 12em;
     overflow: hidden;
   }
 
-.usuario-area > span {
+.ingresante > span {
   overflow: hidden;
   text-overflow: ellipsis;
   width: 11em;
   display: block;
 }
 
-.usuario-area:hover > span {
+.ingresante:hover > span {
   overflow: visible;
   white-space: normal;
+  word-break: break-all;
+  height: auto;
+}
+
+td.anulador {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+  max-width: 12em;
+}
+
+td.anulador:hover {
+  overflow: visible;
+  white-space: normal !important;
   word-break: break-all;
   height: auto;
 }
