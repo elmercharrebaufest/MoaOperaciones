@@ -3,7 +3,7 @@ import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormGroup, FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
 import { reference } from '@angular/core/src/render3';
@@ -51,6 +51,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     @Input() elementSelected: any;
     @Input() itemIdSelected: string = '';
     @Input() posicionSelected: any;
+    @Input() formularioResumenCertificacion: FormGroup;
     @Output() closeModal = new EventEmitter<void>();
     @Output() closeDialog = new EventEmitter<void>();
 
@@ -107,6 +108,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     };
 
     totalMontoCertificar!: number;
+    get descriptions(): FormArray {
+        return this.formularioResumenCertificacion.get('descriptions') as FormArray;
+    }
 
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService,

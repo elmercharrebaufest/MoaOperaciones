@@ -22,6 +22,7 @@ import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
 import { FileModalComponent } from '../file-modal/file-modal.component';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
         private location: Location,
-        private cdr: ChangeDetectorRef
+        private cdr: ChangeDetectorRef,
+        private formBuilder: FormBuilder
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
@@ -207,6 +209,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             ]
         }
     ];
+
+    formularioResumenCertificacion: FormGroup = this.formBuilder.group({
+        descriptions: this.formBuilder.array([])
+    });
 
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
@@ -546,7 +552,29 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     openModal() {
         this.searchElement();
+        this.createResumenForm();
         this.showModal = this.itemIdSelected.length > 0;
+    }
+
+    createResumenForm(): void {
+        this.resetFormularioResumenCertificacion();
+        const descriptionsArray = this.descriptions;
+        this.itemSelected.forEach(item => {
+            const descriptionForm = this.formBuilder.group({
+            description: [item.posicionDescripcion, Validators.required]
+            });
+            descriptionsArray.push(descriptionForm);
+        });
+    }
+
+    get descriptions() {
+        return this.formularioResumenCertificacion.controls["descriptions"] as FormArray;
+    }
+
+    resetFormularioResumenCertificacion(): void {
+        this.formularioResumenCertificacion = this.formBuilder.group({
+            descriptions: this.formBuilder.array([])
+        });
     }
 
     private fechaInicioConfigurado: any;

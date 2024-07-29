@@ -1,9 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { CalendarModule } from 'primeng/calendar';
-import { forEach } from '@angular/router/src/utils/collection';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 declare var $: any;
 
 type Column = {
@@ -99,10 +97,14 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     };
 
     totalMontoCertificar!: number;
-
+    @Input() formularioResumenCertificacion: FormGroup;
+    get descriptions(): FormArray {
+        return this.formularioResumenCertificacion.get('descriptions') as FormArray;
+    }
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService,
-        private messageService: MessageService
+        private messageService: MessageService,
+        private formBuilder: FormBuilder
     ) { }
 
     ngOnInit() {
@@ -450,7 +452,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
     validateValues() {
-            this.documentDateMsg = [];
+        this.documentDateMsg = [];
 
         if (this.fechaDocumento === null || this.fechaDocumento === undefined || this.fechaDocumento.toString() === '') {
             this.documentDateMsg.push({ severity: 'error', summary: '', detail: 'Ingrese una fecha de prestación del servicio' });
@@ -549,58 +551,58 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     //---------- ARCHIVOS ADJUNTOS---------//
     uploadedFiles: File[] = [];
     maxSizeFile = 10 * 1024 * 1024; // 10 MB
-    allowedTypes = ['application/pdf', 
-        'application/vnd.ms-excel', 
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 
+    allowedTypes = ['application/pdf',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'application/vnd.ms-outlook',
-        'application/octet-stream', 
+        'application/octet-stream',
         'application/x-msg'];
 
     allowedExtensions = ['.pdf', '.xls', '.xlsx', '.msg'];
 
     onFileSelected(event: any) {
-      const files: FileList = event.target.files;
-      let totalSize = this.uploadedFiles.reduce((acc, file) => acc + file.size, 0);
-  
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (!this.isValidFileType(file)) {
-            this.messageService.add({ severity: 'error', summary: `${file.name} Archivo invalido.`, detail: 'Solo se permiten archivos .pdf, .xls, .msg.' })
-          continue;
+        const files: FileList = event.target.files;
+        let totalSize = this.uploadedFiles.reduce((acc, file) => acc + file.size, 0);
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (!this.isValidFileType(file)) {
+                this.messageService.add({ severity: 'error', summary: `${file.name} Archivo invalido.`, detail: 'Solo se permiten archivos .pdf, .xls, .msg.' })
+                continue;
+            }
+            if (totalSize + file.size > this.maxSizeFile) {
+                this.messageService.add({ severity: 'error', summary: 'Tamaño excedido 10 MB.', detail: 'El limite de carga de archivos es de 10 MB.' })
+                continue;
+            }
+            this.uploadedFiles.push(file);
+            totalSize += file.size;
         }
-        if (totalSize + file.size > this.maxSizeFile) {
-            this.messageService.add({ severity: 'error', summary: 'Tamaño excedido 10 MB.', detail: 'El limite de carga de archivos es de 10 MB.' })
-          continue;
-        }
-        this.uploadedFiles.push(file);
-        totalSize += file.size;
-      }
-  
-      this.updateFileInput();
+
+        this.updateFileInput();
     }
-  
+
     isValidFileType(file: File): boolean {
         const fileTypeValid = this.allowedTypes.includes(file.type);
         const fileExtensionValid = this.allowedExtensions.some(ext => file.name.endsWith(ext));
         return fileTypeValid || fileExtensionValid;
     }
-  
+
     removeFile(index: number) {
-      this.uploadedFiles.splice(index, 1);
-      this.updateFileInput();
+        this.uploadedFiles.splice(index, 1);
+        this.updateFileInput();
     }
-  
+
     updateFileInput() {
-      const dt = new DataTransfer();
-      this.uploadedFiles.forEach(file => dt.items.add(file));
-      this.fileInput.nativeElement.files = dt.files;
+        const dt = new DataTransfer();
+        this.uploadedFiles.forEach(file => dt.items.add(file));
+        this.fileInput.nativeElement.files = dt.files;
     }
-  
+
     uploadFiles() {
-      const formData = new FormData();
-      for (let file of this.uploadedFiles) {
-        formData.append('files', file, file.name);
-      }
+        const formData = new FormData();
+        for (let file of this.uploadedFiles) {
+            formData.append('files', file, file.name);
+        }
     }
 
     //----------FIN ARCHIVOS ADJUNTOS---------//
