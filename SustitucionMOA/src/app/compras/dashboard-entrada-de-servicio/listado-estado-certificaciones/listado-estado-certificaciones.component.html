@@ -62,7 +62,7 @@
             </ng-template>
             <!-- TABLE 1 HEADERS END -->
             <!-- TABLE 1 BODY -->
-            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded" let-item="rowIndex">
                 <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
                     <td>
                         <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
@@ -119,7 +119,8 @@
                     <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>                                                                                
-                        <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                        <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                        <div *ngIf="loadingRows[item]" class="loader"></div>
                     </td>
                 </tr>
                 
