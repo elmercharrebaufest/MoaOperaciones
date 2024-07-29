@@ -21,6 +21,7 @@ import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.com
 import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'app-listado-dashboard-certificacion-de-servicios-proveedor',
@@ -28,7 +29,7 @@ import { MultiSelect } from 'primeng/multiselect';
     styleUrls: ['./listado-dashboard-certificacion-de-servicios-proveedor.component.css']
 })
 
-export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extends ListBaseComponent implements AfterViewInit, OnInit{
+export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extends ListBaseComponent implements AfterViewInit, OnInit {
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -36,7 +37,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
         private location: Location,
-        private cdr: ChangeDetectorRef) {
+        private cdr: ChangeDetectorRef,
+        private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
         this.vendedor = sessionStorage.getItem("proveedor");
@@ -181,6 +183,10 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             ]
         }
     ];
+
+    formularioResumenCertificacion: FormGroup = this.formBuilder.group({
+        descriptions: this.formBuilder.array([])
+    });
 
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
@@ -410,7 +416,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
-                       
+
                     }
                     if (this.expandedPositionRow) {
                         this.calcularValoresACertificar(this.expandedPositionRow);
@@ -423,7 +429,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                     this.disabledFilter = false;
                     if (this.spinnerComponent) this.spinnerComponent.hideIt();
                     this.displayContent = true;
-                    
+
                     // Se buscan las posiciones que están al 100%
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
@@ -450,28 +456,28 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             // Convierte a número
             let valorNumerico = parseFloat(numero);
             // Formatea como número con separadores de miles y dos decimales
-    
+
             if (rowData.ImporteARPUSD.startsWith('$')) {
                 return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
-            else{
+            else {
                 return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
             }
         }
-        
+
         return rowData.ImporteARPUSD;
     }
 
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
-      }
+    }
 
-    isPendingRelease(oc) : boolean{
+    isPendingRelease(oc): boolean {
         return oc.SubjToR === "";
     }
 
-    isNotReceibeMoreMerchandise(posicion) : boolean {
+    isNotReceibeMoreMerchandise(posicion): boolean {
         return posicion.NoMoreGR === "X";
     }
 
@@ -521,7 +527,29 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     openModal() {
         this.searchElement();
+        this.createResumenForm();
         this.showModal = this.itemIdSelected.length > 0;
+    }
+
+    createResumenForm(): void {
+        this.resetFormularioResumenCertificacion();
+        for (let index = 0; index < this.itemSelected.length; index++) {
+            const element = this.itemSelected[index];
+            const descriptionForm = this.formBuilder.group({
+                description: [element.posicionDescripcion, Validators.required]
+            });
+            this.descriptions.push(descriptionForm);
+        }
+    }
+
+    get descriptions() {
+        return this.formularioResumenCertificacion.controls["descriptions"] as FormArray;
+    }
+
+    resetFormularioResumenCertificacion(): void {
+        this.formularioResumenCertificacion = this.formBuilder.group({
+            descriptions: this.formBuilder.array([])
+        });
     }
 
     private fechaInicioConfigurado: any;
@@ -658,55 +686,55 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         });
     }
 
-  eliminarFormatoNumeroLocal(value: any): number {
-    if (!value) value = 0;
-    if (typeof value === 'string') {
-      value = parseFloat(value.replace(',', ''));
-    }
-    return value;
-  }
-
-  private calcularMontoACertificar(cantidadACertificar: number, importe: number): number{
-      const montoActualizado = (cantidadACertificar * importe);
-      return montoActualizado;
-  }
-
-  private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
-    const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
-    return porcentajeACertificar;
-  }
-
-  actualizarValoresACertificarPorCantidad(item: any): void {
-    let cantidadACertificar = item.CantidadACertificar;
-    const cantidadDisponible = item.Cantidad - item.CantidadReal;
-
-    if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && !cantidadACertificar)) {
-      item.CantidadACertificar = cantidadDisponible;
-      cantidadACertificar = cantidadDisponible;
+    eliminarFormatoNumeroLocal(value: any): number {
+        if (!value) value = 0;
+        if (typeof value === 'string') {
+            value = parseFloat(value.replace(',', ''));
+        }
+        return value;
     }
 
-    const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
-    item.PorcentajeACertificar = porcentajeACertificar;
-    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
-  }
-
-  actualizarValoresACertificarPorPorcentaje(item: any): void {
-    let porcentajeACertificar = item.PorcentajeACertificar;
-    const porcentajeDisponible = (100 - item.Porcentaje);
-
-    if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && !porcentajeACertificar)) {
-      item.PorcentajeACertificar = porcentajeDisponible;
-      porcentajeACertificar = porcentajeDisponible;
+    private calcularMontoACertificar(cantidadACertificar: number, importe: number): number {
+        const montoActualizado = (cantidadACertificar * importe);
+        return montoActualizado;
     }
 
-    const cantidadACertificar = (porcentajeACertificar * item.Cantidad) / 100;
-    item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
-  }
+    private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
+        const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
+        return porcentajeACertificar;
+    }
 
-  deshabilitarItemCheckbox(item: any): boolean {
-    return item.PorcentajeACertificar < 0.01 || item.Porcentaje >= 100 || item.MontoACertificar <= 0 || item.CantidadACertificar <= 0;
-  }
+    actualizarValoresACertificarPorCantidad(item: any): void {
+        let cantidadACertificar = item.CantidadACertificar;
+        const cantidadDisponible = item.Cantidad - item.CantidadReal;
+
+        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && !cantidadACertificar)) {
+            item.CantidadACertificar = cantidadDisponible;
+            cantidadACertificar = cantidadDisponible;
+        }
+
+        const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
+        item.PorcentajeACertificar = porcentajeACertificar;
+        item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+    }
+
+    actualizarValoresACertificarPorPorcentaje(item: any): void {
+        let porcentajeACertificar = item.PorcentajeACertificar;
+        const porcentajeDisponible = (100 - item.Porcentaje);
+
+        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && !porcentajeACertificar)) {
+            item.PorcentajeACertificar = porcentajeDisponible;
+            porcentajeACertificar = porcentajeDisponible;
+        }
+
+        const cantidadACertificar = (porcentajeACertificar * item.Cantidad) / 100;
+        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
+        item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe);
+    }
+
+    deshabilitarItemCheckbox(item: any): boolean {
+        return item.PorcentajeACertificar < 0.01 || item.Porcentaje >= 100 || item.MontoACertificar <= 0 || item.CantidadACertificar <= 0;
+    }
 
     validarMantenerItemSeleccionado(item: any) {
         if (item.CantidadACertificar == 0 || Number(item.PorcentajeACertificar < 0.01) || Number(item.MontoACertificar < 0.01)) {
@@ -715,21 +743,21 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     }
 
     numbersOnly(event): boolean {
-      const charCode = (event.which) ? event.which : event.keyCode;
-      // Verificar si el valor ingresado ya contiene .
-      if (charCode === 46) {
-        return event.target.value.indexOf('.') === -1;
-      }
+        const charCode = (event.which) ? event.which : event.keyCode;
+        // Verificar si el valor ingresado ya contiene .
+        if (charCode === 46) {
+            return event.target.value.indexOf('.') === -1;
+        }
 
-      // Verificar que sean un número
-      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-        return false;
-      }
+        // Verificar que sean un número
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
 
-      // Verificar que no se acepten más de 2 decimales
-      if (event.target.value.includes('.')) {
-        return event.target.value.split('.')[1].length <= 2;
-      }
+        // Verificar que no se acepten más de 2 decimales
+        if (event.target.value.includes('.')) {
+            return event.target.value.split('.')[1].length <= 2;
+        }
     }
 
     clearCheckbox(item: any): void {
@@ -772,8 +800,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     hideCheckboxToAll(items: any): boolean {
         // return items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
-        return this.tablaPO.some(x => 
-            x.NumeroOrdenDeCompra === items.NroOrdenCompra && 
+        return this.tablaPO.some(x =>
+            x.NumeroOrdenDeCompra === items.NroOrdenCompra &&
             x.SubjToR === "" && (
                 items.Items.some(item => !this.isGet100(item) || item.MontoACertificar != 0)
             )
@@ -1011,14 +1039,14 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     }
 
     calcularPorcentaje(oc): any[] {
-         const posicionesCompletas = oc.Posiciones.filter(posicion => {
+        const posicionesCompletas = oc.Posiciones.filter(posicion => {
             this.calcularValoresACertificar(posicion);
 
-        const items = posicion.Items || [];
-        const totalItems = items.length;
-        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
-        
-        return itemsCompletados === totalItems;
+            const items = posicion.Items || [];
+            const totalItems = items.length;
+            const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+
+            return itemsCompletados === totalItems;
 
         });
 
@@ -1126,9 +1154,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         ".csv": "text/csv",
         ".msg": "application/vnd.ms-outlook"
     };
-    
+
     loadingRows = new Map<number, boolean>();
-    
+
     descargarArchivos(rowData: any, index: number) {
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
@@ -1138,17 +1166,17 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
         this.service.GetAdjuntosByES(id).subscribe(result => {
             if (result.data.length > 0) {
-                
+
                 result.data.forEach((archivo) => {
                     this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
                 });
             }
-            else{
-           
-              this.confirmationService.confirm({
-                message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
-                rejectVisible: false
-              });
+            else {
+
+                this.confirmationService.confirm({
+                    message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+                    rejectVisible: false
+                });
 
             }
 
@@ -1156,9 +1184,9 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             this.cdr.detectChanges();
         });
 
-      }
+    }
 
-      descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+    descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
         const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
         var byteArray = new Uint8Array(archivo);
         var blob = new Blob([byteArray], { type: typeExtension });
@@ -1176,39 +1204,39 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             document.body.removeChild(link);
             setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
         }
-      }
+    }
 
-      habilitarTodosCampoDeValorACertificar(): void {
+    habilitarTodosCampoDeValorACertificar(): void {
         if (this.expandedPositionRow) { // Verifica si hay una posición expandida
-          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow)); 
-          if (posicionExpandida) { 
-            posicionExpandida.Items.forEach(item => {
-              const rowIndex = this.tablaItems.value.indexOf(item);
-              if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {
-                this.habilitarCampoDeValorACertificar(rowIndex);
-              }
-            });
-          }
+            const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
+            if (posicionExpandida) {
+                posicionExpandida.Items.forEach(item => {
+                    const rowIndex = this.tablaItems.value.indexOf(item);
+                    if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {
+                        this.habilitarCampoDeValorACertificar(rowIndex);
+                    }
+                });
+            }
         }
-      }
+    }
 
-      hayElementosParaCertificar(): boolean {
+    hayElementosParaCertificar(): boolean {
         if (this.expandedPositionRow) {
-          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
-          if (posicionExpandida) {
-            return posicionExpandida.Items.some(item => item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0);
-          }
+            const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
+            if (posicionExpandida) {
+                return posicionExpandida.Items.some(item => item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0);
+            }
         } else {
-          return this.tablaPO.some(ordenCompra =>
-            ordenCompra.Posiciones.some(posicion =>
-              posicion.Items.some(item => 
-                (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0) && 
-                (!this.ocFilterApplied || this.tienePorcentajeACertificar(item))
-              )
-            )
-          );
+            return this.tablaPO.some(ordenCompra =>
+                ordenCompra.Posiciones.some(posicion =>
+                    posicion.Items.some(item =>
+                        (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0) &&
+                        (!this.ocFilterApplied || this.tienePorcentajeACertificar(item))
+                    )
+                )
+            );
         }
-        return false; 
-      }
+        return false;
+    }
 
 }
