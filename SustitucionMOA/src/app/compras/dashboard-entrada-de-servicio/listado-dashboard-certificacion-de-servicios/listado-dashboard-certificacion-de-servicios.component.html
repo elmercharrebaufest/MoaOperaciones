@@ -491,13 +491,13 @@
                                         [elementSelected]="elementSelected"
                                         [itemIdSelected]="itemIdSelected"
                                         (closeModal)="onCloseModal()"
+                                        (closeDialog)="onCloseDialog()"
                                         (enviarMensajeGrilla)="actualizarGrilla($event)">
     </app-modal-alta-entrada-de-servicio>
 
 
 
 <p-confirmDialog [(visible)]="showDialog"
-                 (closeDialog)="onCloseDialog()"
                  header="Atención" icon="pi pi-exclamation-circle" width="425"
                  appendTo="body" acceptLabel="Aceptar" rejectLabel="Cancelar">
 </p-confirmDialog>
