@@ -286,6 +286,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                                 DateTime FechaCreacion = (DateTime)detalle.Fecha_Carga_ES;
                                 documento.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
+                                documento.AnuladaPor = detalle.Anulado_por;
                             }
                             else
                             {
@@ -405,7 +406,8 @@ namespace SustitucionMOAUtils.Services
                 Fiscal = temporal.Fiscal_SOLPED,
                 FechaContabilizacion = fechaContabilizacionFormateada.ToString("dd/MM/yyyy"),
                 FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy"),
-                NroPosicion = temporal.NRO_POS
+                NroPosicion = temporal.NRO_POS,
+                AnuladaPor = temporal.Anulado_por
             };
 
             if (temporal.Estado_certificacion == "Aprobada")
@@ -561,8 +563,13 @@ namespace SustitucionMOAUtils.Services
             bool auto = false;
             bool difSolicitante = false;
 
+            var usuarioIngresante = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == userMail);
+            var usuarioReasignacion = repositorio.Obtener<SustitucionMOAModel.Entities.UsuarioReasignacion>(x => x.Usuario_Id == usuarioIngresante.Id);
+
+
             //2a - Comparar Fiscal/Email con usuario FE
-            if (userMail == detalleSolPed.Email)
+            if (usuarioReasignacion != null && DateTime.Now > usuarioReasignacion.FechaHasta && DateTime.Now < usuarioReasignacion.FechaDesde
+                                && userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -592,8 +599,10 @@ namespace SustitucionMOAUtils.Services
                             //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
                             string solicitante = pos.Solicitante.Replace(" ", "");
                             var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante.ToUpper());
+
                             if (usuario != null && usuario.Mail == userMail)
                             {
+                                //Aca es donde se aporueba automaticamente
                                 auto = true;
                                 difSolicitante = false;
                             }
@@ -606,8 +615,8 @@ namespace SustitucionMOAUtils.Services
                             {
                                 difSolicitante = true;
                             }
-                }
-            }
+                        }
+                    }
                 }
             }
             //Aca - Si los 3 datos estan vacios o no vienen -> “No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante”. 
@@ -729,7 +738,22 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var adjunto in adjuntos)
                 {
-                    adjunto.NroESTemporal = nroESTemporal;
+                    if (string.IsNullOrEmpty(adjunto.NroESTemporal))
+                    {
+                       adjunto.NroESTemporal = nroESTemporal;
+                    }
+                    else
+                    {
+                        var adjuntoNuevo = new AdjuntosEntradasDeServicio()
+                        {
+                            NombreArchivo = adjunto.NombreArchivo,
+                            Extension = adjunto.Extension,
+                            NombreEnBlob = adjunto.NombreEnBlob,
+                            NroESTemporal = nroESTemporal
+                        };
+
+                        repositorio.Agregar(adjuntoNuevo);
+                    }
                 }
 
                 repositorio.GuardarCambios();

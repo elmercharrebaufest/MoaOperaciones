@@ -62,7 +62,7 @@
             </ng-template>
             <!-- TABLE 1 HEADERS END -->
             <!-- TABLE 1 BODY -->
-            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded" let-item="rowIndex">
                 <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
                     <td>
                         <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
@@ -90,7 +90,7 @@
                     <td>{{ rowData.Descripcion | defaultData }}</td>
                     <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>
-                        <div class="usuario-area">
+                        <div class="ingresante">
                             <span>{{ rowData.Ingresante }}</span>
                         </div>
                     </td>
@@ -100,6 +100,7 @@
                             <span>Pendiente de aprobación</span>
                         </div>
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
+                        <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
                     </td>
                     <td
                         *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
@@ -113,11 +114,13 @@
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
                     </td>
-                    <td class="aprobador" *ngIf="rowData.Estado === 'Pendiente Aprobación' || rowData.Estado === 'Aprobada'">{{
+                    <td class="aprobador">{{
                         rowData.Aprobador | defaultData}}</td>
+                    <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>                                                                                
-                        <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                        <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                        <div *ngIf="loadingRows[item]" class="loader"></div>
                     </td>
                 </tr>
                 
