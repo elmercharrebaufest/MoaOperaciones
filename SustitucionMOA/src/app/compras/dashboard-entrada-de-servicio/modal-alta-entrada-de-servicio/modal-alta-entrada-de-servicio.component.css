@@ -241,8 +241,7 @@ p-panel#positions-panel p-header input#description {
     width: 88%;
 }
 
-p-panel#positions-panel p-header span#title {
-    width: 6em;
+p-panel#positions-panel p-header label#title {
     text-transform: uppercase;
 }
 
@@ -281,3 +280,36 @@ input[type=file]::file-selector-button {
   border:  #007AD9;
   color: white;
 }
+
+.form-container{
+  min-width: 95%;
+  display: inline-flex;
+  align-items: center;
+
+  .label-container{
+    font-weight: 400;
+    width: 5%;
+    label{
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+
+  .input-container {
+    width: 95%;
+    input {
+      margin-left: 2em;
+      height: 2em;
+      width: 100%;
+    }
+  
+    span {
+      font-size: 12px;
+      color: #a80000;
+      margin-left: 25px;
+      padding: 5px;
+      display: table;
+    }
+  }
+}
+
