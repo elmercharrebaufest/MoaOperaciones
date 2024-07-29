@@ -862,8 +862,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     ".msg": "application/vnd.ms-outlook"
 };
 
+loadingRows = new Map<number, boolean>();
 
-descargarArchivos(rowData: any) {
+descargarArchivos(rowData: any, index: number) {
+
+    this.loadingRows[index] = true;
+    this.cdr.detectChanges();
 
     this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
         if (result.data.length > 0) {
@@ -880,6 +884,9 @@ descargarArchivos(rowData: any) {
           });
 
         }
+
+        this.loadingRows[index] = false;
+        this.cdr.detectChanges();
     });
 
   }
