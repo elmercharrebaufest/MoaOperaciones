@@ -98,7 +98,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
     totalMontoCertificar!: number;
     @Input() formularioResumenCertificacion: FormGroup;
-
+    get descriptions(): FormArray {
+        return this.formularioResumenCertificacion.get('descriptions') as FormArray;
+    }
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService,
         private messageService: MessageService,
