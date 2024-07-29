@@ -295,6 +295,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
+                        reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
                 },
