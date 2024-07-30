@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 declare var $: any;
 
 type Column = {
@@ -48,7 +49,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     @Output() enviarMensajeGrilla = new EventEmitter();
 
     @ViewChild('fileInput') fileInput: any;
-
+    @BlockUI() blockUI: NgBlockUI;
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -253,6 +254,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
     async certificarPosicion() {
         if (this.validateValues() === true) {
+            this.blockUI.start('Cargando...');
             this.buildEntrySheet();
 
             let items = this.itemSelected;
@@ -300,6 +302,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                         reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
+
+                    this.blockUI.stop();
                 },
                 (error) => {
                     this.confirmationService.confirm({
@@ -308,8 +312,8 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                             this.closeDialog.emit();
                         },
                         rejectVisible: false
-                    }
-                    );
+                    });
+                    this.blockUI.stop();
                 }
             );
         }
@@ -361,7 +365,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
             }
         });
 
-        this.itemsAgrupadosPorPosicion.forEach(position => {
+        this.itemsAgrupadosPorPosicion.forEach((position, index) => {
 
             //let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
             //Encontrar SolPed desde ArrayOfSolpeds
@@ -376,7 +380,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 SolPedNumber: solPedAsociada,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
-                Descripcion: position.Descripcion,
+                Descripcion: this.descriptions.at(index).get('description').value.trim(),
                 OrdenCompraNumero: PONumber,
                 OrdenCompraPosicionNumero: position.NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref,
