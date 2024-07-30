@@ -61,5 +61,6 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string PlannedPackage { get; set; }
         public string PlannedLine { get; set; }
         public string Descripcion { get; set; }
+        public string PosicionDescripcion { get; set; }
     }
 }

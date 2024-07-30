@@ -569,8 +569,11 @@ namespace SustitucionMOAUtils.Services
 
 
             //2a - Comparar Fiscal/Email con usuario FE
-            if (usuarioReasignacion != null && DateTime.Now > usuarioReasignacion.FechaHasta && DateTime.Now < usuarioReasignacion.FechaDesde
-                                && userMail == detalleSolPed.Email)
+            if (usuarioReasignacion != null && DateTime.Now < usuarioReasignacion.FechaHasta && DateTime.Now > usuarioReasignacion.FechaDesde)
+            {
+                auto = false;
+            }
+            else if (userMail == detalleSolPed.Email)
             {
                 auto = true;
             }

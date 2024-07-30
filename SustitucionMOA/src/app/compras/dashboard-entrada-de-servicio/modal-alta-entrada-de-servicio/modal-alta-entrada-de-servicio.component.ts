@@ -377,9 +377,18 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     onDescripcionChange(position: any, value: string) {
         const item = this.itemSelected.find(item => item.NroPosicion === position.NroPosicion);
+
         if (item) {
             item.posicionDescripcion = value;
         }
+
+        this.itemsAgrupadosPorPosicion.forEach((posicion) => {
+            if (posicion.NroPosicion === position.NroPosicion) {
+                posicion.Items.forEach(itemAgrupado => {
+                    itemAgrupado.posicionDescripcion = value;
+                });
+            }
+        });
       }
 
     buildEntrySheet() {
