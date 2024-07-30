@@ -275,6 +275,7 @@ namespace SustitucionMOAUtils.Services
                                 detalleSAP.CodigoServicio = detalle.Nro_servicio;
                                 detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
                                 detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
+                                detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
                                 documento.MotivoRechazo = detalle.Motivo_rechazo;
                                 documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
                                 documento.Ingresante = detalle.Ingresante_CDS;
