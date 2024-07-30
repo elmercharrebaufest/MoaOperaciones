@@ -190,8 +190,8 @@
                                     <!-- Anteriores -->
                                     <!-- * 1  is just to turn it into a number -->
                                     <td class="anterior">{{ rowDetalle.CantidadAnterior }}</td>
-                                    <td class="anterior">{{ (rowDetalle.CantidadAnterior * 100) / rowDetalle.Cantidad }}%</td>
-                                    <td class="anterior text-right">{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.CantidadAnterior * rowDetalle.Monto }}</td>
+                                    <td class="anterior">{{ getPorcentajeAnterior(rowDetalle.CantidadAnterior, rowDetalle.Cantidad) }}</td>
+                                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowDetalle.Moneda) }}</td>
 
                                     <!-- A certificar -->
                                     <td>{{ rowDetalle.CantidadCertificar }}</td>
@@ -200,8 +200,8 @@
 
                                     <!-- Acumulado -->
                                     <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) }}</td>
-                                    <td class="acumulado">{{ ((rowDetalle.CantidadAnterior * 100) / rowDetalle.Cantidad) + (rowDetalle.PorcentajeCertificar * 1) }}%</td>
-                                    <td class="acumulado text-right">{{ rowDetalle.Moneda === 'ARP' ? '$ ' : ''}}{{ (rowDetalle.CantidadAnterior * rowDetalle.Monto) + (rowDetalle.CantidadCertificar * rowDetalle.Monto) }}</td>
+                                    <td class="acumulado">{{ getPorcentajeAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Cantidad, rowDetalle.PorcentajeCertificar) }}</td>
+                                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowDetalle.CantidadCertificar, rowDetalle.Moneda) }}</td>
                                 </tr>
                             </ng-template>
                             <!-- TABLE 2 BODY END -->
