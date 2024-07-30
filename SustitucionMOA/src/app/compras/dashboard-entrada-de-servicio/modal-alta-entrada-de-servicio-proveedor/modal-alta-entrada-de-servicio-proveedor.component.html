@@ -171,7 +171,7 @@
             <div class="message-wrapper">
                 <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
-            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="formularioResumenCertificacion.invalid">Certificar</button>
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="(formularioResumenCertificacion.invalid || certificando)">Certificar</button>
         </div>
     </section>
 

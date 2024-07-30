@@ -60,6 +60,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     colConfigName: string = 'columnasAltaCertificacionesProveedor';
     colspanMonto: number = 8;
     colConfig = [];
+    certificando: boolean = false;
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -251,8 +252,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
         }
     }
 
-    async certificarPosicion() {
-        if (this.validateValues() === true) {
+  async certificarPosicion() {
+      if (this.validateValues() === true) {
+            this.certificando = true;
             this.buildEntrySheet();
 
             let items = this.itemSelected;
@@ -300,6 +302,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                         reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
+                this.certificando = false;
                 },
                 (error) => {
                     this.confirmationService.confirm({
@@ -309,10 +312,11 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                         },
                         rejectVisible: false
                     }
-                    );
+                  );
+                  this.certificando = false;
                 }
-            );
-        }
+          );
+      }
     }
 
     buildEntrySheet() {
