@@ -34,5 +34,6 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public decimal PorcentajeACertificar { get; set; }
         public decimal MontoACertificar { get; set; }
         public bool isSelected { get; set; }
+        public string posicionDescripcion { get; set; }
     }
 }

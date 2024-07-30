@@ -17,119 +17,133 @@
         </ng-container>
     </div>
 
-    <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index">
-        <p-header>
-            <span id="title" class="ui-panel-title">Posicion {{ position.NroPosicion }}</span>
-            <input id="description" pInputText type="text" [(ngModel)]="position.Items[0].posicionDescripcion" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)">
-        </p-header>
-
-        <p-table id="items-list"
-                 [value]="position.Items"
-                 dataKey="NumeroLinea"
-                 [scrollable]="true" 
-                 scrollHeight="300px">
-            <!-- TABLE HEADERS-->
-            <ng-template pTemplate="header">
-                <tr>
-                    <th rowspan="2">N° LINEA</th>
-                    <th rowspan="2">N° Servicio</th>
-                    <th rowspan="2">Txt. Breve</th>
-                    <th rowspan="2">Cant.</th>
-                    <th rowspan="2">UM</th>
-                    <th rowspan="2">Precio Unitario</th>
-                    <th rowspan="2">Monto Total</th>
-                    <th colspan="3" class="anterior">Anterior</th>
-                    <th colspan="3" class="acertificar">A Certificar</th>
-                    <th colspan="3" class="acumulado">Acumulado</th>
-                </tr>
-                <tr>
-                    <th class="anterior">Cant.</th>
-                    <th class="anterior">%</th>
-                    <th class="anterior">Monto</th>
-
-                    <th class="acertificar">Cant.</th>
-                    <th class="acertificar">%</th>
-                    <th class="acertificar">Monto</th>
-
-                    <th class="acumulado">Cant.</th>
-                    <th class="acumulado">%</th>
-                    <th class="acumulado">Monto</th>
-                </tr>
-            </ng-template>
-            <!-- TABLE HEADERS END-->
-            <!-- TABLE BODY -->
-            <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
-                <tr>
-                    <td>{{ rowData.NumeroLinea | defaultData }}</td>
-                    <td>{{ rowData.ServicioNumero | defaultData }}</td>
-                    <td>{{ rowData.Descripcion | defaultData }}</td>
-                    <td>{{ rowData.Cantidad | defaultData }}</td>
-                    <td>{{ rowData.UM | defaultData }}</td>
-                    <td class="text-right">
-                        {{
-                            rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.2-2' | defaultData)) : (rowData.Importe | number:'1.2-2' | defaultData)
-                        }}
-                    </td>
-
-                    <td class="text-right">
-                        {{
-                            (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.2-2')) : (rowData.Cantidad * rowData.Importe | number:'1.2-2'))
-                        }}
-                    </td>
-
-                    <!-- Anteriores -->
-                    <!-- * 1  is just to turn it into a number -->
-                    <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-3' }}</td>
-                    <td class="anterior">{{ rowData.Porcentaje | number:'1.0-3' }}%</td>
-                    <td class="anterior text-right">
-                        {{
-                            (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.2-2') : (calcularMontoAnterior(rowData) | number:'1.2-2'))
-                        }}
-                    </td>
-
-                    <!-- A certificar -->
-                    <td>{{ rowData.CantidadACertificar | number:'1.0-3' }}</td>
-                    <td>{{ rowData.PorcentajeACertificar | number:'1.0-3' }}%</td>
-                    <td class="text-right">
-                        {{
-                            (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2') : (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2'))
-                        }}
-                    </td>
-
-                    <!-- Acumulado -->
-                    <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3'}}</td>
-                    <td class="acumulado">{{ calcularPorcentajeAcumulado(rowData) | number:'1.0-3' }}%</td>
-                    <td class="acumulado text-right">
-                        {{
-                            (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2') : (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2'))
-                        }}
-                    </td>
-                </tr>
-            </ng-template>
-            <!-- TABLE BODY END -->
-
-            <ng-template pTemplate="footer">
-                <tr class="footer">
-                    <td [attr.colspan]="colspanMonto"></td>
-                    <td colspan="2" class="text-right">MONTO TOTAL</td>
-                    <td class="text-right">
-                        {{
-                            (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.2-2') : (position.MontoTotalACertificar | number:'1.2-2'))
-                        }}
-                    </td>
-                    <td colspan="3" class="acumulado"></td>
-                </tr>
-            </ng-template>
-
-
-
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td class="emptyData" colspan="12">No hay items para mostrar</td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </p-panel>
+    <form [formGroup]="formularioResumenCertificacion">
+        <ng-container formArrayName="descriptions">
+            <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index" [formGroupName]="i">
+                <p-header>
+                    <div class="form-container">
+                        <div class="label-container">
+                            <p>Posicion {{ position.NroPosicion }}</p>
+                        </div>
+                        <div class="input-container">
+                            <input id="description" pInputText type="text" formControlName="description" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)" (ngModelChange)="onDescripcionChange(position, $event)">
+                            <span *ngIf="descriptions.at(i).get('description').invalid && descriptions.at(i).get('description').touched">
+                                El campo es requerido
+                            </span>
+                        </div>
+                    </div>
+                </p-header>
+        
+                <p-table id="items-list"
+                         [value]="position.Items"
+                         dataKey="NumeroLinea"
+                         [scrollable]="true" 
+                         scrollHeight="300px">
+                    <!-- TABLE HEADERS-->
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th rowspan="2">N° LINEA</th>
+                            <th rowspan="2">N° Servicio</th>
+                            <th rowspan="2">Txt. Breve</th>
+                            <th rowspan="2">Cant.</th>
+                            <th rowspan="2">UM</th>
+                            <th rowspan="2">Precio Unitario</th>
+                            <th rowspan="2">Monto Total</th>
+                            <th colspan="3" class="anterior">Anterior</th>
+                            <th colspan="3" class="acertificar">A Certificar</th>
+                            <th colspan="3" class="acumulado">Acumulado</th>
+                        </tr>
+                        <tr>
+                            <th class="anterior">Cant.</th>
+                            <th class="anterior">%</th>
+                            <th class="anterior">Monto</th>
+        
+                            <th class="acertificar">Cant.</th>
+                            <th class="acertificar">%</th>
+                            <th class="acertificar">Monto</th>
+        
+                            <th class="acumulado">Cant.</th>
+                            <th class="acumulado">%</th>
+                            <th class="acumulado">Monto</th>
+                        </tr>
+                    </ng-template>
+                    <!-- TABLE HEADERS END-->
+                    <!-- TABLE BODY -->
+                    <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
+                        <tr>
+                            <td>{{ rowData.NumeroLinea | defaultData }}</td>
+                            <td>{{ rowData.ServicioNumero | defaultData }}</td>
+                            <td>{{ rowData.Descripcion | defaultData }}</td>
+                            <td>{{ rowData.Cantidad | defaultData }}</td>
+                            <td>{{ rowData.UM | defaultData }}</td>
+                            <td class="text-right">
+                                {{
+                                    rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.2-2' | defaultData)) : (rowData.Importe | number:'1.2-2' | defaultData)
+                                }}
+                            </td>
+        
+                            <td class="text-right">
+                                {{
+                                    (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.2-2')) : (rowData.Cantidad * rowData.Importe | number:'1.2-2'))
+                                }}
+                            </td>
+        
+                            <!-- Anteriores -->
+                            <!-- * 1  is just to turn it into a number -->
+                            <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-3' }}</td>
+                            <td class="anterior">{{ rowData.Porcentaje | number:'1.0-3' }}%</td>
+                            <td class="anterior text-right">
+                                {{
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.2-2') : (calcularMontoAnterior(rowData) | number:'1.2-2'))
+                                }}
+                            </td>
+        
+                            <!-- A certificar -->
+                            <td>{{ rowData.CantidadACertificar | number:'1.0-3' }}</td>
+                            <td>{{ rowData.PorcentajeACertificar | number:'1.0-3' }}%</td>
+                            <td class="text-right">
+                                {{
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2') : (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2'))
+                                }}
+                            </td>
+        
+                            <!-- Acumulado -->
+                            <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3'}}</td>
+                            <td class="acumulado">{{ calcularPorcentajeAcumulado(rowData) | number:'1.0-3' }}%</td>
+                            <td class="acumulado text-right">
+                                {{
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2') : (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2'))
+                                }}
+                            </td>
+                        </tr>
+                    </ng-template>
+                    <!-- TABLE BODY END -->
+        
+                    <ng-template pTemplate="footer">
+                        <tr class="footer">
+                            <td [attr.colspan]="colspanMonto"></td>
+                            <td colspan="2" class="text-right">MONTO TOTAL</td>
+                            <td class="text-right">
+                                {{
+                                    (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.2-2') : (position.MontoTotalACertificar | number:'1.2-2'))
+                                }}
+                            </td>
+                            <td colspan="3" class="acumulado"></td>
+                        </tr>
+                    </ng-template>
+        
+        
+        
+                    <ng-template pTemplate="emptymessage">
+                        <tr>
+                            <td class="emptyData" colspan="12">No hay items para mostrar</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-panel>
+        </ng-container>
+    </form>
+    
     <br>
     <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() }}</strong></div>
 
@@ -204,7 +218,7 @@
             <div class="message-wrapper">
                 <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
-            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="certificarState">Certificar</button>
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="formularioResumenCertificacion.invalid">Certificar</button>
             <div class="form-actions ml-2">
                 <button type="submit" class="btn btn-success btn-certificar" (click)="BuildReport()">Generar Reporte</button>
             </div>

@@ -87,7 +87,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
   listadoEstadoCertificacion: any = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
     { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
-    { name: 'Estado: Rechazadas', code: 'Rechazado' }
+    { name: 'Estado: Rechazadas', code: 'Rechazado' },
+    { name: 'Estado: Anuladas', code: 'Anulada' }
   ];
   listadoAreas: any = [];
 
@@ -108,6 +109,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'cAnulador', header: 'Anulado Por', field: 'AnuladoPor', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cMotivoRechazo', header: 'Motivo de rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
         { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -116,6 +118,7 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     {
       name: 'ESDetalle',
       columns: [
+        { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cantidad Total', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DT', header: 'Precio Unitario', field: 'T', type: 'string', sortable: false, required: false, visible: true },
@@ -280,6 +283,8 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
         return ['DImporteTotal', 'DFechaPres', 'cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador','esAdjuntos'];
       case 'Rechazado':
         return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cAprobador', 'cEstado', 'cMotivoRechazo', 'cFechaRechazo','esAdjuntos'];
+      case 'Anulada':
+        return ['cFecha', 'cID_ES', 'cDescripción', 'cMontoTotal', 'cOrdenCompra', 'cUsuario', 'cEstado', 'cAprobador', 'cAnulador','esAdjuntos']
     }
   }
 
@@ -371,8 +376,12 @@ export class ListadoEstadoCertificacionesProveedorComponent extends ListBaseComp
     ".msg": "application/vnd.ms-outlook"
 };
 
+loadingRows = new Map<number, boolean>();
 
-descargarArchivos(rowData: any) {
+descargarArchivos(rowData: any, index: number) {
+
+    this.loadingRows[index] = true;
+    this.cdr.detectChanges();
 
     this.service.GetAdjuntosByES(rowData.NumeroCertificacion).subscribe(result => {
         if (result.data.length > 0) {
@@ -389,6 +398,9 @@ descargarArchivos(rowData: any) {
           });
 
         }
+        
+        this.loadingRows[index] = false;
+        this.cdr.detectChanges();
     });
 
   }
@@ -423,5 +435,31 @@ descargarArchivos(rowData: any) {
         } else {
             document.body.style.overflow = 'auto';
         }
+    }
+
+    getPorcentajeAnterior(cantidadAnterior: number, cantidad: string): string {
+      const porcentajeAnterior: number = (cantidadAnterior * 100) / parseFloat(cantidad);
+      return `${parseFloat(porcentajeAnterior.toFixed(2))}%`;
+    }
+  
+    getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
+      const montoAnterior: number = cantidadAnterior * monto;
+      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const montoFormatted: string = parseFloat(montoAnterior.toFixed(2)).toString();
+  
+      return `${coin}${montoFormatted}`;
+    }
+  
+    getPorcentajeAcumulado(cantidadAnterior: number, cantidad: string, porcentajeCertificar: string): string {
+      const porcentajeAcumulado: number = ( (cantidadAnterior * 100) / parseFloat(cantidad)) + (parseFloat(porcentajeCertificar) * 1);
+      return `${parseFloat(porcentajeAcumulado.toFixed(2))}%`;
+    }
+  
+    getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
+      const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
+      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const montoFormatted: string = parseFloat(montoAcumulado.toFixed(2)).toString();
+  
+      return `${coin}${montoFormatted}`;
     }
 }

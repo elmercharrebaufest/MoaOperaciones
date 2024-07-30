@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -187,11 +188,10 @@ namespace SustitucionMOA.Controllers
                 string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
                 List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
                 
-                //int index = 0;
 
                 foreach(EntradaServicioCreateParamsDto posicion in payload.Posiciones)
-                { 
-                    string solpedNumber = posicion.EntrySheetHeader.SolPedNumber.FirstOrDefault();
+                {
+                    string solpedNumber = posicion.EntrySheetHeader.SolPedNumber;                    
 
                     var validacion = EntradaServicioService.ValidarIngresante(posicion, userMail, solpedNumber);
                     var result = new EntradaServicioCreateRespuestaDto();
@@ -208,8 +208,6 @@ namespace SustitucionMOA.Controllers
                         result = validacion;
                     }
                     ret.Add(result);
-
-                    //index++;
                 }
 
 

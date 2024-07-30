@@ -110,8 +110,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   suplentes: any = [];
   listadoEstadoCertificacion: estadoCertificacion[] = [
     { name: 'Estado: Aprobadas', code: 'Aprobada' },
-    { name: 'Estado: Pendiente de aprobación', code: 'Pendiente Aprobación' },
-    { name: 'Estado: Rechazadas', code: 'Rechazado' }
+    { name: 'Estado: Pendientes de aprobación', code: 'Pendiente Aprobación' },
+    { name: 'Estado: Rechazadas', code: 'Rechazado' },
+    { name: 'Estado: Anuladas', code: 'Anulada' }
   ];
   listadoAreas: any = [];
   defaultTablesConfig = [
@@ -127,11 +128,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cDescripción', header: 'Descripción', field: 'Descripción', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cMontoTotal', header: 'Monto total', field: 'MontoTotal', type: 'string', sortable: false, required: false, visible: true },
-        // { id: 'cIngresante', header: 'Ingresante', field: 'Ingresante', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cUsuario', header: 'Usuario', field: 'Usuario', type: 'string', sortable: true, required: false, visible: true },
         { id: 'cEstado', header: 'Estado', field: 'Estado', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAcciones', header: 'Acciones', field: 'Acciones', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cAprobador', header: 'Aprobador', field: 'Aprobador', type: 'string', sortable: true, required: false, visible: true },
+        { id: 'cAnulador', header: 'Anulado Por', field: 'AnuladoPor', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cMotivoRechazo', header: 'Motivo Rechazo', field: 'MotivoRechazo', type: 'string', sortable: false, required: false, visible: false },
         { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -177,9 +178,9 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     this.innerWidth = window.innerWidth;
     this.navService.setSeccionActive("Estado certificaciones");
     this.navService.navegarSeccion("compras/listadoEstadoCertificaciones");
-    
+
     let permisos = sessionStorage.getItem("permisos");
-    
+
     if (permisos && permisos.includes("VER TODOS LOS ESTADOS DE ES")) {
       this.havePermission = true;
     }
@@ -244,7 +245,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.tablaPOAprobaciones = result.data;
             this.userId = this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
           }
-          if(this.estadoCertificacion.code === 'Pendiente Aprobación'){
+          if (this.estadoCertificacion.code === 'Pendiente Aprobación') {
             this.tabla.filter("Pendiente Aprobación", "Estado", "contains");
           }
           this.recalculando = false;
@@ -272,14 +273,14 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             this.floatMsgService.setErrorMsg(result.error);
             return;
           }
-          this.tablaPOSap = result.data; 
+          this.tablaPOSap = result.data;
           resolve();
         }, error => {
           this.floatMsgService.setErrorMsg(error.message);
           this.recalculandoAprobadas = false;
           reject(error);
         })
-        this.subscripciones.push(subscription);
+      this.subscripciones.push(subscription);
     });
   }
 
@@ -337,23 +338,32 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     switch (event.value.code) {
       case 'Aprobada':
         this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
         });
         break;
       case 'Pendiente Aprobación':
-        if(this.tablaPOAprobaciones.length < 1){
+        if (this.tablaPOAprobaciones.length < 1) {
           this.recalculando = true;
           this.getListarPO();
         }
         this.setColumsByUserProfile(this.tablaPOAprobaciones, this.usuario);
         break;
       case 'Rechazado':
-        if(this.tablaPOAprobaciones.length < 1){
+        if (this.tablaPOAprobaciones.length < 1) {
           this.recalculando = true;
           this.getListarPO();
         }
         this.defaultTablesConfig[0].columns.forEach(col => {
-          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' ? false : true;
+          col.visible = col.field === 'Aprobador' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'AnuladoPor' ? false : true;
+        });
+        break;
+      case 'Anulada':
+        if (this.tablaPOAprobaciones.length < 1) {
+          this.recalculando = true;
+          this.getListarPO();
+        }
+        this.defaultTablesConfig[0].columns.forEach(col => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobación' || col.field === 'Acciones' || col.field === 'Reasignar' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
         });
         break;
     }
@@ -392,7 +402,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         accept: () => {
           this.messageService.clear();
           this.blockUI.start('Cargando...');
-          this.reasignar(data); 
+          this.reasignar(data);
         },
         reject: () => { }
       }
@@ -418,7 +428,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
             msj.detail = '';
           }
           this.messageService.add(msj);
-          if(!resp.error){
+          if (!resp.error) {
             this.updateApprover(data.NroEsLocal, resp.data);
           }
           this.blockUI.stop();
@@ -464,7 +474,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
 
           this.resetRejectForm();
           this.mostrarMotivosRechazos = false;
-          this.updateStateFromPending(data.NumeroCertificacion, 'Rechazar', {es: resp.data.result[0], dateReject: resp.data.Fecha_rechazo_string});
+          this.updateStateFromPending(data.NumeroCertificacion, 'Rechazar', { es: resp.data.result[0], dateReject: resp.data.Fecha_rechazo_string });
           this.blockUI.stop();
           this.clearMessage();
         }, error => {
@@ -596,7 +606,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.blockUI.start('Cargando...');
     this.isAll = true;
-    if(this.estadoCertificacion.code === 'Aprobada'){ 
+    if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
       this.blockUI.stop();
@@ -614,7 +624,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeForProvider() {
     this.blockUI.start('Cargando...');
     this.isAll = false;
-    if(this.estadoCertificacion.code === 'Aprobada'){ 
+    if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
       this.blockUI.stop();
@@ -648,49 +658,49 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (fai.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
         });
         return "FAI";
       }
       const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
       if (ai.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'AnuladoPor' ? false : true;
         });
         return "AI";
       }
       const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (fa.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
         });
         return "FA";
       }
       const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (fi.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
         });
         return "FI";
       }
       const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
       if (a.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'AnuladoPor' ? false : true;
         });
         return "A";
       }
       const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
       if (i.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
         });
         return "I";
       }
       const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (f.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' ? false : true;
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
         });
         return "F";
       }
@@ -812,7 +822,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
    * @param esRejected entrada de servicio rechaza solo para los casos de rechazo.
    */
   updateStateFromPending(es: string, action: string, esRejected?: any): void {
-    if(action === 'Aprobar'){
+    if (action === 'Aprobar') {
       const indices = this.tablaPOAprobaciones
         .map((ap, index) => ap.EntradaServicio === es ? index : -1)
         .filter(index => index !== -1);
@@ -850,26 +860,33 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     ".pdf": 'application/pdf',
     ".csv": "text/csv",
     ".msg": "application/vnd.ms-outlook"
-};
+  };
 
+  loadingRows = new Map<number, boolean>();
 
-descargarArchivos(rowData: any) {
+  descargarArchivos(rowData: any, index: number) {
+
+    this.loadingRows[index] = true;
+    this.cdr.detectChanges();
 
     this.service.GetAdjuntosByES(rowData.EntradaServicio.toString()).subscribe(result => {
-        if (result.data.length > 0) {
-            
-            result.data.forEach((archivo) => {
-                this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
-            });
-        }
-        else{
-       
-          this.confirmationService.confirm({
-            message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
-            rejectVisible: false
-          });
+      if (result.data.length > 0) {
 
-        }
+        result.data.forEach((archivo) => {
+          this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+        });
+      }
+      else {
+
+        this.confirmationService.confirm({
+          message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+          rejectVisible: false
+        });
+
+      }
+
+      this.loadingRows[index] = false;
+      this.cdr.detectChanges();
     });
 
   }
@@ -880,17 +897,45 @@ descargarArchivos(rowData: any) {
     var blob = new Blob([byteArray], { type: typeExtension });
 
     if (window.navigator.msSaveOrOpenBlob) {
-        // IE11
-        window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+      // IE11
+      window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
     } else {
-        var url = window.URL.createObjectURL(blob);
-        var link = document.createElement("a");
-        link.href = url;
-        link.download = nombreArchivo;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+      var url = window.URL.createObjectURL(blob);
+      var link = document.createElement("a");
+      link.href = url;
+      link.download = nombreArchivo;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
     }
   }
+
+  getPorcentajeAnterior(cantidadAnterior: number, cantidad: string): string {
+    const porcentajeAnterior: number = (cantidadAnterior * 100) / parseFloat(cantidad);
+    return `${parseFloat(porcentajeAnterior.toFixed(2))}%`;
+  }
+
+  getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
+    const montoAnterior: number = cantidadAnterior * monto;
+    const coin: string = moneda === 'ARP' ? '$ ' : '';
+    const montoFormatted: string = parseFloat(montoAnterior.toFixed(2)).toString();
+
+    return `${coin}${montoFormatted}`;
+  }
+
+  getPorcentajeAcumulado(cantidadAnterior: number, cantidad: string, porcentajeCertificar: string): string {
+    const porcentajeAcumulado: number = ( (cantidadAnterior * 100) / parseFloat(cantidad)) + (parseFloat(porcentajeCertificar) * 1);
+    return `${parseFloat(porcentajeAcumulado.toFixed(2))}%`;
+  }
+
+  getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
+    const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
+    const coin: string = moneda === 'ARP' ? '$ ' : '';
+    const montoFormatted: string = parseFloat(montoAcumulado.toFixed(2)).toString();
+
+    return `${coin}${montoFormatted}`;
+  }
+
+
 }

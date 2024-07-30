@@ -3,7 +3,7 @@ import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { CalendarModule } from 'primeng/calendar';
 import { forEach } from '@angular/router/src/utils/collection';
-import { FormsModule } from '@angular/forms';
+import { FormArray, FormGroup, FormsModule } from '@angular/forms';
 import { UsuarioService } from '../../../usuario/usuario.service';
 import { Calendar } from 'primeng/calendar';
 import { reference } from '@angular/core/src/render3';
@@ -51,6 +51,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     @Input() elementSelected: any;
     @Input() itemIdSelected: string = '';
     @Input() posicionSelected: any;
+    @Input() formularioResumenCertificacion: FormGroup;
     @Output() closeModal = new EventEmitter<void>();
     @Output() closeDialog = new EventEmitter<void>();
 
@@ -107,6 +108,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     };
 
     totalMontoCertificar!: number;
+    get descriptions(): FormArray {
+        return this.formularioResumenCertificacion.get('descriptions') as FormArray;
+    }
 
     constructor(protected service: ComprasService,
         private confirmationService: ConfirmationService,
@@ -315,6 +319,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
                         accept: () => this.cerrarMensajes(msjTypes),
+                        reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
                     this.certificarState = false;
@@ -338,7 +343,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     tituloArchivoPDF = "Reporte";
     BuildReport(){
-
         this.service.buildReportES(this.itemSelected).subscribe(
             (result) => {
                 if (result.logout == true) {
@@ -371,6 +375,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
             });
     }
 
+    onDescripcionChange(position: any, value: string) {
+        const item = this.itemSelected.find(item => item.NroPosicion === position.NroPosicion);
+        if (item) {
+            item.posicionDescripcion = value;
+        }
+      }
+
     buildEntrySheet() {
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
@@ -388,12 +399,48 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
         let ref = this.referencia !== undefined ? this.referencia : '';
 
+        class PositionData {
+            positionId: string;
+            SolPedNumber: string;
+        }
+
+        let ArrayOfSolpeds: PositionData[] = [];
+
+        this.elementSelected.Posiciones.forEach((posicion) => {
+            let hasSelectedItems = false;
+            let positionData: PositionData = {
+                positionId: "",
+                SolPedNumber: "",
+            };
+
+            for (let item of posicion.Items) {
+                if (item.isSelected) {
+                    hasSelectedItems = true;
+                    break;
+                }
+            }
+
+            if (hasSelectedItems) {
+                positionData.positionId = posicion.NumeroPosicion.toString();
+                positionData.SolPedNumber = posicion.NumeroSolp;
+                ArrayOfSolpeds.push(positionData);
+            }
+        });
+
+
         this.itemsAgrupadosPorPosicion.forEach(position => {
 
-            let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
+            //let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
+            //Encontrar SolPed desde ArrayOfSolpeds
+            let matchedPosition = ArrayOfSolpeds.find(x => x.positionId === position.NroPosicion);
+
+            let solPedAsociada = "";
+            if (matchedPosition) {
+                solPedAsociada = matchedPosition.SolPedNumber;
+            }
 
             const entrySheetHeader = {
-                SolPedNumber: solpedNumbers.length > 0 ? solpedNumbers : [this.solPed],
+                SolPedNumber: solPedAsociada,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
                 Descripcion: position.Descripcion.trim(),

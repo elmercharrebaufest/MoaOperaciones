@@ -267,7 +267,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 detalleSAP.NumeroLinea = int.Parse(detalle.Nro_linea).ToString();
                                 detalleSAP.Descripcion = string.IsNullOrEmpty(detalle.Descripcion_ES) ? "" : detalle.Descripcion_ES.Trim();
-                                detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) ? "" : detalle.Texto_breve_servicio.Trim();
+                                detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
                                 detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
@@ -275,6 +275,7 @@ namespace SustitucionMOAUtils.Services
                                 detalleSAP.CodigoServicio = detalle.Nro_servicio;
                                 detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
                                 detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
+                                detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
                                 documento.MotivoRechazo = detalle.Motivo_rechazo;
                                 documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
                                 documento.Ingresante = detalle.Ingresante_CDS;
@@ -286,6 +287,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
                                 DateTime FechaCreacion = (DateTime)detalle.Fecha_Carga_ES;
                                 documento.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
+                                documento.AnuladaPor = detalle.Anulado_por;
                             }
                             else
                             {
@@ -405,7 +407,8 @@ namespace SustitucionMOAUtils.Services
                 Fiscal = temporal.Fiscal_SOLPED,
                 FechaContabilizacion = fechaContabilizacionFormateada.ToString("dd/MM/yyyy"),
                 FechaDocumento = fechaDocumentoFormateada.ToString("dd/MM/yyyy"),
-                NroPosicion = temporal.NRO_POS
+                NroPosicion = temporal.NRO_POS,
+                AnuladaPor = temporal.Anulado_por
             };
 
             if (temporal.Estado_certificacion == "Aprobada")
@@ -541,6 +544,13 @@ namespace SustitucionMOAUtils.Services
                 {
                     detalleSolPed = comprasService.TraerSolpPorNumero(nroSolped);
                 }
+                else
+                {
+                    EntradaServicioCreateRespuestaDto response = new EntradaServicioCreateRespuestaDto();
+                    response.Type = "S";
+                    response.Message = "No se encontro la SOLP";
+                    return response;
+                }
             }
             catch (Exception e)
             {
@@ -554,8 +564,13 @@ namespace SustitucionMOAUtils.Services
             bool auto = false;
             bool difSolicitante = false;
 
+            var usuarioIngresante = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == userMail);
+            var usuarioReasignacion = repositorio.Obtener<SustitucionMOAModel.Entities.UsuarioReasignacion>(x => x.Usuario_Id == usuarioIngresante.Id);
+
+
             //2a - Comparar Fiscal/Email con usuario FE
-            if (userMail == detalleSolPed.Email)
+            if (usuarioReasignacion != null && DateTime.Now > usuarioReasignacion.FechaHasta && DateTime.Now < usuarioReasignacion.FechaDesde
+                                && userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -585,8 +600,10 @@ namespace SustitucionMOAUtils.Services
                             //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
                             string solicitante = pos.Solicitante.Replace(" ", "");
                             var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante.ToUpper());
+
                             if (usuario != null && usuario.Mail == userMail)
                             {
+                                //Aca es donde se aporueba automaticamente
                                 auto = true;
                                 difSolicitante = false;
                             }
@@ -599,8 +616,8 @@ namespace SustitucionMOAUtils.Services
                             {
                                 difSolicitante = true;
                             }
-                }
-            }
+                        }
+                    }
                 }
             }
             //Aca - Si los 3 datos estan vacios o no vienen -> “No se identifica un aprobador en su orden de compra. Por favor, comunicarse con su contratante”. 
@@ -689,7 +706,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte, false);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -722,7 +739,22 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var adjunto in adjuntos)
                 {
-                    adjunto.NroESTemporal = nroESTemporal;
+                    if (string.IsNullOrEmpty(adjunto.NroESTemporal))
+                    {
+                       adjunto.NroESTemporal = nroESTemporal;
+                    }
+                    else
+                    {
+                        var adjuntoNuevo = new AdjuntosEntradasDeServicio()
+                        {
+                            NombreArchivo = adjunto.NombreArchivo,
+                            Extension = adjunto.Extension,
+                            NombreEnBlob = adjunto.NombreEnBlob,
+                            NroESTemporal = nroESTemporal
+                        };
+
+                        repositorio.Agregar(adjuntoNuevo);
+                    }
                 }
 
                 repositorio.GuardarCambios();
@@ -731,7 +763,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, bool reasignar)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte)
         {
         
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
@@ -949,7 +981,6 @@ namespace SustitucionMOAUtils.Services
                             if (detalleSolPed.Email.Contains("@"))
                             {
                                 temp.Fiscal_SOLPED = detalleSolPed.Email;
-                                temp.Aprobador_CDS = detalleSolPed.Email;
                                 var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == detalleSolPed.Email);
                                 if (usuario != null)
                                 {
@@ -964,7 +995,7 @@ namespace SustitucionMOAUtils.Services
                             //Busqueda por Supervisor Trabajo
                             if (detalleSolPed.SupervisorTrabajo[0].Contains("@"))
                             {
-                                temp.Aprobador_CDS = detalleSolPed.SupervisorTrabajo[0];
+                                    temp.Fiscal_SOLPED = detalleSolPed.SupervisorTrabajo[0];
                                     var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == temp.Fiscal_SOLPED);
                                     if (usuario != null)
                                 {
@@ -980,7 +1011,7 @@ namespace SustitucionMOAUtils.Services
                                     if (usuario != null)
                                 {
                                     user = usuario;
-                                    temp.Aprobador_CDS = usuario.Mail;
+                                    temp.Fiscal_SOLPED = usuario.Mail;
                                     temp.Suplente = usuario.Suplente;
                                 }
                             }
@@ -998,7 +1029,7 @@ namespace SustitucionMOAUtils.Services
                                         if (usuario != null)
                                     {
                                         user = usuario;
-                                        temp.Aprobador_CDS = usuario.Mail;
+                                        temp.Fiscal_SOLPED = usuario.Mail;
                                         temp.Suplente = usuario.Suplente;
 
                                     }
@@ -1007,10 +1038,10 @@ namespace SustitucionMOAUtils.Services
                         }
 
                     }
-                    //if (!auto)
-                    //{
-                    //    temp.Aprobador_CDS = temp.Fiscal_SOLPED;
-                    //}
+                    if (!auto)
+                    {
+                        temp.Aprobador_CDS = temp.Fiscal_SOLPED;
+                    }
                 }
             }
             catch(Exception e)
@@ -1570,7 +1601,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
                 List<ReporteDto> reporte = new List<ReporteDto>();
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte, true);
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte);
 
                 repositorio.GuardarCambios();
 

@@ -119,7 +119,7 @@
             <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded">
                 <tr [pSelectableRow]="rowData" *ngIf="isPendingRelease(rowData) && (!ocFilterApplied || (ocFilterApplied && tienePosicionesConItemsACertificar(rowData.Posiciones)))" [class.highlighted]="expanded">
                     <td>
-                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData)">
+                        <a href="#" [pRowToggler]="rowData" (click)="loadSolicitantesList(rowData);clearCheckboxes(rowData)">
                             <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                         </a>
                     </td>
@@ -210,7 +210,7 @@
                                                  class="level3"
                                                  [value]="rowData.Items"
                                                  dataKey="NumeroLinea"
-                                                 [paginator]="true"
+                                                 [paginator]="false"
                                                  [alwaysShowPaginator]="false"
                                                  [rows]="10"
                                                  (onRowExpand)="setExpanded(tablaItems)"
@@ -339,7 +339,7 @@
                                                             </ng-template>
                                                             <!-- TABLE 4 HEADERS END -->
                                                             <!-- TABLE 4 BODY -->
-                                                            <ng-template pTemplate="body" let-rowData let-item>
+                                                            <ng-template pTemplate="body" let-rowData let-item="rowIndex">
                                                                 <tr>
                                                                     <ng-container *ngFor="let col of userTablesConfig[3].columns">
                                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
@@ -365,7 +365,8 @@
                                                                                 </ng-template>
                                                                             </ng-container>
                                                                             <ng-container *ngIf="col.id==='esAdjuntos'">                                                                                
-                                                                                <button class="fa fa-download"  (click)="descargarArchivos(rowData)" ></button>
+                                                                                <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                                                                                <div *ngIf="loadingRows[item]" class="loader"></div>
                                                                             </ng-container>
                                                                         </td>
                                                                     </ng-container>
@@ -436,14 +437,15 @@
                                         [posicionSelected] ="posicionSelected"
                                         [elementSelected]="elementSelected"
                                         [itemIdSelected]="itemIdSelected"
+                                        [formularioResumenCertificacion]="formularioResumenCertificacion"
                                         (closeModal)="onCloseModal()"
+                                        (closeDialog)="onCloseDialog()"
                                         (enviarMensajeGrilla)="actualizarGrilla($event)">
     </app-modal-alta-entrada-de-servicio-proveedor>
 
 
 
 <p-confirmDialog [(visible)]="showDialog"
-                 (closeDialog)="onCloseDialog()"
                  header="Atención" icon="pi pi-exclamation-circle" width="425"
                  appendTo="body" acceptLabel="Aceptar" rejectLabel="Cancelar">
 </p-confirmDialog>

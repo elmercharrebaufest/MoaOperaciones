@@ -34,6 +34,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string FechaContabilizacion { get; set; }
         public string FechaDocumento { get; set; }
         public string NroPosicion { get; set; }
+        public string AnuladaPor { get; set; }
         public EntradaServicioCabeceraDto()
         {
             // Inicializa la lista entradaServicioDetalle en el constructor

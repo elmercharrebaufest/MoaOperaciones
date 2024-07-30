@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -22,6 +22,7 @@ import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
 import { FileModalComponent } from '../file-modal/file-modal.component';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -38,6 +39,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
         private location: Location,
+        private cdr: ChangeDetectorRef,
+        private formBuilder: FormBuilder
     ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
@@ -206,6 +209,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             ]
         }
     ];
+
+    formularioResumenCertificacion: FormGroup = this.formBuilder.group({
+        descriptions: this.formBuilder.array([])
+    });
 
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
@@ -545,7 +552,29 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     openModal() {
         this.searchElement();
+        this.createResumenForm();
         this.showModal = this.itemIdSelected.length > 0;
+    }
+
+    createResumenForm(): void {
+        this.resetFormularioResumenCertificacion();
+        const descriptionsArray = this.descriptions;
+        this.itemSelected.forEach(item => {
+            const descriptionForm = this.formBuilder.group({
+            description: [item.posicionDescripcion, Validators.required]
+            });
+            descriptionsArray.push(descriptionForm);
+        });
+    }
+
+    get descriptions() {
+        return this.formularioResumenCertificacion.controls["descriptions"] as FormArray;
+    }
+
+    resetFormularioResumenCertificacion(): void {
+        this.formularioResumenCertificacion = this.formBuilder.group({
+            descriptions: this.formBuilder.array([])
+        });
     }
 
     private fechaInicioConfigurado: any;
@@ -1360,11 +1389,15 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         ".msg": "application/vnd.ms-outlook"
     };
     
-    
-    descargarArchivos(rowData: any) {
+    loadingRows = new Map<number, boolean>();
+
+    descargarArchivos(rowData: any, index: number) {
 
         let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
-
+        
+        this.loadingRows[index] = true;
+        this.cdr.detectChanges();
+        
         this.service.GetAdjuntosByES(id).subscribe(result => {
             if (result.data.length > 0) {
                 
@@ -1373,16 +1406,18 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 });
             }
             else{
-           
               this.confirmationService.confirm({
                 message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
                 rejectVisible: false
               });
 
             }
+
+            this.loadingRows[index] = false;
+            this.cdr.detectChanges();
         });
 
-      }
+    }
 
       descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
         const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
