@@ -429,6 +429,12 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
+        
+        if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
+            this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
+            return;
+        }
+
         this.messageService.clear();
         try {
             if (!this.solpActual.posiciones) {
