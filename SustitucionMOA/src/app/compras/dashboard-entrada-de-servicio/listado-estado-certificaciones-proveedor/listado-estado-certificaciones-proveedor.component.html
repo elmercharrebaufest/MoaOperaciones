@@ -159,8 +159,8 @@
                     <!-- Anteriores -->
                     <!-- * 1  is just to turn it into a number -->
                     <td class="anterior">{{ rowData.CantidadAnterior }}</td>
-                    <td class="anterior">{{ (rowData.CantidadAnterior * 100) / rowData.Cantidad }}%</td>
-                    <td class="anterior text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowData.CantidadAnterior * rowData.Monto }}</td>
+                    <td class="anterior">{{ getPorcentajeAnterior(rowData.CantidadAnterior, rowData.Cantidad) }}</td>
+                    <td class="anterior text-right">{{ getMontoAnterior(rowData.CantidadAnterior, rowData.Monto, rowData.Moneda) }}</td>
 
                     <!-- A certificar -->
                     <td>{{ rowData.CantidadCertificar }}</td>
@@ -169,8 +169,8 @@
 
                     <!-- Acumulado -->
                     <td class="acumulado">{{ (rowData.CantidadAnterior * 1) + (rowData.CantidadCertificar * 1) }}</td>
-                    <td class="acumulado">{{ ((rowData.CantidadAnterior * 100) / rowData.Cantidad) + (rowData.PorcentajeCertificar * 1) }}%</td>
-                    <td class="acumulado text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ (rowData.CantidadAnterior * rowData.Monto) + (rowData.CantidadCertificar * rowData.Monto) }}</td>
+                    <td class="acumulado">{{ getPorcentajeAcumulado(rowData.CantidadAnterior, rowData.Cantidad, rowData.PorcentajeCertificar) }}</td>
+                    <td class="acumulado text-right">{{ getMontoAcumulado(rowData.CantidadAnterior, rowData.Monto, rowData.CantidadCertificar, rowData.Moneda) }}</td>
                 </tr>
             </ng-template>
             <!-- TABLE 2 BODY END -->

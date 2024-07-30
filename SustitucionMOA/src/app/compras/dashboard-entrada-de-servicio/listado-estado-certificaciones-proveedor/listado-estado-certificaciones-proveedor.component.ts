@@ -436,4 +436,30 @@ descargarArchivos(rowData: any, index: number) {
             document.body.style.overflow = 'auto';
         }
     }
+
+    getPorcentajeAnterior(cantidadAnterior: number, cantidad: string): string {
+      const porcentajeAnterior: number = (cantidadAnterior * 100) / parseFloat(cantidad);
+      return `${parseFloat(porcentajeAnterior.toFixed(2))}%`;
+    }
+  
+    getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
+      const montoAnterior: number = cantidadAnterior * monto;
+      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const montoFormatted: string = parseFloat(montoAnterior.toFixed(2)).toString();
+  
+      return `${coin}${montoFormatted}`;
+    }
+  
+    getPorcentajeAcumulado(cantidadAnterior: number, cantidad: string, porcentajeCertificar: string): string {
+      const porcentajeAcumulado: number = ( (cantidadAnterior * 100) / parseFloat(cantidad)) + (parseFloat(porcentajeCertificar) * 1);
+      return `${parseFloat(porcentajeAcumulado.toFixed(2))}%`;
+    }
+  
+    getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
+      const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
+      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const montoFormatted: string = parseFloat(montoAcumulado.toFixed(2)).toString();
+  
+      return `${coin}${montoFormatted}`;
+    }
 }
