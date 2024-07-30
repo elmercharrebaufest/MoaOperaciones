@@ -576,6 +576,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['adicional'].enable();
             this.formularioCotizacion.controls['trabajoHecho'].enable();
             this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+            this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
         }
     }
 
@@ -640,13 +641,15 @@ export class CotizacionComponent extends ListBaseComponent {
     condicionesEspecialesSolpSinLiberar() {
         if (this.model.trabajoHecho == true || this.model.adicional == true) {
             this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
+            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
         } else {
             this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
+            this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
+
         }
 
         if (this.model.condEspProveedorAsignado == true) {
             this.formularioCotizacion.controls['trabajoHecho'].disable();
-            this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
             this.formularioCotizacion.controls['adicional'].disable();
         } else {
             this.formularioCotizacion.controls['trabajoHecho'].enable();
