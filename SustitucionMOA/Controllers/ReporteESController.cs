@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Logger;
 using System.Text;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace SustitucionMOA.Controllers
 {
@@ -21,10 +22,12 @@ namespace SustitucionMOA.Controllers
 
         private static readonly string TEMPLATE_REPORTE_ALTA_ES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteAltaES.html");
         
-        public ActionResult BuildReportES(List<ReporteDto> report)
+        public ActionResult BuildReportES(string reportRequest)
         {
             try
             {
+                var report = JsonConvert.DeserializeObject<List<ReporteDto>>(reportRequest);
+
                 string templateContent = string.Empty;
                 string htmlTable = string.Empty;
 
@@ -79,7 +82,7 @@ namespace SustitucionMOA.Controllers
             decimal montoTotal = 0;
             var sb = new StringBuilder();
 
-            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].Descripcion} </h3>");
+            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].posicionDescripcion} </h3>");
             sb.AppendLine("<table id=\"items-list\" style=\"width:100%; border-collapse:collapse;\">");
             sb.AppendLine("<thead>");
             sb.AppendLine("<tr>");

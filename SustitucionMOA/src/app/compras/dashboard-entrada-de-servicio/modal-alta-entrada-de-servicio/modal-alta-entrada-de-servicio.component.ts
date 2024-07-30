@@ -343,7 +343,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     tituloArchivoPDF = "Reporte";
     BuildReport(){
-
         this.service.buildReportES(this.itemSelected).subscribe(
             (result) => {
                 if (result.logout == true) {
@@ -375,6 +374,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 this.floatMsgService.setErrorMsg(error.message);
             });
     }
+
+    onDescripcionChange(position: any, value: string) {
+        const item = this.itemSelected.find(item => item.NroPosicion === position.NroPosicion);
+        if (item) {
+            item.posicionDescripcion = value;
+        }
+      }
 
     buildEntrySheet() {
         let fechaDocFormateada = "";

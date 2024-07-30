@@ -515,7 +515,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 this.itemSelected = [];
                 this.itemIdSelected = [];
 
-                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                const esId = Id === 0 ? TempId : Id;
+                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + esId);
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
                     let closeBtn = document.getElementsByClassName("alert-success")[0].getElementsByClassName("close")[0] as HTMLElement;

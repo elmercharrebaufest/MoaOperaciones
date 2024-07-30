@@ -1405,10 +1405,13 @@ export class ComprasService extends BaseService {
             .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
     }
 
-    public buildReportES(report : any): Observable<any> {
+    public buildReportES(reportRequest : any): Observable<any> {
 
+        var payload = new FormData();
+
+        payload.append('reportRequest', JSON.stringify(reportRequest));
         return this.http
-            .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
+            .post<any>('/api/ReporteES/BuildReportES', payload, { headers: this.headers });
     }
 
    
