@@ -53,6 +53,7 @@ export class CotizacionComponent extends ListBaseComponent {
     selectDirectores: number[] = [];
     hoy: Date = new Date();
     condicionEspecial: boolean;
+    condicionEspecialOriginal: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -671,8 +672,13 @@ export class CotizacionComponent extends ListBaseComponent {
         }
     }
 
-    validarCondicionEspecial(){
-        this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
+    tieneCondEspOriginal(){
+        return this.condicionEspecialOriginal = this.condEspOriginales.trabajoHecho == true || this.condEspOriginales.adicional == true || this.condEspOriginales.urgencia == true || this.condEspOriginales.proveedorAsignado == true;
     }
 
+    validarCondicionEspecial(){
+        if(this.tieneCondEspOriginal()){
+            this.floatMsgService.setErrorMsg("Debe completar la condicion especial");
+        }
+    }
 };
