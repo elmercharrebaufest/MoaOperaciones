@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using Org.BouncyCastle.Asn1.X509;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -3435,7 +3436,32 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual("ruta1", resultado.ArchivosEspecificacionesTecnicas.First().Nombre); // Asumiendo que ObtenerNombre retorna la ruta
                                                                                                  // Continúa con más aserciones según sea necesario
         }
+
+        [Test]
+        public void GuardarEnvioCircularProveedor_DeberiaGuardarEnvioCircularYRetornarResultado()
+        {
+            // Arrange
+            int id = 1;
+            int envioCircularA = 2;
+            var solp = new Solp { Id = id };
+            var resultadoEsperado = new Resultado
+            {
+                IdEntidad = id,
+                Mensaje = "Se grabo con exito"
+            };
+
+            repositorioMock.Setup(r => r.Obtener<Solp>(It.IsAny<Expression<Func<Solp, bool>>>())).Returns(solp);
+            repositorioMock.Setup(r => r.GuardarCambios());
+
+            // Act
+            var resultado = target.GuardarEnvioCircularProveedor(id, envioCircularA);
+
+            // Assert
+            Assert.AreEqual(resultadoEsperado.IdEntidad, resultado.IdEntidad);
+            Assert.AreEqual(resultadoEsperado.Mensaje, resultado.Mensaje);
+            Assert.AreEqual(envioCircularA, solp.EnvioCircularA);
+            repositorioMock.Verify(r => r.Obtener<Solp>(It.IsAny<Expression<Func<Solp, bool>>>()), Times.Once);
+            repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
+        }
     }
-
-
 }

@@ -278,6 +278,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: solp.posiciones.map(x => {
 
@@ -1333,5 +1334,14 @@ export class ComprasService extends BaseService {
                 params: params,
                 headers: this.headers
             });
+    }
+
+    public guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
+        var payload = new FormData();
+        payload.append('id', id.toString());
+        payload.append('enviarCircularA', enviarCircularA.toString());
+
+        return this.http
+            .post<any>('/api/compras/GuardarEnvioCircularProveedor', payload, { headers: this.headers });
     }
 }

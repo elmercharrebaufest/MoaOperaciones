@@ -35,6 +35,7 @@ import { EmailComposeService } from '../../common/email-compose/email-compose.se
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
 import { CondicionesEspecialesOriginales } from './steps/cotizacion/condiciones-especiales-originales';
+import { EnumEnvioCircularA } from '../enum-envio-circular';
 
 @Component({
     selector: 'app-solp',
@@ -107,6 +108,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     tieneAdjuntos: boolean = false;
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
     condEspOriginales: CondicionesEspecialesOriginales;
+    displayEnvioCircular: boolean;
 
 
     set pasoActual(value: Paso) {
@@ -303,6 +305,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.solpActual = new Solp(result.data);
+                        console.log("solp", this.solpActual);
                         this.condEspOriginales = {
                             trabajoHecho: this.solpActual.trabajoHecho,
                             adicional: this.solpActual.adicional,
@@ -601,7 +604,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 else if (this.solpActual.nroSolp) {
-                                    this.displaySAPEditar = true;
+                                    this.enviarCircularProveedores();
                                 } else {
                                     this.displaySAP = true;
                                 }
@@ -1004,7 +1007,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         }
     }
 
-
     obtenerUsuarioCompras() {
         try {
             this.subscription = this.service.obtenerUsuarioCompras().subscribe(
@@ -1290,7 +1292,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
 
-
     obtenerUsuarioSolicitante() {
         try {
             this.subscription = this.service.listarUsuarioSolicitante().subscribe(
@@ -1355,5 +1356,68 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         });
 
         return puedoGuardar;
+    }
+
+    condicionCircular(){
+        var tieneVisita = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
+        return this.solpActual.tieneModificaciones && tieneVisita && !this.solpActual.tieneRevisionTecnicaFinalizada && this.solpActual.tienePeticionDeOferta;
+    }
+
+    enviarCircularProveedores(){
+        if(this.condicionCircular()){
+            this.displayEnvioCircular = true;
+        } else {
+            this.displaySAPEditar = true;
+        }
+    }
+
+    salirModalCircular(){
+        this.solpActual.envioCircularA = EnumEnvioCircularA.NoEnviar;
+        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+    }
+
+    enviarCircularTodos(){
+        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarATodos;
+        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+    }
+
+    enviarCircularVisitaRealizada(){
+        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarRealizaronVisita;
+        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+    }
+
+    guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.spinnerComponent.showIt();
+            this.subscription = this.service.guardarEnvioCircularProveedor(id, enviarCircularA).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        if(result.data.error != undefined && result.error != ""){
+                            this.floatMsgService.setErrorMsg(result.data.error);
+                        } else {
+                            this.displayEnvioCircular = false;
+                            this.displaySAPEditar = true;
+                            this.blockUI.stop();
+                        }
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.spinnerComponent.hideIt();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 }

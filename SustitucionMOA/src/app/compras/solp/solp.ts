@@ -9,6 +9,7 @@ import { EnumTipoSolpSap } from "../enum-tipo-solp-sap";
 import { SolpPosicion } from "./solp-posicion";
 import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posicion-view-model';
 import { setupJornadaLaboralDias } from "./solp.utils";
+import { EnumEnvioCircularA } from "../enum-envio-circular";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -101,6 +102,11 @@ export class Solp extends CommonResponse {
     usuarioSolicitanteList?: any[];
     selectUsuarioFiscal?: any;
     selectResponsableTrabajo?: any;
+    tienePeticionDeOferta: boolean;
+    tieneModificaciones: boolean;
+    tieneRevisionTecnicaFinalizada: boolean;
+    envioCircularA: EnumEnvioCircularA;
+
 
     public get ultimaPosicion(): SolpPosicion {
         //comentar linea de abajo si se quiere que no se ordene por Fecha (Mas actual primero)
@@ -296,6 +302,10 @@ export class Solp extends CommonResponse {
             this.estadoPasos = solp.EstadoPasos;
 
             this.selectUsuarioCompras = this.usuarioComprasId > 0 ? this.usuarioComprasList.find(x => x.Id === this.usuarioComprasId) : this.usuarioComprasList[0];
+
+            this.tienePeticionDeOferta = solp.TienePeticionDeOferta;
+            this.tieneModificaciones = solp.TieneModificaciones;
+            this.tieneRevisionTecnicaFinalizada = solp.TieneRevisionTecnicaFinalizada;
 
             if (solp.Posiciones && solp.Posiciones.length > 0) {
                 let ultimaPos = solp.Posiciones[solp.Posiciones.length - 1];

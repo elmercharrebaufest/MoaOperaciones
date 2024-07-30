@@ -112,5 +112,6 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
         Resultado DesagruparPO(string nroSolp, string po);
+        Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA);
     }
 }
