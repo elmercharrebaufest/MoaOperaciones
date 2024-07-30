@@ -273,9 +273,11 @@ export class ComprasService extends BaseService {
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
         return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
-          .pipe(
-            timeoutWith(30000, throwError(new Error('Se excedió el tiempo de espera, por favor inténtelo más tarde')))
-          );
+        .pipe(
+            catchError(error => {
+                return throwError(error);
+            })
+        );
       }
 
 

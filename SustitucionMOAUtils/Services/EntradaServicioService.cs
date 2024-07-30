@@ -1137,7 +1137,7 @@ namespace SustitucionMOAUtils.Services
 
                     aprobacion.Nro_linea = esItem.ExternalLineNumber;
                     aprobacion.Nro_servicio = esItem.Service;
-                    aprobacion.Texto_breve_servicio = esItem.ShortText.Trim();
+                    aprobacion.Texto_breve_servicio = posicion.EntrySheetHeader.Descripcion.Trim();
                     aprobacion.UM = esItem.UM;
                     aprobacion.Cantidad_a_certificar = esItem.Quantity;
                     aprobacion.Porcentaje_a_certificar = esItem.Percentage;
