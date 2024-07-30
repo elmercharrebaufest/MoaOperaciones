@@ -7,6 +7,10 @@ namespace SustitucionMOAModel.Entities
 {
     public class Adjudicacion
     {
+        public Adjudicacion()
+        {
+            Token = Guid.NewGuid().ToString();
+        }
         [Key]
         public int Id { get; set; }
         public int Cotizacion_Id { get; set; }

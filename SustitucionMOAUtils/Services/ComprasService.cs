@@ -7338,7 +7338,7 @@ namespace SustitucionMOAUtils.Services
                             Garantias = adjudicacionDto.Garantias,
                             TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
                             Posiciones = posiciones,
-                            Token = Guid.NewGuid().ToString(),
+                            //Token = Guid.NewGuid().ToString(),
                             RegionSap = regiones.FirstOrDefault(c => c.Id == adjudicacionDto.RegionSap),
                             RegionSap_Id = adjudicacionDto.RegionSap,
                             NumeroOrdenDeCompra = ""
