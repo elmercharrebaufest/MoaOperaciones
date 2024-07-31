@@ -2857,7 +2857,6 @@ namespace SustitucionMOAUtils.Services
 
                 SetNombreDePedido(solp);
 
-                //solp.Pliego.ObservacionesGeneracion = result.ObservacionesGeneracion;
                 if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
                 {
                     solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
@@ -7551,6 +7550,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+
 
             return ordenDeCompraSAP;
         }

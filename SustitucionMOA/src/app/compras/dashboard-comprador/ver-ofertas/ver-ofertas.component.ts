@@ -195,8 +195,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
                     this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
                     this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
-
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;   
                     this.setTextoCondicionEspecial();
                     this.blockUI.stop();
                 }
@@ -736,11 +735,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 
+    verificarCondicionEspecial(){
+        return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
+    }
+
     setTextoCondicionEspecial() {
-        if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true) {
-            this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp ?
-                this.adjudicacion.TextoDeCabecera = `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`
-                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+        if (this.verificarCondicionEspecial()) {
+            if(!this.adjudicacion.TextoDeCabecera){
+                this.adjudicacion.TextoDeCabecera = "";
+            }
+
+            if(this.adjudicacion.TextoDeCabecera != undefined && 
+                this.adjudicacion.TextoDeCabecera != "" && 
+                this.modalTexto.adjudicacion.TextoDeCabecera != 
+                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp){
+                    this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+                } else {
+                    this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+                }
         }
     }
 
