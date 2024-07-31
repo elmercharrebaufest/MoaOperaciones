@@ -738,8 +738,10 @@ namespace SustitucionMOAUtils.Services
         {
             if (idAdjuntos != null && idAdjuntos.Count > 0)
             {
-                var adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(x => idAdjuntos.Contains(x.NombreEnBlob));
-
+                var adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(x => idAdjuntos.Contains(x.NombreEnBlob))
+                                                          .GroupBy(a => a.NombreEnBlob)
+                                                          .Select(g => g.First())
+                                                          .ToList();
                 foreach (var adjunto in adjuntos)
                 {
                     if (string.IsNullOrEmpty(adjunto.NroESTemporal))
