@@ -667,11 +667,14 @@ export class OrdenesDeCargaFasonAltaComponent
         this.displayModal = null;
     }
 
-    selectProducto() {
-        if (!this.ordenDeCargaFason.ProductoSeleccionado){
+    selectProducto(producto?: Material) {
+        if (!this.ordenDeCargaFason.ProductoSeleccionado && !producto){
             this.validaCPEDG = false;
             this.setearDefaultEnCPEDG();
             return;
+        }
+        if(producto){
+            this.ordenDeCargaFason.ProductoSeleccionado = producto;
         }
         this.ordenDeCargaFason.Producto_Id = this.ordenDeCargaFason.ProductoSeleccionado.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
