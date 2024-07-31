@@ -255,7 +255,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
     async certificarPosicion() {
         if (this.validateValues() === true) {
-            this.blockUI.start('Cargando...');
+            let respIdAdjuntos = { data: [] };
             this.buildEntrySheet();
             this.certificando = true;
 
@@ -266,11 +266,14 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 return element;
             });
 
-            const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
-            const respIdAdjuntos = adjuntarArchivosResult.data;
+            if(this.uploadedFiles.length > 0){
+                this.blockUI.start('Adjuntando archivos...');
+                respIdAdjuntos = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
+                this.blockUI.stop();
+            }
 
-
-            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
+            this.blockUI.start('Confirmando la certificación...');
+            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
