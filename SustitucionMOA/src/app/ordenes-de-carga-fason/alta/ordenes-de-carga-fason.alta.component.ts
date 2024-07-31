@@ -668,12 +668,13 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     selectProducto(producto?: Material) {
-        if (!this.ordenDeCargaFason.ProductoSeleccionado || !producto){
+        if (!this.ordenDeCargaFason.ProductoSeleccionado && !producto) {
             this.validaCPEDG = false;
             this.setearDefaultEnCPEDG();
             return;
         }
-        if(producto){
+
+        if (producto) {
             this.ordenDeCargaFason.ProductoSeleccionado = producto;
         }
         this.ordenDeCargaFason.Producto_Id = this.ordenDeCargaFason.ProductoSeleccionado.MaterialId;
