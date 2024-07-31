@@ -1,7 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { FormArray, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 declare var $: any;
 
 type Column = {
@@ -48,7 +49,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     @Output() enviarMensajeGrilla = new EventEmitter();
 
     @ViewChild('fileInput') fileInput: any;
-
+    @BlockUI() blockUI: NgBlockUI;
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -60,6 +61,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     colConfigName: string = 'columnasAltaCertificacionesProveedor';
     colspanMonto: number = 8;
     colConfig = [];
+    certificando: boolean = false;
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -253,7 +255,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
 
     async certificarPosicion() {
         if (this.validateValues() === true) {
+            this.blockUI.start('Cargando...');
             this.buildEntrySheet();
+            this.certificando = true;
 
             let items = this.itemSelected;
 
@@ -300,6 +304,9 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                         reject: () => this.cerrarMensajes(msjTypes),
                         rejectVisible: false
                     });
+
+                    this.blockUI.stop();
+                this.certificando = false;
                 },
                 (error) => {
                     this.confirmationService.confirm({
@@ -308,12 +315,24 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                             this.closeDialog.emit();
                         },
                         rejectVisible: false
-                    }
-                    );
+                    });
+                    this.blockUI.stop();
+                    this.certificando = false;
                 }
-            );
-        }
+          );
+      }
     }
+
+    onDescripcionChange(position: any, value: string) {
+
+        this.itemsAgrupadosPorPosicion.forEach((posicion) => {
+            if (posicion.NroPosicion === position.NroPosicion) {
+                posicion.Items.forEach(itemAgrupado => {
+                    itemAgrupado.posicionDescripcion = value;
+                });
+            }
+        });
+      }
 
     buildEntrySheet() {
         let fechaDocFormateada = "";
@@ -361,7 +380,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
             }
         });
 
-        this.itemsAgrupadosPorPosicion.forEach(position => {
+        this.itemsAgrupadosPorPosicion.forEach((position, index) => {
 
             //let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
             //Encontrar SolPed desde ArrayOfSolpeds
@@ -376,7 +395,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 SolPedNumber: solPedAsociada,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
-                Descripcion: position.Descripcion,
+                Descripcion: this.descriptions.at(index).get('description').value.trim(),
                 OrdenCompraNumero: PONumber,
                 OrdenCompraPosicionNumero: position.NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref,
@@ -398,7 +417,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 GrossPrice: this.round(parseFloat((item.Importe).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
-                ShortText: position.Descripcion,
+                ShortText: item.posicionDescripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO,
                 Descripcion: item.Descripcion,

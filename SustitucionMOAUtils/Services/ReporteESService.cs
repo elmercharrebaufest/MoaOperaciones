@@ -56,6 +56,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
+                fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
                 fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
 
                 
@@ -94,7 +95,7 @@ namespace SustitucionMOAUtils.Services
             decimal montoTotal = 0;
             var sb = new StringBuilder();
 
-            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].Descripcion} </h3>");
+            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].posicionDescripcion} </h3>");
             sb.AppendLine("<table id=\"items-list\" style=\"width:100%; border-collapse:collapse;\">");
             sb.AppendLine("<thead>");
             sb.AppendLine("<tr>");

@@ -1,14 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ComprasService } from '../../compras.service';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { CalendarModule } from 'primeng/calendar';
-import { forEach } from '@angular/router/src/utils/collection';
 import { FormArray, FormGroup, FormsModule } from '@angular/forms';
-import { UsuarioService } from '../../../usuario/usuario.service';
-import { Calendar } from 'primeng/calendar';
-import { reference } from '@angular/core/src/render3';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
 
@@ -58,6 +54,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     @Output() enviarMensajeGrilla = new EventEmitter();
 
     @ViewChild('fileInput') fileInput: any;
+    @BlockUI() blockUI: NgBlockUI;
 
     itemsAgrupadosPorPosicion: any[] = [];
 
@@ -71,6 +68,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     monthNavStatus: boolean = false;
     documentDateMsg: Message[] = [];
     certificarState: boolean = false;
+    
 
     entrySheetData = {
         "EntrySheetHeader": {
@@ -280,6 +278,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     async certificarPosicion() {
         if (this.validateValues() === true) {
+            this.blockUI.start('Cargando...');
             this.certificarState = true;
             this.buildEntrySheet();
             
@@ -323,6 +322,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         rejectVisible: false
                     });
                     this.certificarState = false;
+                    this.blockUI.stop();
                 },
                 (error) => {
                     this.confirmationService.confirm({
@@ -334,9 +334,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     }
                     );
                     this.certificarState = false;
+                    this.blockUI.stop();
                 }
             );
-
         }
       
     }
@@ -377,9 +377,18 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     onDescripcionChange(position: any, value: string) {
         const item = this.itemSelected.find(item => item.NroPosicion === position.NroPosicion);
+
         if (item) {
             item.posicionDescripcion = value;
         }
+
+        this.itemsAgrupadosPorPosicion.forEach((posicion) => {
+            if (posicion.NroPosicion === position.NroPosicion) {
+                posicion.Items.forEach(itemAgrupado => {
+                    itemAgrupado.posicionDescripcion = value;
+                });
+            }
+        });
       }
 
     buildEntrySheet() {
@@ -428,7 +437,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         });
 
 
-        this.itemsAgrupadosPorPosicion.forEach(position => {
+        this.itemsAgrupadosPorPosicion.forEach((position, index) => {
 
             //let solpedNumbers = this.elementSelected.Posiciones.filter(posicion => posicion.isSelected).map(posicion => posicion.NumeroSolp);
             //Encontrar SolPed desde ArrayOfSolpeds
@@ -443,7 +452,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 SolPedNumber: solPedAsociada,
                 MontoTotalACertificar: this.round(this.totalMontoCertificar, 2).toString(),
                 PaqueteNumero: position.NroPosicion.toString(),
-                Descripcion: position.Descripcion.trim(),
+                Descripcion: this.descriptions.at(index).get('description').value.trim(),
                 OrdenCompraNumero: PONumber,
                 OrdenCompraPosicionNumero: position.NroPosicion.toString(),
                 DocumentoReferenciaNumero: ref.trim(),

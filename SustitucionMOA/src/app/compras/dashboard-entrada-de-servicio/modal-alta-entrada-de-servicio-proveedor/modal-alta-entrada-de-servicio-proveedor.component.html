@@ -26,7 +26,7 @@
                             <p>Posicion {{ position.NroPosicion }}</p>
                         </div>
                         <div class="input-container">
-                            <input id="description" pInputText type="text" formControlName="description" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)">
+                            <input id="description" pInputText type="text" formControlName="description" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)" (ngModelChange)="onDescripcionChange(position, $event)">
                             <span *ngIf="descriptions.at(i).get('description').invalid && descriptions.at(i).get('description').touched">
                                 El campo es requerido
                             </span>
@@ -171,7 +171,7 @@
             <div class="message-wrapper">
                 <p-messages [(value)]="documentDateMsg" class="small-message"></p-messages>
             </div>
-            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="formularioResumenCertificacion.invalid">Certificar</button>
+            <button type="submit" class="btn btn-azul btn-certificar" (click)="certificarPosicion()" [disabled]="(formularioResumenCertificacion.invalid || certificando)">Certificar</button>
         </div>
     </section>
 
