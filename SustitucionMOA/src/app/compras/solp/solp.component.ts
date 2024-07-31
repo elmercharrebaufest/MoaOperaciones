@@ -1250,22 +1250,23 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     private getEmailSubject(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean): string {
         let subject = "";
+        let descripcionSolp = this.nombreDePedido || this.solpActual.posiciones[0].tareaSubcontratar;
 
         if (esPrimeraFinalizacion) {
             //SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
             // subject = `SOLP N° ${this.solpActual.NroSolp || ""} PLIEGO: ${this.nombreDePedido}`;
             if (this.solpActual.urgencia == true) {
-                subject = `Nueva SOLP de urgencia Finalizada - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+                subject = `Nueva SOLP de urgencia Finalizada - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? descripcionSolp : " PLIEGO: " + this.nombreDePedido}`;
             } else {
-                subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+                subject = `SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? descripcionSolp : " PLIEGO: " + this.nombreDePedido}`;
             }
         }
         if (esPosteriorFinalizacion) {
             //ACTUALIZACIÓN SOLP N°” + *nnnnn* + “PLIEGO:” + *detalle del pliego*
             if (this.solpActual.urgencia == true) {
-                subject = `ACTUALIZACIÓN de SOLP de urgencia - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+                subject = `ACTUALIZACIÓN de SOLP de urgencia - N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? descripcionSolp : " PLIEGO: " + this.nombreDePedido}`;
             } else {
-                subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? "" : " PLIEGO: " + this.nombreDePedido}`;
+                subject = `ACTUALIZACIÓN SOLP N° ${this.solpActual.NroSolp || ""} ${this.solpActual.tipoSolp === "SIN_PLIEGO" ? descripcionSolp : " PLIEGO: " + this.nombreDePedido}`;
             }
         }
         return subject;
