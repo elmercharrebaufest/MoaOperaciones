@@ -466,7 +466,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     return;
                 }
 
-                if (!this.solpActual.revisadoPor) {
+                if (this.solpActual.tipoSolp != "SIN_PLIEGO" && !this.solpActual.revisadoPor) {
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Revisado por` });
 
                     if (guardarPorPaso == false) {
