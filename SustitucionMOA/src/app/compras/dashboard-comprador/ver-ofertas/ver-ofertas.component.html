@@ -206,8 +206,10 @@
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }} 
                                 {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }} 
-                                <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
-                                    - {{item.Moneda}} {{item.Total}}
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
+                                        - {{item.Moneda}} {{item.Total}}
+                                    </ng-container>
                                 </ng-container>
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
@@ -534,8 +536,10 @@
                             <td colspan="9" class="columna border2-left" style="width: 540px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobalSubPos | number:'1.2-2') : '' }}
                                 {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobalSubPos > 0 ? ' / ' + (proveedor.Cotizacion.TodasTotalGlobalSubPos | number:'1.2-2') : '' }}
-                                <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
-                                    - {{item.Moneda}} {{item.Total}}
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
+                                        - {{item.Moneda}} {{item.Total}}
+                                    </ng-container>
                                 </ng-container>
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
