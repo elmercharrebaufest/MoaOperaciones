@@ -323,6 +323,17 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
       }
     }
 
+    onDescripcionChange(position: any, value: string) {
+
+        this.itemsAgrupadosPorPosicion.forEach((posicion) => {
+            if (posicion.NroPosicion === position.NroPosicion) {
+                posicion.Items.forEach(itemAgrupado => {
+                    itemAgrupado.posicionDescripcion = value;
+                });
+            }
+        });
+      }
+
     buildEntrySheet() {
         let fechaDocFormateada = "";
         let fechaConFormateada = "";
@@ -406,7 +417,7 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
                 GrossPrice: this.round(parseFloat((item.Importe).toString()), 2),
                 Percentage: this.round(parseFloat(item.PorcentajeACertificar), 2).toString(),
                 CertificationAmount: this.round(parseFloat(item.MontoACertificar), 2).toString(),
-                ShortText: position.Descripcion,
+                ShortText: item.posicionDescripcion,
                 PlannedPackage: item.Id,
                 PlannedLine: item.LINE_NO,
                 Descripcion: item.Descripcion,
