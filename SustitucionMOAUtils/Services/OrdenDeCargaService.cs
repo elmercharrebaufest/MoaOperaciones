@@ -48,6 +48,7 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.Vencida,
             EstadoOrdenDeCarga.Anulada,
             EstadoOrdenDeCarga.Entregada,
+            EstadoOrdenDeCarga.AnuladaPorVencimiento,
             EstadoOrdenDeCarga.AnulacionSolicitada,
             EstadoOrdenDeCarga.ErrorDeCarga
         };

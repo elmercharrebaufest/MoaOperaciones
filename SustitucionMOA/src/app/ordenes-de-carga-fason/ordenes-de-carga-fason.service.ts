@@ -308,4 +308,16 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
         { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
+
+  public validarSisaCliente(codigoCliente: string, codigoMaterial: string): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+      .append("codigoCliente", codigoCliente)
+      .append("codigoMaterial", codigoMaterial)
+
+    return this.http
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarSisaCliente',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
 }

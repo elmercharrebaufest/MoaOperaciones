@@ -28,5 +28,6 @@ namespace SustitucionMOAUtils.Interfaces
         bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
         OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
         bool ValidarOrdenActivaScato(long ordenId);
+        bool ValidarSisaCliente(string codigoCliente, string codigoMaterial);
     }
 }

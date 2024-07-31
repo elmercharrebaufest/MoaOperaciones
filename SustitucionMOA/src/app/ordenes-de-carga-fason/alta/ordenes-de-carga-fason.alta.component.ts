@@ -238,7 +238,10 @@ export class OrdenesDeCargaFasonAltaComponent
             return false;
         }
         if (this.validaCPEDG) {
-
+            if (this.validandoCliente || this.validandoCuitDestinatario || this.validandoCuitDestino || Object.keys(this.validando).some(v => this.validando[v])) {
+                this.mensajeComponent.setInfoMsg("Hay validaciones pendientes. Intente nuevamente en unos segundos.");
+                return false;
+            }
             if (!this.ordenDeCargaFason.CUITDestinatario || this.mensajeCuitDestinatario) {
                 this.mensajeComponent.setInfoMsg(this.mensajeCuitDestinatario || "Debe ingresar un CUIT de destinatario para este producto.")
                 return false;
@@ -283,6 +286,9 @@ export class OrdenesDeCargaFasonAltaComponent
         this.obtenerDestinos(this.ordenDeCargaFason.Cliente)
         this.getCuilsChofer();
         this.getCuitsTransporte();
+        if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
+            this.validarSisaCliente();
+        }
     }
 
     //Utils
@@ -661,15 +667,19 @@ export class OrdenesDeCargaFasonAltaComponent
         this.displayModal = null;
     }
 
-    selectProducto(value: Material) {
-        if (!value)
+    selectProducto() {
+        if (!this.ordenDeCargaFason.ProductoSeleccionado){
+            this.validaCPEDG = false;
+            this.setearDefaultEnCPEDG();
             return;
-        this.ordenDeCargaFason.ProductoSeleccionado = value;
-        this.ordenDeCargaFason.Producto_Id = value.MaterialId;
+        }
+        this.ordenDeCargaFason.Producto_Id = this.ordenDeCargaFason.ProductoSeleccionado.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
 
         if (!this.validaCPEDG)
             this.setearDefaultEnCPEDG();
+        else
+            this.validarSisaCliente();
         this.setCantidadCambioProducto();
     }
     setCantidadCambioProducto() {
@@ -1173,5 +1183,46 @@ export class OrdenesDeCargaFasonAltaComponent
 
     get usaRemitenteComercial() {
         return this.ordenDeCargaFason.CUITCliente.toString() != this.ordenDeCargaFason.CUITDestino;
+    }
+    validandoCliente = false;
+
+    validarSisaCliente() {
+        const cuit = this.ordenDeCargaFason.CUITCliente.toString();
+        if (!cuit || !this.revisarCUITFormatoValido(cuit) || !this.ordenDeCargaFason.ProductoSeleccionado) {
+            return;
+        }
+        this.validandoCliente = true;
+
+        this.service.validarSisaCliente(this.clienteSeleccionado.CodigoProveedor, this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+            result => {
+                this.validandoCliente = false;
+                const esValidoSisa = this.manejarErroresApiResponse(result);
+                if (!esValidoSisa) {
+                    this.ordenDeCargaFason.ProductoSeleccionado = null;
+                    this.ordenDeCargaFason.Producto_Id = null;
+                    this.selectProducto();
+                    this.mensajeComponent.setInfoMsg("El cliente no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.");
+                }
+                else {
+                    this.validarRucaCliente(cuit);
+                }
+            }
+        )
+    }
+
+    validarRucaCliente(cuitCliente: string) {
+        this.validandoCliente = true;
+        this.service.validarCuitRuca(cuitCliente).subscribe(
+            result => {
+                this.validandoCliente = false;
+                const esValidoRuca = this.manejarErroresApiResponse(result);
+                if (!esValidoRuca) {
+                    this.ordenDeCargaFason.ProductoSeleccionado = null;
+                    this.ordenDeCargaFason.Producto_Id = null;
+                    this.selectProducto();
+                    this.mensajeComponent.setInfoMsg("Cliente no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                }
+            }
+        );
     }
 }

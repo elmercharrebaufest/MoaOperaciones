@@ -52,16 +52,11 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'" (selectedChange)="selectProducto($event)"
-                                        [placeholder]="'Seleccione un producto'"
-                                        [(selected)]="ordenDeCargaFason.ProductoSeleccionado"
-                                        [disabled]="editando||null">
-                                        <ng-template let-option>
-                                            <p class="option-label">
-                                                {{option.Descripcion}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
+                                    <p-dropdown name="productosFason" [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado"
+                                        [disabled]="editando||null" (ngModelChange)="selectProducto()"
+                                        [options]="listaProductos" optionLabel="Descripcion"
+                                        placeholder="Seleccione un producto" [filter]="true">
+                                    </p-dropdown>
                                 </div>
                             </div>
                             <div *ngIf="ordenDeCargaFason.ProductoSeleccionado && !validaCPEDG"

@@ -2,7 +2,6 @@
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -12,11 +11,11 @@ using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -209,15 +208,15 @@ namespace SustitucionMOAUtils.Services
                     var ordenEntity = new OrdenDeCargaFason(request);
                     ordenEntity.Producto = producto;
                     var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
-                    ActualizarOrdenDeCarga(detalleActualizar, i==0);
+                    ActualizarOrdenDeCarga(detalleActualizar, i == 0);
                     repositorio.Agregar(ordenEntity);
 
                     repositorio.GuardarCambios();
                     ultimoId = (int)ordenEntity.Id;
                 }
-                
 
-                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad= ultimoId ?? 0 };
+
+                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = ultimoId ?? 0 };
                 return resultado;
             }
             catch (Exception ex)
@@ -450,7 +449,7 @@ namespace SustitucionMOAUtils.Services
             result.ordenes = result.ordenes.Distinct().ToList();
             return result;
         }
-        
+
         public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
         {
             var ordenDeCarga = this.repositorio.Obtener<OrdenDeCargaFason>(o => o.Id.ToString() == ordenId);
@@ -481,7 +480,7 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarOrdenActivaScato(long ordenId)
         {
-            
+
             Log.Info($"Obteniendo estado de la orden fason {ordenId} en Scato con nro Entrega");
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId);
             if (result == null)
@@ -489,10 +488,23 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
             return !result.Terminado;
         }
+        public bool ValidarSisaCliente(string codigoCliente, string codigoMaterial)
+        {
+            var controlarCargaReq = new ControlCargaRequest
+            {
+                Cliente = codigoCliente,
+                Material = codigoMaterial,
+                SoloSisa = true
+            };
+
+            var responseHandler = ordenCargaConsumer.ControlarCarga(controlarCargaReq);
+
+            return !responseHandler.TieneRespuesta(ControlCargaResEnum.ClienteInhabilitadoEnSisa);
+        }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool enviarNotificaciones = false)
         {
             var detalleAActualizar = ObtenerDetallesActualizar(orden);
-         
+
             ActualizarOrdenDeCarga(detalleAActualizar, enviarNotificaciones);
         }
         private void ActualizarOrdenDeCarga(DetallesActualizarOrdenDeCargaFason detalle, bool enviarNotificaciones = false)
@@ -570,8 +582,8 @@ namespace SustitucionMOAUtils.Services
 
             return ValidarCuitExisteScato(cuit).Existe;
         }
-        private DetallesActualizarOrdenDeCargaFason ObtenerDetallesActualizar(OrdenDeCargaFason orden, 
-            bool? existeTransportePreRevisado=null, 
+        private DetallesActualizarOrdenDeCargaFason ObtenerDetallesActualizar(OrdenDeCargaFason orden,
+            bool? existeTransportePreRevisado = null,
             bool? existeIntermediarioFletePreRevisado = null)
         {
             var existeTransporte = existeTransportePreRevisado != null ? (bool)existeTransportePreRevisado : TransporteExiste(orden.CUITTransporte);
