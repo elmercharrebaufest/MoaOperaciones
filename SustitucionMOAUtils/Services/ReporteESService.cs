@@ -56,6 +56,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
+                fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
                 fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
 
                 

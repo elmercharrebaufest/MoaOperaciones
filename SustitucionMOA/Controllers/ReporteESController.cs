@@ -46,8 +46,9 @@ namespace SustitucionMOA.Controllers
                     htmlTable += data.Table;
                     generalAmount += data.TotalAmount;
                 }
-                
+
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
+                fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
                 fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
 
                 using (var ms = new MemoryStream())
