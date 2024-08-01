@@ -278,7 +278,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     async certificarPosicion() {
         if (this.validateValues() === true) {
-            this.blockUI.start('Cargando...');
+            let respIdAdjuntos = { data: [] };
             this.certificarState = true;
             this.buildEntrySheet();
             
@@ -288,10 +288,14 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                 return element;
             });
 
-            const adjuntarArchivosResult = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
-            const respIdAdjuntos = adjuntarArchivosResult.data;
+            if(this.uploadedFiles.length > 0){
+                this.blockUI.start('Adjuntando archivos...');
+                respIdAdjuntos = await this.service.AdjuntarArchivosCertificacion(this.uploadedFiles).toPromise();
+                this.blockUI.stop();
+            }
 
-            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos).subscribe(
+            this.blockUI.start('Confirmando la certificación...');
+            this.service.postCreateAsync(this.entrySheetObjects, items, respIdAdjuntos.data).subscribe(
                 (response) => {
                     this.mensajeError = '';
                     let resultMsj: string[] = [];
@@ -314,6 +318,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
                         }
                     });
+                    this.blockUI.stop();
                     this.mensajeError = resultMsj.join("");
                     this.confirmationService.confirm({
                         message: "<ul>" + this.mensajeError + "</ul>",
@@ -322,9 +327,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                         rejectVisible: false
                     });
                     this.certificarState = false;
-                    this.blockUI.stop();
                 },
                 (error) => {
+                    this.blockUI.stop();
                     this.confirmationService.confirm({
                         message: error.status === 500 ? this.errorCallService : error.error.Message,
                         accept: () => {
@@ -334,7 +339,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
                     }
                     );
                     this.certificarState = false;
-                    this.blockUI.stop();
                 }
             );
         }
