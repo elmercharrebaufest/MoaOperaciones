@@ -112,7 +112,7 @@
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
                         <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
-                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)"></button>
+                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)" [disabled]="!equalsIgnoreCase(rowData.Fiscal,usuario)"></button>
                     </td>
                     <td class="aprobador">{{
                         rowData.Aprobador | defaultData}}</td>
