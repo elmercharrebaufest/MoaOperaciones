@@ -83,7 +83,7 @@ namespace SustitucionMOA.Controllers
             decimal montoTotal = 0;
             var sb = new StringBuilder();
 
-            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].posicionDescripcion} </h3>");
+            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición {reports[0].NroPosicion}: {reports[0].posicionDescripcion} </h3>");
             sb.AppendLine("<table id=\"items-list\" style=\"width:100%; border-collapse:collapse;\">");
             sb.AppendLine("<thead>");
             sb.AppendLine("<tr>");

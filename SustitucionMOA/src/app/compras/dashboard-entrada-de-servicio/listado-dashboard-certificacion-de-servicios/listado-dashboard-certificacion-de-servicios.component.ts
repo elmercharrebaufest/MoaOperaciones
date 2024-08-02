@@ -115,7 +115,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     btnCertificarHabilitado: boolean = true;
 
     //#region Variables 
-    tablaPO: any[];
+    tablaPO: any[] = [];
     selectedItems: any[][][][] = [];
     cols: any[];
     usuario: string;
