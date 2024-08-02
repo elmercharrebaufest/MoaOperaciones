@@ -265,14 +265,13 @@ namespace SustitucionMOAUtils.Services
                         {
                             if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out Aprobaciones detalle))
                             {
-                                detalleSAP.NumeroLinea = int.Parse(detalle.Nro_linea).ToString();
-                                detalleSAP.Descripcion = string.IsNullOrEmpty(detalle.Descripcion_ES) ? "" : detalle.Descripcion_ES.Trim();
+                                detalleSAP.NumeroLinea = int.Parse(detalleSAP.Ext_line).ToString();
                                 detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
                                 detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
                                 detalleSAP.NroRemito = detalle.Referencia;
-                                detalleSAP.CodigoServicio = detalle.Nro_servicio;
+                                detalleSAP.CodigoServicio = string.IsNullOrEmpty(detalleSAP.CodigoServicio) ?  "0" : detalleSAP.CodigoServicio;
                                 detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
                                 detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
                                 detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
