@@ -143,7 +143,7 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS') || this.isAuthorized('VER COMO AUDITOR');
 
     public chat: ChatsDto;
     public chatCompras: ChatComprasDto;

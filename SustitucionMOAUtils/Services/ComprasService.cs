@@ -1226,6 +1226,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtro = (x => x.FechaBorrado == null);
                 }
+
                 string[] pedidos = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
                 {
