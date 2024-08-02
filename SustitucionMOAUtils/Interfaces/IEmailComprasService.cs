@@ -1,0 +1,12 @@
+﻿using SustitucionMOAModel.Entities;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace SustitucionMOAUtils.Interfaces
+{
+    public interface IEmailComprasService
+    {
+        void EnviarMailCotizacionCreada(Cotizacion cotizacion);
+        void EnviarMailSolpLiberada(Solp solp);
+    }
+}
