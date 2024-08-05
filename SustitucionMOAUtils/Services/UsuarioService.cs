@@ -302,14 +302,11 @@ namespace SustitucionMOAUtils.Services
 
             }
             
-            if (!string.IsNullOrEmpty(suplente))
-            {
-                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
+            List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
 
-                foreach (var aprobacion in aprobaciones)
-                {
-                    aprobacion.Suplente = suplente;
-                }
+            foreach (var aprobacion in aprobaciones)
+            {
+                aprobacion.Suplente = suplente;
             }
             
             repositorio.GuardarCambios();
