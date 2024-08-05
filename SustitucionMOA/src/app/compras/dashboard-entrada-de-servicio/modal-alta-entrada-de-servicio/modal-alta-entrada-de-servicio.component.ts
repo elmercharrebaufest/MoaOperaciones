@@ -628,6 +628,11 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     ngOnDestroy() {
         this.saveColumnConfig(this.colConfig);
+        // Limpiar variables
+    this.itemsAgrupadosPorPosicion = [];
+    this.mensajeError = '';
+    this.uploadedFiles = [];
+    this.entrySheetObjects = [];
     }
 
     validateValues() {
