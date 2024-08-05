@@ -12,7 +12,7 @@ import { SpinnerComponent } from './../../common/view-child/spinner/spinner.comp
 import { UsuarioService } from './../usuario.service';
 import { Rol } from '../../common/models/rol';
 import { ModificarDatosComponent } from '../modificar-datos/modificar-datos.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Calendar } from 'primeng/calendar';
 
 @Component({
@@ -39,7 +39,8 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     @ViewChild('fechaReasignar') calendar: Calendar;
 
-    constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, 
+        protected floatMsgService: FloatMsgService, protected modalService: ModalService, private fb: FormBuilder) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -103,6 +104,20 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.getUsuario();
         this.getRolesOptions();
 
+        this.formularioUsuario = this.fb.group({
+            usuarioSap: ['', [Validators.required]],
+            suplente: ['', [Validators.required]],
+            fechaReasignar1: [{ value: null, disabled: true }, [Validators.required]]
+          });
+      
+          this.formularioUsuario.get('suplente').valueChanges.subscribe(value => {
+            if (value) {
+              this.formularioUsuario.get('fechaReasignar1').enable();
+            } else {
+              this.formularioUsuario.get('fechaReasignar1').disable();
+              this.formularioUsuario.get('fechaReasignar1').reset();
+            }
+          });
     }
 
 
