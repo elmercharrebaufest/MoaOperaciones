@@ -654,6 +654,13 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         return true;
     }
 
+    clearMessage() {
+        setTimeout(() => {
+          this.messageService.clear();
+        }, 10000)
+      }
+
+
     uploadedFiles: File[] = [];
     maxSizeFile = 10 * 1024 * 1024; // 10 MB
     allowedTypes = ['application/pdf', 
@@ -673,10 +680,12 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         const file = files[i];
         if (!this.isValidFileType(file)) {
             this.messageService.add({ severity: 'error', summary: `${file.name} Archivo invalido.`, detail: 'Solo se permiten archivos .pdf, .xls, .msg.' })
+            this.clearMessage();
           continue;
         }
         if (totalSize + file.size > this.maxSizeFile) {
             this.messageService.add({ severity: 'error', summary: 'Tamaño excedido 10 MB.', detail: 'El limite de carga de archivos es de 10 MB.' })
+            this.clearMessage();
           continue;
         }
         this.uploadedFiles.push(file);

@@ -734,13 +734,20 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
     }
 
     deshabilitarItemCheckbox(item: any): boolean {
-        return item.PorcentajeACertificar < 0.01 || item.Porcentaje >= 100 || item.MontoACertificar <= 0 || item.CantidadACertificar <= 0;
+        let ordenPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(item.NroOrdenCompra);
+        let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
+        let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
+        let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal || Number(item.PorcentajeACertificar) < 0.001;
+        return deshabilitarCheckboxDeItem;
     }
 
     validarMantenerItemSeleccionado(item: any) {
-        if (item.CantidadACertificar == 0 || Number(item.PorcentajeACertificar < 0.01) || Number(item.MontoACertificar < 0.01)) {
+        if (!this.esItemValidoParaCertificar(item) || Number(item.PorcentajeACertificar) < 0.001) {
             this.clearCheckbox(item);
         }
+        const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+        posicion.isSelected = this.tieneItemsACertificarTodosValidos(posicion) && this.tieneTodosItemsValidosSeleccionados(posicion);
     }
 
     numbersOnly(event): boolean {
