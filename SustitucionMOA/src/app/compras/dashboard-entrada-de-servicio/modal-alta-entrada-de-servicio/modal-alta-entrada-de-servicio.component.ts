@@ -136,7 +136,7 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
-        this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
+        //this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
         this.colConfig = this.getColumnConfig();
     }
 
