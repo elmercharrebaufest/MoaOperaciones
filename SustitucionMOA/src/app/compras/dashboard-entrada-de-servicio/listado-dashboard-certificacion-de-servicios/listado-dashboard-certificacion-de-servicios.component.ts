@@ -555,7 +555,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.createResumenForm();
         this.showModal = this.itemIdSelected.length > 0;
     }
-
+/**
+ * construye el formulario de resumen de certificación
+ */
     createResumenForm(): void {
         this.resetFormularioResumenCertificacion();
         const descriptionsArray = this.descriptions;
@@ -602,6 +604,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
+    /**
+     * busca las posiciones que fueron seleccionadas
+     * y las guarda en posicionesSelected y elementosSelected 
+     */
     searchElement() {
         for (const ordenCompra of this.tablaPO) {
 

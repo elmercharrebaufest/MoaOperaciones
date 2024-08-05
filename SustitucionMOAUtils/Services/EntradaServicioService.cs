@@ -265,14 +265,13 @@ namespace SustitucionMOAUtils.Services
                         {
                             if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out Aprobaciones detalle))
                             {
-                                detalleSAP.NumeroLinea = int.Parse(detalle.Nro_linea).ToString();
-                                detalleSAP.Descripcion = string.IsNullOrEmpty(detalle.Descripcion_ES) ? "" : detalle.Descripcion_ES.Trim();
+                                detalleSAP.NumeroLinea = int.Parse(detalleSAP.Ext_line).ToString();
                                 detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
                                 detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
                                 detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
                                 detalleSAP.NroRemito = detalle.Referencia;
-                                detalleSAP.CodigoServicio = detalle.Nro_servicio;
+                                detalleSAP.CodigoServicio = string.IsNullOrEmpty(detalleSAP.CodigoServicio) ?  "0" : detalleSAP.CodigoServicio;
                                 detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
                                 detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
                                 detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
@@ -569,11 +568,7 @@ namespace SustitucionMOAUtils.Services
 
 
             //2a - Comparar Fiscal/Email con usuario FE
-            if (usuarioReasignacion != null && DateTime.Now < usuarioReasignacion.FechaHasta && DateTime.Now > usuarioReasignacion.FechaDesde)
-            {
-                auto = false;
-            }
-            else if (userMail == detalleSolPed.Email)
+            if (userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -1057,15 +1052,15 @@ namespace SustitucionMOAUtils.Services
 
             //MMSN-1066 - Derivación automatica del suplente.
             #region DerivacionAutomatica
-            if(user != null && user.Id != 0)
+            if (user != null && user.Id != 0)
             {
                 if (!string.IsNullOrEmpty(user.Suplente))
                 {
                     UsuarioReasignacion periodo = repositorio.Listar<UsuarioReasignacion>(x => x.Usuario_Id == user.Id).ToList().LastOrDefault();
-                    if(periodo != null)
+                    if (periodo != null)
                     {
                         //Comprobar fechaDesde y fechaHasta
-                        if (periodo.FechaDesde <= DateTime.Today && periodo.FechaHasta >= DateTime.Today)
+                        if (periodo.FechaDesde <= DateTime.Today && periodo.FechaHasta >= DateTime.Today && !auto)
                         {
                             temp.Aprobador_CDS = user.Suplente;
                             temp.Suplente = temp.Fiscal_SOLPED;
