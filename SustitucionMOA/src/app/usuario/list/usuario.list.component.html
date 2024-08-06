@@ -228,8 +228,18 @@
                                 SUPLENTE
                             </div>
                             <div class="styled-select" style="width: 40% !important;">
-                                <input pInputText formControlName="suplente" (keyup)="validarConExpresionesRegulares('suplente')">
+                                <input pInputText formControlName="suplente" 
+                                (keyup)="validarConExpresionesRegulares('suplente')" 
+                                (input)="onInput()"  
+                                (blur)="validateEmail()" 
+                                autocomplete="off">
                             </div>
+                            <ul *ngIf="filteredList.length > 0" class="suggestion-list">
+                                <li *ngFor="let item of filteredList" class="suggestion-item" (click)="selectItem(item)">{{ item.Mail }}</li>
+                            </ul>
+                            <div *ngIf="shouldShowError()" class="error-message">
+                                El correo electrónico ingresado no es válido.
+                              </div>
                         </div>
 
                         <div style="margin-top: 10px;">
@@ -304,7 +314,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal" id="closeModal"
                             style="display: inline-flex;">Cancelar</button>
-                        <button type="button" class="btn-custom btn-add btn-chico" (click)="guardarRolesUsuario()"
+                        <button type="button" class="btn-custom btn-add btn-chico" [disabled]="validacionOk" (click)="guardarRolesUsuario()"
                             style="display: inline-flex;">
                             Guardar
                         </button>
