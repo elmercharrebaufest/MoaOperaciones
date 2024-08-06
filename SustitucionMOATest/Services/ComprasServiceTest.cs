@@ -1967,7 +1967,7 @@ namespace SustitucionMOATest.Services
                     CUITProveedor = "2737237394",
                     CodigoProveedor = "003723739",
                     Usuario_Id = 1,
-                    UsuarioComprasSAP = "A"
+                    //UsuarioComprasSAP = "A"
                 },
             });
 

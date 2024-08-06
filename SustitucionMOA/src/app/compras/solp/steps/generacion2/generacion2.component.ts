@@ -42,7 +42,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     @Output() onEstCompleto = new EventEmitter<any>();
     detalleVisitas: DetalleVisitaDeObraDto[];
-   
+
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -86,11 +86,11 @@ export class Generacion2Component extends ListBaseComponent {
         )
         this.model.listaVisitas.forEach(visita => {
             this.visitaDeObra.push({
-                Codigo: visita.id, 
+                Codigo: visita.id,
                 FechaHora: visita.visitaDeObraFecha
             });
         });
-        
+
     };
 
     eliminarVisita(id) {
@@ -168,9 +168,9 @@ export class Generacion2Component extends ListBaseComponent {
         return false;
     }
 
-    mostrarValidacion(campoAValidar, vacio){
+    mostrarValidacion(campoAValidar, vacio) {
         let camposVacios = this.camposObligatorios.find(x => x.campo == campoAValidar && x.esObligatorio);
-        if(vacio !== null && vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
+        if (vacio !== null && vacio !== undefined && vacio.CodigoDescripcion != "Seleccione un usuario") {
             return (camposVacios != null && vacio == 0);
         }
         return true;
@@ -219,7 +219,7 @@ export class Generacion2Component extends ListBaseComponent {
 
     listarVisitasDeObra() {
         try {
-            var fechas: VisitaObraDto[] = this.model.listaVisitas.map( visita => {
+            var fechas: VisitaObraDto[] = this.model.listaVisitas.map(visita => {
                 return {
                     FechaHora: visita.visitaDeObraFecha
                 }
@@ -243,7 +243,7 @@ export class Generacion2Component extends ListBaseComponent {
                         this.floatMsgService.setErrorMsg(error.message);
                     });
             }
-            
+
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -251,21 +251,28 @@ export class Generacion2Component extends ListBaseComponent {
         return false; //<-- Prevent Refresh
     }
 
-    traerDetalleVisitas(){
+    traerDetalleVisitas() {
         this.listarVisitasDeObra();
     }
 
-    verDetalle(){
+    verDetalle() {
         this.verDetalleVisitas = true;
     }
 
-    cerrarDetalle(){
+    cerrarDetalle() {
         this.verDetalleVisitas = false;
     }
 
     onCompletarResponsable() {
         if (this.model != undefined && this.model.selectResponsableTrabajo != undefined) {
             this.model.supervisorTrabajo = this.model.selectResponsableTrabajo.CodigoDescripcion;
+
+            if (this.model.tipoSolp == "SIN_PLIEGO") {
+                this.model.selectUsuarioFiscal = this.model.selectResponsableTrabajo;
+                this.model.mail = this.model.selectResponsableTrabajo.CodigoDescripcion;
+                this.model.supervisorTrabajo = this.model.selectResponsableTrabajo.CodigoDescripcion;
+            }
+
         }
     }
 }

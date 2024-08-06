@@ -5,6 +5,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Notificacion;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -12,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         //List<OrdenCompraDto> GetByProveedor(string vendedor);
         //List<OrdenCompraDto> ServicioOrdenesCompraFake(string vendedor);
-        ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros);
-
+        ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros, string userMail);
+        Task<List<SolicitantesSolpedDto>> GetSolicitantes(List<string> nroSolpedList);
     }
 }

@@ -1,6 +1,5 @@
 import { Adjuntos } from "./adjuntos";
 import { Rol } from "./rol";
-import { TipoUsuario } from "./tipoUsuario";
 
 
 export class Notificacion {

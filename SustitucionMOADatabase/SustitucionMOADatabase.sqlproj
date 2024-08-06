@@ -64,8 +64,9 @@
     <Folder Include="DBO\Views" />
     <Folder Include="scripts\PreDeployment" />
     <Folder Include="scripts\PostDeployment" />
-    <Folder Include="scripts\Notificaciones" />
     <Folder Include="scripts\Comunicacion" />
+    <Folder Include="scripts\Notificaciones\" />
+    <Folder Include="DBO\Sequence" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -204,24 +205,30 @@
     <Build Include="DBO\Tables\PeticionDeOfertaCierre.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaVisualizacionPrecio.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaRevisionTecnica.sql" />
-    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasiva.sql" />
-    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasivaFila.sql" />
     <Build Include="DBO\Tables\RegionSap.sql" />
     <None Include="scripts\PostDeployment\RegionSap.sql" />
     <Build Include="DBO\Tables\ChatInternoCompras.sql" />
     <Build Include="DBO\Tables\PeticionDeOfertaUsuarioAdicional.sql" />
-    <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
+    <None Include="scripts\Comunicacion\ComunicacionTipo.sql" />
+    <Build Include="DBO\Tables\Area.sql" />
+    <Build Include="DBO\Tables\Aprobaciones.sql" />
+    <Build Include="DBO\Tables\AreaUsuario.sql" />
+    <None Include="scripts\CreacionRolAdminCont.sql" />
+    <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
+    <None Include="scripts\PostDeployment\AlmacenMaterial.sql" />
     <Build Include="DBO\Stored Procedures\VerificarActividadUsuarioID.sql" />
-    <Build Include="DBO\Tables\LiberadorSapTipo.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasivaFila.sql" />
+    <Build Include="DBO\Tables\AplicacionCartaPorteCargaMasiva.sql" />
     <Build Include="DBO\Tables\LiberadorSap.sql" />
     <Build Include="DBO\Tables\LiberadorSapSolp.sql" />
+    <Build Include="DBO\Tables\LiberadorSapTipo.sql" />
     <None Include="scripts\PostDeployment\LiberadorSap.sql" />
+    <Build Include="DBO\Tables\ArchivoCampoSustentable.sql" />
     <Build Include="DBO\Tables\OrdenResiduos.sql" />
-    <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
-    <Build Include="DBO\Tables\ArchivoBoleto.sql" />
     <Build Include="DBO\Tables\EstadoArchivoBoleto.sql" />
-    <Build Include="DBO\Tables\Almacen.sql" />
+    <Build Include="DBO\Tables\EstadoOrdenResiduos.sql" />
     <Build Include="DBO\Tables\AlmacenMaterial.sql" />
+    <Build Include="DBO\Tables\Almacen.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
     <Build Include="DBO\Tables\CotizacionHistorial.sql" />
     <None Include="scripts\Notificaciones\Notificacion.sql" />
@@ -237,6 +244,11 @@
     <Build Include="DBO\Tables\NotificacionPrioridad.sql" />
     <None Include="scripts\Comunicacion\TipoRetencion.sql" />
     <Build Include="DBO\Tables\ChatExternoCompras.sql" />
+    <Build Include="DBO\Tables\UsuarioReasignacion.sql" />
+    <Build Include="DBO\Tables\ArchivoBoleto.sql" />
+    <Build Include="DBO\Tables\AdjuntosEntradasDeServicio.sql" />
+    <Build Include="DBO\Sequence\SecuenciaNumeroTemporal.sql" />
+    <Build Include="DBO\Stored Procedures\ObtenerSiguienteValorSecuencia.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -262,8 +274,7 @@
     <None Include="DatabaseNewPublishQaBaufest.xml" />
     <None Include="DatabaseNewPublishQaHuenei.xml" />
     <None Include="DatabaseNewPublishQaCompras.xml" />
-    <None Include="scripts\PostDeployment\EstadoOrdenResiduos.sql" />
-    <None Include="scripts\PostDeployment\AlmacenMaterial.sql" />
+    <None Include="scripts\Insert Rol EstadoES.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

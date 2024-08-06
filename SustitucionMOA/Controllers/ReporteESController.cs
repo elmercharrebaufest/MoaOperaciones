@@ -13,6 +13,7 @@ using SustitucionMOAUtils.Logger;
 using System.Text;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace SustitucionMOA.Controllers
 {
@@ -21,10 +22,12 @@ namespace SustitucionMOA.Controllers
 
         private static readonly string TEMPLATE_REPORTE_ALTA_ES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteAltaES.html");
         
-        public ActionResult BuildReportES(List<ReporteDto> report)
+        public ActionResult BuildReportES(string reportRequest)
         {
             try
             {
+                var report = JsonConvert.DeserializeObject<List<ReporteDto>>(reportRequest);
+
                 string templateContent = string.Empty;
                 string htmlTable = string.Empty;
 
@@ -43,8 +46,9 @@ namespace SustitucionMOA.Controllers
                     htmlTable += data.Table;
                     generalAmount += data.TotalAmount;
                 }
-                
+
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
+                fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
                 fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
 
                 using (var ms = new MemoryStream())
@@ -79,7 +83,7 @@ namespace SustitucionMOA.Controllers
             decimal montoTotal = 0;
             var sb = new StringBuilder();
 
-            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición: {reports[0].Descripcion} </h3>");
+            sb.AppendLine($"<h3 style=\"font-weight:bold;\"> Posición {reports[0].NroPosicion}: {reports[0].posicionDescripcion} </h3>");
             sb.AppendLine("<table id=\"items-list\" style=\"width:100%; border-collapse:collapse;\">");
             sb.AppendLine("<thead>");
             sb.AppendLine("<tr>");
@@ -110,9 +114,6 @@ namespace SustitucionMOA.Controllers
 
             foreach (ReporteDto report in reports)
             {
-                decimal PorcentajeACertificar;
-                decimal.TryParse(report.PorcentajeACertificar, NumberStyles.Any, CultureInfo.InvariantCulture, out PorcentajeACertificar);
-
                 sb.AppendLine("<tr>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.NumeroLinea.ToString()}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.ServicioNumero.ToString() ?? "N/A"}</td>");
@@ -120,21 +121,21 @@ namespace SustitucionMOA.Controllers
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Cantidad.ToString() ?? "N/A"}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.UM ?? "N/A"}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Importe.ToString("N2") ?? "N/A"}</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.Cantidad * report.Importe).ToString("N2")}</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2")}</td>");
 
                 // Anteriores
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadReal.ToString()}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{Convert.ToDecimal(report.Porcentaje):0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture):0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{ (report.CantidadReal * report.Importe).ToString("N") }</td>");
 
                 // A certificar
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{PorcentajeACertificar:0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.PorcentajeACertificar:0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.CantidadACertificar * report.Importe).ToString("N2")}</td>");
 
                 // Acumulado
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2")}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje) + PorcentajeACertificar):0.##}%</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture) + report.PorcentajeACertificar):0.##}%</td>");
                 sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2")}</td>");
                 sb.AppendLine("</tr>");
 

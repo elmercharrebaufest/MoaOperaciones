@@ -25,7 +25,7 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     @Input()
     displayOrdenDeCompra: boolean;
     @Input()
-    public ordenDeCompra: AdjudicacionDto;       
+    public ordenDeCompra: AdjudicacionDto;
     @Output() cerrarOrdenDeCompraEmitter = new EventEmitter();
     activeTabs: boolean[] = [false, false, false, false];
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -34,6 +34,7 @@ export class OrdenDeCompraDetalleComponent implements OnInit, OnChanges {
     }
     ngOnChanges(changes: SimpleChanges): void {
         if(this.ordenDeCompra != null){
+       
         }
     }
     

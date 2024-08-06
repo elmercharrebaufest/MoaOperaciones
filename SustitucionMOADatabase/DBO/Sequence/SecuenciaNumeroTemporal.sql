@@ -1,0 +1,7 @@
+﻿CREATE SEQUENCE [dbo].[SecuenciaNumeroTemporal]
+		AS BIGINT
+		START WITH 999
+		INCREMENT BY 1
+		NO MAXVALUE
+		NO CYCLE
+		CACHE 10

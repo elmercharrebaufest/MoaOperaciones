@@ -1,0 +1,300 @@
+:host ::ng-deep p-dialog#alta-certificaciones .ui-dialog {
+  left: 32px;
+  right: 32px;
+}
+
+:host ::ng-deep p-dialog#alta-certificaciones .ui-dialog-content {
+  padding: 1em;
+}
+
+/* FORM CERTIFICACION */
+.alta-form {
+  padding: 3em 0;
+}
+
+.alta-form .fields {
+  display: flex;
+  justify-content: center;
+}
+
+.alta-form p {
+  text-transform: uppercase;
+  font-size: .85em;
+  font-weight: bold !important;
+}
+
+:host ::ng-deep .alta-form p-calendar.smallCal > span > input,
+.alta-form textarea,
+.alta-form input {
+  border: 1px solid #a6a6a6;
+  font-size: .87em !important;
+  color: #333;
+  font-family: "Roboto", Arial, sans-serif;
+}
+
+.alta-form .hint {
+  font-size: .7em;
+}
+
+.alta-form input#ref {
+  height: 2.4em;
+  border-radius: 3px;
+  width: 15em;
+}
+.alta-form .row {
+  margin-bottom: 2rem;
+}
+
+.error {
+  border: 1px solid red !important;
+}
+
+/* Calendar */
+p-calendar.smallCal div {
+  padding: 0.2em;
+}
+
+:host ::ng-deep p-calendar.smallCal table td > span,
+:host ::ng-deep p-calendar.smallCal table td > a {
+  padding: .4em;
+}
+
+:host ::ng-deep p-calendar.smallCal table {
+  font-size: .8em;
+  margin: 0;
+}
+
+:host ::ng-deep p-calendar.smallCal table th > span {
+  color: #075088 !important
+}
+
+
+:host ::ng-deep p-calendar.smallCal table td,
+:host ::ng-deep p-calendar.smallCal table td > span {
+  padding: 0 .2em !important;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-datepicker-title {
+  font-size: .78em;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-datepicker-title select {
+  font-size: 1em;
+  margin: .125em 0;
+  margin-top: 0.125em;
+  margin-right: 0px;
+  margin-bottom: 0.125em;
+  vertical-align: middle;
+  background-color: white;
+  border: 1px solid #959595;
+  border-radius: 4px;
+  font-family: san-serif;
+  font-family: "Open Sans", "Helvetica Neue", sans-serif;
+
+}
+
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-prev,
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > .ui-datepicker-next {
+    visibility: hidden;
+}
+
+:host ::ng-deep p-calendar#fechaDocumento > span > div > div > div > table td > a,
+:host ::ng-deep p-calendar#fechaContabilizacion > span > div > div > div > table td > a {
+    padding: .1em;
+}
+
+:host ::ng-deep p-calendar#fechaDocumento .ui-datepicker-title select > option {
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+/* TABLE */
+p-table#items-list th,
+p-table#items-list td {
+    text-align: center;
+}
+
+p-table#items-list td.text-right {
+    text-align: right !important;
+}
+
+p-table#items-list td {
+    font-size: .78em;
+}
+
+p-table#items-list th {
+    font-size: .76em;
+    background-color: #1C7CD5 !important;
+    color: white;
+}
+
+p-table#items-list th.anterior {
+    border-color: white;
+    background-color: #F9C834 !important;
+    color: #333;
+}
+
+p-table#items-list th.acertificar {
+    border-color: white;
+    background-color: blue !important;
+    color: #fff;
+}
+
+p-table#items-list th.acumulado {
+    border-color: white;
+    background-color: #00B050 !important;
+    color: #fff;
+}
+
+:host ::ng-deep p-table#items-list > .ui-table > .ui-table-wrapper > table {
+    table-layout: auto;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr {
+    background: white;
+    color: #333;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:first-child { 
+    border-bottom: none;
+    border-left: none;
+}
+
+:host ::ng-deep p-table#items-list .ui-table-tfoot > tr > td:last-child { 
+    border-bottom: none;
+    border-right: none;
+}
+
+#alta-certificaciones .alta-form .message-wrapper {
+    max-width: fit-content;
+    margin: 0 auto;
+    height: 3em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .small-message .ui-messages ul {
+    padding-right: 3em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .small-message .ui-messages.ui-widget.ui-corner-all.ui-messages-error.ng-trigger.ng-trigger-messageAnimation.ng-star-inserted {
+    font-size: 0.95em;
+    color: #842029;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages-icon.pi.pi-times {
+    font-size: 1.4em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages.ui-messages-error .ui-messages-close {
+    font-size: 1.1em;
+}
+
+:host ::ng-deep #alta-certificaciones .message-wrapper .ui-messages.ui-messages-error .ui-messages-icon {
+    color: #c0392b;
+}
+
+/* Calendar end */
+
+.form-actions {
+  margin: 0;
+  background-color: transparent;
+  text-align: center;
+}
+
+.btn-azul {
+  background: #075088;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: .4em 3em;
+  font-weight: bolder;
+  text-align: center;
+  font-size: 1.1em;
+  margin-top: 4px;
+}
+
+.btn-certificar {
+  margin-top: 1.3em;
+}
+/* FORM CERTIFICACION END */
+
+/* POSITIONS PANEL */
+p-panel#positions-panel p-header input#description {
+    margin-left: 2em;
+    height: 2em;
+    width: 88%;
+}
+
+p-panel#positions-panel p-header span#title {
+    width: 6em;
+    text-transform: uppercase;
+}
+
+p-panel#positions-panel #ui-panel-0-label {
+    margin-top: .3em;
+}
+
+/* POSITIONS PANEL END */
+
+
+/* COLS CONFIG */
+div#col-select {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    margin-bottom: 1em;
+    padding: .1em .3em;
+    gap: 10px;
+}
+/* END COLS CONFIG */
+
+
+@media screen and (max-width: 600px) {
+  .modal-container {
+    width: 90vw;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .modal-container {
+    width: 95vw;
+  }
+}
+
+input[type=file]::file-selector-button {
+  padding: .2em .4em;
+  background-color: #007AD9;
+  border:  #007AD9;
+  color: white;
+}
+
+
+.form-container{
+  min-width: 95%;
+  display: inline-flex;
+  align-items: center;
+
+  .label-container{
+    font-weight: 400;
+    width: 5%;
+    label{
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+
+  .input-container {
+    width: 95%;
+    input {
+      margin-left: 2em;
+      height: 2em;
+      width: 100%;
+    }
+  
+    span {
+      font-size: 12px;
+      color: #a80000;
+      margin-left: 25px;
+      padding: 5px;
+      display: table;
+    }
+  }
+}

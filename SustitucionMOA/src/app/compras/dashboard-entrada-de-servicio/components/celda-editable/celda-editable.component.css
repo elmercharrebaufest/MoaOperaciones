@@ -1,0 +1,155 @@
+.info-input {
+    width: 105px;
+    font-size: 12px;
+    height: 25px;
+}
+
+button {
+    width: 25px !important;
+    height: 25px;
+    font-size: 12px;
+}
+
+.edit{
+    color: #007ad9 !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.edit:hover{
+    color: #007ad9 !important;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+}
+
+.aprove {
+    background-color: green;
+    border-color: green;
+}
+
+.aprove:hover {
+    background-color: rgb(1, 104, 1) !important;
+    border-color: rgb(1, 104, 1) !important;
+}
+
+.reject {
+    background-color: red;
+    border-color: red;
+}
+
+.reject:hover {
+    background-color: rgb(180, 0, 0) !important;
+    border-color: rgb(180, 0, 0) !important;
+}
+
+form > * {
+    margin-right: 5px;
+}
+
+.error {
+    border: 1px solid red !important;
+}
+
+.error-message {
+    font-size: 12px;
+    color: red;
+    margin-top: 5px;
+}
+
+.input-container {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    width: 165px;
+    background-color: #ff0000fc;
+    color: #fff;
+    text-align: left;
+    border-radius: 5px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 120%;
+    left: 79%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+input.error:hover + .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Calendar */
+p-calendar.smallCal div {
+    padding: 0.2em;
+}
+
+:host ::ng-deep p-calendar.smallCal table td > span,
+:host ::ng-deep p-calendar.smallCal table td > a {
+    padding: 0.4em;
+}
+
+:host ::ng-deep p-calendar.smallCal table {
+    font-size: 0.8em;
+    margin: 0;
+}
+
+:host ::ng-deep p-calendar.smallCal table th > span {
+    color: #075088 !important;
+}
+
+:host ::ng-deep p-calendar.smallCal table td,
+:host ::ng-deep p-calendar.smallCal table td > span {
+    padding: 0 0.2em !important;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-datepicker {
+    width: 243px;
+    top: 30px !important;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-inputtext {
+    width: 105px;
+    font-size: 12px;
+    height: 25px;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-datepicker-title {
+    font-size: 0.78em;
+}
+
+:host ::ng-deep p-calendar.smallCal .ui-datepicker-title select {
+    font-size: 1em;
+    margin: 0.125em 0;
+    margin-top: 0.125em;
+    margin-right: 0px;
+    margin-bottom: 0.125em;
+    vertical-align: middle;
+    background-color: white;
+    border: 1px solid #959595;
+    border-radius: 4px;
+    font-family: san-serif;
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+:host
+    ::ng-deep
+    p-calendar#fechaDocumento
+    > span
+    > div
+    > div
+    > div
+    > table
+    td
+    > a {
+    padding: 0.1em;
+}
+
+:host ::ng-deep p-calendar#fechaDocumento .ui-datepicker-title select > option {
+    font-family: "Open Sans", "Helvetica Neue", sans-serif;
+}

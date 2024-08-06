@@ -185,14 +185,17 @@
     <Compile Include="Helpers\GenericCopier.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
+    <Compile Include="Interfaces\IEmailCertificationService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IEmailResiduosService.cs" />
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
     <Compile Include="Interfaces\IOrdenResiduosService.cs" />
     <Compile Include="Interfaces\IEntradaServicioService.cs" />
+    <Compile Include="Interfaces\IReporteESService.cs" />
     <Compile Include="Interfaces\IRYDService.cs" />
     <Compile Include="Interfaces\IRYDMantenimientoService.cs" />
     <Compile Include="Interfaces\IPDFService.cs" />
@@ -247,10 +250,12 @@
     <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdjuntosCertificacionesService.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ComunicacionService.cs" />
@@ -300,6 +305,7 @@
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
+    <Compile Include="Services\ReporteESService.cs" />
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />
@@ -347,7 +353,7 @@
       <Name>SustitucionMOAValidator</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAWS\SustitucionMOAWS.csproj">
-      <Project>{CB32F9E6-ED7B-4623-B624-0EA3717D06C2}</Project>
+      <Project>{cb32f9e6-ed7b-4623-b624-0ea3717d06c2}</Project>
       <Name>SustitucionMOAWS</Name>
     </ProjectReference>
   </ItemGroup>

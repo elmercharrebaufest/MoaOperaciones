@@ -31,7 +31,7 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<OrdenCompraDto> Request(OrderParamsDto parametros)
+        public List<OrdenCompraDto> Request(OrderParamsDto parametros, bool usuarioSolp = false)
         {
             string fechaInicio = parametros.fechaInicio;
             string vendedor = parametros.vendedor;
@@ -45,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
             BAPIEKKOL[] cabeceras = new BAPIEKKOL[] { };
             BAPIEKPOC[] detalle = new BAPIEKPOC[] { };
             BAPIRETURN[] bapiReturn = new BAPIRETURN[] { };
-            service.BAPI_PO_GETITEMS("", "", "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
+            service.BAPI_PO_GETITEMS("", "", usuarioSolp ? "X" : "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
                                      "", "", "", OC, "", "", "", new BAPIMGVMATNR(), "", "",
                                      "", "", vendedor, "X",
                                      ref cabeceras,

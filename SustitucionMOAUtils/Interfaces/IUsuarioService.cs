@@ -1,7 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.Raw;
 using SustitucionMOAModel.Models.WSMapMOA.Login;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario;
 using SustitucionMOAModel.Models.WSMapMOA.Usuario.Perfil;
@@ -19,10 +18,11 @@ namespace SustitucionMOAUtils.Interfaces
         Rol ObtenerRolPorCodigo(string codigo);
         List<RolDropdownDto> GetRoles();
         byte[] getDocumento(string nombre);
-        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap);
+        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta);
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
+        UsuarioReasignacionDto GetPeriodoReasignacion(int idUsuario);
         List<Rol> GetRolesApiKey(string apikey);
         void SeccionVisitada(string mailUsuario, string seccion);
         ProveedorDto GetProveedorPorCodigo(string codigo, string mailUsuario);
@@ -35,7 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TipoUsuarioDto> GetTipoUsuario();
         List<string> ValidarMailUsuario(UsuarioModificacionDto usuarioModificacionDto);
         string ModificarUsuario(UsuarioModificacionDto usuarioModificacionDto);
-        List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId);
+        List<ProveedorAuditoriaDto> GetProveedorAuditoriaPorUsuario(int usuarioId); 
         IEnumerable<IGrouping<int, UsuarioDto>> ListarUsuarioCreadorSolp();
         ProveedorDto TraerProveedorEnSAP(string codigoProveedor, string codigoCorredor);
         string EliminarCuitNoHabilitado(int proveedorId, string mailUsuarioSesion);
