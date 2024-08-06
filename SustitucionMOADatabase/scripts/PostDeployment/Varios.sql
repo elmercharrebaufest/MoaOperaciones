@@ -222,3 +222,8 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'FechaLimiteCampos
 BEGIN
 	insert into Configuracion values ('FechaLimiteCamposSustentables','2024-02-22 00:00')
 END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'EnvioMailLiberacionOC')
+BEGIN
+	insert into Configuracion values ('EnvioMailLiberacionOC','1')
+END
