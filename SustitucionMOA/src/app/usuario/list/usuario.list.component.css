@@ -28,3 +28,43 @@
     padding: 0 2em;
 }
 
+  .error-border {
+    border: 2px solid red;
+    box-shadow: 0 0 5px red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+  
+/* Lista de sugerencias */
+.suggestion-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  /* Elementos de la lista de sugerencias */
+  .suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #007ad9;
+    color: white;
+  }
+  
+  .invalid-input {
+    border: 1px solid red;
+  }
+  
+  
