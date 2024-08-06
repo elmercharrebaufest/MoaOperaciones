@@ -170,7 +170,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var elemento in itemsEntrySheetService)
             {
                 var item = new EntradaServicioDetalleDto();
-
+                item.OrdenCompra = cabecera.PO_NUMBER;
                 item.NumeroLinea = elemento.PLN_LINE;
                 item.PLN_PCKG = elemento.PLN_PCKG;
                 item.CodigoServicio = elemento.SERVICE;
@@ -178,6 +178,7 @@ namespace SustitucionMOAWS.WSConsumers
                 item.Cantidad = elemento.QUANTITY.ToString();
                 item.UM = elemento.BASE_UOM;
                 item.Monto = elemento.NET_VALUE;
+                item.Ext_line = elemento.EXT_LINE;
 
                 items.Add(item);
             }

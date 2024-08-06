@@ -19,6 +19,12 @@ export class FinalizarSolpComponent implements OnInit {
     @Input()
     solpActual: Solp;
 
+    @Input()
+    selectUsuarioCompras: any;
+
+    @Input()
+    usuarioComprasList: any[] = [];
+
     @Output() cancelarFinalizarEmitter = new EventEmitter();
 
     @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();

@@ -1,0 +1,353 @@
+#solicitudes-estado-proveedor {
+  margin: 0;
+  padding-top: 2rem;
+  padding-right: 1.2rem;
+}
+
+#solicitudes-estado-proveedor.content-wraper {
+    margin-top: 0;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.fullscreen {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
+.content-wraper {
+    overflow: hidden;
+}
+
+.fullscreen.show-scrollbar {
+    display: block; /* Forzar la barra de desplazamiento visible */
+}
+
+i#btn-fullscreen,
+i#btn-table,
+i#btn-filtros {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    cursor: pointer;
+}
+
+.i-disabled {
+    pointer-events: none;
+    color: #959595;
+}
+
+i#btn-fullscreen {
+    background-color: transparent;
+    cursor: pointer;
+    transform: rotate(-90deg);
+}
+
+.ingresante {
+  display: inline-block;
+}
+
+.ingresante span {
+  color: blue;
+}
+
+.filtro-oc-input {
+  margin-left: .4em;
+  height: 1.8em;
+  position: relative;
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
+.boton-enviar-motivo {
+  padding: 10px;
+  justify-content: center;
+  display: flex;
+}
+
+/* FILTERS */
+.filters-row {
+  padding: 4px 8px;
+  border-top: 0.5px solid #959595;
+  border-left: 0.5px solid #959595;
+  border-right: 0.5px solid #959595;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  width: max-content;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filters-row > div + div:before {
+  content: "|";
+  padding: .6em;
+  color: #959595;
+  position: inherit;
+  bottom: .3em;
+  font-size: 1.3em;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown {
+  height: 1.8em;
+  width: 17em !important;
+  position: relative;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown > .ui-dropdown-label {
+  font-size: .9em !important;
+  font-family: "Roboto Condensed", Arial, sans-serif !important;
+  padding: .2em .4em;
+  margin-bottom: 0;
+}
+
+:host ::ng-deep .filtro-estado-certificacion > p-dropdown#select-estado-certificacion > .ui-dropdown.ui-dropdown-open > .ui-dropdown-panel > .ui-dropdown-items-wrapper > .ui-dropdown-items {
+  font-size: .9em !important;
+}
+
+/* TABLE */
+.container-table {
+  margin-top: 1em;
+}
+
+
+.aprobada{
+  width: fit-content;
+  background-color: green;
+  color: white;
+  padding: .2em 1em;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.pendiente-aprobacion{
+  width: fit-content;
+  background-color: #ff701a;
+  color: white;
+  padding: .2em 1em;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.rechazada {
+  width: fit-content;
+  background-color: #b90d0d;
+  color: white;
+  padding: .2em 1em;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+.anulada {
+  width: fit-content;
+  background-color: #6d6b6b;
+  color: white;
+  padding: .2em 1em;
+  text-align: center;
+  align-content: center;
+  display: grid;
+  font-weight: bold;
+  margin: auto;
+}
+
+/* TABLE */
+.emptyData {
+  text-align: center !important;
+}
+
+::ng-deep #solicitudes-estado-proveedor .ui-table-wrapper {
+  overflow: auto;
+}
+
+::ng-deep #solicitudes-estado-proveedor .ui-table table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto;
+}
+
+::ng-deep #solicitudes-estado-proveedor table th {
+  word-wrap: normal;
+  white-space: nowrap;
+  width: max-content;
+  color: #fff !important;
+  text-align: center;
+}
+
+:host ::ng-deep #solicitudes-estado-proveedor .ui-table .ui-table-thead > tr > th {
+  padding: 0.3em 1em !important;
+  font-size: 1.1rem;
+}
+
+:host ::ng-deep #solicitudes-estado-proveedor .ui-table tr {
+  width: max-content;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level1 th,
+::ng-deep #solicitudes-estado-proveedor .ui-sortable-column.ui-state-highlight {
+  background-color: #666 !important;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th {
+  background-color: #075088 !important;
+  font-size: 1.1rem !important;
+  white-space: wrap;
+  max-width: 6em;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.anterior {
+  border-color: white;
+  background-color: #F9C834 !important;
+  color: #333 !important;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.acertificar {
+  border-color: white;
+  background-color: #2269c4 !important;
+  color: #fff;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 th.acumulado {
+  border-color: white;
+  background-color: #00B050 !important;
+  color: #fff;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 td.descripcion {
+  max-width: 10em;
+  white-space: wrap;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level1 tr th:first-child {
+  min-width: 4rem;
+}
+
+::ng-deep #solicitudes-estado-proveedor table td {
+  text-align: left;
+  font-size: 1.1rem;
+}
+
+::ng-deep #solicitudes-estado-proveedor table td:first-child {
+  max-width: 0;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level2 tr td:first-child {
+  width: 8%;
+}
+
+::ng-deep #solicitudes-estado-proveedor .level1 th:first-child {
+  max-width: 6rem;
+}
+
+::ng-deep #solicitudes-estado-proveedor i.ui-sortable-column-icon {
+  color: white;
+  font-size: 1.3rem;
+  padding-left: .8rem;
+}
+
+.btn {
+  width: 30px !important;
+  border: none;
+  margin: 0.3rem;
+  transition: background 0.2s linear 0.1s, color 0.2s linear 0s;
+}
+
+  .btn.accept-btn {
+    background-color: #0b880b !important;
+    color: #fff;
+  }
+
+  .btn.reject-btn {
+    background-color: #e33030 !important;
+    color: #fff;
+  }
+
+  td.aprobador {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-all;
+    white-space: nowrap;
+    max-width: 12em;
+  }
+
+  td.aprobador:hover {
+    overflow: visible;
+    white-space: normal;
+    height: auto;
+  }
+
+  td:has(> div.ingresante) {
+    max-width: 12em;
+    overflow: hidden;
+  }
+
+.ingresante > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 11em;
+  display: block;
+}
+
+.ingresante:hover > span {
+  overflow: visible;
+  white-space: normal;
+  word-break: break-all;
+  height: auto;
+}
+
+td.anulador {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+  white-space: nowrap;
+  max-width: 12em;
+}
+
+td.anulador:hover {
+  overflow: visible;
+  white-space: normal !important;
+  word-break: break-all;
+  height: auto;
+}
+
+  /* Rules here apply to devices from 1280px and up */
+  @media (min-width: 1279px) {
+    ::ng-deep #solicitudes-estado-proveedor .ui-table tr th:first-child {
+      font-size: 1.3rem !important;
+      min-width: 4rem;
+    }
+  }
+
+  .loader {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    margin: auto;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }

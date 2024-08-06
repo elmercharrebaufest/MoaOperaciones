@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Serialization;
-using SustitucionMOAModel.Enums;
+﻿using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -37,6 +36,9 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
+
+        [InverseProperty("Usuarios")]
+        public virtual ICollection<Area> Areas { get; set; }
 
         public Rol ObtenerRolPrincipal()
         {
@@ -77,7 +79,7 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id);
+                return Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
             }
             catch
             {
@@ -105,12 +107,12 @@ namespace SustitucionMOAModel.Entities
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor
-            if (Roles.Any(r => r.Codigo == "ADM"))
+            if (Roles.Where(r => r.Codigo == "ADM").Any())
             {
                 return true;
             }
 
-            return Proveedores.Any(p => p.CodigoProveedor == codigoProveedor);
+            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
         }
 
         public string ObtenerRazonSocial()
@@ -205,6 +207,15 @@ namespace SustitucionMOAModel.Entities
             return TieneRol(RolEnum.Administracion) || TieneRol(RolEnum.Todos);
         }
 
+
+        [Obsolete("Reemplazar por método TienePermiso(Permiso permiso)", false)]
+        public virtual bool TienePermiso(string permiso)
+        {
+            var permisosUsuario = ObtenerPermisos();
+
+            return permisosUsuario.Contains(permiso);
+        }
+
         public virtual bool TienePermiso(PermisoEnum permiso)
         {
             if (permisosDelUsuario == null)
@@ -212,6 +223,12 @@ namespace SustitucionMOAModel.Entities
                 CargarPermisosUsuario();
             }
             return permisosDelUsuario.Contains(permiso);
+        }
+
+        [Obsolete("Reemplazar por método TieneRol(RolEnum rol)", false)]
+        public virtual bool TieneRol(string codigo)
+        {
+            return Roles.Any(r => r.Codigo == codigo);
         }
 
         public bool TieneRol(RolEnum rol)
@@ -353,6 +370,10 @@ namespace SustitucionMOAModel.Entities
                 case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
+
+                case "ADMIN CONTABILIZACION MES ANTERIOR": return PermisoEnum.AdminContabilizacionMesAnterior;
+
+
                 case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
                 case "VER REPORTE OC": return PermisoEnum.ReporteOC;
                 case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
@@ -441,6 +462,7 @@ namespace SustitucionMOAModel.Entities
                 case "RESIDUOS": return RolEnum.Residuos;
                 case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
                 case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
+                case "ADMIN CONTABILIZACION MES ANTERIOR": return RolEnum.AdminContabilizacionMesAnterior;
                 case "AUDITOR COMPRAS": return RolEnum.AuditorCompras;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;

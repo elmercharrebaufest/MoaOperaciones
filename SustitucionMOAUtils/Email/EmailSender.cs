@@ -10,6 +10,10 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
+using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -132,7 +136,7 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
+                //Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar","", ConfigurationManager.AppSettings["HostEmail"]),
                 Host = EmailConfig.getEmailHost()
             };
             return client;
@@ -301,13 +305,14 @@ namespace SustitucionMOAUtils.Email
 
                 oMensaje.BodyEncoding = Encoding.UTF8;
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+
                 if (emailSenderData.Archivo != null)
                 {
-                    using (var stream = new MemoryStream(emailSenderData.Archivo))
-                    {
-                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
-                        oMensaje.Attachments.Add(attachment);
-                    }
+                    var stream = new MemoryStream(emailSenderData.Archivo);
+                    stream.Position = 0;
+                    Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
+                    oMensaje.Attachments.Add(attachment);
+                    
                 }
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
@@ -315,6 +320,14 @@ namespace SustitucionMOAUtils.Email
             }
             catch (Exception ex)
             {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+
                 throw ex;
             }
         }
@@ -476,13 +489,22 @@ namespace SustitucionMOAUtils.Email
                 }
 
                 SmtpClient oCliente = GetSmtpClient();
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
+
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);         
 
                 // Enviar el correo de forma asíncrona
                 await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+
                 throw;
             }
         }

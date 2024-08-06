@@ -1448,6 +1448,141 @@ namespace SustitucionMOAUtils.Services
             return solpDevuelta;
         }
 
+        public SolpESDto TraerSolpPorNumero(string nroSolp)
+        {
+            var includes = new List<Expression<Func<Solp, object>>>();
+            includes.Add(u => u.Pliego);
+            includes.Add(u => u.Pliego.VisitasMasivas);
+            includes.Add(u => u.Pliego.Archivos);
+            includes.Add(u => u.Posiciones);
+            includes.Add(u => u.Posiciones.Select(y => y.Subposiciones));
+            includes.Add(u => u.UsuarioCreacion);
+            includes.Add(u => u.UsuarioModificacion);
+
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp,0,null,DirOrden.Asc, includes).ToList().FirstOrDefault();
+
+            if (solp == null)
+            {
+                throw new InfoCustomException("No se encontró la SOLP.");
+            }
+
+            //if (!String.IsNullOrEmpty(x.NroSolp))
+            //{
+            //    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
+            //    {
+            //        FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
+            //        FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
+            //        CreadoPorUsuarios = new List<string>(),
+            //        NumeroSolp = x.NroSolp
+            //    };
+
+            //    //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+
+            //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
+            //}
+
+            var solpDevuelta = new SolpESDto()
+            {
+                UsuarioActual = solp.UsuarioCreacion != null ? new UsuarioDto(solp.UsuarioCreacion) : new UsuarioDto(),
+                Id = solp.Id,
+                NroSolp = solp.NroSolp,
+                FechaCreacion = solp.FechaCreacion,
+                EstadoDocumento = new TablaEstadoDto(solp.EstadoDocumento),
+                EstadoSolpSap = solp.EstadoSolpSap != null ? new TablaSapDto(solp.EstadoSolpSap) : new TablaSapDto(),
+                TipoSolp = solp.TipoSolp != null ? new TablaGeneralDto(solp.TipoSolp) : new TablaGeneralDto(),
+                VincularPliego = !solp.Pliego_Id.HasValue,
+                UsuarioCompras = solp.UsuarioCompras != null ? new UsuarioComprasDto(solp.UsuarioCompras) : new UsuarioComprasDto(),
+                TipoSolpSap = solp.TipoSolpSap,
+                NombreDeObra = solp.Pliego.NombreObra,
+                FiscalContrato = solp.Pliego.FiscalContrato,
+                Telefono = solp.Pliego.Telefono,
+                Email = solp.Pliego.Email,
+                FechaHoraEntrega = solp.Pliego.FechaHoraEntrega,
+                SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
+                SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
+                VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraESDto(a)).ToList(),
+                TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
+                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
+                TieneObradores = solp.Pliego.TieneObradores ?? false,
+                TieneMedioElevacion = solp.Pliego.TieneMedioElevacion ?? false,
+                TieneAndamio = solp.Pliego.TieneAndamio ?? false,
+                TieneTecnicoSeguridad = solp.Pliego.TieneTecnicoSeguridad ?? false,
+                TieneGrillaPersonal = solp.Pliego.TieneGrillaPersonal ?? false,
+                TieneFabricacionTallerExterno = solp.Pliego.TieneFabricacionTallerExterno ?? false,
+                TieneDescripcionTecnica = solp.Pliego.TieneDescripcionTecnica ?? false,
+                TieneDocumentacionTecnica = solp.Pliego.TieneDocumentacionTecnica ?? false,
+                FechaHoraLimiteConsulta = solp.Pliego.FechaHoraLimiteConsulta,
+                ObservacionesGeneracion = solp.Pliego.ObservacionesGeneracion,
+                //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
+                DiasEjecucion = solp.Pliego.DiasEjecucion,
+                ObservacionesCotizacion = solp.Pliego.ObservacionesCotizacion,
+                JornadaLaboral = string.IsNullOrEmpty(solp.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
+                                solp.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
+                JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
+                JornadaLaboralHasta = solp.Pliego.JornadaLaboralHorasHasta,
+                ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
+                //ProveedorAsignadoId = solp.ProveedorAsignado_Id,
+                TrabajoYaHecho = solp.TrabajoYaHecho,
+                Adicional = solp.Adicional,
+                Urgencia = solp.Urgencia,
+                NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
+               // DeshabilitarAdicional = solp.Adjudicacions.Any(),
+
+                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+
+                EspecificacionesTecnicas = solp.Pliego.Archivos.FirstOrDefault(a => a.FileKey == FileKeys.EspecificacionesTecnicasPliego)?.Ruta,
+
+                TieneCondicionesGenerales = solp.Pliego.TieneCondicionesGenerales ?? true,
+
+                RevisadoPor = solp.Pliego.RevisadoPor,
+
+                //EstadoSolpSapId = solp.EstadoSolpSap_Id,
+                //EstadoDocumentoId = solp.EstadoDocumento_Id,
+
+                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || x.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica) ? 
+                //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
+                //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
+
+                Posiciones = solp.Posiciones.Select(p => new SolpPosicionESDto(p)).ToList(),
+                PasoCompletado = solp.PasoCompletado,
+                EstadoPasos = solp.EstadoPasos,
+                EmailLinkToken = solp.EmailLinkToken
+            };
+            if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
+            {
+                if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
+                    solpDevuelta.JornadaLaboral = new List<DayOfWeek> { DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday };
+
+                if (solpDevuelta.JornadaLaboralDesde == null)
+                    solpDevuelta.JornadaLaboralDesde = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 7, 0, 0).ToLocalTime();
+
+                if (solpDevuelta.JornadaLaboralHasta == null)
+                    solpDevuelta.JornadaLaboralHasta = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 16, 0, 0).ToLocalTime();
+            }
+            if (solpDevuelta.Adicional == true)
+            {
+                var ordenDeCompraSAPDto = ObtenerOrdenDeCompra(solpDevuelta.NroOrdenDeCompraAdicional);
+                solpDevuelta.ProveedorIdAdicional = ordenDeCompraSAPDto.Cabecera.Usuario_Id;
+                solpDevuelta.ProveedorRazonSocialAdicional = ordenDeCompraSAPDto.Cabecera.RazonSocialProveedor;
+                solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
+                solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
+                solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
+            }
+
+            //if (solpDevuelta.ProveedorAsignadoId != null)
+            //{
+            //    var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignadoId);
+            //    solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
+            //}
+
+            return solpDevuelta;
+        }
+
         public string BorrarSolp(int idSolp)
         {
             var solpABorrar = repositorio.Obtener<Solp>(x => x.Id == idSolp);
@@ -2722,6 +2857,7 @@ namespace SustitucionMOAUtils.Services
                                 CompletarTipoImputacion(ordenes, centrosDeCosto, centrosDeBeneficio, tipoImputacion, tipoImputacionPosicion, posicionEntity);
                             }
 
+                            
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
 
@@ -2903,7 +3039,6 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-
         private static void CompletarTipoImputacion(List<TablaSap> ordenes, List<TablaSap> centrosDeCosto, List<TablaSap> centrosDeBeneficio, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion, SustitucionMOAModel.Entities.TipoImputacionSAP tipoImputacionPosicion, SolpPosicion posicionEntity)
         {
             switch (tipoImputacionPosicion.Descripcion)
@@ -3151,6 +3286,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
+
 
         private void ActualizarTieneModificaciones(Solp solp)
         {

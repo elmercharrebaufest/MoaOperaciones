@@ -335,6 +335,8 @@
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.html" />
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.css" />
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
+    <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.css" />
+    <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.html" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
@@ -383,6 +385,8 @@
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-servicio\cotizacion-servicio.component.html" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.css" />
+    <Content Include="src\app\compras\dashboard-proveedor\filtro-dashboard-proveedor\filtro-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\listado-dashboard-proveedor\listado-dashboard-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard\dashboard.component.css" />
@@ -417,10 +421,10 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
-    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
-    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
+    <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
@@ -439,8 +443,18 @@
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.html" />
+    <Content Include="src\app\usuario\list\usuario.list.component.css" />
+    <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.css" />
+    <Content Include="src\app\usuario\modificar-datos\modificar-datos.component.html" />
+    <Content Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.css" />
+    <Content Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.html" />
+    <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.css" />
+    <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.html" />
+    <Content Include="src\app\vendedor\vendedor_status.component.css" />
+    <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
+    <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
+    <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
-    <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
@@ -1055,6 +1069,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
+    <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NuevaConsultaInterna.html" />
     <Content Include="Template\ReporteAltaES.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
@@ -1112,9 +1127,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\Startup.Hangfire.cs" />
-    <Compile Include="Controllers\ArchivoBoletoController.cs" />
+    <Compile Include="Controllers\AdjuntosCertificacionesController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\AprobacionExternaController.cs" />
+    <Compile Include="Controllers\ArchivoBoletoController.cs" />
     <Compile Include="Controllers\EntradaServicioController.cs" />
+    <Compile Include="Controllers\LoggerController.cs" />
+    <Compile Include="Controllers\OrdenResiduosController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ComunicacionController.cs" />
     <Compile Include="Controllers\EcheqController.cs" />
@@ -1135,7 +1154,6 @@
     <Compile Include="Controllers\DataAgroController.cs" />
     <Compile Include="Controllers\GestionImpuestosController.cs" />
     <Compile Include="Controllers\LocalidadController.cs" />
-    <Compile Include="Controllers\LoggerController.cs" />
     <Compile Include="Controllers\LogPesificacionController.cs" />
     <Compile Include="Controllers\DocumentosController.cs" />
     <Compile Include="Controllers\FacturaController.cs" />
@@ -1146,7 +1164,6 @@
     <Compile Include="Controllers\NotificacionController.cs" />
     <Compile Include="Controllers\OrdenDeCargaController.cs" />
     <Compile Include="Controllers\OrdenDeCargaFasonController.cs" />
-    <Compile Include="Controllers\OrdenResiduosController.cs" />
     <Compile Include="Controllers\PagoController.cs" />
     <Compile Include="Controllers\PDFController.cs" />
     <Compile Include="Controllers\PesificacionController.cs" />
@@ -1163,12 +1180,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJob.cs" />
-    <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\ActualizarEstadoSolpSapJob.cs" />
-    <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
+    <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
+    <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
@@ -1361,8 +1378,12 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
     <TypeScriptCompile Include="src\app\modelos\adjudicacion.ts" />
+    <TypeScriptCompile Include="src\app\modelos\area.ts" />
     <TypeScriptCompile Include="src\app\modelos\circular-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\cotizacionDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\CreateEntradaServicioDto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\Report.ts" />
+    <TypeScriptCompile Include="src\app\modelos\EntradaServicios\EntrySheet.ts" />
     <TypeScriptCompile Include="src\app\modelos\legajoDto.ts" />
     <TypeScriptCompile Include="src\app\modelos\legajoExternoDto.ts" />
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
@@ -1449,6 +1470,9 @@
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.component.ts" />
     <TypeScriptCompile Include="src\app\ticket-pesada\ticket-pesada.service.ts" />
     <TypeScriptCompile Include="src\app\usuario\alta-empresa-no-granos\usuario.alta-empresa-no-granos.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\modificar-datos\modificar-datos.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\usuario-auditoria-list\usuario-auditoria-list.component.ts" />
+    <TypeScriptCompile Include="src\app\usuario\ver-vendedores\ver-vendedores.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.spec.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\alta\alta.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\declaracion-conformidad\declaracion-conformidad.component.spec.ts" />
@@ -1622,6 +1646,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="dist\assets\css\" />
     <Folder Include="src\app\echeq\gestion\" />
+    <Folder Include="Views\AdjuntosCertificaciones\" />
     <Folder Include="Views\Default\" />
     <Folder Include="Views\Documentos\" />
     <Folder Include="Views\Facturado\" />
@@ -1650,7 +1675,7 @@
       <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
-      <Project>{DA0A7852-EA57-4359-BA7C-B8BABDEDBD42}</Project>
+      <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOARepositorio\SustitucionMOARepositorio.csproj">

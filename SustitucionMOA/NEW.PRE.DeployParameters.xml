@@ -65,7 +65,7 @@
   
   <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
-	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
+  <setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
 
 	<!--Google Drive Campo Sustentable -->
 	<setParameter name="DriveCampoSustentablesApplicationName Config" value="cargaInfoCCSS" />

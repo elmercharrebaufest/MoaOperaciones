@@ -214,7 +214,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","");
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -280,7 +280,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","");
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 

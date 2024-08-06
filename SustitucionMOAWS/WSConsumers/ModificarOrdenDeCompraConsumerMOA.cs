@@ -660,6 +660,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         public class ModificarPedidoSAP
         {
+            public string NRO_SOLP { get; set; }
             public string MEMORY_COMPLETE { get; set; }
             public string MEMORY_UNCOMPLETE { get; set; }
             public string NO_AUTHORITY { get; set; }

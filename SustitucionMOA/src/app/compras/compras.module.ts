@@ -18,15 +18,15 @@ import { ToastModule } from 'primeng/toast';
 import { ChipsModule } from 'primeng/chips';
 import { TableModule } from 'primeng/table';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, SortEvent } from 'primeng/api';
+import { ConfirmationService, MessageService, SortEvent } from 'primeng/api';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { OverlayPanelModule } from 'primeng/overlaypanel';
 import { PanelModule } from 'primeng/panel';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { TabMenuModule } from 'primeng/tabmenu';
 import { QuillModule } from 'ngx-quill'
-import {CardModule} from 'primeng/card';
-import {CarouselModule} from 'primeng/carousel';
+import { CardModule } from 'primeng/card';
+import { CarouselModule } from 'primeng/carousel';
 
 
 import { SharedModule } from '../common/shared.module';
@@ -96,8 +96,21 @@ import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-serv
 import { AdjuntosSolpComponent } from './agrupar-po-th/adjuntos-solp/adjuntos-solp.component';
 
 
+import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
+import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones-proveedor/listado-estado-certificaciones-proveedor.component';
+import { ModalAltaEntradaDeServicioProveedorComponent } from "./dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio-proveedor/modal-alta-entrada-de-servicio-proveedor.component";
+import { ButtonModule } from 'primeng/button';
+import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
+import { CeldaEditableComponent } from './dashboard-entrada-de-servicio/components/celda-editable/celda-editable.component';
+import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/components/spinner-celda/spinner-casilla.component';
+import { AuxPannelComponent } from './dashboard-entrada-de-servicio/components/aux-pannel/aux-pannel.component';
+import { ModalAprobacionComponent } from './dashboard-entrada-de-servicio/components/modal-aprobacion/modal-aprobacion.component';
+import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/components/recalculando-spinner/recalculando-spinner.component';
+import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/file-modal.component';
+
 @NgModule({
     imports: [
+        ButtonModule,
         CommonModule,
         ComprasRoutingModule,
         FormsModule,
@@ -182,17 +195,28 @@ import { AdjuntosSolpComponent } from './agrupar-po-th/adjuntos-solp/adjuntos-so
         CotizacionHistorialComponent,
         CrearPoMultipleComponent,
         ListadoDashboardCertificacionDeServiciosComponent,
+        ListadoDashboardCertificacionDeServiciosProveedoresComponent,
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
+        CustomDecimalPipe,
+        ListadoEstadoCertificacionesProveedorComponent,
         ModalAltaEntradaDeServicioComponent,
         VisualizarMovimientoComponent,
         AgruparPoThComponent,
+        ModalAltaEntradaDeServicioProveedorComponent,
+        CeldaEditableComponent,
+        SpinnerCeldaComponent,
+        ModalAprobacionComponent,
+        AuxPannelComponent,
+        RecalculandoSpinnerComponent,
+        FileModalComponent,
         AdjuntosSolpComponent
     ],
     providers: [
         ComprasService,
         ValidadorPasoSolpService,
-        ConfirmationService
+        ConfirmationService,
+        MessageService
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })

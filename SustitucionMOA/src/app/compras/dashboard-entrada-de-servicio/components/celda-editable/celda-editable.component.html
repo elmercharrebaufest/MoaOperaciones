@@ -1,0 +1,97 @@
+<ng-container *ngIf="!procesando">
+    <ng-container *ngIf="!editarInfo">
+        {{ value | defaultData }}
+        <button
+            class="edit"
+            type="button"
+            pButton
+            icon="pi pi-pencil"
+            (click)="mostrarFormularioEditarDescricionES(editarInfo, value)"
+        ></button>
+    </ng-container>
+    <ng-container *ngIf="editarInfo">
+        <form [formGroup]="formularioActualizarInformacionIngresante">
+            <ng-container *ngIf="columnaEditar === 'Remito'">
+                <div class="input-container">
+                    <input
+                        class="info-input"
+                        formControlName="info"
+                        pInputText
+                        type="text"
+                        maxlength="13"
+                        [class.error]="formularioActualizarInformacionIngresante.invalid"
+                    />
+                    <div *ngIf="f.info.invalid" class="tooltip-content">
+                        <div *ngIf="f.info.errors.required">- Campo requerido</div>
+                        <div *ngIf="f.info.errors.pattern">- El Remito tiene que tener el patrón 1234R12345678</div>
+                        <div *ngIf="f.info.errors.maxlength">- No puede exceder 13 caracteres</div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="columnaEditar === 'DescripcionES'">
+                <div class="input-container">
+                    <input
+                        class="info-input"
+                        formControlName="info"
+                        pInputText
+                        type="text"
+                        maxlength="40"
+                        [class.error]="formularioActualizarInformacionIngresante.invalid"
+                    />
+                    <div *ngIf="f.info.invalid" class="tooltip-content">
+                        <div *ngIf="f.info.errors.required">- Campo requerido</div>
+                        <div *ngIf="f.info.errors.maxlength">- No puede exceder 40 caracteres</div>
+                        <div *ngIf="f.info.errors.pattern">- No puede contener caracteres especiales</div>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-container *ngIf="columnaEditar === 'FechaDocumento'">
+                <div class="input-container">
+                    <p-calendar
+                        [class.error]="formularioActualizarInformacionIngresante.invalid"
+                        formControlName="info"
+                        class="smallCal"
+                        id="fechaDocumento"
+                        dateFormat="dd/mm/yy"
+                        [locale]="es"
+                        [readonlyInput]="true"
+                        [monthNavigator]="true"
+                        [yearNavigator]="true"
+                        [minDate]="fechaDocMin"
+                        [maxDate]="fechaDocMax"
+                        yearRange="{{fechaDocMin.getFullYear()}}:{{fechaDocMax.getFullYear()}}"
+                        autoZIndex="true"
+                        [showIcon]="false">
+                    </p-calendar>
+                    <!-- <input
+                        formControlName="info"
+                        pInputText
+                        type="text"
+                        [class.error]="formularioActualizarInformacionIngresante.invalid"
+                    /> -->
+                    <div *ngIf="f.info.invalid" class="tooltip-content">
+                        <div *ngIf="f.info.invalid" class="error-message">- Campo requerido</div>
+                    </div>
+                </div>
+            </ng-container>
+            <button 
+                [disabled]="formularioActualizarInformacionIngresante.invalid"
+                class="aprove"
+                type="button" 
+                pButton 
+                icon="pi pi-check" 
+                (click)="actualizarInformacionIngresante()"
+            ></button>
+            <button 
+                class="reject"
+                type="button" 
+                pButton 
+                icon="pi pi-times"
+                (click)="mostrarFormularioEditarDescricionES(editarInfo, value)"
+            ></button>
+        </form>
+    </ng-container>
+</ng-container>
+<ng-container *ngIf="procesando">
+    <spinner-celda></spinner-celda>
+</ng-container>

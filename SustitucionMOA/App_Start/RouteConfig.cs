@@ -54,6 +54,12 @@ namespace SustitucionMOA
                 url: "{*url}",
                 defaults: new { controller = "Home", action = "Index" }
             );
+
+            routes.MapRoute(
+               name: "AprobacionExterna",
+               url: "aprobacion-externa/{action}/{temporalId}",
+               defaults: new { controller = "AprobacionExterna", action = "Index", temporalId = UrlParameter.Optional }
+            );
         }
     }
 }

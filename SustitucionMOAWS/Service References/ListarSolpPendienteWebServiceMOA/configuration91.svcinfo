@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="rbEbUzUL28zGXwBSmWeJEOcwp4y7DI4iXKtirkHX2k4=">
+<SavedWcfConfigurationInformation xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="9.1" CheckSum="/gGOLNblZpRkRziwdogiWxq5SUpKUHMdsGciWSKmg9Y=">
   <bindingConfigurations>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding2">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding2</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -110,10 +110,10 @@
         </property>
       </properties>
     </bindingConfiguration>
-    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding1">
+    <bindingConfiguration bindingType="basicHttpBinding" name="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding3">
       <properties>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding1</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding3</serializedValue>
         </property>
         <property path="/closeTimeout" isComplexType="false" isExplicitlyDefined="true" clrType="System.TimeSpan, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -221,7 +221,7 @@
     </bindingConfiguration>
   </bindingConfigurations>
   <endpoints>
-    <endpoint name="HTTP_Port85" contract="ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding">
+    <endpoint name="HTTP_Port91" contract="ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS" bindingType="basicHttpBinding" address="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding2">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -233,7 +233,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding2</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS</serializedValue>
@@ -296,7 +296,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTP_Port85</serializedValue>
+          <serializedValue>HTTP_Port91</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />
@@ -306,7 +306,7 @@
         </property>
       </properties>
     </endpoint>
-    <endpoint name="HTTPS_Port83" contract="ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding1">
+    <endpoint name="HTTPS_Port89" contract="ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS" bindingType="basicHttpBinding" address="https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES" bindingConfiguration="SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding3">
       <properties>
         <property path="/address" isComplexType="false" isExplicitlyDefined="true" clrType="System.Uri, System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>https://gslopidevqa00.molinosagro.ad:50001/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_REQUISITION_GETITEMS&amp;interfaceNamespace=urn%3AOPERACIONES</serializedValue>
@@ -318,7 +318,7 @@
           <serializedValue>basicHttpBinding</serializedValue>
         </property>
         <property path="/bindingConfiguration" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding1</serializedValue>
+          <serializedValue>SI_MMRFC_BAPI_REQUISITION_GETITEMSBinding3</serializedValue>
         </property>
         <property path="/contract" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue>ListarSolpPendienteWebServiceMOA.SI_MMRFC_BAPI_REQUISITION_GETITEMS</serializedValue>
@@ -381,7 +381,7 @@
           <serializedValue>False</serializedValue>
         </property>
         <property path="/name" isComplexType="false" isExplicitlyDefined="true" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-          <serializedValue>HTTPS_Port83</serializedValue>
+          <serializedValue>HTTPS_Port89</serializedValue>
         </property>
         <property path="/kind" isComplexType="false" isExplicitlyDefined="false" clrType="System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
           <serializedValue />

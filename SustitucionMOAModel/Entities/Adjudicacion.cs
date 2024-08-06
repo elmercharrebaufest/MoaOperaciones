@@ -24,7 +24,7 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCreador_Id")]
         public virtual Usuario Usuario { get; set; }
-
+        
         [ForeignKey("Cotizacion_Id")]
         public virtual Cotizacion Cotizacion { get; set; }
 
@@ -34,7 +34,7 @@ namespace SustitucionMOAModel.Entities
         [ForeignKey("Moneda_Id")]
         public virtual TablaSap Moneda { get; set; }
         public DateTime? FechaLiberacionSap { get; set; }
-        
+
         [ForeignKey("RegionSap_Id")]
         public virtual RegionSap RegionSap { get; set; }
     }

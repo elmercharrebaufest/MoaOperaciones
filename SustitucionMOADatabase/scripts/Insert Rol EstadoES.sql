@@ -1,0 +1,20 @@
+﻿IF NOT EXISTS (SELECT TOP 1 1 FROM Rol WHERE Codigo = 'ALLES') 
+BEGIN
+    INSERT Rol (Codigo, Nombre, EsEditable) VALUES ('ALLES', 'VER TODOS LOS ESTADOS DE ES', 1)
+END
+GO
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM PermisoPorRol WHERE Permiso = 'VER TODOS LOS ESTADOS DE ES') 
+BEGIN
+    INSERT PermisoPorRol (Permiso) VALUES ('VER TODOS LOS ESTADOS DE ES')
+END
+GO
+
+DECLARE @IdRol INT = (SELECT TOP 1 Id FROM Rol WHERE Codigo = 'ALLES')
+DECLARE @IdPermisoPorRol INT = (SELECT TOP 1 Id FROM PermisoPorRol WHERE Permiso = 'VER TODOS LOS ESTADOS DE ES')
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM RolPermisoPorRol WHERE Rol_Id = @IdRol AND PermisoPorRol_Id = @IdPermisoPorRol) 
+BEGIN
+    INSERT RolPermisoPorRol (Rol_Id, PermisoPorRol_Id) VALUES (@IdRol, @IdPermisoPorRol)
+END
+GO

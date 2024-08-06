@@ -12,7 +12,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string LINE_NO { get; set; }
         public int PosicionId { get; set; }
         public int NumeroLinea { get; set; }
-        public int Cantidad { get; set; }
+        public double Cantidad { get; set; }
         public string Descripcion { get; set; }
         public int ServicioNumero { get; set; }
         public string UnidadMedida { get; set; }
@@ -34,5 +34,6 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public decimal PorcentajeACertificar { get; set; }
         public decimal MontoACertificar { get; set; }
         public bool isSelected { get; set; }
+        public string posicionDescripcion { get; set; }
     }
 }

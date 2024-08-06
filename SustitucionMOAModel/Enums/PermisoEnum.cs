@@ -110,7 +110,10 @@
         VerOrdenesDeCargaResiduos,
         VerOrdenesDeCargaResiduosAdmin,
         ModificarEstadoProveedor,
+
         ArchivosBoletos,
+        AdminContabilizacionMesAnterior,
+
         CertificacionDeServicios,
         ReporteOC,
         POMultiple,
