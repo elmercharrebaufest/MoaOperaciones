@@ -32,7 +32,7 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string NroOrdenCompra { get; set; }
         public string NroPosicion { get; set; }
         public decimal CantidadACertificar { get; set; }
-        public string PorcentajeACertificar { get; set; }
+        public decimal PorcentajeACertificar { get; set; }
         public decimal MontoACertificar { get; set; }
         public bool isSelected { get; set; }
         public string posicionDescripcion { get; set; }
