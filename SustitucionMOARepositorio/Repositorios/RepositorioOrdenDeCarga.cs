@@ -22,7 +22,6 @@ namespace SustitucionMOARepositorio.Repositorios
                 EstadoOrdenDeCarga.Vencida,
                 EstadoOrdenDeCarga.EntregaPendiente,
                 EstadoOrdenDeCarga.EdicionSolicitada,
-                EstadoOrdenDeCarga.AnulacionSolicitada,
                 EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
                 EstadoOrdenDeCarga.EntregaGenerada
             };

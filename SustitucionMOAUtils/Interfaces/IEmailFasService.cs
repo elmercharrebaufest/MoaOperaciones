@@ -29,8 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         void EnviarMailSolicitudEdicion(OrdenDeCarga ordenDeCarga, List<OrdenDeCargaCambiosHistorial> historialCambios);
 
-        void EnviarMailSolicitudAnulacion(OrdenDeCarga ordenDeCarga);
-
         void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes);
         void EnviarMailSolicitudAnulacionCamionEnPlanta(OrdenDeCarga orden);
         void EnviarMailSolicitudEdicionCamionEnPlanta(OrdenDeCarga orden);

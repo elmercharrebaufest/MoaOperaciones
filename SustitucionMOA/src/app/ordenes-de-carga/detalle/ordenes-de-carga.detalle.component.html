@@ -537,14 +537,6 @@
                                 <input type="button" (click)="abrirModalActivarOC()"
                                     class="btn-custom btn-add btn-grande" value="Activar OC">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="abrirModalAnular()"
-                                    class="btn-custom btn-remove btn-grande" value="Aprobar Anulacion">
-                            </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="confirmarRSA(ordenDeCarga.Id)"
-                                    class="btn-custom btn-remove btn-grande" value="Rechazar Anulacion">
-                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
                                 <input type="button" (click)="confirmarSA(ordenDeCarga.Id)"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">

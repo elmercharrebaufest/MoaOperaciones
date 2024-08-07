@@ -49,7 +49,6 @@ namespace SustitucionMOAUtils.Services
             EstadoOrdenDeCarga.Anulada,
             EstadoOrdenDeCarga.Entregada,
             EstadoOrdenDeCarga.AnuladaPorVencimiento,
-            EstadoOrdenDeCarga.AnulacionSolicitada,
             EstadoOrdenDeCarga.ErrorDeCarga
         };
 
@@ -647,7 +646,6 @@ namespace SustitucionMOAUtils.Services
             var estadosPuedeAnular = new List<EstadoOrdenDeCarga>
             {
                 EstadoOrdenDeCarga.Pendiente,
-                EstadoOrdenDeCarga.AnulacionSolicitada,
                 EstadoOrdenDeCarga.Confirmado,
                 EstadoOrdenDeCarga.ContratoVencido,
                 EstadoOrdenDeCarga.EntregaGenerada,
@@ -687,71 +685,6 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.OrdenDeCargaAnulada;
-        }
-
-        public string SolicitarAnulacionOrden(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                {
-                    Id = 0,
-                    Antes = orden.Estado.ToFriendlyString(),
-                    Despues = EstadoOrdenDeCarga.AnulacionSolicitada.ToFriendlyString(),
-                    NombreColumnaCambio = "estado",
-                    FechaCambio = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    OrdenDeCarga_Id = orden.Id
-                };
-                repositorio.Agregar(ordenHistorial);
-                orden.Estado = EstadoOrdenDeCarga.AnulacionSolicitada;
-                repositorio.GuardarCambios();
-                NotificarSolicitudAnulacion(orden);
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public string RechazarSolicitudAnulacion(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-
-                var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
-                                                .OrderByDescending(x => x.FechaCambio)
-                                                .Take(1)
-                                                .FirstOrDefault().Antes;
-
-                var estadoAnteriorDespues = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
-                                                .OrderByDescending(x => x.FechaCambio)
-                                                .Take(1)
-                                                .FirstOrDefault().Despues;
-
-                orden.HistorialCambios.Add(new OrdenDeCargaCambiosHistorial
-                {
-                    Antes = estadoAnteriorDespues,
-                    Despues = estadoAnterior,
-                    FechaCambio = DateTime.Now,
-                    NombreColumnaCambio = "estado",
-                    Usuario_Id = usuario.Id
-                });
-                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
-                repositorio.GuardarCambios();
-
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
         }
 
         public string EdicionFinalizada(int ordenId, string mailUsuario)
@@ -2578,7 +2511,6 @@ namespace SustitucionMOAUtils.Services
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.Entregada);
-                    estadosListarInternos.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ContratoVencido);
@@ -2620,7 +2552,6 @@ namespace SustitucionMOAUtils.Services
                     estadosListarInternos.Add(EstadoOrdenDeCarga.AnuladaPorVencimiento);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ErrorDeCarga);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionSolicitada);
-                    estadosListarInternos.Add(EstadoOrdenDeCarga.AnulacionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ContratoVencido);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.SinEnviarASAP);
@@ -2641,7 +2572,6 @@ namespace SustitucionMOAUtils.Services
                     EstadoOrdenDeCarga.EntregaPendiente,
                     EstadoOrdenDeCarga.EntregaGenerada,
                     EstadoOrdenDeCarga.EdicionSolicitada,
-                    EstadoOrdenDeCarga.AnulacionSolicitada,
                     EstadoOrdenDeCarga.ContratoVencido,
                     EstadoOrdenDeCarga.EdicionRechazada,
                     EstadoOrdenDeCarga.SinEnviarASAP,
@@ -2793,18 +2723,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     throw new Exception("No se reconoce respuesta SAP (Anular Orden Carga)");
                 }
-            }
-        }
-
-        private void NotificarSolicitudAnulacion(OrdenDeCarga orden)
-        {
-            try
-            {
-                emailFasService.EnviarMailSolicitudAnulacion(orden);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"Error al enviar la notificación de solicitud de anulación de la orden {orden.Id}", ex);
             }
         }
 
