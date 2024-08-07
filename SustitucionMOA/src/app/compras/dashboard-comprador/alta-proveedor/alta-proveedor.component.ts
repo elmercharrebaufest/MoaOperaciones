@@ -43,14 +43,13 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
     super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
   }
 
-
-
   ngOnInit() {
     this.limpiarCampos();
   }
 
   altaNuevoProveedorCompras() {
     this.validarMail();
+    this.validarYCompletarCUIT()
     if(!this.visualizarAlert){
       try {
         this.blockUI.start('Cargando...');
@@ -95,6 +94,14 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
     return false; //<-- Prevent Refresh
   }
 
+  // Si el CUIT tiene menos de 11 caracteres, se completa con ceros a la izquierda
+  validarYCompletarCUIT() {
+    if (this.altaNuevoProveedor.CUIT && this.altaNuevoProveedor.CUIT.toString().length < 11) {
+      this.altaNuevoProveedor.CUIT = this.altaNuevoProveedor.CUIT.toString().padStart(11, '0') as any;
+      this.altaNuevoProveedor.EsProveedorExterior = true;
+    }
+  }
+
   salirPopupProveedor() {
     this.displayAltaProveedor = false;
     this.displayProvCreado = false;
@@ -131,5 +138,13 @@ export class AltaProveedorComponent extends ListBaseComponent implements OnInit 
   nuevoProveedor(proveedor){
     this.resultadoProveedor = { CUIT: proveedor.CUIT, Mail: proveedor.Mail, RazonSocial: proveedor.RazonSocial, Id: proveedor.Id };
   }
-  
+
+  onlyNumberKey(event: KeyboardEvent) {
+    const charCode = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+        return false;
+    }
+    return true;
+  }
 }

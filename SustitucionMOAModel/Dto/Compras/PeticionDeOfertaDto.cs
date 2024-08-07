@@ -114,6 +114,7 @@ namespace SustitucionMOAModel.Dto
         public bool ChatSinLeer { get; set; }
         public string RolUsuario { get; set; }
         public bool CondEspProveedorAsignado { get; set; }
+        public bool? RequisitoCiberseguridad { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
@@ -160,6 +161,7 @@ namespace SustitucionMOAModel.Dto
         public string THCategoria { get; set; }
         public bool? VisibleSolicitante { get; set; }
         public bool Deshabilitado { get; set; }
+        public List<MonedaTotalDto> TotalesPorMoneda { get; set; }
     }
 
     public class PeticionDeOfertaCierreDto

@@ -12,7 +12,10 @@ namespace SustitucionMOAModel.Entities
 
         public string FileKey { get; set; }
 
-        public string Ruta { get; set; }   
+        public string Ruta { get; set; }
+
+        public bool? ArchivoSap { get; set; }
+        
 
         public override bool Equals(object obj)
         {

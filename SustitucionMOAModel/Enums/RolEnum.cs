@@ -77,7 +77,8 @@
         Residuos,
         ResiduosAdmin,
         ApiOrdenesResiduos,
-        AdminContabilizacionMesAnterior
+        AdminContabilizacionMesAnterior,
+        AuditorCompras
         // Al agregar un elemento acá, se debe agregar el mapeo en: clase Usuario, método ObtenerRolEnum
     }
 }

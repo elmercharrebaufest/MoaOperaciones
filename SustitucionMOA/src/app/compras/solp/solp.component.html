@@ -35,7 +35,7 @@
                         <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es"></especificaciones>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoCotizacion" [@fadeInOut]>
-                        <cotizacion [(model)]="solpActual" [(locale)]="es"></cotizacion>
+                        <cotizacion [(model)]="solpActual" [(condEspOriginales)]="condEspOriginales" [(locale)]="es"></cotizacion>
                     </div>
                     <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></cabecera>
@@ -57,7 +57,8 @@
                          (navegarEmitter)="navegar($event)"
                          (guardarCambiosEmitter)="guardarCambios($event)"
                          (showFinalizarDialogEmitter)="showFinalizarDialog()"
-                         (previewEmitter)="preview()">
+                         (previewEmitter)="preview()"
+                         [(esAuditor)]="esAuditor">
         </stepper-actions>
 
         <!-- END form-->

@@ -13,6 +13,7 @@ import { EnumTipoImputacion } from '../../../../enum-tipo-imputacion';
 import { SubPosicionViewModel } from './sub-posicion-view-model';
 import { Solp } from '../../../solp';
 import { SolpPosicion } from '../../../solp-posicion';
+import _ from 'lodash'
 
 @Component({
     selector: 'app-tab-subposicion',
@@ -607,6 +608,19 @@ export class TabSubposicionComponent extends ListBaseComponent {
             this.eliminarSubPosicionIndividual(rowIndex);
         }
     }
+
+   duplicarSubposicion(rowIndex: any) {
+    rowIndex = Number(rowIndex); 
+    if (!isNaN(rowIndex)) { 
+        let subPosicion = this.listadoSubposiciones[rowIndex];
+        let nuevaSubPosicion = _.cloneDeep(subPosicion);
+        let maxSubPosicion = this.listadoSubposiciones.reduce((max, sp) => Math.max(max, Number(sp.subPosicion)), 0);        
+        nuevaSubPosicion.subPosicion = maxSubPosicion + 1;
+
+        this.listadoSubposiciones.push(nuevaSubPosicion);
+        this.calcularTotalSubPosicion();
+    } 
+}
 
     public get monedaPosicion(): string {
 

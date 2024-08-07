@@ -70,6 +70,7 @@
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
+    <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\Compras\ESAdjuntosDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Dto\Compras\UsuarioAreaDto.cs" />
     <Compile Include="Dto\Compras\EmailDetailCertificateDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\Compras\MonedaTotalDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />

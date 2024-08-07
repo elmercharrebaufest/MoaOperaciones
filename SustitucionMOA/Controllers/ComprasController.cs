@@ -150,7 +150,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool sap = false, bool mantenimiento = false,
+        public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nombrePedido = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool sap = false, bool mantenimiento = false,
             bool web = false, bool repoAutomatica = false, bool contratoMarco = false, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
@@ -159,7 +159,7 @@ namespace SustitucionMOA.Controllers
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 return JsonCustom(new
                 {
-                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
@@ -185,8 +185,8 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-           bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nombrePedido = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
+            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
             try
             {
@@ -197,7 +197,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido,fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
@@ -786,7 +786,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-
         [HttpPost]
         public ActionResult ListarAsociarContrato(string solpJson)
         {
@@ -1050,7 +1049,6 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
 
         [HttpPost]
         public ActionResult CrearOrdenDeCompra(string json)
@@ -2011,5 +2009,67 @@ namespace SustitucionMOA.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult ValidarPrecioCotizado(string json)
+        {
+            try
+            {
+                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+                var result = service.ValidarPrecioCotizado(adjudicacion);
+                return JsonCustom(new { data = result });
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerAdjuntosSolpAgrupar(string nroSolp)
+        {
+            try
+            {
+                return JsonCustom(new { data = service.ObtenerAdjuntosSolpAgrupar(nroSolp) });
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DesagruparPeticionDeOferta(string nroSolp, string po)
+        {
+            try
+            {
+                var result = service.DesagruparPO(nroSolp, po);
+                return JsonCustom(new { data = result });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

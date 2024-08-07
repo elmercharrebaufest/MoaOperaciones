@@ -32,6 +32,7 @@ namespace SustitucionMOAModel.Dto
         public string EspecificacionesTecnicas { get; set; }
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
+        public string ObservacionesCotizacionCondEsp { get; set; }
         public List<DayOfWeek> JornadaLaboral { get; set; }
         public DateTimeOffset? JornadaLaboralDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHasta { get; set; }
@@ -118,6 +119,8 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorAsignadoRazonSocial { get; set; }
         public int? ProveedorAdicional_Id { get; set; }
         public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
+        public bool RequisitoCiberseguridad { get; set; }
+        public string CodigoProveedorSap { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -142,6 +145,7 @@ namespace SustitucionMOAModel.Dto
             TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
             TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
+            RequisitoCiberseguridad = entity.Pliego.RequisitoCiberseguridad.HasValue && entity.Pliego.RequisitoCiberseguridad.Value;
             FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
             ObservacionesGeneracion = entity.Pliego.ObservacionesGeneracion;
             JornadaLaboral = new List<DayOfWeek>();
@@ -439,7 +443,7 @@ namespace SustitucionMOAModel.Dto
 
     public class RespuestaCrearOrdenDeCompra
     {
-        public List<string> Errores { get; set; }
+        public List<string> Errores { get; set; } = new List<string>();
         public string Mensaje { get; set; }
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }

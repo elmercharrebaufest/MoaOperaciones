@@ -26,12 +26,12 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        public byte[] ObtenerAdjuntosSolpConsumer(string idArhcivo, string nombreArchivo)
+        public byte[] ObtenerAdjuntosSolpConsumer(string archivoId, string nombreArchivo)
         {
             try
             {
                 
-                byte[] file = service.SI_MMRFC_ADJUNTOS_SOLPED("", "");
+                byte[] file = service.SI_MMRFC_ADJUNTOS_SOLPED(archivoId, nombreArchivo);
 
                 return file;
             }

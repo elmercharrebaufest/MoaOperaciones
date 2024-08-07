@@ -608,8 +608,10 @@ export class AltasComponent extends BaseComponent implements OnInit {
         let archivoId: number = archivo.Id;
         let fileKey: string = archivo.FileKey
         let proveedorId: number = this.empresaSeleccionada.Id;
+        let urlApi: string = '/api/AltaEmpresaGranos/DescargarArchivo';
+        
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString() + "&url=" + urlApi.toString());
 
-        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString());
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");
         document.body.appendChild(link);

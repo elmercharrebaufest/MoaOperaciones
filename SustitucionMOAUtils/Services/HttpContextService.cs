@@ -13,12 +13,17 @@ namespace SustitucionMOAUtils.Services
 
         public string ObtenerPathLogoMail()
         {
-            return System.Web.HttpContext.Current.Server.MapPath("~/Content/Images/header/logo_.png");
+            return GetDirectory("Templates/images/logo.png");
         }
 
         public string GetDirectory(string path)
         {
             return Path.Combine(AppDomain.CurrentDomain.RelativeSearchPath, path);
+        }
+
+        public iTextSharp.text.Image ObtenerLogoImagen()
+        {
+            return iTextSharp.text.Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
         }
     }
 }

@@ -37,7 +37,6 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -52,16 +51,9 @@ using System.Reflection;
 using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Web;
-using System.Web.Security;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using Image = iTextSharp.text.Image;
-using DocumentFormat.OpenXml.Office2010.Excel;
+using SustitucionMOAModel.Dto.Compras;
 using System.Data.Entity.SqlServer;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
-using DocumentFormat.OpenXml.Drawing.Charts;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
-using Org.BouncyCastle.Crypto;
-using System.Data.Common.CommandTrees;
 
 
 namespace SustitucionMOAUtils.Services
@@ -95,11 +87,11 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA;
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
+        private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IEmailService emailService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
-
 
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
@@ -124,7 +116,8 @@ namespace SustitucionMOAUtils.Services
             IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
             IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA,
             IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA,
-            IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA)
+            IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
+            IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -154,6 +147,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerUnidadesDeMedidaConsumerMOA = obtenerUnidadesDeMedidaConsumerMOA;
             this.listarSolpPendienteConsumeMOA = listarSolpPendienteConsumeMOA;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
+            this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -290,6 +284,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
                 pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
                 pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
+                pliegoEntity.RequisitoCiberseguridad = solp.RequisitoCiberseguridad;
                 pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
                 pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
                 pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
@@ -297,6 +292,7 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
                 pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
                 pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
+                pliegoEntity.ObservacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
                 pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
                 pliegoEntity.RevisadoPor = solp.RevisadoPor;
                 if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
@@ -449,7 +445,8 @@ namespace SustitucionMOAUtils.Services
             // Comparar las posiciones
             foreach (var nuevaPosicion in solp.Posiciones)
             {
-                if (cotizaciones != null && cotizaciones.Count > 0 && revisionFinalizada) {
+                if (cotizaciones != null && cotizaciones.Count > 0 && revisionFinalizada)
+                {
 
                     if (!solpEntity.Posiciones.Any(p => p.Codigo == nuevaPosicion.Codigo) && solpLiberada)
                     {
@@ -478,7 +475,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         private Solp PosicionesEliminar(Solp solpEntity, SolpDto solp)
         {
@@ -765,6 +761,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             var filesCotizaciones = files.GetMultiple("fileCotizaciones");
+
             for (int i = 0; i < filesCotizaciones.Count; i++)
             {
                 var file = filesCotizaciones[i];
@@ -787,9 +784,33 @@ namespace SustitucionMOAUtils.Services
                 file.SaveAs(rutaArchivo);
             }
 
+            var fileCotizacionesCondEsp = files.GetMultiple("fileCotizacionesCondEsp");
+
+            for (int i = 0; i < fileCotizacionesCondEsp.Count; i++)
+            {
+                var file = fileCotizacionesCondEsp[i];
+                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
+
+                if (File.Exists(rutaArchivo))
+                {
+                    file.SaveAs(rutaArchivo);
+                    continue;
+                }
+
+                Directory.CreateDirectory(ruta);
+
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp,
+                    Ruta = rutaArchivo,
+                });
+
+                file.SaveAs(rutaArchivo);
+            }
+
             repositorio.GuardarCambios();
 
-            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(x => new ArchivoDto()
+            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(x => new ArchivoDto()
             {
                 Id = x.Id,
                 FileKey = x.FileKey,
@@ -826,7 +847,6 @@ namespace SustitucionMOAUtils.Services
             return nuevaRuta;
         }
 
-
         private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
             //variables para ver a que request accedemos
@@ -834,11 +854,23 @@ namespace SustitucionMOAUtils.Services
             //var crearSolpComsumer = crearSolp(solpEntity);
             //var modificarSolpConsumer = modificarSolp(solpEntity);
             //var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
+          
+            var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
+            resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
+            respuestaGuardarSOLP.Errores = new List<string>();
             if (string.IsNullOrEmpty(solpEntity.NroSolp))
             {
                 var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
 
-                var resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                try
+                {
+                   resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                }
+                catch (Exception e)
+                {
+                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E"});
+                }
+               
                 respuestaGuardarSOLP.Errores = new List<string>();
 
                 foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -876,14 +908,22 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 var resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
+                resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
                 if (solpEntity.TipoSolpSap != 2)
                 {
-                    var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
-                    resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
-                }
+                    try
+                    {
+                        var solpSAP = ConvertirSOLPSAP(solpEntity, postEntitySubPosicionesEliminadas);
+                        resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                    }
+                    catch (Exception e)
+                    {
+                        ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
+                        respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
+                        resultadoEditarSolp.Errores.Add(new ModificarSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
+                    }
 
-                resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
-                respuestaGuardarSOLP.Errores = new List<string>();
+                }               
 
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
@@ -1004,7 +1044,7 @@ namespace SustitucionMOAUtils.Services
             var posicionesId = solpEntity.Posiciones.Select(x => x.Id).ToList();
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(peticionPos => posicionesId.Contains(peticionPos.SolpPosicion_Id));
 
-            var peticionUsuarioId = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.PeticionDeOferta_Id ==  peticionDeOfertaId).Id;
+            var peticionUsuarioId = repositorio.Obtener<PeticionDeOfertaUsuario>(x => x.PeticionDeOferta_Id == peticionDeOfertaId).Id;
             var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticionUsuarioId);
             var cotizaciones = new List<Cotizacion> { cotizacion };
             ActualizarPosicionesDePeticionDeOferta(solpEntity, peticionDeOfertaSolpPosicion);
@@ -1027,8 +1067,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
-
 
         private void ActualizarPeticionDeOfertaAlEditarSolp(Solp solpEntity, bool actualizarEstadoCotizacion = false)
         {
@@ -1165,7 +1203,7 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<CentroDireccion>().Select(x => new CentroDireccionDto(x)).ToList();
         }
 
-        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             try
             {
@@ -1177,6 +1215,11 @@ namespace SustitucionMOAUtils.Services
                 nroSolp = nroSolp.Trim();
                 //var peticionCierre = repositorio.Listar<PeticionDeOfertaCierre, PeticionDeOfertaCierreDto>(pc => new PeticionDeOfertaCierreDto());
 
+                if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                {
+                    nroSolp = "0" + nroSolp;
+                }
+
                 Expression<Func<Solp, bool>> filtro = x => x.FechaBorrado == null; //&& x.UsuarioCreacion_Id == usuarioActual.Id;
 
                 if (usuarioActual.Permisos.Contains("VER TODAS SOLPS"))
@@ -1184,6 +1227,7 @@ namespace SustitucionMOAUtils.Services
                     filtro = (x => x.FechaBorrado == null);
                 }
 
+                string[] pedidos = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 var todasLasSolp = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
                 {
                     UsuarioActual = new UsuarioDto { Mail = x.UsuarioCreacion != null ? x.UsuarioCreacion.Mail : "" },
@@ -1206,7 +1250,7 @@ namespace SustitucionMOAUtils.Services
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
-                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp).Any(),
+                    SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any(),
                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo != rol))
                                  || x.Posiciones.Any(po => po.Peticiones
                                 .SelectMany(se => se.PeticionDeOferta.Usuarios
@@ -1219,7 +1263,7 @@ namespace SustitucionMOAUtils.Services
                     TieneMensajesChatExterno = x.Posiciones.Select(po => po.Peticiones
                                             .SelectMany(se => se.PeticionDeOferta.Usuarios
                                             .SelectMany(re => re.ChatExterno)))
-                                            .Where(chatExterno => chatExterno.Any()) // Filtrar solo colecciones no vacías
+                                            .Where(chatExterno => chatExterno.Any())
                                             .Any(),
 
 
@@ -1230,11 +1274,12 @@ namespace SustitucionMOAUtils.Services
                 (!usuarios.Any() || (x.UsuarioCreacion_Id != null && usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                 (sap == true && x.TipoSolpSap == 3 || mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
                 (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
-                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value) &&
+                (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value)
+                && (!pedidos.Any() || pedidos.All(p => x.Pliego.NombreObra.ToUpper().Contains(p.ToUpper()))) &&
                 (!contratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
                 (!centros.Any() || x.Posiciones.Any(c => centros.Contains(c.Centro_Id))) && (!grupoDeCompras.Any() || x.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                 (!claseDocumento.Any() || claseDocumento.Contains((int)x.ClaseDocumento_Id)) && (!tipoImputacion.Any() || x.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id))))); ;
+                (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))));
 
 
                 if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
@@ -1293,20 +1338,6 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("No se encontró la SOLP.");
             }
 
-            //if (!String.IsNullOrEmpty(x.NroSolp))
-            //{
-            //    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-            //    {
-            //        FechaDesde = Convert.ToDateTime(new DateTime(2010, 01, 01)),
-            //        FechaHasta = Convert.ToDateTime(DateTime.Now.Date.AddDays(1)),
-            //        CreadoPorUsuarios = new List<string>(),
-            //        NumeroSolp = x.NroSolp
-            //    };
-
-            //    //ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-
-            //    x = repositorio.Obtener<Solp>(s => s.Id == idSolp);
-            //}
             var hayAdjudicacionPosicion = repositorio.Existe<AdjudicacionPosicion>(posi => posi.Posicion.Solp.NroSolp.Contains(solp.NroSolp));
             var solpDevuelta = new SolpDto()
             {
@@ -1338,11 +1369,13 @@ namespace SustitucionMOAUtils.Services
                 TieneFabricacionTallerExterno = solp.Pliego.TieneFabricacionTallerExterno ?? false,
                 TieneDescripcionTecnica = solp.Pliego.TieneDescripcionTecnica ?? false,
                 TieneDocumentacionTecnica = solp.Pliego.TieneDocumentacionTecnica ?? false,
+                RequisitoCiberseguridad = solp.Pliego.RequisitoCiberseguridad ?? false,
                 FechaHoraLimiteConsulta = solp.Pliego.FechaHoraLimiteConsulta,
                 ObservacionesGeneracion = solp.Pliego.ObservacionesGeneracion,
                 //EspecificacionesTecnicas = x.EspecificacionesTecnicas,
                 DiasEjecucion = solp.Pliego.DiasEjecucion,
                 ObservacionesCotizacion = solp.Pliego.ObservacionesCotizacion,
+                ObservacionesCotizacionCondEsp = solp.Pliego.ObservacionesCotizacionCondEsp,
                 JornadaLaboral = string.IsNullOrEmpty(solp.Pliego.JornadaLaboralDias) ? new List<DayOfWeek>() :
                                 solp.Pliego.JornadaLaboralDias.Split(",".ToCharArray()).Select(a => (DayOfWeek)Enum.Parse(typeof(DayOfWeek), a)).ToList(),
                 JornadaLaboralDesde = solp.Pliego.JornadaLaboralHorasDesde,
@@ -1357,7 +1390,7 @@ namespace SustitucionMOAUtils.Services
                 DeshabilitarAdicional = hayAdjudicacionPosicion,
                 EditarCondicionesEspeciales = (solp.EstadoSolpSap_Id == null || (solp.EstadoSolpSap.CodigoSap != "05" && solp.EstadoSolpSap.CodigoSap != "02")),
 
-                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(s => new ArchivoDto
                 {
                     Id = s.Id,
                     Nombre = s.ObtenerNombre(s.Ruta),
@@ -1369,11 +1402,6 @@ namespace SustitucionMOAUtils.Services
                 RevisadoPor = solp.Pliego.RevisadoPor,
                 EstadoSolpSap_Id = solp.EstadoSolpSap_Id,
                 EstadoDocumento_Id = solp.EstadoDocumento_Id,
-
-                //Posiciones = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || x.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica) ? 
-                //                x.Posiciones.Select(p => new SolpPosicionDto(p)).ToList() : 
-                //                x.Posiciones.Where(p => !p.FechaBaja.HasValue).Select(p => new SolpPosicionDto(p)).ToList(),
-
                 Posiciones = solp.Posiciones.Select(p => new SolpPosicionDto(p)).ToList(),
                 PasoCompletado = solp.PasoCompletado,
                 EstadoPasos = solp.EstadoPasos,
@@ -1406,6 +1434,7 @@ namespace SustitucionMOAUtils.Services
                     solpDevuelta.MonedaOC = ordenDeCompraSAPDto.Cabecera.Moneda;
                     solpDevuelta.MontoTotalOC = ordenDeCompraSAPDto.Cabecera.MontoTotal;
                     solpDevuelta.FechaCreacionOC = ordenDeCompraSAPDto.Cabecera.FechaCreacionString;
+                    solpDevuelta.CodigoProveedorSap = ordenDeCompraSAPDto.Cabecera.CodigoProveedor;
                 }
             }
 
@@ -1413,6 +1442,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(solpDevuelta.ProveedorAsignado_Id);
                 solpDevuelta.ProveedorAsignado = usuario.ObtenerRazonSocial();
+                solpDevuelta.CodigoProveedorSap = usuario.ObtenerCodigoProveedor();
             }
 
             return solpDevuelta;
@@ -1754,7 +1784,7 @@ namespace SustitucionMOAUtils.Services
                     var PdfWriter = iTextSharp.text.pdf.PdfWriter.GetInstance(document, stream);
                     document.Open();
 
-                    Image image = Image.GetInstance(Convert.FromBase64String("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"));
+                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(Convert.FromBase64String("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"));
                     image.SetAbsolutePosition(180, 700);
                     PdfWriter.DirectContent.AddImage(image, false);
 
@@ -1782,7 +1812,7 @@ namespace SustitucionMOAUtils.Services
                     obra.AddElement(new Paragraph($"Nombre de obra: {solp.NombreDeObra}"));
                     tablaHeader.AddCell(obra);
 
-                    var imagen = Image.GetInstance(@"https://b2cmoagro.blob.core.windows.net/moaoperaciones/logo.png");
+                    var imagen = httpContextService.ObtenerLogoImagen();
 
                     //2284 x 1059
                     imagen.ScaleAbsolute(80f, 40f);
@@ -1864,7 +1894,7 @@ namespace SustitucionMOAUtils.Services
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -1875,7 +1905,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         foreach (var archivoSubido in solp.Pliego.Archivos)
                         {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                             {
                                 string fileName = Path.GetFileName(archivoSubido.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
@@ -2062,7 +2092,7 @@ namespace SustitucionMOAUtils.Services
             }
             double i;
 
-            if(double.TryParse(entrada,out i))
+            if (double.TryParse(entrada, out i))
             {
                 //Buscar por código proveedor
                 lista = repositorio.Listar<Proveedor, ProveedorDto>(x =>
@@ -2201,7 +2231,7 @@ namespace SustitucionMOAUtils.Services
                         if (solp.TrabajoYaHecho != true)
                         {
                             solp.TieneModificaciones = false;
-                            EnviarCircularAutomatico(solp);
+                            //EnviarCircularAutomatico(solp);
                         }
                         else
                         {
@@ -2698,6 +2728,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
+                        var guardarCondicionEspecial = true;
                         SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion = result.TipoImputaciones
                         .FirstOrDefault(dir => dir.NumeroSolicitud == posicion.NumeroSolicitud && dir.NumeroPosicion == posicion.NumeroPosicion);
 
@@ -2823,16 +2854,16 @@ namespace SustitucionMOAUtils.Services
                             {
                                 var cuentamayor = cuentasSolpesSap.Where(a => a.Codigo == tipoImputacion.CuentaContableImputada).FirstOrDefault();
                                 posicionEntity.CuentaMayor_Id = cuentamayor?.Id;
-
                                 CompletarTipoImputacion(ordenes, centrosDeCosto, centrosDeBeneficio, tipoImputacion, tipoImputacionPosicion, posicionEntity);
                             }
+
+                            
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
 
                             //posicionEntity.FechaLiberacion = posicion.FechaEstimadaLiberacionDate; es lo mismo estimada que no estimada??
 
                         }
-                        //posicionEntity.TextoSuministro no se completa desde sap, no lo envian.
 
                         IList<SuposicionServicioSAP> subPosicionesDeLaPosicion =
                             result.ServiciosSuposiciones.Where(x => x.NumeroPosicion == posicion.NumeroPosicion &&
@@ -2931,6 +2962,8 @@ namespace SustitucionMOAUtils.Services
 
                         if (solp.Id == 0)
                             repositorio.Agregar(solp);
+
+
                     }
                     catch (Exception e)
                     {
@@ -2939,9 +2972,8 @@ namespace SustitucionMOAUtils.Services
                         continue;
                     }
                 }
-                SetNombreDePedido(solp);
+            
 
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob subPosicionesBorradas " + subPosicionesBorradas.Count());
 
                 if (subPosicionesBorradas.Count() > 0)
                 {
@@ -2959,6 +2991,34 @@ namespace SustitucionMOAUtils.Services
                         repositorio.Remover(subpos);
                     }
                 }
+
+                SetNombreDePedido(solp);
+
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                {
+                    solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
+
+                    if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
+                    {
+                        ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
+                    }
+                    repositorio.GuardarCambios();                
+
+                    GrabarArchivosSapEnPliego(solp, result.Archivos);
+
+                    if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
+                    {
+                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
+                        //ReiniciarCondicionEspecial(solp);
+                    }
+
+                    if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
+                    {
+                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
+                        //ReiniciarCondicionEspecial(solp);
+                    }
+                }
+
                 repositorio.GuardarCambios();
                 ValidarSolpAnulada(obtenerSolpRequest.NumeroSolp);
                 Logger.Log.Info($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
@@ -2979,7 +3039,6 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-
         private static void CompletarTipoImputacion(List<TablaSap> ordenes, List<TablaSap> centrosDeCosto, List<TablaSap> centrosDeBeneficio, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion, SustitucionMOAModel.Entities.TipoImputacionSAP tipoImputacionPosicion, SolpPosicion posicionEntity)
         {
             switch (tipoImputacionPosicion.Descripcion)
@@ -3001,6 +3060,233 @@ namespace SustitucionMOAUtils.Services
                     break;
             }
         }
+
+        public void ReiniciarCondicionEspecial(Solp solp)
+        {
+            solp.Adicional = false;
+            solp.CondEspProveedorAsignado = false;
+            solp.TrabajoYaHecho = false;
+            solp.THServicioPermanente = false;
+            solp.THAjustePolinomica = false;
+            solp.THProveedorDirecto = false;
+        }
+
+        private void ProcesarCondicionEspecial(PosicionSolpSAP posicion, Solp solp, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion)
+        {
+            CompletarCondicionEspecial(posicion.NumeroRequerimientoInterno, solp);
+
+            if (!ValidarCondicionEspecial(solp)) return;
+
+            if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
+            {
+                EnviarMailErrorCondicionEspecial(solp, "Debe ingresar un proveedor");
+                //ReiniciarCondicionEspecial(solp);
+                return;
+            }
+
+            try
+            {
+                if (solp.Adicional != true)
+                {
+                    var proveedor = ObtenerProveedorCompras(posicion.ProveedorDeseado);
+                    solp.ProveedorAsignado_Id = proveedor.Usuario_Id;
+                }
+                else
+                {
+                    ProcesarOrdenDeCompra(posicion, solp, tipoImputacion);
+                }
+            }
+            catch (WSCustomException ex)
+            {
+                EnviarMailErrorCondicionEspecial(solp, ex.Message);
+                //ReiniciarCondicionEspecial(solp);
+            }
+        }
+
+        private void ProcesarOrdenDeCompra(PosicionSolpSAP posicion, Solp solp, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion)
+        {
+            if (string.IsNullOrEmpty(tipoImputacion.NumeroOrdenDeCompra) && solp.Adicional == true)
+            {
+                EnviarMailErrorCondicionEspecial(solp, "Debe ingresar una orden de compra");
+                //ReiniciarCondicionEspecial(solp);
+                return;
+            }
+
+            var ordenDeCompra = ObtenerOrdenDeCompra(tipoImputacion.NumeroOrdenDeCompra);
+
+            if (!solp.Posiciones.All(x => x.Moneda.CodigoSap == ordenDeCompra.Cabecera.Moneda))
+            {
+                EnviarMailErrorCondicionEspecial(solp, $"La moneda de la OC {ordenDeCompra.Cabecera.Moneda} no es compatible con la moneda de la SOLP {solp.Posiciones.FirstOrDefault().Moneda.CodigoSap}");
+                //ReiniciarCondicionEspecial(solp);
+                return;
+            }
+
+            solp.NroOrdenDeCompraAdicional = tipoImputacion.NumeroOrdenDeCompra;
+            solp.ProveedorAsignado_Id = ordenDeCompra.Cabecera.Usuario_Id;
+        }
+
+
+        private bool ValidarCondicionEspecial(Solp solp)
+        {
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
+        }
+
+        private bool ValidarCondicionEspecialArchivosYObservaciones(Solp solp)
+        {
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true;
+        }
+
+        private byte[] TraerArchivosDeSAP(string docId)
+        {
+            return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
+        }
+
+        private void GrabarArchivosSapEnPliego(Solp solp, List<ArchivoSolpDto> archivos)
+        {
+            try
+            {
+                if (solp.Pliego.Archivos == null)
+                {
+                    solp.Pliego.Archivos = new List<Archivo>();
+                }
+                else
+                {
+                    var archivosSap = solp.Pliego.Archivos.Where(a => a.ArchivoSap == true).ToList();
+                    foreach (var archivo in archivosSap)
+                    {
+                        solp.Pliego.Archivos.Remove(archivo);
+                    }
+                }
+
+                foreach (var item in archivos)
+                {
+                    byte[] archivoSAP = TraerArchivosDeSAP(item.DocId);
+                    string nombreArchivo = $"Solp_{solp.Id}/{item.Nombre}.{item.Tipo}";
+                    string rutaArchivoGuardado = GuardarArchivoEnSistemaDeAlmacenamiento(archivoSAP, nombreArchivo, solp.Id);
+
+                    Archivo nuevoArchivo = new Archivo
+                    {
+                        FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp,
+                        Ruta = rutaArchivoGuardado,
+                        ArchivoSap = true
+                    };
+
+                    solp.Pliego.Archivos.Add(nuevoArchivo);
+                }
+                repositorio.GuardarCambios();
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"ErrorCondicionEspecial {solp.NroSolp}");
+                Logger.Log.Error(e);
+            }
+        }
+
+        private string GuardarArchivoEnSistemaDeAlmacenamiento(byte[] archivo, string nombreArchivo, int solpId)
+        {
+            string rutaBase = $"C:/ArchivosCompras/Solp_{solpId}/";
+            string rutaCompleta = Path.Combine(rutaBase, nombreArchivo);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(rutaCompleta));
+
+            File.WriteAllBytes(rutaCompleta, archivo);
+
+            return rutaCompleta;
+        }
+
+
+        private void EnviarMailErrorCondicionEspecial(Solp solp, string mensaje)
+        {
+            try
+            {
+                var asunto = $"Solp condición especial - {solp.NroSolp} ";
+                var enviarA = new List<string>();
+                Usuario usuario = null;
+
+                if (solp?.UsuarioCreacion?.Mail != null)
+                {
+                    usuario = repositorio.Obtener<Usuario>(x => x.Mail == solp.UsuarioCreacion.Mail);
+                }
+
+                bool esAmbienteQA = ConfigurationManager.AppSettings["EmailAsuntoPrefijo"] == "[QA]";
+
+                if (usuario == null || esAmbienteQA)
+                {
+                    enviarA.Add(ConfigurationManager.AppSettings["EmailMantenimiento"]);
+                }
+                if (usuario != null && !esAmbienteQA)
+                {
+                    enviarA.Add(usuario.Mail);
+                }
+
+                Logger.Log.Info($"Enviando mail a {enviarA.ToJson()}");
+
+                emailService.EnviarMail(enviarA, asunto, "", null, CuerpoEnviarMailErrorCondicionEspecial(solp, mensaje));
+            }
+            catch (Exception e)
+            {
+                Logger.Log.Info($"EnviarMailErrorCondicionEspecial {solp?.NroSolp}");
+                Logger.Log.Error(e);
+            }
+        }
+
+
+
+        private AlternateView CuerpoEnviarMailErrorCondicionEspecial(Solp solp, string mensaje)
+        {
+            var filePath = httpContextService.ObtenerPathLogoMail();
+
+            LinkedResource res = new LinkedResource(filePath);
+            res.ContentId = Guid.NewGuid().ToString();
+            string htmlBody = "";
+            htmlBody += $"Verique la SOLP {solp.NroSolp} y por favor actualice los datos de forma manual. <br />";
+            htmlBody += $"Motivo: {mensaje}  <br />";
+            htmlBody += $" <br/><br/> ";
+
+            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
+                  "<br/><br/>Saludos Cordiales<br/>" +
+                  "Molinos Agro S.A. <br/><br/> " +
+                   @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
+
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            alternateView.LinkedResources.Add(res);
+            return alternateView;
+        }
+
+        private void CompletarCondicionEspecial(string condicion, Solp solp)
+        {
+            var listaCaracteresEspeciales = condicion.Select(c => c.ToString()).ToList();
+            foreach (var caracter in listaCaracteresEspeciales)
+            {
+                switch (caracter.ToUpper())
+                {
+                    case "A":
+                        solp.Adicional = true;
+                        break;
+                    case "P":
+                        solp.CondEspProveedorAsignado = true;
+                        break;
+                    case "S":
+                        solp.TrabajoYaHecho = true;
+                        solp.THServicioPermanente = true;
+                        break;
+                    case "L":
+                        solp.TrabajoYaHecho = true;
+                        solp.THAjustePolinomica = true;
+                        break;
+                    case "D":
+                        solp.TrabajoYaHecho = true;
+                        solp.THProveedorDirecto = true;
+                        break;
+                    case "U":
+                        solp.Urgencia = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
 
         private void ActualizarTieneModificaciones(Solp solp)
         {
@@ -3026,7 +3312,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         public void ActualizarEstadoSolpBulk()
         {
@@ -3207,10 +3492,11 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             var solpsSAP = new List<string>();
             var solps = new List<string>();
+            string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
             if (listarPendiente == true)
             {
                 solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
@@ -3220,11 +3506,17 @@ namespace SustitucionMOAUtils.Services
                 if (!string.IsNullOrEmpty(nroSolp))
                 {
                     nroSolp = nroSolp.Trim();
+
+                    if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                    {
+                        nroSolp = "0" + nroSolp;
+                    }
+
                     solps.Add(nroSolp);
                 }
             }
 
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
 
             if (todasLasSolp != null && todasLasSolp.Count() > 0)
             {
@@ -3301,6 +3593,12 @@ namespace SustitucionMOAUtils.Services
             {
                 var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
                 string[] palabras = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
+                {
+                    nroSolp = "0" + nroSolp;
+                }
+
                 var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
                 var listId = todasLasPO.ToList().Select(y => y.Id);
 
@@ -3357,7 +3655,7 @@ namespace SustitucionMOAUtils.Services
 
                     solps.Add(obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros));
                 }
-                
+
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
@@ -3367,15 +3665,15 @@ namespace SustitucionMOAUtils.Services
                     unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
                 }
                 CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
-                foreach (var item in todasLasOfertas.Usuarios)
-                {                    
+                foreach (var usuarioPO in todasLasOfertas.Usuarios)
+                {
                     var respetaMateriales = true;
-                    if (item.Cotizacion != null && item.Cotizacion.CotizacionPosiciones != null)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones != null)
                     {
-                        if (item.Cotizacion.RespetaMateriales == false)
+                        if (usuarioPO.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
 
-                        foreach (var cotizacionPosicion in item.Cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
+                        foreach (var cotizacionPosicion in usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true))
                         {
                             if (cotizacionPosicion.Completado)
                             {
@@ -3392,32 +3690,31 @@ namespace SustitucionMOAUtils.Services
                             cotizacionPosicion.TodasTotalPesos = cambio * cotizacionPosicion.PrecioTotal;
                             cotizacionPosicion.TodasTotalARPCotizacionPosicion = cotizacionPosicion.CotizacionSubPosiciones.Sum(x => x.TotalARPSubPosCotizacion);
 
-
                         }
-                        item.Cotizacion.TotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
-                        item.Cotizacion.TotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
-                        item.Cotizacion.TodasTotalGlobal = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
-                        item.Cotizacion.TodasTotalGlobalSubPos = item.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
+                        usuarioPO.Cotizacion.TotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalPesos);
+                        usuarioPO.Cotizacion.TotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TotalARPCotizacionPosicion);
+                        usuarioPO.Cotizacion.TodasTotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
+                        usuarioPO.Cotizacion.TodasTotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
                     }
                     //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
 
 
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
-                    item.VerImportes = true;
-                    if (item.Cotizacion == null)
+                    usuarioPO.VerImportes = true;
+                    if (usuarioPO.Cotizacion == null)
                     {
                         mensaje = "Sin Cotizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    if (item.Cotizacion != null && item.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    if (item.Cotizacion != null && item.PropuestaTecnicaAprobada == false)
+                    if (usuarioPO.Cotizacion != null && usuarioPO.PropuestaTecnicaAprobada == false)
                     {
                         mensaje = "Propuesta técnica Rechazada";
                         verAdjudicar = false;
@@ -3426,22 +3723,22 @@ namespace SustitucionMOAUtils.Services
                     {
                         mensaje = "SOLP Sin liberar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
-                    var fechaFinPlazo = (item.PlazoDeOfertaCierre == null && item.FechaCircular == null) ? item.PlazoDeOfertaOriginal :
-                    item.PlazoDeOfertaCierre == null ? item.PlazoDeOfertaCircular.Value :
-                    item.FechaCircular == null ? item.PlazoDeOfertaCierre.Value :
-                    item.PlazoDeOfertaCierre.Value > item.FechaCircular.Value ? item.PlazoDeOfertaCierre.Value : item.PlazoDeOfertaCircular.Value;
+                    var fechaFinPlazo = (usuarioPO.PlazoDeOfertaCierre == null && usuarioPO.FechaCircular == null) ? usuarioPO.PlazoDeOfertaOriginal :
+                    usuarioPO.PlazoDeOfertaCierre == null ? usuarioPO.PlazoDeOfertaCircular.Value :
+                    usuarioPO.FechaCircular == null ? usuarioPO.PlazoDeOfertaCierre.Value :
+                    usuarioPO.PlazoDeOfertaCierre.Value > usuarioPO.FechaCircular.Value ? usuarioPO.PlazoDeOfertaCierre.Value : usuarioPO.PlazoDeOfertaCircular.Value;
 
 
-                    if (item.Cotizacion != null && fechaFinPlazo >= hoy && todasLasOfertas.Urgencia != true)
+                    if (usuarioPO.Cotizacion != null && fechaFinPlazo >= hoy && todasLasOfertas.Urgencia != true)
                     {
                         mensaje = "Plazo de oferta sin finalizar";
                         verAdjudicar = false;
-                        item.VerImportes = false;
+                        usuarioPO.VerImportes = false;
                     }
 
-                    if (!item.EstaHabilitado)
+                    if (!usuarioPO.EstaHabilitado)
                     {
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
@@ -3452,7 +3749,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
-                            item.VerImportes = false;
+                            usuarioPO.VerImportes = false;
                         }
                     }
                     else
@@ -3461,21 +3758,55 @@ namespace SustitucionMOAUtils.Services
                         {
                             mensaje = "Revisión técnica sin finalizar.";
                             verAdjudicar = false;
-                            item.VerImportes = false;
+                            usuarioPO.VerImportes = false;
+                        }
+
+                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
+                        {
+                            mensaje = "La cotización tiene subposiciones sin cotizar";
+                            verAdjudicar = false;
                         }
                     }
 
                     if (esAdmin && !noSolicitoVerPrecios)
                     {
-                        item.VerImportes = true;
+                        usuarioPO.VerImportes = true;
                     }
-                    item.MensajeAdjudicar = mensaje;
-                    item.VerAdjudicar = verAdjudicar;
+
+                    usuarioPO.MensajeAdjudicar = mensaje;
+                    usuarioPO.VerAdjudicar = verAdjudicar;
+
+                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.All(d => d.MonedaDescripcion == "ARP")) 
+                    {
+                        if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
+                        {
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true).GroupBy(x => x.MonedaDescripcion)
+                                                          .Select(grupo => new MonedaTotalDto
+                                                          {
+                                                              Moneda = grupo.Key.ToString(),
+                                                              Total = grupo.Sum(x => x.PrecioTotal).ToString("N2")
+                                                          }).ToList();
+                        }
+                        else
+                        {
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true)
+                                                            .SelectMany(pos => pos.CotizacionSubPosiciones)
+                                                            .Where(x => x.Completado == true)
+                                                            .GroupBy(sub => sub.MonedaDescripcion)
+                                                            .Select(grupo => new MonedaTotalDto
+                                                            {
+                                                                Moneda = grupo.Key.ToString(),
+                                                                Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
+                                                            }).ToList();
+
+                        }
+                    }
+                   
                 }
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
-                todasLasOfertas.SolpDto.ObservacionesCotizacion = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
+                todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
@@ -3513,7 +3844,7 @@ namespace SustitucionMOAUtils.Services
                             posicion.Posicion.AdjudicacionCompleta = false;
                         }
                     }
-                }               
+                }
 
                 return todasLasOfertas;
             }
@@ -3580,7 +3911,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         private decimal CalcularTipoDeCambio(Dictionary<int, decimal> tipodecambio, TablaSap destino, CotizacionPosicionDto cotizacionPosicion)
         {
@@ -4378,6 +4708,7 @@ namespace SustitucionMOAUtils.Services
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+            var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId);
             var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
             var peticionPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionDeOfertaId);
@@ -4430,12 +4761,13 @@ namespace SustitucionMOAUtils.Services
 
                 // buscar archivos de la solp y considerar condiciones especiales
                 if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                   (x.FileKey == FileKeys.AdjuntoCotizacionesSolp && (!esProveedor || !tieneCondicionEspecial))))
+                   x.FileKey == FileKeys.AdjuntoCotizacionesSolp || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp
-                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                            || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                            || (archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
                             && (!esProveedor || !tieneCondicionEspecial))))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
@@ -4454,13 +4786,13 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                //mostrar observación ingresada en el paso 4 si es SOLP con condiciones especiales
+                //mostrar observación de condiciones especielas ingresada en el paso 4 
                 if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
                 {
                     legajo.Add(new LegajoDto
                     {
                         ArchivoId = null,
-                        Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacion,
+                        Observacion = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp,
                         PeticionDeOfertaId = peticionDeOfertaId,
                         SolpId = solp.Id,
                         Fecha = solp.FechaCreacion,
@@ -4780,7 +5112,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             foreach (var archivoSubido in solp.Pliego.Archivos)
                             {
-                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp))
+                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                                 {
                                     string fileName = Path.GetFileName(archivoSubido.Ruta);
                                     archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
@@ -5020,7 +5352,6 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var prov in usuariosDto.GroupBy(a => a.CUIT))
             {
-
                 proveedores.AddRange(prov.Select(a => a.RazonSocial + " - " + a.Mail).ToList());
 
                 var enviarA = prov.Select(a => a.Mail).ToList();
@@ -5104,6 +5435,17 @@ namespace SustitucionMOAUtils.Services
                                "click aquí" +
                                "</a></p> <br />";
                 }
+                if (posicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
+                {
+                    htmlBody += "<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>";
+                    htmlBody += "<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>";
+                    htmlBody += "<ul>";
+                    htmlBody += "<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>";
+                    htmlBody += "<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>";
+                    htmlBody += "<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>";
+                    htmlBody += "</ul>";
+                    htmlBody += "<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>";
+                }
             }
 
             htmlBody += "<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
@@ -5120,7 +5462,7 @@ namespace SustitucionMOAUtils.Services
         {
             bool tieneCondicionEspecial = posicion.Solp.TrabajoYaHecho == true || posicion.Solp.Urgencia == true || posicion.Solp.Adicional == true || posicion.Solp.CondEspProveedorAsignado == true;
             var casoConPliego = posicion.Solp.TipoSolp?.Codigo == "CON_PLIEGO" || (posicion.Solp.TipoSolp?.Codigo == "SIN_PLIEGO" &&
-                   posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp) && !tieneCondicionEspecial);
+                   posicion.Solp.Pliego.Archivos.Any(x => x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) && !tieneCondicionEspecial);
             return casoConPliego;
         }
 
@@ -7001,7 +7343,7 @@ namespace SustitucionMOAUtils.Services
 
                             if (!esMateriales)
                             {
-                                monto = DevolverMontoServicio(ap, tablasap.FirstOrDefault(moneda => moneda.Id == monedaKey)?.Codigo);
+                                monto = DevolverMontoServicio(ap.CotizacionPosicion.CotizacionSubPosiciones.ToList(), tablasap.FirstOrDefault(moneda => moneda.Id == monedaKey)?.Codigo);
                             }
                             else
                             {
@@ -7078,21 +7420,41 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private decimal DevolverMontoServicio(AdjudicacionPosicion adjudicacionPosicion, string monedaCodigo)
+        private decimal DevolverMontoServicio(List<CotizacionSubPosicion> cotizacionSubposiciones, string monedaCodigo)
         {
             decimal total = 0;
             var fecha = DateTime.Now;
             decimal tipoDeCambio = 1;
-            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+            var moneda = cotizacionSubposiciones.FirstOrDefault().Moneda.Codigo;
 
             if (moneda != monedaCodigo)
             {
                 tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), monedaCodigo, moneda).TipoCambio;
             }
 
-            foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
+            foreach (var item in cotizacionSubposiciones)
             {
                 total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
+            }
+
+
+            return total;
+        }
+
+        private decimal DevolverMontoServicioSolicitado(string monedaSolicitada, string monedaCotizada, List<SolpSubposicion> subpos)
+        {
+            decimal total = 0;
+            var fecha = DateTime.Now;
+            decimal tipoDeCambio = 1;
+
+            if (monedaSolicitada != monedaCotizada)
+            {
+                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), monedaCotizada, monedaSolicitada).TipoCambio;
+            }
+
+            foreach (var item in subpos)
+            {
+                total += item.Cantidad.Value * item.PrecioBruto.Value * tipoDeCambio;
             }
 
 
@@ -7326,10 +7688,11 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+
             return ordenDeCompraSAP;
         }
 
-        public void CrearCotizacionConTrabajoYaHecho(Solp solp)
+        public PeticionDeOferta CrearCotizacionConTrabajoYaHecho(Solp solp)
         {
             try
             {
@@ -7350,6 +7713,7 @@ namespace SustitucionMOAUtils.Services
                 };
                 peticionEntidad.PlazoDeOferta = DateTime.Now;
                 repositorio.GuardarCambios();
+                return peticionEntidad;
             }
             catch (Exception e)
             {
@@ -7555,63 +7919,6 @@ namespace SustitucionMOAUtils.Services
                     };
                 }
             }
-            //if (result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje))
-            //{
-            //    try
-            //    {
-            //        int? UsuarioCompras_Id = null;
-            //        var usuariosCompras = repositorio.Listar<UsuarioCompras>();
-
-            //        var UsuarioCompras_Mail = repositorio.Obtener<Usuario>(a => a.UsuarioSap == result.Cabecera.UsuarioComprasSAP)?.Mail;
-            //        Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail " + UsuarioCompras_Mail);
-            //        if (UsuarioCompras_Mail != null)
-            //        {
-            //            UsuarioCompras_Id = usuariosCompras.Where(a => a.Mail.ToLower() == UsuarioCompras_Mail.ToLower()).FirstOrDefault()?.Id;
-            //            Log.Info("ObtenerOrdenDeCompra UsuarioCompras_Mail UsuarioCompras_Id" + UsuarioCompras_Id);
-
-            //            result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
-            //        }
-
-            //        if (result.Cabecera.UsuarioCompras_Id == null)
-            //        {
-            //            var adjudicacion = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOC, 1, "Id", DirOrden.Desc).FirstOrDefault();
-            //            Log.Info("ObtenerOrdenDeCompra Adjudicacion " + (adjudicacion == null ? "" : (adjudicacion.Usuario.Mail + "," + adjudicacion.NumeroOrdenDeCompra)));
-            //            if (adjudicacion != null)
-            //            {
-            //                UsuarioCompras_Id = usuariosCompras.FirstOrDefault(a => a.Mail.ToLower() == adjudicacion.Usuario.Mail.ToLower())?.Id;
-            //                result.Cabecera.UsuarioCompras_Id = UsuarioCompras_Id;
-            //            }
-            //        }
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        Log.Error(e);
-            //        result.Error = new ErrorOC
-            //        {
-            //            Mensaje = e.Message,
-            //            Tipo = "E"
-            //        };
-            //        result.Cabecera = new OrdenDeCompraSAPCabecera
-            //        {
-            //            OrdenDeCompra = "",
-            //            CodigoProveedor = ""
-            //        };
-            //    }
-            //}
-            //if ((result.Error == null || string.IsNullOrEmpty(result.Error.Mensaje)) && result.Cabecera.UsuarioCompras_Id == null)
-            //{
-            //    result.Error = new ErrorOC
-            //    {
-            //        Mensaje = "No se encontro el usuario Comprador.",
-            //        Tipo = "E"
-            //    };
-            //    result.Cabecera = new OrdenDeCompraSAPCabecera
-            //    {
-            //        OrdenDeCompra = "",
-            //        CodigoProveedor = ""
-            //    };
-            //}
-            //Log.Info("ObtenerOrdenDeCompra result" + result.ToJson());
             return result;
         }
 
@@ -8957,7 +9264,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Log.Error( new Exception("ActualizarDatosSolp") );
+                Log.Error(new Exception("ActualizarDatosSolp"));
                 Log.Error(e);
             }
         }
@@ -9779,7 +10086,7 @@ namespace SustitucionMOAUtils.Services
                 Paginacion = new Paginacion(filtro.Columna, filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc,
                     filtro.Pagina ?? 0, filtro.ItemsPorPagina ?? 0),
                 CodigoProveedor = filtro.CodigoProveedor,
-                NroSolp = filtro.NroSolp,
+                NroSolp = !string.IsNullOrEmpty(filtro.NroSolp) ? filtro.NroSolp.Trim() : "",
                 FechaDesde = filtro.FechaDesde,
                 FechaHasta = filtro.FechaHasta,
                 Sap = filtro.Sap ?? false,
@@ -9800,7 +10107,8 @@ namespace SustitucionMOAUtils.Services
                 EstadoLicitacion = filtro.EstadoLicitacion,
                 EstadoCotizacion = filtro.EstadoCotizacion,
                 Agrupada = filtro.Agrupada,
-                NroPo = filtro.NroPo
+                NroPo = !string.IsNullOrEmpty(filtro.NroPo) ? filtro.NroPo.Trim() : "",
+
             };
         }
 
@@ -9846,6 +10154,8 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
+                Log.Info($"Error al AgruparPeticionesDeOferta");
+                Log.Error(ex);
                 throw;
             }
         }
@@ -9915,6 +10225,28 @@ namespace SustitucionMOAUtils.Services
             };
         }
 
+        public Resultado DesagruparPO(string nroSolp, string po)
+        {
+            try
+            {
+                var resultado = new Resultado();
+                var posiciones = repositorio.Listar<SolpPosicion>(x => x.Solp.NroSolp == nroSolp);
+                var posicionesIds = posiciones.Select(x => x.Id);
+                var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => x.PeticionDeOferta_Id.ToString() == po && posicionesIds.Contains(x.SolpPosicion_Id));
+                repositorio.RemoverTodos(peticionDeOfertaSolpPosicion);
+                repositorio.GuardarCambios();
+                var peticion = CrearCotizacionConTrabajoYaHecho(posiciones.FirstOrDefault().Solp);
+                resultado.IdEntidad = peticion.Id;
+                return resultado;
+            }
+            catch (Exception ex)
+            {
+                Log.Info($"Error al DesagruparPO");
+                Log.Error(ex);
+                throw;
+            }
+        }
+
         private void CrearCotizacionEnTH(int usuarioId, List<Cotizacion> cotizaciones, PeticionDeOferta peticion)
         {
             foreach (var usuario in peticion.Usuarios.Distinct())
@@ -9933,7 +10265,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             repositorio.GuardarCambios();
-       
+
         }
 
         private void GrabarHistorialDeCotizaciones(List<Cotizacion> cotizaciones)
@@ -9945,16 +10277,95 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        private void EliminarCotizacionesAsociadasAPO(List<Cotizacion> cotizaciones)
+        public RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto)
         {
-            repositorio.RemoverTodos(cotizaciones);
+            var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
+            var posicionesId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.SolpPosicion_Id);
+            var posicionesSolp = repositorio.Listar<SolpPosicion>(x => posicionesId.Contains(x.Id));
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta_Id);
+            var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
+            var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
+
+            if (esServicios && !trabajoYaHecho)
+            {
+                respuestaGuardarSOLP.Errores = new List<String>();
+                var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+                var adjudicacionResultDto = new AdjudicacionResultDto { Cotizacion_Id = adjudicacionDto.Cotizacion_Id };
+                var monedaCodigo = "";
+                if (adjudicacionDto.EsMonedaProveedor)
+                {
+                    var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
+                    if (!string.IsNullOrEmpty(monedaProv))
+                    {
+                        monedaCodigo = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
+                    }
+                }
+
+                foreach (var posicion in posicionesSolp)
+                {
+                    var cotizacionPosicion = cotizacionPosiciones.FirstOrDefault(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
+                    decimal monto = 0;
+                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.FirstOrDefault(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
+
+                    if (esServicios)
+                    {
+                        monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.CodigoSap, posicion.Subposiciones.ToList());
+                    }
+
+                    var totalSolicitado = monto;
+                    var totalCotizado = cotizacionPosicion.CotizacionSubPosiciones.Sum(cp => cp.Precio.Value * cp.Cantidad) ?? 0;
+                    var monedaAdjudicada = moneda;
+                    var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+
+                    if (monedaAdjudicada != monedaCotizada)
+                    {
+                        respuestaGuardarSOLP.Errores.Add($"Algunas posiciones no tienen el mismo precio que lo solicitado." +
+                            $" La moneda solicitada ({monedaAdjudicada}) no coincide con la moneda cotizada ({monedaCotizada})");
+                        return respuestaGuardarSOLP;
+                    }
+
+                    if (totalSolicitado != totalCotizado)
+                    {
+                        respuestaGuardarSOLP.Errores.Add($"Algunas posiciones no tienen el mismo precio que lo solicitado. El monto solicitado ({monedaAdjudicada} {totalSolicitado.ToString("n2")}) no coincide con el monto cotizado ({monedaCotizada} {totalCotizado.ToString("n2")}).");
+                        return respuestaGuardarSOLP;
+                    }
+                }
+            }
+            return respuestaGuardarSOLP;
         }
 
-        private void EliminarHistorialDeCotizaciones(List<Cotizacion> cotizaciones)
+        public AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp)
         {
-            var cotizacionesIds = cotizaciones.Select(x => x.Id).ToList();
-            var historialCotizacion = repositorio.Listar<CotizacionHistorial>(x => cotizacionesIds.Contains(x.Cotizacion_Id));
-            repositorio.RemoverTodos(historialCotizacion);
+            var solp = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
+
+            var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
+            var adjuntosSolpDto = new AdjuntosSolpDto
+            {
+                Pliego = solp.TipoSolp.Codigo == "CON_PLIEGO" ? pdfFilename : null,
+                PDF = Convert.ToBase64String(GenerarSolpPdf(solp.Id)),
+                ArchivosEspecificacionesTecnicas = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ArchivosCotizacion = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ArchivosCondicionesEspeciales = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(s => new ArchivoDto
+                {
+                    Id = s.Id,
+                    Nombre = s.ObtenerNombre(s.Ruta),
+                    FileKey = s.FileKey,
+                }).ToList(),
+                ObservacionCondicionesEspeciales = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp
+            };
+            return adjuntosSolpDto;
         }
     }
 

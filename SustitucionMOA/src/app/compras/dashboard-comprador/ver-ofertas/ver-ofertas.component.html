@@ -2,7 +2,7 @@
     <div class="row titleSection1">
         <div class="col-sm-8 letraTitulo">
             <strong>
-                {{ this.esTipoPOMultiple ? 'Ver ofertas | SOLP Múltiple' : 'Ver ofertas ' + tablaOfertas.TipoPosicionCodigo + ' | SOLP #' + tablaOfertas.NroSolp }}
+                {{ this.esTipoPOMultiple ? 'Ver ofertas | SOLP Múltiple' : 'Ver ofertas ' + ' | SOLP #' + tablaOfertas.NroSolp }}
                 <b *ngIf="tablaOfertas.TipoPosicionCodigo == 'SERVICIO'">
                     | SERVICIOS
                 </b>
@@ -21,7 +21,7 @@
             </strong>
         </div>
         
-        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio" style="text-align: end;">
+        <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio || !esAuditor" style="text-align: end;">
             <button class="publicar btn btn-success" style="width: 140px;" (click)="abrirModalPrecios()">
                 Ver Precios
             </button>
@@ -70,7 +70,7 @@
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripcion </th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de <br />suministro</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Pendiente</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Ctd. <br />a Adj</th>
+                    <th class="headerth" rowspan="3" style="width: 96px; background-color: #4a1884 !important; width: 60px !important;">Ctd. <br />a Adj</th>
                     <th class="headerth border2-right" rowspan="3" style="background-color: #4760ac !important; width: 60px !important; ">Um</th>
                 </tr>
             </ng-template>
@@ -99,8 +99,8 @@
                     <td class="columna border2-right" style="width: 60px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">Total global
-                    {{ tablaOfertas.TienePosicionesEliminadas ? '/ Total con eliminadas' : '' }}
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"><strong>Total global</strong>
+                        {{ tablaOfertas.TienePosicionesEliminadas ? '/ Total con eliminadas' : '' }}
                     </td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
@@ -206,6 +206,11 @@
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }} 
                                 {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }} 
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
+                                        - {{item.Moneda}} {{item.Total}}
+                                    </ng-container>
+                                </ng-container>
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
@@ -266,7 +271,7 @@
                         <ng-container>
                             <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="7" style="width: 660px !important;">
-                                <button [disabled]="!proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                                <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
                                 </button>
                                 <br />
@@ -346,7 +351,7 @@
                 </tr>
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">Total global
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;"><strong>Total global</strong>
                         {{ tablaOfertas.TienePosicionesEliminadas ? ' / Total con eliminadas' : ''}}
                     </td>
                 </tr>
@@ -362,7 +367,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px !important;">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4" *ngIf="!esAuditor">
                                 <button class="publicar btn" style="font-size: 12px;" (click)="abrirModalTextos()">
                                     Agregar racional de compra
                                 </button>
@@ -531,6 +536,11 @@
                             <td colspan="9" class="columna border2-left" style="width: 540px !important;">
                                 {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobalSubPos | number:'1.2-2') : '' }}
                                 {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobalSubPos > 0 ? ' / ' + (proveedor.Cotizacion.TodasTotalGlobalSubPos | number:'1.2-2') : '' }}
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
+                                        - {{item.Moneda}} {{item.Total}}
+                                    </ng-container>
+                                </ng-container>
                                 <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible" style="justify-content:left"></i>
                             </td>
                         </ng-container>
@@ -589,7 +599,7 @@
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left">
-                            <button [disabled]="!proveedor.VerAdjudicar" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
+                            <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
                             </button>
                             <br />
@@ -732,7 +742,7 @@
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
           (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
     <p-header class="headerModal" style="color: #067935;">
-        <b>Posiciones en distintas monedas</b>
+        <b>Posiciones con diferente moneda o precio</b>
     </p-header>
     <section class="col-md-12">
         <div class="row">
@@ -759,3 +769,20 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog [(visible)]="displayValidacionMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
+          (onHide)="onCerrarMoneda()" appendTo="body" [height]="200" [max] [contentStyle]="{'max-height':'150px', 'min-height':'150px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Posiciones con diferente moneda o precio</b>
+    </p-header>
+    <section class="col-md-12">
+        <div class="row">
+            <div class="col-md-12">
+                {{mensajeValidacionMoneda}}
+            </div>
+        </div>
+    </section>
+    <p-footer>
+        <button type="button" class="btn btn-success botonesComprasColor" (click)="onSiguientePasoValidacionMoneda()">Continuar</button>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarValidacionMoneda()">Cancelar</button>
+    </p-footer>
+</p-dialog>

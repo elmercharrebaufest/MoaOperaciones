@@ -9,7 +9,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
-    "lib": [ "ES2016", "dom" ],
+    "lib": [ "ES2017", "dom" ],
     "noImplicitAny": false,
     "suppressImplicitAnyIndexErrors": true
   },

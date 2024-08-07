@@ -157,8 +157,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION"
-
+                "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION", "AUDITOR COMPRAS"
             };
 
             List<string> contacto = new List<string>
@@ -525,7 +524,7 @@ namespace SustitucionMOAUtils.Services
             if (!resultado.HayError)
             {
 
-                var setCodigoProveedor = "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+                var setCodigoProveedor = proveedorDto.EsProveedorExterior == true ? proveedorDto.CUIT.Substring(1) : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
 
                 Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
 

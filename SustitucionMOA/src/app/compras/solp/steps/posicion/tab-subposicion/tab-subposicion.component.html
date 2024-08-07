@@ -31,8 +31,10 @@
             <ng-template pTemplate="body" let-posicion let-rowIndex="rowIndex">
                 <tr *ngIf="!model.vincularAPliego; else elseBlock" style="text-align: center;" class="tabla-grid-subposiciones">
                     <td style="padding: revert;">
-                        <img (click)="eliminarSubPosicionSolpValidate(rowIndex);" style="width: 18px;" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
-                        <!-- <p-checkbox [(ngModel)]="posicion.eliminar" binary="true"></p-checkbox> -->
+                        <img (click)="eliminarSubPosicionSolpValidate(rowIndex);" style="width: 18px;margin-top: -3px" src="../../../../../Content/images/icons/trashRed.svg" alt="trashWhite" class="pointer" />
+                        <span>
+                            <i (click)="duplicarSubposicion(rowIndex);" class="fa fa-copy pointer" style="font-size: 17px;color:gray"></i>
+                        </span>
                     </td>
                     <td>
                         {{posicion.subPosicion}}
@@ -156,6 +158,7 @@
                             {{posicion.valorNeto | number:'1.2-2'}}
                         </p-cell>
                     </td>
+                    
                     <td [pEditableColumn]="posicion" style="word-wrap:break-word">
                         <p-cellEditor>
                             <ng-template pTemplate="input">

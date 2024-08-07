@@ -28,6 +28,8 @@
 	[TieneFabricacionTallerExterno] BIT NULL, 
     [RevisadoPor] NVARCHAR(MAX) NULL, 
     [TieneCondicionesGenerales] BIT NULL,
+    [RequisitoCiberseguridad] BIT NULL, 
+    [ObservacionesCotizacionCondEsp] NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

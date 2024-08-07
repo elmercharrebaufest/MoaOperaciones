@@ -49,6 +49,8 @@ export class Solp extends CommonResponse {
     public observacionesGeneracion: string = "";
     public listaVisitas: any;
     public usuarioComprasId: number;
+    public requisitoCiberseguridad: boolean;
+
 
     //paso 3
     public especificacionesViewModel: EspecificacionesViewModel = new EspecificacionesViewModel();
@@ -60,6 +62,7 @@ export class Solp extends CommonResponse {
     public comienzoJornadaLaboral: Date;
     public terminoJornadaLaboral: Date;
     public observacionesCotizacion: string;
+    public observacionesCotizacionCondEsp: string;
     public trabajoHecho: boolean;
     public adicional: boolean;
     public urgencia: boolean;
@@ -73,7 +76,9 @@ export class Solp extends CommonResponse {
     public validarAdicional: boolean;
     public mensajeCotizacion: string;
     public archivosCotizacionesNuevos: Array<File>;
+    public archivosCotizacionesNuevosCondEsp: Array<File>;
     public archivosCotizaciones: Array<ArchivoModel>;
+    public archivosCotizacionesCondEsp: Array<ArchivoModel>;
     public liberadoresSap: any[] = [];
     public condEspProveedorAsignado: boolean;
     public editarCondicionesEspeciales: boolean = true;
@@ -162,6 +167,8 @@ export class Solp extends CommonResponse {
 
         this.archivosCotizacionesNuevos = new Array<File>();
         this.archivosCotizaciones = new Array<ArchivoModel>();
+        this.archivosCotizacionesNuevosCondEsp = new Array<File>();
+        this.archivosCotizacionesCondEsp = new Array<ArchivoModel>();
 
         if (solp != null) {
             // Paso 1
@@ -212,6 +219,8 @@ export class Solp extends CommonResponse {
             this.usuarioComprasId = solp.UsuarioCompras.Id || 0;
             this.descripcionTecnica = solp.TieneDescripcionTecnica;
             this.entregaDocumentacion = solp.TieneDocumentacionTecnica;
+            this.requisitoCiberseguridad = solp.RequisitoCiberseguridad;
+
             if (solp.FechaHoraLimiteConsulta != null) {
                 this.fechaLimiteFecha = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
                 this.fechaLimiteHora = new Date(this.getDateFromAspNetFormat(solp.FechaHoraLimiteConsulta));
@@ -241,6 +250,16 @@ export class Solp extends CommonResponse {
                         nombreArchivo: x.Nombre,
                     }
                 });
+
+            this.archivosCotizacionesCondEsp = solp.Adjuntos
+            .filter(x => x.FileKey == "adjuntoCotizacionesSolpCondEsp")
+            .map(x => {
+                return {
+                    id: x.Id,
+                    nombreArchivo: x.Nombre,
+                }
+            });    
+
             this.jornadaLaboralDias.forEach(k => {
                 k.selected = solp.JornadaLaboral.includes(k.weekDay);
             });
@@ -248,8 +267,10 @@ export class Solp extends CommonResponse {
             this.terminoJornadaLaboral = new Date(this.getDateFromAspNetFormat(solp.JornadaLaboralHasta));
             this.ejecucion = solp.DiasEjecucion || '';
             this.observacionesCotizacion = solp.ObservacionesCotizacion;
+            this.observacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
             this.proveedorAsignado_Id = solp.ProveedorAsignado_Id;
             this.proveedorAsignado = solp.ProveedorAsignado;
+            this.codigoProveedorSap = solp.CodigoProveedorSap;
             this.trabajoHecho = solp.TrabajoYaHecho;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;

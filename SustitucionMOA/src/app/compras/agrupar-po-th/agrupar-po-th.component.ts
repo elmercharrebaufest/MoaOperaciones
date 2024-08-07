@@ -15,6 +15,8 @@ import { SolpDto } from './agrupar-po-th-model';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { Paginator } from 'primeng/paginator';
+import { Adjuntos } from '../../common/models/adjuntos';
+import { AdjuntosSolpDto } from './adjuntos-solp-model';
 
 @Component({
     selector: 'app-agrupar-po-th',
@@ -38,7 +40,10 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     deshabilitarCheck: boolean;
     resultadoAgrupar: any;
     displayPeticionAgrupada: boolean = false;
-
+    adjuntosSolpDto: AdjuntosSolpDto = {} as AdjuntosSolpDto;
+    displayConfirmacionAgrupar: boolean = false;
+    resultadoDesagrupar: any;
+    displayPeticionDesagrupada: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -90,6 +95,8 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     columna: string = "NroSolp";
     proveedorSeleccionado: any = {};
     proveedores: any[] = new Array();
+    displayAdjuntosSolp: boolean = false;
+
 
     Agrupada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
     selectAgrupada: boolean | null = null;
@@ -228,10 +235,11 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     onBuscar() {
-        this.filtrosPOAgrupada.Orden = this.orden,
+        this.filtrosPOAgrupada.Orden = this.orden,       
         this.filtrosPOAgrupada.Columna = this.columna,
         this.filtrosPOAgrupada.CodigoProveedor = this.proveedorSeleccionado.CodigoProveedor;
         this.filtrosPOAgrupada.NombrePedido = this.nombrePedido;
+        this.filtrosPOAgrupada.NroPo = this.nroPo;
         this.filtrosPOAgrupada.GrupoDeCompras = this.selectGrupoCompras.join(",");
         this.filtrosPOAgrupada.Centros = this.selectCentro.join(",");
         this.filtrosPOAgrupada.ClaseDocumento = this.selectClaseDocumento.join(",");
@@ -311,6 +319,7 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
             this.selectValorTipoImputacion = filtrosGuardados.ValorTipoImputacion ? filtrosGuardados.ValorTipoImputacion.split(",") : [];
             this.codigoProveedor = filtrosGuardados.CodigoProveedor;
             this.nombrePedido = filtrosGuardados.NombrePedido;
+            this.nroPo = filtrosGuardados.NroPo;
             this.fechaInicio = new Date(filtrosGuardados.FechaDesde);
             this.fechaFin = new Date(filtrosGuardados.FechaHasta == undefined ? filtrosGuardados.FechaDesde : filtrosGuardados.FechaHasta);
             this.selectAgrupada = filtrosGuardados.Agrupada;
@@ -392,18 +401,20 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
     }
 
     agruparPO() {
+        var idsSeleccionados = this.devolverIdsSeleccionados();
+        if (idsSeleccionados.length <= 1) {
+            this.floatMsgService.setInfoMsg("Debe seleccionar al menos dos peticiones de oferta diferentes para agruparlas.");
+        } else {
+            this.displayConfirmacionAgrupar = true;
+        }
+    }
+
+    devolverIdsSeleccionados() {
         let idsSeleccionados = this.listaSolp
             .filter(solp => solp.Selected)
             .map(solp => solp.NroPeticionDeOferta);
-
-        // Hacer un "distinct" de idsSeleccionados
         idsSeleccionados = idsSeleccionados.filter((value, index, self) => self.indexOf(value) === index);
-        
-        if (idsSeleccionados.length > 1) {
-            this.agruparPeticionesDeOferta(idsSeleccionados);
-        } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar al menos dos peticiones de oferta diferentes para agruparlas.");
-        }
+        return idsSeleccionados;
     }
 
     agruparPeticionesDeOferta(ids) {
@@ -439,4 +450,99 @@ export class AgruparPoThComponent extends ListBaseComponent implements OnInit {
         this.displayPeticionAgrupada = false;
         this.onBuscar();
     }
+
+    cerrarPopUpDesagrupar() {
+        this.displayPeticionDesagrupada = false;
+        this.onBuscar();
+    }    
+
+    obtenerAdjuntosSolpAgrupar(nroSolp: string) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.obtenerAdjuntosSolpAgrupar(nroSolp).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.adjuntosSolpDto = result.data;
+                        console.log("solps adjuntos", this.adjuntosSolpDto);
+                        this.abrirModalAdjuntos(nroSolp)
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+    
+    cerrarAdjuntos() {
+        this.displayAdjuntosSolp = false;
+    }
+
+    abrirModalAdjuntos(nroSolp) {
+        this.displayAdjuntosSolp = true;
+        this.nroSolp = nroSolp;
+    }
+
+    aceptarAgrupacion() {
+        this.cerrarConfimarcionAgrupar();
+        var idsSeleccionados = this.devolverIdsSeleccionados();
+        this.agruparPeticionesDeOferta(idsSeleccionados);      
+    }
+
+    cerrarConfimarcionAgrupar() {
+        this.displayConfirmacionAgrupar = false;
+    }
+
+    desagruparPO(nroSolp: string, po: number) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.desagruparPeticionDeOferta(nroSolp.toString(), po.toString()).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        this.resultadoDesagrupar = result.data.IdEntidad;
+                        console.log(result.data.IdEntidad);
+                        this.displayPeticionDesagrupada = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                });
+        } catch (e) {
+            this.blockUI.stop();
+            this.floatMsgService.setErrorMsg(e);
+            return false;
+        }
+        return false; 
+    }
+
+    abrirModalDesagruparPO(nroSolp: string, po: number) {
+        this.confirmationService.confirm({
+            key: 'desagruparPo',
+            message: `¿Está seguro que desea desagrupar la solp #${nroSolp} de la petición de oferta #${po}?`,
+            accept: () => {
+                this.desagruparPO(nroSolp, po)
+            }
+        });
+    }
+
 }

@@ -646,7 +646,7 @@
                                     DASHBOARD PROVEEDOR
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('VER SOLPS PROVEEDOR')">
+                            <div *ngIf="isAuthorized('VER REPORTE OC')">
                                 <a (click)="goToSeccion('/compras/reporte-oc')" href="#">
                                     REPORTE ORDEN DE COMPRA
                                 </a>
@@ -670,13 +670,13 @@
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                            <div *ngIf="isAuthorized('VER PO MULTIPLE')">
                                 <a (click)="goToSeccion('/compras/crear-po-multiple')" href="#">
                                     PUBLICAR PO MULTIPLE
                                 </a>
                             </div>
 
-                            <div *ngIf="isAuthorized('VER SOLPS COMPRADOR')">
+                            <div *ngIf="isAuthorized('VER AGRUPAR PO')">
                                 <a (click)="goToSeccion('/compras/agrupar-po-th')" href="#">
                                     AGRUPAR PO TH
                                 </a>

@@ -12,6 +12,9 @@ export class StepperActionsComponent implements OnInit {
     disabledSave: boolean;
 
     @Input()
+    esAuditor: boolean;
+
+    @Input()
     pasos: Paso[];
 
     @Input()
@@ -90,7 +93,9 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        this.guardarCambiosEmitter.next(params);
+        if(!this.esAuditor){
+            this.guardarCambiosEmitter.next(params);
+        }    
     }
 
     onPasoSiguiente() {
@@ -100,7 +105,9 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        this.guardarCambiosEmitter.next(params);
+        if(!this.esAuditor){
+            this.guardarCambiosEmitter.next(params);
+        }
     }
 
     onGuardar() {
@@ -109,15 +116,18 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: false
         };
-        this.guardarCambiosEmitter.next(params);
+        if(!this.esAuditor){
+            this.guardarCambiosEmitter.next(params);
+        }    
     }
 
     onShowFinalizarDialog() {
-        this.showFinalizarDialogEmitter.next();
+        if(!this.esAuditor){
+            this.showFinalizarDialogEmitter.next();
+        }
     }
 
     onPreview() {
         this.previewEmitter.next();
     }
-
 }
