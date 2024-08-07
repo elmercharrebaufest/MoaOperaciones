@@ -14,10 +14,12 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
-import { CotizacionHoraDto, CotizacionDto, CotizacionPosicionDto } from '../../../modelos/cotizacionDto';
+import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
 import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-model';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -299,6 +301,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 MonedaPO: peticion.Posicion.MonedaId,
                                 MonedaId: cotizacionPos.Moneda_Id,
                                 CentroPosicion: peticion.Posicion.Centro,
+                                EsMaterialCatalogado: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && !!peticion.Posicion.CodigoMaterialSap.Codigo,
+                                CodigoMaterialSap: peticion.Posicion.CodigoMaterialSap.Codigo,
+                                CodigoCentroSap: peticion.Posicion.Centro.CodigoSap,
+                                CodigoGrupoComprasSap: peticion.Posicion.GrupoCompras.CodigoSap,
                                 Descripcion: peticion.Posicion.CodigoMaterialSap.Descripcion == null ? peticion.Posicion.Tarea : peticion.Posicion.CodigoMaterialSap.Descripcion
                             })
                     })
@@ -317,21 +323,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
-            var posRegion = this.lista[0].CentroPosicion.CodigoSap;
-
-            if (posRegion) {
-                this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
-                this.selectedRegion = { label: this.centroDire.label, value: this.centroDire.value };
-            }
-
-            this.adjudicacion.AdjudicacionPosiciones = this.lista;
-            this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
-            this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
-
-            this.displayRegionSap = true;
-
-            this.validacionTextosIncompletos();
-
+            this.validarFechaVigenciaRegistroInfo(usuario);
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
@@ -431,38 +423,38 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    validarMonedasDiferentes(){
+    validarMonedasDiferentes() {
         if (this.adjudicacion != undefined) {
             this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
-        this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    if(result.data.Errores.length > 0){
-                        this.mensajeValidacionMoneda = result.data.Errores[0];
-                        this.displayValidacionMoneda = true;
-                    }else{
-                        this.confirmacionAdjudicar();
+            this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
                     }
-                   
+                    else {
+                        if (result.data.Errores.length > 0) {
+                            this.mensajeValidacionMoneda = result.data.Errores[0];
+                            this.displayValidacionMoneda = true;
+                        } else {
+                            this.confirmacionAdjudicar();
+                        }
+
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        )
-    }
+            )
+        }
     }
 
-    onCerrarValidacionMoneda(){
+    onCerrarValidacionMoneda() {
         this.displayValidacionMoneda = false;
     }
 
-    onSiguientePasoValidacionMoneda(){
+    onSiguientePasoValidacionMoneda() {
         this.displayValidacionMoneda = false;
         this.confirmacionAdjudicar();
     }
@@ -807,7 +799,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
         const preciosPorMoneda: { [key: string]: number } = {};
         for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-            
             if (!subpos.MonedaDescripcion) {
                 continue;
             }
@@ -819,14 +810,70 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.resultado = '';
         for (const moneda in preciosPorMoneda) {
             if (preciosPorMoneda.hasOwnProperty(moneda)) {
-                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 this.resultado += `${moneda} ${precioFormateado}<br>`;
             }
         }
         return this.resultado;
     }
-   
+    posicionesSinVigencia = [];
+    validarFechaVigenciaRegistroInfo(usuario) {
+        this.blockUI.start('Validando fechas de vigencia ...');
+        forkJoin(this.lista
+            .filter(x => x.EsMaterialCatalogado)
+            .map(({ CodigoGrupoComprasSap, CodigoCentroSap, CodigoMaterialSap, CotizacionPosicion_Id }) =>
+                this.service.validarFechaVigenciaRegistroInfo({
+                    grupoComprasCodigoSap: CodigoGrupoComprasSap,
+                    centroCodigoSap: CodigoCentroSap,
+                    materialCodigoSap: CodigoMaterialSap,
+                    cotizacionPosicionId: CotizacionPosicion_Id
+                })))
+            .pipe(
+                finalize(() => this.blockUI.stop())
+            )
+            .subscribe(res => {
+                const errores = res.filter(x => x.error);
+                if (errores.length > 0) {
+                    this.floatMsgService.setErrorMsg(errores[0].error);
+                    return;
+                }
+                this.posicionesSinVigencia = this.lista.filter(x =>
+                    x.EsMaterialCatalogado
+                    && this.obtenerInfoRespuestaRegistroVencido(x.CotizacionPosicion_Id, res)
+                ).map(x => ({
+                    ...x,
+                    FechaVigencia:
+                        this.obtenerInfoRespuestaRegistroVencido(x.CotizacionPosicion_Id, res)
+                            .data.FechaVigencia
+                }));
+                if (!this.posicionesSinVigencia.length) {
+                    this.mostrarModalRegionSap(usuario)
+                }
+            })
+    }
 
+    onCerrarActualizarSinVigenciaModal() {
+        this.posicionesSinVigencia = [];
+    }
+    obtenerInfoRespuestaRegistroVencido(cotizacionPosicionId, listaRespuesta) {
+        return listaRespuesta.find(y => y.data.CotizacionPosicionId === cotizacionPosicionId && !y.data.EstaVigente)
+    }
 
+    mostrarModalRegionSap(usuario) {
+        var posRegion = this.lista[0].CentroPosicion.CodigoSap;
+
+        if (posRegion) {
+            this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
+            this.selectedRegion = { label: this.centroDire.label, value: this.centroDire.value };
+        }
+
+        this.adjudicacion.AdjudicacionPosiciones = this.lista;
+        this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
+        this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
+
+        this.displayRegionSap = true;
+
+        this.validacionTextosIncompletos();
+    }
 }
 

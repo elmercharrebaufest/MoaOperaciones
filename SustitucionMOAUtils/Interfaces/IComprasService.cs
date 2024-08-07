@@ -113,5 +113,7 @@ namespace SustitucionMOAUtils.Interfaces
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
         Resultado DesagruparPO(string nroSolp, string po);
         Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA);
+        ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
+        void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
     }
 }

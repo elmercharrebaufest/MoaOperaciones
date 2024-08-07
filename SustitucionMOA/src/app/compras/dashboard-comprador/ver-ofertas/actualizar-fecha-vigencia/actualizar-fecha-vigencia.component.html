@@ -1,0 +1,43 @@
+<p-dialog [(visible)]="posicionesSinVigencia.length" modal="modal" [width]="850" [draggable]="false" [closable]="false"
+    appendTo="body" positionTop="30" [height]="400" [max] [contentStyle]="{ 
+        'max-height':'400px', 
+        'min-height':'400px'}" (onHide)="cerrarActualizarSinVigenciaModal()">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Posiciones con fechas vigencias vencidas</b>
+    </p-header>
+    <div class="container-fluid" style="height: 400px;">
+        <section class="ui-g ui-fluid">
+            <mensaje #mensajeActualizarFechaVigenciaComponent></mensaje>
+            <div class="ui-g-12 ui-md-12">
+                <h3>Nueva fecha de vigencia:</h3>
+                <p-calendar class="calendar" [locale]="es" dateFormat="dd-M-yy" [(ngModel)]="nuevaFechaVigencia"
+                    [showIcon]="true">
+                </p-calendar>
+            </div>
+            <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posicionesSinVigencia"
+                dataKey="Id">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th class="columna" style="background-color: #4760ac !important;">Indice</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
+                        <th class="columna" style="background-color: #4a1884 !important;">Fecha de Vigencia</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
+                    <tr>
+                        <td class="columna">{{posicionCompra?.Posicion}}</td>
+                        <td class="columna">{{posicionCompra?.Descripcion}}</td>
+                        <td class="columna">
+                            {{ posicionCompra?.FechaVigencia | date:'dd/MM/yy' }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </section>
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger" (click)="cerrarActualizarSinVigenciaModal()">CANCELAR</button>
+        <button type="button" class="btn btn-primary" [disabled]="!nuevaFechaVigencia"
+            (click)="actualizarFechaVigenciaRegistroInfo()">ACTUALIZAR</button>
+    </p-footer>
+</p-dialog>
