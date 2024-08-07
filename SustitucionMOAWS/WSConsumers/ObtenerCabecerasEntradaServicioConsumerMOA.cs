@@ -140,7 +140,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabe.Aprobador = "-"; 
                 cabe.Fiscal = "-";
                 cabe.DesdeSap = true;
-
+                cabe.Moneda = cabecera.CURRENCY;
                 result.Add(cabe);
             }
             return result;

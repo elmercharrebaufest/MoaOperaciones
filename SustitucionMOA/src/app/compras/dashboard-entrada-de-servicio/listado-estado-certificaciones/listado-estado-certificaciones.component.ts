@@ -919,7 +919,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
     const montoAnterior: number = cantidadAnterior * monto;
     const coin: string = moneda === 'ARP' ? '$ ' : '';
-    const montoFormatted: string = parseFloat(montoAnterior.toFixed(2)).toString();
+    const montoFormatted: string = montoAnterior.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
     return `${coin}${montoFormatted}`;
   }
@@ -932,7 +935,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
     const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
     const coin: string = moneda === 'ARP' ? '$ ' : '';
-    const montoFormatted: string = parseFloat(montoAcumulado.toFixed(2)).toString();
+    const montoFormatted: string = montoAcumulado.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
     return `${coin}${montoFormatted}`;
   }
