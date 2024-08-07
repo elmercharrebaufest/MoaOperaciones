@@ -90,7 +90,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarListadoPuerto: boolean = false;
 
     mostrarBotonSolicitarAnulacion: boolean = false;
-    mostrarBotonAprobarRechazarAnulacion: boolean = false;
     mostrarBotonEdicionFinalizada: boolean = false;
     mostrarBotonVerificarCompensacion: boolean = false;
 
@@ -147,52 +146,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         });
     }
 
-    confirmarRSA(Id) {
-        this.confirmationService.confirm({
-            key: 'confirmarRSA',
-            message: '¿Desea rechazar la solicitud de anulación?',
-            accept: () => {
-                this.rechazarSolicitudAnulacion(Id)
-            },
-            reject: () => {
-            }
-        });
-    }
-
-    rechazarSolicitudAnulacion(Id) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        try {
-            this.unsubscribe();
-            this.subscription = this.service.rechazarSolicitudAnulacion(Id).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
-                        this.navService.navegarSeccion(
-                            "/ordenes-de-carga"
-                        );
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
-    }
-
     validarSolicitudAnulacion(ordenId: number) {
         try {
             this.mensajeComponent.setMsgsEmpty();
@@ -206,7 +159,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.blockUI.stop();
                     let puedeSolicitarAnulacion = this.manejarErroresApiResponse(result);
                     if (puedeSolicitarAnulacion) {
-                        this.solicitarAnulacion(ordenId);
+                        this.anularOrden();
                     }
                     else {
                         if (puedeSolicitarAnulacion === false) {
@@ -255,43 +208,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         finally { return false; }
     }
 
-    solicitarAnulacion(Id) {
-        try {
-            this.mensajeComponent.setMsgsEmpty();
-            this.spinnerComponent.showIt();
-            this.unsubscribe();
-            this.blockUI.start('Registrando solicitud...');
-
-            this.subscription = this.service.solicitarAnulacion(Id).subscribe(
-                result => {
-                    this.spinnerComponent.hideIt();
-                    this.blockUI.stop();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else {
-                        this.mensajeComponent.setSuccessMsg(result.data);
-                        this.navService.navegarSeccion(
-                            "/ordenes-de-carga"
-                        );
-                    }
-                },
-                error => {
-                    this.spinnerComponent.hideIt();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.spinnerComponent.hideIt();
-            this.mensajeComponent.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-        return false; //<-- Prevent Refresh
-    }
-
     //Está función va a desaparecer cuando hagamos el refactor de como mostrar los datos de esta pantalla
     verificarListado() {
 
@@ -325,7 +241,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     verificarBotones() {
         this.mostrarBotonContratos = false;
         this.mostrarBotonVerHistorial = false;
-        this.mostrarBotonAprobarRechazarAnulacion = false;
         this.mostrarBotonAnularPorVencimiento = false;
         this.mostrarBotonAnular = false;
         this.mostrarBotonActivarOC = false;
@@ -338,6 +253,18 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonVerificarCompensacion = false;
         this.mostrarBotonVerificarCuitsTercero = false;
 
+        let estadosPuedeAnular: EstadoOrdenDeCarga[] = [
+            EstadoOrdenDeCarga.Confirmado,
+            EstadoOrdenDeCarga.ContratoVencido,
+            EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
+            EstadoOrdenDeCarga.EntregaGenerada,
+            EstadoOrdenDeCarga.EntregaPendiente,
+            EstadoOrdenDeCarga.ErrorDeCarga,
+            EstadoOrdenDeCarga.Pendiente,
+            EstadoOrdenDeCarga.PendienteAprobacionCredito,
+            EstadoOrdenDeCarga.Vencida
+        ];
+
         if (this.estadosVerHistorial.indexOf(this.ordenDeCarga.Estado) >= 0) {
             this.mostrarBotonVerHistorial = true;
             return;
@@ -348,7 +275,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             this.mostrarBotonEditar = true;
 
             if (this.esAnulador) {
-                if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Confirmado || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ContratoVencido || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaGenerada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaPendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.ErrorDeCarga || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Pendiente || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.PendienteAprobacionCredito || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion) {
+                if (estadosPuedeAnular.indexOf(this.ordenDeCarga.Estado) >= 0) {
                     this.mostrarBotonAnular = true;
                 }
             }
@@ -386,9 +313,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                     this.mostrarBotonActivarOC = true;
                 }
             }
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada) {
-                this.mostrarBotonAprobarRechazarAnulacion = true;
-            }
             if (this.ordenDeCarga.TipoContrato === TipoContrato.FacturaAnticipada && !this.ordenDeCarga.NumeroFacturaSeleccionada) {
                 this.mostrarBotonSeleccionarFactura = true;
             }
@@ -408,7 +332,7 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         if (this.esAnulador) {
             this.mostrarBotonAnular = true;
         }
-        if (!(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.AnulacionSolicitada || this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada)) {
+        if (estadosPuedeAnular.indexOf(this.ordenDeCarga.Estado) >= 0) {
             if ((this.esTercero || ((this.esCliente() || this.esCorredor) && !this.mostrarBotonAnular)) && !(this.ordenDeCarga.Estado == EstadoOrdenDeCarga.Vencida))
                 this.mostrarBotonSolicitarAnulacion = true;
 

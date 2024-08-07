@@ -293,28 +293,6 @@ namespace SustitucionMOAUtils.Services.Email
             }
         }
 
-        public void EnviarMailSolicitudAnulacion(OrdenDeCarga orden)
-        {
-            var detallesOrden = new StringBuilder();
-            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
-
-            string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
-            var cabecera = "Orden :";
-            detallesOrden.Append(
-                $"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>"
-                );
-            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, detallesOrden, titulo, cabecera);
-
-            var emailSenderData = new EmailSenderData()
-            {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
-                Asunto = $"Solicitud de anulación, Orden de carga N° {orden.Id}",
-                Cuerpo = cuerpo
-            };
-
-            emailService.EnviarMail(emailSenderData);
-        }
-
         public void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes)
         {
             var cuerpo = $"El camión {patenteChasis} se encuentra autorizado en órdenes pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
