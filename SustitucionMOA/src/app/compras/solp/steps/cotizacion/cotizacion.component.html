@@ -5,6 +5,7 @@
                 <div class="row myRow alinearTitulo" style="padding-top: 2px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
+                        <p class="text-danger" style="font-size: x-small; margin: 0px;">Visible para el Proveedor</p>
                         <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                       [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
                             <ng-template *ngIf="model.archivosCotizacionesNuevos.length == 0" pTemplate="toolbar">
@@ -40,7 +41,7 @@
                         </p-panel>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
-                        Observaciones
+                        Observaciones<p class="text-danger" style="font-size: x-small; margin: 0px;">Visible para el Proveedor</p>
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
                                   name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
                     </div>
@@ -284,6 +285,7 @@
                         <label class="labelCompras" for="checkbox">Justificacion y Adjuntos de Condiciones Especiales</label>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
+                            <p class="text-danger" style="font-size: x-small; margin: 0px;">Sólo visible para el Comprador</p>
                             <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizacionesCondEsp" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                         [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandlerCondEsp($event)">
                                 <ng-template *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0" pTemplate="toolbar">
@@ -323,6 +325,7 @@
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                             Justificación
+                            <p class="text-danger" style="font-size: x-small; margin: 0px;">Sólo visible para el Comprador</p>
                             <textarea [ngModelOptions]="{standalone:true}" 
                                       [(ngModel)]="model.observacionesCotizacionCondEsp" 
                                       (ngModelChange)="validarChecks()"

@@ -330,6 +330,8 @@
     <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
+    <Compile Include="Entities\VerificarActividadUsuario.cs" />
+    <Compile Include="Enums\EnviarCircularEnum.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
