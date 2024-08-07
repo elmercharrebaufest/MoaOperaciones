@@ -524,7 +524,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           Cantidad: item.Cantidad,
           CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
           CantidadReal: item.Cantidad,
-          Importe: item.MontoCertificar,
+          Importe: item.Monto,
           Descripcion: item.TextoBreveServicio,
           Moneda: entradaServicio.Moneda,
           MontoACertificar: item.MontoCertificar,
