@@ -255,16 +255,18 @@ namespace SustitucionMOAUtils.Services
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
-                        Dictionary<string, Aprobaciones> detallesAprobacionPorLinea = ESTemporales
+                        Dictionary<string, List<Aprobaciones>> detallesAprobacionPorLinea = ESTemporales
                         .GroupBy(detalle => detalle.NRO_ES_SAP.ToString())
-                        .ToDictionary(g => g.Key, g => g.First());
+                        .ToDictionary(g => g.Key, g => g.ToList());
 
+                        int i = 0;
                         // Iterar sobre los detalles de la entrada de servicio
                         documento.entradaServicioDetalle = documento.entradaServicioDetalle
                         .Select(detalleSAP =>
                         {
-                            if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out Aprobaciones detalle))
+                            if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out List<Aprobaciones> detalles))
                             {
+                                var detalle = detalles[i];
                                 detalleSAP.NumeroLinea = int.Parse(detalleSAP.Ext_line).ToString();
                                 detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
                                 detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
@@ -275,6 +277,7 @@ namespace SustitucionMOAUtils.Services
                                 detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
                                 detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
                                 detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
+                                detalleSAP.Monto = Convert.ToDecimal(detalle.Monto, CultureInfo.InvariantCulture);
                                 documento.MotivoRechazo = detalle.Motivo_rechazo;
                                 documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
                                 documento.Ingresante = detalle.Ingresante_CDS;
@@ -296,6 +299,7 @@ namespace SustitucionMOAUtils.Services
                                 documento.FechaAprobacion = fechaFormateada;
                                 documento.FechaCreacion = fechaFormateada;
                             }
+                            i++;
                             return detalleSAP;
                         }).ToList();
                     }
@@ -1144,7 +1148,7 @@ namespace SustitucionMOAUtils.Services
                     aprobacion.Planned_package = esItem.PlannedPackage;
                     aprobacion.Planned_line = esItem.PlannedLine;
                     
-                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage);
+                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage && report.LINE_NO.ToString() == esItem.PlannedLine);
                     if (itemReport != null)
                     {
                         aprobacion.Cantidad_Anterior = Decimal.ToDouble(itemReport.CantidadReal);
