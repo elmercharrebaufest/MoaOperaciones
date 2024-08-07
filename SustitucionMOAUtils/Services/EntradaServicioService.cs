@@ -1166,7 +1166,7 @@ namespace SustitucionMOAUtils.Services
                     aprobacion.Planned_package = esItem.PlannedPackage;
                     aprobacion.Planned_line = esItem.PlannedLine;
                     
-                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage);
+                    ReporteDto itemReport = reporte.Find(report => report.Id == esItem.PlannedPackage && report.LINE_NO.ToString() == esItem.PlannedLine);
                     if (itemReport != null)
                     {
                         aprobacion.Cantidad_Anterior = Decimal.ToDouble(itemReport.CantidadReal);
