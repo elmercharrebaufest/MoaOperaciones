@@ -563,15 +563,15 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.validationError = false;
     }
 
-    filteredList: string[] = [];
+    filteredList: any[] = [];
     validacionOk: boolean = false;
 
     onInput() {
         var inputValue = this.formularioUsuario.controls['suplente'].value || '';
         if (inputValue.length > 3) {
             this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
-            if (this.filteredList.length === 0) {
-                
+            if (this.filteredList[0].Mail === inputValue) {
+                this.filteredList = [];
             }
         }
     }    

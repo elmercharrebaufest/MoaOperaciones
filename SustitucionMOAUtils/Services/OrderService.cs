@@ -105,7 +105,7 @@ namespace SustitucionMOAUtils.Services
 
             Proveedor _proveedor = new Proveedor();
 
-            if (!string.IsNullOrEmpty(ordenesCompra[0].ProveedorNombre))
+            if (ordenesCompra.Count > 0 && !string.IsNullOrEmpty(ordenesCompra[0].ProveedorNombre))
             {
                 string razonSocial = ordenesCompra[0].ProveedorNombre;
 
