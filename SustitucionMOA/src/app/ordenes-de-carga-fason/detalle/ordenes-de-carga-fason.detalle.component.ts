@@ -148,7 +148,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
                 },
                 reject: () => {
                 }
-            }
+            })
         }
     }
 
