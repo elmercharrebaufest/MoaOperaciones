@@ -12,7 +12,7 @@
         EntregaPendiente = 7,
         AnuladaPorVencimiento = 8,
         ErrorDeCarga = 9,
-        EdicionSolicitada = 10,
+        //EdicionSolicitada = 10,
         //AnulacionSolicitada = 11,
         ContratoVencido = 12,
         EdicionRechazada = 13,
@@ -41,7 +41,6 @@
                 case EstadoOrdenDeCarga.Confirmado:
                 case EstadoOrdenDeCarga.Vencida:
                 case EstadoOrdenDeCarga.EntregaPendiente:
-                case EstadoOrdenDeCarga.EdicionSolicitada:
                 case EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion:
                     return "yellow";
                 case EstadoOrdenDeCarga.EntregaGenerada:
@@ -80,8 +79,6 @@
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
                     return "Anulada por vencimiento";
-                case EstadoOrdenDeCarga.EdicionSolicitada:
-                    return "Edición solicitada";
                 case EstadoOrdenDeCarga.ContratoVencido:
                     return "Contrato vencido";
                 case EstadoOrdenDeCarga.EdicionRechazada:
@@ -116,8 +113,6 @@
                     return "Vencida";
                 case EstadoOrdenDeCarga.EntregaGenerada:
                     return "OK";
-                case EstadoOrdenDeCarga.EdicionSolicitada:
-                    return "Edición Solicitada";
                 case EstadoOrdenDeCarga.Anulada:
                     return "Anulada";
                 case EstadoOrdenDeCarga.AnuladaPorVencimiento:
@@ -156,8 +151,6 @@
                     return EstadoOrdenDeCarga.Anulada;
                 case "Anulada por vencimiento":
                     return EstadoOrdenDeCarga.AnuladaPorVencimiento;
-                case "Edición solicitada":
-                    return EstadoOrdenDeCarga.EdicionSolicitada;
                 case "Contrato vencido":
                     return EstadoOrdenDeCarga.ContratoVencido;
                 case "Edición rechazada":

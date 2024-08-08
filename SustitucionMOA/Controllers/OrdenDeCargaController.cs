@@ -222,29 +222,6 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult EdicionFinalizada(int ordenId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaService.EdicionFinalizada(ordenId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
         public ActionResult NotificarTransporte(int ordenId)
         {
             try
@@ -392,54 +369,6 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.ForzarCreacionOrden(ordenId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult SolicitarEdicion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.SolicitarEdicionOrden(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult RechazarSolicitudEdicion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.RechazarSolicitudEdicion(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
             }
             catch (InfoCustomException e)
             {

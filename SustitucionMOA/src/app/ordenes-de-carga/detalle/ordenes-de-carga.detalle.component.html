@@ -541,10 +541,6 @@
                                 <input type="button" (click)="confirmarSA(ordenDeCarga.Id)"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
-                                <input type="button" (click)="abrirModalEdicionFinalizada()"
-                                    class="btn-custom btn-remove btn-grande" value="Edición finalizada">
-                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVolverADetalle">
                                 <input type="button" (click)="navegarADetalle()" class="btn-custom btn-add btn-grande"
                                     value="Volver a Detalle">
@@ -781,50 +777,6 @@
                         [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--Modal edición finalizada-->
-    <button type="button" style="display:none" id="openEdicionFinalizada" data-toggle="modal"
-        data-target="#modalEdicionFinalizada"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalEdicionFinalizada" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
-                </div>
-                <div class="modal-body">
-                    <spinner #spinnerModalEdicion></spinner>
-                    <div *ngIf="mensajeValidacionScato" class="row"
-                        class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
-                        {{mensajeValidacionScato}}
-                    </div>
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">
-                        ¿Está seguro de que desea finalizar la edición de la orden de carga?
-                    </div>
-                    <br>
-                </div>
-                <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalEdicionFinalizada" style="display: inline-flex;">
-                        Cancelar
-                    </button>
-                    <button type="button" class="btn-custom btn-success btn-mediano" (click)="edicionFinalizada('A')"
-                        style="display: inline-flex;" [disabled]="validandoEstadoScato">
-                        Aprobar
-                    </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="edicionFinalizada('R')"
-                        style="display: inline-flex;">
-                        Rechazar
-                    </button>
-
                 </div>
             </div>
         </div>

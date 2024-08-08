@@ -440,7 +440,7 @@ namespace SustitucionMOATest.Services
                 InformadaSAP = true,
                 ContratoIngresado = "1111111",
                 NombreChofer = "Enzo V.",
-                CUITChofer = "20637698235",
+                CUITChofer = "33703558599",
                 CUITTransporte = "20637698295",
                 HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
                 Cliente = proveedor,
@@ -448,7 +448,8 @@ namespace SustitucionMOATest.Services
                 NumeroPedido = "11",
                 Producto = producto,
                 Producto_Id = producto.Id,
-                NumeroEntrega = "9834755"
+                NumeroEntrega = "9834755",
+                ChasisAcoplado = "ABC123"
             };
 
             var orden2 = new OrdenDeCarga
@@ -458,7 +459,7 @@ namespace SustitucionMOATest.Services
                 InformadaSAP = true,
                 ContratoIngresado = "212121",
                 NombreChofer = "Enzo",
-                CUITChofer = "20111698235",
+                CUITChofer = "20268774603",
                 CUITTransporte = "20111698295",
                 HistorialCambios = new List<OrdenDeCargaCambiosHistorial> { },
                 Cliente = proveedor,
@@ -466,7 +467,8 @@ namespace SustitucionMOATest.Services
                 NumeroPedido = "11",
                 Producto = producto,
                 Producto_Id = producto.Id,
-                NumeroEntrega = "9834755"
+                NumeroEntrega = "9834755",
+                ChasisAcoplado = "DEF456"
             };
             var respuestaScato = new ScatoRepo.Respuesta<ScatoRepo.Chofer> { IsValid = true, Data = new ScatoRepo.Chofer() };
             var mensajesSap = new ZMPES7060[] { new ZMPES7060 { MENSAJE = "CC-00" } };
@@ -475,6 +477,14 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>())).Returns(orden);
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
             repositorioMock.Setup(x => x.Obtener<Material>(It.IsAny<int>())).Returns(producto);
+            repositorioMock
+                .Setup(x => x.Listar(
+                    It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
+                    It.IsAny<int>(),
+                    It.IsAny<string>(),
+                    It.IsAny<DirOrden>(),
+                    It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
+                .Returns(new List<OrdenDeCarga>());
 
             consumerOrdenCargaMOA
                 .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
@@ -494,9 +504,9 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(orderId, result.IdEntidad);
             Assert.AreEqual(SuccessMsg.OrdenDeCargaActualizada, result.Mensaje);
-            Assert.AreEqual(EstadoOrdenDeCarga.EdicionSolicitada, orden.Estado);
-            repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Exactly(3));
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
+            Assert.AreEqual(EstadoOrdenDeCarga.Confirmado, orden.Estado);
+            repositorioMock.Verify(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()), Times.Exactly(2));
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(1));
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
 
