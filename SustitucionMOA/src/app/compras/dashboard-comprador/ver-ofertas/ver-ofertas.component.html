@@ -782,3 +782,8 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarValidacionMoneda()">Cancelar</button>
     </p-footer>
 </p-dialog>
+
+<app-actualizar-fecha-vigencia [posicionesSinVigencia]="posicionesSinVigencia"
+    (cerrarActualizarFechaVigenciaEmitter)="onCerrarActualizarSinVigenciaModal()"
+>
+</app-actualizar-fecha-vigencia>

@@ -57,9 +57,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />
     <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\Compras\MonedaTotalDto.cs" />
+    <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoReqDto.cs" />
+    <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoResDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
