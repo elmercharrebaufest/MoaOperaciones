@@ -93,6 +93,7 @@ import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-e
 import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/filtro-dashboard-certificacion-de-servicios/filtro-dashboard-certificacion-de-servicios.component';
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
+import { AdjuntosSolpComponent } from './agrupar-po-th/adjuntos-solp/adjuntos-solp.component';
 
 
 import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
@@ -208,7 +209,8 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
         ModalAprobacionComponent,
         AuxPannelComponent,
         RecalculandoSpinnerComponent,
-        FileModalComponent
+        FileModalComponent,
+        AdjuntosSolpComponent
     ],
     providers: [
         ComprasService,

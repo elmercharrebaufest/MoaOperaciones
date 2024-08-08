@@ -214,8 +214,10 @@ export class UsuarioService extends BaseService {
     public altaNuevoProveedorCompras(altaNuevoProveedor: AltaNuevoProveedor) {
         let json = JSON.stringify({
             CUIT: altaNuevoProveedor.CUIT,
-            Mail: altaNuevoProveedor.Mail,          
-            RazonSocial: altaNuevoProveedor.RazonSocial
+            Mail: altaNuevoProveedor.Mail,
+            RazonSocial: altaNuevoProveedor.RazonSocial,
+            EsProveedorExterior: altaNuevoProveedor.EsProveedorExterior,
+
         });
 
         var payload = new FormData();

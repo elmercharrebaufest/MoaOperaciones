@@ -38,17 +38,11 @@
                                 </div>
                             </div>
                         </p-panel>
-                        <div *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizaciones == null || this.model.archivosCotizaciones.length == 0) && (this.model.archivosCotizacionesNuevos == null || this.model.archivosCotizacionesNuevos.length == 0));">
-                            <p class="text-danger">Campo obligatorio</p>
-                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
                                   name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
-                        <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacion == ''  || this.model.observacionesCotizacion == undefined || this.model.observacionesCotizacion == null)">
-                            <p class="text-danger">Campo obligatorio</p>
-                        </div>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <div class="inline-flex">
@@ -90,12 +84,19 @@
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 2em;">
                             <label class="labelCompras" for="checkbox"> Condiciones especiales</label>
                             <div>
-                                <p-checkbox [ngModelOptions]="{standalone:true}" name="trabajoHecho" [(ngModel)]="model.trabajoHecho" label="Trabajo ya hecho / Material entregado / Con presupuesto" formControlName="trabajoHecho"
-                                            binary="true" (click)="validarChecks(); limpiarCheck();" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales" (ngModelChange)="resetearFecha()" ></p-checkbox>
+                                <p-checkbox [ngModelOptions]="{standalone:true}" 
+                                            name="trabajoHecho" 
+                                            [(ngModel)]="model.trabajoHecho" 
+                                            label="Trabajo ya hecho / Material entregado / Con presupuesto" 
+                                            formControlName="trabajoHecho"
+                                            binary="true" 
+                                            (click)="validarChecks(); limpiarCheck();"  
+                                            (ngModelChange)="resetearFecha(); verificarCondicionesEspeciales(); onConditionChange();">
+                                </p-checkbox>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho && !model.adicional">
-                            <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
+                            <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" *ngIf="model.trabajoHecho && !model.adicional; else ocultar">
                                 <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                     <strong>Selección de proveedores *</strong>
                                 </div>
@@ -109,8 +110,7 @@
                                                     formControlName="proveedorSeleccionado"
                                                     [minLength]="3"
                                                     [forceSelection]="true"
-                                                    [disabled]="!model.editarCondicionesEspeciales"
-                                                    (ngModelChange)="validarChecks()">
+                                                    (ngModelChange)="validarChecks(); onConditionChange();">
                                         <ng-template let-proveedor pTemplate="item">
                                             <div class="ui-helper-clearfix">
                                                 <div style="font-size:12px;margin:10px 10px 0 0">{{proveedor.Mail}}</div>
@@ -123,36 +123,48 @@
                                     </div>
                                 </div>
                             </div>
+                            <ng-template #ocultar>
+                                <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                    <!-- Contenido alternativo o puede dejarse vacío -->
+                                </div>
+                            </ng-template>
                             <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                 <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" 
+                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH" 
                                                     (click)="onRadioButtonChange('Servicio permanente')"
                                                    [ngModel]="model.thServicioPermanente" label="Servicio permanente" [value]="true"
-                                                   binary="true" formControlName="servicioPermanente" [disabled]="!model.editarCondicionesEspeciales"> 
+                                                   binary="true" formControlName="servicioPermanente"> 
                                     </p-radioButton>
                                 </div>
     
                                 <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" [value]="true"
+                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH" [value]="true"
                                                 (click)="onRadioButtonChange('Ajuste polinomica')"
                                                 [ngModel]="model.thAjustePolinomica" label="Ajuste polinomica" 
-                                                binary="true" formControlName="ajustePolinomica" [disabled]="!model.editarCondicionesEspeciales">
+                                                binary="true" formControlName="ajustePolinomica">
                                     </p-radioButton>
                                 </div>
 
                                 <div class="col-xs-12 col-sm-12 col-md-12 margenCheckbox">
-                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="thType" 
+                                    <p-radioButton [ngModelOptions]="{standalone:true}" name="tipoTH" 
                                     (click)="onRadioButtonChange('Proveedor directo')"
                                                    [ngModel]="model.thProveedorDirecto" label="Proveedor directo"  [value]="true"
-                                                   binary="true" formControlName="proveedorDirecto" [disabled]="!model.editarCondicionesEspeciales">
+                                                   binary="true" formControlName="proveedorDirecto">
                                     </p-radioButton>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                            <p-checkbox [ngModelOptions]="{standalone:true}" name="adicional" [(ngModel)]="model.adicional" label="Adicional / Mano de obra administrada / Ajuste" formControlName="adicional"
-                                        binary="true" (click)="validarChecks(); limpiarCheckAdicional()" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales"></p-checkbox>
+                            <p-checkbox [ngModelOptions]="{standalone:true}" 
+                                        name="adicional" 
+                                        [(ngModel)]="model.adicional" 
+                                        label="Adicional / Mano de obra administrada / Ajuste" 
+                                        formControlName="adicional"
+                                        binary="true" 
+                                        (click)="validarChecks(); limpiarCheckAdicional()" 
+                                        (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                            </p-checkbox>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.adicional">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
@@ -167,7 +179,7 @@
                                        placeholder="Número de orden de compra"
                                        formControlName="ordenDeCompra"
                                        maxlength="10"
-                                       (ngModelChange)="validarChecks();">
+                                       (ngModelChange)="validarChecks(); onConditionChange();">
                             </div>
                             <div class="col-xs-12 col-sm-10 col-md-4" *ngIf="ordenDeCompraSap != null && ordenDeCompraSap.Error == null && model.ordenDeCompra != ''">
                                 <label for="ordenDeCompra">
@@ -178,37 +190,69 @@
                             </div>
                         </div>
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                            <p-checkbox [ngModelOptions]="{standalone:true}" name="urgencia" [(ngModel)]="model.urgencia" label="Urgencia" formControlName="urgencia"
-                                        binary="true" (click)="validarChecks(); listarLiberadorSap();" [disabled]="model.condEspProveedorAsignado || !model.editarCondicionesEspeciales && model.tipoSolpSap == 1"></p-checkbox>
+                            <p-checkbox [ngModelOptions]="{standalone:true}" 
+                                        name="urgencia" 
+                                        [(ngModel)]="model.urgencia" 
+                                        label="Urgencia" 
+                                        formControlName="urgencia"
+                                        binary="true" 
+                                        (click)="validarChecks(); listarLiberadorSap();" 
+                                        (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                            </p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.urgencia && model.trabajoHecho != true && model.condEspProveedorAsignado != true">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                 <strong>Elija a los liberadores de esta SOLP e incluya al menos un jefe *</strong>
                             </div>
                             <div class="col-xs-12">
                                 <div class="col-md-4">
-                                    <p-multiSelect [options]="liberadoresJefes" [(ngModel)]="selectJefes" defaultLabel="Jefes" formControlName="jefes"
-                                                   [maxSelectedLabels]="1" selectedItemsLabel="{0} jefes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
+                                    <p-multiSelect [options]="liberadoresJefes" 
+                                                   [(ngModel)]="selectJefes" 
+                                                   defaultLabel="Jefes" 
+                                                   formControlName="jefes"
+                                                   [maxSelectedLabels]="1" 
+                                                   selectedItemsLabel="{0} jefes" 
+                                                   optionDisabled="disabled" 
+                                                   (onChange)="onLiberadoresChange($event)">
                                     </p-multiSelect>
                                 </div>
                                 <div class="col-md-4">
-                                    <p-multiSelect [options]="liberadoresGerentes" [(ngModel)]="selectGerentes" defaultLabel="Gerentes" formControlName="gerentes"
-                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} gerentes" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
+                                    <p-multiSelect [options]="liberadoresGerentes" 
+                                                   [(ngModel)]="selectGerentes" 
+                                                   defaultLabel="Gerentes" 
+                                                   formControlName="gerentes"
+                                                   [maxSelectedLabels]="2" 
+                                                   selectedItemsLabel="{0} gerentes" 
+                                                   optionDisabled="disabled" 
+                                                   (onChange)="onLiberadoresChange($event)">
                                     </p-multiSelect>
                                 </div>
                                 <div class="col-md-4">
-                                    <p-multiSelect [options]="liberadoresDirectores" [(ngModel)]="selectDirectores" defaultLabel="Directores" formControlName="directores"
-                                                   [maxSelectedLabels]="2" selectedItemsLabel="{0} directores" optionDisabled="disabled" (onChange)="onLiberadoresChange($event)" [disabled]="!model.editarCondicionesEspeciales">
+                                    <p-multiSelect [options]="liberadoresDirectores" 
+                                                   [(ngModel)]="selectDirectores" 
+                                                   defaultLabel="Directores" 
+                                                   formControlName="directores"
+                                                   [maxSelectedLabels]="2" 
+                                                   selectedItemsLabel="{0} directores" 
+                                                   optionDisabled="disabled" 
+                                                   (onChange)="onLiberadoresChange($event)">
                                     </p-multiSelect>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-12 margenInput" style="margin-top: 1em;">
-                            <p-checkbox [ngModelOptions]="{standalone:true}" name="condEspProveedorAsignado" [(ngModel)]="model.condEspProveedorAsignado" label="Proveedor Asignado" formControlName="condEspProveedorAsignado"
-                                        binary="true" (click)="validarChecks(); limpiarCheckProveedorAsignado()" [disabled]="!model.editarCondicionesEspeciales || model.urgencia || model.adicional || model.trabajoHecho "></p-checkbox>
+                            <p-checkbox [ngModelOptions]="{standalone:true}" 
+                                        name="condEspProveedorAsignado" 
+                                        [(ngModel)]="model.condEspProveedorAsignado" 
+                                        label="Proveedor Asignado" 
+                                        formControlName="condEspProveedorAsignado"
+                                        binary="true" 
+                                        (click)="validarChecks(); limpiarCheckProveedorAsignado()" 
+                                        (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
+                            </p-checkbox>
                         </div>
-                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.urgencia && !model.adicional && !model.trabajoHecho">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.condEspProveedorAsignado && !model.adicional && !model.trabajoHecho">
                             <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                 <strong>Selección de proveedores *</strong>
                             </div>
@@ -222,7 +266,6 @@
                                                 formControlName="proveedorSeleccionado"
                                                 [minLength]="3"
                                                 [forceSelection]="true"
-                                                [disabled]="!model.editarCondicionesEspeciales"
                                                 (ngModelChange)="validarChecks()">
                                     <ng-template let-proveedor pTemplate="item">
                                         <div class="ui-helper-clearfix">
@@ -236,8 +279,65 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput" *ngIf="model.condEspProveedorAsignado || model.urgencia || model.adicional || model.trabajoHecho">
+                        <label class="labelCompras" for="checkbox">Justificacion y Adjuntos de Condiciones Especiales</label>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                            <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
+                            <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizacionesCondEsp" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
+                                        [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandlerCondEsp($event)">
+                                <ng-template *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0" pTemplate="toolbar">
+                                    <div *ngIf="model.archivosCotizacionesNuevosCondEsp.length == 0"
+                                        style="display: inline !important; font-family: Roboto Regular !important; color: #666666;">
+                                        Ningun archivo elegido
+                                    </div>
+                                </ng-template>
+                                <ng-template let-file pTemplate="file">
+                                </ng-template>
+                            </p-fileUpload>
+                        </div>
+                        <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                            <p-panel *ngIf="model.archivosCotizacionesNuevosCondEsp.length > 0 || model.archivosCotizacionesCondEsp.length > 0" header="Anexos agregados" [toggleable]="true" [collapsed]="false">
+                                <div class="row myRow">
+                                    <div class="col-xs-12 col-md-9"
+                                        *ngFor="let archivo of model.archivosCotizacionesCondEsp">
+                                        <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                            (click)="eliminarArchivoCondEsp(false,archivo)" style="width: 26px;" />
+                                        <a class="link-archivo pointer" (click)="descargarArchivo(archivo)">
+                                            {{archivo.nombreArchivo}}
+                                        </a>
+                                    </div>
+                                    <div class="col-xs-12 col-md-9"
+                                        *ngFor="let archivo of model.archivosCotizacionesNuevosCondEsp">
+                                        <img class="pointer" src="./Content/images/icons/trashRed.svg" alt="imageAlt"
+                                            (click)="eliminarArchivoCondEsp(true,archivo)" style="width: 26px;" />
+                                        <a class="link-archivo pointer" (click)="descargarArchivo(archivo)" style="font-weight: lighter;">
+                                            {{archivo.name}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </p-panel>
+                            <div *ngIf="this.model.validacionCheck == false && ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0));">
+                                <p class="text-danger">Campo obligatorio</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
+                            Justificación
+                            <textarea [ngModelOptions]="{standalone:true}" 
+                                      [(ngModel)]="model.observacionesCotizacionCondEsp" 
+                                      (ngModelChange)="validarChecks()"
+                                      name="observacionesCondEsp" 
+                                      id="observacionesCondEsp" 
+                                      cols="30" 
+                                      rows="5" 
+                                      placeholder="Texto de justificacion visible solo para el comprador">
+                            </textarea>
+                            <div *ngIf="this.model.validacionCheck == false && (this.model.observacionesCotizacionCondEsp == ''  || this.model.observacionesCotizacionCondEsp == undefined || this.model.observacionesCotizacionCondEsp == null)">
+                                <p class="text-danger">Campo obligatorio</p>
+                            </div>
+                        </div>
+                    </div>
+                       
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 alinearTitulo">
                         <div class="margenInput obligatorio">
                             * Campos obligatorios

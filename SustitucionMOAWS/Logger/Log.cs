@@ -8,6 +8,7 @@ namespace SustitucionMOAWS.Logger
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
+        private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -124,6 +125,18 @@ namespace SustitucionMOAWS.Logger
             catch (Exception e)
             {
                 Console.WriteLine("ERROR en API:" + e.Message);
+            }
+        }
+        public static void ComprasRegistroInfo(string message)
+        {
+            try
+            {
+                ComprasRegistroInfoLogger.Info(message);
+            }
+            catch (Exception e)
+            {
+                Log.Error("", "", "", "", e.Message);
+                Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
             }
         }
     }

@@ -34,6 +34,7 @@ import { EmailComposeModel } from '../../common/email-compose/email-compose.mode
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
+import { CondicionesEspecialesOriginales } from './steps/cotizacion/condiciones-especiales-originales';
 
 @Component({
     selector: 'app-solp',
@@ -104,6 +105,9 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     tieneContratoMarco: boolean = false;
     datosUltimaSolp: any;
     tieneAdjuntos: boolean = false;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+    condEspOriginales: CondicionesEspecialesOriginales;
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -176,6 +180,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     this.obtenerUltimaSolp();
                 }
             }
+
+            this.validarAuditor();
         }
     }
 
@@ -296,7 +302,15 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.solpActual = new Solp(result.data)
+                        this.solpActual = new Solp(result.data);
+                        this.condEspOriginales = {
+                            trabajoHecho: this.solpActual.trabajoHecho,
+                            adicional: this.solpActual.adicional,
+                            proveedorAsignado: this.solpActual.condEspProveedorAsignado,
+                            urgencia: this.solpActual.urgencia,
+                            proveedorSeleccionado: this.solpActual.proveedorAsignado_Id,
+                            ordenDecompra: this.solpActual.ordenDeCompra
+                        }
                         let estadosPasos = this.solpActual.estadoPasos.split(',');
 
                         let count = 0;
@@ -552,6 +566,15 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                             }
                         });
 
+                        this.solpActual.archivosCotizacionesNuevosCondEsp.splice(0, this.solpActual.archivosCotizacionesNuevosCondEsp.length);
+                        this.solpActual.archivosCotizacionesCondEsp = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolpCondEsp').map(x => {
+                            return {
+                                id: x.Id,
+                                nombreArchivo: x.Nombre,
+                                rutaDeAcceso: ''
+                            }
+                        });
+
                         this.cambiosGuardados = true;
 
                         if (mostrarPreview) {
@@ -608,6 +631,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
             }
             return false; //<-- Prevent Refresh
         }
+    }
+
+    validarAuditor() {
+        return this.esAuditor ? this.disabledSave = true : this.disabledSave = false;
     }
 
     actualizarPasoCompleto(paso: Paso) {
@@ -1134,7 +1161,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         emailModel.subject = this.getEmailSubject(esPrimeraFinalizacion, esPosteriorFinalizacion);
         emailModel.body = this.emailBody;
         emailModel.downloadLinkUrl = this.downloadLinkUrl;
-        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) ? true : false;
+        emailModel.tieneAdjuntos = (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0 || this.solpActual.archivosCotizacionesCondEsp.length > 0) ? true : false;
         this.emailComposeService.show(emailModel);
     }
 
@@ -1159,7 +1186,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     }
 
     validarAdjuntosDescargarSolp() {
-        if (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0) {
+        if (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0 || this.solpActual.archivosCotizacionesCondEsp.length > 0) {
             this.tieneAdjuntos = true;
         }
     }
@@ -1323,7 +1350,4 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
         return puedoGuardar;
     }
-
-
-
 }

@@ -38,7 +38,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                       (!filtro.Centros.Any() || solp.Posiciones.Any(c => filtro.Centros.Contains(c.Centro_Id))) &&
                                       (!filtro.GrupoDeCompras.Any() || solp.Posiciones.Any(gc => filtro.GrupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                                       (filtro.Sap && solp.TipoSolpSap == 3 || filtro.Mantenimiento && solp.TipoSolpSap == 2 || filtro.RepoAutomatica && solp.TipoSolpSap == 4 ||
-                                        (filtro.Web && (solp.TipoSolpSap == null || solp.TipoSolpSap == 1)) || (!filtro.Sap && !filtro.Mantenimiento && !filtro.Web && !filtro.RepoAutomatica)) &&
+                                      (filtro.Web && (solp.TipoSolpSap == null || solp.TipoSolpSap == 1)) || (!filtro.Sap && !filtro.Mantenimiento && !filtro.Web && !filtro.RepoAutomatica)) &&
                                       (filtro.FechaDesde == null || solp.FechaCreacion >= filtro.FechaDesde.Value) && 
                                       (filtro.FechaHasta == null || solp.FechaCreacion <= filtro.FechaHasta.Value) &&
                                       (string.IsNullOrEmpty(filtro.CodigoProveedor) || solp.ProveedorAsignado.Proveedores.Any(p => p.CodigoProveedor.Contains(filtro.CodigoProveedor))) &&
@@ -46,11 +46,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                       (!filtro.NombrePedido.Any() || filtro.NombrePedido.All(p => solp.Pliego.NombreObra.Contains(p.ToUpper()))) &&
                                       (!filtro.TipoImputacion.Any() || solp.Posiciones.Any(c => filtro.TipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
                                       (!filtro.ValorTipoImputacion.Any() || solp.Posiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.ValorTipoImputacion_Id)) ||
-                                        solp.Posiciones.Any(p => p.Subposiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.TipoImputacion_Id)))) &&
-                                      (filtro.EsServicio ? solp.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") : solp.Posiciones.Any(p => p.TipoPosicion.Codigo != "SERVICIO")) &&
-
+                                      solp.Posiciones.Any(p => p.Subposiciones.Any(c => filtro.ValorTipoImputacion.Contains((int)c.TipoImputacion_Id)))) &&
+                                      (filtro.EsServicio ? solp.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO") : solp.Posiciones.Any(p => p.TipoPosicion.Codigo != "SERVICIO")) &&                                  
                                       (filtro.Agrupada != null ? solp.Posiciones.FirstOrDefault().Peticiones.All(x => x.PeticionDeOferta.Agrupada == filtro.Agrupada) : true) &&
-                                      
+                                      (string.IsNullOrEmpty(filtro.NroPo) || solp.Posiciones.Where(x => x.Peticiones.Any(peti => filtro.NroPo == peti.PeticionDeOferta_Id.ToString())).Any()) &&
                                       (!solp.Posiciones.FirstOrDefault().Peticiones.Any(x => x.SolpPosicion.AdjudicacionPosiciones.Any())) &&
                                       solp.Posiciones.All(posi => string.IsNullOrEmpty(posi.NumeroContratoSuperior))
                                 select new SolpDto

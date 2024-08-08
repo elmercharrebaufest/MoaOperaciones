@@ -329,7 +329,8 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             CotizacionesHorasOriginal: this.index == 0 ? this.peticion.Cotizacion.CotizacionesHorasOriginal.filter(x => x.Gremio == 'UOCRA' || x.ConfigurarHora == true) : this.peticion.Cotizacion.CotizacionesHorasOriginal.filter(x => x.Gremio != 'UOCRA'),
             EsNuevaCotizacion: this.peticion.EsNuevaCotizacion,
             CotizacionSubposiciones: this.subposiciones,
-            PorcentajeDeHoras: this.index == 0 ? this.peticion.PorcentajeDeHoras : 0
+            PorcentajeDeHoras: this.index == 0 ? this.peticion.PorcentajeDeHoras : 0,
+            RequisitoCiberseguridad : this.peticion.RequisitoCiberseguridad
         }
         return coti;
     }

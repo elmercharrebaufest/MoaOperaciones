@@ -68,7 +68,11 @@
             <label for="selectTipoPosicion">Filtro posicion</label>
             <p-dropdown [options]="EsServicio" [(ngModel)]="selectTipoPosicion"></p-dropdown>
         </div>
-        <div class="col-md-3" style="margin-top: 35px;">
+        <div class="col-md-3 col-lg-2" style="margin-top: 27px;">
+            <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" pInputText type="text"
+                   [(ngModel)]="nroPo" placeholder="Buscar PO">
+        </div>   
+        <div class="col-md-4" style="margin-top: 35px;">
             <span style="margin-right: 10px;">
                 <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP" [(ngModel)]="sap"></p-checkbox>
             </span>
@@ -83,7 +87,11 @@
                 <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
                             [(ngModel)]="repoAutomatica"></p-checkbox>
             </span>
-        </div>
+        </div>    
+    </div>
+    <div class="row myRow col-md-12 col-lg-12">      
+        <div class="col-md-8 col-lg-8">
+        </div> 
         <div class="col-md-3 col-lg-3">
             <button class="btn buscar" (click)="onBuscar()">Buscar</button>
         </div>
@@ -96,6 +104,7 @@
             <p-table #tabla [value]="listaSolp" dataKey="Id" class="columna1"> 
                 <ng-template pTemplate="header" let-columns>
                     <tr>
+                        <th></th>
                         <th></th>
                         <th>Seleccionar</th>
                         <th>Nro PO</th>
@@ -113,6 +122,14 @@
                             <a (click)="solp.expanded = !solp.expanded">
                                 <i [ngClass]="solp.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                             </a>
+                        </td>
+                        <td style="text-align: center;">
+                            <span style="cursor:pointer;" pTooltip="Adjuntos SOLP" (click)="obtenerAdjuntosSolpAgrupar(solp.NroSolp)">
+                                <img src="./Content/images/icons/descargar.svg" />                      
+                            </span>
+                            <span *ngIf="solp.Agrupada" style="margin-left: 14px;  cursor: pointer;" pTooltip="Desagrupar" (click)="abrirModalDesagruparPO(solp.NroSolp, solp.NroPeticionDeOferta)">                              
+                              <img src="Content/images/buttons/unlink.svg" />
+                            </span>
                         </td>
                         <td>
                           <p-checkbox 
@@ -132,7 +149,7 @@
                         <td>{{solp.Agrupada ? "Si":"No"}}</td>
                     </tr>
                     <tr *ngIf="solp.expanded && solp.PosicionCompras.length > 0">
-                        <td [attr.colspan]="9">
+                        <td [attr.colspan]="10">
                             <p-table [value]="solp.PosicionCompras" dataKey="Id">
                                 <ng-template pTemplate="header">
                                     <tr>
@@ -233,3 +250,54 @@
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUp()">Aceptar</button>
     </p-footer>
 </p-dialog>
+
+<p-dialog [(visible)]="displayPeticionAgrupada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Petición de oferta agrupada!
+    </p-header>
+    <br> La petición #{{resultadoAgrupar?.IdEntidad}} se agrupó correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUp()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayConfirmacionAgrupar" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>¡Atención!</b>
+    </p-header>
+    <br />
+    <br />
+    ¿Desea continuar con la agrupación de las PO?
+    <br />
+    <br />
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="cerrarConfimarcionAgrupar()">No</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="aceptarAgrupacion()">Sí</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayPeticionDesagrupada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Petición desagrupada!
+    </p-header>
+    <br> Se creó la petición #{{resultadoDesagrupar}} correctamente.
+    <br>
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="cerrarPopUpDesagrupar()">Aceptar</button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog #dialogo key="desagruparPo" header="Confirmación" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true" appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal" (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal" (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
+<app-adjuntos-solp 
+    [(displayAdjuntosSolp)]="displayAdjuntosSolp"
+    (cerrarModalAdjuntosEmitter)="cerrarAdjuntos()" 
+    [(adjuntosSolpDto)]="adjuntosSolpDto"
+    [(nroSolp)]="nroSolp">
+</app-adjuntos-solp>

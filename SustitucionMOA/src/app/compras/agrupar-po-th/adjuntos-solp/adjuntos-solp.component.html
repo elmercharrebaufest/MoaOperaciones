@@ -1,0 +1,65 @@
+<p-dialog [(visible)]="displayAdjuntosSolp"
+          modal="modal"
+          [width]="650"
+          [draggable]="false"
+          [closable]="true"
+          (onHide)="onHideAdjuntosDialog()"
+          appendTo="body"
+          positionTop="30"
+          [contentStyle]="{ 'max-height':'1500px', 'min-height':'400px'}">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Adjuntos </b> <span>Solp #{{nroSolp}}</span>
+    </p-header>
+    <div class="col-md-12 row myRow alinearTitulo margenInput" *ngIf="adjuntosSolpDto != null">
+        <div class="col-md-12 titulosModal" style="margin-right: 1em;">
+          <div *ngIf="adjuntosSolpDto?.Pliego != null">
+            <h3>Pliego</h3>
+            <ul>
+              <li>
+                {{adjuntosSolpDto?.Pliego}}
+                <span *ngIf="adjuntosSolpDto?.Pliego != null"> <img class="descargar-icono" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="mostrarPliego()" /> </span>
+              </li>
+            </ul>
+          </div>
+          
+          <div *ngIf="adjuntosSolpDto?.ArchivosEspecificacionesTecnicas?.length > 0">
+            <h3>Especificaciones Técnicas</h3>
+            <ul>
+              <li *ngFor="let archivo of adjuntosSolpDto.ArchivosEspecificacionesTecnicas">
+                {{archivo.Nombre}}
+                <span *ngIf="archivo != null"> <img class="descargar-icono" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarArchivo(archivo)" /> </span>
+              </li>
+            </ul>
+          </div>
+          
+          <div *ngIf="adjuntosSolpDto?.ArchivosCotizacion?.length > 0">
+            <h3>Cotización y Plazo de Ejecución</h3>
+            <ul>
+              <li *ngFor="let archivo of adjuntosSolpDto.ArchivosCotizacion">
+                {{archivo.Nombre}}
+                <span *ngIf="archivo != null"> <img class="descargar-icono" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarArchivo(archivo)" /> </span>
+              </li>
+            </ul>
+          </div>
+          
+          <div *ngIf="adjuntosSolpDto?.ArchivosCondicionesEspeciales?.length > 0">
+            <h3>Condiciones Especiales</h3>
+            <ul>
+              <li *ngFor="let archivo of adjuntosSolpDto.ArchivosCondicionesEspeciales">
+                {{archivo.Nombre}}
+                <span *ngIf="archivo != null"> <img class="descargar-icono" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarArchivo(archivo)" /> </span>
+              </li>
+              <p>{{adjuntosSolpDto.ObservacionCondicionesEspeciales}}</p>
+            </ul>
+          </div>
+        </div>
+
+    </div>
+    <p-footer>
+        <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCerrarModalAdjuntos()">CANCELAR</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog header="Previsualización" [(visible)]="mostrarPreview" [width]="1000" blockScroll="true" modal="modal" appendTo="body" positionTop="30" [contentStyle]="{'overflow':'visible', 'max-height':'1000px', 'min-height':'500px'}">
+  <pliego-preview [src]="pdfPreview"></pliego-preview>
+</p-dialog>

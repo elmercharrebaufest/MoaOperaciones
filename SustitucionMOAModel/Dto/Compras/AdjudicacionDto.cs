@@ -48,6 +48,26 @@ namespace SustitucionMOAModel.Dto
         public decimal PagoEn1Porcentaje { get; set; }
         public decimal PagoEn2Porcentaje { get; set; }
         public string NroSolp { get; set; }
+
+        public int PeticionDeOferta_Id { get; set; }
+    }
+
+    public class AdjudicacionResultDto
+    {
+        public int Cotizacion_Id { get; set; }
+        public int? Moneda_Id { get; set; }
+        public string MonedaCodigo { get; set; } 
+        public List<AdjudicacionPosicionResultDto> Posiciones { get; set; } = new List<AdjudicacionPosicionResultDto>();
+    }
+
+    public class AdjudicacionPosicionResultDto
+    {
+        public int SolpPosicion_Id { get; set; }
+        public int CotizacionPosicion_Id { get; set; }
+        public decimal Cantidad { get; set; }
+        public decimal Monto { get; set; }
+        public int? MonedaId { get; set; }
+        public string MonedaCodigo { get; set; }
     }
 
 }

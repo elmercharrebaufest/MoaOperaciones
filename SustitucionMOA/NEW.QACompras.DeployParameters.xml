@@ -50,7 +50,7 @@
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
   <setParameter name="EmailRerporteSolpTo Config" value="plataformacompras@baufest.com" />
-
+  <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
 
   <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />

@@ -57,6 +57,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     centroDireLista: any;
     ordenDeCompra: AdjudicacionDto;
     nroOC: string;
+    displayValidacionMoneda: boolean = false;
 
     @Input()
     public peticionHs: CotizacionHoraDto;
@@ -77,6 +78,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     historiales: CotizacionHistorialDto[] = [];
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
+    mensajeValidacionMoneda: any;
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -192,8 +195,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
                     this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
                     this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
-
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;   
                     this.setTextoCondicionEspecial();
                     this.blockUI.stop();
                 }
@@ -280,6 +282,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     usuario.Cotizacion.CotizacionPosiciones.forEach((cotizacionPos) => {
                         if (peticion.Id == cotizacionPos.PeticionDeOfertaSolpPosicion_Id)
                             this.lista.push({
+                                PeticionDeOferta_Id: this.tablaOfertas.Id,
                                 Posicion: peticion.Posicion.Indice,
                                 CotizacionPosicion_Id: cotizacionPos.Id,
                                 PlazoDeEntrega: peticion.Posicion.FechaEntregaServicio,
@@ -423,13 +426,49 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.displayGenerarOCMoneda = true;
             this.devolverMonedaProveedor(proveedor.CodigoProveedor);
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
+    }
+
+    validarMonedasDiferentes(){
+        if (this.adjudicacion != undefined) {
+            this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
+            this.adjudicacion.EsMonedaProveedor = this.generarOC;
+        this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
+            (result) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    if(result.data.Errores.length > 0){
+                        this.mensajeValidacionMoneda = result.data.Errores[0];
+                        this.displayValidacionMoneda = true;
+                    }else{
+                        this.confirmacionAdjudicar();
+                    }
+                   
+                }
+            },
+            (error) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+    }
+
+    onCerrarValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+    }
+
+    onSiguientePasoValidacionMoneda(){
+        this.displayValidacionMoneda = false;
+        this.confirmacionAdjudicar();
     }
 
     onGenerarOC() {
         this.generarOC = false;
-        this.confirmacionAdjudicar();
+        this.validarMonedasDiferentes();
     }
 
     onGenerarOCProveedor() {
@@ -438,7 +477,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.floatMsgService.setErrorMsg("El proveedor no tiene una moneda configurada");
             this.onCerrarMoneda();
         } else {
-            this.confirmacionAdjudicar();
+            this.validarMonedasDiferentes();
         }
 
     }
@@ -532,7 +571,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if ((this.adjudicacion.CondicionesDeEntrega == "" || this.adjudicacion.CondicionesDeEntrega == undefined)
             && (this.adjudicacion.CondicionesDePago == "" || this.adjudicacion.CondicionesDePago == undefined)
             && (this.adjudicacion.Garantias == "" || this.adjudicacion.Garantias == undefined)
-            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`)) {
+            && (this.adjudicacion.TextoDeCabecera == "" || this.adjudicacion.TextoDeCabecera == undefined || this.adjudicacion.TextoDeCabecera == `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`)) {
             this.textoRacionalIncompleto = true;
             this.textoRacionalModal = "No se completó ningún racional.";
         }
@@ -696,11 +735,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 
+    verificarCondicionEspecial(){
+        return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
+    }
+
     setTextoCondicionEspecial() {
-        if (this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true) {
-            this.adjudicacion.TextoDeCabecera != undefined && this.adjudicacion.TextoDeCabecera != "" && this.modalTexto.adjudicacion.TextoDeCabecera != this.tablaOfertas.SolpDto.ObservacionesCotizacion ?
-                this.adjudicacion.TextoDeCabecera = `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`
-                : this.adjudicacion.TextoDeCabecera = `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacion}`;
+        if (this.verificarCondicionEspecial()) {
+            if(!this.adjudicacion.TextoDeCabecera){
+                this.adjudicacion.TextoDeCabecera = "";
+            }
+
+            if(this.adjudicacion.TextoDeCabecera != undefined && 
+                this.adjudicacion.TextoDeCabecera != "" && 
+                this.modalTexto.adjudicacion.TextoDeCabecera != 
+                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp){
+                    this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+                } else {
+                    this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+                }
         }
     }
 
@@ -764,27 +816,28 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayHistorial = false;
     }
 
-   // Dentro del componente de Angular
-getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
-    const preciosPorMoneda: { [key: string]: number } = {};
-    for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-        if (!subpos.MonedaDescripcion) {
-            continue;
+    getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
+        const preciosPorMoneda: { [key: string]: number } = {};
+        for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
+            
+            if (!subpos.MonedaDescripcion) {
+                continue;
+            }
+            if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
+                preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+            }
+            preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
         }
-        if (!preciosPorMoneda[subpos.MonedaDescripcion]) {
-            preciosPorMoneda[subpos.MonedaDescripcion] = 0;
+        this.resultado = '';
+        for (const moneda in preciosPorMoneda) {
+            if (preciosPorMoneda.hasOwnProperty(moneda)) {
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
+                this.resultado += `${moneda} ${precioFormateado}<br>`;
+            }
         }
-        preciosPorMoneda[subpos.MonedaDescripcion] += subpos.PrecioUnidad;
+        return this.resultado;
     }
-    this.resultado = '';
-    for (const moneda in preciosPorMoneda) {
-        if (preciosPorMoneda.hasOwnProperty(moneda)) {
-            const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
-            this.resultado += `${moneda} ${precioFormateado}<br>`;
-        }
-    }
-    return this.resultado;
-}
+   
 
 
 }

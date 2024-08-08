@@ -19,6 +19,7 @@ import { EntradaServicio } from '../common/models/entradaServicio';
 import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
 import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
 import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
+import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 
 @Injectable({
     providedIn: 'root'
@@ -76,6 +77,7 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: any = this.filtros.nombrePedido,
         fechaDesde: any = this.filtros.fechaDesde,
         fechaHasta: any | null = this.filtros.fechaHasta,
         sap: boolean = this.filtros.sap,
@@ -88,7 +90,7 @@ export class ComprasService extends BaseService {
         centros: any = this.filtros.centros,
         grupoDeCompras: any = this.filtros.grupoDeCompras,
         claseDocumento: any = this.filtros.claseDocumento,
-        tipoImputacion: any = this.filtros.tipoImputacion,
+        tipoImputacion: any = this.filtros.tipoImputacion,      
         valorTipoImputacion: any = this.filtros.valorTipoImputacion): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
@@ -98,7 +100,8 @@ export class ComprasService extends BaseService {
         params = params.set('itemsPorPagina', itemsPorPagina.toString());
         params = params.set('orden', orden);
         params = params.set('columna', columna);
-        params = params.set('nroSolp', nroSolp);
+        params = params.set('nroSolp', nroSolp);        
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         params = params.set('sap', sap.toString());
@@ -327,6 +330,7 @@ export class ComprasService extends BaseService {
             TieneFabricacionTallerExterno: solp.fabricacionTallerExterno,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
+            RequisitoCiberseguridad: solp.requisitoCiberseguridad,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones.replace(/(<img("[^"]*"|[^/">])*)>/gi, "$1/>"),
@@ -337,13 +341,15 @@ export class ComprasService extends BaseService {
                 Id: solp.usuarioComprasId
             },
             Adjuntos: solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
-                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
+                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } }))
+                .concat(solp.archivosCotizacionesCondEsp.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
+            ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
@@ -357,6 +363,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: solp.posiciones.map(x => {
 
                 return {
@@ -446,6 +453,13 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < solp.archivosCotizacionesNuevos.length; i++) {
                 let fileToUpload = solp.archivosCotizacionesNuevos[i];
                 payload.append("fileCotizaciones", fileToUpload, fileToUpload.name);
+            }
+        }
+
+        if (solp.archivosCotizacionesNuevosCondEsp != null) {
+            for (let i = 0; i < solp.archivosCotizacionesNuevosCondEsp.length; i++) {
+                let fileToUpload = solp.archivosCotizacionesNuevosCondEsp[i];
+                payload.append("fileCotizacionesCondEsp", fileToUpload, fileToUpload.name);
             }
         }
 
@@ -631,6 +645,7 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: string = this.filtros.nombrePedido,
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -655,6 +670,7 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
@@ -677,7 +693,7 @@ export class ComprasService extends BaseService {
                 }
             );
     }
-
+    
     public getListarPOProveedor(pagina: number,
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
@@ -1014,6 +1030,7 @@ export class ComprasService extends BaseService {
 
     public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
         let json = JSON.stringify({
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
             Solp_Id: adjudicacion.Solp_Id,
@@ -1405,6 +1422,15 @@ export class ComprasService extends BaseService {
             .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
     }
 
+    public desagruparPeticionDeOferta(nroSolp: string, po: string) {
+        var payload = new FormData();
+        payload.append('po', po.toString());
+        payload.append('nroSolp', nroSolp.toString());
+
+        return this.http
+            .post<SolpDto>('/api/compras/DesagruparPeticionDeOferta', payload, { headers: this.headers });
+    }
+    
     public buildReportES(reportRequest : any): Observable<any> {
 
         var payload = new FormData();
@@ -1414,5 +1440,36 @@ export class ComprasService extends BaseService {
             .post<any>('/api/ReporteES/BuildReportES', payload, { headers: this.headers });
     }
 
-   
+    public ValidarPrecioCotizado(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarPrecioCotizado', payload, { headers: this.headers });
+    }
+
+    public obtenerAdjuntosSolpAgrupar(nroSolp: string): Observable<AdjuntosSolpDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+    
+        return this.http
+            .get<AdjuntosSolpDto>("/api/compras/ObtenerAdjuntosSolpAgrupar", {
+                params: params,
+                headers: this.headers
+            });
+    }
 }

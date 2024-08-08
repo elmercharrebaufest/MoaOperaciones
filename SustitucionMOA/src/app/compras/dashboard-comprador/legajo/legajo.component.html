@@ -23,7 +23,9 @@
                               (uploadHandler)="onBasicUploadAuto($event, fileUpload)"
                               multiple="multiple"
                               auto="auto"
-                              chooseLabel="Adjuntar">
+                              chooseLabel="Adjuntar"
+                              [style.pointer-events]="esAuditor ? 'none' : 'auto'"
+                              [style.opacity]="esAuditor ? '0.6' : '5'">
                     <ng-template let-file pTemplate="file"></ng-template>
                 </p-fileUpload>
             </span>

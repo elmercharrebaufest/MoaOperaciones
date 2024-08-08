@@ -62,6 +62,7 @@
 	<setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
 	<setParameter name="EmailAltaTransporteResiduosTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTransporteResiduosCC Config" value="moa.operaciones@molinosagro.com.ar" />
+  <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
