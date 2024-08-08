@@ -253,7 +253,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             //kernel.Bind<IJobService>().To(typeof(JobService)).InScope(ctx => OperationContext.Current);
 
             //Activador Ninject Hangfire
-            Hangfire.GlobalConfiguration.Configuration.UseActivator(new NinjectJobActivator(kernel));
+            //Hangfire.GlobalConfiguration.Configuration.UseActivator(new NinjectJobActivator(kernel));
         }
     }
 }
