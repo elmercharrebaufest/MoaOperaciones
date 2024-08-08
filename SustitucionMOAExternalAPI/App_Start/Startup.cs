@@ -13,7 +13,7 @@ namespace SustitucionMOAExternalAPI
     {
         public void Configuration(IAppBuilder app)
         {
-            ConfigureHangFire(app);
+            //ConfigureHangFire(app);
         }
 
         private void ConfigureHangFire(IAppBuilder app)
