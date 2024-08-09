@@ -13,7 +13,7 @@ namespace SustitucionMOAExternalAPI
     {
         public void Configuration(IAppBuilder app)
         {
-            //ConfigureHangFire(app);
+            ConfigureHangFire(app);
         }
 
         private void ConfigureHangFire(IAppBuilder app)
@@ -22,20 +22,26 @@ namespace SustitucionMOAExternalAPI
                            .UseSqlServerStorage("HfContexto", new Hangfire.SqlServer.SqlServerStorageOptions
                            {
                                SchemaName = "HangfireExternalAPI"
-                           }).UseNLogLogProvider();
+                           })
+                           .UseNLogLogProvider();
             GlobalJobFilters.Filters.Add(new AutomaticRetryAttribute { Attempts = 0 });
 
-            var options = new DashboardOptions
+            var dashboardOptions = new DashboardOptions
             {
                 //Authorization = new[]
                 //{
                 //    new AuthorizationFilter { /*Users = "admin, superuser",*/ Roles = "Admin, Support" }//,new ClaimsBasedAuthorizationFilter("name", "value")
                 //}
-            }; 
-            
-           
-            //app.UseHangfireDashboard("/Hangfire", options);
-            app.UseHangfireServer();
+            };
+
+
+            app.UseHangfireDashboard("/Hangfire", dashboardOptions);
+
+            var backgroundJobServerOptions = new BackgroundJobServerOptions
+            {
+                WorkerCount = 1 // Solo un worker, una tarea a la vez
+            };
+            app.UseHangfireServer(backgroundJobServerOptions);
         }
     }
 
