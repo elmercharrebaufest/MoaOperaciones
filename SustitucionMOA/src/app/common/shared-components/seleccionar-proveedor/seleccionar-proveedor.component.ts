@@ -84,7 +84,7 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         // console.log('SeleccionarProveedorComponent::selectEvent::result: ', result);
-                        item = { ...item, proveedorId: result.Id, CUIT: result.CUIT }
+                        item = { ...item, proveedorId: result.Id, CUIT: result.CUIT, proveedorMail: result.Mail }
 
                         this.onLocalidadSeleccionada.emit(item);
                         this.onProveedorSeleccionado.emit(item);

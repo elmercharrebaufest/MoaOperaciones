@@ -85,6 +85,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     subcategoriaCount = 0;
 
     proveedorId: number;
+    proveedorMail: string;
     tieneSubcategorias: boolean = true;
 
     consulta: any;
@@ -247,6 +248,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
                         this.causas = result.causas;
                         if (!this.esCorredor) {
                             this.proveedorId = result.proveedorId
+                            this.proveedorMail = sessionStorage.getItem("username");
                         }
                         this.listaMateriales = result.materiales;
                         if (this.datosLiquidacionObservada) {
@@ -294,6 +296,7 @@ export class CrearConsultaComponent extends ListBaseComponent {
     onProveedorSeleccionado(proveedor: any) {
         this.proveedorSelected = proveedor;
         this.proveedorId = proveedor.proveedorId;
+        this.proveedorMail = proveedor.proveedorMail;
     }
 
     setMaterial(material) {
@@ -867,5 +870,5 @@ export class CrearConsultaComponent extends ListBaseComponent {
 
     validarRubrosSeleccionados() {
         return this.rubrosSelected.every(rubro => !!rubro.discrepanciaCalidad)
-    } 
+    }
 }
