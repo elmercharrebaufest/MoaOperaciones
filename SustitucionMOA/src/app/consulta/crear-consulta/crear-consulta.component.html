@@ -331,12 +331,14 @@
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'INF'">
-                        <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'button'">
+                        <app-informe-comercial [proveedorId]="proveedorId" [displayType]="'button'"
+                            [proveedorMail]="proveedorMail">
                         </app-informe-comercial>
                     </div>
 
                     <div class="col-xs-12 col-sm-12 col-md-12" [hidden]="this.subcategoriaCode != 'CAP'">
-                        <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'">
+                        <app-carta-presentacion [proveedorId]="proveedorId" [displayType]="'button'"
+                            [proveedorMail]="proveedorMail">
                         </app-carta-presentacion>
                     </div>
 
