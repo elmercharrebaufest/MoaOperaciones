@@ -19,7 +19,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.WSConsumers; 
+using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -28,7 +28,7 @@ namespace SustitucionMOAUtils.Services
         readonly IScatoConsumer scatoConsumer;
         readonly IRepositorio repositorio;
 
-        public CartaPorteService (IScatoConsumer scatoConsumer, IRepositorio repositorio)
+        public CartaPorteService(IScatoConsumer scatoConsumer, IRepositorio repositorio)
         {
             this.scatoConsumer = scatoConsumer;
             this.repositorio = repositorio;
@@ -94,7 +94,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtroProducto = new DropdownContent(),
                     filtroVendedor = new DropdownContent(),
-                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas, contratos,"")
+                    data = (CartaPorteWSMOAResponse)new AplicacionesConsumerMOA().request(proveedor, fechas, contratos, "")
                 };
 
                 ValidarRespuesta(dataView.data);
@@ -136,8 +136,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 List<FechaWS> fechas = CommonUtil.toDateList(fechaInicio, fechaFin);
-                List<string>  contratos = new List<string>();
-                CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas, contratos,"");
+                List<string> contratos = new List<string>();
+                CartaPorteExcelWSMOAResponse data = (CartaPorteExcelWSMOAResponse)new AplicacionesExcelConsumerMOA().request(proveedor, fechas, contratos, "");
                 ValidarRespuesta(data);
                 return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Contrato Molinos", "Contrato Proveedor", "Fecha Descarga", "Producto", "Descargado", "Unidad Descargado", "Pend. Aplic.", "Unidad Pend. Aplic.", "Liquidar", "Unidad Liquidar", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular" }, "Reporte Aplicaciones");
             }
@@ -163,7 +163,7 @@ namespace SustitucionMOAUtils.Services
                 List<string> cartaPorte = new List<string>();
                 CartaPorteDescargaExcelWSMOAResponse data = (CartaPorteDescargaExcelWSMOAResponse)new RecepcionesExcelConsumerMOA().request(proveedor, fechas, cartaPorte);
                 ValidarRespuesta(data);
-                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto","Bruto Origen","Tara Origen","Neto Origen","Bruto Destino","Tara Destino", "Neto Destino", "Descargado", "Unidad Descargado", "Mermas", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular", "Contrato Molinos", "CG" }, "Reporte Descargas");
+                return ExcelExport.ToExcel(data.cartasPorte, new string[] { "Carta Porte", "Fecha Descarga", "Producto", "Bruto Origen", "Tara Origen", "Neto Origen", "Bruto Destino", "Tara Destino", "Neto Destino", "Descargado", "Unidad Descargado", "Mermas", "ID Vendedor", "Vendedor", "Sust", "Titular", "Desc. Titular", "Contrato Molinos", "CG" }, "Reporte Descargas");
             }
             catch (InfoCustomException)
             {
@@ -211,8 +211,14 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 CartaPorteDetalleExcelWSMOAResponse data = (CartaPorteDetalleExcelWSMOAResponse)new CartaPorteDetalleExcelConsumerMOA().request(proveedor, cartaporteId);
+                
+                var calidadesMapeadas = MapCalidadesComoFront(data);
 
-                return ExcelExport.ToExcelCartaPorteDetalle(data.entregasDescargas, data.datosCalidad, data.aplicaciones, new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, new string[] { "Caracteristica", "Resultado Calado", "Resultado Camara", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
+                return ExcelExport.ToExcelCartaPorteDetalle(
+                    data.entregasDescargas, calidadesMapeadas, data.aplicaciones, 
+                    new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, 
+                    new string[] { "Caracteristica", "Resultado", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, 
+                    new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
             }
             catch (InfoCustomException)
             {
@@ -743,7 +749,7 @@ namespace SustitucionMOAUtils.Services
             var consultasDiscrepanciaCalidad = repositorio.Listar<Consulta>(
                 consulta => consulta.FechaCreacion > dateTimeFechaInicio &&
                 consulta.Categoria.Code == "DISCAL"
-                ).Select(consulta=>consulta.Detalle.ComprobanteNo);
+                ).Select(consulta => consulta.Detalle.ComprobanteNo);
             var configuracionDiasDisponiblesParaDiscrepar = repositorio.Obtener<Configuracion>(c => c.Code == "DiasParaDiscreparCalidadesDescarga");
 
             var diasParaDiscrepar = configuracionDiasDisponiblesParaDiscrepar != null ? int.Parse(configuracionDiasDisponiblesParaDiscrepar.Value) : -7;
@@ -755,6 +761,21 @@ namespace SustitucionMOAUtils.Services
                 ccpp.SetTieneDiscrepanciaEnCalidad(consultasDiscrepanciaCalidad);
             });
 
+        }
+        private List<CalidadExcel> MapCalidadesComoFront(CartaPorteDetalleExcelWSMOAResponse data)
+        {
+            var vaACamara = !string.IsNullOrEmpty(data.camaraAPresent);
+            var tieneResultadosCamara = vaACamara && !data.datosCalidad.Where(dc => !dc.caracteristica.Contains("HUMEDAD")).All(dc => dc.resultadoCamara == 0 && dc.porcentajeDescuento == 0);
+            return data.datosCalidad
+                .Where(dc =>
+                    (vaACamara && (tieneResultadosCamara || dc.caracteristica.Contains("HUMEDAD"))) || !vaACamara
+                )
+                .Select(dc =>
+                {
+                    var esHumedad = dc.caracteristica.Contains("HUMEDAD");
+                    var resultadoParaExcel = vaACamara && !esHumedad ? dc.resultadoCamara : dc.resultadoCalado;
+                    return new CalidadExcel(dc, resultadoParaExcel);
+                }).ToList();
         }
     }
 }
