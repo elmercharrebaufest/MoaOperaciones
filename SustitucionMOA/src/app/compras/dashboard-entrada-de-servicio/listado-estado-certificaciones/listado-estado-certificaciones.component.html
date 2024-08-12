@@ -178,30 +178,31 @@
                             <!-- TABLE 2 BODY -->
                             <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
                                 <tr>
-                                    <td>{{ rowDetalle.NumeroLinea }}</td>
                                     <td>{{ rowDetalle.NroPosicion }}</td>
+                                    <td>{{ rowDetalle.NumeroLinea }}</td>
+                                  
                                     <td>{{ rowDetalle.CodigoServicio }}</td>
                                     <td class="descripcion">{{ rowDetalle.Descripcion }}</td>
                                     <td>{{ rowDetalle.Cantidad }}</td>
                                     <td>{{ rowDetalle.UM }}</td>
-                                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.Monto | number:'1.0-2' }}</td>
+                                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.PrecioUnitario | number:'1.0-2' }}</td>
                                     <td class="center-content">{{ rowDetalle.NroRemito }}</td>
 
                                     <!-- Anteriores -->
                                     <!-- * 1  is just to turn it into a number -->
                                     <td class="anterior">{{ rowDetalle.CantidadAnterior | number:'1.0-2' }}</td>
                                     <td class="anterior">{{ getPorcentajeAnterior(rowDetalle.CantidadAnterior, rowDetalle.Cantidad)}}</td>
-                                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowData.Moneda)}}</td>
+                                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.PrecioUnitario, rowData.Moneda)}}</td>
 
                                     <!-- A certificar -->
                                     <td>{{ rowDetalle.CantidadCertificar | number:'1.0-2' }}</td>
                                     <td>{{ rowDetalle.PorcentajeCertificar | number:'1.0-2' }}%</td>
-                                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}} {{ rowDetalle.CantidadCertificar * rowDetalle.Monto | number:'1.2-2' }}</td>
+                                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}} {{ rowDetalle.CantidadCertificar * rowDetalle.PrecioUnitario | number:'1.2-2' }}</td>
 
                                     <!-- Acumulado -->
                                     <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) | number:'1.0-2' }}</td>
                                     <td class="acumulado">{{ getPorcentajeAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Cantidad, rowDetalle.PorcentajeCertificar)}}</td>
-                                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowDetalle.CantidadCertificar, rowData.Moneda)}}</td>
+                                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.PrecioUnitario, rowDetalle.CantidadCertificar, rowData.Moneda)}}</td>
                                 </tr>
                             </ng-template>
                             <!-- TABLE 2 BODY END -->
