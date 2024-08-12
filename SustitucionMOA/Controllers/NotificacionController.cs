@@ -92,9 +92,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+                //se comenta hasta volver a implementar
+                //string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                return JsonCustom(new { data = notificacionService.ObtenerNotificacionesUsuario(userMail) });
+                //return JsonCustom(new { data = notificacionService.ObtenerNotificacionesUsuario(userMail) });
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
             catch (InfoCustomException e)
             {
