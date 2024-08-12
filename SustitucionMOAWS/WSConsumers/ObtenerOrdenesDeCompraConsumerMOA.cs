@@ -84,7 +84,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Fecha = fechaFormateada,
                     ProveedorNombre = item.VEND_NAME,
                     MonedaDescripcion = item.CURRENCY_ISO,
-                    SUBJ_TO_R = item.SUBJ_TO_R
+                    SUBJ_TO_R = item.SUBJ_TO_R,
+                    ProveedorNumero = item.VENDOR
                 });
             }
             
