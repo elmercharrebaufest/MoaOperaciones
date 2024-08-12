@@ -179,6 +179,7 @@ namespace SustitucionMOAWS.WSConsumers
                 item.UM = elemento.BASE_UOM;
                 item.Monto = elemento.NET_VALUE;
                 item.Ext_line = elemento.EXT_LINE;
+                item.PrecioUnitario = elemento.GR_PRICE; // elemento.NET_VALUE * elemento.QUANTITY;
 
                 items.Add(item);
             }
