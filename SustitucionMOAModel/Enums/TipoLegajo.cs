@@ -15,7 +15,7 @@
         public const string ChatExterno = "Chat Externo";
         public const string RevisionTecnica = "Revisión tecnica";
         public const string PeticionDeOfertaAgrupada = "Petición de Oferta Agrupada";
-
+        public const string HistorialMovimientos = "HistorialMovimientos";
 
 
 

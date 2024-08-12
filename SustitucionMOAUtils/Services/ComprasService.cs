@@ -5018,6 +5018,17 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            legajo.Add(new LegajoDto
+            {
+                ArchivoId = 0,
+                Observacion = "Excel con historial de movimientos",
+                PeticionDeOfertaId = peticionDeOfertaId,
+                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                Fecha = DateTime.Now,
+                FechaFormateado = DateTime.Now.ToString("dd/MM/yyyy"),
+                Tipo = TipoLegajo.HistorialMovimientos
+            });
+
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
 
@@ -5157,6 +5168,13 @@ namespace SustitucionMOAUtils.Services
                                 string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
                                 archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
                             }
+                        }
+                        var excelDeHistorial = DescargarExcelHistorialMovimientos(idPeticion);
+                        byte[] excelBytes = Encoding.UTF8.GetBytes(excelDeHistorial);
+                        var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
+                        using (var entryStream = zipEntry.Open())
+                        {
+                            entryStream.Write(excelBytes, 0, excelBytes.Length);
                         }
                     }
                 }
@@ -10369,6 +10387,11 @@ namespace SustitucionMOAUtils.Services
         private CrearSolpConsumerMOAResponse CrearOActualizarRegistrosInfoEnSap(List<RegistroInfoDto> registros)
         {
             return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
+        } 
+        public string DescargarExcelHistorialMovimientos(int peticionDeOfertaId)
+        {
+            var historial = ListarHistorialDeFechas(peticionDeOfertaId);
+            return ExcelExport.ComprasHistorialMovimientosToExcel(historial);
         }
     }
 

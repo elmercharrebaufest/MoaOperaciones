@@ -7,6 +7,7 @@ using System.Web.UI.WebControls;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
@@ -1377,6 +1378,89 @@ namespace SustitucionMOAUtils.Export
             }
 
             return maxColWidth;
+        }
+        public static string ComprasHistorialMovimientosToExcel(HistorialDeFechaDto historial)
+        {
+
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+
+            foreach (var solp in historial.ListaSolp)
+            {
+                var tituloRow = new System.Data.DataTable("Nro de SOLP:");
+                tituloRow.Columns.Add("Nro de SOLP:");
+                tituloRow.Columns.Add("");
+                tituloRow.Rows.Add(new string[] { "Nro de SOLP:", solp.NroSolp });
+                var gridTitulo = new GridView();
+                gridTitulo.DataSource = tituloRow;
+                gridTitulo.GridLines = GridLines.None;
+                gridTitulo.Font.Bold = true;
+                gridTitulo.Font.Size = 10;
+                gridTitulo.ShowHeader = false;
+                gridTitulo.DataBind();
+                gridTitulo.RenderControl(htw);
+
+                var fechaCreacionRow = new System.Data.DataTable("Fecha de Creación:");
+                fechaCreacionRow.Columns.Add("Fecha de Creación:");
+                fechaCreacionRow.Columns.Add("");
+                fechaCreacionRow.Rows.Add(new string[] { "Fecha de Creación:", solp.FechaCreacionFormateada });
+                var gridFechaCreacion = new GridView();
+                gridFechaCreacion.DataSource = fechaCreacionRow;
+                gridFechaCreacion.GridLines = GridLines.None;
+                gridFechaCreacion.Font.Bold = true;
+                gridFechaCreacion.Font.Size = 10;
+                gridFechaCreacion.ShowHeader = false;
+                gridFechaCreacion.DataBind();
+                gridFechaCreacion.RenderControl(htw);
+
+                var fechaLiberacionRow = new System.Data.DataTable("Fecha de Liberación:");
+                fechaLiberacionRow.Columns.Add("Fecha de Liberación:");
+                fechaLiberacionRow.Columns.Add("");
+                fechaLiberacionRow.Rows.Add(new string[] { "Fecha de Liberación:", solp.FechaLiberacionSapFormateada });
+                var gridFechaLiberacion = new GridView();
+                gridFechaLiberacion.DataSource = fechaLiberacionRow;
+                gridFechaLiberacion.GridLines = GridLines.None;
+                gridFechaLiberacion.Font.Bold = true;
+                gridFechaLiberacion.Font.Size = 10;
+                gridFechaLiberacion.ShowHeader = false;
+                gridFechaLiberacion.DataBind();
+                gridFechaLiberacion.RenderControl(htw);
+
+                var fechaCreacionPORow = new System.Data.DataTable("Fecha de creación de PO:");
+                fechaCreacionPORow.Columns.Add("Fecha de creación de PO:");
+                fechaCreacionPORow.Columns.Add("");
+                fechaCreacionPORow.Rows.Add(new string[] { "Fecha de creación de PO:", historial.FechaCreacionPOFormateada });
+                var gridFechaCreacionPO = new GridView();
+                gridFechaCreacionPO.DataSource = fechaCreacionPORow;
+                gridFechaCreacionPO.GridLines = GridLines.None;
+                gridFechaCreacionPO.Font.Bold = true;
+                gridFechaCreacionPO.Font.Size = 10;
+                gridFechaCreacionPO.ShowHeader = false;
+                gridFechaCreacionPO.DataBind();
+                gridFechaCreacionPO.RenderControl(htw);
+            }
+
+            var emptyRow = new System.Data.DataTable("Empty");
+            emptyRow.Columns.Add("");
+            emptyRow.Rows.Add("");
+            var gridEmpty = new GridView();
+            gridEmpty.DataSource = emptyRow;
+            gridEmpty.ShowHeader = false;
+            gridEmpty.DataBind();
+            gridEmpty.RenderControl(htw);
+
+            foreach (var row in historial.Cuerpo)
+            {
+                var rowTable = new System.Data.DataTable("Row");
+                rowTable.Columns.Add("");
+                rowTable.Rows.Add(row.ToArray());
+                var gridRow = new GridView();
+                gridRow.ShowHeader = false;
+                gridRow.DataSource = rowTable;
+                gridRow.DataBind();
+                gridRow.RenderControl(htw);
+            }
+            return sw.ToString();
         }
     }
 

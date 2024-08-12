@@ -296,6 +296,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
+    idLegajoEnModal = null;
     verLegajo(Id) {
         this.blockUI.start('Cargando...');
         this.service.verLegajo(Id, null, this.esProveedor)
@@ -306,6 +307,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     }
                     else {
                         this.legajo = result.data;
+                        this.idLegajoEnModal = Id;
                         this.displayLegajo = true;
                         this.blockUI.stop();
                     }

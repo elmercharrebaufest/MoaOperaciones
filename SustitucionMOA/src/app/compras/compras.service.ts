@@ -117,7 +117,7 @@ export class ComprasService extends BaseService {
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
-     }
+    }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -195,7 +195,7 @@ export class ComprasService extends BaseService {
 
         solpList.forEach(param => {
             params = params.append('solpList', param);
-          });
+        });
 
         return this.http
             .get<any[]>('/api/Order/GetSolicitantesByNroSolped', { params, headers: this.headers })
@@ -210,7 +210,7 @@ export class ComprasService extends BaseService {
         pagina: number = this.filtros.pagina,
         elementosPorPagina: number = this.filtros.itemsPorPagina,
         verTodo: boolean | false
-        ) : Observable<any> {
+    ): Observable<any> {
 
         let params: HttpParams = new HttpParams();
 
@@ -222,7 +222,7 @@ export class ComprasService extends BaseService {
         params = params.set('pagina', pagina.toString());
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
         params = params.set('verTodo', verTodo.toString());
-        
+
         return this.http
             .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers }).pipe(
                 catchError(error => {
@@ -235,7 +235,7 @@ export class ComprasService extends BaseService {
         let params: HttpParams = new HttpParams();
         params = params.set('verTodo', verTodo.toString());
         params = params.set('vendedor', proveedorId);
-        
+
         return this.http
             .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(
                 catchError(error => {
@@ -244,7 +244,7 @@ export class ComprasService extends BaseService {
             );
     }
 
-    public deleteById(Id,TempId, AccountingDate) {
+    public deleteById(Id, TempId, AccountingDate) {
         //http.delete falla en ambiente QA - cambiado a Post
         var payload = new FormData();
         if (TempId !== null && TempId !== '') {
@@ -260,7 +260,7 @@ export class ComprasService extends BaseService {
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(parametros : any, report : any, IdAdjuntos): Observable<any> {
+    public postCreateAsync(parametros: any, report: any, IdAdjuntos): Observable<any> {
 
         var payload = new FormData();
 
@@ -276,16 +276,16 @@ export class ComprasService extends BaseService {
         //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
 
         return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
-        .pipe(
-            catchError(error => {
-                return throwError(error);
-            })
-        );
-      }
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
 
 
 
-      public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
+    public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
 
         var payload = new FormData();
 
@@ -302,7 +302,7 @@ export class ComprasService extends BaseService {
 
         let params: HttpParams = new HttpParams();
         params = params.set("idES", idES.toString());
-        let resp = this.http.post<any>('/api/AdjuntosCertificaciones/GetAdjuntos', params ,{ headers: this.headers });
+        let resp = this.http.post<any>('/api/AdjuntosCertificaciones/GetAdjuntos', params, { headers: this.headers });
         return resp;
     }
 
@@ -1163,7 +1163,7 @@ export class ComprasService extends BaseService {
 
     public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
         let json = JSON.stringify(mensaje);
-        
+
 
         var payload = new FormData();
         payload.append('json', json);
@@ -1322,8 +1322,7 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
 
-    ): Observable<any>
-    {
+    ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
@@ -1431,8 +1430,8 @@ export class ComprasService extends BaseService {
         return this.http
             .post<SolpDto>('/api/compras/DesagruparPeticionDeOferta', payload, { headers: this.headers });
     }
-    
-    public buildReportES(reportRequest : any): Observable<any> {
+
+    public buildReportES(reportRequest: any): Observable<any> {
 
         var payload = new FormData();
 
@@ -1500,5 +1499,10 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/ActualizarFechaVigenciaRegistroInfo', payload, { headers: this.headers });
 
+    }
+    descargarArchivoHistorialMovimientos(idPeticionOferta: number): Observable<ApiResponse<string>> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idPeticionOferta", idPeticionOferta.toString());
+        return this.http.get("/api/compras/DescargarArchivoHistorialMovimientos", { params });
     }
 }

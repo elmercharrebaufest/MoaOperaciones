@@ -20,6 +20,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Input() usuarioProveedor: boolean;
     @Input() legajo: any;
     @Input() esAuditor: boolean;
+    @Input() idLegajo: number;
 
 
     @Output() cerrarLegajoEmitter = new EventEmitter();
@@ -28,7 +29,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Output() adjuntarArchivoLegajoEmitter = new EventEmitter<{ files: any }>();
 
     @BlockUI() blockUI: NgBlockUI;
-    
+
     error: string;
     visualizarAlert = false;
 
@@ -58,16 +59,16 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     descargarLegajo() {
         this.descargarLegajoEmitter.next();
     }
-    onBasicUploadAuto(event, fileUpload) {     
-        var archivoWeb = event.files.reduce((sum, file) => sum + file.size, 0);      
-        if(archivoWeb > 10000000){ 
-            this.error = "El archivo adjuntado no debe superar los 10Mb";   
+    onBasicUploadAuto(event, fileUpload) {
+        var archivoWeb = event.files.reduce((sum, file) => sum + file.size, 0);
+        if (archivoWeb > 10000000) {
+            this.error = "El archivo adjuntado no debe superar los 10Mb";
             fileUpload.clear();
-            return  this.visualizarAlert = true;               
-        }else{   
-        this.adjuntarArchivoLegajoEmitter.next(event.files);
-        fileUpload.clear();
-        this.visualizarAlert = false;
+            return this.visualizarAlert = true;
+        } else {
+            this.adjuntarArchivoLegajoEmitter.next(event.files);
+            fileUpload.clear();
+            this.visualizarAlert = false;
         }
     }
 
@@ -166,7 +167,29 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                         this.blockUI.stop();
                     }
                 )
+        } else if (tipoLegajo == "HistorialMovimientos") {
+            this.blockUI.start("Descargando...");
+            this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var blob = new Blob([result.data], {
+                                type: "application/octet-stream",
+                            });
+                            this.downloadArchivoLocal(blob, "Historial de Movimientos.xlsx");
+                            this.blockUI.stop();
+                        }
+                    },
+                    (error) => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
+                    }
+                )
         }
+
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
