@@ -29,5 +29,10 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
         public string NroRemito { get; set; }
         public string Ext_line { get; set; }
         public string FechaPrestacion { get; set; }
+        /// <summary>
+        /// Precio por unidad del item
+        /// </summary>
+        public decimal PrecioUnitario { get; set; }
+
     }
 }

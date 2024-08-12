@@ -255,53 +255,17 @@ namespace SustitucionMOAUtils.Services
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
-                        Dictionary<string, List<Aprobaciones>> detallesAprobacionPorLinea = ESTemporales
-                        .GroupBy(detalle => detalle.NRO_ES_SAP.ToString())
-                        .ToDictionary(g => g.Key, g => g.ToList());
 
-                        int i = 0;
-                        // Iterar sobre los detalles de la entrada de servicio
-                        documento.entradaServicioDetalle = documento.entradaServicioDetalle
-                        .Select(detalleSAP =>
-                        {
-                            if (detallesAprobacionPorLinea.TryGetValue(documento.EntradaServicio, out List<Aprobaciones> detalles))
-                            {
-                                var detalle = detalles[i];
-                                detalleSAP.NumeroLinea = int.Parse(detalleSAP.Ext_line).ToString();
-                                detalleSAP.TextoBreveServicio = string.IsNullOrEmpty(detalle.Texto_breve_servicio) || detalle.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalle.Texto_breve_servicio.Trim();
-                                detalleSAP.CantidadCertificar = detalle.Cantidad_a_certificar;
-                                detalleSAP.PorcentajeCertificar = detalle.Porcentaje_a_certificar;
-                                detalleSAP.MontoCertificar = detalle.Monto_a_certificar;
-                                detalleSAP.NroRemito = detalle.Referencia;
-                                detalleSAP.CodigoServicio = string.IsNullOrEmpty(detalleSAP.CodigoServicio) ?  "0" : detalleSAP.CodigoServicio;
-                                detalleSAP.NroPosicion = int.Parse(detalle.NRO_POS).ToString();
-                                detalleSAP.Cantidad = Convert.ToDecimal(detalle.Cantidad, CultureInfo.InvariantCulture).ToString();
-                                detalleSAP.CantidadAnterior = Convert.ToDouble(detalle.Cantidad_Anterior);
-                                detalleSAP.Monto = Convert.ToDecimal(detalle.Monto, CultureInfo.InvariantCulture);
-                                documento.MotivoRechazo = detalle.Motivo_rechazo;
-                                documento.NumeroCertificacion = detalle.NRO_ES_LOCAL;
-                                documento.Ingresante = detalle.Ingresante_CDS;
-                                documento.Aprobador = detalle.Aprobador_CDS;
-                                documento.Suplente = detalle.Suplente;
-                                documento.Fiscal = detalle.Fiscal_SOLPED;
-                                documento.Descripcion = string.IsNullOrEmpty(detalle.Texto_breve_servicio) ? "" : detalle.Texto_breve_servicio.Trim();
-                                DateTime fechaAprobacionFormateada = (DateTime)detalle.Fecha_aprobacion;
-                                documento.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
-                                DateTime FechaCreacion = (DateTime)detalle.Fecha_Carga_ES;
-                                documento.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
-                                documento.AnuladaPor = detalle.Anulado_por;
-                            }
-                            else
-                            {
-                                documento.Fiscal = correoSolp;
-                                DateTime fecha = DateTime.Parse(documento.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
-                                string fechaFormateada = fecha.ToString("dd/MM/yyyy");
-                                documento.FechaAprobacion = fechaFormateada;
-                                documento.FechaCreacion = fechaFormateada;
-                            }
-                            i++;
-                            return detalleSAP;
-                        }).ToList();
+                        if (documento.EntradaServicio == "1001540384") {
+                        
+                            var a = documento.EntradaServicio;
+                        }
+
+                       List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();                       
+
+                       var detalleEntradadeServicio = MergeDetalle(documento, detalleAprobacionesTemporales, correoSolp);
+                       
+                       documento.entradaServicioDetalle = detalleEntradadeServicio.entradaServicioDetalle;                       
                     }
                     else
                     {
@@ -326,6 +290,60 @@ namespace SustitucionMOAUtils.Services
             EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
 
             return EntradasServicio;
+        }
+
+        /// <summary>
+        /// mergea los datos del detalle que vienen de sap con los datos que se guardaron en la temporal
+        /// </summary>
+        /// <param name="entradaServicioSAP">detalle que devuelve sap</param>
+        /// <param name="detalleAprobacionesTemporales">detalle que se guardo en la temporal</param>
+        /// <param name="emailFiscal"></param>
+        /// <returns></returns>
+        private EntradaServicioCabeceraDto MergeDetalle(EntradaServicioCabeceraDto entradaServicioSAP, List<Aprobaciones> detalleAprobacionesTemporales, string emailFiscal)
+        {
+
+            foreach (var detalle in entradaServicioSAP.entradaServicioDetalle)
+            {
+                var detalleAprobacion = detalleAprobacionesTemporales.FirstOrDefault(x => x.Planned_line == detalle.NumeroLinea && x.Planned_package == detalle.PLN_PCKG);
+
+                if (detalleAprobacion != null)
+                {
+                    detalle.NumeroLinea = int.Parse(detalleAprobacion.Nro_linea).ToString();
+                    detalle.TextoBreveServicio = string.IsNullOrEmpty(detalleAprobacion.Texto_breve_servicio) || detalleAprobacion.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo" ? "" : detalleAprobacion.Texto_breve_servicio.Trim();
+                    detalle.CantidadCertificar = detalleAprobacion.Cantidad_a_certificar;
+                    detalle.PorcentajeCertificar = detalleAprobacion.Porcentaje_a_certificar;
+                    detalle.MontoCertificar = detalleAprobacion.Monto_a_certificar;
+                    detalle.NroRemito = detalleAprobacion.Referencia;
+                    detalle.CodigoServicio = string.IsNullOrEmpty(detalle.CodigoServicio) ? "0" : detalle.CodigoServicio;
+                    detalle.NroPosicion = int.Parse(detalleAprobacion.NRO_POS).ToString();
+                    detalle.Cantidad = Convert.ToDecimal(detalleAprobacion.Cantidad, CultureInfo.InvariantCulture).ToString();
+                    detalle.CantidadAnterior = Convert.ToDouble(detalleAprobacion.Cantidad_Anterior);
+
+                    entradaServicioSAP.MotivoRechazo = detalleAprobacion.Motivo_rechazo;
+                    entradaServicioSAP.NumeroCertificacion = detalleAprobacion.NRO_ES_LOCAL;
+                    entradaServicioSAP.Ingresante = detalleAprobacion.Ingresante_CDS;
+                    entradaServicioSAP.Aprobador = detalleAprobacion.Aprobador_CDS;
+                    entradaServicioSAP.Suplente = detalleAprobacion.Suplente;
+                    entradaServicioSAP.Fiscal = detalleAprobacion.Fiscal_SOLPED;
+                    entradaServicioSAP.Descripcion = string.IsNullOrEmpty(detalleAprobacion.Texto_breve_servicio) ? "" : detalleAprobacion.Texto_breve_servicio.Trim();
+                    DateTime fechaAprobacionFormateada = (DateTime)detalleAprobacion.Fecha_aprobacion;
+                    entradaServicioSAP.FechaAprobacion = fechaAprobacionFormateada.ToString("dd/MM/yyyy");
+                    DateTime FechaCreacion = (DateTime)detalleAprobacion.Fecha_Carga_ES;
+                    entradaServicioSAP.FechaCreacion = FechaCreacion.ToString("dd/MM/yyyy");
+                    entradaServicioSAP.AnuladaPor = detalleAprobacion.Anulado_por;
+                }
+                else {
+
+                    entradaServicioSAP.Fiscal = emailFiscal;
+                    DateTime fecha = DateTime.Parse(entradaServicioSAP.FechaCreacion); // FechaCreacion es la fecha de la alta en sap no es la fecha_carga_es de aprobaciones.
+                    string fechaFormateada = fecha.ToString("dd/MM/yyyy");
+                    entradaServicioSAP.FechaAprobacion = fechaFormateada;
+                    entradaServicioSAP.FechaCreacion = fechaFormateada;
+                }
+            }
+
+
+            return entradaServicioSAP;
         }
 
         /// <summary>
