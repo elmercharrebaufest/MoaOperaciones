@@ -107,18 +107,18 @@ namespace SustitucionMOAUtils.Services
 
             if (ordenesCompra.Count > 0 && !string.IsNullOrEmpty(ordenesCompra[0].ProveedorNombre))
             {
-                string razonSocial = ordenesCompra[0].ProveedorNombre;
+                string razonSocial = ordenesCompra[0].ProveedorNombre.Trim();
 
                 _proveedor = repositorio.Listar<Proveedor>(p =>
-                    p.RazonSocial == razonSocial
+                   p.RazonSocial.Trim() == razonSocial
                 ).FirstOrDefault();
 
                 if (_proveedor == null && !string.IsNullOrEmpty(ordenesCompra[0].ProveedorNumero))
                 {
-                    string codigoProveedor = ordenesCompra[0].ProveedorNumero;
+                    string codigoProveedor = ordenesCompra[0].ProveedorNumero.TrimEnd();
 
                     _proveedor = repositorio.Listar<Proveedor>(p =>
-                        p.CodigoProveedor == codigoProveedor
+                        p.CodigoProveedor.Trim() == codigoProveedor
                     ).FirstOrDefault();
                 }
             } 
