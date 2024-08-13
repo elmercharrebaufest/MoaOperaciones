@@ -427,6 +427,8 @@ namespace SustitucionMOAUtils.Services
                 Solp = solp
             };
             respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp ?? "";
+            respuestaGuardarSOLP.Solp.TieneModificaciones = solpEntity.TieneModificaciones;
+
             if (solp.Finalizar)
             {
                 try
