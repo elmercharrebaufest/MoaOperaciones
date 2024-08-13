@@ -1452,7 +1452,10 @@ namespace SustitucionMOAUtils.Export
             foreach (var row in historial.Cuerpo)
             {
                 var rowTable = new System.Data.DataTable("Row");
-                rowTable.Columns.Add("");
+                foreach (var i in row)
+                {
+                    rowTable.Columns.Add("");
+                }
                 rowTable.Rows.Add(row.ToArray());
                 var gridRow = new GridView();
                 gridRow.ShowHeader = false;

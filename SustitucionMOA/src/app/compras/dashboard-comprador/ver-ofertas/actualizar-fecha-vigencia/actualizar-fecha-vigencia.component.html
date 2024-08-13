@@ -3,16 +3,20 @@
         'max-height':'400px', 
         'min-height':'400px'}" (onHide)="cerrarActualizarSinVigenciaModal()">
     <p-header class="headerModal" style="color: #067935;">
-        <b>Posiciones con fechas vigencias vencidas</b>
+        <b>Posiciones con fechas de vigencias vencidas</b>
     </p-header>
     <div class="container-fluid" style="height: 400px;">
         <section class="ui-g ui-fluid">
             <mensaje #mensajeActualizarFechaVigenciaComponent></mensaje>
-            <div class="ui-g-12 ui-md-12">
-                <h3>Nueva fecha de vigencia:</h3>
-                <p-calendar class="calendar" [locale]="es" dateFormat="dd-M-yy" [(ngModel)]="nuevaFechaVigencia"
-                    [showIcon]="true">
-                </p-calendar>
+            <div class="col-md-12 row myRow alinearTitulo margenInput">
+                <div class="col-md-12 titulosModal">
+                    Nueva fecha de vigencia:
+                </div>
+                <div class="col-md-4" style="margin-right: 1em;">
+                    <p-calendar class="calendar" [locale]="es" dateFormat="dd-M-yy" [(ngModel)]="nuevaFechaVigencia"
+                        [showIcon]="true" [minDate]="hoy">
+                    </p-calendar>
+                </div>
             </div>
             <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posicionesSinVigencia"
                 dataKey="Id">

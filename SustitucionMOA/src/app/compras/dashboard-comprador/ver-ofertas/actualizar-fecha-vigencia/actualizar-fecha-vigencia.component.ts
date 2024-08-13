@@ -32,6 +32,8 @@ export class ActualizarFechaVigenciaComponent implements OnInit {
 
     @Output() cerrarActualizarFechaVigenciaEmitter = new EventEmitter();
 
+    hoy = new Date();
+
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {

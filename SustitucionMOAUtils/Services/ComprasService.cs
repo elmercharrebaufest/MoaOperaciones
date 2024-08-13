@@ -10363,13 +10363,17 @@ namespace SustitucionMOAUtils.Services
             return new ValidarFechaVigenciaRegistroInfoResDto
             {
                 CotizacionPosicionId = request.CotizacionPosicionId,
-                EstaVigente = DateTime.Parse(ultimoRegistroInfo.FechaVigencia) > DateTime.Now,
+                EstaVigente = DateTime.Parse(ultimoRegistroInfo.FechaVigencia).Date >= DateTime.Now.Date,
                 FechaVigencia = ultimoRegistroInfo?.FechaVigencia
             };
         }
 
         public void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos)
         {
+            if (datos.NuevaFechaVigencia.Date < DateTime.Now.Date)
+            {
+                throw new ValidationCustomException("No puede seleccionarse una fecha anterior al día de hoy.");
+            }
             var idCotizacionesPosiciones = datos.RegistrosInfo.Select(r => r.CotizacionPosicion_Id);
             var idSolpPosiciones = datos.RegistrosInfo.Select(r => r.SolpPosicion_Id);
             var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => idCotizacionesPosiciones.Contains(x.Id));
