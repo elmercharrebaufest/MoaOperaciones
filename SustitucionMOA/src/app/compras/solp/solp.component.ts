@@ -1360,7 +1360,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     condicionCircular(){
         var tieneVisita = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
-        return this.solpActual.tieneModificaciones && tieneVisita && !this.solpActual.tieneRevisionTecnicaFinalizada && this.solpActual.tienePeticionDeOferta;
+        return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
     }
 
     enviarCircularProveedores(){
