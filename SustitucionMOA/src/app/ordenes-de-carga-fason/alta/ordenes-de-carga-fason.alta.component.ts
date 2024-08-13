@@ -44,6 +44,8 @@ export class OrdenesDeCargaFasonAltaComponent
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
+
+    localSubscriptions = new Subscription();
     constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -53,7 +55,7 @@ export class OrdenesDeCargaFasonAltaComponent
     ) {
         super(service, navService, securityService, floatMsgService, modalService);
 
-        this.subscriptions.add(
+        this.localSubscriptions.add(
             this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
                 this.validarCNRTRequest()
             ))
@@ -964,10 +966,16 @@ export class OrdenesDeCargaFasonAltaComponent
         });
     }
     patenteAcopladoSelected(event: any) {
-        this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+        if (typeof (event) === "string")
+            this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCargaFason.PatenteAcoplado = event.value.toUpperCase();
     }
     patenteChasisSelected(event: any) {
-        this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+        if (typeof (event) === "string")
+            this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCargaFason.PatenteChasis = event.value.toUpperCase();
     }
     get patenteAcopladoValida() {
         return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
@@ -1030,7 +1038,7 @@ export class OrdenesDeCargaFasonAltaComponent
         this.displayModalEscalable = false;
     }
     public extraOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+        this.localSubscriptions.unsubscribe();
     }
 
     getPatentes() {
