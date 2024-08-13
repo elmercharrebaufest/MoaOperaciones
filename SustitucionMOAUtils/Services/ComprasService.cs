@@ -393,6 +393,26 @@ namespace SustitucionMOAUtils.Services
 
                     }
                 }
+
+                string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
+
+                if (!string.IsNullOrEmpty(pliegoEntity.ObservacionesGeneracion))
+                {
+                    int index = pliegoEntity.ObservacionesGeneracion.IndexOf("Justificación de condición especial:");
+                    if (index != -1)
+                    {
+                        pliegoEntity.ObservacionesGeneracion = pliegoEntity.ObservacionesGeneracion.Substring(0, index).TrimEnd();
+                    }
+
+                    pliegoEntity.ObservacionesGeneracion += "\n\n" + justificacionTexto;
+                }
+                else
+                {
+                    pliegoEntity.ObservacionesGeneracion = justificacionTexto;
+                }
+
+
+
             }
             SetNombreDePedido(solpEntity);
             ExistenPosicionesNuevas(solp, solpEntity);
