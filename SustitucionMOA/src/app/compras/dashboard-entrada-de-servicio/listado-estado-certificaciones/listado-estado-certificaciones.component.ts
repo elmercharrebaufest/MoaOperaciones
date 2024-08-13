@@ -606,15 +606,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.blockUI.start('Cargando...');
     this.isAll = true;
+    const mockEvent = { value: { code: this.estadoCertificacion.code } };
+
     if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculando = true;
       await this.getListarPO();
     } else {
       this.recalculando = true;
       await this.getListarPO();
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
@@ -624,15 +628,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeForProvider() {
     this.blockUI.start('Cargando...');
     this.isAll = false;
+    const mockEvent = { value: { code: this.estadoCertificacion.code } };
+
     if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculando = true;
       await this.getListarPO();
     } else {
       this.recalculando = true;
       await this.getListarPO();
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
