@@ -477,7 +477,8 @@ namespace SustitucionMOAUtils.Services
                 NroRemito = temporal.Referencia,
                 CodigoServicio = temporal.Nro_servicio,
                 FechaPrestacion = temporal.Fecha_Documento?.ToString("dd/MM/yyyy"),
-                CantidadAnterior = Convert.ToDouble(temporal.Cantidad_Anterior)
+                CantidadAnterior = Convert.ToDouble(temporal.Cantidad_Anterior),
+                PrecioUnitario = Convert.ToDecimal(temporal.Monto),
             };
 
             return detalleEntradaServicioTemp;
