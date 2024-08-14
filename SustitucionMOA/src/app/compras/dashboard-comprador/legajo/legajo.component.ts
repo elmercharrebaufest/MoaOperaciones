@@ -145,7 +145,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     }
                 )
         }
-        else if (tipoLegajo == "SOLP Archivos" || tipoLegajo == "Legajo" || tipoLegajo == "Circular") {
+        else if (tipoLegajo == "SOLP Archivos" || tipoLegajo == "Legajo" || tipoLegajo == "Circular" || tipoLegajo == "Cotización Adjunto") {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(archivoId)
                 .subscribe(

@@ -5052,6 +5052,35 @@ namespace SustitucionMOAUtils.Services
                 Tipo = TipoLegajo.HistorialMovimientos
             });
 
+            //buscar archivos de la cotizacion 
+            if (peticion.Usuarios != null)
+            {
+                foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                {
+                    var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                    if (cotizacionUsuario.Archivos.Count > 0) 
+                    {
+                        foreach (var item in cotizacionUsuario.Archivos)
+                        {
+                            legajo.Add(new LegajoDto
+                            {
+                                ArchivoId = item.Id,
+                                Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": " + item.ObtenerNombre(item.Ruta),
+                                PeticionDeOfertaId = peticionDeOfertaId,
+                                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                                Fecha = cotizacionUsuario.FechaCreacion,
+                                FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
+                                Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
+                                Tipo = TipoLegajo.CotizacionAdjunto
+                            });
+                        }
+                    }
+                   
+                }
+            }
+
+
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
 
@@ -5198,6 +5227,27 @@ namespace SustitucionMOAUtils.Services
                         using (var entryStream = zipEntry.Open())
                         {
                             entryStream.Write(excelBytes, 0, excelBytes.Length);
+                        }
+                    }
+
+                    // Agregar archivos de cotizaciones al zip
+                    if (peticion.Usuarios != null)
+                    {
+                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                        {
+                            var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                            if (cotizacionUsuario.Archivos.Count > 0)
+                            {
+                                foreach (var item in cotizacionUsuario.Archivos)
+                                {
+                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                    {
+                                        string fileName = Path.GetFileName(item.Ruta);
+                                        archivo.CreateEntryFromFile(item.Ruta, fileName);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
