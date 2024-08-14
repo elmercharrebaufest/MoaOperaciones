@@ -107,7 +107,7 @@
                         <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
                     </td>
                     <td
-                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
+                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
                         <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
                             (click)="mostrarResumenDeAprobacion(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
