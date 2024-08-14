@@ -698,13 +698,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         });
         return "A";
       }
-      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
-      if (i.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "I";
-      }
+      
       const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (f.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -713,6 +707,14 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         return "F";
       }
 
+      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+      if (i.length > 0) {
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
+        });
+        return "I";
+      }
+      
       if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
