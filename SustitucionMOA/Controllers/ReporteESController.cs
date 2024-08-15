@@ -120,23 +120,23 @@ namespace SustitucionMOA.Controllers
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Descripcion ?? "N/A"}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Cantidad.ToString() ?? "N/A"}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.UM ?? "N/A"}</td>");
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Importe.ToString("N2") ?? "N/A"}</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2")}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
 
                 // Anteriores
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadReal.ToString()}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadReal.ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture):0.##}%</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{ (report.CantidadReal * report.Importe).ToString("N") }</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{ (report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US")) }</td>");
 
                 // A certificar
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N")}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.PorcentajeACertificar:0.##}%</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.CantidadACertificar * report.Importe).ToString("N2")}</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
 
                 // Acumulado
-                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2")}</td>");
+                sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(report.CantidadReal + report.CantidadACertificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{(Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture) + report.PorcentajeACertificar):0.##}%</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2")}</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
                 sb.AppendLine("</tr>");
 
                 montoTotal += (report.CantidadACertificar * report.Importe);
