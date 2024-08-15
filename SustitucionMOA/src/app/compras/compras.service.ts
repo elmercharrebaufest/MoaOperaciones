@@ -20,6 +20,7 @@ import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
 import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
 import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
+import { LegajoDto } from '../modelos/compras/legajoDto';
 
 @Injectable({
     providedIn: 'root'
@@ -811,7 +812,7 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number, esProveedor): Observable<any> {
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<ApiResponse<LegajoDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
         if (idPeticionDeOfertaUsuario != null) {
@@ -1499,6 +1500,18 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/ActualizarFechaVigenciaRegistroInfo', payload, { headers: this.headers });
 
+    }
+
+    descargarHistorialCotizaciones(cotizacionId: number): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('cotizacionId', cotizacionId.toString());
+
+        return this.http
+            .get<ApiResponse<string>>(
+                '/api/compras/DescargarHistorialCotizaciones',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
     descargarArchivoHistorialMovimientos(idPeticionOferta: number): Observable<ApiResponse<string>> {
         let params: HttpParams = new HttpParams();

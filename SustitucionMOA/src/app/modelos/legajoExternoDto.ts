@@ -1,4 +1,4 @@
-import { LegajoDto } from "./legajoDto"
+import { LegajoDto } from "./compras/legajoDto"
 
 export interface LegajoExternoDto {
     ListaLegajos?: LegajoDto[]

@@ -878,21 +878,22 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
         {
+            var response = new SustitucionMOAApiResponse<List<LegajoDto>>();
             try
             {
-                var result = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor);
-                return JsonCustom(new { data = result });
+                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor);
             }
             catch (WSCustomException e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.ErrorWS;
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [ValidateInput(false)]
@@ -2158,6 +2159,27 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpGet]
+        public ActionResult DescargarHistorialCotizaciones(int cotizacionId)
+        {
+            var response = new SustitucionMOAApiResponse<string>();
+            try
+            {
+                var ms = service.GenerarHistorialCotizaciones(cotizacionId);
+                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialCotizaciones.xlsx"));
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
         public ActionResult DescargarArchivoHistorialMovimientos(int idPeticionOferta)
         {

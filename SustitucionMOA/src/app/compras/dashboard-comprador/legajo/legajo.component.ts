@@ -8,6 +8,7 @@ import { SecurityService } from '../../../common/services/SecurityService';
 import { SessionDataService } from '../../../common/services/SessionDataService';
 import { ComprasService } from '../../compras.service';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { LegajoDto, LegajoTipo } from '../../../modelos/compras/legajoDto';
 
 @Component({
     selector: 'app-legajo',
@@ -18,7 +19,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
 
     @Input() displayLegajo: boolean;
     @Input() usuarioProveedor: boolean;
-    @Input() legajo: any;
+    @Input() legajo: LegajoDto[];
     @Input() esAuditor: boolean;
     @Input() idLegajo: number;
 
@@ -72,101 +73,21 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    descargarArchivo(archivoId, tipoLegajo) {
-        if (tipoLegajo == "SOLP" || tipoLegajo == "Pliego") {
-            let SolpId = this.legajo[0].SolpId;
-            this.blockUI.start("Generando...");
-            this.service.getPdf(SolpId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
-        } else if (tipoLegajo == "Petición de Oferta") {
-            this.blockUI.start("Generando...");
-            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
-        } else if (tipoLegajo == "Chat Interno") {
-            let SolpId = this.legajo[0].SolpId;
-            this.blockUI.start("Generando...");
-            this.service.obtenerYExportarChat(SolpId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "text/plain",
-                            });
-
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.blockUI.stop();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                )
+    descargarArchivo(archivoId: number | undefined, tipoLegajo: string) {
+        if (tipoLegajo == LegajoTipo.Solp || tipoLegajo == LegajoTipo.Pliego) {
+            this.descargarSolp_Pliego(this.legajo[0].SolpId);
         }
-        else if (tipoLegajo == "SOLP Archivos" || tipoLegajo == "Legajo" || tipoLegajo == "Circular" || tipoLegajo == "Cotización Adjunto") {
-            this.blockUI.start("Descargando...");
-            this.service.DescargarArchivo(archivoId)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var byteArray = new Uint8Array(result.FileContents);
-                            var blob = new Blob([byteArray], {
-                                type: "application/octet-stream",
-                            });
-                            this.downloadArchivoLocal(blob, result.FileDownloadName);
-                            this.blockUI.stop();
-                        }
-                    },
-                    (error) => {
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    }
-                )
+        else if (tipoLegajo == LegajoTipo.PeticionDeOferta && archivoId) {
+            this.descargarPeticionDeOferta(archivoId);
+        }
+        else if (tipoLegajo == LegajoTipo.ChatInterno) {
+            this.descargarChatInterno(this.legajo[0].SolpId);
+        }
+        else if ((tipoLegajo == LegajoTipo.SolpArchivos || tipoLegajo == LegajoTipo.Legajo || tipoLegajo == LegajoTipo.Circular) && archivoId) {
+            this.descargarSolpArchivos_Legajo_Circular(archivoId);
+        }
+        else if (tipoLegajo == LegajoTipo.Cotizacion && archivoId) {
+            this.descargarHistorialCotizaciones(archivoId);
         } else if (tipoLegajo == "HistorialMovimientos") {
             this.blockUI.start("Descargando...");
             this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
@@ -189,17 +110,131 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     }
                 )
         }
+    }
 
+    private descargarSolp_Pliego(solpId: number) {
+        this.blockUI.start("Generando...");
+        this.service.getPdf(solpId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                    }
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    private descargarPeticionDeOferta(archivoId: number) {
+        this.blockUI.start("Generando...");
+        this.service.getPdfPeticionDeOfertaUsuario(archivoId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                    }
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    private descargarChatInterno(solpId: number) {
+        this.blockUI.start("Generando...");
+        this.service.obtenerYExportarChat(solpId.toString())
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "text/plain",
+                        });
+
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                    }
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            )
+    }
+
+    private descargarSolpArchivos_Legajo_Circular(archivoId: number) {
+        this.blockUI.start("Descargando...");
+        this.service.DescargarArchivo(archivoId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+                        this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
+    private descargarHistorialCotizaciones(cotizacionId: number) {
+        this.blockUI.start("Descargando...");
+        this.service.descargarHistorialCotizaciones(cotizacionId).subscribe(
+            (response) => {
+                var byteArray = new Uint8Array(response.FileContents);
+                var blob = new Blob([byteArray], {
+                    type: "application/octet-stream",
+                });
+                this.downloadArchivoLocal(blob, response.FileDownloadName);
+                this.blockUI.stop();
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
-        if (window.navigator.msSaveOrOpenBlob) {
+        if ((window.navigator as any).msSaveOrOpenBlob) {
             // IE11
-            window.navigator.msSaveOrOpenBlob(
-                blob,
-                nombreArchivo
-            );
-        } else {
+            (window.navigator as any).msSaveOrOpenBlob(blob, nombreArchivo);
+        }
+        else {
             var url = window.URL.createObjectURL(blob);
             var link = document.createElement("a");
             document.body.appendChild(link);

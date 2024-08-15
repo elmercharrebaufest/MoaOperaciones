@@ -9,6 +9,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -118,5 +119,6 @@ namespace SustitucionMOAUtils.Interfaces
         ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
         void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
         string DescargarExcelHistorialMovimientos(int peticionDeOfertaId);
+        byte[] GenerarHistorialCotizaciones(int cotizacionId);
     }
 }
