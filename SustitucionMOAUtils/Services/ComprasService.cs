@@ -855,7 +855,7 @@ namespace SustitucionMOAUtils.Services
             //var crearSolpComsumer = crearSolp(solpEntity);
             //var modificarSolpConsumer = modificarSolp(solpEntity);
             //var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
-          
+
             var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
             resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
             respuestaGuardarSOLP.Errores = new List<string>();
@@ -865,13 +865,13 @@ namespace SustitucionMOAUtils.Services
 
                 try
                 {
-                   resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                    resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
                 }
                 catch (Exception e)
                 {
-                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E"});
+                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
                 }
-               
+
                 respuestaGuardarSOLP.Errores = new List<string>();
 
                 foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -924,7 +924,7 @@ namespace SustitucionMOAUtils.Services
                         resultadoEditarSolp.Errores.Add(new ModificarSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
                     }
 
-                }               
+                }
 
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
@@ -1460,7 +1460,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioCreacion);
             includes.Add(u => u.UsuarioModificacion);
 
-            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp,0,null,DirOrden.Asc, includes).ToList().FirstOrDefault();
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault();
 
             if (solp == null)
             {
@@ -1527,7 +1527,7 @@ namespace SustitucionMOAUtils.Services
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
-               // DeshabilitarAdicional = solp.Adjudicacions.Any(),
+                // DeshabilitarAdicional = solp.Adjudicacions.Any(),
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
@@ -3004,28 +3004,26 @@ namespace SustitucionMOAUtils.Services
 
                 SetNombreDePedido(solp);
 
-                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento && !string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
                 {
                     solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
 
-                    if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
-                    {
-                        ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
-                    }
+                    ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
+
                     repositorio.GuardarCambios();
 
                     GrabarArchivosSapEnPliego(solp, result.Archivos);
 
                     if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
-                        //ReiniciarCondicionEspecial(solp);
+                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                            $"Recuerde ingresar un adjunto para completar la SOLP.");
                     }
 
                     if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
-                        //ReiniciarCondicionEspecial(solp);
+                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                            $"Recuerde ingresar una justificacion para completar la SOLP.");
                     }
                 }
 
@@ -3092,7 +3090,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar un proveedor");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3111,7 +3109,7 @@ namespace SustitucionMOAUtils.Services
             catch (WSCustomException ex)
             {
                 EnviarMailErrorCondicionEspecial(solp, ex.Message);
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
             }
         }
 
@@ -3120,7 +3118,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(tipoImputacion.NumeroOrdenDeCompra) && solp.Adicional == true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar una orden de compra");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3129,7 +3127,7 @@ namespace SustitucionMOAUtils.Services
             if (!solp.Posiciones.All(x => x.Moneda.CodigoSap == ordenDeCompra.Cabecera.Moneda))
             {
                 EnviarMailErrorCondicionEspecial(solp, $"La moneda de la OC {ordenDeCompra.Cabecera.Moneda} no es compatible con la moneda de la SOLP {solp.Posiciones.FirstOrDefault().Moneda.CodigoSap}");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3788,7 +3786,7 @@ namespace SustitucionMOAUtils.Services
                     usuarioPO.MensajeAdjudicar = mensaje;
                     usuarioPO.VerAdjudicar = verAdjudicar;
 
-                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.All(d => d.MonedaDescripcion == "ARP")) 
+                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.All(d => d.MonedaDescripcion == "ARP"))
                     {
                         if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                         {
@@ -3813,7 +3811,7 @@ namespace SustitucionMOAUtils.Services
 
                         }
                     }
-                   
+
                 }
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
