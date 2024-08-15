@@ -489,7 +489,7 @@ namespace SustitucionMOAUtils.Services
 
             List<OrdenCompraDto> ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros);
 
-            if (!string.IsNullOrEmpty(ordenesCompra[0].MonedaDescripcion))
+            if (ordenesCompra.Count > 0 && !string.IsNullOrEmpty(ordenesCompra[0].MonedaDescripcion))
             {
                 return ordenesCompra[0].MonedaDescripcion;
             }
@@ -809,6 +809,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ReporteDto reporte = new ReporteDto();
                 int nroLinea = int.Parse(ap.Nro_linea);
+                string package = ap.Planned_line;
                 long nroPosicion = long.Parse(ap.NRO_POS);
                 decimal cantidadACertificar = Convert.ToDecimal(ap.Cantidad_a_certificar, CultureInfo.InvariantCulture);
                 decimal porcentajeACertificar = Convert.ToDecimal(ap.Porcentaje_a_certificar, CultureInfo.InvariantCulture);
@@ -818,18 +819,22 @@ namespace SustitucionMOAUtils.Services
                     .Sum(a => a.Cantidad);
 
                 var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
-                var item = position.Items.First(x => x.NumeroLinea == nroLinea);
+                var item = position.Items.First(x => x.NumeroLinea == nroLinea && x.LINE_NO == package);
 
-                if (totalACertificar > cantidadACertificar)
-                {
-                    item.CantidadReal = item.CantidadReal + (totalACertificar - cantidadACertificar);
-                } else if(totalACertificar < cantidadACertificar)
-                {
-                    item.CantidadReal = item.CantidadReal + (cantidadACertificar - totalACertificar);
-                } else if(totalACertificar == cantidadACertificar)
-                {
-                    item.CantidadReal = item.CantidadReal + totalACertificar;
-                }
+                //cantidad real es cantidad anterior
+
+                item.CantidadReal = Convert.ToDecimal(ap.Cantidad_Anterior);
+
+                //if (totalACertificar > cantidadACertificar)
+                //{
+                //    item.CantidadReal = item.CantidadReal + (totalACertificar - cantidadACertificar);
+                //} else if(totalACertificar < cantidadACertificar)
+                //{
+                //    item.CantidadReal = item.CantidadReal + (cantidadACertificar - totalACertificar);
+                //} else if(totalACertificar == cantidadACertificar)
+                //{
+                //    item.CantidadReal = item.CantidadReal + totalACertificar;
+                //}
 
                 double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
                 item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
@@ -1208,7 +1213,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            Task.Run(() => GenerateAndSaveReportInBlob(reporte, newESLocal));
+            Task.Run(() => GenerateAndSaveReportInBlob(reporte, newESLocal)).Wait();
 
             //Para mensaje de retorno de ES Temporal (sin aprobación automatica) se necesita mostrar datos de NRO_ES_LOCAL y estado.
             return temp;
