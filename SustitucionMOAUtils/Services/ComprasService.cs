@@ -2939,11 +2939,7 @@ namespace SustitucionMOAUtils.Services
                         repositorio.Remover(subpos);
                     }
                 }
-
-                if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
-                {
-                    ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
-                }
+                
                 repositorio.GuardarCambios();
                 SetNombreDePedido(solp);
 
