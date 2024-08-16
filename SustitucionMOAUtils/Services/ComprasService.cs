@@ -431,7 +431,7 @@ namespace SustitucionMOAUtils.Services
             };
             respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp ?? "";
             respuestaGuardarSOLP.Solp.TieneModificaciones = solpEntity.TieneModificaciones;
-            respuestaGuardarSOLP.Solp.TienePeticionDeOferta = solpEntity.Posiciones.Any(p => p.Peticiones.Any());
+            respuestaGuardarSOLP.Solp.TienePeticionDeOferta = solpEntity.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any());
 
             if (solp.Finalizar)
             {

@@ -74,8 +74,8 @@ namespace SustitucionMOAUtils.Services.Email
                     Log.Info($"Copia mail responsable de trabajo paso 2 {solp.Pliego.SupervisorTrabajo}");
                 }
 
-                var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada" +
-                    $": {solp.NroSolp}" +
+                var descripcionSolp = !string.IsNullOrEmpty(solp.Pliego?.NombreObra) ? solp.Pliego.NombreObra : solp.Posiciones.First().Tarea;
+                var asunto = $"{(solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada")}: {solp.NroSolp} - {descripcionSolp}" +
                     (solp.Adicional == true ? $" - con Adicional OC: {solp.NroOrdenDeCompraAdicional}" : "");
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
 
