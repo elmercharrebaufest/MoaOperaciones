@@ -596,13 +596,15 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
                         if (enviarSap) {
                             this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
+                            this.solpActual.tieneModificaciones = result.Solp.TieneModificaciones;
                             if (result.Mensaje == "OK") {
                                 this.finalizarOk = true;
 
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
-                                else if (this.solpActual.nroSolp) {
+                                
+                                if (this.solpActual.tieneModificaciones) {
                                     this.enviarCircularProveedores();
                                 } else {
                                     this.displaySAP = true;
