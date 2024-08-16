@@ -5,7 +5,7 @@
                 <div class="row myRow alinearTitulo" style="padding-top: 2px;">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         <label class="labelCompras" for="editorTexto"> Adjuntar Anexos</label>
-                        <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Visible para el Proveedor)</label>
+                        <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Visible para Comprador y Proveedor)</label>
                         <p-fileUpload [styles]="{'margin-left':'-13px'}" name="fileUploadCotizaciones" auto="true" multiple="multiple" chooseLabel="Elegir archivo"
                                       [showUploadButton]=false [showCancelButton]=false [customUpload]="true" (uploadHandler)="uploadHandler($event)">
                             <ng-template *ngIf="model.archivosCotizacionesNuevos.length == 0" pTemplate="toolbar">
@@ -42,7 +42,6 @@
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 margenInput">
                         Observaciones
-                        <label style="color: gray; font-size: 14px">&nbsp;&nbsp;(Sólo visible para el Comprador)</label>
                         <textarea [ngModelOptions]="{standalone:true}" [(ngModel)]="model.observacionesCotizacion" (ngModelChange)="validarChecks()"
                                   name="observaciones" id="observaciones" cols="30" rows="5" placeholder="Indicar la cantidad de días con que se cuenta a partir de tener el equipo disponible, en una parada programada o que el trabajo depende de otros"></textarea>
                     </div>
