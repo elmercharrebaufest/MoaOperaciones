@@ -26,7 +26,7 @@
                             <p>Posicion {{ position.NroPosicion }}</p>
                         </div>
                         <div class="input-container">
-                            <input id="description" pInputText type="text" formControlName="description" maxlength="40" (keyup)="limpiarComienzoConEspacios($event)" (ngModelChange)="onDescripcionChange(position, $event)">
+                            <input id="description" pInputText type="text" value={{position.posicionDescripcion}} maxlength="40" (keyup)="limpiarComienzoConEspacios($event)" (input)="onDescripcionChange(position, $event.target.value)">
                             <span *ngIf="descriptions.at(i).get('description').invalid && descriptions.at(i).get('description').touched">
                                 El campo es requerido
                             </span>

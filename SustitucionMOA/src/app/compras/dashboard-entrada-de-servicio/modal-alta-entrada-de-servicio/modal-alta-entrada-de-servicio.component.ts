@@ -136,7 +136,6 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
         this.setRangoFechaDocumento();
         this.setRangoFechaContabilizacion();
         this.calcularTotalMontoCertificar();
-        //this.itemSelected = this.orderBy(this.itemSelected, 'NroPosicion');
         this.colConfig = this.getColumnConfig();
     }
 
@@ -146,18 +145,19 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
     ngAfterContentInit() {
         this.entrySheetObjects = [];
         this.agruparItemPorPosicion(this.itemSelected);
+        this.itemsAgrupadosPorPosicion = this.orderBy(this.itemsAgrupadosPorPosicion, 'NroPosicion');
         this.applyColumnConfig(this.colConfig);
     }
 
     agruparItemPorPosicion(items) {
-        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, NroSolP, ...Items }) => {
+        this.itemsAgrupadosPorPosicion = items.reduce((prev, { NroPosicion, NroSolP, posicionDescripcion, ...Items }) => {
             const id = prev.findIndex((item) => item.NroPosicion === NroPosicion);
             if (id >= 0) {
                 prev[id].MontoTotalACertificar = prev[id].MontoTotalACertificar + (Items.CantidadACertificar * Items.Importe);
                 prev[id].Descripcion.trim();
                 prev[id].Items.push(Items);
             } else {
-                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe), NroSolP })
+                prev.push({ NroPosicion, Descripcion: Items.Descripcion.trim(), Items: [Items], MontoTotalACertificar: (Items.CantidadACertificar * Items.Importe), NroSolP, posicionDescripcion })
             }
             return prev;
         }, []);
@@ -347,7 +347,9 @@ export class ModalAltaEntradaDeServicioComponent implements OnInit {
 
     tituloArchivoPDF = "Reporte";
     BuildReport(){
-        this.service.buildReportES(this.itemSelected).subscribe(
+        const items = this.orderBy(this.itemSelected, 'NroPosicion');
+
+        this.service.buildReportES(items).subscribe(
             (result) => {
                 if (result.logout == true) {
                     this.sessionDataService.logout();
