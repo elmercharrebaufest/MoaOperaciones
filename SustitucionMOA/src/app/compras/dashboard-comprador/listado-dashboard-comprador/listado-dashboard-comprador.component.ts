@@ -1030,11 +1030,11 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             return null;
         }
         if (response.error) {
-            this.mensajeComponent.setErrorMsg(response.error);
+            this.floatMsgService.setErrorMsg(response.error);
             return null;
         }
         if (response.info) {
-            this.mensajeComponent.setInfoMsg(response.info);
+            this.floatMsgService.setErrorMsg(response.info);
         }
         return response.data || null;
     }

@@ -10508,15 +10508,13 @@ namespace SustitucionMOAUtils.Services
             {
                 foreach (var peticionOfertaUsuario in peticion.Usuarios)
                 {
-                    var fechaCircular = peticionOfertaUsuario.Circulares
-                        .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                        .OrderByDescending(p => p.Circular.Id)
-                        .FirstOrDefault().Circular.FechaCreacion;
+                    var circular = (peticionOfertaUsuario.Circulares?
+                            .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                            .OrderByDescending(p => p.Circular.Id)
+                            .FirstOrDefault())?.Circular;
 
-                    var plazoDeOfertaCircular = peticionOfertaUsuario.Circulares
-                        .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                        .OrderByDescending(p => p.Circular.Id)
-                        .FirstOrDefault().Circular.PlazoDeOferta;
+                    var fechaCircular = circular?.FechaCreacion;
+                    var plazoDeOfertaCircular = circular?.PlazoDeOferta;
 
                     DateTime fechaFinPlazo;
                     if (plazoDeOfertaCierre == null && fechaCircular == null)
