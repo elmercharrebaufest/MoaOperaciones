@@ -604,11 +604,12 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 
-                                if (this.solpActual.tieneModificaciones) {
-                                    this.enviarCircularProveedores();
-                                } else {
+                                // Esto sirve para la mejora de no enviarCirculares automaticas
+                                // if (this.solpActual.tieneModificaciones) {
+                                //     this.enviarCircularProveedores();
+                                // } else {
                                     this.displaySAP = true;
-                                }
+                                // }
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {

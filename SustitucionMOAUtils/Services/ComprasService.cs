@@ -265,6 +265,10 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+
+                // borrar esta linea cuando este la mejora del envio de circulares automaticas
+                solpEntity.EnvioCircularA = (int)EnviarCircularEnum.NoEnviar;
+
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
