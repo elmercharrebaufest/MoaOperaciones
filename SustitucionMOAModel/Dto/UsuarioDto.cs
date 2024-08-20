@@ -28,7 +28,7 @@ namespace SustitucionMOAModel.Dto
             Permisos = new List<string>();
         }
         public string Suplente { get; set; }
-
+        public bool? Externo { get; set; }
 
 
         public UsuarioDto(Usuario usuario)
@@ -62,6 +62,7 @@ namespace SustitucionMOAModel.Dto
             RazonSocial = usuario.ObtenerRazonSocial();
             OrganizacionDeCompra = usuario.OrganizacionDeCompra;
             Suplente = usuario.Suplente;
+            Externo = usuario.Externo;
     }
 
         private string ObtenerCodigoProveedor()

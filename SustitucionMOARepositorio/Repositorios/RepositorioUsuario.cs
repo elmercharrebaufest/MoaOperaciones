@@ -31,6 +31,7 @@ namespace SustitucionMOARepositorio.Repositorios
                         NombreCorto = u.TipoUsuario.NombreCorto
                     },
                     u.OrganizacionDeCompra,
+                    u.Externo,
                     Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial }
                     ),
                 }).ToList();
@@ -46,6 +47,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     UsuarioSap = string.IsNullOrEmpty(u.UsuarioSap) ? "" : u.UsuarioSap,
                     Suplente = string.IsNullOrEmpty(u.Suplente) ? "" : u.Suplente,
                     TipoUsuario = u.TipoUsuario,
+                    Externo = u.Externo,
                     Tipo = (
                         (u.TipoUsuario.NombreCorto == "G" || u.TipoUsuario.NombreCorto == "NG" || u.TipoUsuario.NombreCorto == "A") ? "Proveedor" :
                         u.TipoUsuario.NombreCorto == "CORR" ? "Corredor" :

@@ -249,5 +249,15 @@ namespace SustitucionMOA.App_Start
             //Activador Ninject Hangfire
             GlobalConfiguration.Configuration.UseNinjectActivator(kernel);
         }
+
+        /// <summary>
+        /// Gets the configured kernel.
+        /// </summary>
+        /// <returns>The kernel.</returns>
+        public static IKernel GetKernel()
+        {
+            return bootstrapper.Kernel;
+        }
+
     }
 }

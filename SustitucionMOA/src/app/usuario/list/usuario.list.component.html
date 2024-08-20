@@ -247,27 +247,6 @@
                                 <p>Periodo de reasignación</p>
                             </div>
                             <div style="margin-top: 10px; padding-top: 0.8em;">
-                                <!--<p-calendar #fechaReasignar
-                                            [(ngModel)]="rangoReasignacion"
-                                            (ngModelChange)="onCalendarChange($event)"
-                                            selectionMode="range"
-                                            formControlName="fechaReasignar1"
-                                            id="fechaReasignar"
-                                            dateFormat="dd/mm/yy"
-                                            [readonlyInput]="true"
-                                            [monthNavigator]="true"
-                                            [yearNavigator]="true"
-                                            [locale]="es"
-                                            autoZIndex="true"
-                                            [minDate]="fechaReasignacionMin"
-                                            [maxDate]="fechaReasignacionMax"
-                                            yearRange="{{fechaReasignacionMin.getFullYear()}}:{{fechaReasignacionMax.getFullYear()}}"
-                                            [showIcon]="true"
-                                            [showButtonBar]="true"
-                                            (onClearClick)="handleClearClick($event)"
-                                            clearButtonStyleClass="center-clear-button"
-                                            todayButtonStyleClass="center-today-button">
-                                </p-calendar>-->
                                 <p-calendar #fechaReasignar
                                             [(ngModel)]="rangoReasignacion"
                                             (ngModelChange)="onCalendarChange($event)"
@@ -296,7 +275,15 @@
                                 <p style="color:red; font-size: 1em">Por favor, cargue un rango de fechas</p>
                             </div>                           
                         </div>
-                                         
+                        &nbsp;
+                        <div class=""> 
+                            <input type="checkbox" name="externo" 
+                            (change)="onCheckboxChange($event)" 
+                            #externoCheckbox 
+                            [disabled]="isCheckboxDisabled">
+                            &nbsp;
+                            <label> Es usuario externo</label>
+                        </div>  
 
                         <div class="row" *ngFor="let titulo of titulos">
                             <h5 class="tituloCategoriaListaUsuarios col-md-12">{{titulo}}</h5><br>

@@ -11,6 +11,21 @@
     overflow: hidden;
 }
 
+.reasignacionIcon {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
 .fullscreen {
     position: fixed !important;
     left: 0;
@@ -279,7 +294,8 @@ i#btn-fullscreen {
 }
 
 i#btn-fullscreen,
-i#btn-filtros {
+i#btn-filtros,
+i#btn-reasignacion {
     font-size: 1.7rem;
     float: right;
     margin-top: .6em;

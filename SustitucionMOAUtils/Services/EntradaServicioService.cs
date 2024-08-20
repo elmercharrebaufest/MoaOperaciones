@@ -35,6 +35,7 @@ using System.Web;
 using SustitucionMOAUtils.Email;
 using System.Globalization;
 using DocumentFormat.OpenXml.Bibliography;
+using System.Windows.Media.Animation;
 
 namespace SustitucionMOAUtils.Services
 
@@ -591,7 +592,12 @@ namespace SustitucionMOAUtils.Services
 
 
             //2a - Comparar Fiscal/Email con usuario FE
-            if (userMail == detalleSolPed.Email)
+            if (usuarioIngresante.Externo != null && usuarioIngresante.Externo == true)
+            {
+                auto = false;
+                difSolicitante = false;
+            }
+            else if (userMail == detalleSolPed.Email)
             {
                 auto = true;
             }
@@ -801,6 +807,37 @@ namespace SustitucionMOAUtils.Services
             return true;
         }
 
+        /// <summary>
+        /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
+        /// </summary>
+        /// <param name="ListaAp"></param>
+        public void NotificarReasignaciones(List<string> ListaAp)
+        {
+            //Todos los registros con mismo NRO_ES_LOCAL
+            foreach(string esLocal in ListaAp)
+            {
+                //Todos los registros con mismo NRO_ES_LOCAL
+                List<Aprobaciones> completeAp = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
+                //Buscar Proveedor
+                OrderParamsDto orderParams = new OrderParamsDto();
+                orderParams.OrdenCompraId = completeAp[0].NRO_OC;
+                Proveedor prov = new Proveedor();
+                prov = orderService.BuscarProveedor(orderParams);
+
+                //MMSN-1030: Fix
+                string aprobador = completeAp[0].Aprobador_CDS;
+                var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                int userId = 0;
+                if (user != null)
+                {
+                    userId = user.Id;
+                }
+                List<ReporteDto> reporte = new List<ReporteDto>();
+
+                _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+            }
+            
+        }
         private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";
@@ -1098,6 +1135,14 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             #endregion
+
+            if (user != null && user.Id != 0 && user.Externo == true)
+            {
+                var usuarioSuplente = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == user.Suplente);
+                temp.Aprobador_CDS = user.Suplente;
+                temp.Suplente = usuarioSuplente.Suplente;
+                temp.Fiscal_SOLPED = user.Suplente;
+            }
 
             //Datos OC
             temp.NRO_OC = posicion.EntrySheetHeader.OrdenCompraNumero;

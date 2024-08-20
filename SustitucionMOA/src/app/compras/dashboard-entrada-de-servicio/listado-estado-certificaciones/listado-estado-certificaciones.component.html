@@ -5,10 +5,11 @@
             <div class="col-xs-12 col-sm-10">
                 <strong>Dashboard - Solicitudes de certificaciones</strong>
             </div>
+            <i *ngIf="isAuthorized('ABM USUARIOS')" id="btn-reasignacion" [ngClass]="'fa fa-retweet'" title="Ejecutar proceso de derivación automática" (click)="correrReasignacionManual()"></i>
             <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'"
-                [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
+               [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
             <i *ngIf="showOrHideAuxPanel()" id="btn-filtros" class="fa fa-filter" title="Filtros"
-                (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
+               (click)="togglePanel('search')" [class.i-disabled]="!displayContent"></i>
         </div>
         <br />
     </section>
@@ -240,6 +241,17 @@
 
 <p-confirmDialog [style]="{width: '50vw'}" appendTo="body">
 </p-confirmDialog>
+
+<p-confirmDialog #dialogo key="reasignacion" icon="pi pi-exclamation-triangle" [width]="400" [responsive]="true"
+                 appendTo="body">
+    <p-footer>
+        <button type="button" pButton label="Cancelar" class="ui-button-info botonModal"
+                (click)="dialogo.reject()"></button>
+        <button type="button" pButton label="Aceptar" class="ui-button-success botonModal"
+                (click)="dialogo.accept()"></button>
+    </p-footer>
+</p-confirmDialog>
+
 
 <modal-aprobacion *ngIf="mostrarModalAprobaciones" [showModal]="mostrarModalAprobaciones"
     [entradaServicioSeleccionada]="entradaServicioSeleccionada" (aprobarES)="enviarAprobacion($event)"

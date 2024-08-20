@@ -179,7 +179,7 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
@@ -188,6 +188,8 @@ namespace SustitucionMOAUtils.Services
             usuario.RemoverRolesEditables();
 
             usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
+
+            usuario.Externo = esExterno;
 
             if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {

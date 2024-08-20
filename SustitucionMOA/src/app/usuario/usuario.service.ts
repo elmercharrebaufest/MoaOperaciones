@@ -45,7 +45,7 @@ export class UsuarioService extends BaseService {
         return this._usuarioVerVendedores.asObservable()
     }
 
-    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, fDesde: string, fHasta: string) {
+    guardarRolesUsuario(usuarioSeleccionado: any, idRoles: any, fDesde: string, fHasta: string, esExterno: any) {
         var payload = new FormData();
         payload.append('idRoles', idRoles);
         payload.append('idUsuario', usuarioSeleccionado.Id);
@@ -53,6 +53,7 @@ export class UsuarioService extends BaseService {
         payload.append('suplente', usuarioSeleccionado.Suplente);
         payload.append('fDesde', fDesde);
         payload.append('fHasta', fHasta);
+        payload.append('esExterno', esExterno);
 
         return this.http
             .post<any>('/api/usuario/GuardarRoles', payload, { headers: this.headers })

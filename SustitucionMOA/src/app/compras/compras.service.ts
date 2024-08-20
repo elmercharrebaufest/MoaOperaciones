@@ -1472,4 +1472,11 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
+    public runReasignacion() {
+        return this.http
+            .get('/api/Derivacion/CorrerReasignacionManual', {
+                headers: this.headers,
+            });
+    }
+   
 }

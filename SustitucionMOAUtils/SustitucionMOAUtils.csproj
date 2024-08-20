@@ -186,6 +186,8 @@
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
+    <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
+    <Compile Include="Interfaces\ITimerDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
@@ -255,6 +257,8 @@
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\LogicaDerivacionAutomaticaService.cs" />
+    <Compile Include="Services\TimerDerivacionAutomaticaService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />

@@ -13,6 +13,7 @@ import { LoginGuard } from './../common/security/login-guard';
 import { ok } from 'assert';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { BuscadorComponent } from './../common/shared-components/buscador/buscador.component'
+import { ConfirmationService, SelectItem } from 'primeng/api';
 declare var $: any;
 
 @Component({
@@ -119,7 +120,7 @@ export class LayoutComponent implements OnDestroy {
     constructor(private service: LayoutService, private sessionDataService: SessionDataService,
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
-    private cd: ChangeDetectorRef) {
+        private cd: ChangeDetectorRef, private confirmationService: ConfirmationService) {
         
         this.renderer.setElementClass(document.body, 'wrapper', true);
 
@@ -425,7 +426,8 @@ export class LayoutComponent implements OnDestroy {
                 this.setMsjSuccess(successMsj);
             });
 
-         this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
+        this.esUsuarioComercial = this.securityService.tienePermiso('ABM EMPRESAS');
+        this.confirmationService = confirmationService;
     }
 
     ngAfterViewInit() {
@@ -745,4 +747,6 @@ export class LayoutComponent implements OnDestroy {
         $("#notificationSmall").css({ "right" : "-270px" });
         $("#coverAll").fadeOut();
     }
+
+
 }

@@ -959,4 +959,43 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     return `${coin}${montoFormatted}`;
   }
 
+
+    isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    correrReasignacionManual() {
+        this.confirmationService.confirm({
+            key: 'reasignacion',
+            header: 'Ejecutar proceso de derivación automática',
+            message: '¿Está seguro de que desea correr el proceso de derivación manualmente?',
+            accept: () => {
+                this.reasignacionManual()
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    reasignacionManual(): void {
+        this.blockUI.start();
+        this.service.runReasignacion().subscribe(
+            (resp: any) => {
+                const msj = { severity: 'success', summary: 'Proceso de derivación automática exitoso', detail: '' };
+                if (resp.error) {
+                    msj.severity = 'error';
+                    msj.summary = resp.error
+                    msj.detail = '';
+                }
+                this.messageService.add(msj);
+                this.blockUI.stop();
+                this.clearMessage();
+            }, error => {
+                this.messageService.add({ severity: 'error', summary: 'Ha ocurrido un error.', detail: error });
+                this.blockUI.stop();
+                this.clearMessage();
+            }
+        );
+    }
+
 }

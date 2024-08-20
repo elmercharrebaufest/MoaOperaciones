@@ -46,4 +46,5 @@ export class LayoutService extends BaseService {
             .get('/api/dataAgro/goToDataAgro')
             .pipe(timeoutWith(30000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde "))));
     }
+
 }
