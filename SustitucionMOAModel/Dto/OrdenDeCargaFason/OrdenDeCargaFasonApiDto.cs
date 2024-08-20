@@ -26,7 +26,6 @@
             DomicilioTipo = ordenFason.DomicilioTipo;
             Escalable = ordenFason.Escalable;
             FechaCreacion = ordenFason.FechaCreacion.ToString();
-            FechaRetiro = ordenFason.FechaRetiro.ToString();
             FleteMOA = ordenFason.FleteMOA;
             KmARecorrer = ordenFason.KmARecorrer;
             LocalidadDescripcion = ordenFason.LocalidadDescripcion;

@@ -52,10 +52,10 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="productosFason" [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado"
-                                        [disabled]="editando||null" (ngModelChange)="selectProducto()"
-                                        [options]="listaProductos" optionLabel="Descripcion"
-                                        placeholder="Seleccione un producto" [filter]="true">
+                                    <p-dropdown name="productosFason"
+                                        [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado" [disabled]="editando||null"
+                                        (ngModelChange)="selectProducto()" [options]="listaProductos"
+                                        optionLabel="Descripcion" placeholder="Seleccione un producto" [filter]="true">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -215,30 +215,6 @@
                                     [(ngModel)]="ordenDeCargaFason.FleteMOA"></p-checkbox>
                             </div>
 
-                            <div class="col-xs-12 col-md-12">
-                                <div class="formulario-label">
-                                    Fecha de retiro:
-                                </div>
-
-                                <div class="styled-select">
-                                    <p-calendar name="FechaRetiro" [(ngModel)]="ordenDeCargaFason.FechaRetiro"
-                                        [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [minDate]="hoy"
-                                        [style]="{'width': '95%'}" [maxDate]="maxDateValue">
-                                    </p-calendar>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-md-12">
-                                <div class="formulario-label">
-                                    Destinos:
-                                </div>
-                                <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="destinos" [(ngModel)]="ordenDeCargaFason.Destino"
-                                        [options]="listaDestinos" optionLabel="LocalidadDescripcion"
-                                        placeholder="Seleccione un Destino" [filter]="true">
-                                    </p-dropdown>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-xs-1 col-md-1 vertical"></div>

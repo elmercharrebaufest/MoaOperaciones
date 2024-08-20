@@ -1,5 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenDeCarga;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaFasonDto VerificarTransporte(int ordenId, string mailUsuario);
         void VerificarTransporteJob();
         List<OrdenDeCargaFason> VerificarVencimientoOrdenDeCargaFason();
-        object ObtenerDestinos(int clienteId);
+        List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(int clienteId);
         Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario);
         Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario);
         List<ProveedorDto> GetCorredores();

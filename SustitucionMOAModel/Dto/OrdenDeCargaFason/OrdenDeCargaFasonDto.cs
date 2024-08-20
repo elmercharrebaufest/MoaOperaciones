@@ -27,8 +27,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         [JsonProperty("fechaCreacion")]
         public string FechaCreacion { get; set; }
 
-        [JsonProperty("fechaRetiro")]
-        public string FechaRetiro { get; set; }
         public int Cantidad { get; set; }
         public string PatenteAcoplado { get; set; }
         public string NombreChofer { get; set; }
@@ -44,8 +42,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool TransporteExiste { get; set; }
         public string Observacion { get; set; }
         public bool FleteMOA { get; set; }
-        public int LocalidadId { get; set; }
-        public string LocalidadDescripcion { get; set; }
         public Models.DataAgro.MaterialDto ProductoSeleccionado { get; set; }
         public int Producto_Id { get; set; }
         public bool RemitenteComercial { get; set; }
@@ -73,16 +69,13 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             ColorSemaforo = orden.Estado.ObtenerSemaforo();
             Corredor = orden.Corredor?.CodigoProveedor;
             CUILChofer = orden.CUILChofer;
-            CUITCliente = "";
+            CUITCliente = orden.Cliente.CUIT;
             CUITTransporte = orden.CUITTransporte;
             DescripcionEstado = esInterno ? orden.Estado.ToFriendlyStringInterno() : orden.Estado.ToFriendlyStringExterno();
             DescripcionEstadoListado = "";
             Estado = orden.Estado;
             FechaCreacion = orden.FechaCreacion.ToString("dd/MM/yyyy HH:mm");
-            FechaRetiro = orden.FechaRetiro.ToString("dd/MM/yyyy");
             Id = orden.Id;
-            LocalidadDescripcion = orden.LocalidadDescripcion;
-            LocalidadId = orden.LocalidadId;
             Material = orden.Producto.Nombre;
             NombreChofer = orden.NombreChofer;
             Producto_Id = orden.Producto.Id;

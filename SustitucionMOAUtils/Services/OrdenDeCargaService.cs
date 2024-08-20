@@ -38,7 +38,6 @@ namespace SustitucionMOAUtils.Services
         private readonly string _usuarioAutomaticoSAP = ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"];
         private readonly string _transporteNoExiste = "El transporte no existe";
 
-        protected readonly IFeriadoService feriadoService;
         protected readonly IEmailFasService emailFasService;
         protected readonly IFacturaAnticipadaService facturaAnticipadaService;
         protected readonly IKgDisponiblesFasService kgDisponiblesFasService;
@@ -64,9 +63,8 @@ namespace SustitucionMOAUtils.Services
             IFacturaAnticipadaService facturaAnticipadaService,
             IKgDisponiblesFasService kgDisponiblesFasService,
             ICNRTClient cNRTClient
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient)
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, (IRepositorio)repositorioOrdenDeCarga, cNRTClient, feriadoService)
         {
-            this.feriadoService = feriadoService;
             this.emailFasService = emailFasService;
             this.facturaAnticipadaService = facturaAnticipadaService;
             this.kgDisponiblesFasService = kgDisponiblesFasService;
@@ -2876,30 +2874,6 @@ namespace SustitucionMOAUtils.Services
                 return;
 
             GenerarEntregaSAP(orden);
-        }
-
-        private DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
-        {
-            var dayOfWeek = fechaOrigen.DayOfWeek;
-            var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
-
-            var fechaFinal = fechaOrigen.AddDays(cantidadDiasDeMargen);
-
-            var feriados = feriadoService.ObtenerFeriados();
-
-            foreach (var fechaFeriado in feriados)
-            {
-                if (fechaFeriado.DayOfWeek != DayOfWeek.Saturday &&
-                    fechaFeriado.DayOfWeek != DayOfWeek.Sunday &&
-                    fechaFeriado.Date >= fechaOrigen &&
-                    fechaFeriado.Date <= fechaFinal)
-                {
-                    cantidadDiasDeMargen++;
-                }
-            }
-
-            var fechaVencimiento = fechaOrigen.AddDays(cantidadDiasDeMargen);
-            return fechaVencimiento;
         }
 
         private bool EsUsuarioInterno(Usuario usuario)

@@ -63,7 +63,6 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     listaProductos: Material[];
-    listaDestinos: DestinoFason[] = [];
     listaClientes: any[];
     listaCorredores: any[];
 
@@ -226,11 +225,6 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenDeCargaFason.Destino) {
-            // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
-            this.mensajeComponent.setInfoMsg("Seleccione un destino.");
-            return false;
-        }
         if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
             this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
             return false;
@@ -285,7 +279,6 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
             this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
         }
-        this.obtenerDestinos(this.ordenDeCargaFason.Cliente)
         this.getCuilsChofer();
         this.getCuitsTransporte();
         if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
@@ -336,15 +329,6 @@ export class OrdenesDeCargaFasonAltaComponent
         });
 
         return result;
-    }
-
-    getFecha = (meses: number, fecha: Date = new Date()) => {
-        fecha.setMonth(fecha.getMonth() - meses);
-        var anho = fecha.toLocaleString("default", { year: "numeric" });
-        var mes = fecha.toLocaleString("default", { month: "2-digit" });
-        var dia = fecha.toLocaleString("default", { day: "2-digit" });
-        let stringFecha = anho + '-' + mes + '-' + dia;
-        return stringFecha;
     }
 
     //Servicios
@@ -450,11 +434,6 @@ export class OrdenesDeCargaFasonAltaComponent
                             this.cargarClientes('');
                         }
 
-
-                        var parts = this.ordenDeCargaFason.FechaRetiro.toString().split('/');
-                        var year = parts[2].split(" ");
-                        this.ordenDeCargaFason.FechaRetiro = new Date(Number(year[0]), Number(parts[1]) - 1, Number(parts[0]));
-
                         const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
                         this.selectProducto(producto);
                         if (this.ordenDeCargaFason.CUITDestino)
@@ -471,22 +450,6 @@ export class OrdenesDeCargaFasonAltaComponent
         }
     }
 
-    obtenerDestinos = (Cliente: string) => {
-        this.service.getDestino(Cliente).subscribe(
-            (result) => {
-                this.listaDestinos = result.data;
-                if (this.ordenDeCargaFason.LocalidadDescripcion) {
-                    let seleccionado = this.listaDestinos.find(a => a.LocalidadDescripcion == this.ordenDeCargaFason.LocalidadDescripcion);
-                    if (seleccionado) {
-                        this.ordenDeCargaFason.Destino = seleccionado;
-                    }
-                }
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-    }
 
     obtenerProductos = () => {
         this.service.getMateriales().subscribe(
@@ -569,14 +532,12 @@ export class OrdenesDeCargaFasonAltaComponent
                             this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
                             this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
 
-                            this.obtenerDestinos(this.clienteSeleccionado.Id);
                         } else {
                             if (this.ordenDeCargaFason.Cliente != null && this.ordenDeCargaFason.Cliente != "") {
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CodigoProveedor == this.ordenDeCargaFason.Cliente);
                                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
                                 this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
                                 this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
-                                this.obtenerDestinos(this.clienteSeleccionado.Id);
                             }
                         }
                         this.blockUI.stop();

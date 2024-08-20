@@ -11,10 +11,10 @@ using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 
 namespace SustitucionMOAUtils.Services
@@ -29,8 +29,9 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
             ICNRTClient cNRTClient,
-            IEmailFasonService emailFasonService
-            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio, cNRTClient)
+            IEmailFasonService emailFasonService,
+            IFeriadoService feriadoService
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorio, cNRTClient, feriadoService)
         {
             this.emailFasonService = emailFasonService;
         }
@@ -125,11 +126,12 @@ namespace SustitucionMOAUtils.Services
             if (repositorio.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
                 return new List<OrdenDeCargaFason>();
 
-            var ordenes = repositorio.Listar<OrdenDeCargaFason>((orden) => DbFunctions.AddDays(orden.FechaRetiro, 5) < fechaLimite && (orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente));
+            var ordenes = repositorio.Listar<OrdenDeCargaFason>((orden) => orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
 
             foreach (var orden in ordenes)
             {
-                orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+                if (CalcularFechaVencimiento(orden.FechaCreacion) < fechaLimite)
+                    orden.Estado = EstadoOrdenDeCargaFason.Vencida;
             }
             repositorio.GuardarCambios();
 
@@ -197,7 +199,12 @@ namespace SustitucionMOAUtils.Services
                 ValidarRequest(request, mailUsuario);
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
                 var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
-
+                var localidades = ObtenerDestinos(request.Cliente);
+                if (localidades.Count == 0)
+                {
+                    return new Resultado { error = "El cliente no cuenta con ninguna localidad, imposible continuar con la carga." };
+                }
+                var localidad = localidades.First();
                 request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
                 request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
 
@@ -207,6 +214,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     var ordenEntity = new OrdenDeCargaFason(request);
                     ordenEntity.Producto = producto;
+                    ordenEntity.LocalidadId = localidad.LocalidadId;
+                    ordenEntity.LocalidadDescripcion = localidad.LocalidadDescripcion;
+                    ordenEntity.KmARecorrer = localidad.KmARecorrer;
                     var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
                     ActualizarOrdenDeCarga(detalleActualizar, i == 0);
                     repositorio.Agregar(ordenEntity);
@@ -239,17 +249,13 @@ namespace SustitucionMOAUtils.Services
                 orden.CorredorId = request.CorredorId;
                 orden.CUILChofer = request.CUILChofer;
                 orden.CUITTransporte = request.CUITTransporte;
-                orden.LocalidadId = request.Destino.LocalidadId;
-                orden.LocalidadDescripcion = request.Destino.LocalidadDescripcion;
                 orden.FechaCreacion = DateTime.Now;
-                orden.FechaRetiro = request.FechaRetiro;
                 orden.NombreChofer = request.NombreChofer;
                 orden.Observacion = request.Observacion;
                 orden.PatenteAcoplado = request.PatenteAcoplado;
                 orden.PatenteChasis = request.PatenteChasis;
                 orden.Producto_Id = request.Producto_Id;
                 orden.RazonSocialTransporte = request.RazonSocialTransporte;
-                orden.KmARecorrer = request.Destino.KmARecorrer;
                 orden.FleteMOA = request.FleteMOA;
                 orden.CUITIntermediarioFlete = request.CUITIntermediarioFlete;
                 orden.RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
@@ -278,7 +284,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public object ObtenerDestinos(int clienteId)
+        public List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(int clienteId)
         {
             Proveedor proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
             if (proveedor.CUIT.Length != 11)

@@ -13,7 +13,6 @@ namespace SustitucionMOAModel.Entities
         public long Id { get; set; }
         public EstadoOrdenDeCargaFason Estado { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public DateTime FechaRetiro { get; set; }
         public int Cantidad { get; set; }
         public string PatenteChasis { get; set; }
         public string PatenteAcoplado { get; set; }
@@ -91,17 +90,13 @@ namespace SustitucionMOAModel.Entities
             CorredorId = request.CorredorId;
             CUILChofer = request.CUILChofer;
             CUITTransporte = request.CUITTransporte;
-            LocalidadId = request.Destino.LocalidadId;
-            LocalidadDescripcion = request.Destino.LocalidadDescripcion;
             FechaCreacion = DateTime.Now;
-            FechaRetiro = request.FechaRetiro;
             NombreChofer = request.NombreChofer;
             Observacion = request.Observacion;
             PatenteAcoplado = request.PatenteAcoplado;
             PatenteChasis = request.PatenteChasis;
             Producto_Id = request.Producto_Id;
             RazonSocialTransporte = request.RazonSocialTransporte;
-            KmARecorrer = request.Destino.KmARecorrer;
             FleteMOA = request.FleteMOA;
             CUITIntermediarioFlete = request.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
@@ -125,7 +120,6 @@ namespace SustitucionMOAModel.Entities
                 Id == carga.Id &&
                 Estado == carga.Estado &&
                 FechaCreacion == carga.FechaCreacion &&
-                FechaRetiro == carga.FechaRetiro &&
                 Cantidad == carga.Cantidad &&
                 PatenteChasis == carga.PatenteChasis &&
                 PatenteAcoplado == carga.PatenteAcoplado &&
@@ -162,7 +156,6 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
 
             hashCode = hashCode * -1521134295 + FechaCreacion.GetHashCode();
-            hashCode = hashCode * -1521134295 + FechaRetiro.GetHashCode();
             hashCode = hashCode * -1521134295 + Cantidad.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteChasis);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteAcoplado);

@@ -2,7 +2,6 @@
 	[Id] BIGINT PRIMARY KEY IDENTITY(1,1) NOT NULL, 
 	[Estado] INT NOT NULL, 
 	[FechaCreacion] DATETIME NOT NULL, 
-	[FechaRetiro] DATE NOT NULL, 
 	[Cantidad] INT DEFAULT 30000 NOT NULL, 
 	[PatenteChasis] VARCHAR(15) NOT NULL, 
 	[PatenteAcoplado] VARCHAR(15) NOT NULL, 
