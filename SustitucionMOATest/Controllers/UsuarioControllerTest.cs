@@ -14,6 +14,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Web.Mvc;
 
+
 namespace SustitucionMOATest.Controllers
 {
     public class UsuarioControllerTest
@@ -85,7 +86,8 @@ namespace SustitucionMOATest.Controllers
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
-                                It.IsAny<string>()
+                                It.IsAny<string>(),
+                                It.IsAny<bool>()
                                 )
                     )
                 .Returns(successMessage); ;
