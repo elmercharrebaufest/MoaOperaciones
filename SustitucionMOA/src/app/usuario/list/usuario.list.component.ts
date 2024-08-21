@@ -589,6 +589,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
             if (this.filteredList[0].Mail === inputValue) {
                 this.filteredList = [];
+                this.isCheckboxDisabled = false;
             }
         } else {
             this.filteredList = [];
