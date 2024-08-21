@@ -2185,8 +2185,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var result = service.DescargarExcelHistorialMovimientos(idPeticionOferta);
-                return JsonCustom(new { data = result });
+                var ms = service.GenerarExcelHistorialMovimientos(idPeticionOferta);
+                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialMovimientos.xlsx"));
             }
             catch (InfoCustomException e)
             {

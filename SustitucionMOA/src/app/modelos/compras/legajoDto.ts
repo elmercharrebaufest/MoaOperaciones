@@ -23,4 +23,5 @@ export namespace LegajoTipo {
     export const RevisionTecnica = "Revisión tecnica"
     export const Solp = "SOLP"
     export const SolpArchivos = "SOLP Archivos"
+    export const HistorialMovimientos = "HistorialMovimientos"
 }

@@ -118,7 +118,7 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA);
         ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
         void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
-        string DescargarExcelHistorialMovimientos(int peticionDeOfertaId);
+        byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);
         byte[] GenerarHistorialCotizaciones(int cotizacionId);
     }
 }

@@ -5238,8 +5238,7 @@ namespace SustitucionMOAUtils.Services
                                 archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
                             }
                         }
-                        var excelDeHistorial = DescargarExcelHistorialMovimientos(idPeticion);
-                        byte[] excelBytes = Encoding.UTF8.GetBytes(excelDeHistorial);
+                        var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
                         var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
                         using (var entryStream = zipEntry.Open())
                         {
@@ -10560,24 +10559,27 @@ namespace SustitucionMOAUtils.Services
                         .FirstOrDefault();
 
                     var revisionTecnicaFinalizada = true;
-                    if (esMateriales && cotizacion.RespetaMateriales == false && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
+                    if (cotizacion != null)
                     {
-                        revisionTecnicaFinalizada = false;
-                    }
-                    if (!esMateriales && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
-                    {
-                        revisionTecnicaFinalizada = false;
-                    }
+                        if (esMateriales && cotizacion.RespetaMateriales == false && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
+                        {
+                            revisionTecnicaFinalizada = false;
+                        }
+                        if (!esMateriales && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
+                        {
+                            revisionTecnicaFinalizada = false;
+                        }
 
-                    if (cotizacion != null && !plazoOfertaSinFinalizar && revisionTecnicaFinalizada)
-                    {
-                        yield return cotizacion;
+                        if (!plazoOfertaSinFinalizar && revisionTecnicaFinalizada)
+                        {
+                            yield return cotizacion;
+                        }
                     }
                 }
             }
         }
 
-        public string DescargarExcelHistorialMovimientos(int peticionDeOfertaId)
+        public byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId)
         {
             var historial = ListarHistorialDeFechas(peticionDeOfertaId);
             return ExcelExport.ComprasHistorialMovimientosToExcel(historial);

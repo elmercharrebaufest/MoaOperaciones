@@ -88,27 +88,8 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
         }
         else if (tipoLegajo == LegajoTipo.Cotizacion && archivoId) {
             this.descargarHistorialCotizaciones(archivoId);
-        } else if (tipoLegajo == "HistorialMovimientos") {
-            this.blockUI.start("Descargando...");
-            this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
-                .subscribe(
-                    (result) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        }
-                        else {
-                            var blob = new Blob([result.data], {
-                                type: "application/octet-stream",
-                            });
-                            this.downloadArchivoLocal(blob, "Historial de Movimientos.xlsx");
-                            this.blockUI.stop();
-                        }
-                    },
-                    (error) => {
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    }
-                )
+        } else if (tipoLegajo == LegajoTipo.HistorialMovimientos) {
+            this.descargarHistorialMovimientos();
         }
     }
 
@@ -246,5 +227,24 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
             }, 0);
             return;
         }
+    }
+    descargarHistorialMovimientos() {
+        this.blockUI.start("Descargando...");
+        this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
+            .subscribe(
+                (result) => {
+                    this.blockUI.stop();
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+                    this.downloadArchivoLocal(blob, result.FileDownloadName);
+                    ;
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
     }
 }

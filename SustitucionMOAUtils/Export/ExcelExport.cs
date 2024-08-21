@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DocumentFormat.OpenXml;
@@ -20,6 +21,7 @@ namespace SustitucionMOAUtils.Export
 {
     public static class ExcelExport
     {
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcel(object dataList, string[] headers, string titulo)
         {
 
@@ -54,7 +56,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCartaPorteDetalle(object entregasDescargasList, object datosCalidadList, object aplicacionesList, string[] entregasDescargasHeaders, string[] datosCalidadHeaders, string[] aplicacionesHeaders, string titulo)
         {
 
@@ -180,7 +182,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelContratoDetalle(object ampliacionesAnulacionesList, object aplicacionesList, List<CalidadContratoDetalleExcel> calidadList, object caracteristicasList, object condicionesPagoList, object fijacionesList, object hijosList, object liquidacionesList, object pagosList, object resumenList, string[] ampliacionesAnulacionesHeaders, string[] aplicacionesHeaders, string[] calidadHeaders, string[] caracteristicasHeaders, string[] condicionesPagoHeaders, string[] fijacionesHeaders, string[] hijosHeaders, string[] liquidacionesHeaders, string[] pagosHeaders, string[] resumenHeaders, string titulo)
         {
 
@@ -605,7 +607,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelPagoDetalle(object cabecerasList, object salidasList, object vendedoresList, string[] cabecerasHeaders, string[] salidasHeaders, string[] vendedoresHeaders, string titulo)
         {
 
@@ -751,8 +753,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCuentaCorrienteAgrupada(List<CuentaCorrienteAgrupada> list, string[] headers, string titulo)
         {
 
@@ -831,7 +832,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCuentaCorrientePartidasAbiertas(List<CuentaCorrienteAgrupada> list, string[] headers, string titulo)
         {
 
@@ -910,7 +911,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelViajesAgrupados(List<ViajeAgrupadoExcel> list, string[] headers, string titulo)
         {
 
@@ -1329,7 +1330,6 @@ namespace SustitucionMOAUtils.Export
             return columns;
         }
 
-
         private static Dictionary<int, int> GetMaxCharacterWidth(SheetData sheetData)
         {
             //iterate over all cells getting a max char value for each column
@@ -1379,91 +1379,59 @@ namespace SustitucionMOAUtils.Export
 
             return maxColWidth;
         }
-        public static string ComprasHistorialMovimientosToExcel(HistorialDeFechaDto historial)
+        public static byte[] ComprasHistorialMovimientosToExcel(HistorialDeFechaDto historial)
         {
-
-            StringWriter sw = new StringWriter();
-            HtmlTextWriter htw = new HtmlTextWriter(sw);
-
-            foreach (var solp in historial.ListaSolp)
+            var memStream = new MemoryStream();
+            using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
             {
-                var tituloRow = new System.Data.DataTable("Nro de SOLP:");
-                tituloRow.Columns.Add("Nro de SOLP:");
-                tituloRow.Columns.Add("");
-                tituloRow.Rows.Add(new string[] { "Nro de SOLP:", solp.NroSolp });
-                var gridTitulo = new GridView();
-                gridTitulo.DataSource = tituloRow;
-                gridTitulo.GridLines = GridLines.None;
-                gridTitulo.Font.Bold = true;
-                gridTitulo.Font.Size = 10;
-                gridTitulo.ShowHeader = false;
-                gridTitulo.DataBind();
-                gridTitulo.RenderControl(htw);
+                WorkbookPart workbookPart = document.AddWorkbookPart();
+                workbookPart.Workbook = new Workbook();
 
-                var fechaCreacionRow = new System.Data.DataTable("Fecha de Creación:");
-                fechaCreacionRow.Columns.Add("Fecha de Creación:");
-                fechaCreacionRow.Columns.Add("");
-                fechaCreacionRow.Rows.Add(new string[] { "Fecha de Creación:", solp.FechaCreacionFormateada });
-                var gridFechaCreacion = new GridView();
-                gridFechaCreacion.DataSource = fechaCreacionRow;
-                gridFechaCreacion.GridLines = GridLines.None;
-                gridFechaCreacion.Font.Bold = true;
-                gridFechaCreacion.Font.Size = 10;
-                gridFechaCreacion.ShowHeader = false;
-                gridFechaCreacion.DataBind();
-                gridFechaCreacion.RenderControl(htw);
+                WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                SheetData sheetData = new SheetData();
+                worksheetPart.Worksheet = new Worksheet(sheetData);
 
-                var fechaLiberacionRow = new System.Data.DataTable("Fecha de Liberación:");
-                fechaLiberacionRow.Columns.Add("Fecha de Liberación:");
-                fechaLiberacionRow.Columns.Add("");
-                fechaLiberacionRow.Rows.Add(new string[] { "Fecha de Liberación:", solp.FechaLiberacionSapFormateada });
-                var gridFechaLiberacion = new GridView();
-                gridFechaLiberacion.DataSource = fechaLiberacionRow;
-                gridFechaLiberacion.GridLines = GridLines.None;
-                gridFechaLiberacion.Font.Bold = true;
-                gridFechaLiberacion.Font.Size = 10;
-                gridFechaLiberacion.ShowHeader = false;
-                gridFechaLiberacion.DataBind();
-                gridFechaLiberacion.RenderControl(htw);
+                Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new Sheets());
+                Sheet sheet = new Sheet() { Id = document.WorkbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "Sheet1" };
+                sheets.Append(sheet);
 
-                var fechaCreacionPORow = new System.Data.DataTable("Fecha de creación de PO:");
-                fechaCreacionPORow.Columns.Add("Fecha de creación de PO:");
-                fechaCreacionPORow.Columns.Add("");
-                fechaCreacionPORow.Rows.Add(new string[] { "Fecha de creación de PO:", historial.FechaCreacionPOFormateada });
-                var gridFechaCreacionPO = new GridView();
-                gridFechaCreacionPO.DataSource = fechaCreacionPORow;
-                gridFechaCreacionPO.GridLines = GridLines.None;
-                gridFechaCreacionPO.Font.Bold = true;
-                gridFechaCreacionPO.Font.Size = 10;
-                gridFechaCreacionPO.ShowHeader = false;
-                gridFechaCreacionPO.DataBind();
-                gridFechaCreacionPO.RenderControl(htw);
-            }
-
-            var emptyRow = new System.Data.DataTable("Empty");
-            emptyRow.Columns.Add("");
-            emptyRow.Rows.Add("");
-            var gridEmpty = new GridView();
-            gridEmpty.DataSource = emptyRow;
-            gridEmpty.ShowHeader = false;
-            gridEmpty.DataBind();
-            gridEmpty.RenderControl(htw);
-
-            foreach (var row in historial.Cuerpo)
-            {
-                var rowTable = new System.Data.DataTable("Row");
-                foreach (var i in row)
+                foreach (var solp in historial.ListaSolp)
                 {
-                    rowTable.Columns.Add("");
+                    AddRow(sheetData, "Nro de SOLP:", solp.NroSolp);
+                    AddRow(sheetData, "Fecha de Creación:", solp.FechaCreacionFormateada);
+                    AddRow(sheetData, "Fecha de Liberación:", solp.FechaLiberacionSapFormateada);
+                    AddRow(sheetData, "Fecha de creación de PO:", historial.FechaCreacionPOFormateada);
                 }
-                rowTable.Rows.Add(row.ToArray());
-                var gridRow = new GridView();
-                gridRow.ShowHeader = false;
-                gridRow.DataSource = rowTable;
-                gridRow.DataBind();
-                gridRow.RenderControl(htw);
+
+                AddEmptyRow(sheetData);
+
+                foreach (var row in historial.Cuerpo)
+                {
+                    AddRow(sheetData, row.ToArray());
+                }
+
+                workbookPart.Workbook.Save();
             }
-            return sw.ToString();
+            return memStream.ToArray();
+        }
+
+        public static void AddRow(SheetData sheetData, params string[] values)
+        {
+            Row row = new Row();
+            foreach (var value in values)
+            {
+                Cell cell = new Cell() { CellValue = new CellValue(value), DataType = CellValues.String };
+                row.Append(cell);
+            }
+            sheetData.Append(row);
+        }
+
+        public static void AddEmptyRow(SheetData sheetData)
+        {
+            Row row = new Row();
+            Cell cell = new Cell() { CellValue = new CellValue(""), DataType = CellValues.String };
+            row.Append(cell);
+            sheetData.Append(row);
         }
     }
 
