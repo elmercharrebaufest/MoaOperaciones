@@ -204,6 +204,10 @@ namespace SustitucionMOAUtils.Services
                 {
                     return new Resultado { error = "El cliente no cuenta con ninguna localidad, imposible continuar con la carga." };
                 }
+                if (request.CantidadDeViajes > 3)
+                {
+                    return new Resultado { error = "No puede generar más de 3(tres) viajes." };
+                }
                 var localidad = localidades.First();
                 request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
                 request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
