@@ -1351,12 +1351,19 @@ namespace SustitucionMOAUtils.Services
                         DocumentoReferenciaNumero = EntradasDeServicioTemp[0].Referencia
                     };
 
+                    string codigoProveedor = EntradasDeServicioTemp[0].Proveedor;
+
+                    var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == codigoProveedor);
+
                     emailDetailCertificateDto.Descripcion = EntradasDeServicioTemp[0].Texto_breve_servicio;
                     emailDetailCertificateDto.FechaCertificacion = EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd");
                     emailDetailCertificateDto.Destinatario = EntradasDeServicioTemp[0].Ingresante_CDS;
-                    emailDetailCertificateDto.Proveedor = "";
+                    emailDetailCertificateDto.Proveedor = proveedor.RazonSocial;
                     emailDetailCertificateDto.MontoTotal = Moneda == "ARP" ? "$ " + EntradasDeServicioTemp[0].Monto_total.ToString() : EntradasDeServicioTemp[0].Monto_total.ToString();
                     emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
+                    emailDetailCertificateDto.NumeroPosicion = EntradasDeServicioTemp[0].NRO_POS;
+                    emailDetailCertificateDto.Aprobador = EntradasDeServicioTemp[0].Aprobador_CDS;
+
 
                     EntradaServicioSapParams.EntrySheetServices = new EntrySheetServiceSection
                     {

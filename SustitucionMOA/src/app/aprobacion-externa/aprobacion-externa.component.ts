@@ -31,6 +31,7 @@ export class AprobacionExternaComponent implements OnInit {
     desc: string = "";
     importe: string = "";
     ordenCompra: string = "";
+    nroPosicion: string = "";
 
     //TableData
     tableBody: string = "";
@@ -103,6 +104,7 @@ export class AprobacionExternaComponent implements OnInit {
                             if (this.aprobacionesList.length > 0) {
                                 this.usuario = this.aprobacionesList[0].Ingresante_CDS;
                                 this.cert = this.aprobacionesList[0].NRO_ES_LOCAL;
+                                this.nroPosicion = this.aprobacionesList[0].NRO_POS;
                                 this.estado = this.aprobacionesList[0].Estado_certificacion;
                                 let dateString = this.aprobacionesList[0].Fecha_Carga_ES.toString();
                                 let ts = parseInt(dateString.match(/\d+/)[0], 10);

@@ -16,6 +16,10 @@
             <label [for]="col.name">{{ col.name | titlecase }}</label><br>
         </ng-container>
     </div>
+    <div>
+        <label>Número de Orden de Compra: {{itemsAgrupadosPorPosicion[0].Items[0].NroOrdenCompra}}</label>
+    </div>
+    <br>
 
     <form [formGroup]="formularioResumenCertificacion">
         <ng-container formArrayName="descriptions">

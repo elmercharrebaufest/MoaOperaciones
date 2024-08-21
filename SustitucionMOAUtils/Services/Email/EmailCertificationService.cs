@@ -55,8 +55,9 @@ namespace SustitucionMOAUtils.Services.Email
         private (List<string>, string, string) BuildApprovedEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate)
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
-            object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
+           
+            object[] subjectArgs = { emailDetail.NumeroCertificacion , emailDetail.NumeroCertificacion , emailDetail.NroOC, emailDetail.NumeroPosicion
+                    , emailDetail.FechaCertificacion, emailDetail.Proveedor, emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.Aprobador};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
