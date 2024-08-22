@@ -207,8 +207,8 @@ namespace SustitucionMOAUtils.Services
                     fechaHastaDT = auxFHasta;
                 };
                 //Parsing failsafe
-                if (fechaDesdeDT != fechaHastaDT)
-                {
+                //if (fechaDesdeDT != fechaHastaDT)
+                //{
                     UsuarioReasignacion periodo = new UsuarioReasignacion
                     {
                         Usuario_Id = idUsuario,
@@ -228,7 +228,7 @@ namespace SustitucionMOAUtils.Services
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
                 
-                }
+                //}
 
             }
             else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))

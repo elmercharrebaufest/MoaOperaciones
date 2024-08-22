@@ -17,6 +17,11 @@
         </ng-container>
     </div>
 
+    <div>
+        <label>Número de Orden de Compra: {{itemsAgrupadosPorPosicion[0].Items[0].NroOrdenCompra}}</label>
+    </div>
+    <br>
+
     <form [formGroup]="formularioResumenCertificacion">
         <ng-container formArrayName="descriptions">
             <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index" [formGroupName]="i">
