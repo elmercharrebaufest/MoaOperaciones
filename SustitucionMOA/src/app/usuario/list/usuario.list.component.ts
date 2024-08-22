@@ -337,6 +337,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioSeleccionado = usuario;
         this.formularioUsuario.controls['usuarioSap'].patchValue(usuario.UsuarioSap);
         this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
+
+        if (usuario.Suplente) {
+            this.isCheckboxDisabled = false;
+        }
         this.cleanReasignarInput();
         this.rolesUsuarioSeleccionado = new Array<Rol>();
         this.rolOptions = [];
@@ -623,7 +627,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         } else {
           this.formularioUsuario.controls['suplente'].setErrors(null);
           this.validacionOk = false;
-          this.isCheckboxDisabled = inputValue.trim() === '';        
+          this.isCheckboxDisabled = false;      
         }
       }
       

@@ -592,12 +592,13 @@ namespace SustitucionMOAUtils.Services
 
 
             //2a - Comparar Fiscal/Email con usuario FE
+
             if (usuarioIngresante.Externo != null && usuarioIngresante.Externo == true)
             {
                 auto = false;
                 difSolicitante = false;
             }
-            else if (userMail == detalleSolPed.Email)
+            else if (userMail == detalleSolPed.Email && usuarioReasignacion != null && DateTime.Now < usuarioReasignacion.FechaHasta && DateTime.Now > usuarioReasignacion.FechaDesde)
             {
                 auto = true;
             }
