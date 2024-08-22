@@ -4995,6 +4995,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            //Excel Historial de movimientos
             legajo.Add(new LegajoDto
             {
                 ArchivoId = 0,
@@ -5003,6 +5004,7 @@ namespace SustitucionMOAUtils.Services
                 SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
                 Fecha = DateTime.Now,
                 FechaFormateado = DateTime.Now.ToString("dd/MM/yyyy"),
+                Usuario = new UsuarioDto { CUIT = "", Mail = "---" },
                 Tipo = TipoLegajo.HistorialMovimientos
             });
 
@@ -10469,7 +10471,12 @@ namespace SustitucionMOAUtils.Services
                     PeticionDeOfertaId = peticion.Id,
                     SolpId = 0,
                     Tipo = TipoLegajo.Cotizacion,
-                    Usuario = null,
+                    Usuario = new UsuarioDto
+                    {
+                        CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                        Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
+                        Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
+                    },
                     UsuarioId = 0
                 });
             }
@@ -10489,7 +10496,12 @@ namespace SustitucionMOAUtils.Services
                     PeticionDeOfertaId = peticion.Id,
                     SolpId = 0,
                     Tipo = TipoLegajo.RevisionTecnica,
-                    Usuario = null,
+                    Usuario = new UsuarioDto 
+                    { 
+                        Mail = peticion.RevisionTecnica.Usuario.Mail, 
+                        CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro,
+                        Id = peticion.RevisionTecnica.Usuario_Id,
+                    },
                     UsuarioId = 0
                 });
             }
