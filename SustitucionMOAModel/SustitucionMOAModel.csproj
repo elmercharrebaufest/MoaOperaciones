@@ -306,7 +306,6 @@
     <Compile Include="Dto\TipoRetencionDto.cs" />
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
-    <Compile Include="Dto\Compras\UsuarioComprasRelacionConUsuariosDto.cs" />
     <Compile Include="Dto\UsuarioMailDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ChatExternoCompras.cs" />
