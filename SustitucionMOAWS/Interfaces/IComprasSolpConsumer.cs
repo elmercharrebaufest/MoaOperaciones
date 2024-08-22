@@ -76,6 +76,10 @@ namespace SustitucionMOAWS.Interfaces
         EntradaServicioDto ObtenerEntradaServicio(string nroES);
         //BAPIESSR ObtenerEntradaServicio(string nroES);
     }
+    public interface IObtenerAdjuntosSOLPEDConsumerMOA
+    {
+        byte[] ObtenerAdjuntosSolpConsumer(string idArhcivo, string nombreArchivo);
+    }
 
 
 }

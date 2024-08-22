@@ -44,14 +44,18 @@
             </div>
         </div>
         <div class="row myRow">
-            <div class="col-md-2 col-lg-3">
+            <div class="col-md-2 col-lg-2">
                 <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
                             dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
                             [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
                             (onClearClick)="returnToTodaysDate()">
                 </p-calendar>
             </div>
-            <div class="col-md-6" style="margin-top: 6px;">
+            <div class="col-md-7" style="margin-top: 6px;">
+                <div class="col-md-4 col-lg-4">
+                    <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: -6px" pInputText type="text"
+                           [(ngModel)]="nombrePedido" placeholder="Buscar por nombre del pedido">
+                </div>
                 <span style="margin-right: 10px;">
                     <p-checkbox class="checkboxFechas" binary="true" label="SOLPs pendientes de tratar"
                                 [(ngModel)]="listarPendiente"></p-checkbox>
@@ -198,7 +202,7 @@
                                      (click)="generarZipPliego(rowData.Id)" />
                             </span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-2" *ngIf="!esAuditor">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/chat.svg" alt="chat"
                                      (click)="obtenerChatInterno(rowData)" style="height: 30px;" />
@@ -239,7 +243,8 @@
                     <td colspan="2" class="columna" style="text-align: center;">
                         <button *ngIf="rowData.VerPublicar && !rowData.TodasLasPosicionesBorradas"
                                 class="publicar btn btn-success" style="font-size: 12px;"
-                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)">
+                                (click)="publicarCotizacion(rowData.Id, rowData.NroSolp)"
+                                [disabled]="esAuditor">
                             Publicar
                         </button>
                     </td>
@@ -277,8 +282,13 @@
                                                 <td id="agregarProveedor">                                                   
                                                     <div>                                              
                                                         <span *ngIf="!rowData.Adicional && !rowData.TrabajoYaHecho && !rowData.CondEspProveedorAsignado">
-                                                            <img class="pointer" src="./Content/images/icons/add-user.svg" title="Agregar proveedor"
-                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" style="height: 30px;" />
+                                                            <img class="pointer" 
+                                                                 src="./Content/images/icons/add-user.svg" 
+                                                                 title="Agregar proveedor"
+                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" 
+                                                                 [style.pointer-events]="esAuditor ? 'none' : 'auto'"
+                                                                 [style.opacity]="esAuditor ? '0.6' : '1'"
+                                                                 style="height: 30px;" />
                                                         </span>
                                                     </div>
                                                 </td>
@@ -296,7 +306,7 @@
                                                     </button>
                                                     <!--&& licitacion.RevisionFinalizada == true-->
                                                     <button class="publicar btn "
-                                                            *ngIf="rowData.VerCircular == true "
+                                                            *ngIf="(rowData.VerCircular == true) && !esAuditor"
                                                             style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Circular
                                                     </button>
@@ -304,7 +314,7 @@
                                                             (click)="verOfertas(licitacion.Id)">
                                                         Ver Ofertas
                                                     </button>
-                                                    <button class="publicar btn" *ngIf="licitacion.EstadoColor == 'Green'"
+                                                    <button class="publicar btn" *ngIf="(licitacion.EstadoColor == 'Green') && !esAuditor"
                                                             (click)="obtenerPeticionDeOfertaParaCerrar(licitacion.Id)">
                                                         Cerrar Cotizacion
                                                     </button>
@@ -330,12 +340,12 @@
                                                 <th class="columna">Moneda</th>
                                                 <th class="columna">Estado</th>
                                                 <th class="columna"></th>
-                                                <th class="columna" *ngIf="rowData.VerEditarOC"></th>
+                                                <th class="columna" *ngIf="rowData.VerEditarOC || !esAuditor"></th>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="emptymessage">
                                             <tr>
-                                                <td style="text-align: center;" colspan="9">Sin datos</td>
+                                                <td style="text-align: center;" [attr.colspan]="esAuditor ? 8 : 9">Sin datos</td>
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-orden>
@@ -353,7 +363,7 @@
                                                         Ver detalle
                                                     </button>
                                                 </td>
-                                                <td class="columna" *ngIf="rowData.VerEditarOC">
+                                                <td class="columna" *ngIf="rowData.VerEditarOC || !esAuditor">
                                                     <button class="publicar btn btn-success"
                                                             (click)="editarOrdenDeCompra(orden.NumeroOrdenDeCompra)">
                                                         Editar
@@ -376,7 +386,7 @@
     <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"
                 (cerrarLegajoEmitter)="cerrarLegajo()" (descargarArchivoEmitter)="descargarArchivo($event)"
                 (descargarLegajoEmitter)="descargarLegajo()" (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
-                [(legajo)]="legajo">
+                [(legajo)]="legajo" [(esAuditor)]="esAuditor">
     </app-legajo>
 
     <app-circular [(locale)]="es"

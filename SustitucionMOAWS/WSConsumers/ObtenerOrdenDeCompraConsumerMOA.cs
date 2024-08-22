@@ -448,7 +448,6 @@ namespace SustitucionMOAWS.WSConsumers
                 pos.UnidadId = unidad.Id;
                 pos.UnidadDescripcion = unidad?.Descripcion ?? "";
                 pos.UnidadCodigo = unidad?.CodigoSap ?? "";
-                pos.UnidadDescripcion = unidades.FirstOrDefault(a => a.Codigo == posicion.PO_UNIT)?.Descripcion ?? "";
                 pos.MonedaDescripcion = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.Descripcion;
                 pos.MonedaCodigo = monedas.FirstOrDefault(a => a.Codigo == POHEADER.CURRENCY)?.CodigoSap;
                 pos.PrecioTotal = posicion.QUANTITY * posicion.NET_PRICE;
@@ -541,7 +540,7 @@ namespace SustitucionMOAWS.WSConsumers
         /// </summary>
         /// <param name="numeroDeOrdenCompra"></param>
         /// <returns></returns>
-        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen)
+        public DetalleOrdenDeCompraDto ObtenerDetalleDeOrdenDeCompra(string numeroDeOrdenCompra, List<TablaSap> centro, List<TablaSap> almacen, bool usuarioSolp)
         {
             try
             {
@@ -557,7 +556,7 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEKBE[] POHISTORY;
                 ObtenerDetalleDeOrdenDeCompraSap(numeroDeOrdenCompra, out POITEM, out RETURN, out POHEADER, out result, out POTEXTHEADER, out POTEXTITEM, out POSERVICES, out POSCHEDULE, out POADDRDELIVERY, out POHISTORY);
 
-                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY, centro, almacen);
+                return map(result, POHEADER, RETURN, POITEM, POTEXTHEADER, POTEXTITEM, POSERVICES, POSCHEDULE, POADDRDELIVERY, POHISTORY, centro, almacen, usuarioSolp);
 
             }
             catch (Exception e)
@@ -570,7 +569,7 @@ namespace SustitucionMOAWS.WSConsumers
         /// Mapea Detalle de una Orden de Compra
         /// </summary>
         private DetalleOrdenDeCompraDto map(BAPIEIKP result, BAPIMEPOHEADER POHEADER, BAPIRET2[] RETURN, BAPIMEPOITEM[] POITEM, BAPIMEPOTEXTHEADER[] POTEXTHEADER,
-         BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes)
+         BAPIMEPOTEXT[] POTEXTITEM, BAPIESLLC[] POSERVICES, BAPIMEPOSCHEDULE[] POSCHEDULE, BAPIMEPOADDRDELIVERY[] POADDRDELIVERY, BAPIEKBE[] POHISTORY, List<TablaSap> centros, List<TablaSap> almacenes, bool usuarioSolp)
         {
             DetalleOrdenDeCompraDto detalleOrdenDeCompra = new DetalleOrdenDeCompraDto();
 
@@ -611,6 +610,12 @@ namespace SustitucionMOAWS.WSConsumers
             /// Recorre cada Posicion en busqueda de itemsOC
             foreach (var posicion in POITEM)
             {
+                if (!usuarioSolp)
+                {
+                    if (posicion.DELETE_IND == "L" || posicion.DELETE_IND == "S")
+                        continue;
+                }
+
                 PosicionDto pos = new PosicionDto();
 
                 pos.Id = int.Parse(posicion.PCKG_NO);
@@ -669,6 +674,8 @@ namespace SustitucionMOAWS.WSConsumers
 
                 /// Obtine los Items de la position
                 pos.Items = ObtenerItemsdelaPosicion(POSERVICES, POHISTORY, POHEADER, pos, ListaDeEntradasDeServicio);
+
+                pos.Bloqueada = usuarioSolp && (posicion.DELETE_IND == "L" || posicion.DELETE_IND == "S");
 
                 detalleOrdenDeCompra.Posiciones.Add(pos);
             }

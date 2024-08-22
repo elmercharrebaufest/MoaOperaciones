@@ -130,7 +130,6 @@
                     (function ($) {
                         $("#resolte-contaniner").css("height", (screen.height - 200) + "px");
 
-
                         const queryString = window.location.search;
                         const urlParams = new URLSearchParams(queryString);
                         var param = urlParams.get('param');
@@ -145,7 +144,7 @@
                         };
                         $.ajax({
                             async: false,
-                            url: '/api/AltaEmpresaGranos/DescargarArchivo',
+                            url: parametros.get("urlApi"),
                             type: 'GET',
                             data: datos,
                             dataType: "json",
@@ -174,10 +173,10 @@
                                 $("#select_file").change();
                             },
                             error: function (error) {
+                                console.log(error);
                                 console.log("error");
                             }
                         });
-
                     }(jQuery));
                 </script>
             </div>

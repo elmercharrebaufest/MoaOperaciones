@@ -37,6 +37,9 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
 
+        [InverseProperty("Usuarios")]
+        public virtual ICollection<Area> Areas { get; set; }
+
         [InverseProperty("Alumno")]
         public virtual ICollection<ProgresoCurso> ProgresoCursosAsignados { get; set; }
 
@@ -79,7 +82,7 @@ namespace SustitucionMOAModel.Entities
         {
             try
             {
-                return Proveedores.FirstOrDefault(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id);
+                return Proveedores.Where(p => p.CUIT == CUITRegistro && TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault();
             }
             catch
             {
@@ -107,12 +110,12 @@ namespace SustitucionMOAModel.Entities
         public bool TieneProveedor(string codigoProveedor)
         {
             //Los administradores pueden elegir impersonarse como cualquier proveedor
-            if (Roles.Any(r => r.Codigo == "ADM"))
+            if (Roles.Where(r => r.Codigo == "ADM").Any())
             {
                 return true;
             }
 
-            return Proveedores.Any(p => p.CodigoProveedor == codigoProveedor);
+            return Proveedores.Where(p => p.CodigoProveedor == codigoProveedor).Any();
         }
 
         public string ObtenerRazonSocial()
@@ -207,6 +210,15 @@ namespace SustitucionMOAModel.Entities
             return TieneRol(RolEnum.Administracion) || TieneRol(RolEnum.Todos);
         }
 
+
+        [Obsolete("Reemplazar por método TienePermiso(Permiso permiso)", false)]
+        public virtual bool TienePermiso(string permiso)
+        {
+            var permisosUsuario = ObtenerPermisos();
+
+            return permisosUsuario.Contains(permiso);
+        }
+
         public virtual bool TienePermiso(PermisoEnum permiso)
         {
             if (permisosDelUsuario == null)
@@ -214,6 +226,12 @@ namespace SustitucionMOAModel.Entities
                 CargarPermisosUsuario();
             }
             return permisosDelUsuario.Contains(permiso);
+        }
+
+        [Obsolete("Reemplazar por método TieneRol(RolEnum rol)", false)]
+        public virtual bool TieneRol(string codigo)
+        {
+            return Roles.Any(r => r.Codigo == codigo);
         }
 
         public bool TieneRol(RolEnum rol)
@@ -355,9 +373,17 @@ namespace SustitucionMOAModel.Entities
                 case "VER ORDENES DE CARGA RESIDUOS ADMIN": return PermisoEnum.VerOrdenesDeCargaResiduosAdmin;
                 case "MODIFICAR ESTADO PROVEEDOR": return PermisoEnum.ModificarEstadoProveedor;
                 case "ARCHIVOS BOLETOS": return PermisoEnum.ArchivosBoletos;
+
+                case "ADMIN CONTABILIZACION MES ANTERIOR": return PermisoEnum.AdminContabilizacionMesAnterior;
+
+
                 case "ADMINISTRAR CURSOS": return PermisoEnum.AdminCursos;
                 case "REALIZAR CURSOS": return PermisoEnum.RealizarCursos;
                 case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
+                case "VER REPORTE OC": return PermisoEnum.ReporteOC;
+                case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
+                case "VER AGRUPAR PO": return PermisoEnum.AgruparPO;
+                case "VER COMO AUDITOR": return PermisoEnum.VerComoAuditor;
                 //default: throw new Exception("Permiso no mapeado: " + permisoStr);
                 default: return null;
             }
@@ -441,6 +467,8 @@ namespace SustitucionMOAModel.Entities
                 case "RESIDUOS": return RolEnum.Residuos;
                 case "RESIDUOS ADMIN": return RolEnum.ResiduosAdmin;
                 case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
+                case "ADMIN CONTABILIZACION MES ANTERIOR": return RolEnum.AdminContabilizacionMesAnterior;
+                case "AUDITOR COMPRAS": return RolEnum.AuditorCompras;
                 case "API ORDENES DE CARGA": return RolEnum.ApiOrdenesResiduos;
                 case "ADMIN CURSOS": return RolEnum.AdminCursos;
                 case "ALUMNO CURSOS": return RolEnum.AlumnoCursos;

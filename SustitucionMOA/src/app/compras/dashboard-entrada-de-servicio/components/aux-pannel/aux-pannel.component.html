@@ -1,0 +1,28 @@
+<section class="aux-panel" id="search">
+    <div class="aux-panel-header">
+        Refinar resultados
+        <i class="pi pi-times" (click)="togglePanel('search')"></i>
+    </div>
+    <div class="aux-panel-body">
+        <div class="search-filters row">
+            <!-- <div class="filtro-nro-orden col-md-3">
+                <p>Número de OC:</p>
+                <input pInputText type="text" [(ngModel)]="ordenCompraId" placeholder="Orden de compra" />
+            </div>
+
+            <div class="filtro-proveedor col-md-3">
+                <p>Proveedor:</p>
+                <p-autoComplete class="filtro-proveedor" [(ngModel)]="proveedorSeleccionado" [suggestions]="proveedorList" (completeMethod)="autocompleteProveedor($event)" field="valor" placeholder="Proveedor" [minLength]="4" autoZIndex="true" emptyMessage="No hay resultados para mostrar"></p-autoComplete>
+            </div> -->
+
+            <div class="filtro-fechas col-md-6 col-sm-12 col-xs-12">
+                <p>Ver:</p>
+                <dropdown (select)="setDateByRange($event)" [disabled]="visible" [options]="filtroFechas" class="styled-select" [selectedOption]="fechaSeleccionada"></dropdown>
+            </div>
+
+            <div class="SearchBtn col-md-6 col-sm-12 col-xs-12 vertical-align-middle">
+                <button class="btn btn-buscar" (click)="onBuscar()" [disabled]="visible">Buscar</button>
+            </div>
+        </div>
+    </div>
+</section>

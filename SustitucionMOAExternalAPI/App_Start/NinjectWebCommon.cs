@@ -36,6 +36,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.WSConsumers;
     using SustitucionMOAWS.GoogleDrive;
     using SustitucionMOAWS.GoogleDrive.Interfaces;
+    using Hangfire;
     using SustitucionMOAUtils.Export.CampoSustentable;
 
     public static class NinjectWebCommon
@@ -71,7 +72,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             {
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
                 kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
-                GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(kernel);
+                System.Web.Http.GlobalConfiguration.Configuration.DependencyResolver = new NinjectDependencyResolver(kernel);
                 RegisterServices(kernel);
                 return kernel;
             }
@@ -219,8 +220,9 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>().To(typeof(ObtenerUnidadesDeMedidaAlternativasConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerPDFOrdenCompraConsumerMOA>().To(typeof(ObtenerPDFOrdenCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IListarSolpPendientesConsumerMOA>().To(typeof(ListarSolpPendientesConsumerMOA)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IObtenerAdjuntosSOLPEDConsumerMOA>().To(typeof(ObtenerAdjuntosSOLPEDConsumerMOA)).InScope(ctx => OperationContext.Current);
 
-
+            
             #endregion
 
             // Scato WebApi
@@ -253,6 +255,9 @@ namespace SustitucionMOAExternalAPI.App_Start
 
 
             //kernel.Bind<IJobService>().To(typeof(JobService)).InScope(ctx => OperationContext.Current);
+
+            //Activador Ninject Hangfire
+            Hangfire.GlobalConfiguration.Configuration.UseActivator(new NinjectJobActivator(kernel));
         }
     }
 }

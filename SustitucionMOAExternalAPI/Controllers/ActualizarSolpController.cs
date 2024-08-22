@@ -1,4 +1,5 @@
-﻿using SustitucionMOAUtils.Interfaces;
+﻿using Hangfire;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System;
@@ -27,16 +28,16 @@ namespace SustitucionMOAExternalAPI.Controllers
             try
             {
                 Log.ExternalAPIInfo(string.Format("Inicio Se informaron cambios para la SOLP: {0}", nrosolp));
-
-                Task.Run(() =>
+                var solp = new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
                 {
-                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(new SustitucionMOAWS.WSConsumers.ObtenerSolpRequest
-                    {
-                        NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
-                        FechaDesde = new DateTime(2010, 01, 01),
-                        FechaHasta = DateTime.Now.Date.AddDays(1)
-                    });
-                });
+                    NumeroSolp = nrosolp.TrimStart('0').PadLeft(10, '0'),
+                    FechaDesde = new DateTime(2010, 01, 01),
+                    FechaHasta = DateTime.Now.Date.AddDays(1)
+                };
+
+                BackgroundJob.Enqueue(() =>
+                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(solp)
+                );  
             }
             catch (Exception ex)
             {

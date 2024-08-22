@@ -8,10 +8,12 @@ using SustitucionMOAWS.ResponseHandler.EntradadeServicios;
 using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -27,15 +29,15 @@ namespace SustitucionMOAWS.WSConsumers
     public class ObtenerCabecerasEntradaServicioConsumerMOA : IObtenerCabecerasEntradaServicioConsumerMOA
     {
         // Obtiene cabeceras de entradas de servicios desde unra Fecha dada
-        //SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient service;
+        SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient service;
         //private const string COMP_CODE = "MOA";
         private readonly IRepositorio repositorio;
 
         public ObtenerCabecerasEntradaServicioConsumerMOA()
         {
-            //service = new SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient();
-            //service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
-            //service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
+            service = new SI_MMRFC_BAPI_ENTRYSHEET_GETLISTClient();
+            service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
+            service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             //this.repositorio = repositorio;
         }
 
@@ -43,9 +45,17 @@ namespace SustitucionMOAWS.WSConsumers
         {
             try
             {
-                string _UrlServicio = System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCabecera"];
+                string _UrlServicio = SAPCredential.DevolverEndpoint(System.Configuration.ConfigurationManager.AppSettings["ServicioSAPEntradasServicioCabecera"]).ToString() ;
                 string _SOAPAction = System.Configuration.ConfigurationManager.AppSettings["SOAPAction"];
-                string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
+
+                string Authorization = service.ClientCredentials.UserName.UserName+":"+ service.ClientCredentials.UserName.Password;
+                byte[] userNameBytes = System.Text.Encoding.UTF8.GetBytes(Authorization);
+                string authorizationBase64 = System.Convert.ToBase64String(userNameBytes);
+
+
+
+                //string _Authorization = System.Configuration.ConfigurationManager.AppSettings["Authorization"];
+                string _Authorization = "Basic " + authorizationBase64;
                 HttpClient client = new HttpClient();
                 HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, _UrlServicio);
                 request.Headers.Add("SOAPAction", _SOAPAction);
@@ -114,14 +124,23 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var cabecera in Cabeceras)
             {
                 var cabe = new EntradaServicioCabeceraDto();
+                DateTime fechaCreacion;
+                DateTime.TryParseExact(cabecera.CREATED_ON, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCreacion);
 
                 cabe.EntradaServicio = cabecera.SHEET_NO;
+                cabe.FechaCreacionDateTime = fechaCreacion;
                 cabe.FechaCreacion = cabecera.CREATED_ON;
                 cabe.OrdenCompra = cabecera.PO_NUMBER;
                 //cabe.Proveedor = cabecera.PERSON_EXT; //Nombre del proveedor en la oc
                 cabe.Descripcion = cabecera.SHORT_TEXT;
                 cabe.MontoTotal = cabecera.GROSS_VAL;
+                cabe.Ingresante = cabecera.CREATED_BY;
 
+                // Momentaneo mientras se encontra la forma de buscar el aprobador o fiscal de la ES de sap
+                cabe.Aprobador = "-"; 
+                cabe.Fiscal = "-";
+                cabe.DesdeSap = true;
+                cabe.Moneda = cabecera.CURRENCY;
                 result.Add(cabe);
             }
             return result;

@@ -15,7 +15,7 @@ import { BlockUIModule } from 'ng-block-ui';
 import { SelectModule } from "ng2-select";
 import { NgxMaskModule } from "ngx-mask";
 import { ModalModule } from "ngx-modal";
-import { LoggerModule, NgxLoggerLevel } from "ngx-logger"
+import { LoggerModule, NgxLoggerLevel } from "ngx-logger";
 import { MultiSelectModule } from 'primeng/multiselect';
 import { NgxPaginationModule } from "ngx-pagination";
 import { AduanaService } from "./aduana/aduana.service";
@@ -84,27 +84,31 @@ import { ListadoNovedadesComponent } from './listado-novedades/listado-novedades
 import { AngularEditorModule } from '@kolkov/angular-editor';;
 import { ComunicacionesComponent } from './comunicaciones/comunicaciones.component'
 import { NotificacionesModule } from "./notificaciones/notificaciones.module";
+import { AprobacionExternaComponent } from './aprobacion-externa/aprobacion-externa.component'
 
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
+import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        HttpClientModule,
-        AppRoutingModule,
-        FormsModule,
-        ReactiveFormsModule,
-        NgxPaginationModule,
-        SelectModule,
-        ModalModule,
-        ReCaptchaModule,
-        SharedModule,
-        LogPesificacionModule,
-        NgxMaskModule.forRoot(),
-        BlockUIModule.forRoot(),
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    HttpClientModule,
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    NgxPaginationModule,
+    SelectModule,
+    ModalModule,
+    ReCaptchaModule,
+    SharedModule,
+    LogPesificacionModule,
+    CalendarModule,
+    NgxMaskModule.forRoot(),
+    BlockUIModule.forRoot(),
         LoggerModule.forRoot(
             {
                 serverLoggingUrl: '/api/Logger/Front',
@@ -112,51 +116,53 @@ import { TooltipModule } from "primeng/tooltip";
                 serverLogLevel: NgxLoggerLevel.ERROR
             }
         ),
-        ComprasModule,
-        ConfirmDialogModule,
-        MultiSelectModule,
+    ComprasModule,
+    ConfirmDialogModule,
+    MultiSelectModule,
         ToastModule,
         DropdownModule,
         ButtonModule,
         TooltipModule,
-        QuillModule,
-        AngularEditorModule,
-        NotificacionesModule
-    ],
-    declarations: [
-        AppComponent,
-        ContactoMailComponent,
-        HomeComponent,
-        HomeNGSComponent,
-        LayoutComponent,
-        NoAutorizadoComponent,
-        UsuarioListComponent,
-        UsuarioAltaEmpresaNoGranosComponent,
-        UsuarioCambioVendedorComponent,
-        VendedorStatusComponent,
-        PesificacionComponent,
-        EmpresaGranosComponent,
-        EmpresaNoGranosComponent,
-        AltasComponent,
-        EstadoSolicitudComponent,
-        //AltaNotificacionesComponent,
-        //ListadoNotificacionesComponent,
-        CarouselNotificacionesComponent,
-        VentaSustentableBaseComponent,
-        FaqComponent,
-        TicketPesadaComponent,
-        ConsultaBaseComponent,
-        VentaSustentableBaseComponent,
-        ApikeyComponent,
-        PesificacionesGuardadasComponent,
-        PesificacionBaseComponent,
-        ModificarDatosComponent,
-        UsuarioAuditoriaListComponent,
-        LegajoExternoComponent,
-        VerVendedoresComponent,
-        ListadoNovedadesComponent,
-        ModalNotificacionesComponent,
-        ComunicacionesComponent
+    QuillModule,
+    AngularEditorModule,
+    NotificacionesModule
+  ],
+  declarations: [
+    AppComponent,
+    ContactoMailComponent,
+    HomeComponent,
+    HomeNGSComponent,
+    LayoutComponent,
+    NoAutorizadoComponent,
+    UsuarioListComponent,
+    UsuarioAltaEmpresaNoGranosComponent,
+    UsuarioCambioVendedorComponent,
+    VendedorStatusComponent,
+    PesificacionComponent,
+    EmpresaGranosComponent,
+    EmpresaNoGranosComponent,
+    AltasComponent,
+    EstadoSolicitudComponent,
+    //AltaNotificacionesComponent,
+    //ListadoNotificacionesComponent,
+    CarouselNotificacionesComponent,
+    VentaSustentableBaseComponent,
+    FaqComponent,
+    TicketPesadaComponent,
+    ConsultaBaseComponent,
+    VentaSustentableBaseComponent,
+    ApikeyComponent,
+    PesificacionesGuardadasComponent,
+    PesificacionBaseComponent,
+    ModificarDatosComponent,
+      UsuarioAuditoriaListComponent,
+      LegajoExternoComponent,
+      VerVendedoresComponent,
+    ListadoNovedadesComponent,
+    ModalNotificacionesComponent,
+    ComunicacionesComponent,
+    AprobacionExternaComponent,
+    MessageSpinnerComponent
     ],
     providers: [
         DatePipe,

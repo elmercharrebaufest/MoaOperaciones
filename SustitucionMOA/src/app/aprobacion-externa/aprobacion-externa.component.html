@@ -1,0 +1,220 @@
+<div class="logo-container" align="center">
+    <img src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" class="img-responsive logo-center">
+</div>
+
+<message-spinner class="center-content"></message-spinner>
+
+<ng-container *ngIf="!messageSpinnerComponent.spinnerStatus">
+    <div class="message-container" *ngIf="isApprover === false">
+        <h3 class="headerTitle">La certificaci&oacute;n {{ nroESLocal.split('&')[0] }}, se encuentra Anulada o Eliminada.</h3>
+    </div>
+    
+    <div class="message-container" *ngIf="isApprover === true && oldES === true">
+        <h3 class="headerTitle">Este enlace de entrada de servicio corresponde a una versi&oacute;n anterior, consulte su estado en el portal,en la pantalla "Estado Certificaci&oacute;n".</h3>
+    </div>
+    
+    <div *ngIf="action === 'approve' && isApprover === true && oldES === false" class="resumen-container">
+        <h3 class="headerTitle">Aprobaci&oacute;n de entrada de servicio temporal</h3>
+
+        <div class="container">
+            <div class="flex-container">
+                <p>Proveedor: {{ prov }}</p>
+            </div>
+            <div class="flex-container">
+                <p>Generada por: {{ usuario }}</p>
+            </div>
+            <div class="flex-container">
+                <p>Número Orden de Compra: {{ ordenCompra }}</p>
+            </div>
+            <br />
+
+            <p>Certificaci&oacute;n: {{ cert }} </p>
+            <p>Fecha certificaci&oacute;n: {{ fechaCarga }}</p>
+
+            <br />
+
+            <p>Descripci&oacute;n: {{ desc }} </p>
+            <p>Importe: {{ importe }}</p>
+
+            <br />
+            <p>Detalle de servicios</p>
+            <!-- Table -->
+            <table class="table-container">
+                <thead>
+                    <tr>
+                        <th class="table-header">Descripci&oacute;n</th>
+                        <th class="table-header">Cantidad</th>
+                        <th class="table-header">UM</th>
+                        <th class="table-header">%</th>
+                        <th class="table-header">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Tabla -->
+                    <ng-container *ngFor="let ap of aprobacionesList">
+                        <tr>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Descripcion_ES ? ap.Descripcion_ES : ap.Texto_breve_servicio }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Cantidad_a_certificar ? ap.Cantidad_a_certificar : '0' }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.UM }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Porcentaje_a_certificar }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>$ {{ ap.Monto_a_certificar }}</td>
+                        </tr>
+                    </ng-container>
+                    <tr *ngIf="aprobacionesList && aprobacionesList.length > 0">
+                        <td colspan='4' style='padding: 10px; border: 0px solid #333;'></td>
+                        <td style='padding: 10px; border: 1px solid #333;'><strong>$ {{ aprobacionesList[0]?.Monto_total }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <br />
+
+        <spinner></spinner>
+        <div *ngIf="approvalSuccess === true" class="center-container">
+            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
+            <br />
+        </div>
+        <div *ngIf="approvalError === true" class="center-container">
+            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
+            <br />
+        </div>
+
+        <div class="center-container">
+            <div *ngIf="estado.includes('Pendiente'); else elseState">
+
+            </div>
+            <ng-template #elseState>
+                <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
+            </ng-template>
+        </div>
+        <br />
+    </div>
+    
+    <div *ngIf="action === 'reject' && isApprover === true && oldES === false" class="resumen-container">
+    
+        <h3 class="headerTitle">Rechazo de entrada de servicio temporal</h3>
+
+        <div class="container">
+            <div class="flex-container">
+                <p>Proveedor: {{ prov }}</p>
+            </div>
+            <div class="flex-container">
+                <p>Generada por: {{ usuario }}</p>
+            </div>
+            <div class="flex-container">
+                <p>Número Orden de Compra: {{ ordenCompra }}</p>
+            </div>
+            <br />
+
+            <p>Certificaci&oacute;n: {{ cert }} </p>
+            <p>Fecha certificaci&oacute;n: {{ fechaCarga }}</p>
+
+            <br />
+
+            <p>Descripci&oacute;n: {{ desc }} </p>
+            <p>Importe: {{ importe }}</p>
+
+            <br />
+            <p>Detalle de servicios</p>
+            <!-- Table -->
+            <table class="table-container">
+                <thead>
+                    <tr>
+                        <th class="table-header">Descripci&oacute;n</th>
+                        <th class="table-header">Cantidad</th>
+                        <th class="table-header">UM</th>
+                        <th class="table-header">%</th>
+                        <th class="table-header">Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Tabla -->
+                    <ng-container *ngFor="let ap of aprobacionesList">
+                        <tr>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Descripcion_ES ? ap.Descripcion_ES : ap.Texto_breve_servicio }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Cantidad_a_certificar ? ap.Cantidad_a_certificar : '0' }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.UM }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Porcentaje_a_certificar }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>$ {{ ap.Monto_a_certificar }}</td>
+                        </tr>
+                    </ng-container>
+                    <tr *ngIf="aprobacionesList && aprobacionesList.length > 0">
+                        <td colspan='4' style='padding: 10px; border: 0px solid #333;'></td>
+                        <td style='padding: 10px; border: 1px solid #333;'><strong>$ {{ aprobacionesList[0]?.Monto_total }}</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div *ngIf="estado.includes('Pendiente'); else elseState2">
+            <h3 class="center-text">Causas de rechazo: </h3>
+            <br />
+            <div class="center-container-radios">
+                <div class="radio-container">
+                    <label>
+                        <input type="radio" name="staticCauses" value="Servicio no ejecutado/concluido" [(ngModel)]="rejectionCause" (click)="deselectRadio('Servicio no ejecutado/concluido')">
+                        Servicio no ejecutado/concluido
+                    </label>
+                </div>
+                <div class="radio-container">
+                    <label>
+                        <input type="radio" name="staticCauses" value="Error en las cantidades certificadas, porcentajes erroneos" [(ngModel)]="rejectionCause" (click)="deselectRadio('Error en las cantidades certificadas, porcentajes erroneos')">
+                        Error en las cantidades certificadas, porcentajes err&oacute;neos
+                    </label>
+                </div>
+                <div class="radio-container">
+                    <label>
+                        <input type="radio" name="staticCauses" value="Servicio realizado con resultado distinto al contratado" [(ngModel)]="rejectionCause" (click)="deselectRadio('Servicio realizado con resultado distinto al contratado')">
+                        Servicio realizado con resultado distinto al contratado
+                    </label>
+                </div>
+                <div class="radio-container">
+                    <label>
+                        <input type="radio" name="staticCauses" value="Falta de presentacion de documentacion" [(ngModel)]="rejectionCause" (click)="deselectRadio('Falta de presentacion de documentacion')">
+                        Falta de presentaci&oacute;n de documentaci&oacute;n
+                    </label>
+                </div>
+            </div>
+
+            <br />
+
+            <div class="center-text">
+                <h3 class="center-text">Observaciones: </h3>
+                <br />
+                <textarea placeholder="Max. 80 caracteres" [rows]="5" [cols]="10" pInputTextarea autoResize="autoResize" [(ngModel)]="rejectionFreeText" class="custom-textarea" maxlength="80"></textarea>
+            </div>
+
+            <br />
+
+            <spinner></spinner>
+            <div *ngIf="rejectionSuccess === true" class="center-container">
+                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido rechazada</strong></p>
+                <br />
+            </div>
+            <div *ngIf="rejectionError === true" class="center-container">
+                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido rechazada, intente nuevamente</strong></p>
+                <br />
+            </div>
+
+
+            <div class="center-container">
+
+                <div *ngIf="rejectionCause !== ''; else elseBlock">
+                    <button pButton type="button" label="Rechazar" class="ui-button-danger custom-button" [disabled]="isButtonDisabled" (click)="rechazarES()">
+                    </button>
+                </div>
+                <ng-template #elseBlock>
+                    <button pButton type="button" label="Rechazar" class="ui-button-danger custom-button" disabled>
+                    </button>
+                </ng-template>
+
+            </div>
+        </div>
+
+        <ng-template #elseState2>
+            <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
+        </ng-template>
+    </div>
+</ng-container>

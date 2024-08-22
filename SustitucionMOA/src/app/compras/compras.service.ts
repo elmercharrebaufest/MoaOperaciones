@@ -1,6 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
-import { BehaviorSubject,Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
 import { EmailComposeModel } from '../common/email-compose/email-compose.model';
@@ -14,8 +14,12 @@ import { RegistroInfoDto } from '../modelos/registro-info';
 import { PeticionVisualizacionPrecioDto } from '../modelos/peticion-visualizar-precio-dto';
 import { ChatExternoComprasDto, ChatInternoComprasDto, ChatProveedorDto, ChatsDto } from './chat-interno/chat-interno.interface';
 import { VisitaObraDto } from '../modelos/infoVisitasDeObraDto';
-import { timeoutWith } from 'rxjs/operators';
+import { catchError, timeoutWith } from 'rxjs/operators';
 import { EntradaServicio } from '../common/models/entradaServicio';
+import { FiltroDto } from './agrupar-po-th/agrupar-po-th-filtro-model'
+import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
+import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
+import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 
 @Injectable({
     providedIn: 'root'
@@ -59,11 +63,13 @@ export class ComprasService extends BaseService {
     onDataUpdate: EventEmitter<void> = new EventEmitter<void>();
 
     public getCombos(): Observable<any> {
-        return this.http.get('/api/compras/Combos', { headers: this.headers });
+        return this.http
+            .get('/api/compras/Combos', { headers: this.headers });
     }
 
     public obtenerUltimaSolp(): Observable<any> {
-        return this.http.get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
+        return this.http
+            .get('/api/compras/ObtenerUltimaSolp', { headers: this.headers });
     }
 
     public getListarSolp(pagina: number,
@@ -71,8 +77,9 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: any = this.filtros.nombrePedido,
         fechaDesde: any = this.filtros.fechaDesde,
-        fechaHasta: any = this.filtros.fechaHasta,
+        fechaHasta: any | null = this.filtros.fechaHasta,
         sap: boolean = this.filtros.sap,
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
@@ -83,7 +90,7 @@ export class ComprasService extends BaseService {
         centros: any = this.filtros.centros,
         grupoDeCompras: any = this.filtros.grupoDeCompras,
         claseDocumento: any = this.filtros.claseDocumento,
-        tipoImputacion: any = this.filtros.tipoImputacion,
+        tipoImputacion: any = this.filtros.tipoImputacion,      
         valorTipoImputacion: any = this.filtros.valorTipoImputacion): Observable<any> {
         let params: HttpParams = new HttpParams();
         pagina = pagina != null ? pagina : this.filtros.pagina;
@@ -93,7 +100,8 @@ export class ComprasService extends BaseService {
         params = params.set('itemsPorPagina', itemsPorPagina.toString());
         params = params.set('orden', orden);
         params = params.set('columna', columna);
-        params = params.set('nroSolp', nroSolp);
+        params = params.set('nroSolp', nroSolp);        
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
         params = params.set('sap', sap.toString());
@@ -109,19 +117,21 @@ export class ComprasService extends BaseService {
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         return this.http.get('/api/compras/ListarSolp', { params: params, headers: this.headers });
-    }
+     }
 
     public borrarSolp(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
 
-        return this.http.get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
+        return this.http
+            .get('/api/compras/BorrarSolp', { params: params, headers: this.headers });
     }
 
     public traerSolpId(idSolp: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-        return this.http.get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
+        return this.http
+            .get('/api/compras/TraerSolpId', { params: params, headers: this.headers });
     }
 
     getPdf(idSolp): Observable<any> {
@@ -130,6 +140,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
+
     getPdfPeticionDeOfertaUsuario(idPeticionDeOfertaUsuario): Observable<any> {
         return this.http
             .get("/api/compras/GenerarPeticionDeOfertaUsuarioPdf?idPeticionDeOfertaUsuario=" + idPeticionDeOfertaUsuario.toString(), {
@@ -175,6 +186,21 @@ export class ComprasService extends BaseService {
             .get<any[]>('/api/Order/GetByProveedor', { params: params, headers: this.headers })
     }
 
+
+    public getSolicitantesByNroSolped(
+        solpList: string[]
+    ): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+
+        solpList.forEach(param => {
+            params = params.append('solpList', param);
+          });
+
+        return this.http
+            .get<any[]>('/api/Order/GetSolicitantesByNroSolped', { params, headers: this.headers })
+    }
+
     public getByProveedorAsync(
         fechaInicio: any = this.filtros.fechaDesde,
         proveedorId: string, 
@@ -183,6 +209,7 @@ export class ComprasService extends BaseService {
         ordenAscendente: boolean = this.filtros.ordenAscendente,
         pagina: number = this.filtros.pagina, 
         elementosPorPagina: number = this.filtros.itemsPorPagina,
+        verTodo: boolean | false
         ) : Observable<any> {
 
         let params: HttpParams = new HttpParams();
@@ -194,27 +221,91 @@ export class ComprasService extends BaseService {
         params = params.set('OrdenAscendente', ordenAscendente.toString());
         params = params.set('pagina', pagina.toString());
         params = params.set('elementosPorPagina', elementosPorPagina.toString());
+        params = params.set('verTodo', verTodo.toString());
         
         return this.http
-            .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers })
+            .get<any[]>('/api/EntradaServicio/GetByProveedorAsync', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
     }
 
-    public deleteById(Id, AccountingDate) {
+    ObtenerESLocales(verTodo: boolean | false, proveedorId: string | '') {
+        let params: HttpParams = new HttpParams();
+        params = params.set('verTodo', verTodo.toString());
+        params = params.set('vendedor', proveedorId);
+        
+        return this.http
+            .get<any[]>('/api/EntradaServicio/ObtenerESLocales', { params: params, headers: this.headers }).pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public deleteById(Id,TempId, AccountingDate) {
         //http.delete falla en ambiente QA - cambiado a Post
         var payload = new FormData();
-        payload.append('DocumentoNumero', JSON.stringify(Id));
-        payload.append('FechaContabilizacion', AccountingDate);
+        if (TempId !== null && TempId !== '') {
+            payload.append('DocumentoNumero', JSON.stringify(TempId));
+        }
+        else {
+            payload.append('DocumentoNumero', JSON.stringify(Id));
+            payload.append('FechaContabilizacion', AccountingDate);
+        }
+
 
         return this.http
             .post('/api/EntradaServicio/DeleteById', payload, { headers: this.headersPost })
     }
 
-    public postCreateAsync(entradaServicioCreateParamsDto): Observable<any> {
-        return this.http.post('/api/EntradaServicio/CreateAsync', entradaServicioCreateParamsDto)
-          .pipe(
-            timeoutWith(30000, throwError(new Error('Se excedi� el tiempo de espera, por favor int�ntelo m�s tarde')))
-          );
+    public postCreateAsync(parametros : any, report : any, IdAdjuntos): Observable<any> {
+
+        var payload = new FormData();
+
+        let request: CreateEntradaServicioDto = {
+            Posiciones: parametros,
+            report: report,
+            IdAdjuntos: IdAdjuntos
+            // Asegúrate de incluir todos los campos requeridos por la interfaz
+        };
+
+        payload.append('request', JSON.stringify(request));
+        //payload.append('report', JSON.stringify(report));
+        //payload.append('IdAdjuntos', JSON.stringify(IdAdjuntos));
+
+        return this.http.post('/api/EntradaServicio/CreateAsync', payload, { headers: this.headers })
+        .pipe(
+            catchError(error => {
+                return throwError(error);
+            })
+        );
       }
+
+
+
+      public AdjuntarArchivosCertificacion(archivos: File[]): Observable<any> {
+
+        var payload = new FormData();
+
+        for (let i = 0; i < archivos.length; i++) {
+            let fileToUpload = archivos[i];
+            payload.append("file", fileToUpload, fileToUpload.name);
+        }
+
+        return this.http
+            .post<any>('/api/AdjuntosCertificaciones/Adjuntar', payload, { headers: this.headers });
+    }
+
+    public GetAdjuntosByES(idES): Observable<any> {
+
+        let params: HttpParams = new HttpParams();
+        params = params.set("idES", idES.toString());
+        let resp = this.http.post<any>('/api/AdjuntosCertificaciones/GetAdjuntos', params ,{ headers: this.headers });
+        return resp;
+    }
+
 
     public GuardarSolp(solp: Solp) {
         let solpJson = JSON.stringify({
@@ -239,6 +330,7 @@ export class ComprasService extends BaseService {
             TieneFabricacionTallerExterno: solp.fabricacionTallerExterno,
             TieneDescripcionTecnica: solp.descripcionTecnica,
             TieneDocumentacionTecnica: solp.entregaDocumentacion,
+            RequisitoCiberseguridad: solp.requisitoCiberseguridad,
             FechaHoraLimiteConsulta: this.getFechaHora(solp.fechaLimiteFecha, solp.fechaLimiteHora),
             ObservacionesGeneracion: solp.observacionesGeneracion,
             EspecificacionesTecnicas: solp.especificacionesViewModel.observaciones.replace(/(<img("[^"]*"|[^/">])*)>/gi, "$1/>"),
@@ -249,13 +341,15 @@ export class ComprasService extends BaseService {
                 Id: solp.usuarioComprasId
             },
             Adjuntos: solp.especificacionesViewModel.archivosEspecificaciones.map(x => { return { Id: x.id } })
-                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } })),
+                .concat(solp.archivosCotizaciones.map(x => { return { Id: x.id } }))
+                .concat(solp.archivosCotizacionesCondEsp.map(x => { return { Id: x.id } })),
 
             DiasEjecucion: solp.ejecucion,
             JornadaLaboral: solp.jornadaLaboralDias.filter(x => x.selected).map(x => x.weekDay),
             JornadaLaboralDesde: solp.comienzoJornadaLaboral,
             JornadaLaboralHasta: solp.terminoJornadaLaboral,
             ObservacionesCotizacion: solp.observacionesCotizacion,
+            ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
             Adicional: solp.adicional,
@@ -269,6 +363,7 @@ export class ComprasService extends BaseService {
             THServicioPermanente: solp.thServicioPermanente,
             THAjustePolinomica: solp.thAjustePolinomica,
             THProveedorDirecto: solp.thProveedorDirecto,
+            CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: solp.posiciones.map(x => {
 
                 return {
@@ -307,9 +402,11 @@ export class ComprasService extends BaseService {
                     Cantidad: x.cuentaTd,
                     PrecioBruto: x.precioBruto,
                     Unidad: this.getObjetoCodigo(x.unidadSeleccionada && x.unidadSeleccionada.Codigo),
+
                     CuentaMayor: this.getObjetoCodigo(x.cuentaMayor && x.cuentaMayor.Codigo),
                     TipoImputacionValor: this.getObjetoCodigo(x.valorImputacion && x.valorImputacion.Codigo, x.valorImputacion && x.valorImputacion.Tabla),
                     Provincia: x.selectProvincia,
+
 
                     Subposiciones: x.listadoSubPosiciones ? x.listadoSubPosiciones.filter(sp => {
                         return !!((sp.codigoServicio && sp.codigoServicio.Codigo) ||
@@ -359,6 +456,13 @@ export class ComprasService extends BaseService {
             }
         }
 
+        if (solp.archivosCotizacionesNuevosCondEsp != null) {
+            for (let i = 0; i < solp.archivosCotizacionesNuevosCondEsp.length; i++) {
+                let fileToUpload = solp.archivosCotizacionesNuevosCondEsp[i];
+                payload.append("fileCotizacionesCondEsp", fileToUpload, fileToUpload.name);
+            }
+        }
+
         payload.append('solpJson', solpJson);
 
         return this.http
@@ -391,20 +495,7 @@ export class ComprasService extends BaseService {
         fechaHora.setMinutes(hora.getMinutes());
         fechaHora.setSeconds(hora.getSeconds());
         return fechaHora;
-
     }
-
-    // getCodigosProveedores(electrico, consultoria, civil, ingenieria, mecanico) {
-    //     let list = [];
-
-    //     if (electrico) list.push('ELECTRICO');
-    //     if (consultoria) list.push('CONSULTORIA');
-    //     if (civil) list.push('CIVIL');
-    //     if (ingenieria) list.push('INGENIERIA');
-    //     if (mecanico) list.push('MECANICO');
-
-    //     return list.join(',');
-    // }
 
     getProveedores(proveedores, codigo) {
         if (proveedores)
@@ -421,7 +512,6 @@ export class ComprasService extends BaseService {
 
             return { Codigo: codigo }
         }
-
         return null;
     }
 
@@ -555,6 +645,7 @@ export class ComprasService extends BaseService {
         orden: string = this.filtros.orden,
         columna: string = this.filtros.columna,
         nroSolp: string = this.filtros.nroSolp,
+        nombrePedido: string = this.filtros.nombrePedido,
         estados: any = this.filtros.estados,
         usuarios: any = this.filtros.usuarioId,
         centros: any = this.filtros.centros,
@@ -579,6 +670,7 @@ export class ComprasService extends BaseService {
         params = params.set('orden', orden);
         params = params.set('columna', columna);
         params = params.set('nroSolp', nroSolp);
+        params = params.set('nombrePedido', nombrePedido);
         params = params.set('estados', estados);
         params = params.set('usuarios', usuarios);
         params = params.set('centros', centros);
@@ -601,7 +693,7 @@ export class ComprasService extends BaseService {
                 }
             );
     }
-
+    
     public getListarPOProveedor(pagina: number,
         itemsPorPagina: number,
         orden: string = this.filtros.orden,
@@ -763,12 +855,10 @@ export class ComprasService extends BaseService {
             payload.append("files", fileToUpload, fileToUpload.name);
         }
 
-
         payload.append('idPeticion', idPeticion.toString());
 
         return this.http
             .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
-
     }
 
     descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number): Observable<any> {
@@ -916,7 +1006,6 @@ export class ComprasService extends BaseService {
             }
         }
 
-
         payload.append('json', json);
 
         return this.http
@@ -941,6 +1030,7 @@ export class ComprasService extends BaseService {
 
     public GrabarAdjudicacion(adjudicacion: AdjudicacionDto) {
         let json = JSON.stringify({
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
             Cotizacion_Id: adjudicacion.Cotizacion_Id,
             AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
             Solp_Id: adjudicacion.Solp_Id,
@@ -999,13 +1089,6 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
-
-    // public obtenerOrdenDeCompra(filtro: string) {
-    //     let params: HttpParams = new HttpParams()
-    //     params = params.set('filtro', filtro);
-    //     return this.http
-    //         .get<OrdenDeCompraSap>('/api/compras/ObtenerOrdenDeCompra', { params: params, headers: this.headers })
-    // }
 
     public guardarAdjudicacionAutomatica(registrosInfo: RegistroInfoDto[]) {
         let json = JSON.stringify(registrosInfo);
@@ -1079,7 +1162,7 @@ export class ComprasService extends BaseService {
 
     public grabarMensajeChatInterno(mensaje: ChatInternoComprasDto) {
         let json = JSON.stringify(mensaje);
-
+        
 
         var payload = new FormData();
         payload.append('json', json);
@@ -1217,7 +1300,6 @@ export class ComprasService extends BaseService {
     }
 
     listarUsuarioSolicitante(): Observable<any> {
-
         return this.http
             .get("/api/compras/ListarUsuarioSolicitante", {
                 headers: this.headers,
@@ -1239,8 +1321,8 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
 
-        ): Observable<any> 
-        {
+    ): Observable<any>
+    {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
@@ -1259,6 +1341,53 @@ export class ComprasService extends BaseService {
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
 
+
+    public enviarMotivoRechazoES(motivo: any): Observable<any> {
+        let json = JSON.stringify(motivo);
+        var payload = new FormData();
+        payload.append('json', json);
+        return this.http.post<any>("/api/EntradaServicio/RechazarEntradaDeServicio", payload, { headers: this.headers });
+    }
+
+    public enviarAprobacionES(NRO_ES_LOCAL: string, moneda: string): Observable<any> {
+        var payload = new FormData();
+        payload.append('nro_es_local', NRO_ES_LOCAL);
+        payload.append('Moneda', moneda);
+        return this.http.post<any>("/api/EntradaServicio/AprobarEntradaDeServicio", payload, { headers: this.headers })
+            .pipe(
+                timeoutWith(30000, throwError(new Error('Se excedio el tiempo de espera, por favor inténtelo más tarde'))),
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public reasignarSuplente(data: any): Observable<any> {
+        var payload = new FormData();
+        payload.append('nro_es_local', data.NroEsLocal);
+        payload.append('suplente', data.Suplente);
+        return this.http.post<any>("/api/EntradaServicio/ReasignarSuplente", payload, { headers: this.headers })
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+    public enviarEdicionIngresante(data: any): Observable<any> {
+        var payload = new FormData();
+        payload.append('ID', data.ID);
+        payload.append('ColumnaEditar', data.ColumnaEditar);
+        payload.append('NuevoValor', data.NuevoValor);
+        return this.http.post<any>("/api/EntradaServicio/ActualizarInformacionIngresante", payload, { headers: this.headers })
+            .pipe(
+                catchError(error => {
+                    return throwError(error);
+                })
+            );
+    }
+
+
     public listarHistorialDeFechas(id: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionId", id.toString());
@@ -1276,10 +1405,71 @@ export class ComprasService extends BaseService {
         return this.http
             .post<any>('/api/compras/MarcarChatProveedorComoLeido', payload, { headers: this.headers });
     }
+    
+    public listarSolpCondicionEspecial(filtrosPOAgrupada: FiltroDto): Observable<SolpDto> {
+        let filtroJson = JSON.stringify(filtrosPOAgrupada);
+        let params: HttpParams = new HttpParams()
+        params = params.set('filtroJson', filtroJson);
+        return this.http
+            .get<SolpDto>('/api/compras/ListarSolpCondicionEspecial', { params: params, headers: this.headers })
+    }
 
-    public buildReportES(report : any): Observable<any> {
+    public agruparPeticionesDeOferta(peticionDeOfertaIds: number) {
+        var payload = new FormData();
+        payload.append('peticionDeOfertaIds', peticionDeOfertaIds.toString());
 
         return this.http
-            .post<any>('/api/ReporteES/BuildReportES', report, { headers: this.headers });
+            .post<SolpDto>('/api/compras/AgruparPeticionesDeOferta', payload, { headers: this.headers });
+    }
+
+    public desagruparPeticionDeOferta(nroSolp: string, po: string) {
+        var payload = new FormData();
+        payload.append('po', po.toString());
+        payload.append('nroSolp', nroSolp.toString());
+
+        return this.http
+            .post<SolpDto>('/api/compras/DesagruparPeticionDeOferta', payload, { headers: this.headers });
+    }
+    
+    public buildReportES(reportRequest : any): Observable<any> {
+
+        var payload = new FormData();
+
+        payload.append('reportRequest', JSON.stringify(reportRequest));
+        return this.http
+            .post<any>('/api/ReporteES/BuildReportES', payload, { headers: this.headers });
+    }
+
+    public ValidarPrecioCotizado(adjudicacion: AdjudicacionDto) {
+        let json = JSON.stringify({
+            PeticionDeOferta_Id: adjudicacion.PeticionDeOferta_Id,
+            Cotizacion_Id: adjudicacion.Cotizacion_Id,
+            AdjudicacionPosiciones: adjudicacion.AdjudicacionPosiciones,
+            Solp_Id: adjudicacion.Solp_Id,
+            TextoDeCabecera: adjudicacion.TextoDeCabecera,
+            CondicionesDeEntrega: adjudicacion.CondicionesDeEntrega,
+            CondicionesDePago: adjudicacion.CondicionesDePago,
+            Garantias: adjudicacion.Garantias,
+            EsMonedaProveedor: adjudicacion.EsMonedaProveedor,
+            Proveedor: adjudicacion.Proveedor,
+            RegionSap: adjudicacion.RegionSap
+        });
+
+        var payload = new FormData();
+        payload.append('json', json);
+
+        return this.http
+            .post<any>('/api/compras/ValidarPrecioCotizado', payload, { headers: this.headers });
+    }
+
+    public obtenerAdjuntosSolpAgrupar(nroSolp: string): Observable<AdjuntosSolpDto> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("nroSolp", nroSolp);
+    
+        return this.http
+            .get<AdjuntosSolpDto>("/api/compras/ObtenerAdjuntosSolpAgrupar", {
+                params: params,
+                headers: this.headers
+            });
     }
 }

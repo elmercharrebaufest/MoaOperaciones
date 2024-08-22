@@ -10,6 +10,7 @@ export interface SolpCompraDto{
 }
 
 export interface PosicionCompra{
+    NroSolp?: string
     TipoPosicionCodigo: string
     PrecioTotal: number
     UnidadId: string
@@ -82,5 +83,6 @@ export interface AltaNuevoProveedor{
     Id?: number,
     CUIT?: number,
     Mail?: string,
-    RazonSocial?: string
+    RazonSocial?: string,
+    EsProveedorExterior?: boolean
 }

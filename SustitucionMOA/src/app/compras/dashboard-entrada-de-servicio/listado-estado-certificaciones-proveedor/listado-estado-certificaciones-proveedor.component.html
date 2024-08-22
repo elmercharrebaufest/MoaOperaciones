@@ -1,0 +1,186 @@
+
+<div id="solicitudes-estado-proveedor" class="content-wraper" [class.fullscreen]="fullscreen" [class.show-scrollbar]="showScrollbar">
+    <!-- HEADER -->
+    <section class="container-fluid clearfix">
+        <div class="row titleSection">
+            <div class="col-xs-12 col-sm-10">
+                <strong>Dashboard - Solicitudes de certificaciones</strong>
+            </div>
+            <i id="btn-fullscreen" [ngClass]="fullscreen ? 'fa fa-compress' : 'fa fa-expand'" [class.i-disabled]="!displayContent" title="Pantalla completa" (click)="toggleFullscreen()"></i>
+        </div>
+        <br />
+    </section>
+    <aux-pannel [fechaSeleccionada]="fechaSeleccionadaAux" *ngIf="showOrHideAuxPanel()" (obtenerESSap)="onBuscar()"
+        [proveedor]="proveedor" [visible]="recalculandoAprobadas" (getFecha)="getFecha($event)"></aux-pannel>
+    <!-- HEADER END -->
+    <p-messages [value]="msgs"></p-messages>
+    <div class="container-tabla">
+        <!-- FILTERS -->
+        <div class="filters-row">
+            <i class="pi pi-filter"></i>
+            <div class="filtro-oc">
+                <input class="filtro-oc-input" pInputText type="text" (input)="
+                      tabla.filterGlobal($event.target.value, 'contains')
+                  " placeholder="Busqueda por OC" [disabled]="recalculando" />
+            </div>
+            <div class="filtro-estado-certificacion">
+                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
+                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="recalculando"
+                    [options]="listadoEstadoCertificacion"
+                    placeholder="Seleccione un estado de certificación"></p-dropdown>
+            </div>
+        </div>
+        <!-- FILTERS END -->
+        <!-- TABLE 1 -->
+        <p-table #tabla class="level1"
+            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
+            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+            [columns]="columns" [globalFilterFields]="['OrdenCompra']" responsiveLayout="scroll | stack"
+            rowExpandMode="single">
+            <!-- TABLE 1 HEADERS -->
+            <ng-template pTemplate="header" let-columns class="lista-header">
+                <tr>
+                    <th></th>
+                    <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                    </ng-container>
+                </tr>
+            </ng-template>
+            <!-- TABLE 1 HEADERS END -->
+            <!-- TABLE 1 BODY -->
+            <ng-template pTemplate="body" let-rowData let-columns="columns" let-expanded="expanded" let-item="rowIndex">
+                <tr [pSelectableRow]="rowData">
+                    <td>
+                        <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
+                            (click)="toggleRow(rowData)">
+                            <i [ngClass]="expanded
+                                      ? 'pi pi-chevron-down'
+                                      : 'pi pi-chevron-right'"></i>
+                        </a>
+                    </td>
+                    <td>{{rowData.FechaCreacion}}</td>
+
+                    <td>{{rowData.EntradaServicio}}</td>
+                    <td *ngIf="rowData.Estado === 'Aprobada'">
+                        {{ rowData.FechaAprobacion }}
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">
+                        {{ rowData.FechaRechazo }}
+                    </td>
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación'">{{rowData.entradaServicioDetalle[0].FechaPrestacion | defaultData}}</td><!-- aca va la fecha de rpestacion-->
+                    <td>{{rowData.Descripcion | defaultData }}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{rowData.OrdenCompra || ""}}</td>
+                    <td>
+                        <div class="usuario-area">
+                            <span>{{ isMoaIntern(rowData.Ingresante) }}</span>
+                        </div>
+                    </td>
+                    <td class="aprobador">{{ rowData.Aprobador | defaultData }}</td>
+                    <td>
+                        <div class="aprobada" *ngIf="rowData.Estado === 'Aprobada'"><span>Aprobada</span> </div>
+                        <div class="pendiente-aprobacion" *ngIf="rowData.Estado === 'Pendiente Aprobación'">
+                            <span>Pendiente de aprobación</span>
+                        </div>
+                        <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
+                        <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
+                    </td>
+                    <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
+                    <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
+                    <td>
+                        <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                        <div *ngIf="loadingRows[item]" class="loader"></div>
+                    </td>
+                </tr>
+            </ng-template>
+            <!-- TABLE 1 BODY END -->
+
+            <ng-template pTemplate="footer" let-columns>
+                <tr *ngIf="recalculando || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                    <td colspan="12">
+                        <recalculando-spinner [description]="'Cargando las entradas de servicio, espere por favor...'"></recalculando-spinner>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+                <tr *ngIf="(!recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (!recalculando && estadoCertificacion.code === 'Rechazado') || (!recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                    <td class="emptyData" colspan="12">
+                        No hay entradas de servicios para mostrar
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+                <tr>
+                    <td colspan="18">
+                        <!-- TABLE 2 -->
+                        <p-table class="level2" [value]="rowData.entradaServicioDetalle"
+                            responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
+                            <!-- TABLE 2 HEADERS -->
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <ng-container *ngFor="let col of defaultTablesConfig[1].columns">
+                                        <th rowspan="2" [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                                        <th rowspan="2" [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
+                                    </ng-container>
+                                    <th colspan="3" class="anterior">Anterior</th>
+                                    <th colspan="3" class="acertificar">A Certificar</th>
+                                    <th colspan="3" class="acumulado">Acumulado</th>
+                                </tr>
+                                <tr>
+                                    <th class="anterior">Cant.</th>
+                                    <th class="anterior">%</th>
+                                    <th class="anterior">Monto</th>
+
+                                    <th class="acertificar">Cant.</th>
+                                    <th class="acertificar">%</th>
+                                    <th class="acertificar">Monto</th>
+
+                                    <th class="acumulado">Cant.</th>
+                                    <th class="acumulado">%</th>
+                                    <th class="acumulado">Monto</th>
+                                </tr>
+                            </ng-template>
+            <!-- TABLE 2 HEADERS END -->
+            <!-- TABLE 2 BODY -->
+            <ng-template pTemplate="body" let-rowDetalle let-expanded="expanded">
+                <tr>
+                    <td>{{rowDetalle.NroPosicion }}</td>
+                    <td>{{rowDetalle.Descripcion}}</td>
+                    <td>{{rowDetalle.Cantidad}}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowDetalle.Monto | number:'1.0-2' }}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowDetalle.Monto * rowDetalle.CantidadCertificar | number:'1.2-2'}}</td>
+                    <td>{{rowDetalle.UM}}</td>
+                    <td>{{rowDetalle.NroRemito | defaultData}}</td><!-- aca va la referencia-->
+                    <td>{{rowDetalle.TextoBreveServicio | defaultData}}</td><!-- aca va el texto breve-->
+
+                    <!-- Anteriores -->
+                    <!-- * 1  is just to turn it into a number -->
+                    <td class="anterior">{{ rowDetalle.CantidadAnterior | number:'1.0-2' }}</td>
+                    <td class="anterior">{{ getPorcentajeAnterior(rowDetalle.CantidadAnterior, rowDetalle.Cantidad) }}</td>
+                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowData.Moneda) }}</td>
+
+                    <!-- A certificar -->
+                    <td>{{ rowDetalle.CantidadCertificar | number:'1.0-2'}}</td>
+                    <td>{{ rowDetalle.PorcentajeCertificar | number:'1.0-2'}}%</td>
+                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}} {{ rowDetalle.CantidadCertificar * rowDetalle.Monto | number:'1.2-2' }}</td>
+
+                    <!-- Acumulado -->
+                    <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) | number:'1.0-2' }}</td>
+                    <td class="acumulado">{{ getPorcentajeAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Cantidad, rowDetalle.PorcentajeCertificar) }}</td>
+                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowDetalle.CantidadCertificar, rowData.Moneda) }}</td>
+                </tr>
+            </ng-template>
+            <!-- TABLE 2 BODY END -->
+        </p-table>
+        <!-- TABLE 2 END -->
+        </td>
+        </tr>
+        </ng-template>
+        </p-table>
+        <!-- TABLE 1 END -->
+    </div>
+    <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
+</div>

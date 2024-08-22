@@ -22,7 +22,7 @@
 /* Tamaños de columnas por posicion */
 .tabla-subposiciones th:nth-of-type(1), .tabla-grid-subposiciones td:nth-of-type(1) {
     text-align: center;
-    width: 35px;
+    width: 50px;
     height: 40px;
 }
 

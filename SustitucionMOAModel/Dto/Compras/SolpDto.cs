@@ -32,6 +32,7 @@ namespace SustitucionMOAModel.Dto
         public string EspecificacionesTecnicas { get; set; }
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
+        public string ObservacionesCotizacionCondEsp { get; set; }
         public List<DayOfWeek> JornadaLaboral { get; set; }
         public DateTimeOffset? JornadaLaboralDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHasta { get; set; }
@@ -112,7 +113,14 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<int> PosicionesId { get; set; }
         public bool TieneMensajesChatInterno { get; set; }
         public bool TieneMensajesChatExterno { get; set; }
-
+        public int NroPeticionDeOferta { get; set; }
+        public bool Agrupada { get; set; }
+        public string ProveedorAsignadoCuit { get; set; }
+        public string ProveedorAsignadoRazonSocial { get; set; }
+        public int? ProveedorAdicional_Id { get; set; }
+        public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
+        public bool RequisitoCiberseguridad { get; set; }
+        public string CodigoProveedorSap { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -137,6 +145,7 @@ namespace SustitucionMOAModel.Dto
             TieneFabricacionTallerExterno = entity.Pliego.TieneFabricacionTallerExterno.HasValue && entity.Pliego.TieneFabricacionTallerExterno.Value;
             TieneDescripcionTecnica = entity.Pliego.TieneDescripcionTecnica.HasValue && entity.Pliego.TieneDescripcionTecnica.Value;
             TieneDocumentacionTecnica = entity.Pliego.TieneDocumentacionTecnica.HasValue && entity.Pliego.TieneDocumentacionTecnica.Value;
+            RequisitoCiberseguridad = entity.Pliego.RequisitoCiberseguridad.HasValue && entity.Pliego.RequisitoCiberseguridad.Value;
             FechaHoraLimiteConsulta = entity.Pliego.FechaHoraLimiteConsulta;
             ObservacionesGeneracion = entity.Pliego.ObservacionesGeneracion;
             JornadaLaboral = new List<DayOfWeek>();
@@ -270,6 +279,9 @@ namespace SustitucionMOAModel.Dto
         public List<TablaSapDto> UnidadesDeMedida { get; set; }
         public string NroSolp { get; set; }
         public string TipoPosicionCodigo { get; set; }
+        public string CentroCodigoSap { get; set; }
+        public string GrupoComprasCodigoSap { get; set; }
+        public string MaterialDescripcion { get; set; }
 
         public SolpPosicionDto() { }
 
@@ -380,6 +392,8 @@ namespace SustitucionMOAModel.Dto
         public TablaSapDto UnidadMedidaCotizacion { get; set; }
         public int? CodigoSolp { get; set; }
         public bool Eliminado { get; set; }
+        public decimal? ValorNeto { get; set; }
+
 
         public SolpSubposicionDto() { }
 
@@ -429,7 +443,7 @@ namespace SustitucionMOAModel.Dto
 
     public class RespuestaCrearOrdenDeCompra
     {
-        public List<string> Errores { get; set; }
+        public List<string> Errores { get; set; } = new List<string>();
         public string Mensaje { get; set; }
         public int IdEntidad { get; set; }
         public string NumeroPedido { get; set; }

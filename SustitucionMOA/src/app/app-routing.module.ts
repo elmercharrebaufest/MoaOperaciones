@@ -19,12 +19,14 @@ import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
+import { GestionCM05Component } from "./gestionCM05/gestionCM05.component";
 import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
+import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
 
 
 const appRoutes: Routes = [
@@ -41,6 +43,8 @@ const appRoutes: Routes = [
     // },
     { path: "ticket-pesada", component: TicketPesadaComponent },
     { path: "verLegajoOrdenDeCompra/:id/:token", component: LegajoExternoComponent },
+    { path: 'aprobacion-externa/approve/:es', component: AprobacionExternaComponent },
+    { path: 'aprobacion-externa/reject/:es', component: AprobacionExternaComponent },
 
     {
         path: "",

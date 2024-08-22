@@ -1,4 +1,5 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Component({
@@ -8,7 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 
 export class SpinnerComponent {
 
-    visible = new BehaviorSubject<boolean>(false);
+    @Input()visible = new BehaviorSubject<boolean>(false);
 
     showIt() {
         this.visible.next(true);

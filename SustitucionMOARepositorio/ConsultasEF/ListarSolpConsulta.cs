@@ -35,8 +35,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<int> ValorTipoImputacion;
         private readonly bool? ListarPendiente;
         private readonly bool ContratoMarco;
+        private readonly string[] NombrePedido;
 
-        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, string[] nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
             Paginacion = paginacion;
             Solps = solps;
@@ -56,6 +57,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
             TipoImputacion = tipoImputacion;
             ValorTipoImputacion = valorTipoImputacion;
             ListarPendiente = listarPendiente;
+            NombrePedido = nombrePedido;
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
@@ -79,6 +81,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                 (!GrupoDeCompras.Any() || x.Posiciones.Any(gc => GrupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
                                 (Sap && x.TipoSolpSap == 3 || Mantenimiento && x.TipoSolpSap == 2 || ReposicionAutomatica && x.TipoSolpSap == 4 ||
                                 (Web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (!Sap && !Mantenimiento && !Web && !ReposicionAutomatica)) &&
+                                (!NombrePedido.Any() || NombrePedido.All(p => x.Pliego.NombreObra.ToUpper().Contains(p.ToUpper()))) &&
                                 (FechaDesde == null || x.FechaCreacion >= FechaDesde.Value) && (FechaHasta == null || x.FechaCreacion <= FechaHasta.Value) &&
                                 (!ContratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
                                 (!ClaseDocumento.Any() || x.EstadoSolpSap_Id != null && ClaseDocumento.Contains((int)x.ClaseDocumento_Id)) &&

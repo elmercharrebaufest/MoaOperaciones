@@ -31,6 +31,7 @@ namespace SustitucionMOAModel.Entities
         public string ObservacionesGeneracion { get; set; }
         public int? DiasEjecucion { get; set; }
         public string ObservacionesCotizacion { get; set; }
+        public string ObservacionesCotizacionCondEsp { get; set; }
         public string JornadaLaboralDias { get; set; }
         public DateTimeOffset? JornadaLaboralHorasDesde { get; set; }
         public DateTimeOffset? JornadaLaboralHorasHasta { get; set; }
@@ -41,5 +42,7 @@ namespace SustitucionMOAModel.Entities
 
         [InverseProperty("Pliegos")]
         public virtual ICollection<Archivo> Archivos { get; set; }
+        public bool? RequisitoCiberseguridad { get; set; }
+
     }
 }

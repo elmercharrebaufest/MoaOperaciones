@@ -1,4 +1,8 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+using SustitucionMOAModel.Models.WSMapMOA.Reporte;
+using SustitucionMOAUtils.Logger;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -7,6 +11,8 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Newtonsoft.Json;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 
@@ -50,7 +56,7 @@ namespace SustitucionMOAUtils.Email
             }
 
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
         }
 
         public static void sendFleteEmail(string nroProveedor, string nroFactura, string nroProforma, string importe, byte[] file, string fileName)
@@ -78,7 +84,7 @@ namespace SustitucionMOAUtils.Email
             }
 
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
 
         }
 
@@ -123,7 +129,7 @@ namespace SustitucionMOAUtils.Email
                 mail.To.Add(reporte.Destinatario);
             }
             mail.Subject = GenerarAsunto(mail.Subject);
-            client.Send(mail);
+            SendMail(mail, client);
 
         }
 
@@ -134,7 +140,7 @@ namespace SustitucionMOAUtils.Email
                 Port = EmailConfig.getEmailPort(),
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                // Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar")
+                //Credentials = new System.Net.NetworkCredential("moaoperaciones@molinosagro.com.ar","", ConfigurationManager.AppSettings["HostEmail"]),
                 Host = EmailConfig.getEmailHost()
             };
             return client;
@@ -260,9 +266,9 @@ namespace SustitucionMOAUtils.Email
                 //        oMensaje.Attachments.Add(data);
                 //    }
                 //}
-                SmtpClient oCliente = GetSmtpClient();
+                SmtpClient client = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                oCliente.Send(oMensaje);
+                SendMail(oMensaje, client);
             }
             catch (Exception ex)
             {
@@ -309,24 +315,32 @@ namespace SustitucionMOAUtils.Email
 
                 oMensaje.BodyEncoding = Encoding.UTF8;
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
+
                 if (emailSenderData.Archivo != null)
                 {
-                    using (var stream = new MemoryStream(emailSenderData.Archivo))
-                    {
-                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
-                        oMensaje.Attachments.Add(attachment);
-                    }
+                    var stream = new MemoryStream(emailSenderData.Archivo);
+                    stream.Position = 0;
+                    Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
+                    oMensaje.Attachments.Add(attachment);
+                    
                 }
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                oCliente.Send(oMensaje);
+                SendMail(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+
                 throw ex;
             }
         }
-
 
         public static async Task EnviarMailAsync(List<string> enviarA,
             string asunto,
@@ -411,7 +425,7 @@ namespace SustitucionMOAUtils.Email
                 //}
                 SmtpClient oCliente = GetSmtpClient();
                 oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
-                await oCliente.SendMailAsync(oMensaje);
+                await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
@@ -489,16 +503,55 @@ namespace SustitucionMOAUtils.Email
                 }
 
                 SmtpClient oCliente = GetSmtpClient();
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
+
+                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);         
 
                 // Enviar el correo de forma asíncrona
-                await oCliente.SendMailAsync(oMensaje);
+                await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
             {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+
                 throw;
             }
         }
+
+        private static async Task SendMailAsync(MailMessage oMensaje, SmtpClient oCliente)
+        {
+            LogMail(oMensaje);
+            await oCliente.SendMailAsync(oMensaje);
+        }
+
+        private static void SendMail(MailMessage mail, SmtpClient client)
+        {
+            LogMail(mail);
+            client.Send(mail);
+        }
+        private static void LogMail(MailMessage mail) {
+            try
+            {
+                Log.Info($"SendMail Subject: {mail.Subject}");
+                Log.Info($"SendMail To: {mail.To}");
+                Log.Info($"SendMail Cc: {mail.CC}");
+                Log.Info($"SendMail Bcc: {mail.Bcc}");
+                Log.Info($"SendMail BodyIsHtml: {mail.IsBodyHtml}");
+                Log.Info($"SendMail Body: {mail.Body}");
+                Log.Info($"SendMail HasAttachments: {mail.Attachments?.Count > 0}");
+                Log.Info($"SendMail Attachments: {string.Join(",", mail.Attachments?.Select(a => a.Name).ToList())}");
+
+            }
+            catch (Exception)
+            {
+            }
+        }
+
     }
 
     public class EmailSenderData

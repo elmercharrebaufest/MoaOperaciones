@@ -18,8 +18,6 @@ import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../chat-interno/chat-interno.interface';
-import { forEach } from '@angular/router/src/utils/collection';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 declare var $: any;
 
@@ -68,7 +66,7 @@ export class DashboardComponent extends ListBaseComponent {
     ordenDeCompra: any;
     displayOrdenDeCompra: boolean;
     displayChatInterno: boolean = false;
-
+    nombrePedido: string = "";
     filtrosSolicitante: {
         nroSolp: string;
         sap: boolean;
@@ -87,8 +85,10 @@ export class DashboardComponent extends ListBaseComponent {
         fechaDesde: string;
         fechaHasta: string;
         pageIndex: number;
+        nombrePedido: string;
     } = {
             nroSolp: "",
+            nombrePedido: "",
             sap: false,
             mantenimiento: false,
             web: false,
@@ -143,7 +143,8 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterSap = false;
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
-    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS');
+    verTodas: boolean = this.isAuthorized('VER TODAS SOLPS') || this.isAuthorized('VER COMO AUDITOR');
+
     public chat: ChatsDto;
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
@@ -153,10 +154,6 @@ export class DashboardComponent extends ListBaseComponent {
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
         { nombre: "Sin pliego", path: "/compras/solp/0", tipoSolp: "SIN_PLIEGO" },
-        // { nombre: "Con documentos requerimientos", path: ""},
-        // { nombre: "Sin documento", path: ""},
-        // { nombre: "Emergencia", path: ""},
-        // { nombre: "Adicional", path: ""}
     ]
 
     subtitulos = [
@@ -260,11 +257,16 @@ export class DashboardComponent extends ListBaseComponent {
         return data.PosicionesEstado && data.NroSolp != null ? '#DD441E' : '#333333';
     }
 
+    public validarAuditor(): boolean {
+        return this.isAuthorized('VER COMO AUDITOR');
+
+    }
+
     getListarSolp() {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
-            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
+            this.subscription = this.service.getListarSolp(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
                 multiSelectValues, this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(",")
             ).subscribe(
                 (result: any) => {
@@ -724,6 +726,7 @@ export class DashboardComponent extends ListBaseComponent {
         this.filtrosSolicitante.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosSolicitante.fechaDesde = this.fechaInicio;
         this.filtrosSolicitante.fechaHasta = this.fechaFin;
+        this.filtrosSolicitante.nombrePedido = this.nombrePedido;
         this.paginator.changePage(0);
         this.cerrarExpansiones();
         this.getListarSolp();
@@ -928,6 +931,7 @@ export class DashboardComponent extends ListBaseComponent {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosSolicitante'));
         if (filtrosGuardados) {
             this.nroSolp = filtrosGuardados.nroSolp;
+            this.nombrePedido = filtrosGuardados.nombrePedido;
             this.sap = filtrosGuardados.sap;
             this.mantenimiento = filtrosGuardados.mantenimiento;
             this.web = filtrosGuardados.web;

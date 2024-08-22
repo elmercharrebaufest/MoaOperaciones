@@ -13,6 +13,7 @@ import { EnumTipoImputacion } from '../../../../enum-tipo-imputacion';
 import { SubPosicionViewModel } from './sub-posicion-view-model';
 import { Solp } from '../../../solp';
 import { SolpPosicion } from '../../../solp-posicion';
+import _ from 'lodash'
 
 @Component({
     selector: 'app-tab-subposicion',
@@ -476,13 +477,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     autocompleteSap(event, tablaAFiltrar, soloDescripcion = false) {
         try {
-            let filter = tablaAFiltrar || this.tablaAFiltrar;
-            if (filter == 'OrdenSolpSap' && event.query.toLowerCase().length < 4) {
-                this.autocomplete = [];
-                return;
-            }
-
-            this.subscription = this.service.autocompleteSap(filter, event.query.toLowerCase()).subscribe(
+            this.subscription = this.service.autocompleteSap(tablaAFiltrar || this.tablaAFiltrar, event.query.toLowerCase()).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -613,6 +608,19 @@ export class TabSubposicionComponent extends ListBaseComponent {
             this.eliminarSubPosicionIndividual(rowIndex);
         }
     }
+
+   duplicarSubposicion(rowIndex: any) {
+    rowIndex = Number(rowIndex); 
+    if (!isNaN(rowIndex)) { 
+        let subPosicion = this.listadoSubposiciones[rowIndex];
+        let nuevaSubPosicion = _.cloneDeep(subPosicion);
+        let maxSubPosicion = this.listadoSubposiciones.reduce((max, sp) => Math.max(max, Number(sp.subPosicion)), 0);        
+        nuevaSubPosicion.subPosicion = maxSubPosicion + 1;
+
+        this.listadoSubposiciones.push(nuevaSubPosicion);
+        this.calcularTotalSubPosicion();
+    } 
+}
 
     public get monedaPosicion(): string {
 

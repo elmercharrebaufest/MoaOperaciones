@@ -3,6 +3,7 @@ using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.Logger;
 using SustitucionMOAWS.ObtenerSolpWebServiceMOA;
+using SustitucionMOAWS.ScatoComandosWebService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,6 +45,8 @@ namespace SustitucionMOAWS.WSConsumers
                 string IM_SERVICES = "X";
                 string IM_ACCOUNT_ASSIGNMENT = "X";
                 string IM_DELIVERY_ADDRESS = "X";
+                string IM_ITEM_TEXT = "X";
+                string IM_HEADER_TEXT = "X";
 
                 ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
 
@@ -54,9 +57,9 @@ namespace SustitucionMOAWS.WSConsumers
                             "",
                             "",
                             IM_DELIVERY_ADDRESS,
+                            IM_HEADER_TEXT,
                             "",
-                            "",
-                            "",
+                            IM_ITEM_TEXT,
                             "",
                             IM_PREQ_DATE_F,
                             IM_PREQ_DATE_I,
@@ -64,16 +67,16 @@ namespace SustitucionMOAWS.WSConsumers
                             "",
                             IM_SERVICES,
                             IM_USUARIOS,
+                            out string EX_EXITO,
                             out ZMPES5740[] EX_PRACCOUNT,
-                            out ZMPES5750[] EX_PRADDRDELIVERY,
-                            out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                            out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                            out ZMPES7110[] EX_PRADDRDELIVERY,
+                            out ZMPES7120[] EX_PRCOMPONENTS,
+                            out ZMPES7140[] EX_PRHEADERTEXT,
                             out ZMPES5670[] EX_PRITEM,
-                            out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
+                            out ZMPES7130[] EX_PRIMETEXT,
                             out BAPIRETURN[] EX_RETURN,
                             out ZMPES5770[] EX_SERVICEACCOUNT,
                             out ZMPES5730[] EX_SERVICELINES);
-
 
                 /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
                     •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
@@ -83,8 +86,8 @@ namespace SustitucionMOAWS.WSConsumers
                     •	Mensajes del WS, procesados por SAP (EX_RETURN)
                     •	Variable de status de ws (EX_EXITO)
                 */
-
-                return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
+                var archivos = result.ToList() ?? new List<ZMPES7100>();
+                return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES, archivos, EX_PRHEADERTEXT);
 
             }
             catch (Exception e)
@@ -155,7 +158,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             string IM_HEADER_TEXT = "";
             string IM_ITEM_TEXT = "";
-
+            string EX_EXITO = "";
             foreach (var item in req.CreadoPorUsuarios.Select((value, i) => new { i, value }))
             {
                 IM_USUARIOS[item.i] = new ZMPES5640 { ERNAM = item.value };
@@ -178,16 +181,17 @@ namespace SustitucionMOAWS.WSConsumers
                         IM_REL_IND,
                         IM_SERVICES,
                         IM_USUARIOS,
+                        out EX_EXITO,
                         out ZMPES5740[] EX_PRACCOUNT,
-                        out ZMPES5750[] EX_PRADDRDELIVERY,
-                        out BAPIMEREQCOMPONENT[] EX_PRCOMPONENTS,
-                        out BAPIMEREQHEADTEXT[] EX_PRHEADERTEXT,
+                        out ZMPES7110[] EX_PRADDRDELIVERY,
+                        out ZMPES7120[] EX_PRCOMPONENTS,
+                        out ZMPES7140[] EX_PRHEADERTEXT,
                         out ZMPES5670[] EX_PRITEM,
-                        out BAPIMEREQITEMTEXT[] EX_PRIMETEXT,
+                        out ZMPES7130[] EX_PRIMETEXT,
                         out BAPIRETURN[] EX_RETURN,
                         out ZMPES5770[] EX_SERVICEACCOUNT,
-                        out ZMPES5730[] EX_SERVICELINES);
-
+                        out ZMPES5730[] EX_SERVICELINES                        
+                        );
 
             /*  •	Datos a nivel posición de SOLPED (EX_PRITEM)
                 •	Datos de dirección de la posición de la SOLPED (EX_PRADDRDELIVERY)
@@ -197,18 +201,21 @@ namespace SustitucionMOAWS.WSConsumers
                 •	Mensajes del WS, procesados por SAP (EX_RETURN)
                 •	Variable de status de ws (EX_EXITO)
             */
+            var archivos = result.ToList() ?? new List<ZMPES7100>();
 
-            return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES);
+            return Map(EX_PRACCOUNT, EX_PRADDRDELIVERY, EX_PRCOMPONENTS, EX_PRITEM, EX_RETURN, EX_SERVICEACCOUNT, EX_SERVICELINES, archivos, EX_PRHEADERTEXT);
 
         }
 
         private ObtenerSolpSAPResponse Map(ZMPES5740[] tipoImputaciones, //EX_PRACCOUNT
-                                          ZMPES5750[] direccionesPosicion, //EX_PRADDRDELIVERY
-                                          BAPIMEREQCOMPONENT[] eX_PRCOMPONENTS, //eX_PRCOMPONENTS
+                                          ZMPES7110[] direccionesPosicion, //EX_PRADDRDELIVERY
+                                          ZMPES7120[] eX_PRCOMPONENTS, //eX_PRCOMPONENTS
                                           ZMPES5670[] posiciones, //EX_PRITEM
                                           BAPIRETURN[] mensajes, //EX_RETURN
                                           ZMPES5770[] imputacionesSuposiciones, //EX_SERVICEACCOUNT
-                                          ZMPES5730[] suposicionesServicios) //EX_SERVICELINES
+                                          ZMPES5730[] suposicionesServicios,
+                                          List<ZMPES7100> archivos,
+                                          ZMPES7140[] textosCabecera) //EX_PRHEADERTEXT
         {
             var result = new ObtenerSolpSAPResponse();
 
@@ -245,6 +252,18 @@ namespace SustitucionMOAWS.WSConsumers
                 Todos estos objetos van a venir completos segun el tipo de imputación. Por ejemplo, si la imputación es del tipo (EX_PREITEM-ACCTASSCAT) = "K", la tabla va a pasar como parámetro el campo COSTCENTER. 
                 Resto de campos solo a nivel informativo.
              */
+
+           
+           result.ObservacionesGeneracion = textosCabecera.Length > 0 ? textosCabecera.Where(x => x.TEXT_ID == "B01").FirstOrDefault().TEXT_LINE : "";
+            
+
+            result.Archivos = archivos.Select(x => new ArchivoSolpDto
+            {
+               DocId = x.DOC_ID,
+               Nombre = x.OBJ_DESCR,
+               Tipo = x.OBJ_TYPE
+            }).ToList();
+
             if (result.TipoImputaciones == null)
             {
                 result.TipoImputaciones = new List<TipoImputacionSAP>();
@@ -270,6 +289,7 @@ namespace SustitucionMOAWS.WSConsumers
                     IdOrden = tipoImputacion.ORDERID,
                     COArea = tipoImputacion.CO_AREA,
                     CentroDeBeneficio = tipoImputacion.PROFIT_CTR,
+                    NumeroOrdenDeCompra = tipoImputacion.UNLOAD_PT
                 });
             }
 
@@ -394,14 +414,13 @@ namespace SustitucionMOAWS.WSConsumers
                     PosicionPedido = posicion.PO_ITEM,
                     FechaPedido = posicion.PO_DATE,
                     EsPosicionConcluida = posicion.CLOSED,
-                    //VER
                     Moneda = posicion.CURRENCY,
                     CantidadDiasEntrega = posicion.PLND_DELRY,
                     EstaBloqueada = posicion.REQ_BLOCKED,
                     EstadoSolpSap = posicion.PROCSTAT,
                     EstadoPosicion = posicion.DELETE_IND,
                     FechaEstimadaLiberacionDate = SAPFormatter.GetDateTime(posicion.REL_DATE),
-                    Ordered = posicion.ORDERED,              
+                    Ordered = posicion.ORDERED,
                 });
             }
 
@@ -586,6 +605,7 @@ namespace SustitucionMOAWS.WSConsumers
         public DateTime FechaEstimadaLiberacionDate { get; set; }
         public decimal Ordered { get; internal set; }
         public string ProveedorFijoRazonSocial { get; internal set; }
+        public string CodigoDeProveedor { get; internal set; }
     }
 
     public class DireccionSolpSAP
@@ -619,6 +639,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string CantidadesImputadasString { get; internal set; }
         public string PorcentajeDistribucionString { get; internal set; }
         public string PrecioNetoImputadoString { get; internal set; }
+        public string NumeroOrdenDeCompra { get; internal set; }
     }
 
     public class ObtenerSolpSAPResponse
@@ -630,6 +651,8 @@ namespace SustitucionMOAWS.WSConsumers
         public IList<PosicionSolpSAP> Posiciones { get; set; }
         public IList<ImputacionSuposicionSAP> ImputacionesSuposiciones { get; set; }
         public IList<SuposicionServicioSAP> ServiciosSuposiciones { get; set; }
+        public List<ArchivoSolpDto> Archivos { get; internal set; }
+        public string ObservacionesGeneracion { get; internal set; }
     }
 
     public class ObtenerSolpRequest
@@ -656,5 +679,14 @@ namespace SustitucionMOAWS.WSConsumers
         public string Mensaje { get; set; }
         public string rTipo { get; set; }
     }
+
+    public class ArchivoSolpDto
+    {
+        public string DocId { get; set; }
+        public string Nombre { get; internal set; }
+        public string Tipo { get; internal set; }
+    }
+
+    
 }
 

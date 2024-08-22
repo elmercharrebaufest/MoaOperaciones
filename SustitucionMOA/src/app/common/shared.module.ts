@@ -53,7 +53,8 @@ import { FormatNumericDirective } from './directive/format.numeric.directive';
 import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
 import { CustomFilterEstados } from './pipes/customFilterEstados';
 
-import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
+import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe';
+import { CustomNumberFormatterPipe } from './pipes/customNumberFormatter.pipe';
 import { DefaultNumberParser } from './pipes/defaultNumber';
 import { HoverLeftBorderDirective } from './directive/hover-left-border.directive';
 import { MouseLeaveDirective } from './directive/on-mouse-leave.directive';
@@ -93,9 +94,9 @@ const declaredAndExported = [
     CustomNumberPipe,
     FormatNumericDirective,
     CustomTipoProveedorFilter,
-    CustomFilterEstados
-    ,
+    CustomFilterEstados,
     CustomDefaultDataPipe,
+    CustomNumberFormatterPipe,
     DefaultNumberParser,
     HoverLeftBorderDirective,
     MouseLeaveDirective,

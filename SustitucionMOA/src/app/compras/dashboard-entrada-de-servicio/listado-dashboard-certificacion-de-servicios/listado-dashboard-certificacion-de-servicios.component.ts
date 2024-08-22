@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, AfterViewInit, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
 import { ListBaseComponent } from '../../../common/base-components/list-base-component';
@@ -21,6 +21,8 @@ import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.com
 import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
+import { FileModalComponent } from '../file-modal/file-modal.component';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 
 @Component({
@@ -36,7 +38,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router,
         private confirmationService: ConfirmationService,
-        private location: Location) {
+        private location: Location,
+        private cdr: ChangeDetectorRef,
+        private formBuilder: FormBuilder
+    ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.usuario = sessionStorage.getItem("username");
         this.vendedor = sessionStorage.getItem("proveedor");
@@ -63,6 +68,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     protected mensajeComponent: MensajeComponent;
 
     @ViewChild("myModal") modal: ModalAltaEntradaDeServicioComponent;
+
+    @ViewChild('fileModal') fileModal: FileModalComponent;
+
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -91,6 +99,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     itemIdSelected: any[] = [];
     numeroLineaSelected: Set<string> = new Set();
     itemSelected: any[] = [];
+    posicionSelected: any[] = [];
     elementSelected: any[] = [];
     selectedItemId: number | null = null;
     selectedPosicionId: number | null = null;
@@ -106,7 +115,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     btnCertificarHabilitado: boolean = true;
 
     //#region Variables 
-    tablaPO: any[];
+    tablaPO: any[] = [];
     selectedItems: any[][][][] = [];
     cols: any[];
     usuario: string;
@@ -126,7 +135,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     fullscreen: boolean = false;
     displayContent: boolean = false;
     isInputActive: boolean = false;
-    currentPage: number = 0;
+    procesandoCelda: { [key: string]: any[] } = {
+        "FechaDocumento": [],
+        "DescripcionES": [],
+        "Remito": []
+    };
 
     // COLUMNS CONFIG
     userTablesConfig: any[] = [];
@@ -157,7 +170,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'pAlmacen', header: 'Almacén', field: 'Almacen', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pSolped', header: 'NRO_SOLPED', field: 'NumeroSolp', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'pContrato', header: 'Contrato', field: 'Contrato', type: 'string', sortable: false, required: false, visible: true },
-                { id: 'pSolicitante', header: 'Solicitante', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
+                { id: 'pSolicitante', header: 'Aprobador', field: 'Solicitante', type: 'string', sortable: false, required: true, visible: true }
             ],
         },
         {
@@ -170,7 +183,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'iUM', header: 'UM', field: 'UM', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iImporte', header: 'Precio Unitario', field: 'ImporteString', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iMonto', header: 'Monto Total', field: null, type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'iCantidadReal', header: 'Cant. Anterior', field: 'CantidadReal', type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'iCantidadReal', header: 'Cant. Anterior', field: 'CantidadReal', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'iPorcentaje', header: 'Porc. %', field: 'Porcentaje', type: 'custom', sortable: false, required: true, visible: true },
                 // These fields values are calculated in the view. NA: Not applicable
                 { id: 'iCantidadACertificar', header: 'Cant. Actual', field: null, type: 'custom', sortable: false, required: true, visible: true },
@@ -183,17 +196,23 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         {
             name: 'Entradas',
             columns: [
-                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esNro', header: 'NRO_ES', field: 'Id', type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'esFechaDoc', header: 'F. Documento (F. de prestación de servicios)', field: 'FechaDocumentoString', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esFechaContabilización', header: 'F. Contabilización', field: 'FechaContabilizacion', type: 'date', sortable: false, required: true, visible: true },
-                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true }
+                { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
+                { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
+
             ]
         }
     ];
+
+    formularioResumenCertificacion: FormGroup = this.formBuilder.group({
+        descriptions: this.formBuilder.array([])
+    });
 
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
@@ -211,12 +230,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.navService.setSeccionList(
             [
                 new Seccion('compras/dashboardCertificacionDeServicios', 'Compras', 'Ingresar certificación'),
-               // new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
+                new Seccion('compras/listadoEstadoCertificaciones', 'Compras', 'Estado certificaciones')
             ]
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.filtroFechaComponent.setPeriodoInitial('1');
+        this.filtroFechaComponent.setPeriodoInitial('2');
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
@@ -247,10 +266,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     seleccionarPosicion(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = posicion.Items.filter(item => this.esItemValidoParaCertificar(item));
+            const itemsFiltered = posicion.Items.filter(item => this.esItemValidoParaCertificar(item) && Number(item.PorcentajeACertificar) >= 0.001);
             itemsFiltered.forEach((item: any) => {
                 if (!this.itemSelected.includes(item)) {
                     item.isSelected = true;
+                    item.posicionDescripcion = posicion.Descripcion;
                     this.onCheckboxPositionChange(item);
                 }
             });
@@ -296,6 +316,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         const itemId = item.PosicionId;
         const numeroLinea = item.NumeroLinea;
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
+        item.posicionDescripcion = posicion.Descripcion;
 
         if (!item.isSelected) {
             this.itemIdSelected.splice(this.itemIdSelected.indexOf(itemId), 1); 
@@ -305,6 +326,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         else {
             this.itemIdSelected.push(itemId);
             if (!this.numeroLineaSelected.has(numeroLinea)) this.numeroLineaSelected.add(numeroLinea);
+            item.NroSolP = posicion.NumeroSolp;
             if (!this.itemSelected.includes(item)) this.itemSelected.push(item);
         }
 
@@ -313,6 +335,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     loadSolicitantesList(rowData: any) {
+       
         if (this.solicitantes !== undefined && this.solicitantes.length > 0) {
 
             this.solicitantes.length = 0;
@@ -348,6 +371,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
         });
     }
+
+    loading: boolean = false;
+
 
     toggleSolicitanteFilter(): void {
         this.filterSolicitante = !this.filterSolicitante;
@@ -423,9 +449,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else {
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
+                        this.cargarArrayProcesosSpinners(this.tablaPO);
                         this.length = result.data.length > 0 ? result.data[0].ItemsTotales : result.data.length;
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
-                        this.pageIndex = 0;                       
+                        this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
+
                     }
                     if (this.expandedPositionRow) {
                         this.filtrarTablas();
@@ -441,7 +469,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                         this.spinnerComponent.hideIt();
 
                     this.displayContent = true;
-                    
+
                     // Se buscan las posiciones que están al 100%
                     this.posicionesCompletas = [].concat.apply([], this.tablaPO.map(oc => this.calcularPorcentaje(oc)));
                 },
@@ -460,33 +488,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         return false; //<-- Prevent Refresh
     }
 
-    updateCurrentPage(pageIndex: number) {
-        if (this.tabla) {
-            this.currentPage = pageIndex;
-            this.tabla.first = this.currentPage * this.pageSize;
-            this.tabla.onPageChange({
-              first: this.tabla.first,
-              rows: this.pageSize,
-              page: this.currentPage,
-              pageCount: Math.ceil(this.currentPage / this.pageSize)
-            });
-          }
-      }
-    onPageChange(event: any): void {
-        this.currentPage = (event.first / event.rows);
-      }
-
     esPosicionCompleta(posicion): boolean {
         let isComplete = this.posicionesCompletas.some(p => p.Id === posicion.Id);
         return isComplete;
-      }
+    }
 
-    isPendingRelease(oc) : boolean{
+    isPendingRelease(oc): boolean {
         return oc.SubjToR != "";
     }
 
-    isNotReceibeMoreMerchandise(posicion) : boolean {
-        return posicion.NoMoreGR === "X";
+    isNotReceibeMoreMerchandise(posicion): boolean {
+        return posicion.NoMoreGR === "X" || posicion.Bloqueada;
     }
 
     getFecha() {
@@ -498,17 +510,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.fechaInicio = fechaActual.toISOString().slice(0, 10);
     }
 
-    deleteES(Id: any, AccountingDate: any) {
+    deleteES(Id: any, TempId: any, AccountingDate: any) {
         this.confirmationService.confirm({
             message: 'Esta a punto de eliminar la entrada de servicio. <b>¿Desea confirmar?</b>',
-            accept: () => { this.deleteById(Id, AccountingDate); },
+            accept: () => { this.deleteById(Id, TempId, AccountingDate); },
             reject: () => { }
         });
     }
 
-    deleteById(Id, AccountingDate) {
+    deleteById(Id, TempId, AccountingDate) {
         this.mensajeComponent.setMsgsEmpty();
-        this.service.deleteById(Id, AccountingDate).subscribe((result: any) => {
+        this.service.deleteById(Id, TempId, AccountingDate).subscribe((result: any) => {
             if (result.logout == true) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
@@ -522,7 +534,13 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 this.itemSelected = [];
                 this.itemIdSelected = [];
 
-                this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                //this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);asda
+                if (TempId !== null && TempId !== '') {
+                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + TempId);
+                }
+                else {
+                    this.floatMsgService.setSuccessMsg("Se ha eliminado la entrada de servicio " + Id);
+                }
                 this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
                 setTimeout(() => {
                     let closeBtn = document.getElementsByClassName("alert-success")[0].getElementsByClassName("close")[0] as HTMLElement;
@@ -534,7 +552,31 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     openModal() {
         this.searchElement();
+        this.createResumenForm();
         this.showModal = this.itemIdSelected.length > 0;
+    }
+/**
+ * construye el formulario de resumen de certificación
+ */
+    createResumenForm(): void {
+        this.resetFormularioResumenCertificacion();
+        const descriptionsArray = this.descriptions;
+        this.itemSelected.forEach(item => {
+            const descriptionForm = this.formBuilder.group({
+            description: [item.posicionDescripcion, Validators.required]
+            });
+            descriptionsArray.push(descriptionForm);
+        });
+    }
+
+    get descriptions() {
+        return this.formularioResumenCertificacion.controls["descriptions"] as FormArray;
+    }
+
+    resetFormularioResumenCertificacion(): void {
+        this.formularioResumenCertificacion = this.formBuilder.group({
+            descriptions: this.formBuilder.array([])
+        });
     }
 
     private fechaInicioConfigurado: any;
@@ -562,6 +604,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
+    /**
+     * busca las posiciones que fueron seleccionadas
+     * y las guarda en posicionesSelected y elementosSelected 
+     */
     searchElement() {
         for (const ordenCompra of this.tablaPO) {
 
@@ -570,6 +616,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
                 if (itemEncontrado) {
                     this.elementSelected = ordenCompra;
+                    this.posicionSelected = posicion;
                     break;
                 }
             }
@@ -650,6 +697,38 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
 
+    habilitarTodosCampoDeValorACertificar(): void {
+        if (this.expandedPositionRow) { // Verifica si hay una posición expandida
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow)); 
+          if (posicionExpandida) { 
+            posicionExpandida.Items.forEach(item => {
+              const rowIndex = this.tablaItems.value.indexOf(item);
+              if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {
+                this.habilitarCampoDeValorACertificar(rowIndex);
+              }
+            });
+          }
+        }
+      }
+
+      hayElementosParaCertificar(): boolean {
+        if (this.expandedPositionRow) {
+          const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow));
+          if (posicionExpandida) {
+            return posicionExpandida.Items.some(item => item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0);
+          }
+        } else {
+          return this.tablaPO.some(ordenCompra =>
+            ordenCompra.Posiciones.some(posicion =>
+              posicion.Items.some(item => 
+                (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0) && 
+                (!this.ocFilterApplied || this.tienePorcentajeACertificar(item))
+              )
+            )
+          );
+        }
+        return false; 
+      }
 
 
     /**
@@ -673,39 +752,67 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         });
     }
 
-    calcularMontoACertificar(item: any) {
-        const montoActualizado = (item.CantidadACertificar * item.Importe);
-        item.MontoACertificar = montoActualizado;
+  eliminarFormatoNumeroLocal(value: any): number {
+    if (!value) value = 0;
+    if (typeof value === 'string') {
+      value = parseFloat(value.replace(',', ''));
     }
+    return value;
+  }
+
+  private calcularMontoACertificar(cantidadACertificar: number, importe: number, cantidad: number): number {
+    const montoActualizado = (cantidadACertificar * importe) / cantidad;
+    return montoActualizado;
+  }
+
+  private calcularPorcentajeACertificar(cantidadACertificar: number, cantidad: number): number {
+    const porcentajeACertificar = (cantidadACertificar * 100) / cantidad;
+    return porcentajeACertificar;
+  }
 
     actualizarValoresACertificarPorCantidad(item: any): void {
-        const cantidadACertificar = item.CantidadACertificar;
-        const cantidadDisponible = item.Cantidad - item.CantidadReal;
+      let cantidadACertificar = item.CantidadACertificar;
+      const cantidadDisponible = item.Cantidad - item.CantidadReal;
 
-        if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
-            item.CantidadACertificar = cantidadDisponible;
-        }
-
-        const percentajeACertificar = (item.CantidadACertificar * 100) / item.Cantidad;
-        item.PorcentajeACertificar = Number(percentajeACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+      if (cantidadACertificar > cantidadDisponible || (cantidadACertificar < 0 && cantidadACertificar != '')) {
+        item.CantidadACertificar = cantidadDisponible;
+        cantidadACertificar = cantidadDisponible;
+      }
+      const porcentajeACertificar = this.calcularPorcentajeACertificar(cantidadACertificar, item.Cantidad);
+      item.PorcentajeACertificar = Number(porcentajeACertificar.toFixed(3));
+      item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
     }
 
-    actualizarValoresACertificarPorPorcentaje(item: any): void {
-        const porcentajeDisponible = (100 - item.Porcentaje);
-        const porcentajeACertificar = item.PorcentajeACertificar;
+    Number = Number;
+    timeout: any = null;
+    actualizarValoresACertificarPorPorcentaje(item: any, event): void {
+        clearTimeout(this.timeout);
+        this.timeout = setTimeout(() => {
+            if (event.keyCode != 13) {
+                const porcentajeDisponible = (100 - item.Porcentaje);
+                const cantidadDisponible = item.Cantidad - item.CantidadReal;
+                const porcentajeACertificar = item.PorcentajeACertificar;
 
-        if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
-            item.PorcentajeACertificar = porcentajeDisponible;
-        }
+                if (porcentajeACertificar > porcentajeDisponible || (porcentajeACertificar < 0 && porcentajeACertificar != '')) {
+                    item.PorcentajeACertificar = porcentajeDisponible;
+                }
 
-        const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
-        item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
-        this.calcularMontoACertificar(item);
+                const cantidadACertificar = (item.PorcentajeACertificar * item.Cantidad) / 100;
+                item.CantidadACertificar = Number(cantidadACertificar.toFixed(3));
+                item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
+
+                if (porcentajeACertificar != '' && porcentajeACertificar > 0 &&
+                    (item.CantidadACertificar.toFixed(3) === cantidadDisponible.toFixed(3) || Number(item.MontoACertificar.toFixed(2)) < 0.01)) {
+                    item.PorcentajeACertificar = porcentajeDisponible;
+                    item.CantidadACertificar = cantidadDisponible;
+                    item.MontoACertificar = this.calcularMontoACertificar(cantidadACertificar, item.Importe, item.Cantidad);
+                }
+            }
+        }, 500);
     }
 
     validarMantenerItemSeleccionado(item: any) {
-        if (!this.esItemValidoParaCertificar(item)) {
+        if (!this.esItemValidoParaCertificar(item) || Number(item.PorcentajeACertificar) < 0.001) {
             this.clearCheckbox(item);
         }
         const posicion = this.obtenerPosicionPorNumero(item.NroOrdenCompra, Number(item.NroPosicion));
@@ -743,7 +850,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     selectAllItems(event: any, posicion: any): void {
         if (event.target.checked) {
-            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item));
+            const itemsFiltered = posicion.Items.filter((item: any) => this.esItemValidoParaCertificar(item) && Number(item.PorcentajeACertificar) >= 0.001);
             if (itemsFiltered.length > 0) {
                 itemsFiltered.forEach((item: any) => {
                     if (!this.itemSelected.includes(item)) {
@@ -809,7 +916,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let orderPendienteDeLiberacion = this.ordenEsPendienteDeLiberacion(posicion.NroOrdenCompra);
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(posicion.NroOrdenCompra, Number(posicion.NumeroPosicion));
         let posicionTieneItemsACertificar = this.tieneItemsACertificar(posicion);
-        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar;
+        const mostrarCheckboxDeSeleccionarTodosItems = !orderPendienteDeLiberacion && !posicionConEntregaFinal && posicionTieneItemsACertificar && !posicion.Bloqueada;
         return mostrarCheckboxDeSeleccionarTodosItems;
     }
 
@@ -823,7 +930,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         let posicionConEntregaFinal = this.posicionEsConEntregaFinal(item.NroOrdenCompra, Number(item.NroPosicion));
         let itemTienePorcentajeACertificar = this.tienePorcentajeACertificar(item);
         let itemTieneMontoACertificar = this.tieneMontoVálidoACertificar(item);
-        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal;
+        let deshabilitarCheckboxDeItem = ordenPendienteDeLiberacion || !itemTienePorcentajeACertificar || !itemTieneMontoACertificar || posicionConEntregaFinal || Number(item.PorcentajeACertificar) < 0.001;
         return deshabilitarCheckboxDeItem;
     }
 
@@ -859,7 +966,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
             this.tabla.first = 0;
             setTimeout(() => this.filtrarTablaPosiciones(), 60);
-            this.updateCurrentPage(this.currentPage);
         }, 20); // Esta espera es necesaria para que parezca el elemento en el DOM
     }
 
@@ -930,7 +1036,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     tieneItemsACertificarTodosValidos(posicion: any): boolean {
-        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item));
+        return posicion.Items.filter(item => this.tienePorcentajeACertificar(item)).every(item => this.esItemValidoParaCertificar(item)) && !posicion.Bloqueada;
     }
 
     tieneTodosItemsValidosSeleccionados(posicion: any): boolean {
@@ -960,10 +1066,10 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     /**
      * Obtiene configuración de tablas del usuario
-     * del sessionStorage.
+     * del localStorage.
      */
     obtenerConfiguracionDeTablasDelUsuario() {
-        let colConfig = sessionStorage.getItem('columnasCertificaciones');
+        let colConfig = localStorage.getItem('columnasCertificaciones');
         this.userTablesConfig = [...this.defaultTablesConfig];
 
         if (colConfig) {
@@ -980,12 +1086,12 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     /**
-     * Guarda en el session storage la configuración
+     * Guarda en el localStorage la configuración
      * de tablas del usuario.
      */
     guardarConfiguracionDeTablasDeUsuario() {
         let visibleColumns = this.userTablesConfig.reduce((acc, t) => acc.concat(t.columns.filter(c => c.visible).map(a => a.id)), []);
-        sessionStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
+        localStorage.setItem('columnasCertificaciones', JSON.stringify(visibleColumns));
     }
 
 
@@ -1079,14 +1185,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     }
 
     calcularPorcentaje(oc): any[] {
-         const posicionesCompletas = oc.Posiciones.filter(posicion => {
+        const posicionesCompletas = oc.Posiciones.filter(posicion => {
             this.calcularValoresACertificar(posicion);
 
-        const items = posicion.Items || [];
-        const totalItems = items.length;
-        const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
-        
-        return itemsCompletados === totalItems;
+            const items = posicion.Items || [];
+            const totalItems = items.length;
+            const itemsCompletados = items.filter(item => item.Porcentaje === "100").length;
+
+            return itemsCompletados === totalItems;
 
         });
 
@@ -1106,4 +1212,238 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             document.body.style.overflow = 'auto';
         }
     }
+
+    isARP = false;
+
+    formatCurrency(columnField: string, rowData: any): string {
+        let formattedValue = rowData[columnField];
+
+        if ((rowData.MonedaDescripcion === 'ARP' || rowData.MonedaDescripcion === '$ ')
+            && (columnField === "MontoTotalString" || columnField === "PrecioUnidadString")) {
+            formattedValue = "$ " + formattedValue;
+        }
+
+        return formattedValue;
+    }
+
+
+    calculateAmount(colId: string, rowData: any): string {
+        if (colId === 'iMonto') {
+            const monto = rowData.Cantidad * rowData.Importe;
+            return this.formatAmount(monto, rowData.Moneda);
+        } else if (colId === 'iMontoACertificar') {
+            const montoACertificar = rowData.CantidadACertificar * rowData.Importe;
+            if (isNaN(montoACertificar)) return '';
+            return this.formatAmount(montoACertificar, rowData.Moneda);
+        }
+        return '';
+    }
+
+    formatAmount(monto: number, moneda: string): string {
+        if (moneda === "ARP") {
+            this.isARP = true;
+            return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+            this.isARP = false;
+            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
+    }
+
+    formatImport(columna: string, valor: any): string {
+
+        if (columna === 'iImporte' && this.isARP) {
+            valor = "$ " + valor;
+        }
+
+        return valor;
+    }
+
+    formatESImport(columna: string, rowData: any): string {
+
+        if (rowData.TemporalId !== null) {
+            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
+            // Convierte a número
+            let valorNumerico = parseFloat(numero);
+            // Formatea como número con separadores de miles y dos decimales
+    
+            if (this.isARP) {
+                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+            else{
+                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            }
+        }
+        return rowData.ImporteARPUSD;
+    }
+
+    /**
+     * Metodo para cargar un array de booleanos que corresponden a las celdas editables como usuario ingresante.
+     * @param pendienteAprobacion 
+     * @returns 
+     */
+    cargarArrayProcesosSpinners(pendienteAprobacion: any[]): void {
+        const tieneTemporalId = pendienteAprobacion.some(item =>
+            item.Posiciones.some(posicion =>
+                posicion.Items.some(item =>
+                    item.EntradasServicio.some(entrada =>
+                        entrada.TemporalId !== null
+                    )
+                )
+            )
+        );
+        if (!tieneTemporalId) {
+            return;
+        }
+        pendienteAprobacion.forEach(item => {
+            item.Posiciones.forEach(posicion => {
+                posicion.Items.forEach(item => {
+                    item.EntradasServicio.forEach(entrada => {
+                        if (entrada.TemporalId !== null) {
+                            this.procesandoCelda["FechaDocumento"][entrada.IdES] = false;
+                            this.procesandoCelda["DescripcionES"][entrada.IdES] = false;
+                            this.procesandoCelda["Remito"][entrada.IdES] = false;
+                        }
+                    });
+                });
+            });
+        });
+    }    
+
+    /**
+     * Metodo que envia la información de las ES editables como ingresante de la misma
+     * @param valor 
+     * @param columnaEditar 
+     * @param id 
+     * @param nroOc 
+     */
+    enviarInformacionIngresante(valor: any, columnaEditar: string, id: number, nroOc: string): void {
+        this.procesandoCelda[columnaEditar][id] = true;
+        const data = {
+          ID: id,
+          ColumnaEditar: columnaEditar,
+          NuevoValor: valor
+        }
+        this.service.enviarEdicionIngresante(data).subscribe( 
+        resp => {
+            this.setearNuevoValorDeCelda(valor, columnaEditar, id, nroOc);
+        }, error => {
+            console.error(error)
+        }
+        )
+    }
+
+    /**
+     * Metodo que setea el dato editado luego de ser enviado al servicio para actualizarlo.
+     * Esto actualiza el valor de la celda sin necesidad de cargar la tabla nuevamente.
+     * @param valor 
+     * @param columnaEditar 
+     * @param id 
+     * @param nroOc 
+     */
+    setearNuevoValorDeCelda(valor: any, columnaEditar: string, id: number, nroOc: string): void{
+        const ordenCompraIndex = this.tablaPO.findIndex(oc => oc.NumeroOrdenDeCompra === nroOc);
+            if (ordenCompraIndex !== -1) {
+                const ordenCompra = this.tablaPO[ordenCompraIndex];
+                const itemIndex = ordenCompra.Posiciones
+                    .flatMap(posicion => posicion.Items)
+                    .findIndex(item => item.EntradasServicio.some(es => es.IdES === id));
+
+                if (itemIndex !== -1) {
+                    const item = ordenCompra.Posiciones
+                        .flatMap(posicion => posicion.Items)[itemIndex];
+                    const entradaServicioIndex = item.EntradasServicio.findIndex(es => es.IdES === id);
+
+                    if (entradaServicioIndex !== -1) {
+                        const entradaServicio = item.EntradasServicio[entradaServicioIndex];
+
+                        switch (columnaEditar) {
+                            case 'DescripcionES':
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].TextoBreve = valor;
+                                break;
+                            case 'FechaDocumento':
+                                const fecha = valor.split('-');
+                                valor = fecha[2] + '/' + fecha[1] + '/' + fecha[0];
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].FechaDocumentoString = valor;
+                                break;
+                            case 'Remito':
+                                this.tablaPO[ordenCompraIndex].Posiciones
+                                    .flatMap(posicion => posicion.Items)[itemIndex].EntradasServicio[entradaServicioIndex].Referencia = valor;
+                                break;
+                            default:
+                                // Caso no manejado
+                                break;
+                        }
+                        this.procesandoCelda[columnaEditar][id] = false;
+                    }
+                }
+            }
+    }
+
+    totalesBloqueadasEliminadas(oc: any): void {
+        const allBlockOrDeleted = oc.Posiciones.every(
+            pos => pos.Bloqueada
+        )
+
+        return allBlockOrDeleted;
+    }
+
+    fileTypes: { [key: string]: string } = {
+        ".pdf": 'application/pdf',
+        ".csv": "text/csv",
+        ".msg": "application/vnd.ms-outlook"
+    };
+    
+    loadingRows = new Map<number, boolean>();
+
+    descargarArchivos(rowData: any, index: number) {
+
+        let id = rowData.Id === 0 || rowData.Id == undefined || rowData.Id == null ? rowData.TemporalId : rowData.Id;
+        
+        this.loadingRows[index] = true;
+        this.cdr.detectChanges();
+        
+        this.service.GetAdjuntosByES(id).subscribe(result => {
+            if (result.data.length > 0) {
+                
+                result.data.forEach((archivo) => {
+                    this.descargarArchivo(archivo.Adjuntos, archivo.NombreArchivo, archivo.Extension);
+                });
+            }
+            else{
+              this.confirmationService.confirm({
+                message: "<ul>" + "No se encontraron adjuntos a descargar" + "</ul>",
+                rejectVisible: false
+              });
+
+            }
+
+            this.loadingRows[index] = false;
+            this.cdr.detectChanges();
+        });
+
+    }
+
+      descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+        const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
+        var byteArray = new Uint8Array(archivo);
+        var blob = new Blob([byteArray], { type: typeExtension });
+
+        if (window.navigator.msSaveOrOpenBlob) {
+            // IE11
+            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+        } else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            link.href = url;
+            link.download = nombreArchivo;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
+            
+        }
+      }
+
 }

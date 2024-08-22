@@ -69,6 +69,18 @@
                     /endpoint[@name='SI_MMRFC_OBTENER_TIPO_CAMBIO']
                     /@address" />
   </parameter>
+
+  <parameter name="EmailMantenimiento Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailMantenimiento']
+                           /@value" />
+  </parameter>
+  
+  <parameter name="EmailAsuntoPrefijo Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
+                           /@value" />
+  </parameter>
   
 </parameters>
 

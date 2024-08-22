@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
+    <p>Estimado,<br> Se ha rechazado la certificaci&oacute;n nro. {0} por el siguiente motivo:</p>
+    <p style="color: red">{1}</p>
+    <div class="container-grey" style="width: 95%; margin: 50px auto; background-color: #f2f2f2; border: 2px solid #333; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+        <div class="flex-group" style="display: flex;">
+            <p>Proveedor: </p><strong style="text-align: center; margin: auto;" align="center">{2}</strong>    
+        </div>
+
+        <p>Generada por: {3}</p>
+        <br>
+        <p>Orden de Compra: {8}</p>
+        <p>Certificaci&oacute;n {4}</p>
+        <p>Fecha certificaci&oacute;n: {5}</p>
+
+        <br>
+
+        <p>Descripci&oacute;n: {6}</p>
+        <p>Importe: {7}</p>
+
+        <br>
+        <p>Detalle de servicios</p>
+        <!-- Table -->
+        <table width="100%" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Descripción</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Cantidad</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">UM</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">%</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Monto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {9}
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <br>
+
+    <div class="flex-group">
+        <p style="text-align: center; margin: auto;">Puedes visualizar esta información en MOA Operaciones, <a href="https://moaoperaciones.com.ar">ingres&aacute; ac&aacute;</a>  </p>
+    </div>
+    <br>
+
+    <div class="flex-group">
+        <p style="color: red; font-size: 1.5em; font-weight: bold; text-align: center; margin: auto;">¡Atenci&oacute;n! No responder a este email</p>
+    </div>
+    <br>
+
+    <div class="flex-group" align="center">
+        <img border="0" src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" width="200" height="100" align="center" style="margin:auto;">
+    </div>
+
+    <br>
+    <br>
+</body>
+</html>

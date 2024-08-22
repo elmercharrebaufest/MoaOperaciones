@@ -9,7 +9,6 @@ GO
 
 ALTER TABLE [dbo].[PeticionDeOfertaSolpPosicion]  WITH CHECK ADD  CONSTRAINT [FK_dbo.PeticionDeOfertaSolpPosicion_dbo.PeticionDeOferta_PeticionDeOferta_Id] FOREIGN KEY([PeticionDeOferta_Id])
 REFERENCES [dbo].[PeticionDeOferta] ([Id])
-ON DELETE CASCADE
 GO
 
 ALTER TABLE [dbo].[PeticionDeOfertaSolpPosicion] CHECK CONSTRAINT [FK_dbo.PeticionDeOfertaSolpPosicion_dbo.PeticionDeOferta_PeticionDeOferta_Id]

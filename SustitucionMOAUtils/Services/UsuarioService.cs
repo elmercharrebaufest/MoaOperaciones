@@ -17,6 +17,7 @@ using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
 using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
+
 namespace SustitucionMOAUtils.Services
 {
     public class UsuarioService : IUsuarioService
@@ -157,7 +158,8 @@ namespace SustitucionMOAUtils.Services
             {
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA","ADMIN_CURSOS","CERTIFICACION"
+                "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION", "AUDITOR COMPRAS"
+                ,"ADMIN_CURSOS"
             };
 
             List<string> contacto = new List<string>
@@ -165,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
@@ -179,13 +181,78 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta)
         {
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
+            usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
+
             usuario.RemoverRolesEditables();
 
-            usuario.UsuarioSap = usuarioSap.ToUpper();
+            usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
+
+            if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
+            {
+                string dateTimeFormat = "yyyy-MM-dd";
+                DateTime fechaDesdeDT = new DateTime();
+                DateTime fechaHastaDT = new DateTime();
+                DateTime auxFDesde;
+                if(DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                {
+                    fechaDesdeDT = auxFDesde;
+                };
+                DateTime auxFHasta;
+                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFHasta))
+                {
+                    fechaHastaDT = auxFHasta;
+                };
+                //Parsing failsafe
+                if (fechaDesdeDT != fechaHastaDT)
+                {
+                    UsuarioReasignacion periodo = new UsuarioReasignacion
+                    {
+                        Usuario_Id = idUsuario,
+                        FechaDesde = fechaDesdeDT,
+                        FechaHasta = fechaHastaDT
+                    };
+
+                    //Evitar duplicacion de periodos
+                    var per = GetPeriodoReasignacion(idUsuario);
+
+                    if(per.Id == 0)
+                    {
+                        repositorio.Agregar<UsuarioReasignacion>(periodo);
+                    }
+                    else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
+                    {
+                        repositorio.Agregar<UsuarioReasignacion>(periodo);
+                    }
+                
+                }
+
+            }
+            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            {
+                //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
+                List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
+                if(periodos.Count > 0)
+                {
+                    int[] periodosIds = new int[periodos.Count];
+
+                    for (int i = 0; i < periodos.Count; i++)
+                    {
+                        periodosIds[i] = periodos[i].Id;
+                    }
+
+                    foreach (int id in periodosIds)
+                    {
+                        UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
+                        repositorio.Remover<UsuarioReasignacion>(per);
+                    }
+                    
+                }
+
+            }
 
             foreach (int idRol in idRoles)
             {
@@ -235,9 +302,19 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
+            
+            List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
 
+            foreach (var aprobacion in aprobaciones)
+            {
+                aprobacion.Suplente = suplente;
+            }
+            
             repositorio.GuardarCambios();
+
+
             var proveedor = usuario.ObtenerProveedor();
+
             if (proveedor != null)
             {
                 return string.Format(SuccessMsg.RolesActualizadosOk, usuario.Mail, " ( CUIT: " + proveedor.CUIT + ")");
@@ -253,11 +330,30 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+                Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == idUsuario);
 
                 var rolesDto = usuario.Roles.Select(x => new RolDropdownDto(x)).ToList();
 
                 return rolesDto;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public UsuarioReasignacionDto GetPeriodoReasignacion(int userId)
+        {
+            try
+            {
+                Entidades.UsuarioReasignacion periodo = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == userId).ToList().LastOrDefault();
+                UsuarioReasignacionDto periodoDto = new UsuarioReasignacionDto();
+                if (periodo != null)
+                {
+                    periodoDto = new UsuarioReasignacionDto(periodo);
+                }
+                 
+                return periodoDto;
             }
             catch (Exception)
             {
@@ -414,15 +510,15 @@ namespace SustitucionMOAUtils.Services
             return proveedores.ToList();
         }
 
-        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.DocumentacionPendiente)
+        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta)
         {
-            UsuarioNoGranos usuarioNoGranos = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
+            UsuarioNoGranos usuario = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
 
             TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
 
-            Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario };
+            //Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario };
 
-            usuarioNoGranos.TipoUsuario = tipoUsuario;
+            usuario.TipoUsuario = tipoUsuario;
 
             var resultado = new ResultadoGenerico();
 
@@ -430,7 +526,7 @@ namespace SustitucionMOAUtils.Services
             if (!resultado.HayError)
             {
 
-                var setCodigoProveedor = "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+                var setCodigoProveedor = proveedorDto.EsProveedorExterior == true ? proveedorDto.CUIT.Substring(1) : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
 
                 Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
 

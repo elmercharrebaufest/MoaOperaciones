@@ -15,7 +15,7 @@
                     {{pasoAnterior().descripcion}}
                 </button>&nbsp;
             </div>
-            <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
+            <div *ngIf="nroSolp == null || nroSolp == 0 || tipoSolpSap == 2" class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
                 <button class="btn btn-primary botonesComprasColor" [disabled]="disabledSave" (click)="onGuardar()">GUARDAR</button>&nbsp;
             </div>
             <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
@@ -23,14 +23,17 @@
                     {{pasoSiguiente().descripcion}}
                     &nbsp;<i class="fa fa-arrow-right"></i>
                 </button>
-                <button class="btn btn-success botonesComprasColor" *ngIf="!pasoSiguiente().paso" (click)="onShowFinalizarDialog()">
+                <button class="btn btn-success botonesComprasColor" 
+                    *ngIf="!pasoSiguiente().paso" 
+                    (click)="onShowFinalizarDialog()" 
+                    [disabled]="esAuditor">
                     {{pasoSiguiente().descripcion}}
                 </button>
             </div>
             <div class="col-xs-1 col-md-1">
             </div>
             <div class="col-xs-4 col-md-4">
-                <div class="col-xs-6 col-md-6" style="text-align: left;" *ngIf="this.tipoSolp != 'SIN_PLIEGO'">
+                <div class="col-xs-6 col-md-6" style="text-align: left;" *ngIf="this.tipoSolp != 'SIN_PLIEGO' && !esAuditor">
                     <button class="btn btn-primary botonesComprasColor" *ngIf="pasoActual.Preview" (click)="onPreview()">PREVIEW</button>&nbsp;
                 </div>
                 <div class="col-xs-6 col-md-6" style="text-align: right;">

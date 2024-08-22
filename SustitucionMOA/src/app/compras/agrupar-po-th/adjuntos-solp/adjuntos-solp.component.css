@@ -1,0 +1,23 @@
+/* Estilo para los encabezados h3 */
+h3 {
+    background-color: grey;
+    color: white;
+    padding: 10px;
+  }
+  
+  /* Estilo para los elementos de la lista */
+  li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  /* Estilo para el icono de descarga */
+  .descargar-icono {
+    cursor: pointer;
+  }
+  
+  /* Opcional: Añade un poco de espacio al final de cada ítem de la lista para mejor visualización */
+  li:not(:last-child) {
+    margin-bottom: 10px;
+  }

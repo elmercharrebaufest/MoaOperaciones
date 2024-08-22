@@ -45,6 +45,7 @@
 	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="moaoperaciones@baufest.com;luciano.calaon@molinosagro.com.ar"/>
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailRegistroInfo Config" value="plataformacompras@baufest.com" />
 	<setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
 	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="EmailAltaTempranaCuitFasonTo Config" value="moaoperaciones@baufest.com" />
@@ -60,10 +61,11 @@
 	<setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
 	<setParameter name="EmailAltaTransporteResiduosTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTransporteResiduosCC Config" value="moa.operaciones@molinosagro.com.ar" />
-
+  <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
+  
   <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
-	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=webopdevstorage;AccountKey=degh9HC+9hXxFOEU/2HqhP1ZusanUvm9X31YqPQIT68DNsU+GuVnphhYa7Okoexu4R1X5s7xiH5/X3ouTXURew==;EndpointSuffix=core.windows.net" />
+  <setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
 
 	<!--Google Drive Campo Sustentable -->
 	<setParameter name="DriveCampoSustentablesApplicationName Config" value="cargaInfoCCSS" />

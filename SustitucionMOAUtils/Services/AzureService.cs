@@ -2,6 +2,7 @@
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
+using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -64,6 +65,46 @@ namespace SustitucionMOAUtils.Services
             var stream = await CrearNuevoStreamAsync(archivo);
 
             await referenciaArchivo.UploadFromStreamAsync(stream);
+        }
+
+        public async Task SubirArchivoABlobStorageAsync(MemoryStream archivo, string blobReference, string nombreContenedor)
+        {
+            var contenedor = blobClient.GetContainerReference(nombreContenedor);
+            var referenciaArchivo = contenedor.GetBlockBlobReference(blobReference);
+
+            referenciaArchivo.Properties.ContentType = "application/pdf";
+
+
+            await referenciaArchivo.UploadFromStreamAsync(archivo);
+        }
+
+
+        public async Task<MemoryStream> ObtenerArchivoBlobStorageAsync(string blobReference, string nombreContenedor)
+        {
+            try
+            {
+                var contenedor = blobClient.GetContainerReference(nombreContenedor);
+                var referenciaArchivo = contenedor.GetBlockBlobReference(blobReference);
+
+                if (await referenciaArchivo.ExistsAsync().ConfigureAwait(false))
+                {
+                    var memoryStream = new MemoryStream();
+                    
+                    await referenciaArchivo.DownloadToStreamAsync(memoryStream).ConfigureAwait(false);
+                    memoryStream.Position = 0;
+
+                    return memoryStream;
+                }
+                else
+                {
+                    throw new FileNotFoundException("El archivo no existe en el blob storage.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al obtener el archivo: {ex.Message}");
+                throw;
+            }
         }
 
         private static async Task<MemoryStream> CrearNuevoStreamAsync(HttpPostedFileBase file)

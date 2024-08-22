@@ -192,5 +192,9 @@ namespace SustitucionMOARepositorio
         /// <param name="parameters">Como se cargan los parametros de la query, con forma @param1</param>
         /// <returns></returns>
         DbRawSqlQuery<TEntidad> ExecuteQuery<TEntidad>(string query, SqlParameter parameters = null);
+
+        List<TEntidad> ListarConsulta<TEntidad>(IConsulta<TEntidad> consulta) where TEntidad : class;
+        
     }
+
 }

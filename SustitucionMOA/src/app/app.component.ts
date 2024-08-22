@@ -71,6 +71,9 @@ export class AppComponent implements OnDestroy {
         } else if (this.path.match(/^\/verLegajoOrdenDeCompra\/\d+\/[a-f0-9-]+$/)) {
             this.navService.navegarSeccion(this.path);
         }
+        else if (this.path.includes('/aprobacion-externa')) {
+            this.navService.navegarSeccion(this.path);
+        }
         else {
             this.validarLoginAzure();
         }

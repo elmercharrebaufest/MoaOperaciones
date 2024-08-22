@@ -25,12 +25,13 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerOrdenesDeCompraConsumerMOA()
         {
-            service = new BAPI_PO_GETITEMSPortTypeClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETITEMS&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions";
+            service = new BAPI_PO_GETITEMSPortTypeClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<OrdenCompraDto> Request(OrderParamsDto parametros)
+        public List<OrdenCompraDto> Request(OrderParamsDto parametros, bool usuarioSolp = false)
         {
             string fechaInicio = parametros.fechaInicio;
             string vendedor = parametros.vendedor;
@@ -44,7 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
             BAPIEKKOL[] cabeceras = new BAPIEKKOL[] { };
             BAPIEKPOC[] detalle = new BAPIEKPOC[] { };
             BAPIRETURN[] bapiReturn = new BAPIRETURN[] { };
-            service.BAPI_PO_GETITEMS("", "", "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
+            service.BAPI_PO_GETITEMS("", "", usuarioSolp ? "X" : "", fechaInicio, "", "", categoria, "", new BAPIMGVMATNR(), "",
                                      "", "", "", OC, "", "", "", new BAPIMGVMATNR(), "", "",
                                      "", "", vendedor, "X",
                                      ref cabeceras,
@@ -83,7 +84,8 @@ namespace SustitucionMOAWS.WSConsumers
                     Fecha = fechaFormateada,
                     ProveedorNombre = item.VEND_NAME,
                     MonedaDescripcion = item.CURRENCY_ISO,
-                    SUBJ_TO_R = item.SUBJ_TO_R
+                    SUBJ_TO_R = item.SUBJ_TO_R,
+                    ProveedorNumero = item.VENDOR
                 });
             }
             

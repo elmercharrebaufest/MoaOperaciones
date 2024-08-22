@@ -5,6 +5,6 @@ namespace SustitucionMOAWS.WSConsumers
 {
     public interface IObtenerOrdenesDeCompraConsumerMOA
     {
-        List<OrdenCompraDto> Request(OrderParamsDto parametros);
+        List<OrdenCompraDto> Request(OrderParamsDto parametros, bool usuarioSolp = false);
     }
 }

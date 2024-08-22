@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
@@ -37,7 +38,9 @@ namespace SustitucionMOAWS.WSConsumers
 
         public ObtenerEntradaDeServicioPorNumeroConsumerMOA()
         {
-            service = new SI_MMRFC_BAPI_ENTRYSHEET_GETDETAILClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn:sap-com:document:sap:rfc:functions";
+            //var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETDETAIL&amp;interfaceNamespace=urn:OPERACIONES";
+            service = new SI_MMRFC_BAPI_ENTRYSHEET_GETDETAILClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             //this.repositorio = repositorio;
@@ -167,7 +170,7 @@ namespace SustitucionMOAWS.WSConsumers
             foreach (var elemento in itemsEntrySheetService)
             {
                 var item = new EntradaServicioDetalleDto();
-
+                item.OrdenCompra = cabecera.PO_NUMBER;
                 item.NumeroLinea = elemento.PLN_LINE;
                 item.PLN_PCKG = elemento.PLN_PCKG;
                 item.CodigoServicio = elemento.SERVICE;
@@ -175,6 +178,8 @@ namespace SustitucionMOAWS.WSConsumers
                 item.Cantidad = elemento.QUANTITY.ToString();
                 item.UM = elemento.BASE_UOM;
                 item.Monto = elemento.NET_VALUE;
+                item.Ext_line = elemento.EXT_LINE;
+                item.PrecioUnitario = elemento.GR_PRICE; // elemento.NET_VALUE * elemento.QUANTITY;
 
                 items.Add(item);
             }

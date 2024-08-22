@@ -5,6 +5,7 @@ using SustitucionMOAWS.BorrarEntradaServicioWebServiceMOA;
 using SustitucionMOAWS.CredentialService;
 using System;
 using System.Linq;
+using System.Security.Policy;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -16,7 +17,8 @@ namespace SustitucionMOAWS.WSConsumers
 
         public BorrarEntradaServicioConsumerMOA()
         {
-            service = new SI_MMRFC_BORRAR_HESClient();
+            var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BORRAR_HES&amp;interfaceNamespace=urn:OPERACIONES";
+            service = new SI_MMRFC_BORRAR_HESClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
             //this.repositorio = repositorio;
@@ -29,7 +31,7 @@ namespace SustitucionMOAWS.WSConsumers
                 string ENTRYSHEET = nroES;
                 BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] RETURN = new BorrarEntradaServicioNuevoWebServiceMOA.BAPIRET2[] { };
 
-                service.SI_MMRFC_BORRAR_HES(nroES,fechaContabilizacion, ref RETURN);
+                service.SI_MMRFC_BORRAR_HES(nroES, fechaContabilizacion, ref RETURN);
 
                 return Map(RETURN);
             }
