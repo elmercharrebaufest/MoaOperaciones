@@ -32,5 +32,8 @@ namespace SustitucionMOAModel.Entities
         public string RazonSocial { get; set; }
 
         public bool Borrado { get; set; }
+
+        public double? HectareasTotalesUcropit { get; set; }
+        public double? HectareasSojaUcropit { get; set; }
     }
 }

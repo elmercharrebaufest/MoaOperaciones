@@ -92,6 +92,10 @@
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\OrdenDeCargaFasonApiDto.cs" />
+    <Compile Include="Dto\OrdenDeCargaNoResiduoApiDto.cs" />
+    <Compile Include="Dto\OrdenDeCarga\ValidarChoferResponse.cs" />
     <Compile Include="Dto\OrdenesCompra\DetalleOrdenDeCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioCabeceraMocDto.cs" />
@@ -106,6 +110,7 @@
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ReporteDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\OrdenResiduosApiDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
@@ -128,6 +133,7 @@
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
@@ -146,6 +152,15 @@
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
+    <Compile Include="Dto\Consulta\DetallesCategoriasEstadosDto.cs" />
+    <Compile Include="Dto\Consulta\ReqListadoConsultaDto.cs" />
+    <Compile Include="Dto\Curso\ActualizarProgresoReqDto.cs" />
+    <Compile Include="Dto\Curso\AsignarAlumnosResDto.cs" />
+    <Compile Include="Dto\Curso\AsignarReqDto.cs" />
+    <Compile Include="Dto\Curso\CursoDto.cs" />
+    <Compile Include="Dto\Curso\CursoUsuarioDto.cs" />
+    <Compile Include="Dto\Curso\ProgresoAlumnoEnCursoDto.cs" />
+    <Compile Include="Dto\Curso\ProgresoResDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ActualizarArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
@@ -291,9 +306,11 @@
     <Compile Include="Dto\TipoRetencionDto.cs" />
     <Compile Include="Dto\TipoUsuarioDto.cs" />
     <Compile Include="Dto\Compras\UsuarioComprasDto.cs" />
+    <Compile Include="Dto\UsuarioMailDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ChatExternoCompras.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
+    <Compile Include="Entities\Curso.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\Almacen.cs" />
@@ -302,6 +319,7 @@
     <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
+    <Compile Include="Entities\ProgresoCurso.cs" />
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\AplicacionCartaPorte.cs" />
@@ -330,8 +348,12 @@
     <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
+    <Compile Include="Entities\VerificarActividadUsuario.cs" />
+    <Compile Include="Enums\CondicionRetiro.cs" />
+    <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
+    <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
     <Compile Include="Enums\TipoLegajo.cs" />
     <Compile Include="Enums\RolEnum.cs" />
     <Compile Include="Enums\TipoContratoFAS.cs" />

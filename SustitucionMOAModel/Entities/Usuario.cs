@@ -40,6 +40,9 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Usuarios")]
         public virtual ICollection<Area> Areas { get; set; }
 
+        [InverseProperty("Alumno")]
+        public virtual ICollection<ProgresoCurso> ProgresoCursosAsignados { get; set; }
+
         public Rol ObtenerRolPrincipal()
         {
             return Roles.FirstOrDefault();
@@ -374,6 +377,8 @@ namespace SustitucionMOAModel.Entities
                 case "ADMIN CONTABILIZACION MES ANTERIOR": return PermisoEnum.AdminContabilizacionMesAnterior;
 
 
+                case "ADMINISTRAR CURSOS": return PermisoEnum.AdminCursos;
+                case "REALIZAR CURSOS": return PermisoEnum.RealizarCursos;
                 case "VER SOLAPA CERTIFICACION DE SERVICIOS": return PermisoEnum.CertificacionDeServicios;
                 case "VER REPORTE OC": return PermisoEnum.ReporteOC;
                 case "VER PO MULTIPLE": return PermisoEnum.POMultiple;
@@ -464,6 +469,9 @@ namespace SustitucionMOAModel.Entities
                 case "API ORDENES RESIDUOS": return RolEnum.ApiOrdenesResiduos;
                 case "ADMIN CONTABILIZACION MES ANTERIOR": return RolEnum.AdminContabilizacionMesAnterior;
                 case "AUDITOR COMPRAS": return RolEnum.AuditorCompras;
+                case "API ORDENES DE CARGA": return RolEnum.ApiOrdenesResiduos;
+                case "ADMIN CURSOS": return RolEnum.AdminCursos;
+                case "ALUMNO CURSOS": return RolEnum.AlumnoCursos;
                 //default: throw new Exception("Rol no mapeado: " + codigoRol);
                 default: return null;
             }

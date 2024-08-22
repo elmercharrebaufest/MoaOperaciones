@@ -153,9 +153,12 @@ namespace SustitucionMOAUtils.Helpers
             var res = this.AgregarAdjuntoComentario(consultaId, primerComentario.Id, files);
             return res;
         }
-        protected void EnviarMail(Consulta consulta, Comentario comentario, List<DestinatarioDto> destinatarios, HttpFileCollectionBase files)
+        protected void EnviarMail(
+            Consulta consulta, Comentario comentario, 
+            List<DestinatarioDto> destinatarios, HttpFileCollectionBase files,
+            IEnumerable<string> emailsCC = null)
         {
-            var destinatariosCC = this.emailService.ObtenerListaDestinatarios(new string[] { consultaInternaCC });
+            var destinatariosCC = emailsCC != null? emailService.ObtenerListaDestinatarios(emailsCC): new List<string>();
             var destinatariosMail = destinatarios.Select(d => d.Mail).ToList();
 
             this.EnviarMailInterno(consulta, comentario, files, destinatariosCC, destinatariosMail);

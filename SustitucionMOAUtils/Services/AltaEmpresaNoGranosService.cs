@@ -227,47 +227,33 @@ namespace SustitucionMOAUtils.Services
             return info;
         }
 
-        public string EditarAltaEmpresaNoGranos(int proveedorId, string razonSocial, string cuit, string email, string telefono,
-            bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago, string ServicioPrestado,
-            string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual,
-            bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio)
+        public string EditarAltaEmpresaNoGranos(
+            int proveedorId,
+            string razonSocial,
+            string cuit,
+            string email,
+            string telefono,
+            bool realizarAnalisisNOSIS,
+            int? IdRubro,
+            string CondicionDePago,
+            string ServicioPrestado,
+            string OrganizacionDeCompra,
+            string RazonDeEleccion,
+            int? FacturacionAnual,
+            bool requiereVerificacionCompras,
+            bool ingresoAPlanta,
+            bool altaInterna,
+            bool siperObligatorio)
         {
             if (proveedorId <= 0)
             {
-                throw new InfoCustomException("Id invalido.");
+                throw new InfoCustomException("Id inválido.");
             }
 
-            var proveedor = repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
-
-            if (proveedor == null)
-            {
-                throw new InfoCustomException("No se encontro proveedor con este Id.");
-            }
+            var proveedor = repositorio.Obtener<Proveedor>(p => p.Id == proveedorId) ??
+                throw new InfoCustomException("No se encontró proveedor con este Id.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == proveedor.Mail);
-
-            if (usuario == null)
-            {
-                proveedor.Mail = email;
-                proveedor.RazonSocial = razonSocial;
-                proveedor.CUIT = cuit;
-                proveedor.Telefono = telefono;
-                proveedor.RealizarAnalisisNOSIS = realizarAnalisisNOSIS;
-                proveedor.IdRubro = IdRubro;
-                proveedor.CondicionDePago = CondicionDePago;
-                proveedor.ServicioPrestado = ServicioPrestado;
-                proveedor.OrganizacionDeCompra = OrganizacionDeCompra;
-                proveedor.RazonDeEleccion = RazonDeEleccion;
-                proveedor.FacturacionAnual = FacturacionAnual;
-                proveedor.RequiereVerificacionCompras = requiereVerificacionCompras;
-                proveedor.IngresoAPlanta = ingresoAPlanta;
-                proveedor.AltaInterna = altaInterna;
-                proveedor.SiperObligatorio = siperObligatorio;
-
-                repositorio.GuardarCambios();
-
-                return "Editado correctamente";
-            }
 
             proveedor.RazonSocial = razonSocial;
             proveedor.CUIT = cuit;
@@ -284,9 +270,18 @@ namespace SustitucionMOAUtils.Services
             proveedor.AltaInterna = altaInterna;
             proveedor.SiperObligatorio = siperObligatorio;
 
+            string mensajeResultado;
+            if (usuario == null)
+            {
+                proveedor.Mail = email;
+                mensajeResultado = "Editado correctamente";
+            }
+            else
+            {
+                mensajeResultado = "No se puede modificar el Mail porque ya existe un Usuario vinculado.";
+            }
             repositorio.GuardarCambios();
-
-            return "No se puede modificar el Mail porque ya existe un Usuario vinculado.";
+            return mensajeResultado;
         }
 
         public string GetRazonSocial(string CUIT)

@@ -23,3 +23,8 @@
 .fw-normal{
     font-weight: normal!important;
 }
+
+.green_entregada {
+    background-color: lightseagreen;
+    border: 1px solid darkturquoise;
+}

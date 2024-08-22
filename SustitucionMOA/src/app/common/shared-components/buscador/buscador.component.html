@@ -1,10 +1,10 @@
 <div clickOutside (clickOutside)="op.hide($event)">
-  <div>
+  <div #autoComplete>
     <p-autoComplete #buscador [minLength]="6" [(ngModel)]="service.palabraABuscar" [suggestions]="resultados" 
     (completeMethod)="autoBusqueda($event, op)" (onFocus)="autoBusqueda($event, op)" placeholder="Ingresar contrato o CCPP o liquidacion">
     </p-autoComplete>
   </div>
-  <p-overlayPanel #op appendTo="#buscador" autoZIndex="true">
+  <p-overlayPanel #op appendTo="#autoComplete" autoZIndex="true">
     <spinner-small></spinner-small>
     <ng-container *ngIf="hayResultados; else elseBlock">
       <div class="col-md-12 col-xs-12 sinPaddingLados" *ngFor="let resultado of resultados">

@@ -99,14 +99,13 @@
                                 </div>
                             </div>
                             <ng-container *ngIf="validaCPEDG">
-                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado?.EsRevendedor">
-                                    <div class="formulario-label" style="margin-bottom: 8px;">
-                                        <p-checkbox name="reventa" [binary]="true"
-                                            [(ngModel)]="ordenDeCarga.Reventa"></p-checkbox>
-                                        <label class="ml-2 pointer mySearch bold"
-                                            (click)="ordenDeCarga.Reventa = !ordenDeCarga.Reventa">
-                                            Reventa
-                                        </label>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Remitente Comercial:
+                                    </div>
+                                    <div class="styled-select">
+                                        <input [disabled]="true" type="text"
+                                            [value]="ordenDeCarga.CUITRemitenteComercial? clienteSeleccionado.RazonSocial: ''">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
@@ -336,32 +335,34 @@
                                 </div>
 
                             </div>
-                            <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                <div class="formulario-label">
-                                    CUIT Intermediario Flete:
-                                </div>
-                                <div class="styled-select">
-                                    <div class="ui-inputgroup">
-                                        <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
-                                            mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
-                                            (change)="validarIntermediarioFlete()">
-                                        <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
-                                            <p-progressSpinner
-                                                [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
-                                        </span>
+                            <ng-container *ngIf="validaCPEDG">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        CUIT intermediario flete:
                                     </div>
+                                    <div class="styled-select">
+                                        <div class="ui-inputgroup">
+                                            <input type="text" [(ngModel)]="ordenDeCarga.CUITIntermediarioFlete"
+                                                mask="00-00000000-0" [placeholder]="descripcionIntermediarioFlete"
+                                                (change)="validarIntermediarioFlete()">
+                                            <span class="ui-inputgroup-addon" *ngIf="validando.CUITIntermediarioFlete">
+                                                <p-progressSpinner
+                                                    [style]="{width: '100%', height: '100%'}"></p-progressSpinner>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div *ngIf="!intermediarioFleteCuitFormatoValido">
+                                        CUIT inválido
+                                    </div>
+                                    <div class="styled-select" *ngIf="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                        <input [disabled]="true" type="text"
+                                            [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
+                                    </div>
+                                    <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
+                                        {{ mensajesGestionCuit.CUITIntermediarioFlete }}
+                                    </p>
                                 </div>
-                                <div *ngIf="!intermediarioFleteCuitFormatoValido">
-                                    CUIT inválido
-                                </div>
-                                <div class="styled-select" *ngIf="ordenDeCarga.RazonSocialIntermediarioFlete">
-                                    <input [disabled]="true" type="text"
-                                        [(ngModel)]="ordenDeCarga.RazonSocialIntermediarioFlete">
-                                </div>
-                                <p *ngIf="mensajesGestionCuit.CUITIntermediarioFlete">
-                                    {{ mensajesGestionCuit.CUITIntermediarioFlete }}
-                                </p>
-                            </div>
+                            </ng-container>
                         </div>
 
                         <div class="col-xs-12 col-md-11" style="margin-left: 3em;">

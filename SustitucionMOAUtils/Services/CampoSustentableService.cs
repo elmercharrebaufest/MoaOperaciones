@@ -1,5 +1,11 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
+using iTextSharp.tool.xml.html;
+using iTextSharp.tool.xml.parser;
+using iTextSharp.tool.xml.pipeline.css;
+using iTextSharp.tool.xml.pipeline.end;
+using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
@@ -8,6 +14,9 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.Export.CampoSustentable;
+using SustitucionMOAUtils.Extensions;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
@@ -26,6 +35,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -36,12 +46,14 @@ namespace SustitucionMOAUtils.Services
         private readonly IExcelExportWrapper excelExport;
         private readonly IDataAgroService dataAgroService;
         private readonly ICampoSustentableGoogleDrive campoSustentableGoogleDrive;
+        private readonly ICampoSustentablePdfGenerator campoSustentablePdfGenerator;
 
         public CampoSustentableService(
             IRepositorioCampoSustentable repositorio,
             IExcelExportWrapper excelExport,
             IDataAgroService dataAgroService,
-            ICampoSustentableGoogleDrive campoSustentableGoogleDrive
+            ICampoSustentableGoogleDrive campoSustentableGoogleDrive,
+            ICampoSustentablePdfGenerator campoSustentablePdfGenerator
             )
         {
             this.repositorio = repositorio;
@@ -49,6 +61,7 @@ namespace SustitucionMOAUtils.Services
             this.excelExport = excelExport;
             this.dataAgroService = dataAgroService;
             this.campoSustentableGoogleDrive = campoSustentableGoogleDrive;
+            this.campoSustentablePdfGenerator = campoSustentablePdfGenerator;
         }
 
         public Resultado Agregar(string mailUsuario, CampoProveedor campoProveedor, HttpPostedFileBase archivoKmz, bool UsarArchivoId)
@@ -76,6 +89,8 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.ToneladasAprobadas = -1;
 
             campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+            campoProveedor.CampoCosecha.Cosecha = repositorio.Obtener<Cosecha>(campoProveedor.CampoCosecha.Cosecha_Id);
+
             repositorio.Agregar(campoProveedor);
 
             repositorio.GuardarCambios();
@@ -117,6 +132,7 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.Latitud = campoProveedorObj.Latitud;
             campoProveedor.CampoCosecha.ToneladasAprobadas = campoProveedorObj.CampoCosecha.ToneladasAprobadas;
             campoProveedor.CampoCosecha.Campo.Nombre = campoProveedorObj.CampoCosecha.Campo.Nombre;
+            campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
 
             repositorio.GuardarCambios();
@@ -158,20 +174,22 @@ namespace SustitucionMOAUtils.Services
             var allCampos = repositorio.Listar<CampoProveedor, CamposSustentableReporte>
                 (c => new CamposSustentableReporte
                 {
-                    HectareasSoja = c.HectareasSoja.ToString(),
-                    HectareasTotales = c.HectareasTotales.ToString(),
+                    HectareasSoja = c.HectareasSojaUcropit != null ? c.HectareasSojaUcropit.ToString() : c.HectareasSoja.ToString(),
+                    HectareasTotales = c.HectareasTotalesUcropit != null ? c.HectareasTotalesUcropit.ToString() : c.HectareasTotales.ToString(),
                     Localidad = c.CampoCosecha.Campo.Localidad.Nombre,
                     Nombre = c.CampoCosecha.Campo.Nombre,
+                    Renspa = c.CampoCosecha.Campo.Renspa,
                     Pais = "Argentina",
                     Provincia = c.CampoCosecha.Campo.Localidad.Provincia.Nombre,
                     Coordenadas = string.Concat(c.Latitud, " ", c.Longitud),
+                    ToneladasAprobadas = c.CampoCosecha.ToneladasAprobadas.ToString(),
                     Partido = c.CampoCosecha.Campo.Localidad.Partido.Descripcion
                 },
-                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id);
+                cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas != -1);
 
             var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
 
-            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
+            var datosDeclaracionJurada = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
                 CUIT = declaracion.CUIT,
@@ -181,33 +199,27 @@ namespace SustitucionMOAUtils.Services
                 Campos = allCampos
             };
 
-            var pdfCampos = GenerarPDFDeclaracion(datos);
+            //var pdfDeclaracionJurada = GenerarPDFDeclaracion(datosDeclaracionJurada);
+
+            var pdfListaCampos = campoSustentablePdfGenerator.GenerarDeclaracionJuradaListaCampos(datosDeclaracionJurada);
 
             byte[] archivoResult;
 
-            Document document = new Document();
+            var document = new Document();
 
             using (MemoryStream stream = new MemoryStream())
             {
-                PdfCopy pdf = new PdfCopy(document, stream);
+                var pdfCopy = new PdfCopy(document, stream);
                 document.Open();
 
-                PdfReader pdfReaderCampos = new PdfReader(pdfCampos);
+                var declaracionCargadaBytes = File.ReadAllBytes(declaracion.Archivo.Ruta);
+                var declaracionCargadaPdfReader = new PdfReader(declaracionCargadaBytes);
+                pdfCopy.AddDocument(declaracionCargadaPdfReader);
+                declaracionCargadaPdfReader.Close();
 
-                pdfReaderCampos.SelectPages(string.Concat("2-", pdfReaderCampos.NumberOfPages));
-
-                //var fileKey = string.Concat(FileKeys.DeclaracionCampoSustentable, "-", cosechaId);
-
-                //var archivoDeclaracion = proveedor.Archivos.FirstOrDefault(a => a.FileKey == fileKey);
-                byte[] fileBytes = File.ReadAllBytes(declaracion.Archivo.Ruta);
-
-                PdfReader pdfReaderDeclaracion = new PdfReader(fileBytes);
-
-                pdf.AddDocument(pdfReaderDeclaracion);
-                pdfReaderDeclaracion.Close();
-
-                pdf.AddDocument(pdfReaderCampos);
-                pdfReaderCampos.Close();
+                var pdfReaderListaCampos = new PdfReader(pdfListaCampos);
+                pdfCopy.AddDocument(pdfReaderListaCampos);
+                pdfReaderListaCampos.Close();
 
                 document.Close();
 
@@ -328,7 +340,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
-        {
+        {   
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarUsuario(usuario, proveedorId);
@@ -374,7 +386,7 @@ namespace SustitucionMOAUtils.Services
 
             var cosecha = repositorio.Obtener<Cosecha>(cosechaId);
 
-            DeclaracionCampoSustentableDto datos = new DeclaracionCampoSustentableDto
+            var datos = new DeclaracionCampoSustentableDto
             {
                 Cosecha = cosecha.Nombre,
                 CUIT = declaracion.CUIT,
@@ -393,6 +405,8 @@ namespace SustitucionMOAUtils.Services
 
                 archivoResult = stream.ToArray();
             }
+
+            //archivoResult = campoSustentablePdfGenerator.GenerarDeclaracionJurada(datos);
 
             return archivoResult;
         }
@@ -445,6 +459,7 @@ namespace SustitucionMOAUtils.Services
                                 HectareasSoja = cp.HectareasSoja,
                                 HectareasTotales = cp.HectareasTotales,
                                 NombreCampo = cp.CampoCosecha.Campo.Nombre,
+                                Renspa = cp.CampoCosecha.Campo.Renspa,
                                 Localidad_Id = cp.CampoCosecha.Campo.Localidad_Id,
                                 ToneladasAprobadas = cp.CampoCosecha.ToneladasAprobadas,
                                 Latitud = cp.Latitud,
@@ -467,7 +482,7 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
             var esAdminCampos = usuario.TienePermiso(PermisoEnum.VerTodosCamposSustentable);
-            var headersBase = new List<string>() { "Cosecha", "Campo", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
+            var headersBase = new List<string>() { "Cosecha", "Campo", "RENSPA", "Proveedor", "Cuit", "Estado", "Motivo", "Ha Totales", "Ha Soja", "Toneladas Aprobadas", "Razon Social", "Fecha Creacion" };
             dynamic listado;
 
             if (esAdminCampos)
@@ -476,6 +491,7 @@ namespace SustitucionMOAUtils.Services
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
+                    Renspa = cp.CampoCosecha.Campo.Renspa,
                     ProveedorRazonSocial = cp.Proveedor.RazonSocial,
                     CuitProveedor = cp.Proveedor.CUIT,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
@@ -487,12 +503,14 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = cp.RazonSocial,
                     FechaCreacion = cp.FechaCreacion
                 });
+                ((List<CampoSustentableExportDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
             }
             else
             {
                 listado = ListarCampos(usuario, cp => new CampoSustentableExportBaseDTO()
                 {
                     Campo = cp.CampoCosecha.Campo.Nombre,
+                    Renspa = cp.CampoCosecha.Campo.Renspa,
                     ProveedorRazonSocial = cp.Proveedor.CodigoProveedor,
                     Cosecha = cp.CampoCosecha.Cosecha.Nombre,
                     HectareasSoja = cp.HectareasSoja,
@@ -502,6 +520,7 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = cp.RazonSocial,
                     FechaCreacion = cp.FechaCreacion
                 });
+                ((List<CampoSustentableExportBaseDTO>)listado).ForEach(x => x.Renspa = x.Renspa.ToFormatoRenspa());
             }
 
             return excelExport.ToExcel(listado, headersBase.ToArray(), "Reporte Campos Sustentables");
@@ -513,6 +532,7 @@ namespace SustitucionMOAUtils.Services
 
             return campoProveedor.Archivo.Ruta;
         }
+
         public async Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar)
         {
             if (archivoSinDescargar.ProcesadoUcropit)
@@ -549,6 +569,8 @@ namespace SustitucionMOAUtils.Services
             archivoSinDescargar.CampoCosecha.ToneladasAprobadas = resultadoProcesadoUcropit.Bsvs2 != null ?
                     Math.Round(resultadoProcesadoUcropit.Bsvs2.ToneladasAprobadas ?? 0, 2) : 0;
             archivoSinDescargar.CampoCosecha.MotivoRechazo = resultadoProcesadoUcropit.MotivoRechazo;
+            campoProveedor.HectareasSojaUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieElegible;
+            campoProveedor.HectareasTotalesUcropit = resultadoProcesadoUcropit.Bsvs2?.SuperficieTotalCampo;
 
             repositorio.GuardarCambios();
         }
@@ -789,9 +811,9 @@ namespace SustitucionMOAUtils.Services
             AddTextosSegundaPagina(writer, baseFontBold, fontSizeNormal, fontSize, xPosition, xMargenBase, xMargenTexto, yPosition);
 
             var logoPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content", "images", "header", "logo_.png");
-            Image logo = Image.GetInstance(logoPath);
-            logo.ScaleToFit(200f, 150f);
-            document.Add(logo);
+            var logoImg = iTextSharp.text.Image.GetInstance(logoPath);
+            logoImg.ScaleToFit(200f, 150f);
+            document.Add(logoImg);
 
             AddTablaDatos(cb, datos, xPosition, xMargenTexto, yPosition);
             // close the streams and voilá the file should be changed :)
@@ -938,5 +960,6 @@ namespace SustitucionMOAUtils.Services
             informacionADeclararEnTabla.WriteSelectedRows(0, -1, xPosition + (xMargenTexto * 3), yPosition - (15f * 16), cb);
 
         }
+
     }
 }

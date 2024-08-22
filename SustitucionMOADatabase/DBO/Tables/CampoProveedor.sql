@@ -12,6 +12,8 @@
     [Borrado] BIT NULL, 
     [CUIT] NVARCHAR(15) NULL, 
     [RazonSocial] NVARCHAR(500) NULL, 
+    [HectareasTotalesUcropit] FLOAT NULL DEFAULT NULL,
+    [HectareasSojaUcropit] FLOAT NULL DEFAULT NULL,
     PRIMARY KEY(CampoCosecha_Id, Proveedor_Id),
     CONSTRAINT [FK_CampoProveedor_ToArchivo] FOREIGN KEY ([Archivo_Id]) REFERENCES [Archivo]([Id]),
     CONSTRAINT [FK_CampoProveedor_ToCampoCosecha] FOREIGN KEY ([CampoCosecha_Id]) REFERENCES [CampoCosecha]([Id]),

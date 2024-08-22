@@ -21,5 +21,5 @@ export interface CalidadCCPP {
 }
 
 export interface CalidadCCPPDiscrepa extends CalidadCCPP {
-    discrepanciaCalidad?: string;
+    discrepanciaCalidad?: number | null
 }

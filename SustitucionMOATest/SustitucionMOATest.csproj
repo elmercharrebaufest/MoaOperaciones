@@ -140,6 +140,7 @@
     <Compile Include="Services\DataAgroServiceTest.cs" />
     <Compile Include="Services\NotificacionServiceTest.cs" />
     <Compile Include="Services\OrdenDeCargaApiServiceTest.cs" />
+    <Compile Include="Services\OrdenDeCargaServiceBaseTest.cs" />
     <Compile Include="Services\OrdenResiduosServiceTest.cs" />
     <Compile Include="Services\PesificacionServiceTests.cs" />
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
@@ -168,6 +169,10 @@
     <ProjectReference Include="..\SustitucionMOAExternalAPI\SustitucionMOAExternalAPI.csproj">
       <Project>{2DB8712D-EC58-4C1F-9329-E376FE5D8A50}</Project>
       <Name>SustitucionMOAExternalAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{E7212DE2-8C26-4CED-AC5C-4B5BBA3612FC}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>

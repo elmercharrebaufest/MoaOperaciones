@@ -19,7 +19,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { ContratoOrdenFas, TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
-import { debounceTime, finalize, take } from 'rxjs/operators';
+import { debounceTime, filter, finalize, take, tap } from 'rxjs/operators';
 import { ApiResponse } from '../../common/models/response';
 import { Factura, newFactura } from '../../common/models/ordenes-de-carga/Factura';
 import { IOrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
@@ -125,6 +125,11 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     ordenActivaScato: boolean = false;
     mensajeValidacionScato: string = "";
 
+    validacionExistenciaPatente$ = new Subject<void>();
+    validacionExistenciaPatenteSub?: Subscription;
+
+    localSubscriptions = new Subscription();
+
     constructor(protected service: OrdenesDeCargaService,
         protected usuarioService: UsuarioService,
         protected navService: NavService,
@@ -140,10 +145,28 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     ) {
         super(navService, securytiService, floatMsgService, modalService);
 
-        this.subscriptions.add(
+        this.localSubscriptions.add(
             this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
                 this.validarCNRTRequest()
             ))
+        this.localSubscriptions.add(
+            this.validacionExistenciaPatente$
+                .pipe(
+                    debounceTime(500),
+                    filter(_ =>
+                        this.chasisAcopladoValido && !!this.ordenDeCarga.CUITCliente))
+                .subscribe(() => {
+                    this.validacionExistenciaPatenteSub = this.service
+                        .validarExistenciaPatentes(
+                            this.ordenDeCarga.ChasisAcoplado, this.ordenDeCarga.CUITCliente)
+                        .subscribe(res => {
+                            const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+                            if (notificarExistencia) {
+                                this.floatMsgService.setInfoMsg("El camión ya fué autorizado por otro cliente.");
+                            }
+                        });
+                })
+        ) //
     }
 
     get noPuedeEditarCuitsTerceros() {
@@ -645,6 +668,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.ChasisAcoplado = event.toUpperCase();
         else if (event.value)
             this.ordenDeCarga.ChasisAcoplado = event.value.toUpperCase();
+        this.validacionExistenciaPatente$.next()
     }
     patenteAcopladoSelected(event: string | { value: string }) {
         if (typeof (event) === "string")
@@ -791,6 +815,9 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.getPatentes();
         this.cargarContratosDisponibles(pClienteCodigo);
         this.setearDefaultEnCPEDG();
+        if (!this.editando) {
+            this.validacionExistenciaPatente$.next()
+        }
     }
 
     onContratoSeleccionadoChanged = () => {
@@ -828,8 +855,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.Producto_Id = this.selectUndefinedOptionValue;
             this.validaCPEDG = false;
         }
-        if (!this.editando)
-            this.ordenDeCarga.Reventa = this.validaCPEDG && this.clienteSeleccionado.EsRevendedor && !this.ordenDeCarga.Reventa;
     }
 
     onPatenteSeleccionada() {
@@ -889,8 +914,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
     }
 
-    ordenarYFiltrarClientes(result: any): any[] {
-        result = result.filter((thing, i, arr) => {
+    ordenarYFiltrarClientes(listaClientes: any): any[] {
+        let result = listaClientes.filter((thing, i, arr) => {
             return arr.indexOf(arr.find(t => t.CodigoProveedor === thing.CodigoProveedor)) === i;
         });
         result.sort((a, b) => {
@@ -913,6 +938,10 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                 // Clientes que existen en SAP pero no en BD
                 cliente.RazonSocial = cliente.RazonSocial + " (" + cliente.CodigoProveedor + ")";
             }
+            cliente.EsRevendedor = cliente.EsRevendedor ||
+                listaClientes.some((e, i, arr) => {
+                    return e.CodigoProveedor == cliente.CodigoProveedor && e.EsRevendedor;
+                });
         });
         return result;
     }
@@ -1061,7 +1090,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                                     this.reiniciarProducto();
                                 } else {
                                     this.contratosDisponibles = resp.Contratos.map(c => {
-                                        return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles);
+                                        return new ContratoOrdenFas(c.NumeroContrato, c.TipoContrato, c.Producto, c.KgDisponibles, c.CondicionRetiro);
                                     });
                                     this.ordenDeCarga.ContratoSeleccionado =
                                         this.ordenDeCarga.ContratoIngresado ?
@@ -1105,6 +1134,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                     this.gestiona[campo] = false;
                 }
 
+                if (campo === 'CUITDestino')
+                    this.asignarRemitenteComercial();
             })
     }
 
@@ -1360,24 +1391,35 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         }
         return response.data;
     }
+
     validarCuilChofer() {
         const campo = "CUITChofer";
-        const cuit = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
-        if (!this.revisarCUITFormatoValido(cuit))
+        const cuilChofer = this.ordenDeCarga.CUITChofer ? this.ordenDeCarga.CUITChofer.toString() : "";
+        const cuitCliente = this.ordenDeCarga.CUITCliente;
+
+        if (!this.revisarCUITFormatoValido(cuilChofer))
             return;
+
         if (this.mensajesOrdenDeCarga[campo])
             this.floatMsgService.setMsgsEmpty();
+
         this.validando[campo] = true;
-        this.mensajesOrdenDeCarga[campo] = null;
-        this.service.validarCuilChofer(cuit).subscribe(result => {
-            this.validando[campo] = false;
-            let data = this.manejarErroresApiResponse(result);
-            if (!data && data != null) {
-                this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
-                this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+        this.mensajesOrdenDeCarga[campo] = undefined;
+
+        this.service.validarChofer(cuilChofer, cuitCliente).subscribe(
+            result => {
+                this.validando[campo] = false;
+                let data = this.manejarErroresApiResponse(result);
+                if (data) {
+                    if (!data.EsCuilValido) {
+                        this.mensajesOrdenDeCarga[campo] = "CUIL Chofer inválido – Revisar valor ingresado";
+                        this.floatMsgService.setInfoMsg("CUIL Chofer inválido – Revisar valor ingresado");
+                    }
+                }
             }
-        });
+        );
     }
+
     validarCuitTransporte() {
         const campo = "CUITTransporte";
         const cuit = this.ordenDeCarga.CUITTransporte ? this.ordenDeCarga.CUITTransporte.toString() : "";
@@ -1418,7 +1460,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     }
 
     setearDefaultEnCPEDG() {
-        this.ordenDeCarga.Reventa = false;
         this.ordenDeCarga.CUITDestinatario = undefined;
         this.validarSisaCuit(this.clienteSeleccionado.cuit, 'CUITDestinatario');
         this.ordenDeCarga.CUITDestino = undefined;
@@ -1518,10 +1559,17 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         });
     }
     get patenteAcopladoValida() {
-        return this.ordenDeCarga.PatenteAcoplado && this.ordenDeCarga.PatenteAcoplado.trim().length >= 6
+        return (
+            this.ordenDeCarga.PatenteAcoplado &&
+            this.ordenDeCarga.PatenteAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCarga.PatenteAcoplado));
     }
+    
     get chasisAcopladoValido() {
-        return this.ordenDeCarga.ChasisAcoplado && this.ordenDeCarga.ChasisAcoplado.trim().length >= 6
+        return (
+            this.ordenDeCarga.ChasisAcoplado &&
+            this.ordenDeCarga.ChasisAcoplado.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCarga.ChasisAcoplado));
     }
 
     displayModalEscalable = false;
@@ -1579,7 +1627,8 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.displayModalEscalable = false;
     }
     public extraOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+        if (this.validacionExistenciaPatenteSub)
+            this.validacionExistenciaPatenteSub.unsubscribe()
     }
 
     verificarOrdenActivaScato(ordenId: string) {
@@ -1614,4 +1663,25 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     abrirModalEdicionInterno() {
         document.getElementById("openEdicionOrdenInterno").click();
     }
+
+    asignarRemitenteComercial() {
+        this.ordenDeCarga.CUITRemitenteComercial = this.usaRemitenteComercial ? this.ordenDeCarga.CUITCliente : null;
+        if (!this.ordenDeCarga.CUITRemitenteComercial) {
+            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
+        } else {
+            this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
+        }
+    }
+
+    get usaRemitenteComercial() {
+        return this.ordenDeCarga.CUITCliente.toString() != this.ordenDeCarga.CUITDestino;
+    }
+
+    esPatenteValida(patente: string) {
+        const exprReg = /[A-Z]{3}[0-9]{3}|[A-Z]{2}[0-9]{3}[A-Z]{2}/;
+        const esValida = exprReg.test(patente);
+        // console.log("Patente " + patente + " es válida? -> " + esValida);
+        return esValida;
+    }
 }
+

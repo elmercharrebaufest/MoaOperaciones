@@ -136,7 +136,9 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     }
 
     campoSustentable = {
-      Nombre: this.campoProveedor.NombreCampo, Localidad_Id: this.campoProveedor.Localidad_Id
+      Nombre: this.campoProveedor.NombreCampo,
+      Renspa: this.campoProveedor.Renspa,
+      Localidad_Id: this.campoProveedor.Localidad_Id
     }
 
     campoCosecha = {
@@ -235,6 +237,10 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     this.mensajeComponent.setMsgsEmpty();
     if (this.campoProveedor.NombreCampo == "" || !this.campoProveedor.NombreCampo) {
       this.mensajeComponent.setErrorMsg("Falta completar Nombre del establecimiento.");
+      return true;
+    }
+    if (this.campoProveedor.Renspa == "" || !this.campoProveedor.Renspa || this.campoProveedor.Renspa.length < 13) {
+      this.mensajeComponent.setErrorMsg("Falta completar RENSPA.");
       return true;
     }
     if (!this.campoProveedor.HectareasTotales) {

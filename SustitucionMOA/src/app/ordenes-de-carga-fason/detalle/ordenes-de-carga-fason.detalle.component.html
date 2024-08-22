@@ -14,7 +14,8 @@
                 <!-- Button trigger modal -->
                 <button *ngIf="botones.editar" type="button"
                     class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                    id="modalToggleButton">
+                    id="modalToggleButton" [disabled]="(activaEnScato || validandoEstadoScato) && !esAdmin"
+                    [pTooltip]="(activaEnScato || validandoEstadoScato) && !esAdmin? 'Imposible editar' : null">
                     Editar
                 </button>
             </div>
@@ -26,8 +27,10 @@
                 <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de anulación" [responsive]="true"
                     appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoSA.reject()"></button>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoSA.accept()"></button>
                     </p-footer>
@@ -44,8 +47,10 @@
                 <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
                     [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoConfirmarAnular.reject()"></button>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoConfirmarAnular.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoConfirmarAnular.accept()"></button>
                     </p-footer>
@@ -59,6 +64,16 @@
                             (click)="dialogoConfirmarEdicion.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
+                <p-confirmDialog #confirmarEdicionActiva key="confirmarEdicionActiva" [responsive]="true"
+                    appendTo="body" [header]="'Orden activa en Scato'">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="confirmarEdicionActiva.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="confirmarEdicionActiva.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+
             </div>
         </div>
         <div class="mySearch">
@@ -82,12 +97,6 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
-                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                        <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true"
-                                            [(ngModel)]="ordenDeCargaFason.Reventa" [disabled]="true"></p-checkbox>
-                                    </div>
-
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.RazonSocialCliente}}</p>
@@ -106,6 +115,17 @@
                                     <div class="col-xs-12 col-md-12" [hidden]="!esAdmin && !esCorredor">
                                         <p class=" blue"><strong>Corredor</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.Corredor}}</p>
+                                    </div>
+
+                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
+                                        <p class="blue"><strong>Remitente Comercial</strong></p>
+                                        <p style="width:100%">
+                                            <ng-container *ngIf="ordenDeCargaFason.RemitenteComercial;else empty">
+                                                {{ordenDeCargaFason.RazonSocialCliente}}
+                                                ({{ordenDeCargaFason.CUITCliente}})
+                                            </ng-container>
+                                            <ng-template #empty>-</ng-template>
+                                        </p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -140,15 +160,6 @@
                                         <p style="width:100%">{{ordenDeCargaFason.Cantidad}}</p>
                                     </div>
 
-                                    <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Fecha de retiro</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.FechaRetiro}}</p>
-                                    </div>
-
-                                    <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Destino</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.LocalidadDescripcion}}</p>
-                                    </div>
                                     <div class="col-xs-12 col-md-12" *ngIf="!validaCPEDG">
                                         <p class="blue"><strong>Destino Mercadería</strong></p>
                                         <p style="width:100%">{{ordenDeCargaFason.DestinoMercaderia}}</p>
@@ -230,15 +241,15 @@
                                         <tr role="row">
                                             <th>Fecha de salida</th>
                                             <th>Fecha de ingreso</th>
-                                            <th>Cantidad de {{ordenDeCargaFason.UniMedCant | lowercase}}</th>
+                                            <th>Cantidad de {{(ordenDeCargaFason.UniMedCant || 'KG') | lowercase}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="fw-normal">{{ordenDeCargaFason.FechaEgreso}}</td>
-                                            <td class="fw-normal">{{ordenDeCargaFason.FechaIngreso}}</td>
-                                            <td class="fw-normal">{{ordenDeCargaFason.CantidadEntregada |
-                                                number:'2.0-0'}}</td>
+                                            <td class="fw-normal">{{ordenDeCargaFason.FechaRetiroReal}}</td>
+                                            <td class="fw-normal">{{ordenDeCargaFason.FechaIngresoPlanta}}</td>
+                                            <td class="fw-normal">{{ ordenDeCargaFason.CantidadDescargada |
+                                                defaultNumber }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -272,7 +283,8 @@
                                 <input type="button" (click)="confirmarRechazarSolicitudEdicion(false)"
                                     class="btn-custom btn-remove btn-grande" value="Rechazar edición">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="botones.solicitarAnulacion">
+                            <div class="col-xs-5 col-md-3"
+                                *ngIf="botones.solicitarAnulacion && !(activaEnScato || validandoEstadoScato)">
                                 <input type="button" (click)="confirmarSolicitudAnulacion()"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>

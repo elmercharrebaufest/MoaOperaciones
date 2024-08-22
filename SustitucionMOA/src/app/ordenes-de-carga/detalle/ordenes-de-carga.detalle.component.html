@@ -66,10 +66,13 @@
         <div class="mySearch">
             <div *ngIf="ordenDeCarga.OrdenesConPatentesRepetidas" class="formulario-input;">
                 <div class="alert alert-warning">
-                    Las siguientes ordenes tienen las mismas patentes de chasis y acoplado:
-                    <a class="cursor" style="cursor: pointer;"
-                        *ngFor="let idOrdenRepetida of ordenDeCarga.OrdenesConPatentesRepetidas"
-                        [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
+                    Las siguientes ordenes tienen la misma patente de chasis:
+                    <ng-container
+                        *ngFor="let idOrdenRepetida of ordenDeCarga.OrdenesConPatentesRepetidas;let last = last">
+                        <a class="cursor" style="cursor: pointer;"
+                            [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
+                        <ng-container *ngIf="!last">-</ng-container>
+                    </ng-container>
                 </div>
             </div>
             <div *ngIf="mensajeError != ''" class="formulario-input;">
@@ -96,12 +99,6 @@
 
                                 <!-- cliente -->
                                 <div class="col-xs-12 col-md-6">
-                                    <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
-                                        <p class="blue"><strong>Reventa</strong></p>
-                                        <p-checkbox name="reventa" [binary]="true" [(ngModel)]="ordenDeCarga.Reventa"
-                                            [disabled]="true"></p-checkbox>
-                                    </div>
-
                                     <div class="col-xs-12 col-md-12" *ngIf="esInterno || esCorredor">
                                         <p class="blue"><strong>Raz&oacute;n social cliente</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialCliente}}</p>
@@ -132,6 +129,16 @@
                                         <p style="width:100%">{{ordenDeCarga.ContratoSAP || '-'}}</p>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12">
+                                        <p class="blue"><strong>Remitente comercial</strong></p>
+                                        <p style="width:100%">
+                                            <ng-container *ngIf="ordenDeCarga.CUITRemitenteComercial; else emptyField">
+                                                {{ordenDeCarga.RazonSocialCliente}}
+                                                ({{ordenDeCarga.CUITRemitenteComercial}})
+                                            </ng-container>
+                                            <ng-template #emptyField>-</ng-template>
+                                        </p>
+                                    </div>
                                     <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
                                         <p class="blue"><strong>Destinatario</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.RazonSocialDestinatario}}
@@ -231,6 +238,11 @@
                                             [(ngModel)]="ordenDeCarga.Escalable" [disabled]="true"></p-checkbox>
                                     </div>
 
+                                    <div class="col-xs-12 col-md-12" *ngIf="esInterno || esComercial || esMesaFas">
+                                        <p class="blue"><strong>Flete MOA</strong></p>
+                                        <p-checkbox name="escalable" [binary]="true" [(ngModel)]="ordenDeCarga.FleteMOA"
+                                            [disabled]="true"></p-checkbox>
+                                    </div>
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Fecha</strong></p>
                                         <p style="width:100%">{{ordenDeCarga.FechaCarga}}</p>
@@ -525,21 +537,9 @@
                                 <input type="button" (click)="abrirModalActivarOC()"
                                     class="btn-custom btn-add btn-grande" value="Activar OC">
                             </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="abrirModalAnular()"
-                                    class="btn-custom btn-remove btn-grande" value="Aprobar Anulacion">
-                            </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonAprobarRechazarAnulacion">
-                                <input type="button" (click)="confirmarRSA(ordenDeCarga.Id)"
-                                    class="btn-custom btn-remove btn-grande" value="Rechazar Anulacion">
-                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonSolicitarAnulacion">
                                 <input type="button" (click)="confirmarSA(ordenDeCarga.Id)"
                                     class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
-                            </div>
-                            <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonEdicionFinalizada">
-                                <input type="button" (click)="abrirModalEdicionFinalizada()"
-                                    class="btn-custom btn-remove btn-grande" value="Edición finalizada">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="mostrarBotonVolverADetalle">
                                 <input type="button" (click)="navegarADetalle()" class="btn-custom btn-add btn-grande"
@@ -721,6 +721,7 @@
                     <h4 class="modal-title" id="modalAnularOrden">Anular orden</h4>
                 </div>
                 <div class="modal-body">
+                    <spinner #spinnerModalAnulacion></spinner>
                     <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
                         {{mensajeValidacionScato}}
                     </div>
@@ -734,7 +735,7 @@
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano" (click)="anularOrden()"
-                        style="display: inline-flex;">
+                        style="display: inline-flex;" [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
 
@@ -758,6 +759,10 @@
                     <h4 class="modal-title" id="modalAnularOrdenVencimiento">Anular orden</h4>
                 </div>
                 <div class="modal-body">
+                    <spinner #spinnerModalAnulacionVencimiento></spinner>
+                    <div *ngIf="mensajeValidacionScato" class="row" class="col-xs-12 col-sm-12 col-md-12 alertScato">
+                        {{mensajeValidacionScato}}
+                    </div>
                     <div class="row" class="col-xs-12 col-sm-12 col-md-12">
                         ¿Está seguro de que desea anular la orden de carga?
                     </div>
@@ -768,52 +773,10 @@
                         Cancelar
                     </button>
                     <button type="button" class="btn-custom btn-remove btn-mediano"
-                        (click)="anularOrdenPorVencimiento()" style="display: inline-flex;">
+                        (click)="anularOrdenPorVencimiento()" style="display: inline-flex;"
+                        [disabled]="validandoEstadoScato">
                         Anular orden
                     </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!--Modal edición finalizada-->
-    <button type="button" style="display:none" id="openEdicionFinalizada" data-toggle="modal"
-        data-target="#modalEdicionFinalizada"></button>
-    <!-- Modal -->
-    <div class="modal fade" id="modalEdicionFinalizada" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="modalEdicionFinalizada">Edicion finalizada</h4>
-                </div>
-                <div class="modal-body">
-                    <div *ngIf="mensajeValidacionScato" class="row"
-                        class="col-xs-12 col-sm-12 col-md-12 alertScato text-center">
-                        {{mensajeValidacionScato}}
-                    </div>
-                    <div class="row" class="col-xs-12 col-sm-12 col-md-12 text-center">
-                        ¿Está seguro de que desea finalizar la edición de la orden de carga?
-                    </div>
-                    <br>
-                </div>
-                <div class="modal-footer" style="border-top:none;">
-                    <button type="button" class="btn-custom btn-cerrar btn-chico" data-dismiss="modal"
-                        id="closemodalEdicionFinalizada" style="display: inline-flex;">
-                        Cancelar
-                    </button>
-                    <button type="button" class="btn-custom btn-success btn-mediano" (click)="edicionFinalizada('A')"
-                        style="display: inline-flex;">
-                        Aprobar
-                    </button>
-                    <button type="button" class="btn-custom btn-remove btn-mediano" (click)="edicionFinalizada('R')"
-                        style="display: inline-flex;">
-                        Rechazar
-                    </button>
-
                 </div>
             </div>
         </div>

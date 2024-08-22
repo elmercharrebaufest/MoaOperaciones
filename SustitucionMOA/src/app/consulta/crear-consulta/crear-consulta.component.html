@@ -93,8 +93,8 @@
                                     {{rubroSelected.caracteristica}} - {{rubroSelected.resultadoCalado}} (Calado) -
                                     Valor sugerido
                                 </span>
-                                <Input placeholder="%" style="width:55px"
-                                    [(ngModel)]="rubroSelected.discrepanciaCalidad" />
+                                <Input placeholder="%" style="width:55px" [name]="rubroSelected.caracteristica"
+                                    ngDefaultControl [(ngModel)]="rubroSelected.discrepanciaCalidad" />
                             </div>
                         </div>
                     </div>

@@ -10,6 +10,9 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
         public string Material { get; set; }
         [Required]
         public string CodigoProveedor { get; set; }
+        public bool TieneAnticipo { get; set; }
+
+        public ContratoParaAplicacionCartaPorte() { }
 
         public ContratoParaAplicacionCartaPorte(string numeroContrato, string material, string codigoProveedor)
         {

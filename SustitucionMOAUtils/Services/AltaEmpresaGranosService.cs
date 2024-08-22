@@ -483,8 +483,14 @@ namespace SustitucionMOAUtils.Services
                 if (proveedor.CorrespondeAltaSolicitada())
                 {
                     estadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-                    proveedor.EstadoAprobacion = estadoAprobacion;
                 }
+                if (proveedor.CorrespondeEstadoPrevio())
+                {
+                    var estadoPrevioAActual = proveedor.EstadoPrevioAActual();
+                    estadoAprobacion = estadoPrevioAActual != null ? (EstadoAprobacion)estadoPrevioAActual :estadoAprobacion;
+                }
+
+                proveedor.EstadoAprobacion = estadoAprobacion;
 
                 proveedor.HistorialAprobaciones.Add(
                     new ProveedorHistorialAprobacion
@@ -672,12 +678,12 @@ namespace SustitucionMOAUtils.Services
 
             if (proveedor.SiperObligatorio ?? false)
             {
-                if(!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
+                if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.SIPER))
                 {
                     throw new ValidationCustomException(string.Format(ErrorMsg.ErrorArchivoRequerido, "SIPER"));
                 }
             }
-            if(proveedor.AltaInterna ?? false)
+            if (proveedor.AltaInterna ?? false)
             {
                 if (!proveedor.Archivos.Any(f => f.FileKey == FileKeys.DeclaracionVinculosAltaInterna))
                 {
@@ -692,6 +698,9 @@ namespace SustitucionMOAUtils.Services
         {
             var usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
             if (usuario == null) throw new InfoCustomException(string.Format(InfoMsg.ElementoNoExiste, "Usuario", mailUsuario));
+
+            if (repositorio.Existe<Proveedor>(p=>p.CUIT == cuit && p.Mail == mailVendedor)) 
+                throw new InfoCustomException("El mail ya tiene registrado esta CUIT");
 
             if (cuit == null || cuit == "") throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "CUIT"));
             if (usuario.Proveedores.Where(x => x.CUIT == cuit).Any()) throw new ValidationCustomException(ErrorMsg.ErrorVendedorRepetido);
@@ -984,7 +993,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             proveedor.EstadoAprobacion = EstadoAprobacion.AprobacionPendiente;
-            proveedor.VinculoConEmpleadosDeMolinos = (altaEmpresa.VinculoConEmpleadosDeMolinos.HasValue 
+            proveedor.VinculoConEmpleadosDeMolinos = (altaEmpresa.VinculoConEmpleadosDeMolinos.HasValue
                 && altaEmpresa.VinculoConEmpleadosDeMolinos == true) ? true : false;
             proveedor.VinculoConFuncionariosPublicos = (altaEmpresa.VinculoConFuncionariosPublicos.HasValue
                 && altaEmpresa.VinculoConFuncionariosPublicos == true) ? true : false;
@@ -999,7 +1008,7 @@ namespace SustitucionMOAUtils.Services
                     Usuario_Id = usuario.Id,
                 }
             );
-            
+
             repositorio.GuardarCambios();
 
             if (ValidarDDJJ(altaEmpresa))

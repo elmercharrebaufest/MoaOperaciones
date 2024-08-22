@@ -150,15 +150,29 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult EditarProveedorNoGranos(int proveedorId, string razonSocial, string cuit, string email, string telefono, bool realizarAnalisisNOSIS, int IdRubro, string CondicionDePago
-            , string ServicioPrestado, string OrganizacionDeCompra, string RazonDeEleccion, int FacturacionAnual, string usuarioMail
-            , bool requiereVerificacionCompras, bool ingresoAPlanta, bool altaInterna, bool siperObligatorio)
+        public ActionResult EditarProveedorNoGranos(
+            int proveedorId,
+            string razonSocial,
+            string cuit,
+            string email,
+            string telefono,
+            bool realizarAnalisisNOSIS,
+            int? IdRubro,
+            string CondicionDePago,
+            string ServicioPrestado,
+            string OrganizacionDeCompra,
+            string RazonDeEleccion,
+            int? FacturacionAnual,
+            bool requiereVerificacionCompras,
+            bool ingresoAPlanta,
+            bool altaInterna,
+            bool siperObligatorio)
         {
             try
             {
-                return JsonCustom(altaEmpresaNoGranosService.EditarAltaEmpresaNoGranos(proveedorId, razonSocial, cuit, email, telefono, realizarAnalisisNOSIS, 
-                IdRubro, CondicionDePago, ServicioPrestado, OrganizacionDeCompra, RazonDeEleccion, FacturacionAnual
-                ,requiereVerificacionCompras, ingresoAPlanta, altaInterna, siperObligatorio));
+                return JsonCustom(altaEmpresaNoGranosService.EditarAltaEmpresaNoGranos(proveedorId, razonSocial, cuit,
+                    email, telefono, realizarAnalisisNOSIS, IdRubro, CondicionDePago, ServicioPrestado, OrganizacionDeCompra,
+                    RazonDeEleccion, FacturacionAnual, requiereVerificacionCompras, ingresoAPlanta, altaInterna, siperObligatorio));
             }
             catch (InfoCustomException e)
             {

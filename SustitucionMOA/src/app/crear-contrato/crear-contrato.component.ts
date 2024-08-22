@@ -823,7 +823,7 @@ export class CrearContratoBaseComponent extends ListBaseComponent implements OnI
     }
 
     isVisibleGrabar() {
-        return !this.spinnerComponent.visible;
+        return !this.spinnerComponent.visible.value;
     }
     isMaterialSeleccionado(material: string) {
         return this.materialSeleccionado == "" || this.materialSeleccionado == material;

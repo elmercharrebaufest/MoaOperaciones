@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.CuentaCorrienteWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -71,7 +71,7 @@ namespace SustitucionMOAWS.CuentaCorrienteWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -117,6 +117,14 @@ namespace SustitucionMOAWS.CuentaCorrienteWebServiceMOA {
         private string dOC_NOField;
         
         private string fISC_YEARField;
+        
+        private string cON_PRECIOField;
+        
+        private string pAGO_DIF_ARPField;
+        
+        private string dOC_PAGO_DIF_ARPField;
+        
+        private string fECHA_PAGO_DIF_ARPField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
@@ -358,6 +366,54 @@ namespace SustitucionMOAWS.CuentaCorrienteWebServiceMOA {
             }
         }
         
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=15)]
+        public string CON_PRECIO {
+            get {
+                return this.cON_PRECIOField;
+            }
+            set {
+                this.cON_PRECIOField = value;
+                this.RaisePropertyChanged("CON_PRECIO");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=16)]
+        public string PAGO_DIF_ARP {
+            get {
+                return this.pAGO_DIF_ARPField;
+            }
+            set {
+                this.pAGO_DIF_ARPField = value;
+                this.RaisePropertyChanged("PAGO_DIF_ARP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=17)]
+        public string DOC_PAGO_DIF_ARP {
+            get {
+                return this.dOC_PAGO_DIF_ARPField;
+            }
+            set {
+                this.dOC_PAGO_DIF_ARPField = value;
+                this.RaisePropertyChanged("DOC_PAGO_DIF_ARP");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=18)]
+        public string FECHA_PAGO_DIF_ARP {
+            get {
+                return this.fECHA_PAGO_DIF_ARPField;
+            }
+            set {
+                this.fECHA_PAGO_DIF_ARPField = value;
+                this.RaisePropertyChanged("FECHA_PAGO_DIF_ARP");
+            }
+        }
+        
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         
         protected void RaisePropertyChanged(string propertyName) {
@@ -369,7 +425,7 @@ namespace SustitucionMOAWS.CuentaCorrienteWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]

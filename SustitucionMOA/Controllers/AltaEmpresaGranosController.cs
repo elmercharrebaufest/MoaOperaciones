@@ -472,7 +472,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_EMPRESAS)]
         public ActionResult DescargarArchivo(string mail, int archivoID, int proveedorId)
         {
             try

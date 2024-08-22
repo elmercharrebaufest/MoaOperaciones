@@ -34,6 +34,16 @@
                         </div>
                     </div>
 
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">RENSPA <span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="text" pInputText [(ngModel)]="renspa" class="fourRounded"
+                                    aria-controls="tableModal" mask="00.000.0.00000/00">
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row myRow cargaDeDatosFields" *ngIf="esCorredor">
                         <div class="col-xs-12 col-sm-12 col-md-3">
                             <p class="crearConsultaTitulos">Modo de ingreso</p>
@@ -50,7 +60,7 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-12 col-md-6">
-
+                            
                         </div>
                     </div>
 

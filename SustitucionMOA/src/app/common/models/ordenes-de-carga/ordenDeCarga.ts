@@ -56,10 +56,13 @@ export class OrdenDeCarga {
     Escalable: boolean;
     NecesitaVerificarCuitsTerceros: boolean;
     DestinoMercaderia: string;
+    FleteMOA: boolean;
     constructor() {
     }
     TienePatentesRepetidas?: boolean;
     OrdenesConPatentesRepetidas?: number[];
+
+    CUITRemitenteComercial?: number
 }
 export type CuitValidaExistencia = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino">;
 export type CuitValidaSISA = keyof Pick<OrdenDeCarga, "CUITDestinatario" | "CUITDestino" | "CUITCorredor" | "CUITCliente">;
