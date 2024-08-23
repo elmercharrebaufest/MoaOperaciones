@@ -1,4 +1,6 @@
-﻿using HandlebarsDotNet;
+﻿// Ignore Spelling: Solp
+
+using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
@@ -3453,10 +3455,9 @@ namespace SustitucionMOAUtils.Services
 
         public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
-            var solpsSAP = new List<string>();
             var solps = new List<string>();
             string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (listarPendiente == true)
+            if (listarPendiente)
             {
                 solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
@@ -3477,30 +3478,19 @@ namespace SustitucionMOAUtils.Services
 
             var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
 
-            if (todasLasSolp != null && todasLasSolp.Count() > 0)
+            if (todasLasSolp?.Any() == true)
             {
                 var listId = todasLasSolp.Select(y => y.Id.Value).ToList();
                 var solpsDB = repositorio.Listar<Solp>(x => listId.Contains(x.Id));
-                todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
-                if (listarPendiente == true)
+                todasLasSolp.First().ItemsTotales = todasLasSolp.ItemsTotales;
+                if (listarPendiente)
                 {
-                    todasLasSolp.FirstOrDefault().ItemPorPagina = todasLasSolp.Count();
+                    todasLasSolp.First().ItemPorPagina = todasLasSolp.Count();
                 }
                 else
                 {
-                    todasLasSolp.FirstOrDefault().ItemPorPagina = 10;
+                    todasLasSolp.First().ItemPorPagina = 10;
                 }
-                var solpIds = solpsDB != null ? solpsDB.Select(solp => solp.Id) : null;
-
-                var adjudicaciones = new List<Adjudicacion>();
-                if (solpIds != null)
-                {
-                    adjudicaciones = repositorio.Listar<Adjudicacion>(adju => adju.Posiciones
-                 .Any(posi => solpIds.Contains(posi.Posicion.Solp_Id)));
-                }
-
-
-                //Unable to create a constant value of type 'SustitucionMOAModel.Entities.Solp'.Only primitive types or enumeration types are supported in this context.
 
                 foreach (var item in todasLasSolp.Items)
                 {
@@ -3515,21 +3505,6 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         var solpDB = solpsDB.First(i => i.Id == item.Id);
-                        //if (item.PosicionCompras.First().TipoPosicion.Codigo == "SERVICIO")
-                        //{
-                        //    if (adjudicaciones.Any(x => x.Posiciones.Any(posi => posi.Posicion.Solp_Id == solpDB.Id)))
-                        //    {
-                        //        item.VerPublicar = false;
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    var verPublicarDeshabilitado = solpDB.Posiciones.All(d => d.Cantidad <= d.AdjudicacionPosiciones.Sum(ap => ap.Cantidad));
-                        //    if (verPublicarDeshabilitado)
-                        //    {
-                        //        item.VerPublicar = false;
-                        //    }
-                        //}
 
                         if (solpDB.CondEspProveedorAsignado == true)
                         {
