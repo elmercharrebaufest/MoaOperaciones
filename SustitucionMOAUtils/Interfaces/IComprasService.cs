@@ -120,5 +120,6 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
         byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);
         byte[] GenerarHistorialCotizaciones(int cotizacionId);
+        byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId);
     }
 }

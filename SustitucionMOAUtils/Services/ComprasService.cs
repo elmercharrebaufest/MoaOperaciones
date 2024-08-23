@@ -4720,16 +4720,12 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var solp in solps.Distinct())
             {
-
                 var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
                 var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
                 var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
-
-
-
 
                 if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                 {
@@ -5081,23 +5077,10 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            foreach (var cotizacion in GetCotizacionesDescargables(peticion))
-            {
-                var fechaCotizacion = cotizacion.FechaCreacion;
-                legajo.Add(new LegajoDto
-                {
-                    ArchivoId = cotizacion.Id,
-                    Fecha = fechaCotizacion,
-                    FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
-                    Leido = false,
-                    Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
-                    PeticionDeOfertaId = peticion.Id,
-                    SolpId = 0,
-                    Tipo = TipoLegajo.Cotizacion,
-                    Usuario = null,
-                    UsuarioId = 0
-                });
-            }
+            AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion);
+
+            AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
+
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
 
@@ -5275,6 +5258,15 @@ namespace SustitucionMOAUtils.Services
                         File.WriteAllBytes(rutaHistorial, historialBytes);
                         archivo.CreateEntryFromFile(rutaHistorial, $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
                     }
+
+                    // Agregar revisión ténica al zip
+                    if (peticion?.RevisionTecnica != null)
+                    {
+                        var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
+                        var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
+                        File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
+                        archivo.CreateEntryFromFile(rutaRevisionTecnica, $"RevTec{peticion.Id}.xlsx");
+                    }
                 }
             }
             return filePath;
@@ -5285,6 +5277,13 @@ namespace SustitucionMOAUtils.Services
             var historialCotizaciones = ObtenerHistorial(cotizacionId);
 
             return comprasArchivosService.GenerarExcelHistorialCotizaciones(historialCotizaciones);
+        }
+
+        public byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+
+            return comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
         }
 
         private byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
@@ -10496,6 +10495,47 @@ namespace SustitucionMOAUtils.Services
         private CrearSolpConsumerMOAResponse CrearOActualizarRegistrosInfoEnSap(List<RegistroInfoDto> registros)
         {
             return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
+        }
+
+        private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion)
+        {
+            foreach (var cotizacion in GetCotizacionesDescargables(peticion))
+            {
+                var fechaCotizacion = cotizacion.FechaCreacion;
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = cotizacion.Id,
+                    Fecha = fechaCotizacion,
+                    FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
+                    Leido = false,
+                    Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
+                    PeticionDeOfertaId = peticion.Id,
+                    SolpId = 0,
+                    Tipo = TipoLegajo.Cotizacion,
+                    Usuario = null,
+                    UsuarioId = 0
+                });
+            }
+        }
+
+        private void AgregarALegajoDescargaRevisionTecnica(List<LegajoDto> legajo, PeticionDeOferta peticion)
+        {
+            if (peticion?.RevisionTecnica != null)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = peticion.Id,
+                    Fecha = peticion.RevisionTecnica.Fecha,
+                    FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                    Leido = false,
+                    Observacion = "Revisión técnica",
+                    PeticionDeOfertaId = peticion.Id,
+                    SolpId = 0,
+                    Tipo = TipoLegajo.RevisionTecnica,
+                    Usuario = null,
+                    UsuarioId = 0
+                });
+            }
         }
 
         private IEnumerable<Cotizacion> GetCotizacionesDescargables(PeticionDeOferta peticion)

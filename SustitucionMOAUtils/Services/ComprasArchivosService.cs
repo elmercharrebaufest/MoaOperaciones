@@ -86,6 +86,52 @@ namespace SustitucionMOAUtils.Services
             return memStream.ToArray();
         }
 
+        public byte[] GenerarExcelRevisionTecnica(PeticionDeOferta peticion)
+        {
+            var revisionTecnica = peticion.RevisionTecnica;
+            var solpNro = peticion.Posiciones.First().SolpPosicion.Solp.NroSolp;
+
+            var memStream = new MemoryStream();
+            using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+            {
+                var workbookPart = document.AddWorkbookPart();
+                workbookPart.Workbook = new Workbook();
+                var sheets = workbookPart.Workbook.AppendChild(new Sheets());
+
+                var worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                worksheetPart.Worksheet = new Worksheet();
+
+                sheets.Append(new Sheet
+                {
+                    Id = workbookPart.GetIdOfPart(worksheetPart),
+                    SheetId = new UInt32Value(1U),
+                    Name = new StringValue("Revisión técnica")
+                });
+                var sheetData = worksheetPart.Worksheet.AppendChild(new SheetData());
+                var rowIndex = 1U;
+
+                AgregarTabla(sheetData, $"SOLP: {solpNro}",
+                    new List<string> { "Fecha", "Recotización económica", "Modificación SOLP", "Observación recotización", "Finalizada", "Fecha finalización" },
+                    new List<List<string>> { new List<string>
+                    {
+                        revisionTecnica.Fecha.ToString(),
+                        revisionTecnica.RecotizacionEconomica ? "Sí" : "No",
+                        revisionTecnica.ModificacionSolp == true  ? "Sí" : "No",
+                        revisionTecnica.ObservacionRecotizacion,
+                        revisionTecnica.Finalizada ? "Sí" : "No",
+                        revisionTecnica.FechaFinalizacion?.ToString()
+                    } },
+                    ref rowIndex);
+
+                var columnas = AjustarColumnas(sheetData);
+                worksheetPart.Worksheet.InsertAt(columnas, 0);
+
+                var workbookStylesPart1 = workbookPart.AddNewPart<WorkbookStylesPart>("rId3");
+                GenerateWorkbookStylesPartContent(workbookStylesPart1);
+            }
+            return memStream.ToArray();
+        }
+
         private void AgregarTabla(SheetData sheetData, string titulo, List<string> cabeceras, List<List<string>> valores, ref uint rowIndex)
         {
             if (!string.IsNullOrEmpty(titulo))

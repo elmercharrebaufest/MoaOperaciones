@@ -15,6 +15,7 @@ export namespace LegajoTipo {
     export const CierreOferta = "Cierre de Oferta"
     export const Circular = "Circular"
     export const Cotizacion = "Cotización"
+    export const HistorialMovimientos = "HistorialMovimientos"
     export const Legajo = "Legajo"
     export const PeticionDeOferta = "Petición de Oferta"
     export const PeticionDeOfertaAgrupada = "Petición de Oferta Agrupada"
@@ -23,5 +24,4 @@ export namespace LegajoTipo {
     export const RevisionTecnica = "Revisión tecnica"
     export const Solp = "SOLP"
     export const SolpArchivos = "SOLP Archivos"
-    export const HistorialMovimientos = "HistorialMovimientos"
 }
