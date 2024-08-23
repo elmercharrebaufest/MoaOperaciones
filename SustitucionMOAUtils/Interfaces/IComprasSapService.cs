@@ -7,6 +7,6 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasSapService
     {
-        IEnumerable<PosicionSolpSAP> ObtenerPendientesAdjudicar(string numeroSolpe);
+        IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolpe);
     }
 }

@@ -3,6 +3,7 @@
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -19,11 +20,13 @@ namespace SustitucionMOAUtils.Services
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
-        public IEnumerable<PosicionSolpSAP> ObtenerPendientesAdjudicar(string numeroSolpe)
+        public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolpe)
         {
             ObtenerSolpRequest request = new ObtenerSolpRequest()
             {
                 NumeroSolp = numeroSolpe,
+                FechaDesde = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                FechaHasta = DateTime.Today.AddDays(1),
             };
 
             ObtenerSolpSAPResponse response = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(request);
