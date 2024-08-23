@@ -12,6 +12,7 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
@@ -33,6 +34,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.SqlServer;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -43,8 +45,6 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using SustitucionMOAModel.Dto.Compras;
-using System.Data.Entity.SqlServer;
 
 
 namespace SustitucionMOAUtils.Services
@@ -86,6 +86,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasArchivosService comprasArchivosService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
+        private readonly IComprasSapService comprasServiceSap;
+
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
@@ -112,7 +114,8 @@ namespace SustitucionMOAUtils.Services
             IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
-            IComprasArchivosService comprasArchivosService)
+            IComprasArchivosService comprasArchivosService,
+            IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -145,6 +148,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
             this.comprasArchivosService = comprasArchivosService;
+            this.comprasServiceSap = comprasServiceSap;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -2157,33 +2161,6 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
-                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
-                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
-                                    )
-        {
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = numeroSolp,
-                CentroLogistico = centroLogistico,
-                FiltroTipoPosicion = filtroTipoPosicion,
-                IndicadorDeLiberacion = indicadorDeLiberacion,
-                OrigenCreacion = origenCreacion,
-                CreadoPorUsuarios = creadoPorUsuarios,
-                TipoDeImputacion = tipoDeImputacion,
-                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
-                ObtenerImputacion = ObtenerImputacion,
-                ObtenerServicios = ObtenerServicios,
-                MostrarItemsBorrados = MostrarItemsBorrados,
-
-            };
-            var solps = obtenerSolpConsumerMOA.Request(filtros);
-
-            return solps;
-        }
-
         public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
         {
             var ret = new List<TablaSapDto>();
@@ -3530,24 +3507,29 @@ namespace SustitucionMOAUtils.Services
                     item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
                     item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
 
-                    if (item.VerPublicar == true && item.PosicionCompras.Count() > 0)
+                    if (item.VerPublicar && item.PosicionCompras.Any())
                     {
+                        if (comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any())
+                        {
+                            item.VerPublicar = false;
+                        }
+
                         var solpDB = solpsDB.First(i => i.Id == item.Id);
-                        if (item.PosicionCompras.First().TipoPosicion.Codigo == "SERVICIO")
-                        {
-                            if (adjudicaciones.Any(x => x.Posiciones.Any(posi => posi.Posicion.Solp_Id == solpDB.Id)))
-                            {
-                                item.VerPublicar = false;
-                            }
-                        }
-                        else
-                        {
-                            var verPublicarDeshabilitado = solpDB.Posiciones.All(d => d.Cantidad <= d.AdjudicacionPosiciones.Sum(ap => ap.Cantidad));
-                            if (verPublicarDeshabilitado)
-                            {
-                                item.VerPublicar = false;
-                            }
-                        }
+                        //if (item.PosicionCompras.First().TipoPosicion.Codigo == "SERVICIO")
+                        //{
+                        //    if (adjudicaciones.Any(x => x.Posiciones.Any(posi => posi.Posicion.Solp_Id == solpDB.Id)))
+                        //    {
+                        //        item.VerPublicar = false;
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    var verPublicarDeshabilitado = solpDB.Posiciones.All(d => d.Cantidad <= d.AdjudicacionPosiciones.Sum(ap => ap.Cantidad));
+                        //    if (verPublicarDeshabilitado)
+                        //    {
+                        //        item.VerPublicar = false;
+                        //    }
+                        //}
 
                         if (solpDB.CondEspProveedorAsignado == true)
                         {
