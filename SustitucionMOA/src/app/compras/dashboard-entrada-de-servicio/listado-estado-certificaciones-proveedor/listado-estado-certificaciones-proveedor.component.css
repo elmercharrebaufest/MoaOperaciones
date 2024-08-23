@@ -81,7 +81,6 @@ i#btn-fullscreen {
   border-top: 0.5px solid #959595;
   border-left: 0.5px solid #959595;
   border-right: 0.5px solid #959595;
-  border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   width: max-content;
   background: white;
@@ -350,4 +349,24 @@ td.anulador:hover {
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .table-options{
+    display: flex;
+  }
+
+
+  .refresh-row{
+    padding: 4px 8px;
+    border-top: 0.5px solid #959595;
+    border-left: 0.5px solid #959595;
+    border-top-left-radius: 5px;
+    width: max-content;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    i {
+        cursor: pointer;
+    }
   }

@@ -959,6 +959,17 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     return `${coin}${montoFormatted}`;
   }
 
+  refreshDataTable(){
+    if(this.estadoCertificacion.code === 'Aprobada' && !this.recalculandoAprobadas){
+      this.recalculandoAprobadas = true;
+      this.obtenerESSap(this.proveedor, this.documentoNumero);
+    } 
+    if((this.estadoCertificacion.code === 'Aprobada' || this.estadoCertificacion.code === 'Pendiente Aprobación' || this.estadoCertificacion.code === 'Rechazado' || this.estadoCertificacion.code === 'Anulada') && !this.recalculandoAprobadas) {
+      this.recalculando = true;
+      this.getListarPO(); // No mover.
+    }
+  }
+
 
     isAuthorized(permiso: string) {
         return this.securityService.tienePermiso(permiso);

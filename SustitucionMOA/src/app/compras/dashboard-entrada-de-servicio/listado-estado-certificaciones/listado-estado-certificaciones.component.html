@@ -21,33 +21,38 @@
     <p-messages [value]="msgs"></p-messages>
 
     <div class="container-tabla">
-        <!-- FILTERS -->
-        <div class="filters-row">
-            <i class="pi pi-filter"></i>
-            <div class="filtro-oc">
-                <input class="filtro-oc-input" pInputText type="text" (input)="
-                        tabla.filter($event.target.value, 'OrdenCompra' ,'contains')
-                    " placeholder="Busqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
+        <div class="table-options">
+            <div class="refresh-row">
+                <i class="pi pi-refresh" [style.cursor]="recalculando || recalculandoAprobadas ? 'no-drop' : 'pointer'" (click)="refreshDataTable()"></i>
             </div>
-            <div class="filtro-usuario" *ngIf="isAll">
-                <input class="filtro-usuario-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'Ingresante', 'contains')" 
-                placeholder="Busqueda por usuario" [disabled]="(recalculando && !isAll)" />
+            <!-- FILTERS -->
+            <div class="filters-row">
+                <i class="pi pi-filter"></i>
+                <div class="filtro-oc">
+                    <input class="filtro-oc-input" pInputText type="text" (input)="
+                            tabla.filterGlobal($event.target.value, 'contains')
+                        " placeholder="Busqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
+                </div>
+                <div class="filtro-usuario" *ngIf="isAll">
+                    <input class="filtro-usuario-input" pInputText type="text" (input)="tabla.filter($event.target.value, 'Ingresante', 'contains')" 
+                    placeholder="Busqueda por usuario" [disabled]="(recalculando && !isAll)" />
+                </div>
+                <div class="filtro-estado-certificacion">
+                    <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
+                        (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')"
+                        [options]="listadoEstadoCertificacion"
+                        placeholder="Seleccione un estado de certificación"></p-dropdown>
+                </div>
+    
+                <div *ngIf="havePermission">
+                    <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver
+                        todo</button>
+                    <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
+                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver Propias</button>
+                </div>
             </div>
-            <div class="filtro-estado-certificacion">
-                <p-dropdown [(ngModel)]="estadoCertificacion" id="select-estado-certificacion"
-                    (onChange)="filtrarPorEstado($event)" optionLabel="name" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')"
-                    [options]="listadoEstadoCertificacion"
-                    placeholder="Seleccione un estado de certificación"></p-dropdown>
-            </div>
-
-            <div *ngIf="havePermission">
-                <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver
-                    todo</button>
-                <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
-                    [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver Propias</button>
-            </div>
+            <!-- FILTERS END -->
         </div>
-        <!-- FILTERS END -->
         <!-- TABLE 1 -->
         <p-table #tabla class="level1"
             [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
