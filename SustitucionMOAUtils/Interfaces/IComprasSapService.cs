@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IComprasServiceSap
+    public interface IComprasSapService
     {
         IEnumerable<PosicionSolpSAP> ObtenerPendientesAdjudicar(string numeroSolpe);
     }

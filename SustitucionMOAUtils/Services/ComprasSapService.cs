@@ -9,11 +9,11 @@ using System.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class ComprasServiceSap : IComprasServiceSap
+    public class ComprasSapService : IComprasSapService
     {
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
-        public ComprasServiceSap(IObtenerSolpConsumerMOA obtenerSolpConsumerMOA
+        public ComprasSapService(IObtenerSolpConsumerMOA obtenerSolpConsumerMOA
             )
         {
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
