@@ -2181,6 +2181,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         public ActionResult DescargarArchivoHistorialMovimientos(int idPeticionOferta)
         {
             try
@@ -2206,6 +2207,27 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        [HttpGet]
+        public ActionResult DescargarRevisionTecnica(int peticionDeOfertaId)
+        {
+            var response = new SustitucionMOAApiResponse<string>();
+            try
+            {
+                var ms = service.GenerarArchivoRevisionTecnica(peticionDeOfertaId);
+                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "RevisionTecnica.xlsx"));
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
     }
 }

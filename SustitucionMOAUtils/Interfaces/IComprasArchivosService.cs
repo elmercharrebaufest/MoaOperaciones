@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,5 +12,6 @@ namespace SustitucionMOAUtils.Interfaces
     public interface IComprasArchivosService
     {
         byte[] GenerarExcelHistorialCotizaciones(List<CotizacionHistorialDto> historialCotizaciones);
+        byte[] GenerarExcelRevisionTecnica(PeticionDeOferta peticion);
     }
 }

@@ -88,8 +88,12 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
         }
         else if (tipoLegajo == LegajoTipo.Cotizacion && archivoId) {
             this.descargarHistorialCotizaciones(archivoId);
-        } else if (tipoLegajo == LegajoTipo.HistorialMovimientos) {
+        }
+        else if (tipoLegajo == LegajoTipo.HistorialMovimientos) {
             this.descargarHistorialMovimientos();
+        }
+        else if (tipoLegajo == LegajoTipo.RevisionTecnica && archivoId) {
+            this.descargarRevisionTecnica(archivoId);
         }
     }
 
@@ -195,6 +199,24 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     private descargarHistorialCotizaciones(cotizacionId: number) {
         this.blockUI.start("Descargando...");
         this.service.descargarHistorialCotizaciones(cotizacionId).subscribe(
+            (response) => {
+                var byteArray = new Uint8Array(response.FileContents);
+                var blob = new Blob([byteArray], {
+                    type: "application/octet-stream",
+                });
+                this.downloadArchivoLocal(blob, response.FileDownloadName);
+                this.blockUI.stop();
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
+    }
+
+    private descargarRevisionTecnica(peticionDeOfertaId: number) {
+        this.blockUI.start("Descargando...");
+        this.service.descargarRevisionTecnica(peticionDeOfertaId).subscribe(
             (response) => {
                 var byteArray = new Uint8Array(response.FileContents);
                 var blob = new Blob([byteArray], {

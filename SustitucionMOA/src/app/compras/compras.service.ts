@@ -1513,9 +1513,22 @@ export class ComprasService extends BaseService {
             .pipe(timeoutWith(120000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
     descargarArchivoHistorialMovimientos(idPeticionOferta: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("idPeticionOferta", idPeticionOferta.toString());
         return this.http.get("/api/compras/DescargarArchivoHistorialMovimientos", { params });
+    }
+
+    descargarRevisionTecnica(peticionDeOfertaId: number): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append('peticionDeOfertaId', peticionDeOfertaId.toString());
+
+        return this.http
+            .get<ApiResponse<string>>(
+                '/api/compras/DescargarRevisionTecnica',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(120000,
+                throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }
