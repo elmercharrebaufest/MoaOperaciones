@@ -62,6 +62,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
         private Mock<IEmailComprasService> mIEmailComprasService;
         private Mock<IComprasArchivosService> mIComprasArchivosService;
+        private Mock<IComprasSapService> comprasSapService;
 
         private GuardarCotizacion guardarCotizacionToClone()
         {
@@ -740,6 +741,7 @@ namespace SustitucionMOATest.Services
             obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
             mIEmailComprasService = new Mock<IEmailComprasService>();
             mIComprasArchivosService = new Mock<IComprasArchivosService>();
+            comprasSapService = new Mock<IComprasSapService>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
@@ -774,7 +776,8 @@ namespace SustitucionMOATest.Services
                 obtenerPDFOrdenCompraConsumerMOAMock.Object,
                 obtenerAdjuntosSOLPEDConsumerMOAMock.Object,
                 mIEmailComprasService.Object,
-                mIComprasArchivosService.Object
+                mIComprasArchivosService.Object,
+                comprasSapService.Object
                 );
         }
 
