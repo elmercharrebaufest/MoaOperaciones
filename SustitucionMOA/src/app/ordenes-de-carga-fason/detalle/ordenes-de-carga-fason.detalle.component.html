@@ -38,8 +38,10 @@
                 <p-confirmDialog #dialogoRSA key="confirmarRSA" header="Confirmación de solicitud de anulación"
                     [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoRSA.reject()"></button>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoRSA.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoRSA.accept()"></button>
                     </p-footer>
@@ -58,8 +60,10 @@
                 <p-confirmDialog #dialogoConfirmarEdicion key="confirmarSolicitudEdicion"
                     header="Confirmación de edición" [responsive]="true" appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoConfirmarEdicion.reject()"></button>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoConfirmarEdicion.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoConfirmarEdicion.accept()"></button>
                     </p-footer>

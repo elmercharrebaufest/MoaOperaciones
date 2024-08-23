@@ -93,7 +93,7 @@ namespace SustitucionMOAUtils.Services
 
             var contratos = ObtenerContratosDisponibles(aplicacionesDisponiblesSap.Contratos);
 
-            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(codigoProveedor);
+            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
             var cartasPorte = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesDeProcesar);
 
             return new ComboAplicacionesContratosCcppResponse { CartasPorte = cartasPorte, Contratos = contratos };
@@ -112,7 +112,8 @@ namespace SustitucionMOAUtils.Services
             if (!aplicacionACrear.ValidarContrato(contratosValidos))
                 throw new InfoCustomException("Revisar contrato seleccionado.");
 
-            var aplicacionesPendientesAplicar = ObtenerAplicacionesPendientesDeProcesar(aplicacionACrear.ContratoSeleccionado.CodigoProveedor);
+
+            var aplicacionesPendientesAplicar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
             var cartasPorteValidas = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesAplicar);
 
             if (!aplicacionACrear.ValidarCartaPorteSeleccionada(cartasPorteValidas))
@@ -149,7 +150,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("No se encontraron contratos disponibles en SAP");
             }
 
-            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(proveedorCodigo);
+            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
 
             var cartasPorteDisponibles = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesDeProcesar);
             if (!cartasPorteDisponibles.Any())
@@ -256,7 +257,8 @@ namespace SustitucionMOAUtils.Services
               IEnumerable<AplicacionCartaPorte> aplicacionesPendientesDeProcesar)
         {
             return cartasDePorte
-                .Select(cp => {
+                .Select(cp =>
+                {
                     var kgPendientesCargados = aplicacionesPendientesDeProcesar
                        .Where(appPendiente => appPendiente.CartaPorte == cp.NumeroCartaPorte)
                        .Sum(appPendiente => appPendiente.Kilogramos);
@@ -280,11 +282,11 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado,bool esCodigoCorredor)
+        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado, bool esCodigoCorredor)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
             if (
-                usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado) || 
+                usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado) ||
                 (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor))
             {
                 return null;
@@ -308,12 +310,20 @@ namespace SustitucionMOAUtils.Services
             }
             return usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
         }
-
-        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(string codigoProveedorSeleccionado)
+        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(
+            AppCartasPortePendienteResponse appCartaPorteResponse
+            )
+        {
+            return ObtenerAplicacionesPendientesDeProcesar(appCartaPorteResponse.Contratos
+                .GroupBy(c=>c.CodigoProveedor)
+                .Select(g=>g.Key));
+        }
+        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(IEnumerable<string> codigosProveedor
+            )
         {
             return repositorio.Listar<AplicacionCartaPorte>(app =>
                 app.Estado == EstadoAplicacionCartaPorte.Pendiente &&
-                app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
+                codigosProveedor.Contains(app.Proveedor.CodigoProveedor));
         }
 
         private AppCCPPRequests.AppCartasPortePendienteResponse ObtenerAplicacionesDisponiblesSap(string codigoProveedor)
