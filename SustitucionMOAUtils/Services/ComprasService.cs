@@ -5005,50 +5005,14 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            //Excel Historial de movimientos
-            legajo.Add(new LegajoDto
-            {
-                ArchivoId = 0,
-                Observacion = "Excel con historial de movimientos",
-                PeticionDeOfertaId = peticionDeOfertaId,
-                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                Fecha = DateTime.Now,
-                FechaFormateado = DateTime.Now.ToString("dd/MM/yyyy"),
-                Usuario = new UsuarioDto { CUIT = "", Mail = "---" },
-                Tipo = TipoLegajo.HistorialMovimientos
-            });
-
-            //buscar archivos de la cotizacion 
-            if (peticion.Usuarios != null)
-            {
-                foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
-                {
-                    var cotizacionUsuario = usuario.Cotizaciones.First();
-
-                    if (cotizacionUsuario.Archivos.Count > 0)
-                    {
-                        foreach (var item in cotizacionUsuario.Archivos)
-                        {
-                            legajo.Add(new LegajoDto
-                            {
-                                ArchivoId = item.Id,
-                                Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": " + item.ObtenerNombre(item.Ruta),
-                                PeticionDeOfertaId = peticionDeOfertaId,
-                                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                                Fecha = cotizacionUsuario.FechaCreacion,
-                                FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
-                                Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
-                                Tipo = TipoLegajo.CotizacionAdjunto
-                            });
-                        }
-                    }
-
-                }
-            }
-
-            AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion);
-
             AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
+
+            if (!esProveedor)
+            {
+                AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId);
+                AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
+                AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion);
+            }
 
             return legajo.OrderByDescending(x => x.Fecha).ToList();
         }
@@ -5089,7 +5053,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor)
         {
             var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
             var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
@@ -5190,42 +5154,6 @@ namespace SustitucionMOAUtils.Services
                                 archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
                             }
                         }
-                        var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
-                        var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
-                        using (var entryStream = zipEntry.Open())
-                        {
-                            entryStream.Write(excelBytes, 0, excelBytes.Length);
-                        }
-                    }
-
-                    // Agregar archivos de cotizaciones al zip
-                    if (peticion.Usuarios != null)
-                    {
-                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
-                        {
-                            var cotizacionUsuario = usuario.Cotizaciones.First();
-
-                            if (cotizacionUsuario.Archivos.Count > 0)
-                            {
-                                foreach (var item in cotizacionUsuario.Archivos)
-                                {
-                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
-                                    {
-                                        string fileName = Path.GetFileName(item.Ruta);
-                                        archivo.CreateEntryFromFile(item.Ruta, fileName);
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // Agregar historiales de cotización al zip
-                    foreach (var cotizacion in GetCotizacionesDescargables(peticion))
-                    {
-                        var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
-                        var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
-                        File.WriteAllBytes(rutaHistorial, historialBytes);
-                        archivo.CreateEntryFromFile(rutaHistorial, $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
                     }
 
                     // Agregar revisión ténica al zip
@@ -5235,6 +5163,47 @@ namespace SustitucionMOAUtils.Services
                         var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
                         File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
                         archivo.CreateEntryFromFile(rutaRevisionTecnica, $"RevTec{peticion.Id}.xlsx");
+                    }
+
+                    if (!esProveedor)
+                    {
+                        // Agregar historial de movimientos al zip
+                        var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
+                        var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
+                        using (var entryStream = zipEntry.Open())
+                        {
+                            entryStream.Write(excelBytes, 0, excelBytes.Length);
+                        }
+
+                        // Agregar archivos de cotizaciones al zip
+                        if (peticion.Usuarios != null)
+                        {
+                            foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                            {
+                                var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                                if (cotizacionUsuario.Archivos.Count > 0)
+                                {
+                                    foreach (var item in cotizacionUsuario.Archivos)
+                                    {
+                                        if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                        {
+                                            string fileName = Path.GetFileName(item.Ruta);
+                                            archivo.CreateEntryFromFile(item.Ruta, fileName);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        // Agregar historiales de cotización al zip
+                        foreach (var cotizacion in GetCotizacionesDescargables(peticion))
+                        {
+                            var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                            var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                            File.WriteAllBytes(rutaHistorial, historialBytes);
+                            archivo.CreateEntryFromFile(rutaHistorial, $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                        }
                     }
                 }
             }
@@ -10508,6 +10477,52 @@ namespace SustitucionMOAUtils.Services
                     },
                     UsuarioId = 0
                 });
+            }
+        }
+
+        private void AgregarALegajoHistorialDeMovimientos(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId)
+        {
+            legajo.Add(new LegajoDto
+            {
+                ArchivoId = 0,
+                Observacion = "Excel con historial de movimientos",
+                PeticionDeOfertaId = peticionDeOfertaId,
+                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                Fecha = DateTime.Now,
+                FechaFormateado = DateTime.Now.ToString("dd/MM/yyyy"),
+                Usuario = new UsuarioDto { CUIT = "", Mail = "---" },
+                Tipo = TipoLegajo.HistorialMovimientos
+            });
+        }
+
+        private void AgregarALegajoDocumentosEnviadosPorProveedores(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId)
+        {
+            // Buscar archivos de la cotizacion 
+            if (peticion.Usuarios == null)
+            {
+                return;
+            }
+            foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+            {
+                var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                if (cotizacionUsuario.Archivos.Count > 0)
+                {
+                    foreach (var item in cotizacionUsuario.Archivos)
+                    {
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = item.Id,
+                            Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": " + item.ObtenerNombre(item.Ruta),
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                            Fecha = cotizacionUsuario.FechaCreacion,
+                            FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
+                            Tipo = TipoLegajo.CotizacionAdjunto
+                        });
+                    }
+                }
             }
         }
 

@@ -925,14 +925,14 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario)
+        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor)
         {
             try
             {
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 
