@@ -3499,7 +3499,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (item.VerPublicar && item.PosicionCompras.Any())
                     {
-                        if (comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any())
+                        if (!comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any())
                         {
                             item.VerPublicar = false;
                         }
@@ -4427,11 +4427,20 @@ namespace SustitucionMOAUtils.Services
                     FechaHasta = fechaHasta,
                     NumeroSolp = solp.NroSolp,
                 };
-                var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                //var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
                     .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
 
+                posiciones.ForEach(pos =>
+                {
+                    pos.Cantidad = posicionesPendientes
+                                    .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice)?
+                                        .Cantidad
+                                    ?? 0;
+                });
+                
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
@@ -4444,16 +4453,17 @@ namespace SustitucionMOAUtils.Services
                             {
                                 var i = 0;
                                 var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
-                                var usuario = proveedor?.UsuariosAsociados.Where(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id).FirstOrDefault();
+                                var usuario = proveedor?.UsuariosAsociados.FirstOrDefault(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id);
                                 if (proveedor != null && usuario != null)
                                 {
                                     decimal pendienteAdjudicar = 0;
 
-                                    var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
+                                    PosicionSolpSAP solpSAPPosicion = posicionesPendientes.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == posicion.Indice);
                                     if (solpSAPPosicion != null)
                                     {
                                         pendienteAdjudicar = solpSAPPosicion.Cantidad - solpSAPPosicion.Ordered;
                                     }
+
                                     try
                                     {
                                         registrosInfo.Add(new RegistroInfoDto
@@ -8683,35 +8693,9 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarSolpTratada(string nroSolp)
         {
-            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = nroSolp,
-            };
-            var tratada = false;
             try
             {
-                if (!string.IsNullOrEmpty(nroSolp))
-                {
-                    var solpEntidad = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
-                    var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
-                    var cantidadPendienteSap = (decimal)0;
-                    foreach (var item in solpEntidad.Posiciones)
-                    {
-                        cantidadPendienteSap += solp != null && solp.Posiciones.Count > 0 &&
-                          solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == item.Indice) ?
-                          (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == item.Indice).FirstOrDefault().Ordered) : 0;
-                    }
-
-                    if (cantidadPendienteSap > 0)
-                    {
-                        tratada = (solpEntidad.Posiciones.Sum(x => x.Cantidad) - cantidadPendienteSap) <= 0;
-                    }
-                }
-                return tratada;
+                return !comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(nroSolp).Any();
             }
             catch (Exception e)
             {
