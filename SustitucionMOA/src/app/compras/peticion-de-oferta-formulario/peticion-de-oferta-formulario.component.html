@@ -28,7 +28,14 @@
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th *ngIf="esTipoMaterial" class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"></p-checkbox></th>
+                                    <th *ngIf="esTipoMaterial" class="columna">
+                                        <p-checkbox name="posiciones"
+                                                    [binary]="true"
+                                                    [(ngModel)]="TodasPosicionesSeleccionadas"
+                                                    (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"
+                                                    [disabled]="!hayPosicionesPendientes()" >
+                                        </p-checkbox>
+                                    </th>
                                     <th *ngIf="esTipoServicio" style="width: 3em"></th>
                                     <th class="columna">Pos.</th>
                                     <th *ngIf="esTipoPOMultiple" class="columna">Nro Solp</th>
@@ -51,7 +58,7 @@
                             <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
                                 <tr>
                                     <td *ngIf="esTipoMaterial">
-                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected" [disabled]="posicionCompra.Cantidad<=0"></p-checkbox>
                                     </td>
                                     <td *ngIf="esTipoServicio">
                                         <a href="#" [pRowToggler]="posicionCompra">
