@@ -121,5 +121,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);
         byte[] GenerarHistorialCotizaciones(int cotizacionId);
         byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId);
+
+        string DescargarAdjuntosProveedores(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
     }
 }

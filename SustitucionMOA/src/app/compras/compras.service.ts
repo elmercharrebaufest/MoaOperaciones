@@ -1532,4 +1532,17 @@ export class ComprasService extends BaseService {
             .pipe(timeoutWith(120000,
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
+
+    descargarAdjuntosProveedores(idPeticion: number, idPeticionDeOfertaUsuario: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("idPeticion", idPeticion.toString());
+        if (idPeticionDeOfertaUsuario != null) {
+            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+        }
+        return this.http
+            .get("/api/compras/DescargarAdjuntosProveedores", {
+                params: params,
+                headers: this.headers,
+            });
+    }
 }

@@ -7,6 +7,7 @@ export interface LegajoDto {
     Leido: boolean
     ArchivoId?: number
     Usuario: any
+    PeticionDeOfertaUsuarioId?: number
 }
 
 export namespace LegajoTipo {
@@ -24,4 +25,5 @@ export namespace LegajoTipo {
     export const RevisionTecnica = "Revisión tecnica"
     export const Solp = "SOLP"
     export const SolpArchivos = "SOLP Archivos"
+    export const CotizacionAdjunto = "Cotización Adjunto"
 }

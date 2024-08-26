@@ -10541,26 +10541,29 @@ namespace SustitucionMOAUtils.Services
             {
                 return;
             }
+            var proveedoresProcesados = new HashSet<int>();
+
             foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
             {
                 var cotizacionUsuario = usuario.Cotizaciones.First();
 
-                if (cotizacionUsuario.Archivos.Count > 0)
+                if (cotizacionUsuario.Archivos.Count > 0 && !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id))
                 {
-                    foreach (var item in cotizacionUsuario.Archivos)
+                    proveedoresProcesados.Add(cotizacionUsuario.UsuarioCreador_Id);
+
+                    legajo.Add(new LegajoDto
                     {
-                        legajo.Add(new LegajoDto
-                        {
-                            ArchivoId = item.Id,
-                            Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": " + item.ObtenerNombre(item.Ruta),
-                            PeticionDeOfertaId = peticionDeOfertaId,
-                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                            Fecha = cotizacionUsuario.FechaCreacion,
-                            FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
-                            Tipo = TipoLegajo.CotizacionAdjunto
-                        });
-                    }
+                        ArchivoId = cotizacionUsuario.Archivos.First().Id,
+                        Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": Descargar adjuntos",
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                        Fecha = cotizacionUsuario.FechaCreacion,
+                        FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.CotizacionAdjunto,
+                        PeticionDeOfertaUsuarioId = cotizacionUsuario.PeticionDeOfertaUsuario_Id
+                    });
+
                 }
             }
         }
@@ -10650,6 +10653,41 @@ namespace SustitucionMOAUtils.Services
         {
             var historial = ListarHistorialDeFechas(peticionDeOfertaId);
             return ExcelExport.ComprasHistorialMovimientosToExcel(historial);
+        }
+
+        public string DescargarAdjuntosProveedores(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+            var zipFilename = $"Adjuntos-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    // Agregar archivos de cotizaciones al zip
+                    if (peticion.Usuarios != null)
+                    {
+                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0 && (peticiondeOfertaUsuarioId == null || x.Id == peticiondeOfertaUsuarioId)))
+                        {
+                            var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                            if (cotizacionUsuario.Archivos.Count > 0)
+                            {
+                                foreach (var item in cotizacionUsuario.Archivos)
+                                {
+                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                    {
+                                        string fileName = Path.GetFileName(item.Ruta);
+                                        archivo.CreateEntryFromFile(item.Ruta, fileName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return filePath;
         }
     }
 
