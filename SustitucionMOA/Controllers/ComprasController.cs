@@ -2229,5 +2229,30 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+
+        [HttpGet]
+        public ActionResult DescargarAdjuntosProveedores(int idPeticion, int? idPeticionDeOfertaUsuario)
+        {
+            try
+            {
+                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                Directory.CreateDirectory(path);
+
+                string rutaZip = service.DescargarAdjuntosProveedores(idPeticion, path, idPeticionDeOfertaUsuario);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+                string fileName = Path.GetFileName(rutaZip);
+
+                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+                Directory.Delete(path, true);
+
+                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

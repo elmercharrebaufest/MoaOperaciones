@@ -28,6 +28,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Output() descargarLegajoEmitter = new EventEmitter();
     @Output() descargarArchivoEmitter = new EventEmitter<{ archivoId: number }>();
     @Output() adjuntarArchivoLegajoEmitter = new EventEmitter<{ files: any }>();
+    @Output() descargarAdjuntosProveedoresEmitter = new EventEmitter();
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -53,13 +54,10 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
         this.cerrarLegajoEmitter.next();
     }
 
-    // descargarArchivo(archivoId: number) {
-    //     this.descargarArchivoEmitter.next({ archivoId: archivoId });
-    // }
-
     descargarLegajo() {
         this.descargarLegajoEmitter.next();
     }
+
     onBasicUploadAuto(event, fileUpload) {
         var archivoWeb = event.files.reduce((sum, file) => sum + file.size, 0);
         if (archivoWeb > 10000000) {
@@ -73,28 +71,75 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    descargarArchivo(archivoId: number | undefined, tipoLegajo: string) {
-        if (tipoLegajo == LegajoTipo.Solp || tipoLegajo == LegajoTipo.Pliego) {
-            this.descargarSolp_Pliego(this.legajo[0].SolpId);
+    descargarArchivo(legajoDto: LegajoDto) {
+        if (legajoDto.Tipo == LegajoTipo.Solp || legajoDto.Tipo == LegajoTipo.Pliego) {
+            this.descargarSolp_Pliego(legajoDto.SolpId);
         }
-        else if (tipoLegajo == LegajoTipo.PeticionDeOferta && archivoId) {
-            this.descargarPeticionDeOferta(archivoId);
+        else if (legajoDto.Tipo == LegajoTipo.PeticionDeOferta && legajoDto.ArchivoId) {
+            this.descargarPeticionDeOferta(legajoDto.ArchivoId);
         }
-        else if (tipoLegajo == LegajoTipo.ChatInterno) {
-            this.descargarChatInterno(this.legajo[0].SolpId);
+        else if (legajoDto.Tipo == LegajoTipo.ChatInterno) {
+            this.descargarChatInterno(legajoDto.SolpId);
         }
-        else if ((tipoLegajo == LegajoTipo.SolpArchivos || tipoLegajo == LegajoTipo.Legajo || tipoLegajo == LegajoTipo.Circular) && archivoId) {
-            this.descargarSolpArchivos_Legajo_Circular(archivoId);
+        else if ((legajoDto.Tipo == LegajoTipo.SolpArchivos || legajoDto.Tipo == LegajoTipo.Legajo || legajoDto.Tipo == LegajoTipo.Circular) && legajoDto.ArchivoId) {
+            this.descargarSolpArchivos_Legajo_Circular(legajoDto.ArchivoId);
         }
-        else if (tipoLegajo == LegajoTipo.Cotizacion && archivoId) {
-            this.descargarHistorialCotizaciones(archivoId);
+        else if (legajoDto.Tipo == LegajoTipo.Cotizacion && legajoDto.ArchivoId) {
+            this.descargarHistorialCotizaciones(legajoDto.ArchivoId);
         }
-        else if (tipoLegajo == LegajoTipo.HistorialMovimientos) {
+        else if (legajoDto.Tipo == LegajoTipo.HistorialMovimientos) {
             this.descargarHistorialMovimientos();
         }
-        else if (tipoLegajo == LegajoTipo.RevisionTecnica && archivoId) {
-            this.descargarRevisionTecnica(archivoId);
+        else if (legajoDto.Tipo == LegajoTipo.RevisionTecnica && legajoDto.ArchivoId) {
+            this.descargarRevisionTecnica(legajoDto.ArchivoId);
+        } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
+            this.descargarAdjuntosProveedores(legajoDto);
         }
+    }
+
+    private descargarAdjuntosProveedores(legajoDto: LegajoDto) {
+        console.log("toy", legajoDto)
+
+        this.blockUI.start('Generando...');
+        this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
     }
 
     private descargarSolp_Pliego(solpId: number) {
