@@ -145,7 +145,7 @@ export class LegajoExternoComponent implements OnInit {
     descargarLegajo() {
         let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(idPeticion, null)
+        this.service.descargarLegajo(idPeticion, null, false)
             .subscribe(
                 (result) => {
                     var byteArray = new Uint8Array(result.FileContents);
