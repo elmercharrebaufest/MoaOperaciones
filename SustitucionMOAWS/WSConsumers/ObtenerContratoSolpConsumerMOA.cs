@@ -25,7 +25,6 @@ namespace SustitucionMOAWS.WSConsumers
             try
             {
                 string IM_COMP_CODE = "MOA";
-                string IM_CONTRACT = numeroContrato;
                 string IM_DETAIL = "X";
                 string IM_ITEM_NO = "00000";
                 ZMPES5800[] IM_MATERIAL = new ZMPES5800[] { };
@@ -37,7 +36,12 @@ namespace SustitucionMOAWS.WSConsumers
                 ZMPES5900[] EX_ITEM = new ZMPES5900[] { };
                 BAPIRETURN[] EX_RETURN = new BAPIRETURN[] { };
                 ZMPES5910[] EX_SUB_ITEM = new ZMPES5910[] { };
-                
+                ZMPES7150[] IM_CONTRACT = new ZMPES7150[] { new ZMPES7150 {
+                    LOW = numeroContrato,
+                    HIGH = numeroContrato,
+                    OPTION = "EQ",
+                    SIGN = "I"
+                } };
 
                 string resultado = service.SI_MMRFC_OBTENER_CONTRATO(IM_COMP_CODE, IM_CONTRACT, IM_DETAIL, IM_ITEM_NO, IM_MATERIAL, IM_NOM_VENDOR, IM_PLANT, IM_TEXT_POS, IM_VENDOR, out EX_HEADER, out EX_ITEM, out EX_RETURN, out EX_SUB_ITEM);
 
