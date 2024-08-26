@@ -830,9 +830,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
     posicionesSinVigencia = [];
     validarFechaVigenciaRegistroInfo(usuario) {
+        const listaAvalidar=this.lista
+            .filter(x => x.EsMaterialCatalogado);
+        if(!listaAvalidar.length){
+            this.mostrarModalRegionSap(usuario)
+            return
+        }
         this.blockUI.start('Validando fechas de vigencia ...');
-        forkJoin(this.lista
-            .filter(x => x.EsMaterialCatalogado)
+        forkJoin(listaAvalidar
             .map(({ CodigoGrupoComprasSap, CodigoCentroSap, CodigoMaterialSap, CotizacionPosicion_Id }) =>
                 this.service.validarFechaVigenciaRegistroInfo({
                     grupoComprasCodigoSap: CodigoGrupoComprasSap,
