@@ -22,3 +22,6 @@ GO
 ALTER TABLE [dbo].[PeticionDeOfertaSolpPosicion] CHECK CONSTRAINT [FK_dbo.PeticionDeOfertaSolpPosicion_dbo.SolpPosicion_SolpPosicion_Id]
 GO
 
+CREATE NONCLUSTERED INDEX [IX_PeticionDeOfertaSolpPosicion_SolpPosicionId] ON [dbo].[PeticionDeOfertaSolpPosicion]([SolpPosicion_Id])
+
+GO

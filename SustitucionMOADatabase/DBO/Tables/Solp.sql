@@ -44,4 +44,16 @@
 
 );
 
+GO
 
+CREATE NONCLUSTERED INDEX [IX_SOLP_NROSOLP] ON [dbo].[Solp]([NroSolp])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLP_UsuarioCreacionId] ON [dbo].[Solp]([UsuarioCreacion_Id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLP_FechaCreacion] ON [dbo].[Solp]([FechaCreacion])
+
+GO
