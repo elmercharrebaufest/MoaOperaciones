@@ -4562,22 +4562,22 @@ namespace SustitucionMOAUtils.Services
                 IEnumerable<PosicionSolpSAP> posicionesPendientesSap = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solpDb.NroSolp);
                 List<int> numerosPosicionesPendientesSap = posicionesPendientesSap.Select(sap => int.Parse(sap.NumeroPosicion)).ToList();
 
-                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                List<SolpPosicion> posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
 
                 if (posiciones.Select(x => x.Indice.Value).Any(indicePosicionDb => !numerosPosicionesPendientesSap.Contains(indicePosicionDb)))
                 {
                     throw new ValidationCustomException("La posición está completa");
                 }
 
-                var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
-                if (registroInfo != null && registroInfo.Count > 0)
+                var posicionesPeticion = posiciones.ConvertAll(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id });
+                if (registroInfo?.Count > 0)
                 {
                     foreach (var pos in posicionesPeticion)
                     {
                         pos.NumeroRegistroInfo = registroInfo.First(a => a.PosicionId == pos.SolpPosicion_Id).Id;
                     }
                 }
-                var fechaOferta = posiciones.First().Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones.First().Solp.Pliego?.FechaHoraEntrega;
+                var fechaOferta = posiciones[0].Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones[0].Solp.Pliego?.FechaHoraEntrega;
                 var usuarios = repositorio.Listar<Usuario>();
 
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
@@ -4594,14 +4594,12 @@ namespace SustitucionMOAUtils.Services
                             poUsuariosAdicionales.Add(new PeticionDeOfertaUsuarioAdicional { Usuario_Id = adicional.Id });
                         }
                     }
-
                 }
-                var usuario = repositorio.Obtener<Usuario>(peticionDeOferta.UsuarioActual.Id);
 
                 var peticion = new PeticionDeOferta()
                 {
                     UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
-                    Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
+                    Usuario = usuarios.Find(x => x.Id == peticionDeOferta.UsuarioActual.Id),
                     FechaCreacion = DateTime.Now,
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posicionesPeticion,
@@ -4616,7 +4614,7 @@ namespace SustitucionMOAUtils.Services
                 peticion = repositorio.Agregar(peticion);
                 repositorio.GuardarCambios();
 
-                if (adjuntos != null && adjuntos.Count > 0)
+                if (adjuntos?.Count > 0)
                 {
                     GuardarArchivosPeticionDeOferta(peticion, adjuntos);
                 }
