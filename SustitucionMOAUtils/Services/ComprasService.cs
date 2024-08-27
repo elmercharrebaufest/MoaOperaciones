@@ -4558,7 +4558,17 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
 
+                Solp solpDb = repositorio.Listar<Solp>(x => x.Id == solp.Id).Single();
+                IEnumerable<PosicionSolpSAP> posicionesPendientesSap = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solpDb.NroSolp);
+                List<int> numerosPosicionesPendientesSap = posicionesPendientesSap.Select(sap => int.Parse(sap.NumeroPosicion)).ToList();
+
                 var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+
+                if (posiciones.Select(x => x.Indice.Value).Any(indicePosicionDb => !numerosPosicionesPendientesSap.Contains(indicePosicionDb)))
+                {
+                    throw new ValidationCustomException("La posición está completa");
+                }
+
                 var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
                 if (registroInfo != null && registroInfo.Count > 0)
                 {
