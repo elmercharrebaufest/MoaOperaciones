@@ -4440,7 +4440,7 @@ namespace SustitucionMOAUtils.Services
                                         .Cantidad
                                     ?? 0;
                 });
-                
+
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
@@ -6612,6 +6612,26 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
+                var peticionCotizacionAgrupadas = peticionCotizacion.PeticionDeOfertaPosicion.GroupBy(a => a.Posiciones.NroSolp);
+                foreach (var posicionCotizacionDtos in peticionCotizacionAgrupadas)
+                {
+                    var posicionesPendientesAdjudicar = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posicionCotizacionDtos.Key);
+                    foreach (var posicion in posicionCotizacionDtos.Select(x => x.Posiciones).ToList())
+                    {
+                        var posicionPendienteAdjudicar = posicionesPendientesAdjudicar.SingleOrDefault(x => int.Parse(x.NumeroPosicion) == posicion.Indice);
+                        if (posicionPendienteAdjudicar != null)
+                        {
+                            posicion.Cantidad = posicionPendienteAdjudicar.Cantidad - posicionPendienteAdjudicar.Ordered;
+                        }
+                        else
+                        {
+                            posicion.Cantidad = 0;
+                        }
+                    }
+                }
+                peticionCotizacion.PeticionDeOfertaPosicion = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0).ToList();
+                if (!peticionCotizacion.PeticionDeOfertaPosicion.Any())
+                    throw new WSCustomException("La petición de oferta no tiene posiciones pendientes, por favor contáctese con el área de compras.");
                 return peticionCotizacion;
             }
             catch (Exception e)
@@ -10480,9 +10500,9 @@ namespace SustitucionMOAUtils.Services
                     PeticionDeOfertaId = peticion.Id,
                     SolpId = 0,
                     Tipo = TipoLegajo.RevisionTecnica,
-                    Usuario = new UsuarioDto 
-                    { 
-                        Mail = peticion.RevisionTecnica.Usuario.Mail, 
+                    Usuario = new UsuarioDto
+                    {
+                        Mail = peticion.RevisionTecnica.Usuario.Mail,
                         CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro,
                         Id = peticion.RevisionTecnica.Usuario_Id,
                     },
