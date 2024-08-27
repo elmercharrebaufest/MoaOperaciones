@@ -482,8 +482,9 @@ namespace SustitucionMOAUtils.Services
 
             var contratoConAnticipo =
                 contratosDisponiblesSap.FirstOrDefault(c =>
-                    c.NumeroContrato != contratoSeleccionado.NumeroContrato &&
+                    c.CodigoProveedor == contratoSeleccionado.CodigoProveedor &&
                     c.Material == contratoSeleccionado.Material &&
+                    c.NumeroContrato != contratoSeleccionado.NumeroContrato &&
                     c.TieneAnticipo);
 
             if (contratoConAnticipo != null)
