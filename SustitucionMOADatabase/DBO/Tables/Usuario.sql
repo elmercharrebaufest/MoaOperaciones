@@ -8,7 +8,7 @@ CREATE TABLE [dbo].[Usuario](
 	[SeccionesVisitadas] NVARCHAR(MAX) NOT NULL DEFAULT '', 
 	[AceptoTyC] BIT NOT NULL DEFAULT 0, 
 	[AceptoTyCFecha] DATETIME,
-	[ApiKey] NVARCHAR(100) NULL
+	[ApiKey] NVARCHAR(100) NULL,
 	CONSTRAINT [PK_dbo.Usuario] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
@@ -16,7 +16,7 @@ CREATE TABLE [dbo].[Usuario](
 	[UsuarioSap] NVARCHAR(20) NULL DEFAULT '', 
 	[OrganizacionDeCompra] NVARCHAR(20) NULL, 
     [Suplente] NVARCHAR(MAX) NULL, 
-    [Externo] BIT NULL
+    [Externo] BIT NULL CONSTRAINT DF_Usuario_Externo DEFAULT 0 ,
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
