@@ -124,7 +124,7 @@
                         </a>
                     </td>
                     <ng-container *ngFor="let col of userTablesConfig[0].columns">
-                        <td *ngIf="col.visible">{{rowData[col.field]}}</td>
+                        <td *ngIf="col.visible">{{formatCurrency(col.field, rowData)}}</td>
                     </ng-container>
                 </tr>
             </ng-template>
@@ -180,7 +180,7 @@
                                             </a>
                                         </td>
                                         <ng-container *ngFor="let col of userTablesConfig[1].columns">
-                                            <td *ngIf="col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                            <td *ngIf="col.visible">{{ formatCurrency(col.field, rowData) }}</td>
                                         </ng-container>
                                     </ng-container>
                                 </tr>
@@ -259,7 +259,7 @@
 
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
-                                                        <td *ngIf="col.type==='string' && col.visible">{{ rowData[col.field] | defaultData }}</td>
+                                                        <td *ngIf="col.type==='string' && col.visible">{{ col.id === 'iImporte' ? formatImportString(col.id, rowData) : rowData[col.field] | defaultData }}</td>
                                                         <!-- Celdas de columas con contenido customizado -->
                                                         <td *ngIf="col.type==='custom' && col.visible">
                                                             <input *ngIf="col.id === 'iCantidadACertificar'"
@@ -298,7 +298,7 @@
                                                                 {{ rowData.Cantidad * rowData.Importe | number:'1.0-2' }}
                                                             </span>
                                                             <span *ngIf="col.id === 'iMontoACertificar'">
-                                                                {{ rowData.MontoACertificar | number:'1.0-2' }}
+                                                                {{ calculateAmount(col.id, rowData) }}
                                                             </span>
 
                                                             <button *ngIf="col.id === 'iAcciones'"

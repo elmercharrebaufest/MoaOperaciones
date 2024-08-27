@@ -598,7 +598,9 @@ namespace SustitucionMOAUtils.Services
                 auto = false;
                 difSolicitante = false;
             }
-            else if (userMail == detalleSolPed.Email && usuarioReasignacion != null && DateTime.Now < usuarioReasignacion.FechaHasta && DateTime.Now > usuarioReasignacion.FechaDesde)
+            else if ((userMail == detalleSolPed.Email && usuarioReasignacion != null && 
+                DateTime.Now <= usuarioReasignacion.FechaHasta && DateTime.Now >= usuarioReasignacion.FechaDesde) 
+                || (userMail == detalleSolPed.Email))
             {
                 auto = true;
             }
@@ -800,7 +802,7 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
-            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra);
+            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, reporte[0].Moneda);
             
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
@@ -839,7 +841,7 @@ namespace SustitucionMOAUtils.Services
             }
             
         }
-        private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra)
+        private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";
             List<ReporteDto> nuevoReporte = new List<ReporteDto>();
@@ -893,6 +895,7 @@ namespace SustitucionMOAUtils.Services
                 reporte.CantidadReal = (decimal)item.CantidadReal;
                 reporte.CantidadACertificar = cantidadACertificar;
                 reporte.PorcentajeACertificar = porcentajeACertificar;
+                reporte.Moneda = moneda;
                 nuevoReporte.Add(reporte);
             }
             return nuevoReporte;
@@ -1360,7 +1363,7 @@ namespace SustitucionMOAUtils.Services
                     emailDetailCertificateDto.FechaCertificacion = EntradasDeServicioTemp[0].Fecha_Contabilizacion?.ToString("yyyy-MM-dd");
                     emailDetailCertificateDto.Destinatario = EntradasDeServicioTemp[0].Ingresante_CDS;
                     emailDetailCertificateDto.Proveedor = proveedor.RazonSocial;
-                    emailDetailCertificateDto.MontoTotal = Moneda == "ARP" ? "$ " + EntradasDeServicioTemp[0].Monto_total.ToString() : EntradasDeServicioTemp[0].Monto_total.ToString();
+                    emailDetailCertificateDto.MontoTotal = Moneda == "ARP" ? "$ " + EntradasDeServicioTemp[0].Monto_total.ToString() : Moneda + " " + EntradasDeServicioTemp[0].Monto_total.ToString();
                     emailDetailCertificateDto.NroOC = EntradasDeServicioTemp[0].NRO_OC;
                     emailDetailCertificateDto.NumeroPosicion = EntradasDeServicioTemp[0].NRO_POS;
                     emailDetailCertificateDto.Aprobador = EntradasDeServicioTemp[0].Aprobador_CDS;
@@ -1393,7 +1396,7 @@ namespace SustitucionMOAUtils.Services
                         serviceDetailDto.Descripcion = ES.Descripcion_ES;
                         serviceDetailDto.Porcentaje = ES.Porcentaje_a_certificar;
                         serviceDetailDto.Cantidad = ES.Cantidad.ToString();
-                        serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : ES.Monto_a_certificar.ToString();
+                        serviceDetailDto.Monto = Moneda == "ARP" ? "$ " + ES.Monto_a_certificar.ToString() : Moneda + " " + ES.Monto_a_certificar.ToString();
 
 
                         serviceDetailDtoList.Add(serviceDetailDto);
@@ -1500,7 +1503,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         rechazo.GeneradoPor = ES.Aprobador_CDS;
                         rechazo.NroOC = ES.NRO_OC;
-                        rechazo.MontoTotal = rechazo.Moneda == "ARP" ? "$ " + ES.Monto_total.ToString() : ES.Monto_total.ToString();
+                        rechazo.MontoTotal = rechazo.Moneda == "ARP" ? "$ " + ES.Monto_total.ToString() : rechazo.Moneda + " " + ES.Monto_total.ToString();
                     }
                     catch (Exception e)
                     {
@@ -1612,7 +1615,6 @@ namespace SustitucionMOAUtils.Services
         public List<Aprobaciones> GetESTemporaria(string nroESLocal)
         {
             List<Aprobaciones> toReturn = new List<Aprobaciones>();
-
             try
             {
                 toReturn = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroESLocal).ToList();
@@ -1624,6 +1626,18 @@ namespace SustitucionMOAUtils.Services
 
 
             return toReturn;
+        }
+
+        public string GetCurrencyType(string NroOC)
+        {
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+
+            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+
+            DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(NroOC, centros, almacenes, false);
+
+            return detalleOrdendeCompra.Posiciones[0].MonedaDescripcion;
         }
 
 

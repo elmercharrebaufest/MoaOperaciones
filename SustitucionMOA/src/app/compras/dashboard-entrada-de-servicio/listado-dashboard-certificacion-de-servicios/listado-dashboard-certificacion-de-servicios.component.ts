@@ -202,7 +202,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esImporte', header: 'Importe', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -1218,10 +1218,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     formatCurrency(columnField: string, rowData: any): string {
         let formattedValue = rowData[columnField];
 
-        if ((rowData.MonedaDescripcion === 'ARP' || rowData.MonedaDescripcion === '$ ')
-            && (columnField === "MontoTotalString" || columnField === "PrecioUnidadString")) {
-            formattedValue = "$ " + formattedValue;
-        }
+        if (columnField === "MontoTotalString" || columnField === "PrecioUnidadString") {
+                formattedValue = rowData.MonedaDescripcion === 'ARP' ?  '$ '+formattedValue : rowData.MonedaDescripcion+ ' ' +formattedValue;
+            }
 
         return formattedValue;
     }
@@ -1245,14 +1244,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         } else {
             this.isARP = false;
-            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return `${moneda} ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
     }
 
-    formatImport(columna: string, valor: any): string {
+    formatImport(columna: string, valor: any, rowData: any): string {
 
-        if (columna === 'iImporte' && this.isARP) {
+        if (columna === 'iImporte' && rowData.MonedaDescripcion === 'ARP') {
             valor = "$ " + valor;
+        }
+        else if(columna === 'iImporte' && rowData.MonedaDescripcion !== 'ARP'){
+            valor =  rowData.MonedaDescripcion +" " + valor;
         }
 
         return valor;
@@ -1260,18 +1262,16 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     formatESImport(columna: string, rowData: any): string {
 
-        if (rowData.TemporalId !== null) {
-            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
+        if (rowData.TemporalId === null) {
+             // Separar el valor numérico de la moneda
+            const [numero, currency] = rowData.ImporteARPUSD.split(' ');
+
             // Convierte a número
             let valorNumerico = parseFloat(numero);
             // Formatea como número con separadores de miles y dos decimales
     
-            if (this.isARP) {
-                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-            else{
-                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
+            return currency + " "+valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
         }
         return rowData.ImporteARPUSD;
     }

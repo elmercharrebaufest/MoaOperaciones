@@ -444,7 +444,7 @@ descargarArchivos(rowData: any, index: number) {
   
     getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
       const montoAnterior: number = cantidadAnterior * monto;
-      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const coin: string = moneda === 'ARP' ? '$ ' : moneda+' ';
       const montoFormatted: string = montoAnterior.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
@@ -460,7 +460,7 @@ descargarArchivos(rowData: any, index: number) {
   
     getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
       const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
-      const coin: string = moneda === 'ARP' ? '$ ' : '';
+      const coin: string = moneda === 'ARP' ? '$ ' : moneda+' ';
       const montoFormatted: string = montoAcumulado.toLocaleString('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2

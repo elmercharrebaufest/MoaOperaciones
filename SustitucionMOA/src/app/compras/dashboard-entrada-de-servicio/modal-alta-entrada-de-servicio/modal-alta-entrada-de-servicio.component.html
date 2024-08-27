@@ -82,41 +82,41 @@
                             <td>{{ rowData.UM | defaultData }}</td>
                             <td class="text-right">
                                 {{
-                                    rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.2-2' | defaultData)) : (rowData.Importe | number:'1.2-2' | defaultData)
+                                    rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.0-2' | defaultData)) : rowData.Moneda +' '+(rowData.Importe | number:'1.0-2' | defaultData)
                                 }}
                             </td>
         
                             <td class="text-right">
                                 {{
-                                    (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.2-2')) : (rowData.Cantidad * rowData.Importe | number:'1.2-2'))
+                                    (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.0-2')) : rowData.Moneda +' '+(rowData.Cantidad * rowData.Importe | number:'1.0-2'))
                                 }}
                             </td>
         
                             <!-- Anteriores -->
                             <!-- * 1  is just to turn it into a number -->
-                            <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-3' }}</td>
-                            <td class="anterior">{{ rowData.Porcentaje | number:'1.0-3' }}%</td>
+                            <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-2' }}</td>
+                            <td class="anterior">{{ rowData.Porcentaje | number:'1.0-2' }}%</td>
                             <td class="anterior text-right">
                                 {{
-                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.2-2') : (calcularMontoAnterior(rowData) | number:'1.2-2'))
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.0-2') : rowData.Moneda +' '+(calcularMontoAnterior(rowData) | number:'1.0-2'))
                                 }}
                             </td>
         
                             <!-- A certificar -->
-                            <td>{{ rowData.CantidadACertificar | number:'1.0-3' }}</td>
-                            <td>{{ rowData.PorcentajeACertificar | number:'1.0-3' }}%</td>
+                            <td>{{ rowData.CantidadACertificar | number:'1.0-2' }}</td>
+                            <td>{{ rowData.PorcentajeACertificar | number:'1.0-2' }}%</td>
                             <td class="text-right">
                                 {{
-                                    (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2') : (rowData.CantidadACertificar * rowData.Importe | number:'1.2-2'))
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.0-2') : rowData.Moneda +' '+(rowData.CantidadACertificar * rowData.Importe | number:'1.0-2'))
                                 }}
                             </td>
         
                             <!-- Acumulado -->
-                            <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-3'}}</td>
-                            <td class="acumulado">{{ calcularPorcentajeAcumulado(rowData) | number:'1.0-3' }}%</td>
+                            <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-2'}}</td>
+                            <td class="acumulado">{{ calcularPorcentajeAcumulado(rowData) | number:'1.0-2' }}%</td>
                             <td class="acumulado text-right">
                                 {{
-                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2') : (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.2-2'))
+                                    (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2') : rowData.Moneda +' '+(calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2'))
                                 }}
                             </td>
                         </tr>
@@ -129,7 +129,7 @@
                             <td colspan="2" class="text-right">MONTO TOTAL</td>
                             <td class="text-right">
                                 {{
-                                    (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.2-2') : (position.MontoTotalACertificar | number:'1.2-2'))
+                                    (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.0-2') : position.Items[0].Moneda +' '+(position.MontoTotalACertificar | number:'1.0-2'))
                                 }}
                             </td>
                             <td colspan="3" class="acumulado"></td>

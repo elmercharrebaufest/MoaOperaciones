@@ -176,7 +176,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'string', sortable: false, required: false, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'string', sortable: false, required: true, visible: true },
-                { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esImporte', header: 'Importe', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -450,22 +450,57 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     formatImport(columna: string, rowData: any): string {
 
-
-        if (rowData.TemporalId !== null) {
-            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
-            // Convierte a número
-            let valorNumerico = parseFloat(numero);
-            // Formatea como número con separadores de miles y dos decimales
-
-            if (rowData.ImporteARPUSD.startsWith('$')) {
-                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
-            else {
-                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-            }
+        if (columna === 'iImporte' && rowData.MonedaDescripcion === 'ARP') {
+            rowData.ImporteARPUSD = "$ " + rowData.ImporteARPUSD;
+        }
+        else if(columna === 'iImporte' && rowData.MonedaDescripcion !== 'ARP'){
+            rowData.ImporteARPUSD =  rowData.MonedaDescripcion +" " + rowData.ImporteARPUSD;
         }
 
         return rowData.ImporteARPUSD;
+    }
+
+    formatImportString(columna: string, rowData: any): string {
+        let importeString = rowData.ImporteString;
+
+        if (columna === 'iImporte' && rowData.Moneda === 'ARP') {
+            importeString = "$ " + importeString;
+        }
+        else if(columna === 'iImporte' && rowData.Moneda !== 'ARP'){
+            importeString =  rowData.Moneda +" " + importeString;
+        }
+
+        return importeString;
+    }
+
+    formatCurrency(columnField: string, rowData: any): string {
+        let formattedValue = rowData[columnField];
+
+        if (columnField === "MontoTotalString" || columnField === "PrecioUnidadString") {
+                formattedValue = rowData.MonedaDescripcion === 'ARP' ?  '$ '+formattedValue : rowData.MonedaDescripcion+ ' ' +formattedValue;
+            }
+
+        return formattedValue;
+    }
+
+    calculateAmount(colId: string, rowData: any): string {
+        if (colId === 'iMonto') {
+            const monto = rowData.MontoACertificar;
+            return this.formatAmount(monto, rowData.Moneda);
+        } else if (colId === 'iMontoACertificar') {
+            const montoACertificar = rowData.MontoACertificar;
+            if (isNaN(montoACertificar)) return '';
+            return this.formatAmount(montoACertificar, rowData.Moneda);
+        }
+        return '';
+    }
+
+    formatAmount(monto: number, moneda: string): string {
+        if (moneda === "ARP") {
+            return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+            return `${moneda} ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
     }
 
     esPosicionCompleta(posicion): boolean {

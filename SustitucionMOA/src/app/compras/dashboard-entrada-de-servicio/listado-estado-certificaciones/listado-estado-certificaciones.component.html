@@ -98,7 +98,7 @@
                     <td>{{ rowData.CUIT | defaultData }}</td>
                     <td>{{ rowData.Proveedor | defaultData }}</td>
                     <td>{{ rowData.Descripcion | defaultData }}</td>
-                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+ ' '}}{{ rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>
                         <div class="ingresante">
                             <span>{{ rowData.Ingresante }}</span>
@@ -195,7 +195,7 @@
                                     <td class="descripcion">{{ rowDetalle.Descripcion }}</td>
                                     <td>{{ rowDetalle.Cantidad }}</td>
                                     <td>{{ rowDetalle.UM }}</td>
-                                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : ''}}{{ rowDetalle.PrecioUnitario | number:'1.0-2' }}</td>
+                                    <td>{{ rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+ ' '}}{{ rowDetalle.PrecioUnitario | number:'1.0-2' }}</td>
                                     <td class="center-content">{{ rowDetalle.NroRemito }}</td>
 
                                     <!-- Anteriores -->
@@ -207,7 +207,7 @@
                                     <!-- A certificar -->
                                     <td>{{ rowDetalle.CantidadCertificar | number:'1.0-2' }}</td>
                                     <td>{{ rowDetalle.PorcentajeCertificar | number:'1.0-2' }}%</td>
-                                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}} {{ rowDetalle.CantidadCertificar * rowDetalle.PrecioUnitario | number:'1.2-2' }}</td>
+                                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+' '}} {{ rowDetalle.CantidadCertificar * rowDetalle.PrecioUnitario | number:'1.2-2' }}</td>
 
                                     <!-- Acumulado -->
                                     <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) | number:'1.0-2' }}</td>

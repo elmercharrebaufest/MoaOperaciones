@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using System.Globalization;
+using DocumentFormat.OpenXml.Bibliography;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -164,7 +165,7 @@ namespace SustitucionMOAUtils.Services.Email
                     DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
                     FechaCert = fechaCarga.ToString(dateTimeFormat);
                     desc = apList[0].Texto_breve_servicio;
-                    importe = "$ " + apList[0].Monto_total.ToString();
+                    importe = reports[0].Moneda == "ARP" ? "$ " + apList[0].Monto_total.ToString() : reports[0].Moneda + " " + apList[0].Monto_total.ToString();
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(reports);
                     NroPosicion = apList[0].NRO_POS;
@@ -203,6 +204,8 @@ namespace SustitucionMOAUtils.Services.Email
         {
             decimal montoTotal = 0;
             var aprStrBuilder = new StringBuilder();
+            var moneda = reports[0].Moneda == "ARP" ? "$" : reports[0].Moneda;
+
             foreach (ReporteDto report in reports)
             {
                 decimal porcentajeAnterior = (Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture) / 100);
@@ -227,27 +230,27 @@ namespace SustitucionMOAUtils.Services.Email
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Descripcion ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Cantidad.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.UM ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Anteriores
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadReal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAnteriorFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // A certificar
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadACertificar.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeACertificarFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Acumulado
                     $"<td style='padding: 10px; border: 1px solid #333;'>{(report.CantidadReal + report.CantidadACertificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAcumuladoFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                 $"</tr>");
                 montoTotal += (report.CantidadACertificar * report.Importe);
             }
             //Ultima fila - solo monto total
             aprStrBuilder.Append($"<tr>" +
                 $"<td colspan='12' style='padding: 10px; border: 0px solid #333;'></td>" +
-                $"<td style='padding: 10px; border: 1px solid #333;'><strong>$ {montoTotal.ToString("N2")}</strong></td>" +
+                $"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda} {montoTotal.ToString("N2")}</strong></td>" +
                 $"</tr>");
 
             return aprStrBuilder;

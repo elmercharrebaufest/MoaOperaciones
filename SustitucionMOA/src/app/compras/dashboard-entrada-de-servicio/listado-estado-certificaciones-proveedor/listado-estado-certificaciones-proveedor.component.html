@@ -75,7 +75,7 @@
                     </td>
                     <td *ngIf="rowData.Estado === 'Pendiente Aprobación'">{{rowData.entradaServicioDetalle[0].FechaPrestacion | defaultData}}</td><!-- aca va la fecha de rpestacion-->
                     <td>{{rowData.Descripcion | defaultData }}</td>
-                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+' '}}{{rowData.MontoTotal | customDecimalPipe | number:'1.2-2' }}</td>
                     <td>{{rowData.OrdenCompra || ""}}</td>
                     <td>
                         <div class="usuario-area">
@@ -155,8 +155,8 @@
                     <td>{{rowDetalle.NroPosicion }}</td>
                     <td>{{rowDetalle.Descripcion}}</td>
                     <td>{{rowDetalle.Cantidad}}</td>
-                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowDetalle.Monto | number:'1.0-2' }}</td>
-                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : ''}}{{rowDetalle.Monto * rowDetalle.CantidadCertificar | number:'1.2-2'}}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+' '}}{{rowDetalle.Monto | number:'1.0-2' }}</td>
+                    <td>{{rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+' '}}{{rowDetalle.Monto * rowDetalle.CantidadCertificar | number:'1.2-2'}}</td>
                     <td>{{rowDetalle.UM}}</td>
                     <td>{{rowDetalle.NroRemito | defaultData}}</td><!-- aca va la referencia-->
                     <td>{{rowDetalle.TextoBreveServicio | defaultData}}</td><!-- aca va el texto breve-->
@@ -170,7 +170,7 @@
                     <!-- A certificar -->
                     <td>{{ rowDetalle.CantidadCertificar | number:'1.0-2'}}</td>
                     <td>{{ rowDetalle.PorcentajeCertificar | number:'1.0-2'}}%</td>
-                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : ''}} {{ rowDetalle.CantidadCertificar * rowDetalle.Monto | number:'1.2-2' }}</td>
+                    <td class="text-right">{{ rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+' '}} {{ rowDetalle.CantidadCertificar * rowDetalle.Monto | number:'1.2-2' }}</td>
 
                     <!-- Acumulado -->
                     <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) | number:'1.0-2' }}</td>

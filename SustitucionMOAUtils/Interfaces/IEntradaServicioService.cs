@@ -34,6 +34,7 @@ namespace SustitucionMOAUtils.Interfaces
         Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda);
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
+        string GetCurrencyType(string NroOC);
         EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
 

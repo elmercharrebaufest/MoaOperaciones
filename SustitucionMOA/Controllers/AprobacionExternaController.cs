@@ -51,6 +51,8 @@ namespace SustitucionMOA.Controllers
                 }
 
                 var aprobacionesListdb = entradaServicioService.GetESTemporaria(ES);
+                var currency = entradaServicioService.GetCurrencyType(aprobacionesListdb[0].NRO_OC);
+
                 Proveedor prov = new Proveedor();
 
                 if (aprobacionesListdb.Count > 0)
@@ -70,7 +72,7 @@ namespace SustitucionMOA.Controllers
                 }
 
                 string proveedorName = !string.IsNullOrEmpty(prov.RazonSocial) ? prov.RazonSocial : "";
-                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName, aprobador = isApprover, versionAnt = oldES, nroOc = aprobacionesListdb[0].NRO_OC };
+                var result = new { aprobacionesList = aprobacionesListdb, proveedor = proveedorName, aprobador = isApprover, versionAnt = oldES, nroOc = aprobacionesListdb[0].NRO_OC, moneda = currency };
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
