@@ -339,7 +339,8 @@ namespace SustitucionMOAWS.WSConsumers
                     CondicionEntrega = item.CONDICION_ENTREGA,
                     Producto = item.PRODUCTO,
                     PuntoExpedicion = item.PTO_EXPEDICION,
-                    TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO)
+                    TipoContrato = ConvertirDeTipoContratoFasSAP(item.TIPO_CONTRATO),
+                    PrecioFlete = item.PRECIO_FLETE
                 };
                 var detalles = new List<Detail>();
                 foreach (var detalle in item.DETALLE)

@@ -52,16 +52,11 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <app-dropdown-input [options]="listaProductos" [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'" (selectedChange)="selectProducto($event)"
-                                        [placeholder]="'Seleccione un producto'"
-                                        [(selected)]="ordenDeCargaFason.ProductoSeleccionado"
-                                        [disabled]="editando||null">
-                                        <ng-template let-option>
-                                            <p class="option-label">
-                                                {{option.Descripcion}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
+                                    <p-dropdown name="productosFason"
+                                        [(ngModel)]="ordenDeCargaFason.ProductoSeleccionado" [disabled]="editando||null"
+                                        (ngModelChange)="selectProducto()" [options]="listaProductos"
+                                        optionLabel="Descripcion" placeholder="Seleccione un producto" [filter]="true">
+                                    </p-dropdown>
                                 </div>
                             </div>
                             <div *ngIf="ordenDeCargaFason.ProductoSeleccionado && !validaCPEDG"
@@ -77,14 +72,13 @@
                             </div>
 
                             <ng-container *ngIf="validaCPEDG">
-                                <div class=" col-xs-12 col-md-12 mt-2" *ngIf="clienteSeleccionado.EsRevendedor">
-                                    <div class="formulario-label" style="margin-bottom: 8px;">
-                                        <p-checkbox name="reventa" [binary]="true"
-                                            [(ngModel)]="ordenDeCargaFason.Reventa"></p-checkbox>
-                                        <label class="ml-2 pointer mySearch bold"
-                                            (click)="ordenDeCargaFason.Reventa = !ordenDeCargaFason.Reventa">
-                                            Reventa
-                                        </label>
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="formulario-label">
+                                        Remitente Comercial:
+                                    </div>
+                                    <div class="styled-select">
+                                        <input [disabled]="true" type="text"
+                                            [value]="ordenDeCargaFason.RemitenteComercial? clienteSeleccionado.RazonSocial: ''">
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-md-12">
@@ -213,40 +207,14 @@
                             </div>
 
                             <div class=" col-xs-12 col-md-12 mt-2" *ngIf="modificaFleteMOA">
-                                <div class="formulario-label" style="margin-bottom: 8px;">
-                                    <p-checkbox name="flete-moa" [binary]="true"
-                                        [(ngModel)]="ordenDeCargaFason.FleteMOA"></p-checkbox>
-                                    <label class="ml-2 pointer mySearch bold"
-                                        (click)="ordenDeCargaFason.FleteMOA = !ordenDeCargaFason.FleteMOA">
-                                        Flete MOA
-                                    </label>
+                                <div class="formulario-label"
+                                    (click)="ordenDeCargaFason.FleteMOA = !ordenDeCargaFason.FleteMOA">
+                                    Flete MOA
                                 </div>
+                                <p-checkbox name="flete-moa" [binary]="true"
+                                    [(ngModel)]="ordenDeCargaFason.FleteMOA"></p-checkbox>
                             </div>
 
-                            <div class="col-xs-12 col-md-12">
-                                <div class="formulario-label">
-                                    Fecha de retiro:
-                                </div>
-
-                                <div class="styled-select">
-                                    <p-calendar name="FechaRetiro" [(ngModel)]="ordenDeCargaFason.FechaRetiro"
-                                        [showIcon]="true" dateFormat="dd-mm-yy" appendTo="body" [minDate]="hoy"
-                                        [style]="{'width': '95%'}" [maxDate]="maxDateValue">
-                                    </p-calendar>
-                                </div>
-                            </div>
-
-                            <div class="col-xs-12 col-md-12">
-                                <div class="formulario-label">
-                                    Destinos:
-                                </div>
-                                <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="destinos" [(ngModel)]="ordenDeCargaFason.Destino"
-                                        [options]="listaDestinos" optionLabel="LocalidadDescripcion"
-                                        placeholder="Seleccione un Destino" [filter]="true">
-                                    </p-dropdown>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-xs-1 col-md-1 vertical"></div>
@@ -339,7 +307,7 @@
                                     Cantidad de viajes:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" [(ngModel)]="ordenDeCargaFason.CantidadDeViajes">
+                                    <input type="number" max="3" [(ngModel)]="ordenDeCargaFason.CantidadDeViajes">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-12" *ngIf="validaCPEDG">
@@ -459,7 +427,7 @@
     </div>
     <p-footer>
         <button [disabled]="razonSocialParaGestion.length < 1" type="button" pButton icon="pi pi-check"
-            (click)="cargarAltaCuit()" label="Gestionar"></button>
+            style="color:black!important" (click)="cargarAltaCuit()" label="Gestionar"></button>
         <button type="button" pButton icon="pi pi-close" (click)="cancelarGestionAltaCUIT()" label="Cancelar"
             class="ui-button-secondary"></button>
     </p-footer>

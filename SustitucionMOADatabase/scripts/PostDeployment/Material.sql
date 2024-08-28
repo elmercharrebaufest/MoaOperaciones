@@ -96,6 +96,36 @@ BEGIN
 	VALUES ('64196 - RESIDUOS SOLIDOS URBANOS', '64196', 3, 0, 'Resid. sól. urb')
 END
 
+IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64200' and TablaSeccionMaterial = 3)
+BEGIN
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
+	VALUES ('64200 - RESIDUOS LIQUIDOS URBANOS', '64200', 3, 0, 'Resid. líq. urb.')
+END
+
+IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64199' and TablaSeccionMaterial = 3)
+BEGIN
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
+	VALUES ('64199 - RESIDUOS PELIGROSOS', '64199', 3, 0, 'Resid. peligr.')
+END
+
+IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64207' and TablaSeccionMaterial = 3)
+BEGIN
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
+	VALUES ('64207 - GOMA EXTRACCION', '64207', 3, 0, 'Goma extracc.')
+END
+
+IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '64195' and TablaSeccionMaterial = 3)
+BEGIN
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
+	VALUES ('64195 - CHATARRA', '64195', 3, 0, 'Chatarra')
+END
+
+IF NOT EXISTS (SELECT top 1 1 FROM dbo.Material WHERE CodigoSap = '63699' and TablaSeccionMaterial = 3)
+BEGIN
+	INSERT INTO Material(Nombre, CodigoSap, TablaSeccionMaterial, ValidaSisaRuca, Abreviacion)
+	VALUES ('63699 - MATERIAL RECICLABLE - NO PELIGROSO', '63699', 3, 0, 'Mat. rec. no pel.')
+END
+
 -- Updates
 
 UPDATE Material SET Nombre = '99709 - PELLET DE GIRASOL INTEGRAL' WHERE CodigoSap = '99709'

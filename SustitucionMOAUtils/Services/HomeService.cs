@@ -54,7 +54,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     data.resumen = homeWsRes.resumen;
                 }
-                CuentaCorrienteWSMOAResponse CtaCteWsRes = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fecha, "", "", "");
+                var CtaCteWsRes = new CuentaCorrientesConsumerMOA().Request("", proveedor, sociedad, fecha, "", "", "");
                 if (CtaCteWsRes != null)
                 {
                     if (CtaCteWsRes.cuentasCorrientes.Count > 0)
@@ -90,7 +90,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     data.resumen = homeWsRes.resumen;
                 }
-                CuentaCorrienteWSMOAResponse CtaCteWsRes = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fecha, "", "", "");
+                var CtaCteWsRes = new CuentaCorrientesConsumerMOA().Request("", proveedor, sociedad, fecha, "", "", "");
                 if (CtaCteWsRes != null)
                 {
                     if (CtaCteWsRes.cuentasCorrientes.Count > 0)

@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Dto
     {
         public string Cosecha { get; set; }
         public string Campo { get; set; }
+        public string Renspa { get; set; }
         public string ProveedorRazonSocial { get; set; }
         public string CuitProveedor { get; set; }
         public string Estado

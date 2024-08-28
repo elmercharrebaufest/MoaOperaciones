@@ -43,20 +43,15 @@ namespace SustitucionMOA.Controllers
                 {
                     if (SessionPersister.User.permisos.Contains("VER ALTAS GRANOS"))
                     {
-                        //Ambos
-                        idTiposProveedor.Add(1);
-                        //Directo Granos
-                        idTiposProveedor.Add(2);
-                        //Corredor
-                        idTiposProveedor.Add(4);
-                        //Cliente
-                        idTiposProveedor.Add(5);
+                        idTiposProveedor.Add((int)TipoUsuarioEnum.Ambos);
+                        idTiposProveedor.Add((int)TipoUsuarioEnum.Granos);
+                        idTiposProveedor.Add((int)TipoUsuarioEnum.Corredor);
+                        idTiposProveedor.Add((int)TipoUsuarioEnum.Cliente);
                     }
 
                     if (SessionPersister.User.permisos.Contains("VER ALTAS NO GRANOS"))
                     {
-                        //No Granos
-                        idTiposProveedor.Add(3);
+                        idTiposProveedor.Add((int)TipoUsuarioEnum.NoGranos);
                     }
                 }
 

@@ -8,6 +8,7 @@ export interface CampoProveedor {
     CampoCosecha_Id?: number;
     CUIT: string;
     Archivo_Id: number;
+    RazonSocial?: string;
 }
 export interface CampoCosecha {
     Campo: CampoSustentable;
@@ -18,4 +19,5 @@ export interface CampoCosecha {
 export interface CampoSustentable {
     Nombre: string;
     Localidad_Id?: number;
+    Renspa: string;
 }

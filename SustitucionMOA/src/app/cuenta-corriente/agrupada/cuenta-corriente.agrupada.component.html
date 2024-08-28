@@ -7,7 +7,7 @@
             <div class="col-xs-12 col-sm-2">
                 <spinner-small></spinner-small>
                 <a (click)="exportExcel()" href="#" style="text-decoration:none!important"
-                   *ngIf="!this.spinnerSmallComponent.visible">
+                    *ngIf="!this.spinnerSmallComponent.visible">
                     <div class="btnSection animate align-right">
                         Exportar <img src="Content/images/buttons/EXPORT.svg" />
                     </div>
@@ -29,7 +29,7 @@
                     Por N&deg; Legal:
                     <div class="styled-select ">
                         <input type="search" class="" placeholder="" [value]="filtroNroLegal"
-                               (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
+                            (input)="filtroNroLegal = $event.target.value" aria-controls="tableModal">
                     </div>
                 </div>
                 <div id="showSearch" onClick="openSearch()">
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-          
+
         <!--Aplicaciones-->
         <div class="row myRow">
             <div class="clearfix myTables">
@@ -63,7 +63,7 @@
                     </tr>
                 </table>
             </div>-->
-            
+
             <div class="clearfix myTables rounded shadow " style="padding-left:0; padding-right:0;" *ngIf="isVisible()">
                 <table id="tableModal"
                     class="display nowrap dataTable no-footer dtr-inline animate  boletosTable cc-agrupada-table cuenta-corriente-agrupada-table"
@@ -108,7 +108,7 @@
                     </tbody>-->
                     <ng-container *ngIf="isAgrupadasVisible()">
                         <ng-container
-                            *ngFor="let cuentaCorrienteA of data.cuentasCorrientesAgrupadas | slice:0:itemsEnPantalla | customFilterContain: 'cuentasCorrientes' : 'xblnr' : filtroNroLegal">
+                            *ngFor="let cuentaCorrienteA of data.cuentasCorrientesAgrupadas | customFilterContain: 'cuentasCorrientes' : 'xblnr' : filtroNroLegal | slice:0:itemsEnPantalla ">
                             <tbody class="agrupador">
                                 <tr role="row">
                                     <td colspan="6" tabindex="0">{{cuentaCorrienteA.agrupador}}</td>

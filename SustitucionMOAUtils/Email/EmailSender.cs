@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Mail;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
@@ -116,11 +117,14 @@ namespace SustitucionMOAUtils.Email
             {
                 foreach (var destinatario in reporte.Destinatario.Split(','))
                 {
-                    mail.To.Add(destinatario);
+                    if (EsCorreoValido(destinatario))
+                    {
+                        mail.To.Add(destinatario);
+                    }
                 }
             }
             //Solo un destinatario
-            else
+            else if (EsCorreoValido(reporte.Destinatario))
             {
                 mail.To.Add(reporte.Destinatario);
             }
@@ -204,7 +208,7 @@ namespace SustitucionMOAUtils.Email
                 };
                 foreach (string mail in enviarA)
                 {
-                    if (!string.IsNullOrEmpty(mail))
+                    if (!string.IsNullOrEmpty(mail) && EsCorreoValido(mail))
                     {
                         oMensaje.To.Add(mail);
                     }
@@ -218,7 +222,10 @@ namespace SustitucionMOAUtils.Email
                 {
                     foreach (string mail in copia)
                     {
-                        oMensaje.CC.Add(mail);
+                        if (EsCorreoValido(mail))
+                        {
+                            oMensaje.CC.Add(mail);
+                        }
                     }
                 }
                 if (copiaOculta != null)
@@ -281,7 +288,7 @@ namespace SustitucionMOAUtils.Email
                 };
                 foreach (string mail in emailSenderData.Mails)
                 {
-                    if (!string.IsNullOrEmpty(mail))
+                    if (!string.IsNullOrEmpty(mail) && EsCorreoValido(mail))
                     {
                         oMensaje.To.Add(mail);
                     }
@@ -295,7 +302,10 @@ namespace SustitucionMOAUtils.Email
                 {
                     foreach (string copia in emailSenderData.Copias)
                     {
-                        oMensaje.CC.Add(copia);
+                        if (EsCorreoValido(copia))
+                        {
+                            oMensaje.CC.Add(copia);
+                        }
                     }
                 }
                 if (emailSenderData.VistaAlternativa != null)
@@ -345,8 +355,6 @@ namespace SustitucionMOAUtils.Email
         {
             try
             {
-                var enviarAValidos = new List<string>();
-                var enviarCopiaValidos = new List<string>();
                 MailMessage oMensaje = new MailMessage
                 {
                     From = new MailAddress(string.IsNullOrEmpty(enviarDesde) ? EmailConfig.getEmailAddFrom() : enviarDesde),
@@ -429,8 +437,11 @@ namespace SustitucionMOAUtils.Email
         {
             try
             {
+
                 MailAddress mailAddress = new MailAddress(correo);
-                return true;
+                Regex regex = new Regex(EmailConfig.getEmailRegexFormato());
+
+                return regex.IsMatch(correo);
             }
             catch (FormatException)
             {
@@ -452,7 +463,7 @@ namespace SustitucionMOAUtils.Email
 
                 foreach (string mail in emailSenderData.Mails)
                 {
-                    if (!string.IsNullOrEmpty(mail))
+                    if (!string.IsNullOrEmpty(mail) && EsCorreoValido(mail))
                     {
                         oMensaje.To.Add(mail);
                     }
@@ -467,7 +478,10 @@ namespace SustitucionMOAUtils.Email
                 {
                     foreach (string copia in emailSenderData.Copias)
                     {
-                        oMensaje.CC.Add(copia);
+                        if (!string.IsNullOrEmpty(copia) && EsCorreoValido(copia))
+                        {
+                            oMensaje.CC.Add(copia);
+                        }
                     }
                 }
 

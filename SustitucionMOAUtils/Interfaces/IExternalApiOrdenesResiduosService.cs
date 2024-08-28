@@ -6,7 +6,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IExternalApiOrdenesResiduosService
     {
-        List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis = null);
+        List<OrdenResiduosApiDto> ObtenerOrdenes(string patenteChasis = null);
         void ActualizarOrden(ActualizarOrdenResiduosExternalDto datos);
     }
 }

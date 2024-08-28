@@ -52,6 +52,9 @@
 .text-repetido {
     color: rgb(198, 198, 92)!important;
 }
+.text-multiples-autorizaciones {
+    color: rgb(222, 71, 71)!important;
+}
 .pointer{
     cursor: pointer;
 }

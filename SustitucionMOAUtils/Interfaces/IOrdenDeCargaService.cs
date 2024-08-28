@@ -16,11 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaEditarDto ObtenerEditar(int ordenId);
         List<OrdenDeCargaHistorialDto> ObtenerEditarHistorial(string mailUsuario, int ordenId);
         string AnularOrden(int ordenId, string mailUsuario);
-        string SolicitarAnulacionOrden(int ordenId, string mailUsuario);
-        string RechazarSolicitudAnulacion(int ordenId, string mailUsuario);
-        string EdicionFinalizada(int ordenId, string mailUsuario);
-        string SolicitarEdicionOrden(int ordenId, string mailUsuario);
-        string RechazarSolicitudEdicion(int ordenId, string mailUsuario);
+        //string SolicitarEdicionOrden(int ordenId, string mailUsuario);
         string NotificarTransporte(int ordenId);
         List<string> ObtenerContratos(int ordenId);
         Resultado SeleccionarContrato(int ordenId, string contratoSAP, string mailUsuario);
@@ -39,7 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ActivarOC(int ordenId, string mailUsuario);
         OrdenDeCargaDetalleDto ObtenerPorNroEntrega(string mailUsuario, string nroEntrega);
         void VerificarSituacionCrediticiaJob();
-        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req);
+        ObtenerContratosDisponiblesResponse ObtenerContratosDisponibles(ObtenerContratosDisponiblesRequest req, string mailUsuario);
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
@@ -58,5 +54,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<SustitucionMOAModel.Entities.Proveedor> FiltrarNoExistentesWeb(List<ClienteSAPResponse> clientes);
         List<DestinatarioDto> ObtenerDestinatariosConsultaFas(int ordenId);
         void VerificarOrdenesFacturaCompensadaJob();
+        ValidarChoferResponse ValidarChofer(string cuilChofer, string cuitCliente);
+        bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente);
+        bool ValidarClienteSolicitaAnulacion(int ordenId);
+        bool ValidarClienteSolicitaEdicion(int ordenId);
     }
 }

@@ -17,6 +17,8 @@ namespace SustitucionMOAUtils.Email
         private static string emailPort = ConfigurationManager.AppSettings["PortEmail"];
         private static string emailHab = ConfigurationManager.AppSettings["HabilitarEnvioMail"];
 
+        private static string emailRegexFormato = ConfigurationManager.AppSettings["EmailRegexFormato"];
+
         public static string getEmailAddTo()
         {
             return emailAddTo;
@@ -67,6 +69,11 @@ namespace SustitucionMOAUtils.Email
                 return false;
             }
             return true;
+        }
+
+        public static string getEmailRegexFormato()
+        {
+            return emailRegexFormato;
         }
     }
 }

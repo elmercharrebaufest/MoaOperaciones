@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { ApiResponse } from '../../common/models/response';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -34,6 +35,13 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
   disabled = false;
   show = false;
   develop = true;
+
+  mostrarModalAprobarRechazar = false;
+  aprobarRechazarAplicacionId: number;
+  opcionesAprobarRechazar: any[] = [ { label: 'Aprobar', value: 'aprobar' }, { label: 'Rechazar', value: 'rechazar' }];
+  decisionAprobarRechazar = { label: '', value: '' };
+  motivoRechazo: string = "";
+
   constructor(
     protected service: AplicacionCcppService,
     protected navService: NavService,
@@ -89,6 +97,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
         this.blockUI.stop()
       });
   }
+  
   limpiarListado() {
     this.show = false
     this.aplicaciones = []
@@ -157,5 +166,92 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
       console.error(error)
       this.blockUI.stop()
     }
+  }
+
+  aprobarORechazarAplicacion(aplicacion: AplicacionCCPP) {
+    this.aprobarRechazarAplicacionId = aplicacion.Id;
+    this.mostrarModalAprobarRechazar = true;
+  }
+
+  cancelarDecisionSobreAplicacionPendienteAprobacion() {
+    this.mostrarModalAprobarRechazar = false;
+  }
+
+  limpiarModalAprobarRechazar() {
+    this.aprobarRechazarAplicacionId = -1;
+    this.decisionAprobarRechazar = { label: '', value: '' };
+    this.motivoRechazo = '';
+  }
+
+  grabarDecisionSobreAplicacionPendienteAprobacion() {
+    this.mostrarModalAprobarRechazar = false;
+    if (this.decisionAprobarRechazar.value == 'aprobar') {
+      this.aprobarAplicacionPendiente();
+    }
+    if (this.decisionAprobarRechazar.value == 'rechazar' && this.motivoRechazo.length > 2) {
+      this.rechazarAplicacionPendiente();
+    }
+    this.limpiarModalAprobarRechazar();
+  }
+
+  aprobarAplicacionPendiente() {
+    this.blockUI.start();
+    try {
+      this.subscription = this.service.aprobarAplicacionPendiente(this.aprobarRechazarAplicacionId).subscribe(
+        (resp) => {
+          let data = this.manejarErroresApiResponse(resp);
+          if (data) {
+            console.info('refresca la grilla');
+            this.getListado();
+          }
+          this.blockUI.stop();
+        },
+        (err) => {
+          this.blockUI.stop();
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      this.blockUI.stop();
+    }
+  }
+
+  rechazarAplicacionPendiente() {
+    this.mostrarModalAprobarRechazar = false;
+    this.blockUI.start();
+    try {
+      this.subscription = this.service.rechazarAplicacionPendiente(this.aprobarRechazarAplicacionId, this.motivoRechazo).subscribe(
+        (resp) => {
+          let data = this.manejarErroresApiResponse(resp);
+          if (data) {
+            console.info('refresca la grilla post rechazo');
+            this.getListado();
+          }
+          this.blockUI.stop();
+        },
+        (err) => {
+          this.blockUI.stop();
+        }
+      );
+    } catch (error) {
+      console.error(error);
+      this.blockUI.stop();
+    }
+  }
+
+  manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+    this.mensajeComponent.setMsgsEmpty();
+    if (response.logout) {
+      this.sessionDataService.logout();
+      return null;
+    }
+    if (response.error) {
+        this.mensajeComponent.setErrorMsg(response.error);
+        return null;
+    }
+    if (response.info) {
+      this.mensajeComponent.setInfoMsg(response.info);
+    }
+    return response.data || null;
   }
 }

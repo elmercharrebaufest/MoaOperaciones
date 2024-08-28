@@ -80,30 +80,40 @@
     <section class="container-fluid clearfix">
         <!--Title-->
         <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Mis Consultas</strong> </div>
+            <div class="col-xs-12 col-sm-10 flex items-end"><strong>Mis Consultas</strong>
+            </div>
         </div>
+    </section>
+    <section>
         <!--End Title-->
         <div class="row myRow">
+            <spinner #topSpinner></spinner>
             <div class="clearfix">
                 <div class="display nowrap no-footer rounded shadow animate consulta-table" #containerList>
-                    <p-table #dt [columns]="colsFiltered" [value]="consultasFiltradas" dataKey="Id" [paginator]="true"
-                        [rows]="15" [responsive]="true" [scrollable]="false"
+                    <p-table #dt [columns]="colsFiltered | customFilterBoolean : 'visible':true:true "
+                        [value]="consultasFiltradas" dataKey="Id" [rows]="15" [responsive]="true" [scrollable]="false"
                         ([style])="{'width.px': this.containerList.offsetWidth}" sortField="FechaUltimaModificacion"
-                        sortOrder="-1">
+                        sortOrder="-1" (onSort)="changeSort($event)" [lazy]="true">
                         <ng-template pTemplate="caption">
                             <div class="ui-helper-clearfix" style="text-align: right">
-                                <div style="float:left">
+                                <div class="flex items-center py-4 gap-5px">
                                     <button *ngIf="!isExternal" type="button" pButton icon="fa fa-file-excel-o "
-                                        iconPos="left" label="Exportar" (click)="exportConsultas()"
-                                        style="background-color:#075088;"></button> &nbsp;
+                                        [disabled]="exportandoConsultas" iconPos="left" label="Exportar"
+                                        (click)="exportConsultas()" style="background-color:#075088;"></button> &nbsp;
                                     <p-multiSelect *ngIf="esInterno" [(ngModel)]="filtrosPorCreacionSeleccionados"
                                         [options]="opcionesFiltroPorCreacion" (onChange)="filtrarPorTipoGeneracion()"
                                         optionLabel="key" defaultLabel="Todos" [filter]="false"
-                                        [style]="{'margin-right': '1rem','position':'relative','top':'1.25rem'}"></p-multiSelect>
+                                        [style]="{'max-height': '35px', 'height':'35px!important'}"
+                                        style="height:35px!important"></p-multiSelect>
                                     <button type="button" pButton icon="fa fa-refresh" (click)="listarConsultas()"
                                         style="background-color: #067935;"></button> &nbsp;
                                     <p-toggleButton [(ngModel)]="showFilters" onIcon="pi pi-filter" onLabel=""
                                         offLabel="" offIcon="pi pi-filter"></p-toggleButton>
+                                    <button type="button" pButton icon="fa fa-table"
+                                        (click)="verSeleccionColumnas = !verSeleccionColumnas"
+                                        pTooltip="Modificar Columnas" class="ui-button-secondary"
+                                        style="background-color: #dadada;">
+                                    </button>
                                 </div>
 
                                 <h4 *ngIf="!isExternal"><span *ngFor="let estado of estadosSummary"
@@ -113,16 +123,39 @@
                                 <!-- <i class="fa fa-search" style="margin:4px 4px 0 0"></i>
                                     <input type="text" pInputText placeholder="Buscar" (input)="dt.filterGlobal($event.target.value, 'contains')" style="width:40% !important"> -->
                             </div>
+                            <!-- COLUMNS CONFIG PANEL -->
+                            <section id="columns" *ngIf="verSeleccionColumnas">
+                                <div>
+                                    <h4 class="flex items-center">Columnas
+                                        <i class="pi pi-times cursor-pointer" (click)="verSeleccionColumnas=false"></i>
+                                    </h4>
+                                    <div class="inline-flex w-full gap-15px item-list">
+                                        <ng-container *ngFor="let col of colsFiltered; index as index">
+                                            <p *ngIf="col">
+                                                <label>
+                                                    <input type="checkbox" [id]="col.field+'_'+index"
+                                                        [disabled]="col.required" [(ngModel)]="col.visible"
+                                                        [value]="col.id"
+                                                        (ngModelChange)="guardarConfiguracionDeTablasDeUsuario()" />
+                                                    {{col.header}}
+                                                </label>
+                                            </p>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </section>
+
                         </ng-template>
                         <ng-template pTemplate="colgroup" let-columns>
                             <colgroup>
+                                <col [style.width.%]="2.5">
                                 <col *ngFor="let col of columns" [style.width.%]="col.width">
-                                <col style="width: 4rem">
+                                <col [style.width.%]="columns.length>=8? 5: 2.5">
                             </colgroup>
                         </ng-template>
                         <ng-template pTemplate="header" let-columns>
                             <tr>
-                                <th style="width: 3rem"></th>
+                                <th style="width: 2rem"></th>
 
                                 <th *ngFor="let col of columns"
                                     [pSortableColumn]="col.filterType != 'custom'? col.field : col.sortdropdown"
@@ -131,22 +164,22 @@
                                         <p-sortIcon
                                             [field]="col.filterType != 'custom'? col.field : col.sortdropdown"></p-sortIcon></span>
                                 </th>
-                                <th style="width: 4rem"></th>
+                                <th style="width: 2rem"></th>
                             </tr>
                             <tr *ngIf="this.showFilters">
-                                <th style="width: 3rem"></th>
+                                <th style="width: 2rem"></th>
                                 <th *ngFor="let col of columns" [ngSwitch]="col.filterType">
                                     <p-spinner *ngSwitchCase="'number'"
-                                        (onChange)="dt.filter(col.numberValue, col.field, 'equals')"
+                                        (onChange)="cambiarFiltro( col.field, col.numberValue)"
                                         [(ngModel)]="col.numberValue" [inputStyle]="{'width.%': 90}"></p-spinner>
                                     <input *ngSwitchCase="'text'" pInputText type="text"
-                                        (input)="dt.filter($event.target.value, col.field, 'contains')"
+                                        (input)="cambiarFiltro( col.field, $event.target.value)"
                                         class="filters-text-table">
                                     <div *ngSwitchCase="'custom'">
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'"
                                             [options]="estados" defaultLabel="Todos" optionLabel="Descripcion"
                                             dataKey="Id" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter(getIds($event.value), 'EstadoConsultaId', 'in')">
+                                            (onChange)="cambiarFiltro('EstadoConsultaId',getIds($event.value))">
                                             <ng-template let-estado pTemplate="item">
                                                 <span class="label label-default"
                                                     [ngStyle]="{'background-color': estado.value.Color}">{{estado.label}}
@@ -158,7 +191,7 @@
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'Categoria'"
                                             [options]="categorias" defaultLabel="Todos" optionLabel="Nombre"
                                             dataKey="Id" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter(getIds($event.value), 'CategoriaId', 'in'); setSubcategorias($event.value)"
+                                            (onChange)="cambiarFiltro('CategoriaId',getIds($event.value)); setSubcategorias($event.value)"
                                             [style]="{'width.%': 100}">
                                             <ng-template let-categoria pTemplate="item">
                                                 <label>{{categoria.label}} <span class="badge right"
@@ -168,12 +201,12 @@
 
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'SubCategoria'"
                                             [options]="subcategoriasList" defaultLabel="Todos" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter($event.value, 'SubCategoriaId', 'in')"
+                                            (onChange)="cambiarFiltro( 'SubCategoriaId',$event.value)"
                                             [style]="{'width.%': 100}"></p-multiSelect>
 
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'Material'"
                                             [options]="materialesList" defaultLabel="Todos" [maxSelectedLabels]="1"
-                                            (onChange)="dt.filter($event.value, 'Material_Id', 'in')"
+                                            (onChange)="cambiarFiltro('Material_Id',$event.value)"
                                             [style]="{'width.%': 100}">
                                         </p-multiSelect>
                                     </div>
@@ -197,12 +230,12 @@
                                         </p-calendar>
                                     </div>
                                 </th>
-                                <th style="width: 4rem"></th>
+                                <th style="width: 2rem"></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-columns="columns">
                             <tr style="word-wrap: break-word;">
-                                <td style="width: 3rem; padding: 0">
+                                <td style="width: 2rem; padding: 0">
                                     <a style="cursor: pointer;" [pRowToggler]="rowData">
                                         <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                     </a>
@@ -225,7 +258,7 @@
                                     </div>
                                     <span *ngSwitchCase="'date'">{{rowData[col.field] | date:'dd/MM/yyyy'}}</span>
                                 </td>
-                                <td style="text-align: center; width: 5rem; padding: 0">
+                                <td style="text-align: center; width: 2rem; padding: 0">
                                     <button pButton type="button" (click)="openModal(rowData.Id, rowData.Asunto)"
                                         class="p-button-secondary" style="background-color: #067935;"
                                         icon="fa fa-comments-o"></button>
@@ -405,6 +438,10 @@
                             </tr>
                         </ng-template>
                     </p-table>
+                    <spinner *ngIf="consultasFiltradas?.length > 10" #bottomSpinner></spinner>
+                    <p-paginator #paginator [rows]="pageSize" [totalRecords]="totalConsultas"
+                        (onPageChange)="handlePageEvent($event)"></p-paginator>
+
                 </div>
             </div>
         </div>
@@ -421,19 +458,32 @@
 <div class="modal fade col-md-12 col-xs-12 col-sm-12 misConsultas" id="myModal" tabindex="-1" role="dialog"
     aria-labelledby="myModalLabel" data-backdrop="false"
     style="overflow-y: scroll;background-color: rgba(0, 0, 0, 0.5);">
-    <div class="modal-dialog WidhtModalConsultasInterno" role="document">
-        <div class="modal-content">
+    <div class="modal-dialog WidhtModalConsultasInterno" [ngClass]="{
+    'maximized-modal':modalMaximizado
+   }" role="document">
+        <div class="modal-content" [ngClass]="{
+    'maximized-modal-content':modalMaximizado
+   }">
             <div class="modal-header">
-                <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close" id="hidemyModal"
-                    (click)=resetVariables()>
-                    <span aria-hidden="true">&times;</span>
-                </button>
+                <div class="grid gap-4px">
+                    <button type="button" class="modal-btn-end w-3 h-3 rw-btn-close" data-dismiss="modal"
+                        aria-label="Close" (click)=resetVariables()>
+                        <i class="pi pi-times-circle" style="font-size: 0.65em"></i>
+                    </button>
+                    <button type="button" class="modal-btn-end w-3 h-3 btn-action"
+                        (click)="toggleMaximizarModalDetalle()">
+                        <i [ngClass]="'pi '+iconoModalDetalle" style="font-size: 0.65em"></i>
+                    </button>
+                </div>
                 <h4 class="modal-title" id="myModalLabel">
                     {{consultaId}} - {{asunto}}
                 </h4>
             </div>
-            <div class="modal-body" style="padding-top:0;" *ngIf="mostrarDetalle">
-                <consulta-detalle [consultaId]="consultaId"></consulta-detalle>
+            <div class="modal-body" [ngClass]="{
+                'h-90': modalMaximizado
+            }
+            " style="padding-top:0;" *ngIf="mostrarDetalle">
+                <consulta-detalle [modalMaximizado]="modalMaximizado" [consultaId]="consultaId"></consulta-detalle>
             </div>
         </div>
     </div>

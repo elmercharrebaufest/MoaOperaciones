@@ -1,0 +1,131 @@
+.rw-btn-close {
+    position: absolute;
+    top: 0px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-action {
+    position: absolute;
+    top: 0px;
+    right: 85px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.modal-btn-end {
+    padding: 0;
+    background: 0 0;
+    border: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.rw-btn-close :hover {
+    color: #bababa;
+}
+
+.btn-action :hover {
+    color: #bababa;
+}
+
+.w-3 {
+    width: 0.75rem !important;
+}
+
+.h-3 {
+    height: 0.75rem !important;
+}
+
+.grid {
+    display: grid;
+}
+
+.gap-4px {
+    gap: 4px;
+}
+
+.maximized-modal {
+    max-width: 100vw !important;
+    width: 100% !important;
+    height: 94vh;
+}
+
+.maximized-modal-content {
+    height: 100%;
+    width: 100% !important;
+    left: 0px !important;
+    max-width: 100vw !important;
+}
+
+.h-90 {
+    height: 90%;
+}
+
+.item-list {
+    display: flex;
+    /* Make the list container a flexbox */
+    flex-wrap: wrap;
+    /* Allow items to wrap to the next line */
+    width: fit-content;
+    /* Adjust width as needed */
+    list-style: none;
+    /* Remove default list styling */
+    margin: 0;
+    /* Remove default margin */
+    padding: 0;
+    /* Remove default padding */
+}
+
+.item-list li {
+    /* Style your list items here */
+    margin: 5px;
+    /* Add some margin between items */
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.grid {
+    display: grid
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.gap-15px {
+    gap: 15px;
+}
+
+.widht-full {
+    width: 100%;
+}
+
+.py-4 {
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+}
+
+.gap-5px {
+    gap: 5px
+}
+
+.font-size-1em {
+    font-size: 1em;
+}
+
+.items-end {
+    align-items: end;
+}

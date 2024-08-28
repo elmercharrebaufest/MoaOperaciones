@@ -35,6 +35,7 @@ namespace SustitucionMOAExternalAPI.Controllers
                 return InternalServerError(new Exception("Hubo un error al procesar la solicitud"));
             }
         }
+
         [Authorize(Roles = "API ORDENES RESIDUOS")]
         [HttpPatch]
         public IHttpActionResult Actualizar([FromBody] ActualizarOrdenResiduosExternalDto datos)

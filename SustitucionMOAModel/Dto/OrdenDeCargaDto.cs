@@ -49,6 +49,8 @@ namespace SustitucionMOAModel.Dto
         public string DestinoMercaderia { get; set; }
         public bool TienePatentesRepetidas { get; set; }
         public bool TieneConsultasRealizadas { get; set; }
+        public bool FleteMOA { get; set; }
+        public bool TienePatenteMultiplesAutorizaciones { get; set; }
         public OrdenDeCargaDto()
         {
             this.ordenes = new List<AutoCompleteDropdownElement> { };
@@ -219,6 +221,8 @@ namespace SustitucionMOAModel.Dto
         public bool NecesitaVerificarCuitsTerceros { get; set; }
         public string DestinoMercaderia { get; set; }
         public List<int> OrdenesConPatentesRepetidas { get; set; }
+        public bool FleteMOA { get; set; }
+        public string CUITRemitenteComercial { get; set; }
         public OrdenDeCargaDetalleDto() { }
 
         public OrdenDeCargaDetalleDto(Ent.OrdenDeCarga orden, List<OrdenDeCargaCambiosHistorialDto> ordenDeCargaCambiosHistorial, Proveedor cliente)
@@ -277,6 +281,8 @@ namespace SustitucionMOAModel.Dto
             CUITChofer = orden.CUITChofer;
             NecesitaVerificarCuitsTerceros = orden.Producto.ValidaSisaRuca && !orden.CuitTerceroExisteScato;
             DestinoMercaderia = orden.DestinoMercaderia;
+            FleteMOA = orden.FleteMOA ?? false;
+            CUITRemitenteComercial = orden.Producto.ValidaSisaRuca && orden.Reventa ? orden.CUITCliente : null;
         }
 
         public override bool Equals(object obj)

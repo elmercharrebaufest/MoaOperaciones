@@ -41,50 +41,33 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <app-dropdown-input
+                                    <p-dropdown name="cmbProductos"
+                                        placeholder="Seleccione un producto"
+                                        [disabled]="ordenResiduos.Id > 0"
                                         [options]="listaProductos"
-                                        [filterKey]="'Descripcion'"
-                                        [valueKey]="'MaterialId'"
-                                        (selectedChange)="onProductoSeleccionado($event)"
-                                        [placeholder]="'Seleccione un producto'"
-                                        [(selected)]="ordenResiduos.Producto"
-                                        [disabled]="ordenResiduos.Id > 0">
-                                        <ng-template let-option>
-                                            <p class="option-label">
-                                                {{option.Descripcion}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
+                                        optionLabel="Descripcion"
+                                        [(ngModel)]="ordenResiduos.Producto"
+                                        (ngModelChange)="onProductoSeleccionado()"
+                                        [filter]="true"
+                                        filterBy="value.Descripcion">
+                                    </p-dropdown>
                                 </div>
                             </div>
 
-                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-11">
+                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
                                     Destino mercadería (localidad - provincia):
                                 </div>
-                                <!-- <div class="styled-select">
-                                    <app-dropdown-input
-                                        [options]="listaLocalidades"
-                                        [filterKey]="'Nombre'"
-                                        [valueKey]="'Id'"
-                                        [placeholder]="'Seleccione un destino'"
-                                        [(selected)]="ordenResiduos.Localidad">
-                                        <ng-template let-option>
-                                            <p class="option-label">{{option.Nombre}}</p>
-                                        </ng-template>
-                                    </app-dropdown-input>
-                                </div> -->
-                                <div class="styled-select">
-                                    <!-- <app-autocomplete-localidad (onLocalidadSeleccionada)="localidadId = $event"
-                                                        [localidad_Id]="campoProveedorE.Localidad_Id">
-                            </app-autocomplete-localidad> -->
-                                    <!-- <app-autocomplete-localidad
-                                        (onLocalidadSeleccionada)="ordenResiduos.Localidad.Id = $event"
-                                        [localidad_Id]="ordenResiduos.Localidad.Id">
-                                    </app-autocomplete-localidad> -->
+                                <div *ngIf="!ordenResiduos.Id" class="styled-select" style="overflow: initial;">
                                     <app-autocomplete-localidad
                                         (onLocalidadSeleccionada)="onLocalidadSeleccionada($event)"
                                         [localidad_Id]="ordenResiduos.Localidad.Id">
                                     </app-autocomplete-localidad>
+                                </div>
+                                <div *ngIf="ordenResiduos.Id > 0" class="styled-select">
+                                    <input type="text"
+                                        [(ngModel)]="localidadDescripcion"
+                                        disabled="true">
                                 </div>
                             </div>
 

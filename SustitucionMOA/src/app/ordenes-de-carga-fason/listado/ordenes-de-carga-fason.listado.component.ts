@@ -11,6 +11,8 @@ import { ModalService } from '../../common/services/ModalService';
 import { Material } from '../../common/models/material';
 import { ConfirmationService } from 'primeng/api';
 import { Permiso } from '../../common/enums/Permisos';
+import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 
 @Component({
   selector: 'app-listado',
@@ -22,6 +24,8 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
 
   @ViewChild(MensajeComponent)
   protected mensajeComponent: MensajeComponent;
+  @ViewChild(FiltroFechaFasComponent)
+  private filtroFechaFasComponent: FiltroFechaFasComponent;
 
   productoSelected: string = "Todos";
   estadosSelected: string[] = [
@@ -96,7 +100,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     this.data = null;
     try {
       this.unsubscribe();
-      this.subscription = this.service.listado(this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin)
+      this.subscription = this.service.listado(this.filtroFechaFasComponent.fecha_inicio, this.filtroFechaFasComponent.fecha_fin)
         .subscribe(
           result => {
             this.spinnerComponent.hideIt();
