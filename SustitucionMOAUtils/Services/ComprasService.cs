@@ -5024,24 +5024,26 @@ namespace SustitucionMOAUtils.Services
                         });
                     }
 
-                    legajo.Add(new LegajoDto
+                    if (peticion.RevisionTecnica.Finalizada)
                     {
-                        ArchivoId = null,
-                        Observacion = "Finalización revisión tecnica",
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                        Fecha = peticion.RevisionTecnica.Fecha,
-                        FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
-                        Tipo = TipoLegajo.RevisionTecnica
-                    });
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = "Finalización revisión técnica",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                            Fecha = peticion.RevisionTecnica.Fecha,
+                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
+                            Tipo = TipoLegajo.RevisionTecnica
+                        });
+                    }
                 }
             }
 
-            AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
-
             if (!esProveedor)
             {
+                AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
                 AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId);
                 AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
                 AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion);
@@ -5189,17 +5191,17 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    // Agregar revisión ténica al zip
-                    if (peticion?.RevisionTecnica != null)
-                    {
-                        var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
-                        var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
-                        File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
-                        archivo.CreateEntryFromFile(rutaRevisionTecnica, $"RevTec{peticion.Id}.xlsx");
-                    }
-
                     if (!esProveedor)
                     {
+                        // Agregar revisión ténica al zip
+                        if (peticion?.RevisionTecnica != null)
+                        {
+                            var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
+                            var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
+                            File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
+                            archivo.CreateEntryFromFile(rutaRevisionTecnica, $"RevTec{peticion.Id}.xlsx");
+                        }
+
                         // Agregar historial de movimientos al zip
                         var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
                         var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
