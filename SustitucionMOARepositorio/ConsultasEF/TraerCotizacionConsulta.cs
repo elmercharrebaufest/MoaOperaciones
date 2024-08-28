@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
@@ -33,6 +35,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
                                     Cotizacion = new CotizacionDto(),
+                                    ObservacionCotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion  : null,
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     ObservacionTecnicaOriginal = cotizacion != null ? cotizacion.ObservacionTecnica : "",
@@ -46,6 +49,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     EsNuevaCotizacion = cotizacion != null && cotizacion.CotizarNuevaPosicion == true ? true : false,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
+                                    ArchivosPaso4Cotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.Archivos
+                                            .Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolp)
+                                            .Select(a => new ArchivoDto { Ruta = a.Ruta, Id = a.Id }).ToList().OrderBy(a => a.Id),
                                     RequisitoCiberseguridad = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.RequisitoCiberseguridad == true ? true : false,
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
@@ -209,7 +215,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             }).ToList().OrderBy(x => x.Numero)
                                             ,
                                         }
-                                    }).ToList().OrderBy(x => x.Posiciones.Indice)
+                                    }).ToList().OrderBy(x => x.Posiciones.Indice),
                                 };
 
                 var result = resultado.First();

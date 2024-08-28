@@ -6601,6 +6601,14 @@ namespace SustitucionMOAUtils.Services
                 peticionCotizacion.PeticionDeOfertaPosicion = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0).ToList();
                 if (!peticionCotizacion.PeticionDeOfertaPosicion.Any())
                     throw new WSCustomException("La petición de oferta no tiene posiciones pendientes, por favor contáctese con el área de compras.");
+                if (peticionCotizacion.ArchivosPaso4Cotizacion != null)
+                {
+                    peticionCotizacion.ArchivosPaso4Cotizacion = peticionCotizacion.ArchivosPaso4Cotizacion.Select(archivo => new ArchivoDto
+                    {
+                        Id = archivo.Id,
+                        Nombre = Path.GetFileName(archivo.Ruta),
+                    }).ToList();    
+                }
                 return peticionCotizacion;
             }
             catch (Exception e)

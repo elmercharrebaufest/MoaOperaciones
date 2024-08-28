@@ -301,11 +301,6 @@
                 </div>
             </div>
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
     </div>
     <app-plazo-de-oferta [(displayPlazo)]="displayPlazo"
                          (cerrarPlazoEmitter)="cerrarPlazo()"
@@ -313,4 +308,62 @@
                          [(cantidadSolicitada)]="cantidadSolicitada">
     </app-plazo-de-oferta>
 </section>
+
+<div class="rounded shadow" style="margin-top:2rem;">
+    <section class="container-fluid clearfix">
+        <div class="col-xs-12 col-md-12 title">
+            <strong>Cotización y plazo de Ejecución</strong>
+        </div>
+        <div class="linea"></div>
+        <br>
+        <div class="row">
+            <div class="col-md-12">
+            </div>
+        </div>
+        <br>
+        <div class="inputCompras">
+            <div class="row myRow" style="padding-top: 2px;">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <label class="labelCompras" for="editorTexto">
+                        <strong style="font-size: 14px;">
+                            Documentación anexada
+                        </strong>
+                    </label>
+                    
+                </div>
+                <!--Agregar la lista de los archivos -->
+                <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
+                    <p-panel *ngIf="peticion?.ArchivosPaso4Cotizacion?.length > 0"
+                        [toggleable]="true" [collapsed]="false">
+                        <div class="row myRow">
+                            <!-- Archivos que ya fueron guardados-->
+                            <div class="col-xs-12 col-md-9" *ngFor="let archivoCotizacion of peticion?.ArchivosPaso4Cotizacion">
+                                <a class="pointer" (click)="descargarArchivo(archivoCotizacion)">
+                                    {{archivoCotizacion.Nombre}}
+                                </a>
+                            </div>
+                            <!--Fin Archivos que ya fueron guardados-->
+                        </div>
+                    </p-panel>
+                </div>
+                <div class="row myRow">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <label class="labelCompras">
+                            <strong style="font-size: 14px;">
+                                Observaciones
+                            </strong>
+                        </label>
+                        <textarea name="ObservacionCotizacion" ngDefaultControl [(ngModel)]="peticion.ObservacionCotizacion"
+                                  cols="30" rows="1" [disabled]="true"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </section>
+</div>
 
