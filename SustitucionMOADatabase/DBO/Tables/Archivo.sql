@@ -1,7 +1,7 @@
 
 CREATE TABLE [dbo].[Archivo](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[FileKey] [nvarchar](max) NULL,
+	[FileKey] [nvarchar](400) NULL,
 	[Ruta] [nvarchar](max) NULL,
 	[ArchivoSap] BIT NULL DEFAULT 0,
 	[Proveedor_Id] [int] NULL,
@@ -19,3 +19,6 @@ GO
 ALTER TABLE [dbo].[Archivo] CHECK CONSTRAINT [FK_dbo.Archivo_dbo.Proveedor_Proveedor_Id]
 GO
 
+CREATE NONCLUSTERED INDEX [IX_Archivo_FileKey] ON [dbo].[Archivo]([FileKey])
+
+GO

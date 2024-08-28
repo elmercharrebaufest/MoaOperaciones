@@ -25,3 +25,7 @@ GO
 CREATE NONCLUSTERED INDEX [IX_PeticionDeOfertaSolpPosicion_SolpPosicionId] ON [dbo].[PeticionDeOfertaSolpPosicion]([SolpPosicion_Id])
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_PeticionDeOfertaSolpPosicion_PeticionDeOfertaId] ON [dbo].[PeticionDeOfertaSolpPosicion]([PeticionDeOferta_Id])
+
+GO
