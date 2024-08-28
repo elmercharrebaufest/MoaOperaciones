@@ -58,7 +58,13 @@
                             <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
                                 <tr>
                                     <td *ngIf="esTipoMaterial">
-                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected" [disabled]="posicionCompra.Cantidad<=0"></p-checkbox>
+                                        <p-checkbox
+                                            name="selectedCotizacion"
+                                            binary="false"
+                                            [(ngModel)]="posicionCompra.Selected"
+                                            [disabled]="posicionCompra.Cantidad<=0"
+                                            (ngModelChange)="checkSelectAllIfNeeded()">
+                                        </p-checkbox>
                                     </td>
                                     <td *ngIf="esTipoServicio">
                                         <a href="#" [pRowToggler]="posicionCompra">
