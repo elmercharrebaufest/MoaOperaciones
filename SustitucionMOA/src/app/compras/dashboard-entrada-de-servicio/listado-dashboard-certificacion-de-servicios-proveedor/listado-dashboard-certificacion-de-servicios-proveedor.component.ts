@@ -450,35 +450,38 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     formatImport(columna: string, rowData: any): string {
 
-        if (rowData.ImporteARPUSD.startsWith('ARP')) {
+        let parts = rowData.ImporteARPUSD.split(' ');
 
-            let valorNumerico = parseFloat(rowData.ImporteARPUSD.substring(4));
+        let currency: string;
+        let amount: string;
 
-            rowData.ImporteARPUSD = '$ ' + valorNumerico.toLocaleString('en-US', {
+        if (isNaN(parseFloat(parts[0]))) {
+            currency = parts[0];
+            amount = parts[1];
+        } else {
+            amount = parts[0];
+            currency = parts[1];
+        }
+
+        if (amount.includes(',') || amount.includes('.')) {
+            if (currency === 'ARP') {
+                return '$ ' + amount;
+            } else {
+                return currency + ' ' + amount;
+            }
+        } else {
+            let valorNumerico = parseFloat(amount);
+            let formattedAmount = valorNumerico.toLocaleString('en-US', {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
-        }
-
-        if (rowData.ImporteARPUSD.endsWith('USD')) {
-
-            const [numero, currency] = rowData.ImporteARPUSD.split(' ');
-
-            // Convierte a número
-            let valorNumerico = parseFloat(numero);
-            // Formatea como número con separadores de miles y dos decimales
     
-            return currency + " "+valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            if (currency === 'ARP') {
+                return '$ ' + formattedAmount;
+            } else {
+                return currency + ' ' + formattedAmount;
+            }
         }
-
-        if (columna === 'iImporte' && rowData.MonedaDescripcion === 'ARP') {
-            rowData.ImporteARPUSD = "$ " + rowData.ImporteARPUSD;
-        }
-        else if(columna === 'iImporte' && rowData.MonedaDescripcion !== 'ARP'){
-            rowData.ImporteARPUSD =  rowData.MonedaDescripcion +" " + rowData.ImporteARPUSD;
-        }
-
-        return rowData.ImporteARPUSD;
     }
 
     formatImportString(columna: string, rowData: any): string {
