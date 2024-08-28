@@ -450,6 +450,27 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
 
     formatImport(columna: string, rowData: any): string {
 
+        if (rowData.ImporteARPUSD.startsWith('ARP')) {
+
+            let valorNumerico = parseFloat(rowData.ImporteARPUSD.substring(4));
+
+            rowData.ImporteARPUSD = '$ ' + valorNumerico.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        if (rowData.ImporteARPUSD.endsWith('USD')) {
+
+            const [numero, currency] = rowData.ImporteARPUSD.split(' ');
+
+            // Convierte a número
+            let valorNumerico = parseFloat(numero);
+            // Formatea como número con separadores de miles y dos decimales
+    
+            return currency + " "+valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
         if (columna === 'iImporte' && rowData.MonedaDescripcion === 'ARP') {
             rowData.ImporteARPUSD = "$ " + rowData.ImporteARPUSD;
         }
