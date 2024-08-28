@@ -102,7 +102,7 @@ export class AprobacionExternaComponent implements OnInit {
                             this.prov = result.data.proveedor;
                             this.aprobacionesList = result.data.aprobacionesList;
                             this.ordenCompra = result.data.nroOc;
-                            this.moneda = result.data.moneda;
+                            this.moneda = result.data.moneda === "ARP" ? "$ " : result.data.moneda+' ';
                             if (this.aprobacionesList.length > 0) {
                                 this.usuario = this.aprobacionesList[0].Ingresante_CDS;
                                 this.cert = this.aprobacionesList[0].NRO_ES_LOCAL;
