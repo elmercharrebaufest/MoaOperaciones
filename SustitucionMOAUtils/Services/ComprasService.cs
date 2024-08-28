@@ -10291,8 +10291,9 @@ namespace SustitucionMOAUtils.Services
         {
             var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
             var posicionesId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.SolpPosicion_Id);
+            var cotizacionPosicionId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.CotizacionPosicion_Id);
             var posicionesSolp = repositorio.Listar<SolpPosicion>(x => posicionesId.Contains(x.Id));
-            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta_Id);
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => cotizacionPosicionId.Contains(x.Id));
             var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
             var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
 
@@ -10300,32 +10301,28 @@ namespace SustitucionMOAUtils.Services
             {
                 respuestaGuardarSOLP.Errores = new List<String>();
                 var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                var adjudicacionResultDto = new AdjudicacionResultDto { Cotizacion_Id = adjudicacionDto.Cotizacion_Id };
                 var monedaCodigo = "";
                 if (adjudicacionDto.EsMonedaProveedor)
                 {
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
                     if (!string.IsNullOrEmpty(monedaProv))
                     {
-                        monedaCodigo = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
+                        monedaCodigo = tablasap.Find(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
                     }
                 }
 
                 foreach (var posicion in posicionesSolp)
                 {
-                    var cotizacionPosicion = cotizacionPosiciones.FirstOrDefault(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
+                    var cotizacionPosicion = cotizacionPosiciones.Find(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
                     decimal monto = 0;
-                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.FirstOrDefault(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
+                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.Find(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
 
-                    if (esServicios)
-                    {
-                        monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.CodigoSap, posicion.Subposiciones.ToList());
-                    }
+                    monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.First().Moneda.CodigoSap, posicion.Subposiciones.ToList());
 
                     var totalSolicitado = monto;
                     var totalCotizado = cotizacionPosicion.CotizacionSubPosiciones.Sum(cp => cp.Precio.Value * cp.Cantidad) ?? 0;
                     var monedaAdjudicada = moneda;
-                    var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+                    var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.First().Moneda.Codigo;
 
                     if (monedaAdjudicada != monedaCotizada)
                     {
