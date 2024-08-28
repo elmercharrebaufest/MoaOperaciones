@@ -57,7 +57,7 @@ namespace SustitucionMOAUtils.Services
                 
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
                 fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
-                fullHtml = fullHtml.Replace("{generalAmount}", generalAmount.ToString("N2"));
+                fullHtml = fullHtml.Replace("{generalAmount}", (report[0].Moneda == "ARP" ? "$ " : report[0].Moneda + " ") + generalAmount.ToString("N2"));
 
                 
                 var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f);
@@ -148,20 +148,20 @@ namespace SustitucionMOAUtils.Services
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Descripcion ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Cantidad.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.UM ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Anteriores
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadReal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAnteriorFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // A certificar
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadACertificar.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeACertificarFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Acumulado
                     $"<td style='padding: 10px; border: 1px solid #333;'>{(report.CantidadReal + report.CantidadACertificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAcumuladoFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + ((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                 $"</tr>");
 
                 montoTotal += (report.CantidadACertificar * report.Importe);
@@ -173,7 +173,7 @@ namespace SustitucionMOAUtils.Services
             sb.AppendLine("<tr class=\"footer\" style =\"font-weight: bold;\">");
             sb.AppendLine("<td colspan=\"10\" style=\"border:opx; padding:8px; text-align:center;\"></td>");
             sb.AppendLine("<td colspan=\"2\" class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">MONTO TOTAL</td>");
-            sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{montoTotal.ToString("N2")}</td>");
+            sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(reports[0].Moneda == "ARP" ? "$ " : reports[0].Moneda + " ") + montoTotal.ToString("N2")}</td>");
             sb.AppendLine("</tr>");
             sb.AppendLine("</tfoot>");
             sb.AppendLine("</table>");
