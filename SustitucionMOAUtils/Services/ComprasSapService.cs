@@ -14,24 +14,31 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
-        public ComprasSapService(IObtenerSolpConsumerMOA obtenerSolpConsumerMOA
-            )
+        public ComprasSapService(IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
-        public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolpe)
+        public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)
         {
             ObtenerSolpRequest request = new ObtenerSolpRequest()
             {
-                NumeroSolp = numeroSolpe,
+                NumeroSolp = numeroSolp,
                 FechaDesde = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
                 FechaHasta = DateTime.Today.AddDays(1),
             };
 
-            ObtenerSolpSAPResponse response = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(request);
+            try
+            {
+                ObtenerSolpSAPResponse response = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(request);
 
-            return response.Posiciones.Where(posicion => posicion.Ordered < posicion.Cantidad);
+                return response.Posiciones.Where(posicion => posicion.Ordered < posicion.Cantidad);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.ExternalAPIError(ex);
+                throw;
+            }
         }
     }
 }
