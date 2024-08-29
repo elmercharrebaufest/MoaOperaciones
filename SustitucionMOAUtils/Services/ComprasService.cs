@@ -4655,19 +4655,19 @@ namespace SustitucionMOAUtils.Services
             });
 
             //tex:
-            //se define que una posición $pos$ no está pendiente de la siquiente forma:
-            //$$ \{ posPendieteSap \in posicionesPendientesSap \|
+            //se define que una posición $pos$ está pendiente de la siguiente forma:
+            //$$ \{ \exists posPendieteSap \in posicionesPendientesSap \|
             //pos.Solp_Id = posPendieteSap.NumeroSolicitud
             //\land pos.Indice = posPendieteSap.NumeroPosicion \} $$
-            Predicate<SolpPosicion> posicionNoPendiente = pos =>
-                                !posicionesPendientesSap.Any(posPendieteSap =>
+            bool posicionPendiente(SolpPosicion pos) =>
+                                posicionesPendientesSap.Any(posPendieteSap =>
                                             int.Parse(posPendieteSap.NumeroSolicitud) == pos.Solp_Id
                                             && int.Parse(posPendieteSap.NumeroPosicion) == pos.Indice);
 
             //tex:
             // Returns todas las posiciones recibidas están pendientes:
-            // $$ \{\nexists pos \in posiciones \| posicionNoPendiente\} $$
-            return !posiciones.Exists(posicionNoPendiente);
+            // $$ \{\forall pos \in posiciones \| posicionPendiente\} $$
+            return posiciones.TrueForAll(posicionPendiente);
         }
 
         private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
