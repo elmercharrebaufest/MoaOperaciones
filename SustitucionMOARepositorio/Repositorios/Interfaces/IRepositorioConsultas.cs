@@ -6,6 +6,6 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     public interface IRepositorioConsultas
     {
         List<CategoriaDto> ListaCategorias(IEnumerable<string> incluir = null, IEnumerable<string> excluir = null);
-        List<EstadoConsultaDto> ListaEstadosConsultas();
+        List<EstadoConsultaDto> ListaEstadosConsultas(IEnumerable<int> categoriasPermitidasId = null);
     }
 }
