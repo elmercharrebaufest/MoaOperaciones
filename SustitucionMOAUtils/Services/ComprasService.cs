@@ -6615,7 +6615,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         Id = archivo.Id,
                         Nombre = Path.GetFileName(archivo.Ruta),
-                    }).ToList();    
+                    }).ToList();
                 }
                 return peticionCotizacion;
             }
@@ -9669,7 +9669,7 @@ namespace SustitucionMOAUtils.Services
                     FechaEntregaServicio = pos.FechaEntregaServicio,
                     PlazoEntrega = pos.PlazoEntrega,
                     FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                    TieneCotizacion = pos.Peticiones.Any()
+                    TieneCotizacion = pos.Peticiones.Any(),
                 },
                     pos => pos.TipoPosicion.Codigo == "MATERIALES" &&
                     solps.Contains(
@@ -9720,7 +9720,15 @@ namespace SustitucionMOAUtils.Services
                       (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
                       pos.Solp.EstadoSolpSap.CodigoSap == "02")
                 );
-
+                foreach (var posicion in posicionMaterial)
+                {
+                    if (posicion.TieneCotizacion)
+                    {
+                        posicion.ListaPO = repositorio.Obtener<SolpPosicion, IEnumerable<string>>(
+                            po => po.Id == posicion.Id,
+                            po => po.Peticiones.Select(p => p.Id.ToString())).ToList();
+                    }
+                }
                 return posicionMaterial;
             }
             catch (Exception e)
