@@ -32,6 +32,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -4558,13 +4559,9 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
 
-                Solp solpDb = repositorio.Listar<Solp>(x => x.Id == solp.Id).Single();
-                IEnumerable<PosicionSolpSAP> posicionesPendientesSap = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solpDb.NroSolp);
-                List<int> numerosPosicionesPendientesSap = posicionesPendientesSap.Select(sap => int.Parse(sap.NumeroPosicion)).ToList();
-
                 List<SolpPosicion> posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
 
-                if (posiciones.Select(x => x.Indice.Value).Any(indicePosicionDb => !numerosPosicionesPendientesSap.Contains(indicePosicionDb)))
+                if (!TodasLasPosicionesEstanPendientes(posiciones))
                 {
                     throw new ValidationCustomException("La posición está completa");
                 }
@@ -4641,6 +4638,36 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        private bool TodasLasPosicionesEstanPendientes(List<SolpPosicion> posiciones)
+        {
+            IEnumerable<int> nroSolpDb = posiciones.Select(pos => pos.Solp_Id).Distinct();
+
+            //tex:
+            // sea $ posicionesPendientesSap $ las posiciones marcadas en SAP como pendientes
+            ConcurrentQueue<PosicionSolpSAP> posicionesPendientesSap = new ConcurrentQueue<PosicionSolpSAP>();
+            nroSolpDb.AsParallel().ForAll(nroSolp =>
+            {
+                comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(nroSolp.ToString())
+                    .AsParallel()
+                    .ForAll(posSap => posicionesPendientesSap.Enqueue(posSap));
+            });
+
+            //tex:
+            //se define que una posición $pos$ no está pendiente de la siquiente forma:
+            //$$ \{ posPendieteSap \in posicionesPendientesSap \|
+            //pos.Solp_Id = posPendieteSap.NumeroSolicitud
+            //\land pos.Indice = posPendieteSap.NumeroPosicion \} $$
+            Predicate<SolpPosicion> posicionNoPendiente = pos =>
+                                !posicionesPendientesSap.Any(posPendieteSap =>
+                                            int.Parse(posPendieteSap.NumeroSolicitud) == pos.Solp_Id
+                                            && int.Parse(posPendieteSap.NumeroPosicion) == pos.Indice);
+
+            //tex:
+            // Returns todas las posiciones recibidas están pendientes:
+            // $$ \{\nexists pos \in posiciones \| posicionNoPendiente\} $$
+            return !posiciones.Exists(posicionNoPendiente);
         }
 
         private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
