@@ -73,3 +73,11 @@ GO
 CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_GrupoCompras] ON [dbo].[SolpPosicion]([GrupoCompras_Id])
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_Centro] ON [dbo].[SolpPosicion]([Centro_Id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_TipoImputacion] ON [dbo].[SolpPosicion]([TipoImputacion_Id])
+
+GO
