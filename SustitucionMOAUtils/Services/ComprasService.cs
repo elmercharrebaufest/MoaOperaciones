@@ -4559,7 +4559,13 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
 
-                List<SolpPosicion> posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
+                List<Expression<Func<SolpPosicion, object>>> inc = new List<Expression<Func<SolpPosicion, object>>>()
+                {
+                    x => x.Solp,
+                };
+
+                List<SolpPosicion> posiciones = repositorio
+                    .Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id), includes: inc);
 
                 if (!TodasLasPosicionesEstanPendientes(posiciones))
                 {
@@ -4642,12 +4648,10 @@ namespace SustitucionMOAUtils.Services
 
         private bool TodasLasPosicionesEstanPendientes(List<SolpPosicion> posiciones)
         {
-            IEnumerable<int> nroSolpDb = posiciones.Select(pos => pos.Solp_Id).Distinct();
-
             //tex:
             // sea $ posicionesPendientesSap $ las posiciones marcadas en SAP como pendientes
             ConcurrentQueue<PosicionSolpSAP> posicionesPendientesSap = new ConcurrentQueue<PosicionSolpSAP>();
-            nroSolpDb.AsParallel().ForAll(nroSolp =>
+            posiciones.Select(x => x.Solp.NroSolp).Distinct().AsParallel().ForAll(nroSolp =>
             {
                 comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(nroSolp.ToString())
                     .AsParallel()
@@ -4657,11 +4661,11 @@ namespace SustitucionMOAUtils.Services
             //tex:
             //se define que una posición $pos$ está pendiente de la siguiente forma:
             //$$ \{ \exists posPendieteSap \in posicionesPendientesSap \|
-            //pos.Solp_Id = posPendieteSap.NumeroSolicitud
+            //pos.Solp.NroSolp = posPendieteSap.NumeroSolicitud
             //\land pos.Indice = posPendieteSap.NumeroPosicion \} $$
             bool posicionPendiente(SolpPosicion pos) =>
                                 posicionesPendientesSap.Any(posPendieteSap =>
-                                            int.Parse(posPendieteSap.NumeroSolicitud) == pos.Solp_Id
+                                            posPendieteSap.NumeroSolicitud == pos.Solp.NroSolp
                                             && int.Parse(posPendieteSap.NumeroPosicion) == pos.Indice);
 
             //tex:
