@@ -9,7 +9,7 @@ export enum EstadoOrdenDeCarga {
     EntregaPendiente = 7,
     AnuladaPorVencimiento = 8,
     ErrorDeCarga = 9,
-    EdicionSolicitada = 10,
+    //EdicionSolicitada = 10,
     //AnulacionSolicitada = 11,
     ContratoVencido = 12,
     EdicionRechazada = 13,

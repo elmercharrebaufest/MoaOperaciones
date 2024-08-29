@@ -204,12 +204,7 @@ namespace SustitucionMOAModel.Entities
                         }
                         else
                         {
-                            if(Estado == EstadoOrdenDeCarga.EdicionSolicitada)
-                            {
-                                Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-                                
-                            }
-                            else if (FechaEntregaGenerada != null)
+                            if (FechaEntregaGenerada != null)
                             {
                                 Estado = EstadoOrdenDeCarga.EntregaGenerada;
                             }

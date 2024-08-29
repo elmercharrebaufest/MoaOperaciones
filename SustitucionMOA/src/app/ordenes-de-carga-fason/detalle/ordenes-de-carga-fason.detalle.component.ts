@@ -134,7 +134,22 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
 
     editarOrden() {
-        this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        if (this.validandoEstadoScato) {
+            return;
+        }
+        if (!this.activaEnScato) {
+            this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        } else {
+            this.confirmationService.confirm({
+                key: 'confirmarEdicionActiva',
+                message: `La orden está activa en SCATO, ¿seguro que quiere continuar con la edición?`,
+                accept: () => {
+                    this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+                },
+                reject: () => {
+                }
+            })
+        }
     }
 
     verificarTransporte() {

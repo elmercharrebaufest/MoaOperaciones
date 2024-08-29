@@ -14,7 +14,8 @@
                 <!-- Button trigger modal -->
                 <button *ngIf="botones.editar" type="button"
                     class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                    id="modalToggleButton" [disabled]="(activaEnScato || validandoEstadoScato) && !esAdmin">
+                    id="modalToggleButton" [disabled]="(activaEnScato || validandoEstadoScato) && !esAdmin"
+                    [pTooltip]="(activaEnScato || validandoEstadoScato) && !esAdmin? 'Imposible editar' : null">
                     Editar
                 </button>
             </div>
@@ -26,8 +27,10 @@
                 <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de anulación" [responsive]="true"
                     appendTo="body">
                     <p-footer>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoSA.reject()"></button>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoSA.accept()"></button>
                     </p-footer>
@@ -46,8 +49,8 @@
                     <p-footer>
                         <p-message *ngIf="activaEnScato" severity="error"
                             text="Actualmente la orden se encuentra activa en Scato."></p-message>
-                        <button type="button" pButton label="No" class="ui-button-info botonModal"
-                            (click)="dialogoConfirmarAnular.reject()"></button>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoConfirmarAnular.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoConfirmarAnular.accept()"></button>
                     </p-footer>
@@ -61,6 +64,16 @@
                             (click)="dialogoConfirmarEdicion.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
+                <p-confirmDialog #confirmarEdicionActiva key="confirmarEdicionActiva" [responsive]="true"
+                    appendTo="body" [header]="'Orden activa en Scato'">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="confirmarEdicionActiva.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="confirmarEdicionActiva.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+
             </div>
         </div>
         <div class="mySearch">

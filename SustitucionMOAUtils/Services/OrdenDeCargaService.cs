@@ -232,10 +232,10 @@ namespace SustitucionMOAUtils.Services
                         });
                     }
                 }
-                if (!esInterno && historialCambios.Count > 0)
-                {
-                    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
-                }
+                //if (!esInterno && historialCambios.Count > 0)
+                //{
+                //    SolicitarEdicionOrden(ordenDeCarga.Id, mailUsuario);
+                //}
 
                 foreach (var historialCambio in historialCambios)
                 {
@@ -297,33 +297,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string SolicitarEdicionOrden(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                {
-                    Id = 0,
-                    Antes = orden.Estado.ToFriendlyString(),
-                    Despues = EstadoOrdenDeCarga.EdicionSolicitada.ToFriendlyString(),
-                    NombreColumnaCambio = "estado",
-                    FechaCambio = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    OrdenDeCarga_Id = orden.Id
-                };
+        //public string SolicitarEdicionOrden(int ordenId, string mailUsuario)
+        //{
+        //    try
+        //    {
+        //        var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
+        //        var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+        //        var ordenHistorial = new OrdenDeCargaCambiosHistorial()
+        //        {
+        //            Id = 0,
+        //            Antes = orden.Estado.ToFriendlyString(),
+        //            Despues = EstadoOrdenDeCarga.EdicionSolicitada.ToFriendlyString(),
+        //            NombreColumnaCambio = "estado",
+        //            FechaCambio = DateTime.Now,
+        //            Usuario_Id = usuario.Id,
+        //            OrdenDeCarga_Id = orden.Id
+        //        };
 
-                repositorio.Agregar(ordenHistorial);
-                orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
+        //        repositorio.Agregar(ordenHistorial);
+        //        orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
 
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+        //        return SuccessMsg.OrdenDeCargaActualizada;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return ex.Message;
+        //    }
+        //}
 
         public CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false)
         {
@@ -653,7 +653,6 @@ namespace SustitucionMOAUtils.Services
                 EstadoOrdenDeCarga.PendienteCompensacion,
                 EstadoOrdenDeCarga.PendienteAprobacionCredito,
                 EstadoOrdenDeCarga.Vencida,
-                EstadoOrdenDeCarga.EdicionSolicitada,
                 EstadoOrdenDeCarga.EntregaAnuladaPedidoPendienteAnulacion,
                 EstadoOrdenDeCarga.ErrorDeCarga,
             };
@@ -685,97 +684,6 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
 
             return SuccessMsg.OrdenDeCargaAnulada;
-        }
-
-        public string EdicionFinalizada(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-
-                var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
-                                                .OrderByDescending(x => x.FechaCambio)
-                                                .Take(1)
-                                                .FirstOrDefault().Antes;
-
-                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
-                orden.EdicionRechazada = false;
-
-                if (puedeEnviarASAP && orden.NumeroEntrega != null)
-                {
-                    var resultado = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(orden));
-                    if (resultado.HayError)
-                        throw new InfoCustomException(resultado.Errores[0].Message);
-                }
-
-                repositorio.GuardarCambios();
-
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
-
-        public string RechazarSolicitudEdicion(int ordenId, string mailUsuario)
-        {
-            try
-            {
-                string fechaFormat = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId && x.NombreColumnaCambio != "estado").OrderByDescending(x => x.Id).Take(1).FirstOrDefault().FechaCambio.ToString("yyyyMMddHHmm");
-                var listaPrevia = repositorio.Listar<OrdenDeCargaCambiosHistorial>(x => x.OrdenDeCarga_Id == ordenId).Select(x => new
-                {
-                    FechaCambio = x.FechaCambio.ToString("yyyyMMddHHmm"),
-                    x.NombreColumnaCambio,
-                    x.Antes,
-                    x.Despues
-                });
-                var datosAnteriores = listaPrevia.Where(x => x.FechaCambio == fechaFormat && x.NombreColumnaCambio != "estado").ToList();
-                var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-                var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-                var estadoAnterior = repositorio.Listar<OrdenDeCargaCambiosHistorial>(o => o.NombreColumnaCambio == "estado" && o.OrdenDeCarga_Id == ordenId)
-                                                .OrderByDescending(x => x.FechaCambio)
-                                                .Take(1)
-                                                .FirstOrDefault().Antes;
-                var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                {
-                    Id = 0,
-                    Antes = estadoAnterior,
-                    Despues = EstadoOrdenDeCarga.EdicionRechazada.ToFriendlyString(),
-                    NombreColumnaCambio = "estado",
-                    FechaCambio = DateTime.Now,
-                    Usuario_Id = usuario.Id,
-                    OrdenDeCarga_Id = orden.Id
-                };
-                repositorio.Agregar(ordenHistorial);
-                repositorio.GuardarCambios();
-                foreach (var dato in datosAnteriores)
-                {
-                    orden.GetType().GetProperty(dato.NombreColumnaCambio).SetValue(orden, dato.Antes, null);
-                    ordenHistorial = new OrdenDeCargaCambiosHistorial()
-                    {
-                        Id = 0,
-                        Antes = dato.Despues,
-                        Despues = dato.Antes,
-                        NombreColumnaCambio = dato.NombreColumnaCambio,
-                        FechaCambio = DateTime.Now,
-                        Usuario_Id = usuario.Id,
-                        OrdenDeCarga_Id = orden.Id
-                    };
-                    repositorio.Agregar(ordenHistorial);
-                    repositorio.GuardarCambios();
-                }
-                orden.Estado = EstadoOrdenDeCargaExtensions.ObtenerDescripcionEstado(estadoAnterior);
-                orden.EdicionRechazada = true;
-                repositorio.GuardarCambios();
-                return SuccessMsg.OrdenDeCargaActualizada;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
         }
 
         public OrdenDeCargaDto ObtenerPatentes(OrdenDeCarga ordenDeCarga)
@@ -2511,7 +2419,6 @@ namespace SustitucionMOAUtils.Services
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.Entregada);
-                    estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ContratoVencido);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.Vencida);
@@ -2527,7 +2434,6 @@ namespace SustitucionMOAUtils.Services
                     estadosListarInternos.Add(EstadoOrdenDeCarga.Anulada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaGenerada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.Entregada);
-                    estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ContratoVencido);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.SinEnviarASAP);
@@ -2551,7 +2457,6 @@ namespace SustitucionMOAUtils.Services
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EntregaPendiente);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.AnuladaPorVencimiento);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ErrorDeCarga);
-                    estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionSolicitada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.ContratoVencido);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.EdicionRechazada);
                     estadosListarInternos.Add(EstadoOrdenDeCarga.SinEnviarASAP);
@@ -2571,7 +2476,6 @@ namespace SustitucionMOAUtils.Services
                     EstadoOrdenDeCarga.PendienteAprobacionCredito,
                     EstadoOrdenDeCarga.EntregaPendiente,
                     EstadoOrdenDeCarga.EntregaGenerada,
-                    EstadoOrdenDeCarga.EdicionSolicitada,
                     EstadoOrdenDeCarga.ContratoVencido,
                     EstadoOrdenDeCarga.EdicionRechazada,
                     EstadoOrdenDeCarga.SinEnviarASAP,

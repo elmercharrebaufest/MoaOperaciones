@@ -90,7 +90,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     mostrarListadoPuerto: boolean = false;
 
     mostrarBotonSolicitarAnulacion: boolean = false;
-    mostrarBotonEdicionFinalizada: boolean = false;
     mostrarBotonVerificarCompensacion: boolean = false;
 
     ordenActivaScato: boolean = false;
@@ -248,7 +247,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
         this.mostrarBotonVerificarSituacionCrediticia = false;
         this.mostrarBotonNotificarTransporte = false;
         this.mostrarBotonEditar = false;
-        this.mostrarBotonEdicionFinalizada = false;
         this.mostrarBotonSeleccionarFactura = false;
         this.mostrarBotonVerificarCompensacion = false;
         this.mostrarBotonVerificarCuitsTercero = false;
@@ -278,10 +276,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
                 if (estadosPuedeAnular.indexOf(this.ordenDeCarga.Estado) >= 0) {
                     this.mostrarBotonAnular = true;
                 }
-            }
-
-            if (this.ordenDeCarga.Estado == EstadoOrdenDeCarga.EdicionSolicitada) {
-                this.mostrarBotonEdicionFinalizada = true;
             }
 
             if (this.ordenDeCarga.ContratoSeleccionado) {
@@ -681,10 +675,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
     abrirModalActivarOC() {
         document.getElementById("openModalActivarOC").click();
     }
-    abrirModalEdicionFinalizada() {
-        this.verificarOrdenActivaScato(this.ordenDeCargaId.toString(), this.spinnerModalEdicion);
-        document.getElementById("openEdicionFinalizada").click();
-    }
 
     anularOrden() {
         this.mensajeComponent.setMsgsEmpty();
@@ -757,68 +747,6 @@ export class OrdenesDeCargaDetalleComponent extends BaseComponent implements OnI
             document.getElementById("closemodalAnularOrdenVencimiento").click();
             this.mensajeComponent.setErrorMsg(e);
             document.getElementById("closemodalAnularOrdenVencimiento").click();
-        }
-    }
-    edicionFinalizada(Tipo) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        try {
-            if (Tipo == "A") {
-                console.log(this.ordenDeCargaId);
-
-                this.subscriptionDropDowns = this.service.edicionFinalizada(this.ordenDeCargaId).subscribe(
-                    result => {
-                        this.spinnerComponent.hideIt();
-                        document.getElementById("closemodalEdicionFinalizada").click();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-
-                            this.navService.navegarSeccion(
-                                "/ordenes-de-carga"
-                            );
-                        }
-                    },
-                    error => {
-                        document.getElementById("closemodalEdicionFinalizada").click();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                );
-            }
-            else {
-                this.subscriptionDropDowns = this.service.rechazarSolicitudEdicion(this.ordenDeCargaId).subscribe(
-                    result => {
-                        this.spinnerComponent.hideIt();
-                        document.getElementById("closemodalEdicionFinalizada").click();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.mensajeComponent.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.mensajeComponent.setInfoMsg(result.info);
-                        } else {
-                            this.mensajeComponent.setSuccessMsg(result.data);
-
-                            this.navService.navegarSeccion(
-                                "/ordenes-de-carga"
-                            );
-                        }
-                    },
-                    error => {
-                        document.getElementById("closemodalEdicionFinalizada").click();
-                        this.mensajeComponent.setErrorMsg(error.message);
-                    }
-                );
-            }
-
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
         }
     }
 
