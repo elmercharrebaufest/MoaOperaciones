@@ -52,11 +52,11 @@ export interface Consulta {
 }
 
 export interface EstadoConsulta {
-    Id;
-    Code;
-    Descripcion;
-    Color;
-    Cantidad;
+    Id: number;
+    Code: string;
+    Descripcion: string;
+    Color?: string;
+    Cantidad?: number;
 }
 
 export interface Categoria {
