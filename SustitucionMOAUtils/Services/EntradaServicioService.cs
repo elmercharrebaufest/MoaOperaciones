@@ -1374,25 +1374,17 @@ namespace SustitucionMOAUtils.Services
                                 ES.Fecha_aprobacion = DateTime.Today;
                                 result.NroESSap = ESNumber.ToString();
                                 repositorio.GuardarCambios();
+
+                                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
+
                             }
                             catch (Exception e)
                             {
-                                throw e;
+                                Logger.Log.Info(e.Message);
                             }
                         }
                     }
-                } else
-                {
-                    emailDetailCertificateDto.NumeroCertificacion = EntradasDeServicioTemp[0].NRO_ES_LOCAL;
                 }
-            }
-
-            try {
-                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Info(e.Message);
             }
             
             return result;
