@@ -90,6 +90,13 @@ export class MisConsultasComponent extends ListBaseComponent {
     consultas: Consulta[];
     consultasFiltradas: Consulta[];
     estados: EstadoConsulta[];
+    selectedEstados: EstadoConsulta[] = [
+        { Id: 1, Code: 'INI', Descripcion: 'Iniciada' },
+        { Id: 2, Code: 'GES', Descripcion: 'En gestión' },
+        { Id: 3, Code: 'GESRTA', Descripcion: 'En gestión Rta' },
+        { Id: 4, Code: 'DOC', Descripcion: 'Solicitud de información' },
+        { Id: 5, Code: 'REC', Descripcion: 'Rechazado' }
+    ]
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
