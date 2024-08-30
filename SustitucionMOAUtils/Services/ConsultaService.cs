@@ -986,11 +986,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<EstadoConsultaDto> ObtenerEstados()
+        public List<EstadoConsultaDto> ObtenerEstados(IEnumerable<int> categoriasPermitidasId = null)
         {
             try
             {
-                return repositorioConsultas.ListaEstadosConsultas();
+                return repositorioConsultas.ListaEstadosConsultas(categoriasPermitidasId);
             }
             catch (ValidationCustomException e)
             {

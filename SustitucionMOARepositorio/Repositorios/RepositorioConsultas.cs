@@ -49,15 +49,24 @@ namespace SustitucionMOARepositorio.Repositorios
                 return c;
             }).ToList();
         }
-        public List<EstadoConsultaDto> ListaEstadosConsultas()
+        public List<EstadoConsultaDto> ListaEstadosConsultas(IEnumerable<int> categoriasPermitidasId = null)
         {
-            var conteos = (from consulta in Set<Consulta>()
-                           group consulta by consulta.EstadoConsulta_Id into grupo
-                           select new  // Create anonymous object for each group
-                           {
-                               Cantidad = grupo.Count(),
-                               EstadoConsultaId = grupo.Key
-                           }).ToList();
+            var conteos = categoriasPermitidasId != null
+                            ? (from consulta in Set<Consulta>()
+                               where categoriasPermitidasId.Contains(consulta.Categoria_Id)
+                               group consulta by consulta.EstadoConsulta_Id into grupo
+                               select new  // Create anonymous object for each group
+                               {
+                                   Cantidad = grupo.Count(),
+                                   EstadoConsultaId = grupo.Key
+                               }).ToList()
+                           : (from consulta in Set<Consulta>()
+                              group consulta by consulta.EstadoConsulta_Id into grupo
+                              select new  // Create anonymous object for each group
+                              {
+                                  Cantidad = grupo.Count(),
+                                  EstadoConsultaId = grupo.Key
+                              }).ToList();
             var estadosConsulta = from m in Set<EstadoConsulta>()
                                   select new EstadoConsultaDto
                                   {
