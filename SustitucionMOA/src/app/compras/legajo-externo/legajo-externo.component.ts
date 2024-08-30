@@ -102,40 +102,8 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
-        } else if (legajoDto.Tipo == "Cotización adjunto") {
-            this.blockUI.start('Generando...');
-            this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
-                .subscribe(
-                    (result) => {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
-
-                        if (window.navigator.msSaveOrOpenBlob) {
-                            window.navigator.msSaveOrOpenBlob(
-                                blob,
-                                result.FileDownloadName
-                            );
-                        } else {
-                            var url = window.URL.createObjectURL(blob);
-                            var link = document.createElement("a");
-                            document.body.appendChild(link);
-                            link.href = url;
-                            link.download = result.FileDownloadName;
-                            link.click();
-                            setTimeout(function () {
-                                window.URL.revokeObjectURL(url);
-                            }, 0);
-                            this.blockUI.stop();
-                            return false;
-                        }
-                        this.blockUI.stop();
-                    },
-                    (error) => {
-                        this.mensajeComponent.setErrorMsg(error.message);
-                        this.blockUI.stop();
-                    })
+        } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
+            this.descargarAdjuntosProveedores(legajoDto)
         } else if (legajoDto.Tipo == LegajoTipo.Cotizacion && legajoDto.ArchivoId) {
             this.descargarHistorialCotizaciones(legajoDto.ArchivoId);
         }
@@ -144,8 +112,6 @@ export class LegajoExternoComponent implements OnInit {
         }
         else if (legajoDto.Tipo == LegajoTipo.RevisionTecnica && legajoDto.ArchivoId) {
             this.descargarRevisionTecnica(legajoDto.ArchivoId);
-        } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
-            this.descargarAdjuntosProveedores();
         }
         else {
             this.blockUI.start("Descargando...");
@@ -167,10 +133,9 @@ export class LegajoExternoComponent implements OnInit {
         }
     }
 
-    descargarAdjuntosProveedores() {
-        let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
+    descargarAdjuntosProveedores(legajoDto: LegajoDto) {
         this.blockUI.start('Generando...');
-        this.service.descargarAdjuntosProveedores(idPeticion, null)
+        this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
             .subscribe(
                 (result) => {
                     var byteArray = new Uint8Array(result.FileContents);
