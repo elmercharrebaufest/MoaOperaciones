@@ -3500,11 +3500,6 @@ namespace SustitucionMOAUtils.Services
 
                     if (item.VerPublicar && item.PosicionCompras.Any())
                     {
-                        if (!comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any())
-                        {
-                            item.VerPublicar = false;
-                        }
-
                         var solpDB = solpsDB.First(i => i.Id == item.Id);
 
                         if (solpDB.CondEspProveedorAsignado == true)
@@ -3521,6 +3516,8 @@ namespace SustitucionMOAUtils.Services
                         {
                             item.VerPublicar = false;
                         }
+
+                        item.VerPublicar &= comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any();
                     }
                 }
             }
@@ -3582,19 +3579,8 @@ namespace SustitucionMOAUtils.Services
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
 
-                var solps = new List<ObtenerSolpSAPResponse>();
-
-                foreach (var nroSolp in todasLasOfertas.NrosSolp)
-                {
-                    var filtros = new ObtenerSolpRequest
-                    {
-                        FechaDesde = fechaDesde,
-                        FechaHasta = fechaHasta,
-                        NumeroSolp = nroSolp
-                    };
-
-                    solps.Add(obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros));
-                }
+                var posicionesSap =
+                    comprasServiceSap.ObtenerPosiciones(todasLasOfertas.NrosSolp);
 
                 var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
@@ -3750,40 +3736,20 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
                 {
-                    var solp = solps.FirstOrDefault(x => x.Posiciones.Any(y => y.NumeroSolicitud == posicion.Posicion.NroSolp));
+                    PosicionSolpSAP posicionSap =
+                        posicionesSap
+                        .Single(sap => sap.NumeroSolicitud == posicion.Posicion.NroSolp
+                                                && int.Parse(sap.NumeroPosicion) == posicion.Posicion.Indice);
 
-                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 &&
-                        solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                       (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : 0; //Cantidad que ya se adjudico
+                    posicion.Posicion.CantidadAdjudicada = posicionSap.Ordered; //Cantidad que ya se adjudico
 
-                    posicion.Posicion.CantidadPendiente = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                        (posicion.Posicion.Cantidad - posicion.Posicion.CantidadAdjudicada) : posicion.Posicion.Cantidad; //Cantidad Pendiente
+                    posicion.Posicion.Cantidad = posicionSap.Cantidad;
+
+                    posicion.Posicion.CantidadPendiente = posicionSap.Cantidad - posicionSap.Ordered; //Cantidad Pendiente
 
                     posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
 
-                    if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
-                    {
-                        if (posicion.Posicion.CantidadPendiente <= 0)
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = true;
-                        }
-                        else
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = false;
-                        }
-                    }
-                    else
-                    {
-                        if (adjudicaciones.Any(x => x.Posiciones.Any(y => y.Posicion.Solp_Id == posicion.SolpId)) &&
-                            adjudicaciones.Any(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicion.SolpPosicion_Id)))
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = true;
-                        }
-                        else
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = false;
-                        }
-                    }
+                    posicion.Posicion.AdjudicacionCompleta = posicion.Posicion.CantidadPendiente <= 0;
                 }
 
                 return todasLasOfertas;
