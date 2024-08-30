@@ -3575,14 +3575,11 @@ namespace SustitucionMOAUtils.Services
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
                 var posicionesId = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.SolpPosicion_Id).ToList();
-                var adjudicaciones = repositorio.Listar<Adjudicacion>(x => x.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
-                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
 
                 var posicionesSap =
                     comprasServiceSap.ObtenerPosiciones(todasLasOfertas.NrosSolp);
 
-                var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
+                var esAdmin = usuario.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
                 var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
@@ -3594,7 +3591,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var usuarioPO in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
-                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones != null)
+                    if (usuarioPO.Cotizacion?.CotizacionPosiciones != null)
                     {
                         if (usuarioPO.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
@@ -3622,8 +3619,6 @@ namespace SustitucionMOAUtils.Services
                         usuarioPO.Cotizacion.TodasTotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
                         usuarioPO.Cotizacion.TodasTotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
                     }
-                    //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
-
 
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
@@ -3634,7 +3629,7 @@ namespace SustitucionMOAUtils.Services
                         verAdjudicar = false;
                         usuarioPO.VerImportes = false;
                     }
-                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    if (usuarioPO.Cotizacion?.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
@@ -3687,7 +3682,7 @@ namespace SustitucionMOAUtils.Services
                             usuarioPO.VerImportes = false;
                         }
 
-                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
+                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Exists(x => x.CotizacionSubPosiciones.Exists(y => !y.Completado)))
                         {
                             mensaje = "La cotización tiene subposiciones sin cotizar";
                             verAdjudicar = false;
@@ -3702,26 +3697,26 @@ namespace SustitucionMOAUtils.Services
                     usuarioPO.MensajeAdjudicar = mensaje;
                     usuarioPO.VerAdjudicar = verAdjudicar;
 
-                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.All(d => d.MonedaDescripcion == "ARP"))
+                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.TrueForAll(d => d.MonedaDescripcion == "ARP"))
                     {
                         if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true).GroupBy(x => x.MonedaDescripcion)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado).GroupBy(x => x.MonedaDescripcion)
                                                           .Select(grupo => new MonedaTotalDto
                                                           {
-                                                              Moneda = grupo.Key.ToString(),
+                                                              Moneda = grupo.Key,
                                                               Total = grupo.Sum(x => x.PrecioTotal).ToString("N2")
                                                           }).ToList();
                         }
                         else
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado)
                                                             .SelectMany(pos => pos.CotizacionSubPosiciones)
-                                                            .Where(x => x.Completado == true)
+                                                            .Where(x => x.Completado)
                                                             .GroupBy(sub => sub.MonedaDescripcion)
                                                             .Select(grupo => new MonedaTotalDto
                                                             {
-                                                                Moneda = grupo.Key.ToString(),
+                                                                Moneda = grupo.Key,
                                                                 Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
                                                             }).ToList();
 
@@ -3734,22 +3729,22 @@ namespace SustitucionMOAUtils.Services
 
                 todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
-                foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
+                foreach (SolpPosicionDto posicion in todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion))
                 {
                     PosicionSolpSAP posicionSap =
                         posicionesSap
-                        .Single(sap => sap.NumeroSolicitud == posicion.Posicion.NroSolp
-                                                && int.Parse(sap.NumeroPosicion) == posicion.Posicion.Indice);
+                        .Single(sap => sap.NumeroSolicitud == posicion.NroSolp
+                                                && int.Parse(sap.NumeroPosicion) == posicion.Indice);
 
-                    posicion.Posicion.CantidadAdjudicada = posicionSap.Ordered; //Cantidad que ya se adjudico
+                    posicion.CantidadAdjudicada = posicionSap.Ordered; //Cantidad que ya se adjudico
 
-                    posicion.Posicion.Cantidad = posicionSap.Cantidad;
+                    posicion.Cantidad = posicionSap.Cantidad;
 
-                    posicion.Posicion.CantidadPendiente = posicionSap.Cantidad - posicionSap.Ordered; //Cantidad Pendiente
+                    posicion.CantidadPendiente = posicionSap.Cantidad - posicionSap.Ordered; //Cantidad Pendiente
 
-                    posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
+                    posicion.CantidadAdjudicacion = posicion.CantidadPendiente; //Cantidad A Adjudicar 
 
-                    posicion.Posicion.AdjudicacionCompleta = posicion.Posicion.CantidadPendiente <= 0;
+                    posicion.AdjudicacionCompleta = posicion.CantidadPendiente <= 0;
                 }
 
                 return todasLasOfertas;
