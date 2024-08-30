@@ -32,7 +32,6 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
@@ -4611,13 +4610,8 @@ namespace SustitucionMOAUtils.Services
         {
             //tex:
             // sea $ posicionesPendientesSap $ las posiciones marcadas en SAP como pendientes
-            ConcurrentQueue<PosicionSolpSAP> posicionesPendientesSap = new ConcurrentQueue<PosicionSolpSAP>();
-            posiciones.Select(x => x.Solp.NroSolp).Distinct().AsParallel().ForAll(nroSolp =>
-            {
-                comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(nroSolp.ToString())
-                    .AsParallel()
-                    .ForAll(posSap => posicionesPendientesSap.Enqueue(posSap));
-            });
+            IEnumerable<PosicionSolpSAP> posicionesPendientesSap =
+                comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posiciones.Select(x => x.Solp.NroSolp));
 
             //tex:
             //se define que una posición $pos$ está pendiente de la siguiente forma:

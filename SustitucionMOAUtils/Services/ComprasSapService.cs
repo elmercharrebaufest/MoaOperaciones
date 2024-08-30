@@ -22,24 +22,7 @@ namespace SustitucionMOAUtils.Services
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)
         {
-            ObtenerSolpRequest request = new ObtenerSolpRequest()
-            {
-                NumeroSolp = numeroSolp,
-                FechaDesde = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
-                FechaHasta = DateTime.Today.AddDays(1),
-            };
-
-            try
-            {
-                ObtenerSolpSAPResponse response = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(request);
-
-                return response.Posiciones.Where(posicion => posicion.Ordered < posicion.Cantidad);
-            }
-            catch (Exception ex)
-            {
-                Logger.Log.ExternalAPIError(ex);
-                throw;
-            }
+            return ObtenerPosiciones(numeroSolp).Where(posicion => posicion.Ordered < posicion.Cantidad);
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<string> numerosSolp)
@@ -57,7 +40,7 @@ namespace SustitucionMOAUtils.Services
                 );
             return result;
         }
-        
+
         public IEnumerable<PosicionSolpSAP> ObtenerPosiciones(string numeroSolp)
         {
             ObtenerSolpRequest request = new ObtenerSolpRequest()
