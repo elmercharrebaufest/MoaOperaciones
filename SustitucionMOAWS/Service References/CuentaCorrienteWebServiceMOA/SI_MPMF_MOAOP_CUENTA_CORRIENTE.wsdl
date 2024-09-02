@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="SI_MPMF_MOAOP_CUENTA_CORRIENTE" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" name="SI_MPMF_MOAOP_CUENTA_CORRIENTE" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:documentation />
   <wsp:UsingPolicy wsdl:required="true" />
   <wsp:Policy wsu:Id="OP_SI_MPMF_MOAOP_CUENTA_CORRIENTE" />
@@ -117,7 +117,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="DEBE">
             <xsd:annotation>
-              <xsd:documentation>Amount in Local Currency</xsd:documentation>
+              <xsd:documentation>Amount in local currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -145,7 +145,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="HABER">
             <xsd:annotation>
-              <xsd:documentation>Amount in Local Currency</xsd:documentation>
+              <xsd:documentation>Amount in local currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -156,7 +156,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="IMPORTE_ARP">
             <xsd:annotation>
-              <xsd:documentation>Amount in Local Currency</xsd:documentation>
+              <xsd:documentation>Amount in local currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -167,7 +167,7 @@
           </xsd:element>
           <xsd:element minOccurs="0" name="SALDO">
             <xsd:annotation>
-              <xsd:documentation>Amount in Local Currency</xsd:documentation>
+              <xsd:documentation>Amount in local currency</xsd:documentation>
             </xsd:annotation>
             <xsd:simpleType>
               <xsd:restriction base="xsd:decimal">
@@ -217,6 +217,38 @@
                 <xsd:pattern value="\d+" />
               </xsd:restriction>
             </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="CON_PRECIO">
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="PAGO_DIF_ARP">
+            <xsd:annotation>
+              <xsd:documentation>Payment Method</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="DOC_PAGO_DIF_ARP">
+            <xsd:annotation>
+              <xsd:documentation>Character Field Length = 10</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="FECHA_PAGO_DIF_ARP" type="rfc:date">
+            <xsd:annotation>
+              <xsd:documentation>Baseline Date for Due Date Calculation</xsd:documentation>
+            </xsd:annotation>
           </xsd:element>
         </xsd:sequence>
       </xsd:complexType>

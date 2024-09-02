@@ -144,5 +144,9 @@
         public const string MODIFICAR_ESTADO_PROVEEDOR = "MODIFICAR ESTADO PROVEEDOR";
         /*Administración Contabilización - Mes Anterior*/
         public const string ADMIN_CONTABILIZACION_MES_ANTERIOR = "ADMIN CONTABILIZACION MES ANTERIOR";
+
+        /*CURSOS*/
+        public const string ADMINISTRAR_CURSOS = "ADMINISTRAR CURSOS";
+        public const string REALIZAR_CURSOS = "REALIZAR CURSOS";
     }
 }

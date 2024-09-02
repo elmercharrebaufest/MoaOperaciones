@@ -1,10 +1,7 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using Entities = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -79,7 +76,7 @@ namespace SustitucionMOAModel.Dto
 
         public ConsultaDto() { }
 
-        public ConsultaDto(Consulta consulta)
+        public ConsultaDto(Entities.Consulta consulta)
         {
             this.Id = consulta.Id;
             this.Asunto = consulta.Asunto;

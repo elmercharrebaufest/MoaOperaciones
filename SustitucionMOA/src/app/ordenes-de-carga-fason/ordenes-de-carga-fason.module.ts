@@ -20,6 +20,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { DialogModule } from 'primeng/dialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { MessageService } from 'primeng/api';
+import { MessageModule } from 'primeng/message';
 import { ToastModule } from 'primeng/toast';
 
 @NgModule({
@@ -41,7 +42,8 @@ import { ToastModule } from 'primeng/toast';
     ProgressSpinnerModule,
     DialogModule,
     TooltipModule,
-    ToastModule
+    ToastModule,
+    MessageModule
   ],
   declarations: [
     OrdenesDeCargaFasonAltaComponent,

@@ -1,10 +1,9 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
-import { Comentario, Destinatario } from './consulta';
-import { map } from 'rxjs/operators';
+import { Comentario, Consulta, Destinatario, ReqListadoConsultaDto } from './consulta';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
-import { OrdenDeCarga } from '../common/models/ordenes-de-carga/ordenDeCarga';
+import { ApiResponse } from '../common/models/response';
 
 @Injectable()
 export class ConsultaService extends BaseService {
@@ -74,11 +73,35 @@ export class ConsultaService extends BaseService {
             .get('/api/consulta/GetVendedoresUsuario', { headers: this.headers });
     }
 
-    public listarConsultas(): Observable<any> {
-        return this.http
-            .get('/api/consulta/Consultas', { headers: this.headers });
-    }
+    public listarConsultas({ page, pageSize, orderBy, filtros, dirOrden }: ReqListadoConsultaDto): Observable<any> {
+        let params = new HttpParams();
+        params = params.append('page', page.toString());
+        params = params.append('pageSize', pageSize.toString());
+        params = params.append('orderBy', orderBy);
+        params = params.append('dirOrden', dirOrden.toString());
+        if (filtros) {
+            params = params.append('filtrosURIEncoded', encodeURIComponent(JSON.stringify(filtros)));
+        }
 
+
+        return this.http
+            .get('/api/consulta/Consultas', { headers: this.headers, params });
+    }
+    listaExportacionConsultas(filtros: Record<keyof Consulta, any>): Observable<ApiResponse<Consulta[]>> {
+        let params = new HttpParams();
+        if (filtros) {
+            params = params.append('filtrosURIEncoded', encodeURIComponent(JSON.stringify(filtros)));
+        }
+        return this.http
+            .get('/api/consulta/ListaExportacionConsultas', { headers: this.headers, params });
+    }
+    public obtenerConsultaDisconformidad(numeroCCPP: number | string): Observable<ApiResponse<Consulta>> {
+        let params = new HttpParams();
+        params = params.append('numeroCCPP', numeroCCPP.toString());
+
+        return this.http
+            .get('/api/consulta/ObtenerConsultaDisconformidad', { headers: this.headers, params });
+    }
     public getConsultaDetalle(idConsulta): Observable<any> {
         return this.http
             .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });

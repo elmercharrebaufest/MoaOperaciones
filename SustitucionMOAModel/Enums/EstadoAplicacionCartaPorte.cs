@@ -9,7 +9,9 @@
             Error = 2,
             SinEstado = 3,
             Eliminado = 4,
-            EnProceso = 5
+            EnProceso = 5,
+            PendienteAprobacion = 6,
+            Rechazada = 7
         }
 
         public static class EstadoAplicacionCartaPorteExtensions
@@ -18,10 +20,12 @@
             {
                 switch (me)
                 {
-                    case EstadoAplicacionCartaPorte.Error:                  
+                    case EstadoAplicacionCartaPorte.Error:
+                    case EstadoAplicacionCartaPorte.Rechazada:
                         return "red";
                     case EstadoAplicacionCartaPorte.Pendiente:
                     case EstadoAplicacionCartaPorte.EnProceso:
+                    case EstadoAplicacionCartaPorte.PendienteAprobacion:
                         return "orange";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "green";
@@ -42,6 +46,10 @@
                         return "Pendiente";
                     case EstadoAplicacionCartaPorte.EnProceso:
                         return "En proceso";
+                    case EstadoAplicacionCartaPorte.PendienteAprobacion:
+                        return "Pendiente aprobación";
+                    case EstadoAplicacionCartaPorte.Rechazada:
+                        return "Rechazada";
                     default:
                         return "Sin estado";
                 }
@@ -53,10 +61,12 @@
                 {
                     case EstadoAplicacionCartaPorte.Pendiente:
                     case EstadoAplicacionCartaPorte.EnProceso:
+                    case EstadoAplicacionCartaPorte.PendienteAprobacion:
                         return "En proceso";
                     case EstadoAplicacionCartaPorte.Aplicado:
                         return "Aplicación aceptada";
                     case EstadoAplicacionCartaPorte.Error:
+                    case EstadoAplicacionCartaPorte.Rechazada:
                         return "Aplicación rechazada";
                     case EstadoAplicacionCartaPorte.Eliminado:
                         return "Aplicación eliminada";

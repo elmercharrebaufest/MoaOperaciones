@@ -30,6 +30,7 @@ using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive;
+using SustitucionMOAUtils.Export.CampoSustentable;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -175,6 +176,8 @@ namespace SustitucionMOA.App_Start
             }
             #endregion
 
+            kernel.Bind<ICampoSustentablePdfGenerator>().To(typeof(CampoSustentablePdfGenerator)).InScope(ctx => OperationContext.Current);
+
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IOrdenCargaConsumerMOA>().To(typeof(OrdenCargaConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -231,7 +234,9 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies

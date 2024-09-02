@@ -44,5 +44,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId);
         List<ProveedorDto> GetProveedoresUsuario(int usuarioId);
         void DesasociarVendedor(int usuarioId, int proveedorId, string mailUsuarioSesion);
+        List<string> GetMailUsuarios(string mail);
+        string ObtenerConfiguracion(string mailUsuario, TipoConfiguracionUsuario tipo);
+        void GuardarConfiguracionUsuario(string mailUsuario, string valor, TipoConfiguracionUsuario tipo);
     }
 }

@@ -11,8 +11,10 @@ export class SecurityService {
     }
 
     tienePermisoRedirect(permiso: string) {
-        if (JSON.parse(sessionStorage.getItem("permisos")).indexOf(permiso) == -1) {
-            this.router.navigate(['no-autorizado']);
+        if (sessionStorage.getItem("permisos")) {
+            if (JSON.parse(sessionStorage.getItem("permisos")).indexOf(permiso) == -1) {
+                this.router.navigate(['no-autorizado']);
+            }
         }
     }
 

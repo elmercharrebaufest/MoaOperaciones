@@ -10,6 +10,8 @@ namespace SustitucionMOAModel.Dto
     {
         public string NombreCampo { get; set; }
 
+        public string Renspa { get; set; }
+
         public string NombreCosecha { get; set; }
 
         public double HectareasTotales { get; set; }
@@ -42,6 +44,7 @@ namespace SustitucionMOAModel.Dto
         {
             return obj is CampoProveedorDto dto &&
                    NombreCampo == dto.NombreCampo &&
+                   Renspa == dto.Renspa &&
                    NombreCosecha == dto.NombreCosecha &&
                    HectareasTotales == dto.HectareasTotales &&
                    HectareasSoja == dto.HectareasSoja &&
@@ -60,6 +63,7 @@ namespace SustitucionMOAModel.Dto
         {
             int hashCode = 1599569244;
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreCampo);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Renspa);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreCosecha);
             hashCode = hashCode * -1521134295 + HectareasTotales.GetHashCode();
             hashCode = hashCode * -1521134295 + HectareasSoja.GetHashCode();

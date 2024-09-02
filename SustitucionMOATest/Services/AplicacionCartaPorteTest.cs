@@ -22,6 +22,7 @@ namespace SustitucionMOATest.Services
     {
         private Mock<IRepositorio> repositorio;
         private Mock<IAplicacionCartaPorteConsumer> consumer;
+        private Mock<IEmailAplicacionCPService> mIEmailAplicacionCPService;
         private IAplicacionCartaPorteService aplicacionCCPPService;
 
 
@@ -33,7 +34,8 @@ namespace SustitucionMOATest.Services
         {
             repositorio = new Mock<IRepositorio>();
             consumer = new Mock<IAplicacionCartaPorteConsumer>();
-            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object);
+            mIEmailAplicacionCPService = new Mock<IEmailAplicacionCPService>();
+            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object, mIEmailAplicacionCPService.Object);
         }
 
         [Test]

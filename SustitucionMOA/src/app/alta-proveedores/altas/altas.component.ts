@@ -133,7 +133,8 @@ export class AltasComponent extends BaseComponent implements OnInit {
     setEstadosDefault() {
         const estadosDefault: BehaviorSubject<Array<string>> = new BehaviorSubject<Array<string>>([
             "Alta solicitada",
-            "Analisis de Nosis",
+            "Análisis de Nosis",
+            "Análisis Interno",
             "Etapa Final"
         ]);
         this.estadosSelected = estadosDefault.value;
@@ -223,8 +224,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
                         } else {
                             let estadosIntermedios = result.intermedios;
                             let estadosFinales = result.finales;
-                            let estadosAgrupados = [{ Key: estadosIntermedios.map(x => x.Key).join("|"), Value: 'Altas en gestión' }, { Key: estadosFinales.map(x => x.Key).join("|"), Value: 'Altas finalizadas' }]
-                            this.estados = estadosIntermedios.concat(estadosFinales).concat(estadosAgrupados);
+                            this.estados = estadosIntermedios.concat(estadosFinales);
                             this.descripcionEstadoAlta = [];
                             this.estados.forEach(x =>
                                 this.descripcionEstadoAlta.push({
@@ -610,7 +610,7 @@ export class AltasComponent extends BaseComponent implements OnInit {
         let proveedorId: number = this.empresaSeleccionada.Id;
         let urlApi: string = '/api/AltaEmpresaGranos/DescargarArchivo';
         
-        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString() + "&url=" + urlApi.toString());
+        var param = btoa("fileKey=" + fileKey + "&mail=" + this.empresaSeleccionada.Mail + "&archivoId=" + archivoId.toString() + "&proveedorId=" + proveedorId.toString() + "&urlApi=" + urlApi.toString());
 
         var url = "/officetohtml/index.html?param=" + param;
         var link = document.createElement("a");

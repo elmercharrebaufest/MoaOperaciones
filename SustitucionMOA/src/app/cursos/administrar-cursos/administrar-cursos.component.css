@@ -1,0 +1,11 @@
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.contenedor-acciones {
+    width: 100%;
+    display: grid;
+    justify-content: end;
+    grid-gap: 4px;
+    grid-auto-flow: column;
+}

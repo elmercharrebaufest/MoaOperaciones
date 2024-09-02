@@ -37,6 +37,7 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.GoogleDrive;
     using SustitucionMOAWS.GoogleDrive.Interfaces;
     using Hangfire;
+    using SustitucionMOAUtils.Export.CampoSustentable;
 
     public static class NinjectWebCommon
     {
@@ -181,6 +182,8 @@ namespace SustitucionMOAExternalAPI.App_Start
             }
             #endregion
 
+            kernel.Bind<ICampoSustentablePdfGenerator>().To(typeof(CampoSustentablePdfGenerator)).InScope(ctx => OperationContext.Current);
+
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -235,8 +238,9 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
-
+            kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             // GoogleDrive
             kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICampoSustentableGoogleDrive>().To(typeof(CampoSustentableGoogleDrive)).InSingletonScope();

@@ -28,7 +28,8 @@
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -259,10 +260,21 @@
     <Content Include="Content\images\buttons\upload.png" />
     <Content Include="Content\images\header\key-solid.svg" />
     <Content Include="Content\images\header\logo.png" />
+    <Content Include="Content\images\favicon.ico" />
     <Content Include="Content\images\header\logo_.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\images\icons\add-user.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\images\icons\bell-ring.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\images\icons\dolly-solid.svg" />
+    <Content Include="Content\images\icons\paper-clip.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\images\icons\send.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\images\icons\carpeta.svg" />
@@ -271,6 +283,7 @@
     <Content Include="Content\images\icons\descargar.svg" />
     <Content Include="Content\images\icons\doc-file.svg" />
     <Content Include="Content\images\icons\editar.svg" />
+    <Content Include="Content\images\icons\file-checkmark-icon.svg" />
     <Content Include="Content\images\icons\gears.svg" />
     <Content Include="Content\images\icons\liquidaciones.svg" />
     <Content Include="Content\images\icons\paper.svg" />
@@ -284,6 +297,7 @@
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
     <Content Include="Content\images\LogoBaufest.png" />
+    <Content Include="Content\js\jquery.migrate.js" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
     <Content Include="dist\Content\css\font-awesome.css" />
@@ -1089,6 +1103,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Template\RespuestaConsulta.html" />
+    <Content Include="Template\NotificacionConsultaParaInternos.html" />
     <Content Include="Template\Solp.html" />
     <Content Include="tsconfig.json" />
     <Content Include="package.json" />
@@ -1131,6 +1146,8 @@
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
+    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\CursoController.cs" />
     <Compile Include="Controllers\EntradaServicioController.cs" />
     <Compile Include="Controllers\LoggerController.cs" />
     <Compile Include="Controllers\OrdenResiduosController.cs" />

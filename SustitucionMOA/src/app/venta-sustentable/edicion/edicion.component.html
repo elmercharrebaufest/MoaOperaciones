@@ -14,7 +14,7 @@
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                            <p class="crearConsultaTitulos">Nombre del establecimiento<span class="requerido">*</span>
+                            <p class="crearConsultaTitulos">Nombre del establecimiento <span class="requerido">*</span>
                             </p>
                             <div class="styled-select ">
                                 <input type="search" [(ngModel)]="campoProveedor.NombreCampo" class="fourRounded"
@@ -32,6 +32,18 @@
                                 <input type="search" [(ngModel)]="localidadNombre" class="fourRounded"
                                     aria-controls="tableModal" disabled>
                             </div>-->
+                        </div>
+                    </div>
+
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">RENSPA <span class="requerido">*</span></p>
+                            <div class="styled-select">
+                                <input type="text" [(ngModel)]="campoProveedor.Renspa" class="fourRounded"
+                                    aria-controls="tableModal" mask="00.000.0.00000/00">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
                         </div>
                     </div>
 

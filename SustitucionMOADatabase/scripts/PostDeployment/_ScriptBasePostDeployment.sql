@@ -34,7 +34,8 @@ Post-Deployment Script Template
 :r .\RegionSap.sql
 :r .\EstadoOrdenResiduos.sql
 :r .\AlmacenMaterial.sql
-
+:r .\Curso.sql
+:r .\UsuariosParaExternalAPI.sql
 :r ..\Notificaciones\Notificacion.sql
 :r ..\Notificaciones\NotificacionFechaCreacion.sql
 :r ..\Notificaciones\NotificacionPrioridad.sql

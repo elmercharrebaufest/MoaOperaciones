@@ -555,7 +555,7 @@ namespace SustitucionMOAUtils.Services
         public string AgregarApertura(EcheqRequestModel request)
         {
             string mensajeErrorBloqueo = "bloqueado por";
-            string mensajeErrorBloqueoReemplazo = "El Contrato esta siendo tratado, espere un momentos.";
+            string mensajeErrorBloqueoReemplazo = "Error al aperturar el contrato, por favor vuelva a intentar más tarde";
             string mensaje = string.Empty;
             EcheqLiquidacion liquidacion = repositorio.Obtener<EcheqLiquidacion>(x =>
             x.Documento == request.Documento &&
@@ -565,7 +565,14 @@ namespace SustitucionMOAUtils.Services
 
             if (liquidacion == null)
             {
+                var hoy = DateTime.Now;
                 liquidacion = CrearLiquidacion(request);
+                echeqModificacionDocumentoChequeConsumerMOA.Request(
+                    IM_CONTRATO:request.Contrato, IM_DOCUMENTO:request.Documento,
+                    IM_EJERCICIO: liquidacion.Ejercicio,IM_FECHA: hoy.ToString("yyyy-MM-dd"),
+                    IM_HORA: hoy.ToString("HH:mm:ss"), IM_PEDIDO: request.Pedido,
+                    IM_PROVEEDOR: request.CodigoProveedor, IM_REFERENCIA: liquidacion.NumeroCOE, 
+                    IM_SOCIEDAD:"MOA", IM_USUARIO:"", IM_ZLSCH:"=");
             }
 
             //ANULAR APERTURAS ANTERIORES

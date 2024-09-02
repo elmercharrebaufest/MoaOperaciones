@@ -25,5 +25,14 @@ namespace SustitucionMOAUtils.Extensions
             }
             return str.PadLeft(12, '0');
         }
+
+        public static string ToFormatoRenspa(this string str)
+        {
+            if (string.IsNullOrEmpty(str) || str.Length != 13)
+            {
+                return str;
+            }
+            return $"{str.Substring(0,2)}.{str.Substring(2, 3)}.{str.Substring(5, 1)}.{str.Substring(6, 5)}/{str.Substring(11, 2)}";
+        }
     }
 }

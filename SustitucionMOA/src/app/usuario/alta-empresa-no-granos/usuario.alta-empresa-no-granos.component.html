@@ -79,7 +79,7 @@
                     Estimado facturación anual a MOA ($):
                     <div class="styled-select">
                         <input type="text" class="" placeholder="" numeric decimals="0" [(ngModel)]="facturacionAnual"
-                            maxlength="12" (change)="calcularFacturacion()">
+                            maxlength="9" (change)="calcularFacturacion()">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-3">
@@ -125,9 +125,9 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <input type="button" class="btn btn-custom btn-add" placeholder="" value="Grabar" (click)="grabar()"
-                        *ngIf="!spinnerComponent.visible">
+                        *ngIf="!spinnerComponent.visible.value">
                     <input type="button" class="btn btn-custom btn-remove" placeholder="" value="Rechazar"
-                        (click)="rechazar()" *ngIf="!spinnerComponent.visible && proveedorId>0">
+                        (click)="rechazar()" *ngIf="!spinnerComponent.visible.value && proveedorId>0">
                     <spinner></spinner>
                 </div>
             </div>

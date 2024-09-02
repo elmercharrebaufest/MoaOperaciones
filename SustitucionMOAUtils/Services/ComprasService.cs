@@ -45,6 +45,7 @@ using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 using SustitucionMOAModel.Dto.Compras;
 using System.Data.Entity.SqlServer;
+using System.Diagnostics;
 
 
 namespace SustitucionMOAUtils.Services
@@ -2593,39 +2594,32 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                Debug.WriteLine($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
                 Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+
                 if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
                 Log.Info(JsonConvert.SerializeObject(result));
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Posiciones {result.Posiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Direcciones {result.Direcciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob ImputacionesSuposiciones {result.ImputacionesSuposiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob ServiciosSuposiciones {result.ServiciosSuposiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob TipoImputaciones {result.TipoImputaciones.Count()}");
 
                 List<TablaSap> ordenes = new List<TablaSap>();
 
                 List<int> subPosicionesBorradas = new List<int>();
 
                 List<string> tablasSapAConsultar = new List<string>
-            {
-                TablasSap.Moneda,
-                TablasSap.Almacen,
-                TablasSap.Centro,
-                TablasSap.GrupoCompras,
-                TablasSap.GrupoArticulo,
-                TablasSap.Unidad,
-                TablasSap.ClaseDocumento,
-                TablasSap.CecoSolpSap,
-                TablasSap.OrdenSolpSap,
-                TablasSap.CentroBeneficio,
-                TablasSap.CuentasSolpSap,
+     {
+         TablasSap.Moneda,
+         TablasSap.Almacen,
+         TablasSap.Centro,
+         TablasSap.GrupoCompras,
+         TablasSap.GrupoArticulo,
+         TablasSap.Unidad,
+         TablasSap.ClaseDocumento,
+         TablasSap.CecoSolpSap,
+         TablasSap.CentroBeneficio,
+         TablasSap.CuentasSolpSap,
 
-            };
+     };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
                 var tablaGeneral = repositorio.Listar<TablaGeneral>(x => x.Tabla == "TipoSolp");
@@ -2636,14 +2630,16 @@ namespace SustitucionMOAUtils.Services
                     var imputacionesTemp = result.TipoImputaciones.ToList();
                     foreach (var impTemp in imputacionesTemp)
                     {
-                        ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                         if (!String.IsNullOrEmpty(impTemp.IdOrden))
                         {
-                            var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
+                            var existeOrden = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.OrdenSolpSap && x.Codigo == impTemp.IdOrden).ToList();
                             if (existeOrden.Count == 0)
                             {
-                                //this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
                                 listaSap.AddRange(ObtenerOrdenesSap(impTemp.IdOrden));
+                            }
+                            else
+                            {
+                                ordenes.AddRange(existeOrden);
                             }
                         }
                     }
@@ -2656,16 +2652,30 @@ namespace SustitucionMOAUtils.Services
                 List<TipoSolpPosicionSAP> tiposSolpPosicionSAP = repositorio.Listar<TipoSolpPosicionSAP>();
                 List<SustitucionMOAModel.Entities.TipoImputacionSAP> tiposImputacionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoImputacionSAP>();
 
-                List<MaterialSolp> materialesSap = repositorio.Listar<MaterialSolp>();
+                var materialesParaConsultar = result.Posiciones.Select(x => x.Material).ToList();
+                List<MaterialSolp> materialesSap = new List<MaterialSolp>();
+                if (result.Posiciones.Any(x => x.Tipo == "0"))
+                {
+                    materialesSap = repositorio.Listar<MaterialSolp>(x =>
+                        materialesParaConsultar.Contains(x.Codigo)
+                    ).ToList();
+                }
+
+                var usuarioParaConsultar = result.Posiciones.Select(x => x.UsuarioCreado).ToList();
+
+                List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(
+                    a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap },
+                    a => a.UsuarioSap != null && a.UsuarioSap != "" && usuarioParaConsultar.Contains(a.UsuarioSap)).ToList();
+
+
+                List<TablaSap> centros = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> monedas = tablaSap.Where(x => x.Tabla == TablasSap.Moneda).ToList();
                 List<TablaSap> almacenes = tablaSap.Where(x => x.Tabla == TablasSap.Almacen).ToList();
-                List<TablaSap> centros = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> gruposCompras = tablaSap.Where(x => x.Tabla == TablasSap.GrupoCompras).ToList();
                 List<TablaSap> gruposArticulos = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
                 List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
                 List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
-                List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap }, a => a.UsuarioSap != null && a.UsuarioSap != "").ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
                 var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap).Select(x => new TablaSapDto(x)).ToList();
@@ -2996,6 +3006,8 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);
                 throw;
             }
+            Debug.WriteLine($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+
         }
 
         private void CompletarObservacionSegunCondEsp(Solp solp, string observaciones)

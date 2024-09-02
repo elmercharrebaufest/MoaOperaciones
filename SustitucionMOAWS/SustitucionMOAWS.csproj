@@ -748,6 +748,7 @@
     <Compile Include="WSConsumers\VendedorHabilitadoConsumerMOA.cs" />
     <Compile Include="WSConsumers\VinculaDetalleConsumerMOA.cs" />
     <Compile Include="WSRequests\AplicacionCartaPorte\AppCartasPortePendienteRequest.cs" />
+    <Compile Include="WSRequests\AplicacionCartaPorte\AppCartasPortePendienteResponse.cs" />
     <Compile Include="WSRequests\OrdenCarga\ControlCargaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearEntregaRequest.cs" />
     <Compile Include="WSRequests\OrdenCarga\CrearOrdenRequest.cs" />
@@ -926,15 +927,6 @@
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
     <None Include="Service References\CuentaCorrienteWebServiceMOA\SI_MPMF_MOAOP_CUENTA_CORRIENTE.wsdl" />
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.SI_MPMF_MOAOP_CUENTA_CORRIENTEResponse.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES4910.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\SustitucionMOAWS.CuentaCorrienteWebServiceMOA.ZMPES6120.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.wsdl" />
     <None Include="Service References\DataAgroAuthWebServiceMOA\AuthService.xsd">
       <SubType>Designer</SubType>
@@ -1323,6 +1315,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ScatoWebService\ServicioRepositorio15.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\ScatoWebService\ServicioRepositorio16.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Service References\ScatoWebService\ServicioRepositorio2.xsd">
@@ -2984,18 +2979,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\ContratoDetalleWebServiceMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -3802,6 +3785,12 @@
     <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\configuration91.svcinfo" />
     <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\configuration.svcinfo" />
     <None Include="Service References\ObtenerAdjuntosSOLPEDWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

@@ -557,4 +557,47 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.validationError = false;
     }
 
+    filteredList: any[] = [];
+    validacionOk: boolean = false;
+
+    onInput() {
+        var inputValue = this.formularioUsuario.controls['suplente'].value || '';
+        if (inputValue.length > 3) {
+            this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
+            if (this.filteredList[0].Mail === inputValue) {
+                this.filteredList = [];
+            }
+        }
+    }    
+
+    selectItem(item: any) {
+        this.formularioUsuario.controls['suplente'].setValue(item.Mail);
+        this.formularioUsuario.controls['suplente'].markAsTouched();
+        this.formularioUsuario.controls['suplente'].markAsDirty();
+        this.filteredList = [];
+      }
+
+    validateEmail() {
+        const inputValue = this.formularioUsuario.controls['suplente'].value;
+        const valid = this.data.some(item => item.Mail === inputValue);
+        if (!valid && inputValue.length > 0) {
+          this.formularioUsuario.controls['suplente'].setErrors({ invalidEmail: true });
+          this.validacionOk = false;
+        } else {
+          this.formularioUsuario.controls['suplente'].setErrors(null);
+          this.validacionOk = false;
+
+        }
+      }
+      
+      shouldShowError(): boolean {
+        const control = this.formularioUsuario.controls['suplente'];
+        
+        if (control.touched && control.invalid && control.errors && control.errors.invalidEmail) {
+            this.validacionOk = true;
+
+        }else{this.validacionOk = false;}
+
+        return control.touched && control.invalid && control.errors && control.errors.invalidEmail;
+    }
 }
