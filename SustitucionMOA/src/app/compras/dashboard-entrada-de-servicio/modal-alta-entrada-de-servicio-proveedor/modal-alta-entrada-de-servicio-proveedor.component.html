@@ -42,7 +42,8 @@
                             [value]="position.Items"
                             dataKey="NumeroLinea"
                             [scrollable]="true"
-                            scrollHeight="300px">
+                            scrollHeight="300px"
+                            [autoLayout]="true">
                         <!-- TABLE HEADERS-->
                         <ng-template pTemplate="header">
                             <tr>
@@ -73,7 +74,7 @@
                         <!-- TABLE BODY -->
                         <ng-template pTemplate="body" let-rowData let-expanded="expanded" let-i="rowIndex">
                             <tr>
-                                <td>{{ rowData.Descripcion | defaultData }}</td>
+                                <td style="word-break: break-all;">{{ rowData.Descripcion | defaultData }}</td>
                                 <td>{{ rowData.Cantidad | defaultData }}</td>
                                 <td>{{ rowData.UM | defaultData }}</td>
                                 <td>

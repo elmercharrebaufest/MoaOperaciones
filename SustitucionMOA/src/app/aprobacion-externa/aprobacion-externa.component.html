@@ -83,6 +83,14 @@
             <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
             <br />
         </div>
+        <div *ngIf="approvalErrorInfo === true" class="center-container">
+            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}</strong></p>
+            <br />
+        </div>
+        <div *ngIf="approvalErrorClosePeriod === true" class="center-container">
+            <p class="center-text status-message"> <strong>"La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}"</strong></p>
+            <br />
+        </div>
 
         <div class="center-container">
             <div *ngIf="estado.includes('Pendiente'); else elseState">
