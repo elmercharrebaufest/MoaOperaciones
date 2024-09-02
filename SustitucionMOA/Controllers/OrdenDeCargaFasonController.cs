@@ -217,29 +217,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
-        //{
-        //    var response = new SustitucionMOAApiResponse();
-        //    try
-        //    {
-        //        ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
-        //    }
-        //    catch (InfoCustomException ice)
-        //    {
-        //        response.Info = ice.Message;
-        //    }
-        //    catch (ValidationCustomException vce)
-        //    {
-        //        response.Error = vce.Message;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        response.Error = ErrorMsg.Error;
-        //    }
-        //    return ContentCustom(response);
-        //}
         [HttpGet]
         public ContentResult ValidarIntermediarioFlete(string cuit)
         {
@@ -263,6 +240,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
         {
@@ -382,30 +360,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        [HttpPost]
-        public ActionResult ActualizarSolicitudEdicion(int ordenId, bool aprobado)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var estadoSolicitud = new EstadoSolicitudEdicionFason(ordenId, SessionPersister.getUsername(), aprobado);
-                response.Data = ordenDeCargaFasonService.ActualizarSolicitudEdicion(estadoSolicitud);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
+        
         [HttpPost]
         public ActionResult ActualizarSolicitudAnulacion(int ordenId, bool aprobado)
         {
@@ -430,6 +385,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult SolicitarAnulacion(int ordenId)
         {
@@ -454,6 +410,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult AnularOrden(int ordenId)
         {
@@ -478,6 +435,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -501,6 +459,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
@@ -548,6 +507,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult ObtenerCuilsChofer(string ordenDeCargaFasonJson)
         {
@@ -572,6 +532,7 @@ namespace SustitucionMOA.Controllers
             }
 
         }
+        
         [HttpPost]
         public ActionResult ObtenerCuitsTransporte(string ordenDeCargaFasonJson)
         {
@@ -596,6 +557,7 @@ namespace SustitucionMOA.Controllers
             }
 
         }
+        
         public ActionResult ObtenerPatentes(string ordenDeCargaFasonJson)
         {
             try
@@ -642,6 +604,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario,
             string ordenId)
@@ -666,6 +629,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
@@ -688,6 +652,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        
         [HttpGet]
         public ActionResult ValidarOrdenActivaScato(long ordenId)
         {
@@ -711,6 +676,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarSisaCliente(string codigoCliente, string codigoMaterial)
         {

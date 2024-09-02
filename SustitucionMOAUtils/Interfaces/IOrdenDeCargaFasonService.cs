@@ -20,7 +20,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
         OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud);
         OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario);
-        OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud);
         OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest ordenDeCarga, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario);
