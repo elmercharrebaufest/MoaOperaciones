@@ -4396,10 +4396,10 @@ namespace SustitucionMOAUtils.Services
 
                 posiciones.ForEach(pos =>
                 {
-                    pos.Cantidad = posicionesPendientes
-                                    .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice)?
-                                        .Cantidad
-                                    ?? 0;
+                    var posPendiente = posicionesPendientes
+                                    .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice);
+                    pos.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
+                                    ;
                 });
 
                 foreach (var posicionAgrupada in consultaRegistro)
@@ -5289,14 +5289,16 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado == true && x.SolpPosicion.EsConcluido == true);
+                var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.First().SolpPosicion.Solp.NroSolp);
                 foreach (var peti in listaPosiciones)
                 {
                     var item = peti.SolpPosicion;
+                    var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice);
                     posiciones +=
                     $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
                     $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
                     $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea)} </td>" +
-                    $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
+                    $"<td style='font-size: 8px;'>{(valorEnSAP != null ? valorEnSAP.Cantidad - valorEnSAP.Ordered : 0)}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
                     $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
