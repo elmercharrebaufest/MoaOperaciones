@@ -101,7 +101,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             CodigoSap = pop.SolpPosicion.Centro.CodigoSap
                                                                         },
                                                                         CentroId = pop.SolpPosicion.Centro_Id,
-
+                                                                        GrupoCompras = new TablaSapDto
+                                                                        {
+                                                                            Descripcion = pop.SolpPosicion.GrupoCompras.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.GrupoCompras.CodigoSap,
+                                                                        },
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
                                                                             Id = s.Id,

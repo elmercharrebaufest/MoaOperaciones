@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -785,7 +785,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -901,7 +901,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -989,7 +989,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1203,7 +1203,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1291,7 +1291,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1379,7 +1379,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1537,7 +1537,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -1751,7 +1751,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2133,7 +2133,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2333,7 +2333,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -2421,7 +2421,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -3587,7 +3587,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4025,7 +4025,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4463,7 +4463,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4537,7 +4537,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4975,7 +4975,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7471,7 +7471,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -10261,7 +10261,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -10895,7 +10895,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -11263,7 +11263,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12149,7 +12149,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12293,7 +12293,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12437,7 +12437,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12595,7 +12595,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12879,7 +12879,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -13555,7 +13555,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14231,7 +14231,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14977,7 +14977,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -15723,7 +15723,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -16147,7 +16147,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -16557,7 +16557,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -17359,7 +17359,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -18007,7 +18007,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -18081,7 +18081,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -18785,7 +18785,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -19223,7 +19223,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -19577,7 +19577,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20001,7 +20001,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20341,7 +20341,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20681,7 +20681,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20769,7 +20769,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21179,7 +21179,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21295,7 +21295,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -22209,7 +22209,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -23249,7 +23249,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -23295,7 +23295,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -23347,274 +23347,278 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=0)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string MEMORY_COMPLETE;
+        public string IM_URL;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string MEMORY_UNCOMPLETE;
+        public string MEMORY_COMPLETE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string NO_AUTHORITY;
+        public string MEMORY_UNCOMPLETE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=3)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string NO_MESSAGE_REQ;
+        public string NO_AUTHORITY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=4)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string NO_MESSAGING;
+        public string NO_MESSAGE_REQ;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=5)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string NO_PRICE_FROM_PO;
+        public string NO_MESSAGING;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=6)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string PARK_COMPLETE;
+        public string NO_PRICE_FROM_PO;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=7)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string PARK_UNCOMPLETE;
+        public string PARK_COMPLETE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=8)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR;
+        public string PARK_UNCOMPLETE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=9)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP POEXPIMPHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRVENDOR POADDRVENDOR;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=10)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP POEXPIMPHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=11)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER POHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKPX POEXPIMPHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=12)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADERX POHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER POHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=13)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string PURCHASEORDER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADERX POHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=14)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string TESTRUN;
+        public string PURCHASEORDER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=15)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM VERSIONS;
+        public string TESTRUN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=16)]
-        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM VERSIONS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=17)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEDCM_ALLVERSIONS[] ALLVERSIONS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=18)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONIN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=19)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIPAREX[] EXTENSIONOUT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=20)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADER[] INVPLANHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=21)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_HEADERX[] INVPLANHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=22)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEM[] INVPLANITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=23)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPI_INVOICE_PLAN_ITEMX[] INVPLANITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=24)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA._NFM_BAPIDOCITM[] NFMETALLITMS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=25)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNT[] POACCOUNT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=26)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTPROFITSEGMENT[] POACCOUNTPROFITSEGMENT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=27)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOACCOUNTX[] POACCOUNTX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=28)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOADDRDELIVERY[] POADDRDELIVERY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=29)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENT[] POCOMPONENTS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=30)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOMPONENTX[] POCOMPONENTSX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=31)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCOND[] POCOND;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=32)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADER[] POCONDHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=33)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDHEADERX[] POCONDHEADERX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=34)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOCONDX[] POCONDX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=35)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKES[] POCONFIRMATION;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=36)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUCC[] POCONTRACTLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=37)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPO[] POEXPIMPITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=38)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIPOX[] POEXPIMPITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=39)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE[] POHISTORY;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=40)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBE_MA[] POHISTORY_MA;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=41)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKBES[] POHISTORY_TOTALS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=42)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEM[] POITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=43)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOITEMX[] POITEMX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=44)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESUHC[] POLIMITS;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=45)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEKKOP[] POPARTNER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=46)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULE[] POSCHEDULE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=47)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSCHEDULX[] POSCHEDULEX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=48)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLC[] POSERVICES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=49)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESLLTX[] POSERVICESTEXT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=50)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIP[] POSHIPPING;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=51)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSHIPPEXP[] POSHIPPINGEXP;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=52)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIITEMSHIPX[] POSHIPPINGX;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=53)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIESKLC[] POSRVACCESSVALUES;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=54)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXTHEADER[] POTEXTHEADER;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=55)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOTEXT[] POTEXTITEM;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=56)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
-        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=57)]
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER;
+        
+        [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=58)]
         [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
         [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
         public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX;
@@ -23623,6 +23627,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
         }
         
         public SI_MMRFC_MODIFICAR_OCRequest(
+                    string IM_URL, 
                     string MEMORY_COMPLETE, 
                     string MEMORY_UNCOMPLETE, 
                     string NO_AUTHORITY, 
@@ -23681,6 +23686,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
                     SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIRET2[] RETURN, 
                     SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNO[] SERIALNUMBER, 
                     SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX) {
+            this.IM_URL = IM_URL;
             this.MEMORY_COMPLETE = MEMORY_COMPLETE;
             this.MEMORY_UNCOMPLETE = MEMORY_UNCOMPLETE;
             this.NO_AUTHORITY = NO_AUTHORITY;
@@ -24093,6 +24099,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
         }
         
         public SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOHEADER SI_MMRFC_MODIFICAR_OC(
+                    string IM_URL, 
                     string MEMORY_COMPLETE, 
                     string MEMORY_UNCOMPLETE, 
                     string NO_AUTHORITY, 
@@ -24153,6 +24160,7 @@ namespace SustitucionMOAWS.ModificarOCWebServiceMOA {
                     ref SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIMEPOSERIALNOX[] SERIALNUMBERX, 
                     out SustitucionMOAWS.ModificarOCWebServiceMOA.BAPIEIKP EXPPOEXPIMPHEADER) {
             SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest inValue = new SustitucionMOAWS.ModificarOCWebServiceMOA.SI_MMRFC_MODIFICAR_OCRequest();
+            inValue.IM_URL = IM_URL;
             inValue.MEMORY_COMPLETE = MEMORY_COMPLETE;
             inValue.MEMORY_UNCOMPLETE = MEMORY_UNCOMPLETE;
             inValue.NO_AUTHORITY = NO_AUTHORITY;

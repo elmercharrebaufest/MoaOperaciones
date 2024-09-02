@@ -211,7 +211,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...')
-        this.service.descargarLegajo(this.itemSelected.Id, this.itemSelected.Usuarios[0].Id)
+        this.service.descargarLegajo(this.itemSelected.Id, this.itemSelected.Usuarios[0].Id, this.esProveedor)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

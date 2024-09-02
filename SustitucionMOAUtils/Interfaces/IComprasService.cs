@@ -9,6 +9,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -59,7 +60,7 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
         List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor);
         Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
-        string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
+        string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario, bool esProveedor);
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos, bool esAutomatico = false, List<PeticionDeOfertaUsuario> usuarios = null);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
@@ -114,5 +115,13 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
         Resultado DesagruparPO(string nroSolp, string po);
+        Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA);
+        ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
+        void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
+        byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);
+        byte[] GenerarHistorialCotizaciones(int cotizacionId);
+        byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId);
+
+        string DescargarAdjuntosProveedores(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
     }
 }

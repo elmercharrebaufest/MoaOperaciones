@@ -70,6 +70,7 @@
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
+    <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />
     <Compile Include="Dto\Compras\AdjuntosSolpDto.cs" />
     <Compile Include="Dto\Compras\ChatComprasDto.cs" />
     <Compile Include="Dto\Compras\ESAdjuntosDto.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Dto\Compras\EmailDetailCertificateDto.cs" />
     <Compile Include="Dto\CondicionDePagoDto.cs" />
     <Compile Include="Dto\Compras\MonedaTotalDto.cs" />
+    <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoReqDto.cs" />
+    <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoResDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
@@ -351,6 +354,7 @@
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\CondicionRetiro.cs" />
     <Compile Include="Enums\EstadoCursoEnum.cs" />
+    <Compile Include="Enums\EnviarCircularEnum.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />

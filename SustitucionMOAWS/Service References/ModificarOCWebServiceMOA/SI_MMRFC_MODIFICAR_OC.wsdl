@@ -310,6 +310,7 @@
       <xsd:element name="Z_MMRFC_MODIFICAR_OC">
         <xsd:complexType>
           <xsd:all>
+            <xsd:element minOccurs="0" name="IM_URL" type="xsd:string" />
             <xsd:element minOccurs="0" name="MEMORY_COMPLETE">
               <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
