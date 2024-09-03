@@ -28,6 +28,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.Data.Entity;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -528,7 +529,7 @@ namespace SustitucionMOAUtils.Services
 
             Expression<Func<Consulta, bool>> filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
 
-
+            var hoy = DateTime.Now;
             var ret = repositorio.Listar(
                 x => new ConsultaDto
                 {
@@ -594,7 +595,10 @@ namespace SustitucionMOAUtils.Services
                     GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
-                    Rubro = x.Detalle.Rubro
+                    Rubro = x.Detalle.Rubro,
+                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER"?
+                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion):
+                        DbFunctions.DiffDays(x.FechaCreacion, hoy)
                 },
                 paginacion,
                 filtroBusqueda);

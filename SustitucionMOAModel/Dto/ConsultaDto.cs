@@ -49,15 +49,8 @@ namespace SustitucionMOAModel.Dto
         public UsuarioDto Usuario { get; set; }
         public IList<ComentarioDto> Comentarios { get; set; }
 
-        public int? DiasReclamo { 
-            get {
-                if (this.EstadoConsulta != null && this.EstadoConsulta.Code == EstadosConsulta.Finalizado.Code())
-                    return (FechaUltimaModificacion - FechaCreacion).Days;
-
-                return (DateTime.Now - FechaCreacion).Days;
-            } 
-        }
-
+        public int? DiasReclamo { get; set; }
+        
         public bool PuedeReabrir
         {
             get
