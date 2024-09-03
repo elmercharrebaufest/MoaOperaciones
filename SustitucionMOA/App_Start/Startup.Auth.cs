@@ -85,6 +85,13 @@ namespace SustitucionMOA
 					// Specify the scope by appending all of the scopes requested into one string (separated by a blank space)
 					Scope = $"openid profile offline_access",
 
+					ProtocolValidator = new OpenIdConnectProtocolValidator
+					{
+						RequireNonce = !System.Configuration.ConfigurationManager.AppSettings["SpaUrl"].ToString().Contains("localhost"),
+						RequireState = !System.Configuration.ConfigurationManager.AppSettings["SpaUrl"].ToString().Contains("localhost"),
+						RequireStateValidation = !System.Configuration.ConfigurationManager.AppSettings["SpaUrl"].ToString().Contains("localhost")
+					}
+
 					//UseTokenLifetime = false,
 				}
 			);
