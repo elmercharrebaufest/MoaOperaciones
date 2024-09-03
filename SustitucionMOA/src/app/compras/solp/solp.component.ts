@@ -593,7 +593,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
                             }
                         }
-
+                        
                         if (enviarSap) {
                             this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
                             this.solpActual.tieneModificaciones = result.Solp.TieneModificaciones;
@@ -604,12 +604,12 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                     this.displaySAPVincularPliego = true;
                                 }
                                 
-                                // Esto sirve para la mejora de no enviarCirculares automaticas
-                                // if (this.solpActual.tieneModificaciones) {
-                                //     this.enviarCircularProveedores();
-                                // } else {
+                                // Esto sirve para la mejora de no enviarCirculares automáticas
+                                if (this.solpActual.tieneModificaciones) {
+                                     this.enviarCircularProveedores();
+                                } else {
                                     this.displaySAP = true;
-                                // }
+                                }
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {

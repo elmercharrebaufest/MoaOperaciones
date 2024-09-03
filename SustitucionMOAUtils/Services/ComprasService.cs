@@ -272,8 +272,9 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
 
-                // borrar esta linea cuando este la mejora del envio de circulares automaticas
-                solpEntity.EnvioCircularA = (int)EnviarCircularEnum.NoEnviar;
+                solpEntity.EnvioCircularA = (int)EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
+                                                                               * (llamar desde el front)
+                                                                               */
 
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
