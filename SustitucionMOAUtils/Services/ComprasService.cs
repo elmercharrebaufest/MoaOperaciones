@@ -422,6 +422,21 @@ namespace SustitucionMOAUtils.Services
 
 
             }
+            else
+            {
+                solpEntity.ProveedorAsignado_Id = null;
+                if (!string.IsNullOrEmpty(solpEntity.Pliego.ObservacionesGeneracion))
+                {
+                    string fraseABuscar = "Justificación de condición especial:";
+
+                    int indice = solpEntity.Pliego.ObservacionesGeneracion.IndexOf(fraseABuscar);
+                    if (indice != -1)                    
+                        solpEntity.Pliego.ObservacionesGeneracion = solpEntity.Pliego.ObservacionesGeneracion.Substring(0, indice);
+                    solpEntity.Pliego.ObservacionesCotizacionCondEsp = null;
+                }
+                if (solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any())
+                    repositorio.RemoverTodos(solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).ToList());
+            }
             SetNombreDePedido(solpEntity);
             ExistenPosicionesNuevas(solp, solpEntity);
             repositorio.GuardarCambios();
