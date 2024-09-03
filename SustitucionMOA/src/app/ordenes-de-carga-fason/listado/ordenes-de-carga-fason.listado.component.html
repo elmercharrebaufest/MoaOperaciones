@@ -95,7 +95,11 @@
               | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) 
               | customFilter : 'patenteChasis' : filtroPatente | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
               role="row" [class.odd]="!odd">
-              <td>{{ordenDeCargaFason.Id}}</td>
+              <td>{{ordenDeCargaFason.Id}}
+                <i *ngIf="ordenDeCargaFason.FleteMOA && esAdmin" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
+                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
+                </i>
+              </td>
               <td *ngIf="esAdmin">{{ordenDeCargaFason.RazonSocialCorredor}}</td>
               <td *ngIf="esAdmin || isCorredor()">{{ordenDeCargaFason.RazonSocialCliente}}</td>
               <td>{{ordenDeCargaFason.DescripcionEstado}}</td>

@@ -159,7 +159,7 @@ namespace SustitucionMOAUtils.Services
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
                 "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION", "AUDITOR COMPRAS"
-                ,"ADMIN_CURSOS"
+                ,"ADMIN_CURSOS", "RESIDUOS ADMIN"
             };
 
             List<string> contacto = new List<string>
@@ -167,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
