@@ -307,61 +307,15 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
         
-        public OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario)
-        {
-            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
-            if (orden == null)
-                throw new InfoCustomException("Orden no encontrada");
-            if (orden.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada)
-                throw new InfoCustomException("La anulación de esta orden ya fue solicitada.");
-            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
-            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
-            if (esAdmin)
-                throw new InfoCustomException("Usuario administrador, debería anular directamente.");
-            if (ValidarOrdenActivaScato(ordenId))
-                throw new InfoCustomException("La orden está en activa, imposible editar.");
-
-            orden.Estado = EstadoOrdenDeCargaFason.AnulacionSolicitada;
-
-            repositorio.GuardarCambios();
-
-            return OrdenDeCargaFasonDto(orden, usuario);
-        }
-        
-        public OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud)
-        {
-            var orden = repositorio.Obtener<OrdenDeCargaFason>(estadoSolicitud.OrdenId);
-            if (orden == null)
-                throw new InfoCustomException("Orden no encontrada");
-            if (orden.Estado != EstadoOrdenDeCargaFason.AnulacionSolicitada)
-                throw new InfoCustomException("Esta orden no está en estado de anulación solicitada.");
-            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == estadoSolicitud.MailUsuario);
-            if (!usuario.TieneRol(RolEnum.FasonAdmin))
-                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
-
-
-            if (estadoSolicitud.Aprobado)
-                orden.Estado = EstadoOrdenDeCargaFason.Anulada;
-            else
-                ActualizarOrdenDeCarga(orden);
-
-            repositorio.GuardarCambios();
-            return OrdenDeCargaFasonDto(orden, usuario);
-        }
-        
         public OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario)
         {
-            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
-            if (orden == null)
-                throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.Estado == EstadoOrdenDeCargaFason.Entregada)
+            {
                 throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada.");
+            }
             var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
-            if (!usuario.TieneRol(RolEnum.FasonAdmin))
-                throw new InfoCustomException("Usuario sin permisos para realizar esta acción.");
-
             orden.Estado = EstadoOrdenDeCargaFason.Anulada;
-
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
         }
@@ -472,11 +426,10 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarOrdenActivaScato(long ordenId)
         {
-            Log.Info($"Obteniendo estado de la orden fason {ordenId} en Scato con nro Entrega");
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId);
             if (result == null)
                 return false;
-            Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
+            Log.Debug($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
             return !result.Terminado;
         }
         

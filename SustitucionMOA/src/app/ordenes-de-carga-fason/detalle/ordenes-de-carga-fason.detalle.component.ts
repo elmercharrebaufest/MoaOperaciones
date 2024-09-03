@@ -19,8 +19,6 @@ import { finalize } from 'rxjs/operators';
 export interface BotonesDetalleFason {
     editar: boolean;
     verificarTransporte: boolean;
-    aprobarRechazarAnulacion: boolean;
-    solicitarAnulacion: boolean;
     anular: boolean;
     verificarCuitsTercero: boolean;
 }
@@ -63,11 +61,6 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         EstadoOrdenDeCargaFason.PendienteCompensacion,
         EstadoOrdenDeCargaFason.Vencida,
     ];
-    estadosPermitenSolicitarAnulacion = [
-        EstadoOrdenDeCargaFason.Generada,
-        EstadoOrdenDeCargaFason.Pendiente,
-        EstadoOrdenDeCargaFason.Vencida,
-    ];
 
     constructor(private route: ActivatedRoute, protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
@@ -95,11 +88,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
         this.botones.editar = this.estadosPermitenEdicion.includes(this.ordenDeCargaFason.Estado);
 
-        this.botones.aprobarRechazarAnulacion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada;
-
-        this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
-
-        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
+        this.botones.anular = this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Anulada;
 
         this.botones.verificarCuitsTercero = this.esAdmin && this.ordenDeCargaFason.NecesitaVerificarCuitsTerceros;
     }
@@ -182,17 +171,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-    confirmarSolicitudAnulacion() {
-        this.confirmationService.confirm({
-            key: 'confirmarSA',
-            message: '¿Desea solicitar anulación?',
-            accept: () => {
-                this.solicitarAnulacion()
-            },
-            reject: () => {
-            }
-        });
-    }
+    
     confirmarAnulacion() {
         this.confirmationService.confirm({
             key: 'confirmarAnular',
@@ -203,82 +182,6 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             reject: () => {
             }
         });
-    }
-    confirmarRechazarSolicitudAnulacion(aprobado: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarRSA',
-            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
-            accept: () => {
-                this.solicitudAnulacion(aprobado)
-            },
-            reject: () => {
-            }
-        });
-    }
-
-    solicitarAnulacion() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        try {
-            this.service.solicitarAnulacion(this.ordenDeCargaFason.Id).subscribe(
-                result => {
-                    this.blockUI.stop();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else if (result.data) {
-                        this.ordenDeCargaFason = result.data;
-                    } else {
-                        this.obtenerOrdenDeCargaFason();
-                    }
-                    this.verificarBotones();
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-    solicitudAnulacion(aprobado: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        try {
-            this.service.actualizarSolicitudAnulacion(this.ordenDeCargaFason.Id, aprobado).subscribe(
-                result => {
-                    this.blockUI.stop();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else if (result.data) {
-                        this.ordenDeCargaFason = result.data;
-                    } else {
-                        this.obtenerOrdenDeCargaFason();
-                    }
-                    this.verificarBotones();
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
     }
     
     anularOrden() {
@@ -313,6 +216,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
     verificarCuitsTerceros() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();

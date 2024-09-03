@@ -11,7 +11,7 @@
         PendienteContabilizacion = 6,
         //EdicionSolicitada = 7,
         //EdicionRechazada = 8,
-        AnulacionSolicitada = 9,
+        //AnulacionSolicitada = 9,
         Anulada = 10,
     }
 
@@ -33,8 +33,6 @@
                     return "Pendiente compensación";
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
                     return "Pendiente contabilizar";
-                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
-                    return "Anulación solicitada";
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "Anulada";
                 default:
@@ -56,8 +54,6 @@
                     return "Orden vencida";
                 case EstadoOrdenDeCargaFason.Entregada:
                     return "Orden entregada";
-                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
-                    return "Anulación solicitada";
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "Anulada";
 
@@ -73,7 +69,6 @@
                 case EstadoOrdenDeCargaFason.Vencida:
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "red";
-                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
                 case EstadoOrdenDeCargaFason.Pendiente:
                     return "yellow";
                 case EstadoOrdenDeCargaFason.Generada:
