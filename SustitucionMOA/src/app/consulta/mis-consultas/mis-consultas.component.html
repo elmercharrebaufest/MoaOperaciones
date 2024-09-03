@@ -178,7 +178,7 @@
                                     <div *ngSwitchCase="'custom'">
                                         <p-multiSelect appendTo="body" *ngIf="col.field == 'EstadoConsulta'"
                                             [options]="estados" defaultLabel="Todos" optionLabel="Descripcion"
-                                            dataKey="Id" [maxSelectedLabels]="1"
+                                            dataKey="Id" [maxSelectedLabels]="1" [(ngModel)]="selectedEstados"
                                             (onChange)="cambiarFiltro('EstadoConsultaId',getIds($event.value))">
                                             <ng-template let-estado pTemplate="item">
                                                 <span class="label label-default"

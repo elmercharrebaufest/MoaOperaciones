@@ -362,56 +362,6 @@ namespace SustitucionMOA.Controllers
         }
         
         [HttpPost]
-        public ActionResult ActualizarSolicitudAnulacion(int ordenId, bool aprobado)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var estadoSolicitud = new EstadoSolicitudAnulacionFason(ordenId, SessionPersister.getUsername(), aprobado);
-                response.Data = ordenDeCargaFasonService.ActualizarSolicitudAnulacion(estadoSolicitud);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-        
-        [HttpPost]
-        public ActionResult SolicitarAnulacion(int ordenId)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenDeCargaFasonService.SolicitarAnulacion(ordenId, mailUsuario);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-        
-        [HttpPost]
         public ActionResult AnularOrden(int ordenId)
         {
             var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();

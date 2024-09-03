@@ -84,7 +84,7 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenDeCargaFleteMOA(ordenDeCarga, contratoSAP);
                 var ordenPuedeEnviarseDirectoSap = contratoTieneKgsDisponibles;
 
-                var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
+                //var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
@@ -110,7 +110,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, usuarioPuedeEnviarASAP, mailUsuario);
+                        var creadaEnSAP = CrearPedidoEnSAP(ordenDeCarga, ordenDeCarga.Cliente, true, mailUsuario);
                         if (creadaEnSAP)
                         {
                             VerificarSituacionCrediticia(ordenDeCarga, true);
@@ -198,11 +198,8 @@ namespace SustitucionMOAUtils.Services
             {
                 var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
                 var esAdmin = usuario.TienePermiso(PermisoEnum.VerTodasOrdenesDeCarga);
-                var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
                 var estadoPrevio = ordenDeCarga.Estado;
                 var esInterno = EsUsuarioInterno(usuario);
-
-                Log.Debug(this.GetType().Name, "Editar", $" usuarioPuedeEnviarASAP: {puedeEnviarASAP}. Chofer en Scato: {choferEnScato.ToJson()}");
 
                 var cargarDatosOCEditar = CargarDatosOCEditar(ordenDeCarga, usuario);
                 var ordenEditar = cargarDatosOCEditar.Item1;
@@ -241,7 +238,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 ordenEditar.HistorialCambios.Concat(historialCambios);
 
-                if (puedeEnviarASAP && ordenEditar.NumeroEntrega != null)
+                if (ordenEditar.NumeroEntrega != null)
                 {
                     var resultadoSAP = ordenCargaConsumer.ModificarEntregaOrdenCarga(new ModificarEntregaRequest(ordenEditar));
                     if (resultadoSAP.HayError)
@@ -257,7 +254,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
                 NotificarTransporte(ordenEditar.Id);
 
-                if (puedeEnviarASAP && !ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato)
+                if (!ordenEditar.TieneCodigoSap(ControlCargaResEnum.FaltaCargarKmsEnContrato)
                         && ordenEditar.TransporteExiste && string.IsNullOrEmpty(ordenEditar.NumeroEntrega)
                         && ordenEditar.AprobadoCredito && (!ordenEditar.SinSeleccionarFactura || !ordenEditar.EsFacturaAnticipada))
                 {
@@ -660,12 +657,15 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("La orden no puede anularse debido a su estado actual.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
+            
+            //var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
-            if (puedeEnviarASAP)
-            {
-                AnularOrdenSap(orden);
-            }
+            //if (puedeEnviarASAP)
+            //{
+            //    AnularOrdenSap(orden);
+            //}
+
+            AnularOrdenSap(orden);
 
             var ordenHistorial = new OrdenDeCargaCambiosHistorial()
             {
@@ -904,7 +904,7 @@ namespace SustitucionMOAUtils.Services
                     if (orden.TipoContrato == TipoContratoFAS.Anticipado)
                         return GenerarEntregaSAP(orden);
 
-                    var creadaEnSaP = !string.IsNullOrEmpty(orden.NumeroPedido) || CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
+                    var creadaEnSaP = !string.IsNullOrEmpty(orden.NumeroPedido) || CrearPedidoEnSAP(orden, orden.Cliente, true, mailUsuario);
                     if (creadaEnSaP)
                     {
                         return VerificarSituacionCrediticia(orden, true);
@@ -967,7 +967,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"ForzarCreacionOrden " + ordenId.ToJson());
             var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
 
-            var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, false, mailUsuario);
+            var creadaEnSaP = CrearPedidoEnSAP(orden, orden.Cliente, false, mailUsuario);
 
             if (creadaEnSaP)
             {
@@ -2061,7 +2061,7 @@ namespace SustitucionMOAUtils.Services
             var ordenEditar = repositorio.Obtener<OrdenDeCarga>(ordenDeCarga.Id);
             var listaValoresDiferentes = ordenEditar.Compare(ordenDeCarga);
             var historialCambios = new List<OrdenDeCargaCambiosHistorial>() { };
-            var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
+            //var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
             var product = repositorio.Obtener<Material>(ordenDeCarga.Producto_Id);
 
             ordenEditar.NombreChofer = ordenDeCarga.NombreChofer;
@@ -2112,13 +2112,13 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     var crearPedido = !string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP) || puedeCrearPedido;
-                    if (crearPedido && puedeEnviarASAP && !ordenEditar.EsFacturaAnticipada && contratoKgDisponibles)
+                    if (crearPedido && !ordenEditar.EsFacturaAnticipada && contratoKgDisponibles)
                     {
                         if (string.IsNullOrWhiteSpace(ordenEditar.ContratoSAP))
                         {
                             ordenEditar.ContratoSAP = ordenEditar.ContratoIngresado;
                         }
-                        var creadaEnSaP = CrearPedidoEnSAP(ordenEditar, ordenEditar.Cliente, true, puedeEnviarASAP, usuario.Mail);
+                        var creadaEnSaP = CrearPedidoEnSAP(ordenEditar, ordenEditar.Cliente, true, usuario.Mail);
                         if (creadaEnSaP)
                         {
                             VerificarSituacionCrediticia(ordenEditar, true);
@@ -2149,12 +2149,17 @@ namespace SustitucionMOAUtils.Services
             return kilosDisponibles >= Constante.FAS_KILOS_LIMITE_SUPERIOR;
         }
 
-        private bool CrearPedidoEnSAP(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool validaKg, bool puedeEnviarASAP, string mailUsuario)
+        private bool CrearPedidoEnSAP(OrdenDeCarga ordenDeCarga, Proveedor cliente, bool validaKg, string mailUsuario)
         {
-            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, validaKg: {validaKg}, usuarioPuedeEnviarASAP: {puedeEnviarASAP})");
+            Log.Info($"CrearPedidoEnSAP(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, cliente: {cliente?.Id.ToJson()}, validaKg: {validaKg})");
 
-            var mailUsuarioSAP = puedeEnviarASAP ? mailUsuario : _usuarioAutomaticoSAP;
-            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuarioSAP);
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            var usuarioSapNombre = usuario?.UsuarioSap;
+            if (string.IsNullOrEmpty(usuarioSapNombre))
+            {
+                var usuarioAutomatico = repositorio.Obtener<Usuario>(u => u.Mail == _usuarioAutomaticoSAP);
+                usuarioSapNombre = usuarioAutomatico.UsuarioSap;
+            }
 
             var crearOrdenReq = new CrearOrdenRequest
             {
@@ -2164,7 +2169,7 @@ namespace SustitucionMOAUtils.Services
                 Kilos = ordenDeCarga.Cantidad,
                 Material = ordenDeCarga.Producto.CodigoSap,
                 PedidoInput = ordenDeCarga.NumeroPedidoIngresado,
-                UsuarioSAP = usuario.UsuarioSap,
+                UsuarioSAP = usuarioSapNombre,
                 ValidaKg = validaKg,
                 CuitDestino = ordenDeCarga.CUITDestino,
                 CuitDestinatario = ordenDeCarga.CUITDestinatario,
@@ -2828,7 +2833,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info("VerificarTransporte ActualizarEstado " + orden.ToDto().ToJson());
                 if (!string.IsNullOrEmpty(orden.ContratoSAP) && string.IsNullOrEmpty(orden.NumeroPedido) && crearPedido && !orden.EsFacturaAnticipada)
                 {
-                    CrearPedidoEnSAP(orden, orden.Cliente, true, false, mailUsuario);
+                    CrearPedidoEnSAP(orden, orden.Cliente, true, mailUsuario);
                 }
                 var aprobadoCredito = orden.AprobadoCredito || ObtenerSituacionCrediticia(orden);
                 if (aprobadoCredito && string.IsNullOrEmpty(orden.NumeroEntrega) && !string.IsNullOrEmpty(orden.NumeroPedido))

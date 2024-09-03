@@ -197,7 +197,9 @@ namespace SustitucionMOA.Controllers
 
                 var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos, paginacion, filtros);
                 var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
-                var estados = consultaService.ObtenerEstados();
+                var categoriasParaFiltrar = obtenerTodos ? consultaService.ObtenerCategoriasInterno(false, usuarioActual)
+                    .Select(x => x.Id) : null;
+                var estados = consultaService.ObtenerEstados(categoriasParaFiltrar);
 
                 return JsonCustom(new
                 {

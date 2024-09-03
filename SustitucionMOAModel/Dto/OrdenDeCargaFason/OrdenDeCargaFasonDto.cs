@@ -13,7 +13,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string CUITCliente { get; set; }
 
-        [JsonProperty("estado")]
         public EstadoOrdenDeCargaFason Estado { get; set; }
         public string DescripcionEstado { get; set; }
         public string DescripcionEstadoListado { get; set; }

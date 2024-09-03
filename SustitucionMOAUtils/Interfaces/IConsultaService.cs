@@ -24,7 +24,7 @@ namespace SustitucionMOAUtils.Interfaces
         void RecategorizarConsulta(int consultaId, int categoriaId, int? subCategoria);
         List<CategoriaDto> ObtenerCategorias(Boolean? excluir, UsuarioDto usuario, Boolean? mostrarCategoriaInterno);
         List<CategoriaDto> ObtenerCategoriasInterno(Boolean? excluir, UsuarioDto usuario);
-        List<EstadoConsultaDto> ObtenerEstados();
+        List<EstadoConsultaDto> ObtenerEstados(IEnumerable<int> categoriasPermitidasId = null);
         List<SubCategoriaDto> ObtenerSubCategorias(UsuarioDto usuario);
         List<CausaConsultaDto> ObtenerCausas();
         string EnviarMailRecordatorio(int consultaId);

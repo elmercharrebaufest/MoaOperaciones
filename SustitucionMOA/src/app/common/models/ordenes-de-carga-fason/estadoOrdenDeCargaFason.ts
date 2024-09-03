@@ -8,6 +8,6 @@ export enum EstadoOrdenDeCargaFason {
     PendienteContabilizacion = 6,
     // EdicionSolicitada = 7,
     // EdicionRechazada = 8,
-    AnulacionSolicitada = 9,
+    // AnulacionSolicitada = 9,
     Anulada = 10,
 }
