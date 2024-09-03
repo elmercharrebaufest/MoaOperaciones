@@ -300,4 +300,7 @@
   <ItemGroup>
     <None Include="scripts\PostDeployment\Curso.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\ActualizarApellidoChoferOrdenDeCargaFason.sql" />
+  </ItemGroup>
 </Project>

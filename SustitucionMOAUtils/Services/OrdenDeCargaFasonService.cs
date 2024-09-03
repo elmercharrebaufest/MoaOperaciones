@@ -251,6 +251,7 @@ namespace SustitucionMOAUtils.Services
                 orden.CUITTransporte = request.CUITTransporte;
                 //orden.FechaCreacion = DateTime.Now;
                 orden.NombreChofer = request.NombreChofer;
+                orden.ApellidoChofer = request.ApellidoChofer;
                 orden.Observacion = request.Observacion;
                 orden.PatenteAcoplado = request.PatenteAcoplado;
                 orden.PatenteChasis = request.PatenteChasis;

@@ -18,6 +18,7 @@ namespace SustitucionMOAModel.Dto
         public string LocalidadDescripcion { get; set; }
         public int LocalidadId { get; set; }
         public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
         public string Observacion { get; set; }
         public string PatenteAcoplado { get; set; }
         public string PatenteChasis { get; set; }

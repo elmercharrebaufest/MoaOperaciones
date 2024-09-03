@@ -249,11 +249,21 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
-                                    Nombre y apellido del chofer:
+                                    Nombre del chofer:
                                 </div>
                                 <div class="styled-select">
                                     <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
                                         (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
+                                        type="text" maxlength="25">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Apellido del chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <input [(ngModel)]="ordenDeCargaFason.ApellidoChofer"
+                                        (ngModelChange)="ordenDeCargaFason.ApellidoChofer = $event.toUpperCase()"
                                         type="text" maxlength="25">
                                 </div>
                             </div>
