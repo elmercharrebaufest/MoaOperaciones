@@ -131,6 +131,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     public solpMode: ComponentMode;
 
+    protected locale: any;
+
     constructor(protected service: ComprasService,
         protected navService: NavService,
         protected sessionDataService: SessionDataService,
@@ -144,6 +146,17 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         super(navService, securytiService, floatMsgService, modalService);
         this.pasos = setupSolpPasos();
         this.solpActual = new Solp();
+
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
     }
     ngOnChanges(changes: SimpleChanges): void {
         this.obtenerUsuarioSolicitante(); 
