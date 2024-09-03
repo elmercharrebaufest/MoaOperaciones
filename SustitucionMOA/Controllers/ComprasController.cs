@@ -17,6 +17,7 @@ using System.Linq;
 using HttpHelper = System.Web.Http;
 using System.Web.Mvc;
 using SustitucionMOAWS.WSConsumers;
+using System.Globalization;
 
 namespace SustitucionMOA.Controllers
 {
@@ -2074,11 +2075,11 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GuardarEnvioCircularProveedor(int id, int enviarCircularA)
+        public ActionResult GuardarEnvioCircularProveedor(int id, EnviarCircularEnum enviarCircularA, string fechaLimite)
         {
             try
             {
-                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA);
+                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, DateTime.Parse(fechaLimite, CultureInfo.InvariantCulture));
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

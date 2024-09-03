@@ -272,7 +272,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
 
-                solpEntity.EnvioCircularA = (int)EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
+                solpEntity.EnvioCircularA = EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
                                                                                * (llamar desde el front)
                                                                                */
 
@@ -2240,7 +2240,7 @@ namespace SustitucionMOAUtils.Services
                         if (solp.TrabajoYaHecho != true)
                         {
                             solp.TieneModificaciones = false;
-                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != (int)EnviarCircularEnum.NoEnviar && !peticiones.Any(rt => rt.RevisionTecnica.Finalizada))
+                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar && !peticiones.Any(rt => rt.RevisionTecnica.Finalizada))
                             {
                                 EnviarCircularAutomatico(solp);
                             }
@@ -5978,7 +5978,7 @@ namespace SustitucionMOAUtils.Services
                 PlazoDeOferta = DateTime.Now.AddDays(7),
                 RequiereCambioDeFecha = true,
                 FechaEntrega = fechaEntrega,
-                UsuarioIds = solp.EnvioCircularA == (int)EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
+                UsuarioIds = solp.EnvioCircularA == EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
             };
 
             GrabarCircular(circularDto, null, true, peticionUsuarios);
@@ -10369,11 +10369,12 @@ namespace SustitucionMOAUtils.Services
             return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
         }
 
-        public Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA)
+        public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime fechaLimite)
         {
             var resultado = new Resultado();
             var solp = repositorio.Obtener<Solp>(x => x.Id == id);
             solp.EnvioCircularA = envioCircularA;
+            solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Year, fechaLimite.Month, fechaLimite.Day, 23, 59, 59, DateTimeKind.Local);
             repositorio.GuardarCambios();
             resultado.IdEntidad = solp.Id;
             resultado.Mensaje = "Se grabó con éxito";

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -123,7 +124,7 @@ namespace SustitucionMOAModel.Dto
         public string CodigoProveedorSap { get; set; }
         public bool? TieneModificaciones { get; set; }
         public bool? TieneRevisionTecnicaFinalizada { get; set; }
-        public int? EnvioCircularA { get; set; }
+        public EnviarCircularEnum? EnvioCircularA { get; set; }
 
 
         public SolpDto() { }
