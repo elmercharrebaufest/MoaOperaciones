@@ -11,6 +11,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
+using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Controllers
 {
@@ -634,6 +635,29 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenDeCargaFasonService.ValidarSisaCliente(codigoCliente,codigoMaterial);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ContentResult ValidarExistenciaPatentes(string patenteChasis, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaFasonService.ValidarExistenciaPatente(patenteChasis, cuitCliente);
             }
             catch (InfoCustomException ice)
             {

@@ -39,8 +39,11 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public TransporteExiste: boolean;
     public Observacion: string;
     public LocalidadDescripcion: string;
-
+    public TienePatentesRepetidas?: boolean;
+    public TienePatenteMultiplesAutorizaciones?: boolean;
     public RemitenteComercial?: boolean;
+
+    public OrdenesConPatentesRepetidas?: number[];
     constructor() {
         super();
         this.FechaRetiro = new Date();

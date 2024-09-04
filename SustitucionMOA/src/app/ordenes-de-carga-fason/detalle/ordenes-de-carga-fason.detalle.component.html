@@ -55,6 +55,17 @@
                     </div>
                 </div>
             </div>
+            <div *ngIf="ordenDeCargaFason.OrdenesConPatentesRepetidas" class="formulario-input;">
+                <div class="alert alert-warning">
+                    Las siguientes ordenes tienen la misma patente de chasis:
+                    <ng-container
+                        *ngFor="let idOrdenRepetida of ordenDeCargaFason.OrdenesConPatentesRepetidas;let last = last">
+                        <a class="cursor" style="cursor: pointer;"
+                            [routerLink]="['/','ordenes-de-carga','detalle',idOrdenRepetida]">{{idOrdenRepetida}}</a>
+                        <ng-container *ngIf="!last">-</ng-container>
+                    </ng-container>
+                </div>
+            </div>
             <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
                 <div class="formulario-campo">
                     <div class="col-xs-12 col-md-12 search-header">

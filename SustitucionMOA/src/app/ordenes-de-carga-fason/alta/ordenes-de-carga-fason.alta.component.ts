@@ -12,13 +12,13 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
+import { setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ApiResponse } from '../../common/models/response';
 import { IOrdenesBaseComponent, OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { Permiso } from '../../common/enums/Permisos';
-import { debounceTime, finalize } from 'rxjs/operators';
-import { Subject, Subscription, forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Subscription, forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
@@ -45,7 +45,6 @@ export class OrdenesDeCargaFasonAltaComponent
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
-    localSubscriptions = new Subscription();
     constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -54,12 +53,6 @@ export class OrdenesDeCargaFasonAltaComponent
         protected msgService: MessageService
     ) {
         super(service, navService, securityService, floatMsgService, modalService);
-
-        this.localSubscriptions.add(
-            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
-                this.validarCNRTRequest()
-            ))
-
     }
 
     listaProductos: Material[];
@@ -115,8 +108,6 @@ export class OrdenesDeCargaFasonAltaComponent
     cuitsTransporte: any = [];
     cuilsChofer: any = [];
 
-    validarCNRTSubject = new Subject();
-    validarCNRTSubscription?: Subscription;
     subscriptions = new Subscription();
     escalableCNRT?: boolean;
     errorAlValidarEscalable = false;
@@ -287,6 +278,9 @@ export class OrdenesDeCargaFasonAltaComponent
         this.getCuitsTransporte();
         if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
             this.validarSisaCliente();
+        }
+        if (!this.editando) {
+            this.validacionExistenciaPatente$.next()
         }
     }
 
@@ -941,13 +935,18 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
         else if (event.value)
             this.ordenDeCargaFason.PatenteChasis = event.value.toUpperCase();
+        this.validacionExistenciaPatente$.next()
     }
     get patenteAcopladoValida() {
         return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
     }
     get patenteChasisValido() {
-        return this.ordenDeCargaFason.PatenteChasis && this.ordenDeCargaFason.PatenteChasis.trim().length >= 6
+        return (
+            this.ordenDeCargaFason.PatenteChasis &&
+            this.ordenDeCargaFason.PatenteChasis.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCargaFason.PatenteChasis));
     }
+
     displayModalEscalable = false;
     decidioEscalable = false;
 
@@ -957,7 +956,7 @@ export class OrdenesDeCargaFasonAltaComponent
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
     }
-    validarCNRTRequest() {
+    override validarCNRTRequest() {
         this.validando.Escalable = true;
         this.validarCNRTSubscription = this.service
             .verificarCNRT(this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.PatenteAcoplado)
@@ -1201,5 +1200,20 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             }
         );
+    }
+
+    override validarExistenciaPatentes() {
+        this.validacionExistenciaPatenteSub = this.service
+            .validarExistenciaPatentes(
+                this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
+            .subscribe(res => {
+                const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+                if (notificarExistencia) {
+                    this.floatMsgService.setInfoMsg("El camión ya fué autorizado por otro cliente.");
+                }
+            });
+    }
+    override puedeValidarExistenciaPatentes(): boolean {
+        return this.patenteChasisValido && !!this.ordenDeCargaFason.CUITCliente
     }
 }
