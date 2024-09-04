@@ -16,6 +16,7 @@ import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.component';
+import * as XLSX from 'xlsx';
 
 export interface estadoCertificacion {
   name: string,
@@ -1007,6 +1008,173 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 this.clearMessage();
             }
         );
+    }
+
+    EXCEL_TYPE: string = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    EXCEL_EXTENSION : string = '.xlsx';    
+
+    obtenerEncabezados(estado: string): string[] {
+      const columnas = this.defaultTablesConfig[0].columns;
+      let columnasExcluir: string[] = [];
+      columnasExcluir = ['cAcciones', 'esAdjuntos', 'cEstado'];
+
+      if (estado === 'Rechazado') {
+        columnasExcluir = [...columnasExcluir, 'cAprobador', 'cAnulador', 'cFechaAprobacion'];
+      } else if (estado === 'Aprobada') {
+        columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaRechazo'];
+      } else if (estado === 'Anulada') {
+        columnasExcluir = [...columnasExcluir, 'cAprobador', 'cMotivoRechazo', 'cFecha', 'cFechaAprobacion', 'cFechaRechazo'];
+      } else if(estado === 'Pendiente Aprobación') {
+        columnasExcluir = [...columnasExcluir, 'cMotivoRechazo', 'cAnulador', 'cFechaAprobacion', 'cFechaRechazo'];
+      }
+
+      return columnas
+        .filter(col => !columnasExcluir.includes(col.id))
+        .map(col => col.header);
+    }
+
+    exportarTablaAExcel() {
+      const datos = [...this.tablaPOAprobaciones, ...this.tablaPOSap]
+      const datosPorEstado = this.agruparDatosPorEstado(datos);
+      this.exportarDatosAExcelFile(datosPorEstado);
+    }
+
+  agruparDatosPorEstado(datos: any[]): { [key: string]: any[][] } {
+    const datosPorEstado: { [key: string]: any[][] } = {};
+
+    datos.forEach(item => {
+      const estado = item.Estado || 'Sin_Estado';
+      if (!datosPorEstado[estado]) {
+        datosPorEstado[estado] = [];
+      }
+      let filaDatos: any[] = [];
+
+      let montoTotal = item.Moneda === 'ARP' ? '$ ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })) : item.Moneda + ' ' + (parseFloat(item.MontoTotal).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }));
+
+      if (item.Estado === 'Pendiente Aprobación') {
+          filaDatos = [
+            item.EntradaServicio,
+            item.FechaCreacion,
+            item.OrdenCompra ,
+            item.CUIT ,
+            item.Proveedor ,
+            item.Descripcion ,
+            montoTotal,
+            item.Ingresante ,
+            item.Aprobador,
+          ];
+      }
+
+      if (item.Estado === 'Rechazado') {
+        filaDatos = [
+          item.EntradaServicio,
+          item.FechaRechazo,
+          item.FechaCreacion,
+          item.OrdenCompra ,
+          item.CUIT ,
+          item.Proveedor ,
+          item.Descripcion ,
+          montoTotal,
+          item.Ingresante ,
+          item.MotivoRechazo,
+        ];
+      }
+
+      if (item.Estado === 'Anulada') {
+        filaDatos = [
+          item.EntradaServicio,
+          item.OrdenCompra ,
+          item.CUIT ,
+          item.Proveedor ,
+          item.Descripcion ,
+          montoTotal,
+          item.Ingresante ,
+          item.AnuladaPor,      
+        ];
+      }
+
+      if (item.Estado === 'Aprobada') {
+        filaDatos = [
+          item.EntradaServicio,
+          item.FechaAprobacion,
+          item.FechaCreacion,
+          item.OrdenCompra,
+          item.CUIT ,
+          item.Proveedor ,
+          item.Descripcion ,
+          montoTotal,
+          item.Ingresante ,
+          item.Aprobador,      
+        ];
+      }
+      
+
+      datosPorEstado[estado].push(filaDatos);
+    });
+
+    return datosPorEstado;
+  }
+
+  exportarDatosAExcelFile(datosPorEstado: { [key: string]: any[][] }) {
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+
+    // Crear una hoja para cada estado
+    Object.keys(datosPorEstado).forEach(estado => {
+      const encabezados = this.obtenerEncabezados(estado);
+      const datos = [encabezados, ...datosPorEstado[estado]];
+
+      const ws: XLSX.WorkSheet = XLSX.utils.aoa_to_sheet(datos);
+
+      // Aplicar estilo al encabezado (primera fila)
+      const range = XLSX.utils.decode_range(ws['!ref']!);
+      const headerColor = { rgb: "D3D3D3" };
+
+      datos[0].forEach((_, colIndex) => {
+        const cellAddress = XLSX.utils.encode_cell({ r: 0, c: colIndex });
+        if (!ws[cellAddress]) ws[cellAddress] = {};
+        ws[cellAddress].s = {
+          fill: {
+            patternType: "solid",
+            fgColor: headerColor
+          },
+          font: {
+            bold: true
+          },
+          alignment: {
+            horizontal: "center",
+            vertical: "center"
+          }
+        };
+      });
+
+      const colWidths = datos[0].map((_, colIndex) => 
+        Math.max(
+            ...datos.map(row => (row[colIndex] !== null && row[colIndex] !== undefined ? row[colIndex].toString().length : 0))
+        )
+      );
+      
+      ws["!cols"] = colWidths.map(width => ({ wch: width }));
+
+      XLSX.utils.book_append_sheet(wb, ws, estado || 'Aprobadas');
+    });
+
+    const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
+    this.guardarComoExcel(excelBuffer, 'datos_separados_por_estado');
+  }
+  
+
+  guardarComoExcel(buffer: any, nombreArchivo: string): void {
+    const data: Blob = new Blob([buffer], { type: this.EXCEL_TYPE });
+      const link = document.createElement('a');
+      link.href = window.URL.createObjectURL(data);
+      link.download = nombreArchivo + this.EXCEL_EXTENSION;
+      link.click();
     }
 
 }

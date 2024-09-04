@@ -223,6 +223,9 @@
             </ng-template>
         </p-table>
         <!-- TABLE 1 END -->
+         <br>
+        <button  [disabled]="(recalculando)" class="btn btn-primary" (click)="exportarTablaAExcel()">Exportar a Excel</button>
+
     </div>
     <!-- <app-filtro-dashboard-certificacion-de-servicios></app-filtro-dashboard-certificacion-de-servicios> -->
 </div>
