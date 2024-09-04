@@ -418,7 +418,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     obtenerOrdenDeCarga() {
         try {
-            this.subscriptionDropDowns = this.service.getOrdenDeCargaFason(this.ordenDeCargaFasonId).subscribe(
+            const obtenerOrdenSubscripcion = this.service.getOrdenDeCargaFason(this.ordenDeCargaFasonId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -449,6 +449,7 @@ export class OrdenesDeCargaFasonAltaComponent
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+            this.localSubscriptions.add(obtenerOrdenSubscripcion)
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
