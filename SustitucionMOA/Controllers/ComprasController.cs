@@ -2079,7 +2079,32 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, DateTime.Parse(fechaLimite, CultureInfo.InvariantCulture));
+                DateTime? fechaLimiteD;
+
+                if (string.IsNullOrWhiteSpace(fechaLimite))
+                {
+                    if(enviarCircularA != EnviarCircularEnum.NoEnviar)
+                    {
+                        throw new ValidationCustomException("La fecha límite es obligatoria cuando se enviará una circular");
+                    }
+                    fechaLimiteD = null;
+                }
+                else
+                {
+#pragma warning disable IDE0018 // Inline variable declaration <--> se deba actualizar langVersion.
+                    DateTime fl;
+#pragma warning restore IDE0018 // Inline variable declaration
+                    if (!DateTime.TryParse(fechaLimite, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out fl))
+                    {
+                        throw new ValidationCustomException("La fecha límite no es válida.");
+                    }
+                    else
+                    {
+                        fechaLimiteD = fl; // estas asignaciones raras las tengo que hacer porque el DateTime.TryParse no permite hacer DateTime? (language version??).
+                    }
+                }
+
+                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, fechaLimiteD);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

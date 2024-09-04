@@ -10370,12 +10370,19 @@ namespace SustitucionMOAUtils.Services
             return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
         }
 
-        public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime fechaLimite)
+        public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite)
         {
             var resultado = new Resultado();
             var solp = repositorio.Obtener<Solp>(x => x.Id == id);
             solp.EnvioCircularA = envioCircularA;
-            solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Year, fechaLimite.Month, fechaLimite.Day, 23, 59, 59, DateTimeKind.Local);
+            if(fechaLimite != null)
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Value.Year, fechaLimite.Value.Month, fechaLimite.Value.Day, 23, 59, 59, DateTimeKind.Local);
+            }
+            else
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = null;
+            }
             repositorio.GuardarCambios();
             resultado.IdEntidad = solp.Id;
             resultado.Mensaje = "Se grabó con éxito";

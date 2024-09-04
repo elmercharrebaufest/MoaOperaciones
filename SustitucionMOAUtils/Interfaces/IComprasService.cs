@@ -115,7 +115,7 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
         Resultado DesagruparPO(string nroSolp, string po);
-        Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime fechaLimite);
+        Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite);
         ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
         void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
         byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);
