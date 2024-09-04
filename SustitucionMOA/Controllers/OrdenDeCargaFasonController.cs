@@ -135,18 +135,28 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Agregar(string ordenDeCargaFasonJson)
         {
+            var response = new SustitucionMOAApiResponse<Resultado>();
             try
             {
                 var crearOrdenReq = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
                 var mailUsuario = SessionPersister.getUsername();
-                var resultado = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
-                return JsonCustom(new { data = resultado });
+                
+                response.Data = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
             }
             catch (Exception ex)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return JsonCustom(new { error = ErrorMsg.Error });
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpPost]

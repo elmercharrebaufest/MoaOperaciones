@@ -8,9 +8,9 @@
         public OrdenDeCargaFasonApiDto(Entities.OrdenDeCargaFason ordenFason)
         {
             Id = ordenFason.Id;
+            ApellidoChofer = ordenFason.ApellidoChofer;
             Cantidad = ordenFason.Cantidad;
             Cliente = ordenFason.Cliente.RazonSocial;
-            Reventa = ordenFason.ClienteComoRemitenteComercial;
             CodigoProducto = ordenFason.Producto.CodigoSap;
             CUILChofer = ordenFason.CUILChofer;
             CUITCliente = ordenFason.Cliente.CUIT;
@@ -31,7 +31,6 @@
             LocalidadDescripcion = ordenFason.LocalidadDescripcion;
             LocalidadId = ordenFason.LocalidadId;
             NombreChofer = ordenFason.NombreChofer;
-            ApellidoChofer = ordenFason.ApellidoChofer;
             Observacion = ordenFason.Observacion;
             PatenteAcoplado = ordenFason.PatenteAcoplado;
             PatenteChasis = ordenFason.PatenteChasis;
@@ -40,6 +39,7 @@
             RazonSocialDestino = ordenFason.RazonSocialDestino;
             RazonSocialIntermediarioFlete = ordenFason.RazonSocialIntermediarioFlete;
             RazonSocialTransporte = ordenFason.RazonSocialTransporte;
+            Reventa = ordenFason.ClienteComoRemitenteComercial;
             TipoOrden = TipoOrdenes.FASON;
         }
     }

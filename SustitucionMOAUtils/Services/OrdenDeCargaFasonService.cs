@@ -211,51 +211,36 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario)
         {
-            try
+            ValidarRequest(request, mailUsuario);
+            var existeTransporte = TransporteExiste(request.CUITTransporte);
+            var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
+
+            var producto = repositorio.Obtener<Material>(request.Producto_Id);
+            var localidad = ObtenerLocalidadDeLaOrden(request, producto);
+
+            request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
+            request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+
+            long ultimoId = 0;
+            for (int i = 0; i < request.CantidadDeViajes; i++)
             {
-                ValidarRequest(request, mailUsuario);
-                var existeTransporte = TransporteExiste(request.CUITTransporte);
-                var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
-                var localidades = ObtenerDestinos(request.Cliente);
-                if (localidades.Count == 0)
+                var ordenEntity = new OrdenDeCargaFason(request)
                 {
-                    return new Resultado { error = "El cliente no cuenta con ninguna localidad, imposible continuar con la carga." };
-                }
-                if (request.CantidadDeViajes > 3)
-                {
-                    return new Resultado { error = "No puede generar más de 3(tres) viajes." };
-                }
-                var localidad = localidades.First();
-                request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
-                request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+                    Producto = producto,
+                    LocalidadId = localidad.LocalidadId,
+                    LocalidadDescripcion = localidad.LocalidadDescripcion,
+                    KmARecorrer = localidad.KmARecorrer
+                };
+                var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
+                ActualizarOrdenDeCarga(detalleActualizar, i == 0);
+                repositorio.Agregar(ordenEntity);
 
-                var producto = repositorio.Obtener<Material>(request.Producto_Id);
-                int? ultimoId = null;
-                for (int i = 0; i < request.CantidadDeViajes; i++)
-                {
-                    var ordenEntity = new OrdenDeCargaFason(request)
-                    {
-                        Producto = producto,
-                        LocalidadId = localidad.LocalidadId,
-                        LocalidadDescripcion = localidad.LocalidadDescripcion,
-                        KmARecorrer = localidad.KmARecorrer
-                    };
-                    var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
-                    ActualizarOrdenDeCarga(detalleActualizar, i == 0);
-                    repositorio.Agregar(ordenEntity);
-
-                    repositorio.GuardarCambios();
-                    ultimoId = (int)ordenEntity.Id;
-                }
-
-                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = ultimoId ?? 0 };
-                return resultado;
+                repositorio.GuardarCambios();
+                ultimoId = ordenEntity.Id;
             }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                throw new WSCustomException(ErrorMsg.ErrorWS, ex);
-            }
+
+            var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = (int)ultimoId };
+            return resultado;
         }
 
         public Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario)
@@ -309,12 +294,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(int clienteId)
         {
-            Proveedor proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
-            if (proveedor.CUIT.Length != 11)
-            {
-                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
-            }
-            return scatoConsumer.BuscarDestinos(proveedor.CUIT);
+            var proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
+            return ObtenerDestinos(proveedor.CUIT);
         }
 
         public void VerificarTransporteJob()
@@ -604,6 +585,11 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
+            if (request.CantidadDeViajes > 3)
+            {
+                throw new ValidationCustomException("No puede generar más de 3(tres) viajes.");
+            }
+
             Log.Info($"FASON - Validar Request {request.ToJson()}  usuario: {usuario.Mail}");
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
             Log.Info($"FASON - Validar Request: RolFleteMOA={fleteMOA}");
@@ -668,6 +654,28 @@ namespace SustitucionMOAUtils.Services
             {
                 emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
             }
+        }
+
+        private List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(string cuit)
+        {
+            if (cuit.Length != 11)
+            {
+                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
+            }
+            return scatoConsumer.BuscarDestinos(cuit);
+        }
+
+        private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)
+        {
+            var localidades = producto.EsDerivadoGranario ?
+                ObtenerDestinos(request.CUITDestino) :
+                ObtenerDestinos(request.Cliente);
+
+            if (localidades.Count == 0)
+            {
+                throw new ValidationCustomException("El cliente/destino no cuenta con ninguna localidad, imposible continuar con la carga.");
+            }
+            return localidades.First();
         }
     }
 }
