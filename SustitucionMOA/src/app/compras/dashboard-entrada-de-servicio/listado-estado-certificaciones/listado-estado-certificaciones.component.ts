@@ -1165,7 +1165,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     });
 
     const excelBuffer: any = XLSX.write(wb, { bookType: 'xlsx', type: 'array'});
-    this.guardarComoExcel(excelBuffer, 'datos_separados_por_estado');
+    this.guardarComoExcel(excelBuffer, 'Estados de Certificaciones');
   }
   
 
