@@ -123,7 +123,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
         { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: true },
+        { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: false },
         { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
         { id: 'cProveedor', header: 'Proveedor', field: 'Proveedor', type: 'string', sortable: true, required: true, visible: true },
