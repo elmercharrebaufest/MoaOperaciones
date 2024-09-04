@@ -2230,12 +2230,12 @@ namespace SustitucionMOAUtils.Services
                 var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
                                 .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
 
-                var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
+                var esServicio = solp.Posiciones.Any() && solp.Posiciones.First().TipoPosicion.Codigo == "SERVICIO";
 
                 if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
                 {
                     ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (cotizaciones != null && cotizaciones.Count > 0 && solp.TieneModificaciones == true)
+                    if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
                     {
                         if (solp.TrabajoYaHecho != true)
                         {
@@ -4384,13 +4384,6 @@ namespace SustitucionMOAUtils.Services
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-                var filtros = new ObtenerSolpRequest
-                {
-                    FechaDesde = fechaDesde,
-                    FechaHasta = fechaHasta,
-                    NumeroSolp = solp.NroSolp,
-                };
-                //var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
@@ -4401,7 +4394,6 @@ namespace SustitucionMOAUtils.Services
                     var posPendiente = posicionesPendientes
                                     .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice);
                     pos.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
-                                    ;
                 });
 
                 foreach (var posicionAgrupada in consultaRegistro)
@@ -4409,7 +4401,7 @@ namespace SustitucionMOAUtils.Services
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
-                        CrearProveedor(registros.Select(x => x.Vendedor).ToList());
+                        CrearProveedor(registros.ConvertAll(x => x.Vendedor));
                         foreach (var posicion in posicionAgrupada)
                         {
                             foreach (var registroInfo in registros)
@@ -4454,7 +4446,6 @@ namespace SustitucionMOAUtils.Services
                                             MaterialCodigo = registroInfo.MaterialCodigo,
                                             NumeroOrdenDeCompra = registroInfo.NumeroOrdenDeCompra
                                         });
-
                                     }
                                     catch (Exception e)
                                     {
