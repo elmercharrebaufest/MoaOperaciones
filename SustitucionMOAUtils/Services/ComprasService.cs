@@ -2263,6 +2263,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            repositorio.GuardarCambios();
         }
 
         private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
