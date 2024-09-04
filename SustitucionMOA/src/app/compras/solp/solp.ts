@@ -106,6 +106,7 @@ export class Solp extends CommonResponse {
     tieneModificaciones: boolean;
     tieneRevisionTecnicaFinalizada: boolean;
     envioCircularA: EnumEnvioCircularA;
+    fechaLimiteReenvioDocumentacionPorCambioCondiciones?: Date;
 
 
     public get ultimaPosicion(): SolpPosicion {

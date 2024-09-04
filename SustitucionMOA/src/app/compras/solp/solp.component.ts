@@ -109,6 +109,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
     condEspOriginales: CondicionesEspecialesOriginales;
     displayEnvioCircular: boolean;
+    fechaLimiteDocumentacionRequerida: boolean;
 
 
     set pasoActual(value: Paso) {
@@ -1389,24 +1390,44 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     salirModalCircular(){
         this.solpActual.envioCircularA = EnumEnvioCircularA.NoEnviar;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
     enviarCircularTodos(){
         this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarATodos;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+        if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
+            this.fechaLimiteDocumentacionRequerida = true;
+            return;
+        }
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
     enviarCircularVisitaRealizada(){
         this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarRealizaronVisita;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
+        if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
+            this.fechaLimiteDocumentacionRequerida = true;
+            return;
+        }
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
-    guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
+    get classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones():string {
+        let classes: string = "";
+        if (this.fechaLimiteDocumentacionRequerida
+            && this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            classes +=  " ng-invalid ng-dirty";
+        }
+
+        return classes;
+    }
+
+    guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
-            this.subscription = this.service.guardarEnvioCircularProveedor(id, enviarCircularA).subscribe(
+            this.subscription = this.service.guardarEnvioCircularProveedor(id, enviarCircularA, fechaLimite).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();

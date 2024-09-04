@@ -166,18 +166,21 @@
     <p-header class="headerModal">
         Envío de circular automática
     </p-header>
-    <div class="m-2" id="calDiv">
+    <div class="m-2">
         <label for="icondisplay">Fecha límite para la Nueva Cotización</label>
-        <p-calendar showButtonBar="true" [showIcon]="true"
-                    appendTo="calDiv"
-                    dateFormat="dd/mm/yy" (onSelect)="onSelect($event)"
-                    [(ngModel)]="rangeDates" selectionMode="single" [readonlyInput]="true" [locale]="locale"
-                    (onClearClick)="returnToTodaysDate()"
+        <p-calendar #fechaLimiteReenvioDocumentacionPorCambioCondiciones
+                    showButtonBar="false" [showIcon]="true"
+                    [inputStyleClass]="classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    [styleClass]="classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    class="{{ classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones }}"
+                    appendTo="body"
+                    dateFormat="dd/mm/yy"
+                    [(ngModel)]="solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    selectionMode="single" [readonlyInput]="true" [locale]="locale"
                     [inputStyle]="{'width': '70%'}"
                     [style]="{'width': '70%'}"
                     [autoZIndex]="true">
         </p-calendar>
-
         <div class="text-right" style="margin-top:1em; margin-bottom:0;">
             ¿Desea enviar circulares a los proveedores?
         </div>
