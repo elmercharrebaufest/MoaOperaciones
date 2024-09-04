@@ -954,7 +954,7 @@ export class OrdenesDeCargaFasonAltaComponent
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
     }
-    validarCNRTRequest() {
+    override validarCNRTRequest() {
         this.validando.Escalable = true;
         this.validarCNRTSubscription = this.service
             .verificarCNRT(this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.PatenteAcoplado)
