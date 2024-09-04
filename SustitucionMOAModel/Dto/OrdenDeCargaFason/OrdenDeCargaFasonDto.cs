@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Ent = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 {
@@ -61,7 +62,9 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string FechaRetiroReal { get; set; }
         public string FechaIngresoPlanta { get; set; }
         public double? CantidadDescargada { get; set; }
-
+        public bool TienePatentesRepetidas { get; set; }
+        public bool TienePatenteMultiplesAutorizaciones { get; set; }
+        public List<long> OrdenesConPatentesRepetidas { get; set; }
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
             Cantidad = orden.Cantidad;

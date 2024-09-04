@@ -176,7 +176,7 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
         { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
-  
+
   public anularOrden(ordenId: number) {
     return this.http
       .post<ApiResponse<OrdenDeCargaFasonDto>>(
@@ -301,5 +301,18 @@ export class OrdenesDeCargaFasonService extends OrdenesBaseService {
         '/api/OrdenDeCargaFason/ValidarSisaCliente',
         { params: params, headers: this.headers })
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+  }
+
+  public validarExistenciaPatentes(patenteChasis: string, cuitCliente: string | number): Observable<ApiResponse<boolean>> {
+    let params: HttpParams = new HttpParams()
+      .append("cuitCliente", cuitCliente.toString())
+      .append("patenteChasis", patenteChasis)
+
+    return this.http
+      .get<ApiResponse<boolean>>(
+        '/api/OrdenDeCargaFason/ValidarExistenciaPatentes',
+        { params: params, headers: this.headers })
+      .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+
   }
 }

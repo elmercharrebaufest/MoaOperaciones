@@ -108,6 +108,11 @@
               <td>{{ordenDeCargaFason.Material}}</td>
               <td>{{ordenDeCargaFason.patenteChasis}}
                 <span *ngIf="ordenDeCargaFason.Escalable" class="fa fa-truck" aria-hidden="true"></span>
+                <span pTooltip="Patente repetida" tooltipPosition="bottom"
+                  *ngIf="ordenDeCargaFason.TienePatentesRepetidas || ordenDeCargaFason.TienePatenteMultiplesAutorizaciones"
+                  class="fa fa-exclamation-triangle text-repetido" [ngClass]="{
+                  'text-multiples-autorizaciones':ordenDeCargaFason.TienePatenteMultiplesAutorizaciones
+                 }" aria-hidden="true"></span>
               </td>
               <td *ngIf="esAdmin">
                 <div class="semaforo {{ordenDeCargaFason.ColorSemaforo}}">

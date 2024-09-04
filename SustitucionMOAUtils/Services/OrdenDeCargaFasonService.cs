@@ -16,6 +16,9 @@ using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
+using System.Data.Entity;
+using System.Linq.Expressions;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,6 +26,14 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
         private readonly IEmailFasonService emailFasonService;
+
+        protected readonly List<EstadoOrdenDeCargaFason> estadosParaNoNotificarChasisRepetido = new List<EstadoOrdenDeCargaFason>
+        {
+            EstadoOrdenDeCargaFason.Vencida,
+            EstadoOrdenDeCargaFason.Anulada,
+            EstadoOrdenDeCargaFason.Entregada,
+            EstadoOrdenDeCargaFason.SinEstado,
+        };
 
         public OrdenDeCargaFasonService(IRepositorio repositorio,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -51,19 +62,27 @@ namespace SustitucionMOAUtils.Services
 
                 var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
                 var tipoUsuarioId = usuario.TipoUsuario.Id;
-                var listadoDB = repositorio.Listar<OrdenDeCargaFason>(x =>
+
+                Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
                 (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-                && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null))
-                );
+                && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null));
 
-                if (listadoDB == null || listadoDB.Count == 0)
+                var listadoConFiltro = repositorio.ListarConsultable(filtro);
+
+                if (listadoConFiltro.Count() == 0)
                 {
                     throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de carga fason"));
                 }
 
-                var listado = listadoDB.OrderByDescending(x => x.FechaCreacion)
-                    .Select(x => new OrdenDeCargaFasonDto(x, esInterno))
+                var hashPatentesCargadas = ObtenerHashPatentesCargadas(listadoConFiltro.AsEnumerable());
+
+                var listado = listadoConFiltro.ToList().OrderByDescending(x => x.FechaCreacion)
+                    .Select(x => new OrdenDeCargaFasonDto(x, esInterno)
+                    {
+                        TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
+                        TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
+                    })
                     .ToList();
 
                 var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
@@ -91,7 +110,10 @@ namespace SustitucionMOAUtils.Services
 
                 var orden = repositorio.Obtener<OrdenDeCargaFason>(IdOrdenCargaFason);
 
-                var response = new OrdenDeCargaFasonDto(orden, esInterno);
+                var response = new OrdenDeCargaFasonDto(orden, esInterno)
+                {
+                    OrdenesConPatentesRepetidas = esInterno ? ObtenerOrdenesConPatentesRepetidas(orden) : null
+                };
 
                 return new DetalleOrdenDeCargaFasonResponse { Response = response };
             }
@@ -131,7 +153,7 @@ namespace SustitucionMOAUtils.Services
 
             return ordenes;
         }
-        
+
         public List<ProveedorDto> GetCorredores()
         {
             var corredoresBD = repositorio
@@ -294,7 +316,7 @@ namespace SustitucionMOAUtils.Services
             }
             return scatoConsumer.BuscarDestinos(proveedor.CUIT);
         }
-        
+
         public void VerificarTransporteJob()
         {
             if (repositorio.Obtener<HabilitacionJob>(hj => hj.Nombre == "VerificarTransporteOrdenesDeCargaFasonJob" && hj.Habilitado) == null)
@@ -307,7 +329,7 @@ namespace SustitucionMOAUtils.Services
             }
             repositorio.GuardarCambios();
         }
-        
+
         public OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
@@ -320,7 +342,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
         }
-        
+
         public List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest orden, string mailUsuario)
         {
             List<AutoCompleteDropdownElement> cuils = new List<AutoCompleteDropdownElement>();
@@ -370,7 +392,7 @@ namespace SustitucionMOAUtils.Services
 
             return cuits.Distinct().ToList();
         }
-        
+
         public OrdenDeCargaDto ObtenerPatentes(OrdenDeCargaFasonRequest orden, string mailUsuario)
         {
             Proveedor cliente;
@@ -412,7 +434,7 @@ namespace SustitucionMOAUtils.Services
 
             return true;
         }
-        
+
         public OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
@@ -433,7 +455,7 @@ namespace SustitucionMOAUtils.Services
             Log.Debug($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
             return !result.Terminado;
         }
-        
+
         public bool ValidarSisaCliente(string codigoCliente, string codigoMaterial)
         {
             var controlarCargaReq = new ControlCargaRequest
@@ -447,14 +469,104 @@ namespace SustitucionMOAUtils.Services
 
             return !responseHandler.TieneRespuesta(ControlCargaResEnum.ClienteInhabilitadoEnSisa);
         }
+        public bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente)
+        {
+            return OrdenesConPatentesRepetidas(patenteChasis)
+                .Any(oc => oc.Cliente.CUIT != cuitCliente);
+        }
 
+        private List<OrdenDeCargaFason> OrdenesConPatentesRepetidas(string patenteChasis)
+        {
+            return repositorio.Listar<OrdenDeCargaFason>(oc =>
+                !estadosParaNoNotificarChasisRepetido.Contains(oc.Estado) &&
+                oc.PatenteChasis == patenteChasis
+            );
+        }
+        private bool VerificarOrdenConPatentesRepetidas(OrdenDeCargaFason orden, Hashtable hashPatentesCargadas)
+        {
+
+            if (estadosParaNoNotificarChasisRepetido.Contains(orden.Estado))
+            {
+                return false;
+            }
+            if (hashPatentesCargadas.ContainsKey(orden.PatenteChasis))
+            {
+                var ordenesCargadas = (List<(long, string)>)hashPatentesCargadas[orden.PatenteChasis];
+                return ordenesCargadas.Count > 1;
+            }
+            return false;
+        }
+
+        private bool VerificarChasisConMultiplesAutorizaciones(OrdenDeCargaFason orden, Hashtable hashPatentesCargadas)
+        {
+            if (estadosParaNoNotificarChasisRepetido.Contains(orden.Estado))
+            {
+                return false;
+            }
+
+            if (hashPatentesCargadas.ContainsKey(orden.PatenteChasis))
+            {
+                var chasisAutorizados = (List<(long, string)>)hashPatentesCargadas[orden.PatenteChasis];
+                return chasisAutorizados.Any(data => data.Item2 != orden.Cliente.CUIT);
+            }
+            return false;
+        }
+        private List<long> ObtenerOrdenesConPatentesRepetidas(OrdenDeCargaFason orden)
+        {
+            var hashPatentesCargadas = ObtenerHashPatentesCargadas();
+            if (!VerificarOrdenConPatentesRepetidas(orden, hashPatentesCargadas))
+            {
+                return null;
+            }
+            var ordenesConPatentesRepetidas = (List<(long, string)>)hashPatentesCargadas[orden.PatenteChasis];
+            return ordenesConPatentesRepetidas.Where(data => data.Item1 != orden.Id)
+                .Select(data => data.Item1)
+                .ToList();
+        }
+        private Hashtable ObtenerHashPatentesCargadas()
+        {
+            var diasPreviosParaCompararPatentes = -5;
+            var hoy = DateTime.Now;
+            var fechaTope = hoy.AddDays(diasPreviosParaCompararPatentes);
+
+            return ObtenerHashPatentesCargadas(
+                repositorio.ListarConsultable<OrdenDeCargaFason>(oc =>
+                    oc.FechaCreacion <= hoy &&
+                    DbFunctions.TruncateTime(oc.FechaCreacion) >= fechaTope)
+                .AsEnumerable());
+        }
+        private Hashtable ObtenerHashPatentesCargadas(IEnumerable<OrdenDeCargaFason> ordenes)
+        {
+
+            var hashPatentesCargadas = new Hashtable();
+            ordenes
+                .Where(oc =>
+                    !estadosParaNoNotificarChasisRepetido.Contains(oc.Estado)
+                )
+                .ToList()
+                .ForEach(oc =>
+                {
+                    if (hashPatentesCargadas.ContainsKey(oc.PatenteChasis))
+                    {
+                        var ordenesCargadas = (List<(long, string)>)hashPatentesCargadas[oc.PatenteChasis];
+                        ordenesCargadas.Add((oc.Id, oc.Cliente.CUIT));
+                        hashPatentesCargadas[oc.PatenteChasis] = ordenesCargadas;
+                    }
+                    else
+                    {
+                        hashPatentesCargadas.Add(oc.PatenteChasis, new List<(long, string)> { (oc.Id, oc.Cliente.CUIT) });
+                    }
+
+                });
+            return hashPatentesCargadas;
+        }
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool enviarNotificaciones = false)
         {
             var detalleAActualizar = ObtenerDetallesActualizar(orden);
 
             ActualizarOrdenDeCarga(detalleAActualizar, enviarNotificaciones);
         }
-        
+
         private void ActualizarOrdenDeCarga(DetallesActualizarOrdenDeCargaFason detalle, bool enviarNotificaciones = false)
         {
             var orden = detalle.orden;
@@ -465,7 +577,7 @@ namespace SustitucionMOAUtils.Services
                 NotificacionesNecesarias(detalle);
             }
         }
-        
+
         private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
         {
             if (orden.TransporteExiste && orden.CuitsTerceroExisten)
@@ -489,7 +601,7 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
             ValidarRequest(request, usuario);
         }
-        
+
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
             Log.Info($"FASON - Validar Request {request.ToJson()}  usuario: {usuario.Mail}");
@@ -527,7 +639,7 @@ namespace SustitucionMOAUtils.Services
 
             return estadoTransportista == ControlEstadoResEnum.TransportistaOK;
         }
-        
+
         private bool? CuitExisteScato(string cuit)
         {
             if (cuit is null)
@@ -535,7 +647,7 @@ namespace SustitucionMOAUtils.Services
 
             return ValidarCuitExisteScato(cuit).Existe;
         }
-        
+
         private DetallesActualizarOrdenDeCargaFason ObtenerDetallesActualizar(OrdenDeCargaFason orden,
             bool? existeTransportePreRevisado = null,
             bool? existeIntermediarioFletePreRevisado = null)
@@ -549,7 +661,7 @@ namespace SustitucionMOAUtils.Services
                 existeIntermediarioFlete = existeIntermediarioFlete,
             };
         }
-        
+
         private void NotificacionesNecesarias(DetallesActualizarOrdenDeCargaFason detallesOrden)
         {
             if (!detallesOrden.existeTransporte)

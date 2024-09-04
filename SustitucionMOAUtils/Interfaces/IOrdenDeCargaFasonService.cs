@@ -26,5 +26,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
         bool ValidarOrdenActivaScato(long ordenId);
         bool ValidarSisaCliente(string codigoCliente, string codigoMaterial);
+        bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente);
     }
 }
