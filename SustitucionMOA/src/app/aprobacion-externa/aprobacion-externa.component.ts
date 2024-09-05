@@ -31,6 +31,7 @@ export class AprobacionExternaComponent implements OnInit {
     desc: string = "";
     importe: string = "";
     ordenCompra: string = "";
+    errorMessage: string = '';
 
     //TableData
     tableBody: string = "";
@@ -39,6 +40,9 @@ export class AprobacionExternaComponent implements OnInit {
     approvalSuccess: boolean = false;
     rejectionSuccess: boolean = false;
     approvalError: boolean = false;
+    approvalErrorClosePeriod: boolean = false;
+    approvalErrorInfo: boolean = false;
+
     rejectionError: boolean = false;
     isButtonDisabled: boolean = false;
     isApprover: boolean = false;
@@ -154,8 +158,31 @@ export class AprobacionExternaComponent implements OnInit {
     aprobarES() {
         try {
             this.comprasService.enviarAprobacionES(this.cert, "ARP").subscribe((resp: any) => {
-                this.certSap = resp.data.NroESSap;
-                this.approvalSuccess = true;
+
+                switch (resp.data.Type) {
+                    case "I": {
+                        this.certSap = resp.data.NroESSap;
+                        this.approvalSuccess = true;
+                      break;
+                    }
+                    case "S":
+                    case "Desync":
+                        this.errorMessage = resp.data.Message;
+                        this.approvalErrorInfo = true;
+                      break;
+                    case "E": {
+                        this.errorMessage = resp.data.Message.startsWith("Sólo es posible contabilizar en ") ||
+                        resp.data.Message.startsWith("Contabilice en ") ?
+                        "El período se encuentra cerrado, por favor contabilice en el periodo actual." : resp.data.Message;
+                        this.approvalErrorClosePeriod = true;
+                      break;
+                    }
+                    default: {
+                        this.certSap = resp.data.NroESSap;
+                        this.approvalError = true;
+                      break;
+                    }
+                  }
             },
                 error => {
                     this.approvalError = true;

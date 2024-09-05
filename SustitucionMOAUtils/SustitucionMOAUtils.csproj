@@ -197,6 +197,7 @@
     <Compile Include="Interfaces\IComprasSapService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailCertificationService.cs" />
+    <Compile Include="Interfaces\IEmailAplicacionCPService.cs" />
     <Compile Include="Interfaces\IEmailComprasService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IEmailResiduosService.cs" />

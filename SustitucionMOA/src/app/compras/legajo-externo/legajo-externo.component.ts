@@ -4,7 +4,7 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ComprasService } from '../compras.service';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { LegajoExternoDto } from '../../modelos/legajoExternoDto';
-import { LegajoDto } from '../../modelos/compras/legajoDto';
+import { LegajoDto, LegajoTipo } from '../../modelos/compras/legajoDto';
 
 @Component({
     selector: 'app-legajo-externo',
@@ -138,7 +138,18 @@ export class LegajoExternoComponent implements OnInit {
                         this.mensajeComponent.setErrorMsg(error.message);
                         this.blockUI.stop();
                     })
-        } else {
+        } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
+            this.descargarAdjuntosProveedores(legajoDto)
+        } else if (legajoDto.Tipo == LegajoTipo.Cotizacion && legajoDto.ArchivoId) {
+            this.descargarHistorialCotizaciones(legajoDto.ArchivoId);
+        }
+        else if (legajoDto.Tipo == LegajoTipo.HistorialMovimientos) {
+            this.descargarHistorialMovimientos();
+        }
+        else if (legajoDto.Tipo == LegajoTipo.RevisionTecnica && legajoDto.ArchivoId) {
+            this.descargarRevisionTecnica(legajoDto.ArchivoId);
+        }
+        else {
             this.blockUI.start("Descargando...");
             this.service.DescargarArchivo(legajoDto.ArchivoId)
                 .subscribe(
@@ -158,10 +169,9 @@ export class LegajoExternoComponent implements OnInit {
         }
     }
 
-    descargarAdjuntosProveedores() {
-        let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
+    descargarAdjuntosProveedores(legajoDto: LegajoDto) {
         this.blockUI.start('Generando...');
-        this.service.descargarAdjuntosProveedores(idPeticion, null)
+        this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
             .subscribe(
                 (result) => {
                     var byteArray = new Uint8Array(result.FileContents);
@@ -193,7 +203,7 @@ export class LegajoExternoComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 })
-    }
+    }    
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -250,6 +260,61 @@ export class LegajoExternoComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 })
+    }
+    private descargarHistorialCotizaciones(cotizacionId: number) {
+        this.blockUI.start("Descargando...");
+        this.service.descargarHistorialCotizaciones(cotizacionId).subscribe(
+            (response) => {
+                var byteArray = new Uint8Array(response.FileContents);
+                var blob = new Blob([byteArray], {
+                    type: "application/octet-stream",
+                });
+                this.downloadArchivoLocal(blob, response.FileDownloadName);
+                this.blockUI.stop();
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
+    }
+
+    private descargarRevisionTecnica(peticionDeOfertaId: number) {
+        this.blockUI.start("Descargando...");
+        this.service.descargarRevisionTecnica(peticionDeOfertaId).subscribe(
+            (response) => {
+                var byteArray = new Uint8Array(response.FileContents);
+                var blob = new Blob([byteArray], {
+                    type: "application/octet-stream",
+                });
+                this.downloadArchivoLocal(blob, response.FileDownloadName);
+                this.blockUI.stop();
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
+            }
+        )
+    }
+    descargarHistorialMovimientos() {
+        this.blockUI.start("Descargando...");
+        let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
+        this.service.descargarArchivoHistorialMovimientos(idPeticion)
+            .subscribe(
+                (result) => {
+                    this.blockUI.stop();
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+                    this.downloadArchivoLocal(blob, result.FileDownloadName);
+                    ;
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
     }
 
     getBackgroundColor(currentId: number): any {

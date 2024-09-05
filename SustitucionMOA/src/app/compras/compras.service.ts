@@ -870,6 +870,7 @@ export class ComprasService extends BaseService {
             params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
         params = params.set("esProveedor", esProveedor.toString());
+        params = params.set("esProveedor", esProveedor.toString());
         if (adjudicacionId != null) {
             params = params.set("adjudicacionId", adjudicacionId.toString());
         }
