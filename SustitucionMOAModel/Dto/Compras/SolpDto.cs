@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -465,6 +465,6 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioCreadorMail { get; set; }
         public string Cantidad { get; set; }
         public string Periodo { get; set; }
-    
+
     }
 }

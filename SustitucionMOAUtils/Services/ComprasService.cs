@@ -10363,10 +10363,10 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite)
         {
-            var resultado = new Resultado();
-            var solp = repositorio.Obtener<Solp>(x => x.Id == id);
+            Resultado resultado = new Resultado();
+            Solp solp = repositorio.Obtener<Solp>(x => x.Id == id);
             solp.EnvioCircularA = envioCircularA;
-            if(fechaLimite != null)
+            if (fechaLimite != null)
             {
                 solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Value.Year, fechaLimite.Value.Month, fechaLimite.Value.Day, 23, 59, 59, DateTimeKind.Local);
             }

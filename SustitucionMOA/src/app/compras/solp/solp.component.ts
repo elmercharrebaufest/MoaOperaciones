@@ -160,18 +160,18 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         };
     }
     ngOnChanges(changes: SimpleChanges): void {
-        this.obtenerUsuarioSolicitante(); 
+        this.obtenerUsuarioSolicitante();
     }
 
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
             this.getCombos();
             this.es = setupDaysAndMonths();
-            
+
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
             this.pasoActual = this.pasos[0];
-          
+
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
@@ -445,7 +445,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
-        
+
         if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
             this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
             return;
@@ -607,7 +607,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
                             }
                         }
-                        
+
                         if (enviarSap) {
                             this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
                             this.solpActual.tieneModificaciones = result.Solp.TieneModificaciones;
@@ -617,10 +617,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
-                                
+
                                 // Esto sirve para la mejora de no enviarCirculares automáticas
                                 if (this.solpActual.tieneModificaciones) {
-                                     this.enviarCircularProveedores();
+                                    this.enviarCircularProveedores();
                                 } else {
                                     this.displaySAP = true;
                                 }
@@ -1015,11 +1015,11 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != undefined) {
             this.solpActual.selectUsuarioFiscal = this.solpActual.usuarioSolicitanteList.
                 find(x => x.CodigoDescripcion == this.solpActual.mail);
-              if (this.solpActual.tipoSolp == "CON_PLIEGO") {
+            if (this.solpActual.tipoSolp == "CON_PLIEGO") {
                 this.solpActual.supervisorTrabajo = this.solpActual.mail;
                 this.solpActual.selectResponsableTrabajo = this.solpActual.usuarioSolicitanteList.
                     find(x => x.CodigoDescripcion == this.solpActual.mail);
-              }
+            }
         }
     }
 
@@ -1042,10 +1042,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
-                        if(this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null){
-                        this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
-                            ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
-                            : this.solpActual.usuarioComprasList[0];
+                        if (this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null) {
+                            this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                                ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                                : this.solpActual.usuarioComprasList[0];
                         }
                         this.spinnerComponent.hideIt();
                     }
@@ -1113,7 +1113,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
-        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
+        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
         this.cabecera.validarTabCompleto();
         this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
@@ -1124,7 +1124,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        this.obtenerUsuarioCompras();      
+        this.obtenerUsuarioCompras();
         this.displayFinalizar = true;
     }
 
@@ -1319,7 +1319,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.floatMsgService.setErrorMsg(result.error);
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
-                    } else {                       
+                    } else {
                         this.solpActual.usuarioSolicitanteList = [];
                         result.forEach(element => {
                             this.solpActual.usuarioSolicitanteList.push({
@@ -1342,11 +1342,11 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         }
     }
 
-    public completarUsuarioSolicitante() {       
+    public completarUsuarioSolicitante() {
         if (this.solpActual != undefined) {
-             this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
-          
-             if (this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null) {
+            this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
+
+            if (this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null) {
                 this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
                     ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail)
                     : this.solpActual.usuarioSolicitanteList[0];
@@ -1360,13 +1360,13 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         }
     }
 
-    public validarSolicitante(): boolean{
+    public validarSolicitante(): boolean {
         var puedoGuardar = true;
         this.solpActual.posiciones.forEach(posi => {
-            if((this.solpActual.fiscalContrato == undefined || this.solpActual.fiscalContrato == "") &&
-            (this.solpActual.supervisorTrabajo == undefined || this.solpActual.supervisorTrabajo == "") &&
-            posi.selectSolicitanteCompras != undefined &&  posi.selectSolicitanteCompras != ""){
-                if(!this.solpActual.usuarioSolicitanteList.some(x => x.UsuarioSap === posi.selectSolicitanteCompras)){
+            if ((this.solpActual.fiscalContrato == undefined || this.solpActual.fiscalContrato == "") &&
+                (this.solpActual.supervisorTrabajo == undefined || this.solpActual.supervisorTrabajo == "") &&
+                posi.selectSolicitanteCompras != undefined && posi.selectSolicitanteCompras != "") {
+                if (!this.solpActual.usuarioSolicitanteList.some(x => x.UsuarioSap === posi.selectSolicitanteCompras)) {
                     puedoGuardar = false;
                 }
             }
@@ -1375,25 +1375,25 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return puedoGuardar;
     }
 
-    condicionCircular(){
-        var tieneVisita = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
+    condicionCircular(): boolean {
+        let tieneVisita: boolean = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
         return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
     }
 
-    enviarCircularProveedores(){
-        if(this.condicionCircular()){
+    enviarCircularProveedores(): void {
+        if (this.condicionCircular()) {
             this.displayEnvioCircular = true;
         } else {
             this.displaySAPEditar = true;
         }
     }
 
-    salirModalCircular(){
+    salirModalCircular(): void {
         this.solpActual.envioCircularA = EnumEnvioCircularA.NoEnviar;
         this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
-    enviarCircularTodos(){
+    enviarCircularTodos(): void {
         this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarATodos;
         if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
             this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
@@ -1403,7 +1403,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
-    enviarCircularVisitaRealizada(){
+    enviarCircularVisitaRealizada(): void {
         this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarRealizaronVisita;
         if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
             this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
@@ -1413,17 +1413,17 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
     }
 
-    get classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones():string {
+    get classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones(): string {
         let classes: string = "";
         if (this.fechaLimiteDocumentacionRequerida
             && this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
-            classes +=  " ng-invalid ng-dirty";
+            classes += " ng-invalid ng-dirty";
         }
 
         return classes;
     }
 
-    guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
+    guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date): boolean {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
@@ -1436,7 +1436,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        if(result.data.error != undefined && result.error != ""){
+                        if (result.data.error != undefined && result.error != "") {
                             this.floatMsgService.setErrorMsg(result.data.error);
                         } else {
                             this.displayEnvioCircular = false;

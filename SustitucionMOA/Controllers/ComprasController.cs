@@ -3,21 +3,20 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using HttpHelper = System.Web.Http;
 using System.Web.Mvc;
-using SustitucionMOAWS.WSConsumers;
-using System.Globalization;
+using HttpHelper = System.Web.Http;
 
 namespace SustitucionMOA.Controllers
 {
@@ -33,7 +32,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [ValidateInput(false)]
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
         public ActionResult GuardarSolp(string solpJson)
         {
             try
@@ -198,7 +197,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido,fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
@@ -474,7 +473,7 @@ namespace SustitucionMOA.Controllers
                                                        ? "SOLP no disponible para descarga."
                                                         : "El token no coincide; no tiene permiso para realizar la descarga.";
 
-                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos) 
+                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos)
                 {
                     errorMsg = "SOLP no disponible para descarga.";
                 }
@@ -1434,7 +1433,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpPost]
         public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
         {
@@ -1956,11 +1955,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-               var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
+                var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
                 var ordenar = filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(filtro.Columna) ? filtro.Columna : null), ordenar, (filtro.Pagina == null) ? 0 : filtro.Pagina.Value, (filtro.ItemsPorPagina == 0 || !filtro.ItemsPorPagina.HasValue) ? 10 : filtro.ItemsPorPagina.Value);
                 var resultado = service.ListarSolpCondicionEspecial(filtro);
-                return JsonCustom(new { data = resultado });                
+                return JsonCustom(new { data = resultado });
             }
             catch (InfoCustomException e)
             {
@@ -2083,7 +2082,7 @@ namespace SustitucionMOA.Controllers
 
                 if (string.IsNullOrWhiteSpace(fechaLimite))
                 {
-                    if(enviarCircularA != EnviarCircularEnum.NoEnviar)
+                    if (enviarCircularA != EnviarCircularEnum.NoEnviar)
                     {
                         throw new ValidationCustomException("La fecha límite es obligatoria cuando se enviará una circular");
                     }
