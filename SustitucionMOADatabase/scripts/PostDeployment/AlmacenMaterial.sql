@@ -15,7 +15,12 @@ VALUES
 	(64196,		350,	'LINEA 3 R.Recupero'),
 	(64196,		351,	'CONTRATISTAS'),
 	(64196,		352,	'PLAYA EXTERNA'),
-	(172789,	344,	'Planta')
+	(172789,	344,	'Planta'),
+	(64200,		254,	'No Productivo'),
+	(64199,		254,	'No Productivo'),
+	(64207,		254,	'No Productivo'),
+	(64195,		254,	'No Productivo'),
+	(63699,		254,	'No Productivo')
 
 INSERT INTO Almacen (Id, Nombre)
 SELECT distinct V.IdAlmacen, V.NombreAlmacen

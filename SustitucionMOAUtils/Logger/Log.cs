@@ -150,6 +150,21 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
+
+        public static void Debug(string mensaje)
+        {
+            try
+            {
+                ConfigLog();
+
+                DefaultLogger.Debug(mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+
         public static void Info(string mensaje)
         {
             try

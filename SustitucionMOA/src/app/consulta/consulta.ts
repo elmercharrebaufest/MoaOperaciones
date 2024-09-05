@@ -1,3 +1,4 @@
+import { DirOrden } from "../common/enums/DirOrden";
 import { Archivo } from "../common/models/archivo";
 import { Usuario } from "../usuario/usuario";
 
@@ -51,11 +52,11 @@ export interface Consulta {
 }
 
 export interface EstadoConsulta {
-    Id;
-    Code;
-    Descripcion;
-    Color;
-    Cantidad;
+    Id: number;
+    Code: string;
+    Descripcion: string;
+    Color?: string;
+    Cantidad?: number;
 }
 
 export interface Categoria {
@@ -131,4 +132,11 @@ export function obtenerOpcionesFiltroPorCreacion(): Array<{ key: OpcionFiltroAso
         { key: OpcionFiltroAsociadaCreacion.PorMOA, value: OpcionFiltroAsociadaCreacion.PorMOA },
         { key: OpcionFiltroAsociadaCreacion.PorUsuario, value: OpcionFiltroAsociadaCreacion.PorUsuario },
     ]
+}
+export interface ReqListadoConsultaDto {
+    page: number;
+    pageSize: number;
+    orderBy: keyof Consulta;
+    dirOrden: DirOrden;
+    filtros?: Record<keyof Consulta, any>;
 }

@@ -23,6 +23,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> scatoRepositorioClient;
         private Mock<ICNRTClient> cnrtClient;
         private Mock<IEmailFasonService> emailFasonService;
+        private Mock<IFeriadoService> feriadoService;
         [SetUp]
         public void Setup()
         {
@@ -32,13 +33,15 @@ namespace SustitucionMOATest.Services
             scatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             cnrtClient = new Mock<ICNRTClient>();
             emailFasonService = new Mock<IEmailFasonService>();
+            feriadoService = new Mock<IFeriadoService>();
             service = new OrdenDeCargaFasonService(
                 repositorio.Object,
                 ordenCargaConsumer.Object,
                 scatoConsumer.Object,
                 scatoRepositorioClient.Object,
                 cnrtClient.Object,
-                emailFasonService.Object
+                emailFasonService.Object,
+                feriadoService.Object
             );
         }
 
@@ -57,7 +60,6 @@ namespace SustitucionMOATest.Services
                 CodigoSap = 8088,
                 ValidaSisaRuca=false,
             };
-            orden.Destino = new CrearOrdenDeCargaFasonRequestDestino { LocalidadId=12, LocalidadDescripcion="Locale" };
             orden.Producto_Id = productoId;
             orden.CUITTransporte = cuitTransporte;
             var clientes = new ScatoConsumerWS.ClienteDto[] { };

@@ -78,6 +78,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.OrdenCarga
 
         public TipoContratoFAS TipoContrato { get; set; }
 
+        public decimal PrecioFlete { get; set; }
+
         public List<Detail> Detalles { get; set; }
 
         public Result()

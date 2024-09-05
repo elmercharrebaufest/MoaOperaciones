@@ -16,5 +16,6 @@ namespace SustitucionMOAWS.Interfaces
         ClienteDto[] ObtenerClientesPorCuit(string cuit);
         ProveedorDto ObtenerProveedorPorCuit(string cuit);
         RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega);
+        RecorridoDto ObtenerRecorridoNoRechazadoPorNumeroIdFason(long ordenId);
     }
 }

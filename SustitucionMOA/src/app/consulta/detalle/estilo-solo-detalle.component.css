@@ -1,0 +1,59 @@
+.p-2 {
+    padding: 0.5rem;
+}
+
+:host ::ng-deep .ui-button .ui-button-text {
+    display: none !important;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.grid {
+    display: grid;
+}
+
+.pt-5 {
+    padding-top: 1.25rem;
+}
+
+.gap-4px {
+    gap: 4px
+}
+
+.h-full {
+    height: 100%;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.h-25px {
+    height: 25px;
+}
+
+.rounded-full {
+    border-radius: 99999px;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.max-h-unset {
+    max-height: unset;
+}

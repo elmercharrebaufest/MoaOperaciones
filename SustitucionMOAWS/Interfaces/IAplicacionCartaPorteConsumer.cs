@@ -8,5 +8,7 @@ namespace SustitucionMOAWS.Interfaces
     public interface IAplicacionCartaPorteConsumer
     {
         ZMPES7070[] ObtenerAplicacionesPendientes(AppCartasPortePendienteRequest request);
+
+        AppCartasPortePendienteResponse ObtenerPendientesDeAplicar(AppCartasPortePendienteRequest request);
     }
 }

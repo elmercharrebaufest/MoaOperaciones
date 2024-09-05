@@ -44,6 +44,8 @@ export class OrdenesDeCargaFasonAltaComponent
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
+
+    localSubscriptions = new Subscription();
     constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -53,7 +55,7 @@ export class OrdenesDeCargaFasonAltaComponent
     ) {
         super(service, navService, securityService, floatMsgService, modalService);
 
-        this.subscriptions.add(
+        this.localSubscriptions.add(
             this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
                 this.validarCNRTRequest()
             ))
@@ -61,7 +63,6 @@ export class OrdenesDeCargaFasonAltaComponent
     }
 
     listaProductos: Material[];
-    listaDestinos: DestinoFason[] = [];
     listaClientes: any[];
     listaCorredores: any[];
 
@@ -185,6 +186,10 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
+        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
         if (
             this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11
@@ -224,11 +229,6 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenDeCargaFason.Destino) {
-            // Mostrar un mensaje de error al usuario o hacer algo para indicar que es necesario seleccionar un corredor
-            this.mensajeComponent.setInfoMsg("Seleccione un destino.");
-            return false;
-        }
         if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
             this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
             return false;
@@ -238,7 +238,10 @@ export class OrdenesDeCargaFasonAltaComponent
             return false;
         }
         if (this.validaCPEDG) {
-
+            if (this.validandoCliente || this.validandoCuitDestinatario || this.validandoCuitDestino || Object.keys(this.validando).some(v => this.validando[v])) {
+                this.mensajeComponent.setInfoMsg("Hay validaciones pendientes. Intente nuevamente en unos segundos.");
+                return false;
+            }
             if (!this.ordenDeCargaFason.CUITDestinatario || this.mensajeCuitDestinatario) {
                 this.mensajeComponent.setInfoMsg(this.mensajeCuitDestinatario || "Debe ingresar un CUIT de destinatario para este producto.")
                 return false;
@@ -280,9 +283,11 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
             this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
         }
-        this.obtenerDestinos(this.ordenDeCargaFason.Cliente)
         this.getCuilsChofer();
         this.getCuitsTransporte();
+        if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
+            this.validarSisaCliente();
+        }
     }
 
     //Utils
@@ -328,15 +333,6 @@ export class OrdenesDeCargaFasonAltaComponent
         });
 
         return result;
-    }
-
-    getFecha = (meses: number, fecha: Date = new Date()) => {
-        fecha.setMonth(fecha.getMonth() - meses);
-        var anho = fecha.toLocaleString("default", { year: "numeric" });
-        var mes = fecha.toLocaleString("default", { month: "2-digit" });
-        var dia = fecha.toLocaleString("default", { day: "2-digit" });
-        let stringFecha = anho + '-' + mes + '-' + dia;
-        return stringFecha;
     }
 
     //Servicios
@@ -422,7 +418,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     obtenerOrdenDeCarga() {
         try {
-            this.subscriptionDropDowns = this.service.getOrdenDeCargaFason(this.ordenDeCargaFasonId).subscribe(
+            const obtenerOrdenSubscripcion = this.service.getOrdenDeCargaFason(this.ordenDeCargaFasonId).subscribe(
                 result => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -442,11 +438,6 @@ export class OrdenesDeCargaFasonAltaComponent
                             this.cargarClientes('');
                         }
 
-
-                        var parts = this.ordenDeCargaFason.FechaRetiro.toString().split('/');
-                        var year = parts[2].split(" ");
-                        this.ordenDeCargaFason.FechaRetiro = new Date(Number(year[0]), Number(parts[1]) - 1, Number(parts[0]));
-
                         const producto = this.listaProductos.find(producto => producto.MaterialId == this.ordenDeCargaFason.Producto_Id)
                         this.selectProducto(producto);
                         if (this.ordenDeCargaFason.CUITDestino)
@@ -458,27 +449,12 @@ export class OrdenesDeCargaFasonAltaComponent
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
             );
+            this.localSubscriptions.add(obtenerOrdenSubscripcion)
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
         }
     }
 
-    obtenerDestinos = (Cliente: string) => {
-        this.service.getDestino(Cliente).subscribe(
-            (result) => {
-                this.listaDestinos = result.data;
-                if (this.ordenDeCargaFason.LocalidadDescripcion) {
-                    let seleccionado = this.listaDestinos.find(a => a.LocalidadDescripcion == this.ordenDeCargaFason.LocalidadDescripcion);
-                    if (seleccionado) {
-                        this.ordenDeCargaFason.Destino = seleccionado;
-                    }
-                }
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        );
-    }
 
     obtenerProductos = () => {
         this.service.getMateriales().subscribe(
@@ -561,14 +537,12 @@ export class OrdenesDeCargaFasonAltaComponent
                             this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
                             this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
 
-                            this.obtenerDestinos(this.clienteSeleccionado.Id);
                         } else {
                             if (this.ordenDeCargaFason.Cliente != null && this.ordenDeCargaFason.Cliente != "") {
                                 this.clienteSeleccionado = this.listaClientes.find(x => x.CodigoProveedor == this.ordenDeCargaFason.Cliente);
                                 this.clienteCUIT = this.clienteSeleccionado.CUIT;
                                 this.ordenDeCargaFason.CUITCliente = Number(this.clienteCUIT);
                                 this.ordenDeCargaFason.Cliente = this.clienteSeleccionado.Id;
-                                this.obtenerDestinos(this.clienteSeleccionado.Id);
                             }
                         }
                         this.blockUI.stop();
@@ -661,15 +635,23 @@ export class OrdenesDeCargaFasonAltaComponent
         this.displayModal = null;
     }
 
-    selectProducto(value: Material) {
-        if (!value)
+    selectProducto(producto?: Material) {
+        if (!this.ordenDeCargaFason.ProductoSeleccionado && !producto) {
+            this.validaCPEDG = false;
+            this.setearDefaultEnCPEDG();
             return;
-        this.ordenDeCargaFason.ProductoSeleccionado = value;
-        this.ordenDeCargaFason.Producto_Id = value.MaterialId;
+        }
+
+        if (producto) {
+            this.ordenDeCargaFason.ProductoSeleccionado = producto;
+        }
+        this.ordenDeCargaFason.Producto_Id = this.ordenDeCargaFason.ProductoSeleccionado.MaterialId;
         this.validaCPEDG = this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca;
 
         if (!this.validaCPEDG)
             this.setearDefaultEnCPEDG();
+        else
+            this.validarSisaCliente();
         this.setCantidadCambioProducto();
     }
     setCantidadCambioProducto() {
@@ -677,7 +659,7 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap == CODIGO_PELLET_GIRASOL_INTEGRAL ? CANTIDAD_PELLET_GIRASOL : CANTIDAD_DEFAULT;
     }
     setearDefaultEnCPEDG() {
-        this.ordenDeCargaFason.Reventa = false;
+        this.ordenDeCargaFason.RemitenteComercial = false;
         this.ordenDeCargaFason.CUITIntermediarioFlete = null;
         this.ordenDeCargaFason.RazonSocialIntermediarioFlete = null;
         this.validarIntermediarioFlete();
@@ -817,6 +799,8 @@ export class OrdenesDeCargaFasonAltaComponent
                 else {
                     this.ordenDeCargaFason.RazonSocialDestino = data.RazonSocial;
                 }
+
+                this.asignarRemitenteComercial();
             })
     }
 
@@ -859,6 +843,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.validandoCuitDestino = false;
                 const esValidoSisa = this.manejarErroresApiResponse(result);
                 if (!esValidoSisa) {
+                    this.resetearPlantasDomicilios();
                     this.mensajeCuitDestino = "El CUIT destino no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación";
                 }
                 else {
@@ -890,6 +875,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 this.validandoCuitDestino = false;
                 const esValidoRuca = this.manejarErroresApiResponse(result);
                 if (!esValidoRuca) {
+                    this.resetearPlantasDomicilios();
                     this.mensajeCuitDestino = "El CUIT destino no posee planta/domicilio en RUCA, no podrá cargar la orden hasta regularizar la situación";
                 } else {
                     this.onDestinoIngresado(cuitDestino)
@@ -946,10 +932,16 @@ export class OrdenesDeCargaFasonAltaComponent
         });
     }
     patenteAcopladoSelected(event: any) {
-        this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+        if (typeof (event) === "string")
+            this.ordenDeCargaFason.PatenteAcoplado = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCargaFason.PatenteAcoplado = event.value.toUpperCase();
     }
     patenteChasisSelected(event: any) {
-        this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+        if (typeof (event) === "string")
+            this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
+        else if (event.value)
+            this.ordenDeCargaFason.PatenteChasis = event.value.toUpperCase();
     }
     get patenteAcopladoValida() {
         return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
@@ -1012,7 +1004,7 @@ export class OrdenesDeCargaFasonAltaComponent
         this.displayModalEscalable = false;
     }
     public extraOnDestroy(): void {
-        this.subscriptions.unsubscribe();
+        this.localSubscriptions.unsubscribe();
     }
 
     getPatentes() {
@@ -1156,5 +1148,59 @@ export class OrdenesDeCargaFasonAltaComponent
         this.ordenDeCargaFason[campo.replace("CUIT", "RazonSocial")] = razonSocial;
         this.displayModal = null;
         this.mensajesGestionCuit[campo] = `Se solicitará la gestión del alta para el cuit: ${this.ordenDeCargaFason[campo]}`;
+    }
+
+    asignarRemitenteComercial() {
+        this.ordenDeCargaFason.RemitenteComercial = this.usaRemitenteComercial;
+        if (!this.ordenDeCargaFason.RemitenteComercial) {
+            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
+        } else {
+            this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
+        }
+    }
+
+    get usaRemitenteComercial() {
+        return this.ordenDeCargaFason.CUITCliente.toString() != this.ordenDeCargaFason.CUITDestino;
+    }
+    validandoCliente = false;
+
+    validarSisaCliente() {
+        const cuit = this.ordenDeCargaFason.CUITCliente.toString();
+        if (!cuit || !this.revisarCUITFormatoValido(cuit) || !this.ordenDeCargaFason.ProductoSeleccionado) {
+            return;
+        }
+        this.validandoCliente = true;
+
+        this.service.validarSisaCliente(this.clienteSeleccionado.CodigoProveedor, this.ordenDeCargaFason.ProductoSeleccionado.CodigoSap).subscribe(
+            result => {
+                this.validandoCliente = false;
+                const esValidoSisa = this.manejarErroresApiResponse(result);
+                if (!esValidoSisa) {
+                    this.ordenDeCargaFason.ProductoSeleccionado = null;
+                    this.ordenDeCargaFason.Producto_Id = null;
+                    this.selectProducto();
+                    this.mensajeComponent.setInfoMsg("El cliente no está habilitado en SISA, no podrá cargar la orden hasta regularizar la situación.");
+                }
+                else {
+                    this.validarRucaCliente(cuit);
+                }
+            }
+        )
+    }
+
+    validarRucaCliente(cuitCliente: string) {
+        this.validandoCliente = true;
+        this.service.validarCuitRuca(cuitCliente).subscribe(
+            result => {
+                this.validandoCliente = false;
+                const esValidoRuca = this.manejarErroresApiResponse(result);
+                if (!esValidoRuca) {
+                    this.ordenDeCargaFason.ProductoSeleccionado = null;
+                    this.ordenDeCargaFason.Producto_Id = null;
+                    this.selectProducto();
+                    this.mensajeComponent.setInfoMsg("Cliente no está habilitado en RUCA, no podrá cargar la orden hasta regularizar la situación");
+                }
+            }
+        );
     }
 }

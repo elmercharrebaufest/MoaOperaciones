@@ -13,6 +13,7 @@
     "src/app/archivo-boleto/archivo-boleto.module.ts",
     "src/app/carta-porte/carta-porte.module.ts",
     "src/app/contrato/contrato.module.ts",
+    "src/app/cursos/cursos.module.ts",
     "src/app/venta-sustentable/venta-sustentable.module.ts",
     "src/app/reporte/reporte.module.ts",
     "src/app/consulta/consulta.module.ts",

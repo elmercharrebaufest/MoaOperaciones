@@ -169,6 +169,10 @@
       <Project>{2DB8712D-EC58-4C1F-9329-E376FE5D8A50}</Project>
       <Name>SustitucionMOAExternalAPI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{e7212de2-8c26-4ced-ac5c-4b5bba3612fc}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>
       <Name>SustitucionMOAModel</Name>

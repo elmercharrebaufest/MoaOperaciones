@@ -1,6 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { Router, ActivatedRoute, Params } from '@angular/router';
-import { FiltroFechaComponent } from './../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { Component, ViewChild, HostListener, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Router, ActivatedRoute, } from '@angular/router';
 import { ListBaseComponent } from './../../common/base-components/list-base-component'
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
@@ -14,23 +13,43 @@ import { ModalService } from './../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
 import { ConsultaService } from '../consulta.service';
 import { Table } from 'primeng/table';
-import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales, obtenerOpcionesFiltroPorCreacion, OpcionFiltroAsociadaCreacion } from '../consulta';
+import { Categoria, Consulta, EstadoConsulta, Subcategoria, Materiales, obtenerOpcionesFiltroPorCreacion, OpcionFiltroAsociadaCreacion, ReqListadoConsultaDto } from '../consulta';
 import { SelectItem } from 'primeng/components/common/selectitem';
 import { formatDate } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { HttpStatusCodes } from '../../common/models/httpStatusCodes';
 import { DatosCartaPorteConDisconformidadCalidades, SendDataService } from '../send-data.service';
+import { debounceTime, finalize, } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { DirOrden } from '../../common/enums/DirOrden';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { UsuarioService } from '../../usuario/usuario.service';
+import { TipoConfiguracionUsuario } from '../../common/enums/TipoConfiguracionUsuario';
+
+export interface ConfiguracionColumna {
+    field: string,
+    header: string,
+    filterType: string,
+    visibleExternal: boolean,
+    selectionMode?: 'range' | 'single',
+    width: number,
+    size: number,
+    visible?: boolean,
+    filteredValue?: string
+    sortdropdown?: string
+}
 
 declare var $: any;
 
 @Component({
     selector: 'mis-consultas',
     templateUrl: `mis-consultas.component.html`,
-    providers: [{ provide: ConsultaService, useClass: ConsultaService }]
-
+    styleUrls: ['mis-consultas.component.css'],
+    providers: [{ provide: ConsultaService, useClass: ConsultaService }, UsuarioService],
+    // changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MisConsultasComponent extends ListBaseComponent {
-
+    @BlockUI() blockUI: NgBlockUI;
     @ViewChild('dropdown_categoria')
     protected categoriaDropdownComponent: DropdownComponent;
 
@@ -43,8 +62,10 @@ export class MisConsultasComponent extends ListBaseComponent {
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
-    @ViewChild(SpinnerComponent)
+    @ViewChild("topSpinner")
     protected spinnerComponent: SpinnerComponent;
+    @ViewChild('bottomSpinner')
+    protected spinnerBottomComponent: SpinnerComponent;
 
     @ViewChild("dt")
     protected table: Table;
@@ -52,11 +73,30 @@ export class MisConsultasComponent extends ListBaseComponent {
     @ViewChild("containerList")
     protected containerList: HTMLDivElement;
 
-    cols: any[];
-    colsFiltered: any[];
+    cols: ConfiguracionColumna[] = [
+        { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 8, size: 4, visible: true, filteredValue: '' },
+        { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, visible: true, filteredValue: '' },
+        { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, visible: true, filteredValue: '' },
+        { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre', visible: true },
+        { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre', visible: true },
+        { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0, visible: true, filteredValue: '' },
+        { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion', visible: true },
+        { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material', visible: true },
+        { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single', visible: true },
+        { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single', visible: true },
+        { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4 },
+    ];;
+    colsFiltered: ConfiguracionColumna[];
     consultas: Consulta[];
     consultasFiltradas: Consulta[];
     estados: EstadoConsulta[];
+    selectedEstados: EstadoConsulta[] = [
+        { Id: 1, Code: 'INI', Descripcion: 'Iniciada' },
+        { Id: 2, Code: 'GES', Descripcion: 'En gestión' },
+        { Id: 3, Code: 'GESRTA', Descripcion: 'En gestión Rta' },
+        { Id: 4, Code: 'DOC', Descripcion: 'Solicitud de información' },
+        { Id: 5, Code: 'REC', Descripcion: 'Rechazado' }
+    ]
     estadosSummary: EstadoConsulta[];
     categorias: Categoria[];
     subcategorias: Subcategoria[];
@@ -82,23 +122,52 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
 
+    iconoModalDetalle = 'pi-window-maximize';
+    modalMaximizado = false;
+
+    $buscarConsultas = new Subject<void>();
+    $guardarConfiguracion = new Subject<string>();
+
     @HostListener('window:resize', ['$event']) onResize(event) {
         this.setColumnasByWindowSize();
     }
 
-    constructor(protected service: ConsultaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router, private sendDataService: SendDataService) {
+    constructor(
+        private usuarioService: UsuarioService,
+        private cdr: ChangeDetectorRef,
+        protected service: ConsultaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        protected route: ActivatedRoute,
+        protected router: Router,
+        private sendDataService: SendDataService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.datosCartaPorteConDisconformidadCalidades = sendDataService.getDatosCartaPorteConDisconformidadCalidades();
+        this.$buscarConsultas.pipe(debounceTime(350)).subscribe(() => {
+            this.toggleSpinner(true)
+            this.listarConsultas()
+        }
+        )
+        this.$guardarConfiguracion.pipe(debounceTime(250)).subscribe((valor) => {
+            this.usuarioService.guardarConfiguracionUsuario({
+                valor,
+                tipo: TipoConfiguracionUsuario.ColumnaConsultas
+            }).subscribe(console.info)
+        })
     }
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
     setTabs() {
-        this.setMenuSeccionTab("consulta", "mis-consultas");
+        this.setMenuSeccionTab("consulta", "Mis Consultas");
     }
 
     ngAfterViewInit(): void {
+        this.toggleSpinner(true)
         this.listarConsultas();
         this.getCombos();
 
@@ -149,7 +218,7 @@ export class MisConsultasComponent extends ListBaseComponent {
                 else {
                     this.seleccionarOpcionFiltro('RazonSocialProveedor', proveedor);
                 }
-                
+
             }
 
             if (filtrosActivados && filtrosActivados === 'true' && categoria) {
@@ -168,11 +237,11 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     seleccionarOpcionFiltro(columna: string, valor: string) {
 
-        valor = decodeURIComponent(valor); 
+        valor = decodeURIComponent(valor);
 
         switch (columna) {
 
-         
+
 
             case 'RazonSocialCorredor':
 
@@ -181,13 +250,13 @@ export class MisConsultasComponent extends ListBaseComponent {
                 let colC = this.cols.find(cols => cols.header === 'Corredor');
 
                 colC.filteredValue = valor;
-        break;
-             case 'RazonSocialProveedor':
+                break;
+            case 'RazonSocialProveedor':
                 this.table.filter(valor, 'RazonSocialProveedor', 'contains');
                 let colP = this.cols.find(cols => cols.header === 'Proveedor');
 
                 colP.filteredValue = valor;
-        break;
+                break;
             case 'EstadoConsulta':
                 // Encuentra la opción correspondiente en la lista de estados y selecciónala
                 const estadoSeleccionado = this.estados.find(estado => estado.Code === valor);
@@ -243,19 +312,6 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     setColumnas() {
-        this.cols = [
-            { field: 'Id', header: 'Id', filterType: 'text', visibleExternal: true, width: 6, size: 4, filteredValue:'' },
-            { field: 'RazonSocialCorredor', header: 'Corredor', filterType: 'text', visibleExternal: false, width: 10, size: 4, filteredValue: '' },
-            { field: 'RazonSocialProveedor', header: 'Proveedor', filterType: 'text', visibleExternal: false, width: 10, size: 3, filteredValue: ''},
-            { field: 'Categoria', header: 'Categoria', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'Categoria.Nombre' },
-            { field: 'SubCategoria', header: 'Subcategoria', filterType: 'custom', visibleExternal: false, width: 12, size: 2, sortdropdown: 'SubCategoria.Nombre' },
-            { field: 'Asunto', header: 'Asunto', filterType: 'text', visibleExternal: true, width: 16, size: 0, filteredValue: ''},
-            { field: 'EstadoConsulta', header: 'Estado', filterType: 'custom', visibleExternal: true, width: 10, size: 1, sortdropdown: 'EstadoConsulta.Descripcion' },
-            { field: 'Material', header: 'Material', filterType: 'custom', visibleExternal: true, width: 10, size: 3, sortdropdown: 'Material' },
-            { field: 'FechaCreacion', header: 'Fecha Inicio', filterType: 'date', visibleExternal: false, width: 12, size: 3, selectionMode: 'single' },
-            { field: 'FechaUltimaModificacion', header: 'Ult. Modif.', filterType: 'date', visibleExternal: true, width: 12, size: 3, selectionMode: 'single' },
-            { field: 'DiasReclamo', header: 'Días', filterType: 'text', visibleExternal: false, width: 6, size: 4, filteredValue: '' },
-        ];
 
         let isExternal = this.isExternal;
         this.colsFiltered = this.cols.filter(x => !isExternal || x.visibleExternal);
@@ -291,6 +347,8 @@ export class MisConsultasComponent extends ListBaseComponent {
                 this.windowSize = 'xg'
             }
         }
+
+        this.obtenerConfiguracionDeTablasDelUsuario()
     }
 
     setSubcategorias(categoriasSeleccionadas) {
@@ -323,7 +381,8 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     filtrarFecha(dt, field, desde, hasta) {
-        dt.filter([desde, hasta], field, 'DateRangeFilter');
+        // dt.filter([desde, hasta], field, 'DateRangeFilter');
+        this.cambiarFiltro(field, [desde, hasta], (!!desde) || (!!hasta));
     }
 
     cambiarCalendar(dt, col) {
@@ -373,64 +432,69 @@ export class MisConsultasComponent extends ListBaseComponent {
 
     openModal(idConsulta, asunto) {
         if (this.mostrarDetalle) {
-            this.resetVariables();
+            return this.resetVariables();
         }
 
-        setTimeout(() => {
-            this.consultaId = idConsulta;
-            this.mostrarDetalle = true;
-            this.asunto = asunto;
-            document.getElementById("openModalHiddenButton").click();
-        }, 500);
+        this.consultaId = idConsulta;
+        this.mostrarDetalle = true;
+        this.asunto = asunto;
+        document.getElementById("openModalHiddenButton").click();
+    }
+
+    filtros?: Record<keyof Consulta, any> = {
+        EstadoConsultaId: [1, 2, 3, 4, 5]
+    } as any;
+
+    get requestListado(): ReqListadoConsultaDto {
+        return {
+            page: this.page,
+            pageSize: this.pageSize,
+            orderBy: this.ordenCol,
+            filtros: this.filtros,
+            dirOrden: this.dirOrden
+        }
     }
 
     listarConsultas() {
         this.unsubscribe();
         try {
-            this.subscription = this.service.listarConsultas().subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.consultas = result.data.consultas;
-                        this.consultas.forEach(x => {
-                            x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
-                            x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
-                            x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
-                        });
-                        this.filtrarPorTipoGeneracion();
+            this.subscription = this.service
+                .listarConsultas(this.requestListado)
+                .subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            this.floatMsgService.setErrorMsg(result.error);
+                        } else if (result.info != undefined) {
+                            this.floatMsgService.setInfoMsg(result.info);
+                        } else {
+                            this.consultas = result.data.consultas.length ? this.mapearLista(result.data.consultas) : [];
+                            this.filtrarPorTipoGeneracion();
+                            this.totalConsultas = result.data.totalConsultas;
+                            this.pageSize = result.data.pageItem;
 
-                        this.estados = result.data.estados;
-                        this.estados.forEach(e => {
-                            let estado = result.data.estados.filter(x => x.Id == e.Id)[0];
-                            e.Cantidad = estado.Cantidad;
-                        });
+                            this.estados = result.data.estados;
 
-                        this.categorias = result.data.categorias;
-                        this.categorias.forEach(c => {
-                            let categoria = result.data.categorias.filter(x => x.Id == c.Id)[0];
-                            c.Cantidad = categoria.Cantidad;
+                            this.categorias = result.data.categorias;
 
-                        });
+                            let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
+                            this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
 
-                        let estadosCode = ['INI', 'GES', 'GESRTA', 'DOC'];
-                        this.estadosSummary = result.data.estados.filter(e => estadosCode.indexOf(e.Code) >= 0);
-
-                        if (this.datosCartaPorteConDisconformidadCalidades)
-                            this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
-
-                        this.setfilter();
+                            if (this.datosCartaPorteConDisconformidadCalidades)
+                                this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
+                            this.setfilter();
+                        }
+                        this.toggleSpinner(false);
+                        this.cdr.detectChanges()
+                    },
+                    (error: HttpErrorResponse) => {
+                        this.toggleSpinner(false);
+                        this.cdr.detectChanges()
+                        this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
+                        console.log(error.message);
                     }
-                },
-                (error: HttpErrorResponse) => {
-                    this.floatMsgService.setErrorMsg(HttpStatusCodes.friendlyStatusCode(error.status));
-                    console.log(error.message);
-                }
-            );
+                );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             return false; //<-- Prevent Refresh
@@ -446,38 +510,53 @@ export class MisConsultasComponent extends ListBaseComponent {
     getLabel(option) {
         this.materialesList.forEach(element => {
             if (element.value == option) {
-                console.log(element);
                 return element.label;
             }
         });
     }
 
+    exportandoConsultas = false;
     exportConsultas() {
-        var data = this.consultas.map(c => {
-            return {
-                "Id": c.Id,
-                "Corredor": c.RazonSocialCorredor || "",
-                "Proveedor": c.RazonSocialProveedor,
-                "Categoria": c.Categoria.Nombre,
-                "SubCategoria": c.SubCategoria.Nombre,
-                "Asunto": c.Asunto,
-                "Estado": c.EstadoConsulta.Descripcion,
-                "Fecha Creacion": formatDate(c.FechaCreacion, "dd/MM/yyyy", "en-EN"),
-                "Fecha Ultima Modificacion": formatDate(c.FechaUltimaModificacion, "dd/MM/yyyy", "en-EN"),
-                "Dias de Reclamo": c.DiasReclamo,
-                "Fecha de pago / Fecha factura / Fecha emision de la oblea": c.Fecha ? formatDate(c.Fecha, "dd/MM/yyyy", "en-EN") : "",
-                "Nro Salida de pago / Nro factura": c.ComprobanteNo || "",
-                "Nro Contrato": c.ContratoNo || "",
-                "Impuesto retenido / Impuesto percibido / Impuesto": c.Impuesto || "",
-                "Importe retención": c.Importe || "",
-                "Causa": c.CausaConsulta ? c.CausaConsulta.Nombre : '',
-                "Bolsa emisora de oblea": c.BolsaEmisoraOblea || "",
-                "Usuario que inicia consulta": c.MailUsuarioIniciaConsulta || '',
-                "Rubro/s (Discrepancia)": c.Rubro || ''
-            }
-        });
+        try {
+            this.spinnerComponent.showIt();
+            this.exportandoConsultas = true;
+            this.service.listaExportacionConsultas(this.requestListado.filtros)
+                .subscribe((res) => {
+                    const lista = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent);
+                    if (lista) {
+                        var data = this.mapearLista(lista).map(c => {
+                            return {
+                                "Id": c.Id,
+                                "Corredor": c.RazonSocialCorredor || "",
+                                "Proveedor": c.RazonSocialProveedor,
+                                "Categoria": c.Categoria.Nombre,
+                                "SubCategoria": c.SubCategoria.Nombre,
+                                "Asunto": c.Asunto,
+                                "Estado": c.EstadoConsulta.Descripcion,
+                                "Fecha Creacion": formatDate(c.FechaCreacion, "dd/MM/yyyy", "en-EN"),
+                                "Fecha Ultima Modificacion": formatDate(c.FechaUltimaModificacion, "dd/MM/yyyy", "en-EN"),
+                                "Dias de Reclamo": c.DiasReclamo,
+                                "Fecha de pago / Fecha factura / Fecha emision de la oblea": c.Fecha ? formatDate(c.Fecha, "dd/MM/yyyy", "en-EN") : "",
+                                "Nro Salida de pago / Nro factura": c.ComprobanteNo || "",
+                                "Nro Contrato": c.ContratoNo || "",
+                                "Impuesto retenido / Impuesto percibido / Impuesto": c.Impuesto || "",
+                                "Importe retención": c.Importe || "",
+                                "Causa": c.CausaConsulta ? c.CausaConsulta.Nombre : '',
+                                "Bolsa emisora de oblea": c.BolsaEmisoraOblea || "",
+                                "Usuario que inicia consulta": c.MailUsuarioIniciaConsulta || '',
+                                "Rubro/s (Discrepancia)": c.Rubro || ''
+                            }
+                        });
 
-        this.DownloadJsonData(data, 'Consultas', true);
+                        this.DownloadJsonData(data, 'Consultas', true);
+                    }
+                    this.spinnerComponent.hideIt();
+                    this.exportandoConsultas = false
+                })
+        } catch (e) {
+            this.exportandoConsultas = false;
+            console.error(e)
+        }
     }
 
     resetVariables() {
@@ -541,7 +620,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
     filtrarPorTipoGeneracion() {
         if (!this.consultas || !this.consultas.length) {
-            return;
+            return this.consultasFiltradas = [];
         }
         const filtrarPorGeneradasPorUsuario = this.filtrarPorGeneradasPorUsuario();
         const filtrarPorGeneradasPorMOA = this.filtrarPorGeneradasPorMOA();
@@ -581,15 +660,94 @@ export class MisConsultasComponent extends ListBaseComponent {
     }
 
     abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad() {
-        const consulta = this.consultas.find(
-            consulta =>
-                consulta.ComprobanteNo === this.datosCartaPorteConDisconformidadCalidades.NroCCPP &&
-                consulta.Categoria.Code === "DISCAL"
-        );
-        if (!consulta) {
-            return;
+        this.blockUI.start('Buscando Consulta por Disconformidad ...')
+        this.service.obtenerConsultaDisconformidad(this.datosCartaPorteConDisconformidadCalidades.NroCCPP)
+            .pipe(finalize(() => this.blockUI.stop()))
+            .subscribe(res => {
+                const consulta = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+                if (!consulta) {
+                    return;
+                }
+                this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
+                this.openModal(consulta.Id, consulta.Asunto)
+            })
+    }
+    toggleMaximizarModalDetalle() {
+        this.modalMaximizado = !this.modalMaximizado;
+        this.iconoModalDetalle = this.modalMaximizado ? 'pi-window-minimize' : 'pi-window-maximize'
+    }
+    verSeleccionColumnas = false;
+    private keyConfiguracionTablas = 'columnasMisConsultas'
+
+    obtenerConfiguracionDeTablasDelUsuario() {
+        let colConfig = sessionStorage.getItem(this.keyConfiguracionTablas);
+        if (colConfig) {
+            let visibleCols = colConfig.split(',');
+            const cantidadColumnas = visibleCols.length;
+            // const  = visibleCols.length;
+
+            this.colsFiltered = this.colsFiltered
+                .map(c => {
+                    c.visible = visibleCols.includes(c.field);
+                    // c.width=
+                    return c;
+                })
         }
-        this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
-        this.openModal(consulta.Id, consulta.Asunto)
+        else {
+            this.guardarConfiguracionDeTablasDeUsuario();
+            this.obtenerConfiguracionDeTablasDelUsuario();
+        }
+    }
+
+    guardarConfiguracionDeTablasDeUsuario() {
+        let visibleColumns = this.colsFiltered.filter(col => col.visible).map(col => col.field);
+        const valorGuardado = visibleColumns.join(',');
+        sessionStorage.setItem(this.keyConfiguracionTablas, valorGuardado);
+        this.colsFiltered = [... this.colsFiltered]
+        this.$guardarConfiguracion.next(valorGuardado)
+    }
+
+    pageSize = 20;
+    totalConsultas = 0;
+    page = 1;
+    ordenCol: keyof Consulta = "FechaUltimaModificacion"
+    dirOrden = DirOrden.Desc;
+
+    handlePageEvent({ page }: { page: number; rows: number; pageCount: number }) {
+        this.page = page + 1;
+        this.$buscarConsultas.next()
+    }
+
+    cambiarFiltro(campo: string, value: any, buscar = true) {
+        this.filtros[campo] = value;
+        if (buscar) {
+            this.$buscarConsultas.next();
+        }
+    }
+
+    toggleSpinner(ver: boolean) {
+        if (ver) {
+            this.spinnerComponent.showIt()
+            if (this.spinnerBottomComponent)
+                this.spinnerBottomComponent.showIt()
+        }
+        else {
+            this.spinnerComponent.hideIt()
+            if (this.spinnerBottomComponent)
+                this.spinnerBottomComponent.hideIt()
+        }
+    }
+    changeSort(event: { field: string, order: number }) {
+        this.dirOrden = event.order == -1 ? DirOrden.Desc : DirOrden.Asc;
+        this.ordenCol = event.field as keyof Consulta;
+        this.$buscarConsultas.next();
+    }
+    mapearLista(lista: Consulta[]): Consulta[] {
+        return lista.map(x => {
+            x.Fecha = x.Fecha == undefined ? null : new Date(this.getDateFromAspNetFormat(x.Fecha));
+            x.FechaCreacion = new Date(this.getDateFromAspNetFormat(x.FechaCreacion));
+            x.FechaUltimaModificacion = new Date(this.getDateFromAspNetFormat(x.FechaUltimaModificacion));
+            return x;
+        });
     }
 }

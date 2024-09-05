@@ -71,6 +71,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
 
     private selectUndefinedOptionValue: any;
     proveedorId: number = 0;
+    proveedorMail: string;
 
     estadoSISA: string = "";
 
@@ -203,6 +204,7 @@ export class EmpresaGranosComponent extends ListBaseComponent {
                     this.proveedorCUIT = result.ProveedorCUIT;
                     this.razonSocial = result.RazonSocial;
                     this.altaInterna = result.AltaInterna;
+                    this.proveedorMail = result.Mail;
 
                     if(this.puedeAltaInterna && result.Observacion != null){
                         this.mensajeComponent.setInfoMsg("Observación: " + result.Observacion);

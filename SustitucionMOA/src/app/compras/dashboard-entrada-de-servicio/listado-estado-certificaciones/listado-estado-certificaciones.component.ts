@@ -141,8 +141,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     {
       name: 'ESDetalle',
       columns: [
-        { id: 'DItem', header: 'N° Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DPosicion', header: 'N° Posición', field: 'Posicion', type: 'string', sortable: false, required: false, visible: true },
+        { id: 'DItem', header: 'N° Ítem', field: 'Item', type: 'string', sortable: false, required: false, visible: true },       
         { id: 'DMaterial', header: 'N° Servicio', field: 'Material', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DTxtBrev', header: 'Descripción', field: 'TxtBrev', type: 'string', sortable: false, required: false, visible: true },
         { id: 'DCtdPedido', header: 'Cant.', field: 'CtdPedido', type: 'string', sortable: false, required: false, visible: true },
@@ -524,7 +524,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           Cantidad: item.Cantidad,
           CantidadACertificar: Number(item.CantidadCertificar.replace(",", ".")),
           CantidadReal: item.Cantidad,
-          Importe: item.MontoCertificar,
+          Importe: item.Monto,
           Descripcion: item.TextoBreveServicio,
           Moneda: entradaServicio.Moneda,
           MontoACertificar: item.MontoCertificar,
@@ -606,15 +606,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeAll() {
     this.blockUI.start('Cargando...');
     this.isAll = true;
+    const mockEvent = { value: { code: this.estadoCertificacion.code } };
+
     if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculando = true;
       await this.getListarPO();
     } else {
       this.recalculando = true;
       await this.getListarPO();
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
@@ -624,15 +628,19 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   async SeeForProvider() {
     this.blockUI.start('Cargando...');
     this.isAll = false;
+    const mockEvent = { value: { code: this.estadoCertificacion.code } };
+
     if (this.estadoCertificacion.code === 'Aprobada') {
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculando = true;
       await this.getListarPO();
     } else {
       this.recalculando = true;
       await this.getListarPO();
+      await this.filtrarPorEstado(mockEvent);
       this.blockUI.stop();
       this.recalculandoAprobadas = true;
       await this.obtenerESSap(this.proveedor, this.documentoNumero);
@@ -703,6 +711,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
         });
         return "F";
+      }
+
+      if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
+        });
       }
     }
   }
@@ -919,7 +933,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   getMontoAnterior(cantidadAnterior: number, monto: number, moneda: string): string {
     const montoAnterior: number = cantidadAnterior * monto;
     const coin: string = moneda === 'ARP' ? '$ ' : '';
-    const montoFormatted: string = parseFloat(montoAnterior.toFixed(2)).toString();
+    const montoFormatted: string = montoAnterior.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
     return `${coin}${montoFormatted}`;
   }
@@ -932,10 +949,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   getMontoAcumulado(cantidadAnterior: number, monto: number, cantidadAcertificar: string, moneda: string): string {
     const montoAcumulado: number = (cantidadAnterior * monto) + (parseFloat(cantidadAcertificar) * monto);
     const coin: string = moneda === 'ARP' ? '$ ' : '';
-    const montoFormatted: string = parseFloat(montoAcumulado.toFixed(2)).toString();
+    const montoFormatted: string = montoAcumulado.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
 
     return `${coin}${montoFormatted}`;
   }
-
 
 }

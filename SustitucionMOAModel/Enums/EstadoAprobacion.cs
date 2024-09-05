@@ -50,17 +50,17 @@
                 case EstadoAprobacion.Deshabilitado:
                     return "Deshabilitado";
                 case EstadoAprobacion.AnalisisDeNosis:
-                    return "Analisis de Nosis";
+                    return "Análisis de Nosis";
                 case EstadoAprobacion.EtapaFinal:
                     return "Etapa Final";
                 case EstadoAprobacion.PendienteAprobacionCompras:
-                    return "Pendiente aprobacion compras";
+                    return "Pendiente aprobación compras";
                 case EstadoAprobacion.RechazadoPorCompras:
                     return "Rechazado por compras";
                 case EstadoAprobacion.AltaIncompleta:
                     return "CUIT no habilitado";
                 case EstadoAprobacion.AnularAprobacion:
-                    return "Anular Aprobacion";
+                    return "Anular Aprobación";
                 case EstadoAprobacion.AnalisisInterno:
                     return "Análisis Interno";
                 default:
@@ -94,17 +94,17 @@
                     return EstadoAprobacion.AunNoImplementado;
                 case "Deshabilitado":
                     return EstadoAprobacion.Deshabilitado;
-                case "Analisis de Nosis":
+                case "Análisis de Nosis":
                     return EstadoAprobacion.AnalisisDeNosis;
                 case "Etapa Final":
                     return EstadoAprobacion.EtapaFinal;
-                case "Pendiente aprobacion compras":
+                case "Pendiente aprobación compras":
                     return EstadoAprobacion.PendienteAprobacionCompras;
                 case "Rechazado por compras":
                     return EstadoAprobacion.RechazadoPorCompras;
                 case "CUIT no habilitado":
                     return EstadoAprobacion.AltaIncompleta;
-                case "Anular Aprobacion":
+                case "Anular Aprobación":
                     return EstadoAprobacion.AnularAprobacion;
                 case "Análisis Interno":
                     return EstadoAprobacion.AnalisisInterno;

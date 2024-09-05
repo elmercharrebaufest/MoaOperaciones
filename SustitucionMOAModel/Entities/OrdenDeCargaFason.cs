@@ -13,11 +13,11 @@ namespace SustitucionMOAModel.Entities
         public long Id { get; set; }
         public EstadoOrdenDeCargaFason Estado { get; set; }
         public DateTime FechaCreacion { get; set; }
-        public DateTime FechaRetiro { get; set; }
         public int Cantidad { get; set; }
         public string PatenteChasis { get; set; }
         public string PatenteAcoplado { get; set; }
         public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
         public string CUILChofer { get; set; }
         public string RazonSocialTransporte { get; set; }
         public string CUITTransporte { get; set; }
@@ -48,7 +48,7 @@ namespace SustitucionMOAModel.Entities
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
         public bool FleteMOA { get; set; }
-        public bool Reventa { get; set; }
+        public bool ClienteComoRemitenteComercial { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
@@ -69,7 +69,8 @@ namespace SustitucionMOAModel.Entities
         public double? PesadaTara { get; set; }
         public double? PesadaNeto { get; set; }
 
-        public bool CuitsTerceroExisten { 
+        public bool CuitsTerceroExisten
+        {
             get
             {
                 if (Producto.ValidaSisaRuca)
@@ -79,7 +80,7 @@ namespace SustitucionMOAModel.Entities
                     return existeDestino && existeDestinatario;
                 }
                 return true;
-            } 
+            }
         }
 
         public OrdenDeCargaFason() { }
@@ -90,21 +91,19 @@ namespace SustitucionMOAModel.Entities
             CorredorId = request.CorredorId;
             CUILChofer = request.CUILChofer;
             CUITTransporte = request.CUITTransporte;
-            LocalidadId = request.Destino.LocalidadId;
-            LocalidadDescripcion = request.Destino.LocalidadDescripcion;
             FechaCreacion = DateTime.Now;
-            FechaRetiro = request.FechaRetiro;
             NombreChofer = request.NombreChofer;
+            ApellidoChofer = request.ApellidoChofer;
             Observacion = request.Observacion;
             PatenteAcoplado = request.PatenteAcoplado;
             PatenteChasis = request.PatenteChasis;
             Producto_Id = request.Producto_Id;
             RazonSocialTransporte = request.RazonSocialTransporte;
-            KmARecorrer = request.Destino.KmARecorrer;
             FleteMOA = request.FleteMOA;
             CUITIntermediarioFlete = request.CUITIntermediarioFlete;
             RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete;
-            Reventa = request.Reventa;
+            ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
+                request.CUITDestino != request.CUITCliente.ToString();
             PlantaCodigo = request.PlantaCodigo;
             DomicilioTipo = request.DomicilioTipo;
             DomicilioOrden = request.DomicilioOrden;
@@ -123,11 +122,11 @@ namespace SustitucionMOAModel.Entities
                 Id == carga.Id &&
                 Estado == carga.Estado &&
                 FechaCreacion == carga.FechaCreacion &&
-                FechaRetiro == carga.FechaRetiro &&
                 Cantidad == carga.Cantidad &&
                 PatenteChasis == carga.PatenteChasis &&
                 PatenteAcoplado == carga.PatenteAcoplado &&
                 NombreChofer == carga.NombreChofer &&
+                ApellidoChofer == carga.ApellidoChofer &&
                 CUILChofer == carga.CUILChofer &&
                 RazonSocialTransporte == carga.RazonSocialTransporte &&
                 CUITTransporte == carga.CUITTransporte &&
@@ -140,7 +139,7 @@ namespace SustitucionMOAModel.Entities
                 CorredorId == carga.CorredorId &&
                 KmARecorrer == carga.KmARecorrer &&
                 FleteMOA == carga.FleteMOA &&
-                Reventa == carga.Reventa &&
+                ClienteComoRemitenteComercial == carga.ClienteComoRemitenteComercial &&
                 CUITIntermediarioFlete == carga.CUITIntermediarioFlete &&
                 RazonSocialIntermediarioFlete == carga.RazonSocialIntermediarioFlete &&
                 PlantaCodigo == carga.PlantaCodigo &&
@@ -160,11 +159,11 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + Id.GetHashCode();
 
             hashCode = hashCode * -1521134295 + FechaCreacion.GetHashCode();
-            hashCode = hashCode * -1521134295 + FechaRetiro.GetHashCode();
             hashCode = hashCode * -1521134295 + Cantidad.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteChasis);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteAcoplado);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreChofer);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ApellidoChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUILChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocialTransporte);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITTransporte);

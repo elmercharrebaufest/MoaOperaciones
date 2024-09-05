@@ -61,6 +61,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     nombreEstablecimiento: string;
+    renspa: string;
     pais: string;
     dataLocalidades = [];
     myLocalidades = <any>[];
@@ -256,7 +257,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
     onChangeCosecha() {
 
         if (this.cosechaId > 0) {
-            if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
+            if (!this.esCorredor || (this.esCorredor && (this.operarComo == 2 || !this.sePreseleccionoProveedor))) {
+                this.mensajeComponent.setMsgsEmpty();
                 if (this.CUIT == "" || this.CUIT.length != 11) {
                     this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
                     setTimeout(() => {
@@ -317,7 +319,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
 
         campoSustentable = {
-            Nombre: this.nombreEstablecimiento, Localidad_Id: this.localidadId
+            Nombre: this.nombreEstablecimiento,
+            Localidad_Id: this.localidadId,
+            Renspa: this.renspa
         }
 
         campoCosecha = {
@@ -436,6 +440,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return true;
         }
 
+        if (this.renspa == "" || !this.renspa || this.renspa.length < 13) {
+            this.mensajeComponent.setErrorMsg("Falta completar RENSPA.");
+            return true;
+        }
+
         if (!this.esCorredor || (this.esCorredor && this.operarComo == 2)) {
             if (!this.CUIT) {
                 this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido");
@@ -513,7 +522,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     revisarProveedorSeleccionado() {
-        console.log("Run blur")
         if (this.proveedorSeleccionado)
             return;
 

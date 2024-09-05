@@ -114,6 +114,8 @@
         ArchivosBoletos,
         AdminContabilizacionMesAnterior,
 
+        AdminCursos,
+        RealizarCursos,
         CertificacionDeServicios,
         ReporteOC,
         POMultiple,

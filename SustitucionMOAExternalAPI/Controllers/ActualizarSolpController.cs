@@ -36,8 +36,8 @@ namespace SustitucionMOAExternalAPI.Controllers
                 };
 
                 BackgroundJob.Enqueue(() =>
-                    comprasService.ObtenerSolpesDesdeSAPJob(solp)
-                );
+                    comprasService.ExecuteObtenerSolpesDesdeSAPJob(solp)
+                );  
             }
             catch (Exception ex)
             {

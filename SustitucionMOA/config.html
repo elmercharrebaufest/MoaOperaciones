@@ -2,8 +2,9 @@
 <html>
 <head>
     <title>Codificador</title>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
     <script src="Content/js/jquery.js"></script>
+    <script src="Content/js/jquery.migrate.js"></script>
     <script>
 
         if (window.location.hostname != 'localhost') {
@@ -20,7 +21,7 @@
                 mostrarValorEncriptado("");
                 $.ajax({
                     type: "GET",
-                    data: {value : value},
+                    data: { value: value },
                     contentType: 'application/json; charset=utf-8',
                     dataType: 'JSON',
                     async: true,
@@ -31,7 +32,7 @@
                         } else {
                             mostrarValorEncriptado(data.data);
                         }
-                        
+
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         mostrarError(errorThrown);
@@ -43,11 +44,11 @@
                 $("#encryptedValue").html(texto);
             }
 
-            function mostrarError(texto){
+            function mostrarError(texto) {
                 $("#errorMensaje").html(texto);
             }
         });
-        
+
 
     </script>
 </head>

@@ -9,6 +9,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
@@ -19,6 +20,7 @@ import { MasivaComponent } from './masiva/masiva.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CargaManual } from './carga-manual/carga-manual.component';
 import { TooltipModule } from 'primeng/tooltip';
+import { SelectButtonModule } from 'primeng/selectbutton';
 
 @NgModule({
   imports: [
@@ -33,9 +35,11 @@ import { TooltipModule } from 'primeng/tooltip';
     NgxMaskModule,
     MultiSelectModule,
     ConfirmDialogModule,
+    DialogModule,
     ReactiveFormsModule,
     TooltipModule,
     ToastModule,
+    SelectButtonModule
   ],
   declarations: [ListadoComponent, CargaManual, MasivaComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

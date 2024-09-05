@@ -37,8 +37,9 @@ export class CartaPorteBaseComponent extends ListBaseComponent {
         this.setTabs();
         this.checkPermisos();
         var secciones = [new Seccion('/carta-porte/descarga', 'carta-porte', 'Descargas'), new Seccion('/carta-porte/aplicacion', 'carta-porte', 'Aplicaciones')];
-        if (this.isAuthorized("CREAR FORMULARIO CCPP"))
-            secciones.push(new Seccion('/carta-porte/formulario', 'carta-porte', 'Formulario'));
+        if (this.isAuthorized("CREAR FORMULARIO CCPP")) {
+            //secciones.push(new Seccion('/carta-porte/formulario', 'carta-porte', 'Formulario'));
+        }
         this.navService.setSeccionList(secciones);
 
         if (this.route.snapshot.paramMap.get('contrato')) {

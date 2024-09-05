@@ -222,29 +222,6 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult EdicionFinalizada(int ordenId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaService.EdicionFinalizada(ordenId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
         public ActionResult NotificarTransporte(int ordenId)
         {
             try
@@ -392,102 +369,6 @@ namespace SustitucionMOA.Controllers
                 var mailUsuario = SessionPersister.getUsername();
 
                 return JsonCustom(new { data = ordenDeCargaService.ForzarCreacionOrden(ordenId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult SolicitarAnulacion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.SolicitarAnulacionOrden(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult RechazarSolicitudAnulacion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.RechazarSolicitudAnulacion(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult SolicitarEdicion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.SolicitarEdicionOrden(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [HttpGet]
-        public ActionResult RechazarSolicitudEdicion(int ordenDeCargaId)
-        {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var message = ordenDeCargaService.RechazarSolicitudEdicion(ordenDeCargaId, mailUsuario);
-                return JsonCustom(message);
             }
             catch (InfoCustomException e)
             {
@@ -700,6 +581,7 @@ namespace SustitucionMOA.Controllers
             var response = new ObtenerContratosDisponiblesResponse();
             try
             {
+                var mailUsuario = SessionPersister.getUsername();
                 var req = new ObtenerContratosDisponiblesRequest
                 {
                     ClienteCodigo = clienteCodigo,
@@ -707,7 +589,7 @@ namespace SustitucionMOA.Controllers
                     FechaDesde = fechaDesde,
                     FechaHasta = fechaHasta
                 };
-                response = ordenDeCargaService.ObtenerContratosDisponibles(req);
+                response = ordenDeCargaService.ObtenerContratosDisponibles(req, mailUsuario);
             }
             catch (InfoCustomException ice)
             {
@@ -916,6 +798,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -939,6 +822,31 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
+        [HttpGet]
+        public ContentResult ValidarChofer(string cuilChofer, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<ValidarChoferResponse>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarChofer(cuilChofer, cuitCliente);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
         [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
@@ -962,6 +870,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult FacturasDisponibles(string numeroContrato)
         {
@@ -985,6 +894,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult SeleccionarFactura(int ordenId, string facturaSeleccionada)
         {
@@ -1009,6 +919,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult VerificarCompensacion(int ordenId)
         {
@@ -1081,7 +992,6 @@ namespace SustitucionMOA.Controllers
 
         }
 
-
         [HttpGet]
         public ActionResult ValidarOrdenActivaScato(string ordenId)
         {
@@ -1105,6 +1015,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
@@ -1147,6 +1058,78 @@ namespace SustitucionMOA.Controllers
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Info = "No se ha podido validar la escalabilidad del camión.";
+            }
+            return ContentCustom(response);
+        }
+        
+        [HttpGet]
+        public ContentResult ValidarExistenciaPatentes(string patenteChasis, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarExistenciaPatente(patenteChasis, cuitCliente);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ValidarClienteSolicitaAnulacion(int ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarClienteSolicitaAnulacion(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ContentResult ValidarClienteSolicitaEdicion(int ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaService.ValidarClienteSolicitaEdicion(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
         }

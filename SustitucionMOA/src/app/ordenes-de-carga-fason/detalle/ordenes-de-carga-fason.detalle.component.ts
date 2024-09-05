@@ -14,13 +14,11 @@ import { ListBaseComponent } from '../../common/base-components/list-base-compon
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 import { Rol } from '../../common/enums/Roles';
 import { Permiso } from '../../common/enums/Permisos';
+import { finalize } from 'rxjs/operators';
 
 export interface BotonesDetalleFason {
     editar: boolean;
     verificarTransporte: boolean;
-    aprobarRechazarEdicion: boolean;
-    aprobarRechazarAnulacion: boolean;
-    solicitarAnulacion: boolean;
     anular: boolean;
     verificarCuitsTercero: boolean;
 }
@@ -52,17 +50,15 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     estadoOrdenDeCargaFason = EstadoOrdenDeCargaFason;
 
     validaCPEDG = false;
+    validandoEstadoScato = false;
+
+    activaEnScato = false;
 
     estadosPermitenEdicion = [
         EstadoOrdenDeCargaFason.Generada,
         EstadoOrdenDeCargaFason.PendienteContabilizacion,
         EstadoOrdenDeCargaFason.Pendiente,
         EstadoOrdenDeCargaFason.PendienteCompensacion,
-        EstadoOrdenDeCargaFason.Vencida,
-    ];
-    estadosPermitenSolicitarAnulacion = [
-        EstadoOrdenDeCargaFason.Generada,
-        EstadoOrdenDeCargaFason.Pendiente,
         EstadoOrdenDeCargaFason.Vencida,
     ];
 
@@ -82,6 +78,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.navService.setSeccionList([]);
         this.obtenerOrdenDeCargaFason();
 
+        this.verificarOrdenActivaScato()
     }
 
     verificarBotones() {
@@ -91,13 +88,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
         this.botones.editar = this.estadosPermitenEdicion.includes(this.ordenDeCargaFason.Estado);
 
-        this.botones.aprobarRechazarAnulacion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada;
-
-        this.botones.aprobarRechazarEdicion = this.esAdmin && this.ordenDeCargaFason.Estado == EstadoOrdenDeCargaFason.EdicionSolicitada;
-
-        this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
-
-        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
+        this.botones.anular = this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Anulada;
 
         this.botones.verificarCuitsTercero = this.esAdmin && this.ordenDeCargaFason.NecesitaVerificarCuitsTerceros;
     }
@@ -129,7 +120,22 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
 
     editarOrden() {
-        this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        if (this.validandoEstadoScato) {
+            return;
+        }
+        if (!this.activaEnScato) {
+            this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        } else {
+            this.confirmationService.confirm({
+                key: 'confirmarEdicionActiva',
+                message: `La orden está activa en SCATO, ¿seguro que quiere continuar con la edición?`,
+                accept: () => {
+                    this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+                },
+                reject: () => {
+                }
+            })
+        }
     }
 
     verificarTransporte() {
@@ -165,17 +171,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             this.mensajeComponent.setErrorMsg(e);
         }
     }
-    confirmarSolicitudAnulacion() {
-        this.confirmationService.confirm({
-            key: 'confirmarSA',
-            message: '¿Desea solicitar anulación?',
-            accept: () => {
-                this.solicitarAnulacion()
-            },
-            reject: () => {
-            }
-        });
-    }
+    
     confirmarAnulacion() {
         this.confirmationService.confirm({
             key: 'confirmarAnular',
@@ -187,125 +183,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             }
         });
     }
-    confirmarRechazarSolicitudAnulacion(aprobado: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarRSA',
-            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
-            accept: () => {
-                this.solicitudAnulacion(aprobado)
-            },
-            reject: () => {
-            }
-        });
-    }
-    confirmarRechazarSolicitudEdicion(aprobado: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarSolicitudEdicion',
-            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
-            accept: () => {
-                this.solicitudAnulacion(aprobado)
-            },
-            reject: () => {
-            }
-        });
-    }
-
-    solicitarAnulacion() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        try {
-            this.service.solicitarAnulacion(this.ordenDeCargaFason.Id).subscribe(
-                result => {
-                    this.blockUI.stop();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else if (result.data) {
-                        this.ordenDeCargaFason = result.data;
-                    } else {
-                        this.obtenerOrdenDeCargaFason();
-                    }
-                    this.verificarBotones();
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-    solicitudAnulacion(aprobado: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        try {
-            this.service.actualizarSolicitudAnulacion(this.ordenDeCargaFason.Id, aprobado).subscribe(
-                result => {
-                    this.blockUI.stop();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else if (result.data) {
-                        this.ordenDeCargaFason = result.data;
-                    } else {
-                        this.obtenerOrdenDeCargaFason();
-                    }
-                    this.verificarBotones();
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
-    solicitudEdicion(aprobado: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.spinnerComponent.showIt();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        try {
-            this.service.actualizarSolicitudEdicion(this.ordenDeCargaFason.Id, aprobado).subscribe(
-                result => {
-                    this.blockUI.stop();
-                    this.spinnerComponent.hideIt();
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.mensajeComponent.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.mensajeComponent.setInfoMsg(result.info);
-                    } else if (result.data) {
-                        this.ordenDeCargaFason = result.data;
-                    } else {
-                        this.obtenerOrdenDeCargaFason();
-                    }
-                    this.verificarBotones();
-                },
-                error => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            );
-        } catch (e) {
-            this.mensajeComponent.setErrorMsg(e);
-        }
-    }
+    
     anularOrden() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -338,6 +216,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             this.mensajeComponent.setErrorMsg(e);
         }
     }
+
     verificarCuitsTerceros() {
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -366,6 +245,27 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    verificarOrdenActivaScato() {
+        this.validandoEstadoScato = true;
+        this.spinnerComponent.showIt();
+        try {
+            this.service.validarOrdenActivaScato(this.ordenDeCargaFasonId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt(); this.validandoEstadoScato = false; })
+            ).subscribe(
+                result => {
+                    const estadoEnScato = this.manejarApiResponse(result, this.sessionDataService, this.mensajeComponent)
+                    this.activaEnScato = !!estadoEnScato
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
         }
     }
 }

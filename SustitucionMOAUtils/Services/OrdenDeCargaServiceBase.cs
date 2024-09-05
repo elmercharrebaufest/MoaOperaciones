@@ -23,6 +23,7 @@ namespace SustitucionMOAUtils.Services
         protected readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
         protected readonly IScatoConsumer scatoConsumer;
         protected readonly IScatoRepositorioClient scatoRepositorioClient;
+        protected readonly IFeriadoService feriadoService;
         protected readonly IRepositorio repositorio;
         protected readonly ICNRTClient cNRTClient;
 
@@ -31,7 +32,8 @@ namespace SustitucionMOAUtils.Services
             IScatoConsumer scatoConsumer,
             IScatoRepositorioClient scatoRepositorioClient,
             IRepositorio repositorio,
-            ICNRTClient cNRTClient
+            ICNRTClient cNRTClient,
+            IFeriadoService feriadoService
             )
         {
             this.scatoConsumer = scatoConsumer;
@@ -39,18 +41,22 @@ namespace SustitucionMOAUtils.Services
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.repositorio = repositorio;
             this.cNRTClient = cNRTClient;
+            this.feriadoService = feriadoService;
         }
 
         protected readonly int[] BASES_VALIDACION_CUIT = new int[] {
             5, 4, 3, 2, 7, 6, 5, 4, 3, 2
         };
+
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
-            var clientes = scatoConsumer.ObtenerClientesPorCuit(cuit);
+            var clientesScato = scatoConsumer.ObtenerClientesPorCuit(cuit);
+            var clientesValidos = clientesScato.Where(c => !c.Bloqueado && c.Activo).ToArray();
+
             return new ValidarCuitExisteScatoResponse
             {
-                Existe = clientes.Length > 0,
-                RazonSocial = clientes.Length > 0 ? clientes.First().Descripcion : ""
+                Existe = clientesValidos.Length > 0,
+                RazonSocial = clientesValidos.Length > 0 ? clientesValidos.First().Descripcion : ""
             };
         }
 
@@ -199,10 +205,12 @@ namespace SustitucionMOAUtils.Services
             }
             return (cuitValido, transporte);
         }
+
         public bool ValidarCuilChoferDigito(string cuilChofer)
         {
             return ValidarCuilChofer(cuilChofer).Item1;
         }
+
         public bool ValidarCuitTransporteDigito(string cuitTransporte)
         {
             return ValidarCuitTransporte(cuitTransporte).Item1;
@@ -287,10 +295,34 @@ namespace SustitucionMOAUtils.Services
             var ultimoDigito = Char.GetNumericValue(cuit.Last());
             return auxiliar == ultimoDigito;
         }
+        public DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
+        {
+            var dayOfWeek = fechaOrigen.DayOfWeek;
+            var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
+
+            var fechaFinal = fechaOrigen.AddDays(cantidadDiasDeMargen);
+
+            var feriados = feriadoService.ObtenerFeriados();
+
+            foreach (var fechaFeriado in feriados)
+            {
+                if (fechaFeriado.DayOfWeek != DayOfWeek.Saturday &&
+                    fechaFeriado.DayOfWeek != DayOfWeek.Sunday &&
+                    fechaFeriado.Date >= fechaOrigen &&
+                    fechaFeriado.Date <= fechaFinal)
+                {
+                    cantidadDiasDeMargen++;
+                }
+            }
+
+            var fechaVencimiento = fechaOrigen.AddDays(cantidadDiasDeMargen);
+            return fechaVencimiento;
+        }
     }
     public static class IEnumerableExtensions
     {
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self)
            => self.Select((item, index) => (item, index));
     }
+
 }

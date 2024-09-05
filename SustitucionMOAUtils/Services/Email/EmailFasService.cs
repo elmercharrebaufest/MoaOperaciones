@@ -113,6 +113,46 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
+        public void EnviarMailSolicitudAnulacionCamionEnPlanta(OrdenDeCarga orden)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var titulo = $"Se informa que el día {DateTime.Now} se ha intentado solicitar la anulación de una orden de carga estando el camión en planta:";
+            var cabecera = "Orden:";
+            var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { orden });
+
+            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, orden.Id, ordenes, titulo, cabecera);
+
+            var emailSenderData = new EmailSenderData()
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Asunto = $"Intento de solicitud de anulación. Orden de carga N° {orden.Id}",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailSolicitudEdicionCamionEnPlanta(OrdenDeCarga orden)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
+
+            var titulo = $"Se informa que el día {DateTime.Now} se ha intentado solicitar la edición de una orden de carga estando el camión en planta:";
+            var cabecera = "Orden:";
+            var ordenes = GenerarTablaOrdenesANotificar(new OrdenDeCarga[] { orden });
+
+            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now, orden.Id, ordenes, titulo, cabecera);
+
+            var emailSenderData = new EmailSenderData()
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
+                Asunto = $"Intento de solicitud de edición. Orden de carga N° {orden.Id}",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
+
         public void EnviarMailTransporteNoExiste(OrdenDeCarga ordenDeCarga)
         {
             var cuerpo = $"Razón social: {ordenDeCarga.RazonSocialTransporte} <br> CUIT: {ordenDeCarga.CUITTransporte}";
@@ -253,23 +293,14 @@ namespace SustitucionMOAUtils.Services.Email
             }
         }
 
-        public void EnviarMailSolicitudAnulacion(OrdenDeCarga orden)
+        public void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes)
         {
+            var cuerpo = $"El camión {patenteChasis} se encuentra autorizado en órdenes pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
 
-            var detallesOrden = new StringBuilder();
-            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES);
-
-            string titulo = $"Se informa que el día {DateTime.Now.ToString()} se ha solicitado la anulación de la siguiente orden de carga:";
-            var cabecera = "Orden :";
-            detallesOrden.Append(
-                $"<tr><td>{orden.Id}</td><td>{orden.ContratoIngresado}</td><td>{orden.Cliente.RazonSocial}</td><td>{orden.CodigoCorredor}</td><td>{orden.NombreChofer}</td><td>{orden.ChasisAcoplado}</td><td>{orden.PatenteAcoplado}</td><td>{(string.IsNullOrEmpty(orden.PedidoSAP) ? orden.NumeroPedido : orden.PedidoSAP)}</td><td>{orden.NumeroEntrega}</td><td>{orden.FechaCarga}</td><td>{orden.FechaVencimiento}</td></tr>"
-                );
-            var cuerpo = string.Format(cuerpoTemplate, DateTime.Now.ToString(), orden.Id, detallesOrden, titulo, cabecera);
-
-            var emailSenderData = new EmailSenderData()
+            var emailSenderData = new EmailSenderData
             {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailComerciales, DireccionMailMesaVentaFas }),
-                Asunto = $"Solicitud de anulación, Orden de carga N° {orden.Id}",
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailMesaVentaFas, DireccionMailComerciales }),
+                Asunto = $"Camión {patenteChasis} autorizado en varias órdenes pendientes",
                 Cuerpo = cuerpo
             };
 

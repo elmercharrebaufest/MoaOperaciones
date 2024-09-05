@@ -13,19 +13,19 @@ namespace SustitucionMOAUtils.Services
 {
     public class ExternalApiOrdenesResiduosService : IExternalApiOrdenesResiduosService
     {
-        private IRepositorio repositorio { get; set; }
+        private readonly IRepositorio repositorio;
 
         public ExternalApiOrdenesResiduosService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
         }
 
-        public List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis = null)
+        public List<OrdenResiduosApiDto> ObtenerOrdenes(string patenteChasis = null)
         {
             var listado = repositorio.Listar<OrdenResiduos>(
                     or => string.IsNullOrEmpty(patenteChasis) || or.PatenteChasis == patenteChasis
                 ).Select(
-                    or => OrdenesDeCargaApiDto.From(or)
+                    or => OrdenResiduosApiDto.From(or)
                 );
 
             return listado.ToList();

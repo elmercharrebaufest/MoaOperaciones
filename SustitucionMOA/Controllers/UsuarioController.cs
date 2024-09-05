@@ -303,10 +303,10 @@ namespace SustitucionMOA.Controllers
                 {
                     identity.RemoveClaim(identity.FindFirst(Globals.ClaimsEsCodigoCorredorType));
                 }
-                identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedorAAsignar.TipoProveedor.EsCorredor?"true":"false"));
+                identity.AddClaim(new Claim(Globals.ClaimsEsCodigoCorredorType, proveedorAAsignar.TipoProveedor.EsCorredor ? "true" : "false"));
 
 
-                if(!usuario.EsCorredor() && !proveedorAAsignar.TipoProveedor.EsCorredor)
+                if (!usuario.EsCorredor() && !proveedorAAsignar.TipoProveedor.EsCorredor)
                 {
                     if (identity.FindFirst(Globals.ClaimsTipoUsuarioType) != null)
                     {
@@ -921,7 +921,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProveedoresUsuario(usuarioId)} });
+                return JsonCustom(new { data = new { proveedores = _usuarioService.GetProveedoresUsuario(usuarioId) } });
             }
             catch (InfoCustomException e)
             {
@@ -1054,5 +1054,75 @@ namespace SustitucionMOA.Controllers
         }
 
         #endregion
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ADMINISTRAR_CURSOS)]
+        [HttpGet]
+        public ContentResult GetMailUsuarios(string mail)
+        {
+            var response = new SustitucionMOAApiResponse<List<string>>();
+            try
+            {
+                response.Data = _usuarioService.GetMailUsuarios(mail);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [System.Web.Http.HttpPost]
+        public ActionResult GuardarConfiguracionUsuario([System.Web.Http.FromBody] string valor, [System.Web.Http.FromBody] int tipo)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                _usuarioService.GuardarConfiguracionUsuario(mailUsuario, valor, (TipoConfiguracionUsuario)tipo);
+                return JsonCustom(true);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [HttpGet]
+        public ActionResult ObtenerConfiguracionUsuario(TipoConfiguracionUsuario tipo)
+        {
+            try
+            {
+                var mailUsuario = SessionPersister.getUsername();
+                return JsonCustom(_usuarioService.ObtenerConfiguracion(mailUsuario,tipo));
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
