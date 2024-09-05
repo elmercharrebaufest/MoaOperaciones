@@ -1283,7 +1283,7 @@ namespace SustitucionMOAUtils.Services
                 (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))));
 
 
-                if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
+                if (todasLasSolp.Items != null && todasLasSolp.Items.Any())
                 {
                     todasLasSolp.Items.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
                 }
@@ -2886,7 +2886,7 @@ namespace SustitucionMOAUtils.Services
 
 
 
-                if (subPosicionesBorradas.Count() > 0)
+                if (subPosicionesBorradas.Any())
                 {
                     var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
 
@@ -3523,7 +3523,7 @@ namespace SustitucionMOAUtils.Services
                 var usuarioRol = rol.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
 
 
-                if (todasLasPO != null && todasLasPO.Count() > 0)
+                if (todasLasPO != null && todasLasPO.Any())
                 {
                     var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
                     todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
@@ -7002,7 +7002,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
-                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null).Count() > 0)
+                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null).Any())
                     {
                         foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => (x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null) &&
                         x.CotizacionPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id))
@@ -7549,7 +7549,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (esServicios)
                     {
-                        if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count() > 0)
+                        if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Any())
                         {
                             foreach (var subpos in cotizacionPosicion.CotizacionSubPosiciones)
                             {
@@ -8028,7 +8028,7 @@ namespace SustitucionMOAUtils.Services
             var registros = new List<RegistroInfoDto>();
             var solpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).Where(x => x.MaterialSolp != null);
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
-            if (solpPosiciones.Count() > 0 && solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
+            if (solpPosiciones.Any() && solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
             {
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solpPosiciones.Select(x => x.MaterialSolp.Codigo).ToList());
             }
@@ -9942,9 +9942,9 @@ namespace SustitucionMOAUtils.Services
             // Obtener todas las fechas únicas de circulares y cotizaciones
             var fechasUnicas = proveedores.SelectMany(p => p.FechasCirculares)
                                           .Union(proveedores.SelectMany(p => p.FechasCotizaciones))
-                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraCreacion.Count() > 0)
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraCreacion.Any())
                                            .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraCreacion))
-                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraLiberacion.Count() > 0)
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraLiberacion.Any())
                                            .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraLiberacion))
                                           .Union(cierres)
                                           .Select(f => f.Date)
@@ -9964,7 +9964,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var proveedor in proveedores)
                 {
                     var fechaCircular = proveedor.FechasCirculares.Where(x => x.Date == fecha.Date).ToList();
-                    if (fechaCircular != null && fechaCircular.Count() > 0)
+                    if (fechaCircular != null && fechaCircular.Any())
                     {
                         var rolUsuario = ObtenerRol(proveedor.UsuariosCirculares.FirstOrDefault());
                         string fechaHoraCirculares = string.Join(", ", fechaCircular.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
@@ -9981,7 +9981,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var proveedor in proveedores)
                 {
                     var fechaCotizacion = proveedor.FechasCotizaciones.Where(x => x.Date == fecha.Date).ToList();
-                    if (fechaCotizacion != null && fechaCotizacion.Count() > 0)
+                    if (fechaCotizacion != null && fechaCotizacion.Any())
                     {
                         string fechaHoraCotizacion = string.Join(", ", fechaCotizacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                         fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCotizacion} - Cotización");
@@ -10001,7 +10001,7 @@ namespace SustitucionMOAUtils.Services
                     if (proveedor.FechaOrdenDeCompraLiberacion.Any())
                     {
                         var fechaOrdenDeCompraLiberacion = proveedor.FechaOrdenDeCompraLiberacion.Where(x => x.Date == fecha.Date).ToList();
-                        if (fechaOrdenDeCompraLiberacion != null && fechaOrdenDeCompraLiberacion.Count() > 0)
+                        if (fechaOrdenDeCompraLiberacion != null && fechaOrdenDeCompraLiberacion.Any())
                         {
                             string fechaHoraOrdenLiberada = string.Join(", ", fechaOrdenDeCompraLiberacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenLiberada} - Orden de compra liberada");
@@ -10025,7 +10025,7 @@ namespace SustitucionMOAUtils.Services
                     if (proveedor.FechaOrdenDeCompraCreacion.Any())
                     {
                         var fechaOrdenDeCompraCreacion = proveedor.FechaOrdenDeCompraCreacion.Where(x => x.Date == fecha.Date).ToList();
-                        if (fechaOrdenDeCompraCreacion != null && fechaOrdenDeCompraCreacion.Count() > 0)
+                        if (fechaOrdenDeCompraCreacion != null && fechaOrdenDeCompraCreacion.Any())
                         {
                             string fechaHoraOrdenCreada = string.Join(", ", fechaOrdenDeCompraCreacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenCreada} - Orden de compra creada");
@@ -10050,7 +10050,7 @@ namespace SustitucionMOAUtils.Services
                     if (cierres.Any())
                     {
                         var cierre = cierres.Where(x => x.Date == fecha.Date).ToList();
-                        if (cierre != null && cierre.Count() > 0)
+                        if (cierre != null && cierre.Any())
                         {
                             string fechaHoraCierre = string.Join(", ", cierre.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCierre} - Cierre de cotización");
@@ -10447,7 +10447,7 @@ namespace SustitucionMOAUtils.Services
             var respuesta = CrearOActualizarRegistrosInfoEnSap(registros);
             var errores = respuesta.Errores != null ? respuesta.Errores.Where(x => x.Tipo == "E") : null;
 
-            if (errores != null && errores.Count() > 0)
+            if (errores != null && errores.Any())
             {
                 throw new WSCustomException(string.Join(" - ", errores.Select(x => x.Mensaje)));
             }

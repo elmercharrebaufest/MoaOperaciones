@@ -67,7 +67,7 @@ namespace SustitucionMOAModel.Dto
 
             if (conHistorial) 
             {
-                if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Count() > 0)
+                if (proveedor.HistorialAprobaciones != null && proveedor.HistorialAprobaciones.Any())
                 {
                     UltimaEdicion = proveedor.HistorialAprobaciones.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha;
                     HistorialAprobaciones = proveedor.HistorialAprobaciones.Select(a => new ProveedorHistorialAprobacionDto(a)).ToList();

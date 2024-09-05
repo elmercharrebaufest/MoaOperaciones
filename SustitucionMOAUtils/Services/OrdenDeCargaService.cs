@@ -1236,7 +1236,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
-            if (errores.Count() > 0)
+            if (errores.Any())
                 throw new InfoCustomException($"Las siguientes órdenes no pudieron enviarse correctamente: {string.Join(", ", errores)}");
             return "Se han enviado las órdenes";
         }
