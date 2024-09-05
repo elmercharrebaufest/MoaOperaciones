@@ -22,6 +22,7 @@ export class OrdenCargaResiduosDto {
     public PatenteChasis: string;
     public PatenteAcoplado: string;
     public NombreChofer: string;
+    public ApellidoChofer: string;
     public CUILChofer: string;
     public RazonSocialTransporte: string;
     public CUITTransporte: string;

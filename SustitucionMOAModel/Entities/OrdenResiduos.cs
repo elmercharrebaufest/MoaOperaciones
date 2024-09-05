@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -29,6 +26,7 @@ namespace SustitucionMOAModel.Entities
         public string PatenteChasis { get; set; }
         public string PatenteAcoplado { get; set; }
         public string ChoferNombre { get; set; }
+        public string ChoferApellido { get; set; }
         public string ChoferCuil { get; set; }
         public string TransporteRazonSocial { get; set; }
         public string TransporteCuit { get; set; }

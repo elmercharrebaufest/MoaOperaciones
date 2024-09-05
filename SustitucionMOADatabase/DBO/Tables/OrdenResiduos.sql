@@ -8,6 +8,7 @@
     [PatenteChasis] VARCHAR(15) NOT NULL, 
     [PatenteAcoplado] VARCHAR(15) NOT NULL, 
     [ChoferNombre] VARCHAR(120) NOT NULL, 
+    [ChoferApellido] VARCHAR(120) NOT NULL, 
     [ChoferCuil] VARCHAR(15) NOT NULL, 
     [TransporteRazonSocial] VARCHAR(120) NOT NULL, 
     [TransporteCuit] VARCHAR(15) NOT NULL, 
