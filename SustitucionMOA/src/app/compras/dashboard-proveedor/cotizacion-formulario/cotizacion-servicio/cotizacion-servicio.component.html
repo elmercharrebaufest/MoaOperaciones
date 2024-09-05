@@ -16,14 +16,14 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales1" name="respetaMateriales"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="true" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
             <div class="col-md-2" style="width: 10px;">
                 <label>No</label>
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaMateriales2" name="respetaMateriales"
-                [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaMateriales" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
         </div>
         <div class="col-md-12 row myRow alinearTitulo margenInput">
@@ -44,7 +44,7 @@
             </div>
             <div class="col-md-2">
                 <input type="radio" id="RespetaServicios2" name="respetaServicios"
-                [(ngModel)]="peticion.RespetaServicios" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
+                       [(ngModel)]="peticion.RespetaServicios" [value]="false" [(disabled)]="peticion.RevisionFinalizada" />
             </div>
         </div>
         <br>
@@ -54,14 +54,14 @@
                 <ng-container *ngIf="peticion.PideDescripcionTecnica && !peticion.PideDocumentacionTecnica; else elseBlock">
                     <strong>En este apartado es obligatorio adjuntar una descripción técnica del trabajo sin valores comerciales.</strong>
                 </ng-container>
-                    <ng-template #elseBlock>
-                        <ng-container *ngIf="peticion.PideDescripcionTecnica && peticion.PideDocumentacionTecnica; else textoDefault">
-                            <strong>En este apartado es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
-                        </ng-container>
-                        <ng-template #textoDefault>
-                    <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
+                <ng-template #elseBlock>
+                    <ng-container *ngIf="peticion.PideDescripcionTecnica && peticion.PideDocumentacionTecnica; else textoDefault">
+                        <strong>En este apartado es obligatorio adjuntar una descripción técnica y la documentación respaldatoria.</strong>
+                    </ng-container>
+                    <ng-template #textoDefault>
+                        <strong>Si alguna de las opciones es "No", debe adjuntar un archivo o agregar una observación.</strong>
                     </ng-template>
-                 </ng-template>
+                </ng-template>
             </div>
             <div class="col-md-12 titulosModal" *ngIf="peticion.RequisitoCiberseguridad" style="margin-top: 10px;">
                 <strong>Debe adjuntar la documentación de ciberseguridad solicitada</strong>
@@ -75,6 +75,10 @@
         <div class="inputCompras">
             <div class="row myRow" style="padding-top: 2px;">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" [style.pointer-events]="peticion.RevisionFinalizada ? 'none' : 'auto'">
+                    <div *ngIf="peticion.SolpModificada" class="alert alert-warning">
+                        <i class="fa fa-warning" aria-hidden="true"></i>
+                        Debido que la SOLP fue modificada ingrese la nueva documentacion tecnica en caso que lo considere necesario
+                    </div>
                     <label class="labelCompras" for="editorTexto">
                         <strong style="font-size: 14px;">
                             Adjuntar documentación
@@ -459,12 +463,12 @@
                             <td class="columna" pEditableColumn style="font-size: 11px !important;">
                                 <p-cellEditor>
                                     <ng-template pTemplate="input">
-                                        <input type="text" pKeyFilter="num" 
-                                            numeric-format
-                                            [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta" 
-                                            placeholder="Días" 
-                                            (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
-                                            (blur)="onReestablecerValor(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta')">
+                                        <input type="text" pKeyFilter="num"
+                                               numeric-format
+                                               [(ngModel)]="posicionCompra.Posiciones.CotizacionPosicion.PrimerPlazoDeOferta"
+                                               placeholder="Días"
+                                               (focus)="onEditarCelda(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta', 0)"
+                                               (blur)="onReestablecerValor(posicionCompra.Posiciones.CotizacionPosicion, 'PrimerPlazoDeOferta')">
                                     </ng-template>
                                     <ng-template pTemplate="output">
                                         <div [ngClass]="{'invalido': esFinalizado && (posicionCompra?.Posiciones?.CotizacionPosicion?.PrimerPlazoDeOferta <= 0)}">
@@ -664,12 +668,12 @@
                             Documentación anexada
                         </strong>
                     </label>
-                    
+
                 </div>
                 <!--Agregar la lista de los archivos -->
                 <div class="col-md-12 row" style="margin-left: -1px; margin-bottom: 3px">
                     <p-panel *ngIf="peticion?.ArchivosPaso4Cotizacion?.length > 0"
-                        [toggleable]="true" [collapsed]="false">
+                             [toggleable]="true" [collapsed]="false">
                         <div class="row myRow">
                             <!-- Archivos que ya fueron guardados-->
                             <div class="col-xs-12 col-md-9" *ngFor="let archivoCotizacion of peticion?.ArchivosPaso4Cotizacion">

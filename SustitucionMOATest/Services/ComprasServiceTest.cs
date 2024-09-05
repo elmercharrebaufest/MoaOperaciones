@@ -3451,7 +3451,8 @@ namespace SustitucionMOATest.Services
         {
             // Arrange
             int id = 1;
-            int envioCircularA = 2;
+            EnviarCircularEnum envioCircularA = EnviarCircularEnum.EnviarATodos;
+            DateTime fechaLimite = DateTime.Today.AddDays(7);
             var solp = new Solp { Id = id };
             var resultadoEsperado = new Resultado
             {
@@ -3463,12 +3464,15 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(r => r.GuardarCambios());
 
             // Act
-            var resultado = target.GuardarEnvioCircularProveedor(id, envioCircularA);
+            var resultado = target.GuardarEnvioCircularProveedor(id, envioCircularA, fechaLimite);
 
             // Assert
+            DateTime fechalimiteEsperada = new DateTime(fechaLimite.Year, fechaLimite.Month, fechaLimite.Day, 23, 59, 59, DateTimeKind.Local);
+
             Assert.AreEqual(resultadoEsperado.IdEntidad, resultado.IdEntidad);
             Assert.AreEqual(resultadoEsperado.Mensaje, resultado.Mensaje);
             Assert.AreEqual(envioCircularA, solp.EnvioCircularA);
+            Assert.AreEqual(fechalimiteEsperada, solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones);
             repositorioMock.Verify(r => r.Obtener<Solp>(It.IsAny<Expression<Func<Solp, bool>>>()), Times.Once);
             repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
         }

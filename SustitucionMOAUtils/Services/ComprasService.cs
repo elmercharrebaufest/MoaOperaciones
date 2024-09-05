@@ -276,8 +276,9 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
 
-                // borrar esta linea cuando este la mejora del envio de circulares automaticas
-                solpEntity.EnvioCircularA = (int)EnviarCircularEnum.NoEnviar;
+                solpEntity.EnvioCircularA = EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
+                                                                               * (llamar desde el front)
+                                                                               */
 
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
@@ -2199,17 +2200,17 @@ namespace SustitucionMOAUtils.Services
                 var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
                                 .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
 
-                var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
+                var esServicio = solp.Posiciones.Any() && solp.Posiciones.First().TipoPosicion.Codigo == "SERVICIO";
 
                 if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
                 {
                     ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (cotizaciones != null && cotizaciones.Count > 0 && solp.TieneModificaciones == true)
+                    if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
                     {
                         if (solp.TrabajoYaHecho != true)
                         {
                             solp.TieneModificaciones = false;
-                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != (int)EnviarCircularEnum.NoEnviar && !peticiones.Any(rt => rt.RevisionTecnica.Finalizada))
+                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar && !peticiones.Any(rt => rt.RevisionTecnica.Finalizada))
                             {
                                 EnviarCircularAutomatico(solp);
                             }
@@ -2232,6 +2233,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+            repositorio.GuardarCambios();
         }
 
         private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
@@ -4363,13 +4365,6 @@ namespace SustitucionMOAUtils.Services
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
                 DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-                var filtros = new ObtenerSolpRequest
-                {
-                    FechaDesde = fechaDesde,
-                    FechaHasta = fechaHasta,
-                    NumeroSolp = solp.NroSolp,
-                };
-                //var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
                 var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
@@ -4380,7 +4375,6 @@ namespace SustitucionMOAUtils.Services
                     var posPendiente = posicionesPendientes
                                     .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice);
                     pos.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
-                    ;
                 });
 
                 foreach (var posicionAgrupada in consultaRegistro)
@@ -4388,7 +4382,7 @@ namespace SustitucionMOAUtils.Services
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
-                        CrearProveedor(registros.Select(x => x.Vendedor).ToList());
+                        CrearProveedor(registros.ConvertAll(x => x.Vendedor));
                         foreach (var posicion in posicionAgrupada)
                         {
                             foreach (var registroInfo in registros)
@@ -4433,7 +4427,6 @@ namespace SustitucionMOAUtils.Services
                                             MaterialCodigo = registroInfo.MaterialCodigo,
                                             NumeroOrdenDeCompra = registroInfo.NumeroOrdenDeCompra
                                         });
-
                                     }
                                     catch (Exception e)
                                     {
@@ -5993,7 +5986,7 @@ namespace SustitucionMOAUtils.Services
                 PlazoDeOferta = DateTime.Now.AddDays(7),
                 RequiereCambioDeFecha = true,
                 FechaEntrega = fechaEntrega,
-                UsuarioIds = solp.EnvioCircularA == (int)EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
+                UsuarioIds = solp.EnvioCircularA == EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
             };
 
             GrabarCircular(circularDto, null, true, peticionUsuarios);
@@ -10389,11 +10382,19 @@ namespace SustitucionMOAUtils.Services
             return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
         }
 
-        public Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA)
+        public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite)
         {
-            var resultado = new Resultado();
-            var solp = repositorio.Obtener<Solp>(x => x.Id == id);
+            Resultado resultado = new Resultado();
+            Solp solp = repositorio.Obtener<Solp>(x => x.Id == id);
             solp.EnvioCircularA = envioCircularA;
+            if (fechaLimite != null)
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Value.Year, fechaLimite.Value.Month, fechaLimite.Value.Day, 23, 59, 59, DateTimeKind.Local);
+            }
+            else
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = null;
+            }
             repositorio.GuardarCambios();
             resultado.IdEntidad = solp.Id;
             resultado.Mensaje = "Se grabó con éxito";

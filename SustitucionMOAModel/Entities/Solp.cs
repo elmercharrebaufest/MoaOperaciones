@@ -40,7 +40,9 @@ namespace SustitucionMOAModel.Entities
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
         public bool? TieneModificaciones { get; set; }
-        public int? EnvioCircularA { get; set; }
+        public EnviarCircularEnum? EnvioCircularA { get; set; }
+
+        public DateTime? FechaLimiteReenvioDocumentacionPorCambioCondiciones { get; set; }
 
 
         [ForeignKey("ProveedorAsignado_Id")]

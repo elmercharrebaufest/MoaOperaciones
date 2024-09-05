@@ -117,6 +117,8 @@ namespace SustitucionMOAModel.Dto
         public bool? RequisitoCiberseguridad { get; set; }
         public string ObservacionCotizacion { get; set; }
         public IEnumerable<ArchivoDto> ArchivosPaso4Cotizacion { get; set; }
+
+        public bool SolpModificada { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto
