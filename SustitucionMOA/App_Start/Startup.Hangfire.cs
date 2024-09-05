@@ -111,6 +111,10 @@ namespace SustitucionMOA
                 "VencimientoOrdenesResiduosJob",
                 j => j.Execute(),
                 "30 8 * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IEnviarMailReporteSOLPJob>(
+              "EnviarMailReporteSOLPJob",
+              j => j.Execute(),
+              "0 10 1,15 * *", tz);
         }
     }
 
