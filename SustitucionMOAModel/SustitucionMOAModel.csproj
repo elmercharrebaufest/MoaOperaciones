@@ -206,7 +206,6 @@
     <Compile Include="Dto\DolarMaterialDto.cs" />
     <Compile Include="Dto\NotificacionPrioridadDto.cs" />
     <Compile Include="Dto\NotificacionSinAdjuntosDto.cs" />
-    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
     <Compile Include="Dto\LegajoExternoDto.cs" />

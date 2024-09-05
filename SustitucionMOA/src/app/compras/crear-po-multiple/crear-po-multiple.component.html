@@ -97,7 +97,7 @@
                         <th class="columna">Fecha de entrega</th>
                         <th class="columna">Plazo de entrega (días)</th>
                         <th class="columna">Plazo de oferta</th>
-                        <th class="columna">Tiene PO</th>
+                        <th class="columna">Nro PO</th>
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
@@ -120,7 +120,7 @@
                         <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
                         <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
                         <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
-                        <td class="columna">{{posicionCompra.TieneCotizacion ? "Si":"No"}}</td>
+                        <td class="columna">{{posicionCompra.TieneCotizacion ? posicionCompra.ListaPO.join('-'):"-"}}</td>
                       </tr>
                     </ng-template>
                   </p-table>

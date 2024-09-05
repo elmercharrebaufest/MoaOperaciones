@@ -85,7 +85,6 @@
     <Compile Include="EntidadReferenciadaException.cs" />
     <Compile Include="Extensiones\DataTableExtension.cs" />
     <Compile Include="Extensiones\Extensiones.cs" />
-    <Compile Include="Extensiones\SqlBulkExtension.cs" />
     <Compile Include="ICache.cs" />
     <Compile Include="IConsulta.cs" />
     <Compile Include="IConsultaEscalar.cs" />

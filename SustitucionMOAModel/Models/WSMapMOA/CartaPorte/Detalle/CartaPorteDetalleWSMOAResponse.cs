@@ -94,7 +94,8 @@ namespace SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle
         public string calidadTotalAplicadosUnidad { get; set; }
 
         public string calidadTotalAplicadosString { get; set; }
-
+        public string camaraAPresent { get; set; }
+        public decimal calidadTotalNetosDescontados { get; set; }
         public CartaPorteDetalleExcelWSMOAResponse()
         {
             this.error = new ErrorWS();

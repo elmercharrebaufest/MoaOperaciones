@@ -115,6 +115,8 @@ namespace SustitucionMOAModel.Dto
         public string RolUsuario { get; set; }
         public bool CondEspProveedorAsignado { get; set; }
         public bool? RequisitoCiberseguridad { get; set; }
+        public string ObservacionCotizacion { get; set; }
+        public IEnumerable<ArchivoDto> ArchivosPaso4Cotizacion { get; set; }
     }
 
     public class PeticionDeOfertaSolpPosicionDto

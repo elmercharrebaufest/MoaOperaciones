@@ -82,7 +82,7 @@ namespace SustitucionMOARepositorio
         /// <param name="entidad">Entidad a agregar</param>
         /// <returns>Entidad agregada</returns>
         TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class;
-        void AgregarTodos<TEntidad>(IEnumerable<TEntidad> entidades, List<KeyValuePair<string, string>> properties = null) where TEntidad : class;
+
         /// <summary>
         /// Remueve una entidad del repositorio
         /// </summary>

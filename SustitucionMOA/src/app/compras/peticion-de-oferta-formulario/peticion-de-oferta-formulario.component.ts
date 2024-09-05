@@ -59,6 +59,8 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     TodasPosicionesSeleccionadas: boolean = false;
     pliegoDeGeneralidades: boolean = false;
     esTipoPOMultiple: boolean = false;
+    hayPosicionesPendientes(): boolean { return this.solpCompraDto.PosicionCompras.some(x => x.Cantidad > 0) };
+    posicionesPendientes(): PosicionCompra[] { return this.solpCompraDto.PosicionCompras.filter(x => x.Cantidad > 0) };
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -75,11 +77,11 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
         this.route.params.subscribe(params => {
             let ids = params['id'];
-  
+
             if(!isNaN(ids)){
                 this.obtenerSolpCompras(ids);
                 this.esTipoPOMultiple = false;
-                
+
 
             } else {
                 this.obtenerPosicionesMultipleCompras(ids);
@@ -386,9 +388,18 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
-            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = true);
+            this.solpCompraDto.PosicionCompras
+                .filter(x =>
+                    !(x.Cantidad <= 0)
+                    && !x.Selected // por checkSelectAllIfNeeded, prevenir ciclos
+                )
+                .map(pos => pos.Selected = true);
         } else {
             this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = false);
         }
+    }
+
+    checkSelectAllIfNeeded(): void {
+        this.TodasPosicionesSeleccionadas = this.posicionesPendientes().every(x => x.Selected);
     }
 }

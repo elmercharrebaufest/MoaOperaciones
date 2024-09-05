@@ -192,7 +192,9 @@
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\ICursoService.cs" />
+    <Compile Include="Interfaces\IEmailAplicacionCPService.cs" />
     <Compile Include="Interfaces\IComprasArchivosService.cs" />
+    <Compile Include="Interfaces\IComprasSapService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailCertificationService.cs" />
     <Compile Include="Interfaces\IEmailAplicacionCPService.cs" />
@@ -263,6 +265,7 @@
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Services\ComprasArchivosService.cs" />
+    <Compile Include="Services\ComprasSapService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\Email\EmailComprasService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />

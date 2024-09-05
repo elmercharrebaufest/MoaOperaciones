@@ -31,6 +31,7 @@
             LocalidadDescripcion = ordenFason.LocalidadDescripcion;
             LocalidadId = ordenFason.LocalidadId;
             NombreChofer = ordenFason.NombreChofer;
+            ApellidoChofer = ordenFason.ApellidoChofer;
             Observacion = ordenFason.Observacion;
             PatenteAcoplado = ordenFason.PatenteAcoplado;
             PatenteChasis = ordenFason.PatenteChasis;

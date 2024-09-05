@@ -1,3 +1,4 @@
+import { Archivo } from "../common/models/archivo"
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
@@ -45,6 +46,9 @@ export interface PeticionDeOfertaDto {
     PideDescripcionTecnica?: boolean,
     PideDocumentacionTecnica?: boolean,
     NrosSolp?: any[],
+
+    ArchivosPaso4Cotizacion?: Archivo[],
+    ObservacionCotizacion?: string,
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -69,7 +73,7 @@ export interface PeticionDeOfertaUsarioAdicionalDto {
     RazonSocial: string,
     UsuarioId: number,
     Mail?: string,
-    CUIT?: string   
+    CUIT?: string
 }
 
 export interface PeticionDeOfertaSolpPosicionDto {
@@ -98,7 +102,7 @@ export interface PeticionDeOfertaCierreDto {
     Observaciones: string
 }
 
-export interface PeticionDeOfertaRevisionTecnicaDto{
+export interface PeticionDeOfertaRevisionTecnicaDto {
     Id: number,
     Usuario_Id?: number,
     RecotizacionEconomica?: boolean,

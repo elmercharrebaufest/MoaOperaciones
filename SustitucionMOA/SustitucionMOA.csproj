@@ -1146,7 +1146,6 @@
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
-    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\CursoController.cs" />
     <Compile Include="Controllers\EntradaServicioController.cs" />
     <Compile Include="Controllers\LoggerController.cs" />
