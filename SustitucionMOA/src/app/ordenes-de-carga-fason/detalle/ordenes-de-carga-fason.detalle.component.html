@@ -14,8 +14,8 @@
                 <!-- Button trigger modal -->
                 <button *ngIf="botones.editar" type="button"
                     class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande" (click)="editarOrden()"
-                    id="modalToggleButton" [disabled]="(activaEnScato || validandoEstadoScato) && !esAdmin"
-                    [pTooltip]="(activaEnScato || validandoEstadoScato) && !esAdmin? 'Imposible editar' : null">
+                    id="modalToggleButton" [disabled]="validandoEstadoScato"
+                    >
                     Editar
                 </button>
             </div>

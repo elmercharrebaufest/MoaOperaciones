@@ -123,7 +123,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         if (this.validandoEstadoScato) {
             return;
         }
-        if (!this.activaEnScato) {
+        if (!this.activaEnScato || !this.esAdmin) {
             this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
         } else {
             this.confirmationService.confirm({

@@ -957,7 +957,7 @@ export class OrdenesDeCargaFasonAltaComponent
         //Posible check de si está marcado el campo escalable
         this.validarCNRTSubject.next();
     }
-    override validarCNRTRequest() {
+    validarCNRTRequest() {
         this.validando.Escalable = true;
         this.validarCNRTSubscription = this.service
             .verificarCNRT(this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.PatenteAcoplado)
@@ -1203,7 +1203,7 @@ export class OrdenesDeCargaFasonAltaComponent
         );
     }
 
-    override validarExistenciaPatentes() {
+    validarExistenciaPatentes() {
         this.validacionExistenciaPatenteSub = this.service
             .validarExistenciaPatentes(
                 this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
@@ -1214,7 +1214,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             });
     }
-    override puedeValidarExistenciaPatentes(): boolean {
+    puedeValidarExistenciaPatentes(): boolean {
         return this.patenteChasisValido && !!this.ordenDeCargaFason.CUITCliente
     }
 }

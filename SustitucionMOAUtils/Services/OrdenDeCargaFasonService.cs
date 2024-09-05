@@ -248,9 +248,15 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+                var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
                 ValidarRequest(request, usuario);
                 var orden = repositorio.Obtener<OrdenDeCargaFason>(request.Id);
 
+                if (ValidarOrdenActivaScato(request.Id) && !esAdmin)
+                {
+                    emailFasonService.EnviarMailIntentoEdicionActiva(orden, request);
+                    throw new InfoCustomException("La orden no se puede editar por estar el camión en planta");
+                }
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
                 orden.CorredorId = request.CorredorId;
@@ -277,7 +283,7 @@ namespace SustitucionMOAUtils.Services
                 orden.Escalable = request.Escalable;
                 ActualizarOrdenDeCarga(orden);
 
-                var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+
                 if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
                     throw new ValidationCustomException("La orden está activa en Scato, imposible editar.");
 
@@ -314,11 +320,18 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+
             if (orden.Estado == EstadoOrdenDeCargaFason.Entregada)
             {
                 throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada.");
             }
-            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            if (ValidarOrdenActivaScato(ordenId) && !esAdmin)
+            {
+                emailFasonService.EnviarMailIntentoAnulacionActiva(orden);
+                throw new InfoCustomException("La orden no se puede anular por estar el camión en planta");
+            }
             orden.Estado = EstadoOrdenDeCargaFason.Anulada;
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
