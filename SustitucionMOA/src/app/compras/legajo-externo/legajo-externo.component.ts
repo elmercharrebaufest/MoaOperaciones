@@ -21,6 +21,8 @@ export class LegajoExternoComponent implements OnInit {
     adjudicacionId: string;
     token: string;
     cargarPantalla = false;
+    previousId: number | null = null;
+    toggleColor: boolean = false;
 
     constructor(private route: ActivatedRoute, protected service: ComprasService) {
     }
@@ -216,7 +218,7 @@ export class LegajoExternoComponent implements OnInit {
     descargarLegajo() {
         let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(idPeticion, null, false)
+        this.service.descargarLegajo(idPeticion, null, false,Number(this.adjudicacionId))
             .subscribe(
                 (result) => {
                     var byteArray = new Uint8Array(result.FileContents);
@@ -249,4 +251,17 @@ export class LegajoExternoComponent implements OnInit {
                     this.blockUI.stop();
                 })
     }
+
+    getBackgroundColor(currentId: number): any {
+        if (this.previousId !== currentId) {
+            this.toggleColor = !this.toggleColor;
+            this.previousId = currentId;
+        }
+        return {
+            'background-color': this.toggleColor ? '#c9c9c9' : '#afafaf', 
+            'color': 'back',
+            //'font-weight': 'bold', 
+        };
+    }
+
 }

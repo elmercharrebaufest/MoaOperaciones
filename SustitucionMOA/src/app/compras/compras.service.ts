@@ -863,13 +863,17 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
     }
 
-    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<any> {
+    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, adjudicacionId: number | null): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("idPeticion", idPeticion.toString());
         if (idPeticionDeOfertaUsuario != null) {
             params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
         params = params.set("esProveedor", esProveedor.toString());
+        if (adjudicacionId != null) {
+            params = params.set("adjudicacionId", adjudicacionId.toString());
+        }
+
         return this.http
             .get("/api/compras/DescargarLegajo", {
                 params: params,

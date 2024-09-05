@@ -10,6 +10,7 @@ using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -4399,7 +4400,7 @@ namespace SustitucionMOAUtils.Services
                     var posPendiente = posicionesPendientes
                                     .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice);
                     pos.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
-                                    ;
+                    ;
                 });
 
                 foreach (var posicionAgrupada in consultaRegistro)
@@ -5047,161 +5048,194 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId)
         {
-            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
-            var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
-            var zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
-            var filePath = $"{pathBase}/{zipFilename}";
 
-            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            string zipFilename;
+            string filePath;
+
+            if (adjudicacionId > 0)
             {
-                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                var nroOC = repositorio.Obtener<Adjudicacion, string>(x => x.Id == adjudicacionId, x => x.NumeroOrdenDeCompra);
+                var idsPeticiones = repositorio.Listar<Adjudicacion, int>(x => x.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, x => x.NumeroOrdenDeCompra == nroOC);
+                zipFilename = $"OC-{nroOC}.zip";
+                filePath = $"{pathBase}/{zipFilename}";
+
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
                 {
-                    foreach (var solp in solps)
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
-                        var pliegoFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
-                        var pdfFilePath = $"{pathBase}/{pliegoFilename}";
-                        File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
-
-                        // Agregar archivos de pliego al zip
-                        archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
-
-                        // Agregar archivos adjuntos del solp al zip
-                        if (solp.Pliego.Archivos != null)
+                        foreach (var idPO in idsPeticiones)
                         {
-                            foreach (var archivoSubido in solp.Pliego.Archivos)
-                            {
-                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
-                                {
-                                    string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                    archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
-                                }
-                            }
-                        }
-
-                        // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
-                        if (solp.Posiciones.Any(a => a.TipoPosicion_Id != null && a.TipoPosicion.Codigo == "MATERIALES"))
-                        {
-                            foreach (var peticionUsuario in peticion.Usuarios)
-                            {
-                                string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
-                                var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
-                                var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
-                                File.WriteAllBytes(pdfFilePathUsuario, pdf);
-                                archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
-                            }
-                        }
-
-                        // Agregar archivos de circulares al zip
-                        var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
-                        var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
-                        foreach (var circular in circulares)
-                        {
-                            foreach (var item in circular.Archivos)
-                            {
-                                if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
-                                {
-                                    string fileName = Path.GetFileName(item.Ruta);
-                                    archivo.CreateEntryFromFile(item.Ruta, fileName);
-                                }
-                            }
-                        }
-
-                        // Agregar archivos de chat interno al zip
-                        if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0)
-                        {
-                            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                            Directory.CreateDirectory(path);
-                            string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, null);
-                            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                            string fileName = Path.GetFileName(rutaTxt);
-                            archivo.CreateEntryFromFile(rutaTxt, fileName);
-                            Directory.Delete(path, true);
-                        }
-
-                        // Agregar archivos de chat externo al zip
-                        if (peticion.Usuarios != null)
-                        {
-                            foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
-                            {
-                                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                                Directory.CreateDirectory(path);
-                                string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, usuario.Id);
-                                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                                string fileName = Path.GetFileName(rutaTxt);
-                                archivo.CreateEntryFromFile(rutaTxt, fileName);
-                                Directory.Delete(path, true);
-                            }
-                        }
-                    }
-
-                    // Agregar archivos de la petición de oferta al zip
-                    if (peticion.Archivos != null)
-                    {
-                        foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
-                        {
-                            if (File.Exists(archivoSubido.Archivo.Ruta))
-                            {
-                                string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
-                            }
-                        }
-                    }
-
-                    // Agregar revisión ténica al zip
-                    if (peticion?.RevisionTecnica != null)
-                    {
-                        var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
-                        var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
-                        File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
-                        archivo.CreateEntryFromFile(rutaRevisionTecnica, $"RevTec{peticion.Id}.xlsx");
-                    }
-
-                    if (!esProveedor)
-                    {
-                        // Agregar historial de movimientos al zip
-                        var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
-                        var zipEntry = archivo.CreateEntry("Historial de Movimientos.xlsx", CompressionLevel.Fastest);
-                        using (var entryStream = zipEntry.Open())
-                        {
-                            entryStream.Write(excelBytes, 0, excelBytes.Length);
-                        }
-
-                        // Agregar archivos de cotizaciones al zip
-                        if (peticion.Usuarios != null)
-                        {
-                            foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
-                            {
-                                var cotizacionUsuario = usuario.Cotizaciones.First();
-
-                                if (cotizacionUsuario.Archivos.Count > 0)
-                                {
-                                    foreach (var item in cotizacionUsuario.Archivos)
-                                    {
-                                        if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
-                                        {
-                                            string fileName = Path.GetFileName(item.Ruta);
-                                            archivo.CreateEntryFromFile(item.Ruta, fileName);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        // Agregar historiales de cotización al zip
-                        foreach (var cotizacion in GetCotizacionesDescargables(peticion))
-                        {
-                            var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
-                            var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
-                            File.WriteAllBytes(rutaHistorial, historialBytes);
-                            archivo.CreateEntryFromFile(rutaHistorial, $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                            var peticion = repositorio.Obtener<PeticionDeOferta>(idPO);
+                            var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
+                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo);
                         }
                     }
                 }
             }
+            else
+            {
+                var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+                var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
+                zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+                filePath = $"{pathBase}/{zipFilename}";
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                    {
+                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo);
+                    }
+                }
+            }
+
             return filePath;
+        }
+
+        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo)
+        {
+            int idPeticion = peticion.Id;
+            foreach (var solp in solps)
+            {
+                var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
+                var pliegoFilename = $"PO-{idPeticion}-Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+                var pdfFilePath = $"{pathBase}/{pliegoFilename}";
+                File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
+
+                // Agregar archivos de pliego al zip
+                archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                // Agregar archivos adjuntos del solp al zip
+                if (solp.Pliego.Archivos != null)
+                {
+                    foreach (var archivoSubido in solp.Pliego.Archivos)
+                    {
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                        {
+                            string fileName = Path.GetFileName(archivoSubido.Ruta);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-"+fileName);
+                        }
+                    }
+                }
+
+                // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
+                if (solp.Posiciones.Any(a => a.TipoPosicion_Id != null && a.TipoPosicion.Codigo == "MATERIALES"))
+                {
+                    foreach (var peticionUsuario in peticion.Usuarios)
+                    {
+                        string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
+                        var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
+                        var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                        File.WriteAllBytes(pdfFilePathUsuario, pdf);
+                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{ peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+                    }
+                }
+
+                // Agregar archivos de circulares al zip
+                var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+                var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
+                foreach (var circular in circulares)
+                {
+                    foreach (var item in circular.Archivos)
+                    {
+                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
+                        {
+                            string fileName = Path.GetFileName(item.Ruta);
+                            archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                        }
+                    }
+                }
+
+                // Agregar archivos de chat interno al zip
+                if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0)
+                {
+                    var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                    Directory.CreateDirectory(path);
+                    string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, null);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                    string fileName = Path.GetFileName(rutaTxt);
+                    archivo.CreateEntryFromFile(rutaTxt, $"PO-{idPeticion}-" + fileName);
+                    Directory.Delete(path, true);
+                }
+
+                // Agregar archivos de chat externo al zip
+                if (peticion.Usuarios != null)
+                {
+                    foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
+                    {
+                        var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                        Directory.CreateDirectory(path);
+                        string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, usuario.Id);
+                        byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                        string fileName = Path.GetFileName(rutaTxt);
+                        archivo.CreateEntryFromFile(rutaTxt, $"PO-{idPeticion}-" + fileName);
+                        Directory.Delete(path, true);
+                    }
+                }
+            }
+
+            // Agregar archivos de la petición de oferta al zip
+            if (peticion.Archivos != null)
+            {
+                foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                {
+                    if (File.Exists(archivoSubido.Archivo.Ruta))
+                    {
+                        string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                        archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, $"PO-{idPeticion}-" + fileName);
+                    }
+                }
+            }
+
+            // Agregar revisión ténica al zip
+            if (peticion?.RevisionTecnica != null)
+            {
+                var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
+                var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
+                File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
+                archivo.CreateEntryFromFile(rutaRevisionTecnica, $"PO-{idPeticion}-" + $"RevTec{peticion.Id}.xlsx");
+            }
+
+            if (!esProveedor)
+            {
+                // Agregar historial de movimientos al zip
+                var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
+                var zipEntry = archivo.CreateEntry($"PO-{idPeticion}-" + "Historial de Movimientos.xlsx", CompressionLevel.Fastest);
+                using (var entryStream = zipEntry.Open())
+                {
+                    entryStream.Write(excelBytes, 0, excelBytes.Length);
+                }
+
+                // Agregar archivos de cotizaciones al zip
+                if (peticion.Usuarios != null)
+                {
+                    foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                    {
+                        var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                        if (cotizacionUsuario.Archivos.Count > 0)
+                        {
+                            foreach (var item in cotizacionUsuario.Archivos)
+                            {
+                                if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                {
+                                    string fileName = Path.GetFileName(item.Ruta);
+                                    archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Agregar historiales de cotización al zip
+                foreach (var cotizacion in GetCotizacionesDescargables(peticion))
+                {
+                    var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                    var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                    File.WriteAllBytes(rutaHistorial, historialBytes);
+                    archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                }
+            }
         }
 
         public byte[] GenerarHistorialCotizaciones(int cotizacionId)
@@ -8227,11 +8261,19 @@ namespace SustitucionMOAUtils.Services
             {
                 var cotizacion = adjudicacion.Cotizacion;
                 resultado.NroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra;
-                resultado.NroSolp = string.Join(", ", adjudicacion.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
+                List<string> nrosSolp = adjudicacion.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp).ToList();
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
                 resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false);
+
+                var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
+                foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)
+                {
+                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false));
+                    nrosSolp.AddRange(adjudicacionMismaOC.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
+                }
+                resultado.NroSolp = string.Join(", ", nrosSolp.Distinct());
             }
             return resultado;
         }
