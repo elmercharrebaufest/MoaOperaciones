@@ -430,7 +430,7 @@ namespace SustitucionMOAUtils.Services
                     string fraseABuscar = "Justificación de condición especial:";
 
                     int indice = solpEntity.Pliego.ObservacionesGeneracion.IndexOf(fraseABuscar);
-                    if (indice != -1)                    
+                    if (indice != -1)
                         solpEntity.Pliego.ObservacionesGeneracion = solpEntity.Pliego.ObservacionesGeneracion.Substring(0, indice);
                     solpEntity.Pliego.ObservacionesCotizacionCondEsp = null;
                 }
@@ -777,87 +777,38 @@ namespace SustitucionMOAUtils.Services
         private SolpDto GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
             var ruta = ObtenerRutaArchivos(solp.Id.Value, "Solp");
+            Directory.CreateDirectory(ruta);
 
-            var filesEspecificaciones = files.GetMultiple("fileEspecificaciones");
-            for (int i = 0; i < filesEspecificaciones.Count; i++)
-            {
-                var file = filesEspecificaciones[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoSolp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
-
-            var filesCotizaciones = files.GetMultiple("fileCotizaciones");
-
-            for (int i = 0; i < filesCotizaciones.Count; i++)
-            {
-                var file = filesCotizaciones[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoCotizacionesSolp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
-
-            var fileCotizacionesCondEsp = files.GetMultiple("fileCotizacionesCondEsp");
-
-            for (int i = 0; i < fileCotizacionesCondEsp.Count; i++)
-            {
-                var file = fileCotizacionesCondEsp[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
+            GuardarArchivosSolp(files.GetMultiple("fileEspecificaciones"), ruta, pliego, FileKeys.AdjuntoSolp);
+            GuardarArchivosSolp(files.GetMultiple("fileCotizaciones"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolp);
+            GuardarArchivosSolp(files.GetMultiple("fileCotizacionesCondEsp"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolpCondEsp);
 
             repositorio.GuardarCambios();
 
-            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(x => new ArchivoDto()
-            {
-                Id = x.Id,
-                FileKey = x.FileKey,
-                Nombre = x.ObtenerNombre(x.Ruta)
-            }).ToList();
+            solp.Adjuntos = pliego.Archivos
+                .Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp)
+                .Select(x => new ArchivoDto()
+                {
+                    Id = x.Id,
+                    FileKey = x.FileKey,
+                    Nombre = x.ObtenerNombre(x.Ruta)
+                }).ToList();
+
             return solp;
+        }
+
+        private void GuardarArchivosSolp(IEnumerable<HttpPostedFileBase> archivos, string ruta, Pliego pliego, string fileKey)
+        {
+            foreach (var file in archivos)
+            {
+                var rutaArchivo = CrearRutaArchivo(Path.Combine(ruta, Path.GetFileName(file.FileName)), pliego.Archivos);
+                file.SaveAs(rutaArchivo);
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = fileKey,
+                    Ruta = rutaArchivo,
+                });
+            }
         }
 
         private string CrearRutaArchivo(string ruta, ICollection<Archivo> archivos, int numeroIncremental = 0)
