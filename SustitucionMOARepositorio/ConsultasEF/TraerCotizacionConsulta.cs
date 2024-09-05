@@ -2,7 +2,6 @@
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.SqlServer;
@@ -35,7 +34,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
                                     PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
                                     Cotizacion = new CotizacionDto(),
-                                    ObservacionCotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion  : null,
+                                    ObservacionCotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion : null,
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
                                     ObservacionEconomica = cotizacion != null ? cotizacion.ObservacionEconomica : "",
                                     ObservacionTecnicaOriginal = cotizacion != null ? cotizacion.ObservacionTecnica : "",
@@ -53,6 +52,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             .Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolp)
                                             .Select(a => new ArchivoDto { Ruta = a.Ruta, Id = a.Id }).ToList().OrderBy(a => a.Id),
                                     RequisitoCiberseguridad = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.RequisitoCiberseguridad == true ? true : false,
+                                    SolpModificada = po.PeticionDeOferta.Posiciones.Any(x => x.SolpPosicion.Solp.TieneModificaciones == true),
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
                                     new PeticionDeOfertaSolpPosicionDto()
                                     {
@@ -78,7 +78,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             NroSolp = pop.SolpPosicion.Solp.NroSolp,
                                             CotizacionPosicion = new CotizacionPosicionDto()
                                             {
-                                                
+
                                                 Cantidad = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().Cantidad.Value : 0,
                                                 UnidadMedidaDescripcion = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Descripcion : (pop.SolpPosicion.Unidad != null ? pop.SolpPosicion.Unidad.Descripcion : ""),
                                                 UnidadDeMedida_Id = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().UnidadDeMedida.Id : (pop.SolpPosicion.Unidad_Id != null ? pop.SolpPosicion.Unidad_Id.Value : 0),
@@ -90,7 +90,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 FechaDeEntrega = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega : pop.SolpPosicion.FechaEntregaServicio,
                                                 FechaDeEntregaFormateado = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega != null ?
                                                 SqlFunctions.DateName("day", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DatePart("month", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega) + "/" + SqlFunctions.DateName("year", cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeEntrega)
-                                                : SqlFunctions.DateName("day", pop.SolpPosicion.FechaEntregaServicio) + "/" + SqlFunctions.DatePart("month", pop.SolpPosicion.FechaEntregaServicio) + "/" 
+                                                : SqlFunctions.DateName("day", pop.SolpPosicion.FechaEntregaServicio) + "/" + SqlFunctions.DatePart("month", pop.SolpPosicion.FechaEntregaServicio) + "/"
                                                 + SqlFunctions.DateName("year", pop.SolpPosicion.FechaEntregaServicio),
                                                 PlazoDeEntrega = 0,
                                                 FechaDeVigencia = cotizacion != null && cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia != null ? cotizacion.CotizacionPosiciones.Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id).FirstOrDefault().FechaDeVigencia : (DateTime?)null,
@@ -139,7 +139,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                               .Where(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                         && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                               ).FirstOrDefault().CotizacionSubPosiciones.Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad.Value : 0,
-                                                                                                
+
                                                 MonedaCotizacionId = (cotizacion != null && cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id)) ||
                                                                       cotizacion.CotizacionPosiciones.Any(cp => cp.PeticionDeOfertaSolpPosicion_Id == pop.Id
                                                         && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)) ? cotizacion.CotizacionPosiciones
@@ -184,7 +184,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 },
                                                 UnidadMedidaCotizacion = new TablaSapDto
                                                 {
-                                                    Codigo = subposicion.Unidad.Codigo,                                                    
+                                                    Codigo = subposicion.Unidad.Codigo,
                                                     Id = subposicion.Unidad.Id,
                                                 },
                                                 UnidadCotizacionDescripcion = subposicion.Unidad.Descripcion,

@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
+import { formatDate } from '@angular/common';
 import { Observable, Subject, throwError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
@@ -1480,10 +1481,14 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
+    public guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         var payload = new FormData();
         payload.append('id', id.toString());
         payload.append('enviarCircularA', enviarCircularA.toString());
+
+        if (fechaLimite != null) {
+            payload.append('fechaLimite', formatDate(fechaLimite, 'yyyy-MM-dd', 'es-AR'));
+        }
 
         return this.http
             .post<any>('/api/compras/GuardarEnvioCircularProveedor', payload, { headers: this.headers });

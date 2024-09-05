@@ -49,6 +49,7 @@ export interface PeticionDeOfertaDto {
 
     ArchivosPaso4Cotizacion?: Archivo[],
     ObservacionCotizacion?: string,
+    SolpModificada?: boolean,
 }
 
 export interface PeticionDeOfertaUsarioDto {
