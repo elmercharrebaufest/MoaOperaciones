@@ -1344,18 +1344,29 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     public completarUsuarioSolicitante() {
         if (this.solpActual != undefined) {
+            let selectUsuarioFiscalVacio: boolean = this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null;
+            let selectResponsableTrabajoVacio: boolean = this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null;
+
             this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
 
-            if (this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null) {
+            if (selectUsuarioFiscalVacio) {
                 this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
                     ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail)
                     : this.solpActual.usuarioSolicitanteList[0];
             }
 
-            if (this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null) {
+            if (selectResponsableTrabajoVacio) {
                 this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
                     ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
                     : this.solpActual.usuarioSolicitanteList[0];
+            }
+
+            if (this.esCreacionSolp && selectResponsableTrabajoVacio) {
+                const username: string = sessionStorage.getItem("username");
+
+                this.solpActual.selectResponsableTrabajo =
+                    this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username)
+                    || this.solpActual.usuarioSolicitanteList[0];
             }
         }
     }
