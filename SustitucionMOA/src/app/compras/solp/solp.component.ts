@@ -1364,17 +1364,23 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                 this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
                     ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
                     : this.solpActual.usuarioSolicitanteList[0];
-
-                if (this.esCreacionSolp) {
-                    const username: string = sessionStorage.getItem("username");
-
-                    const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username);
-                    if (elementoEncontrado) {
-                        this.solpActual.selectResponsableTrabajo = elementoEncontrado;
-                        this.onResponsableTrabajoAutomaticallySelected.next();
-                    }
-                }
             }
+
+            this.setCurrentUseAsResponsableTrabajoIfNeeded();
+        }
+    }
+
+    private setCurrentUseAsResponsableTrabajoIfNeeded(): void {
+        if (this.solpActual == null || this.solpActual == undefined) { return; }
+        if (!this.esCreacionSolp) { return; }
+        if (this.solpActual.tipoSolp !== 'SIN_PLIEGO') { return; }
+
+        const username: string = sessionStorage.getItem("username");
+
+        const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username);
+        if (elementoEncontrado) {
+            this.solpActual.selectResponsableTrabajo = elementoEncontrado;
+            this.onResponsableTrabajoAutomaticallySelected.next();
         }
     }
 
