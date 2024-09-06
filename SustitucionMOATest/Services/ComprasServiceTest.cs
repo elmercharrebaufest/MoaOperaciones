@@ -2535,7 +2535,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaVisualizacionPrecio, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
                 .Returns(new List<PeticionDeOfertaVisualizacionPrecio> { new PeticionDeOfertaVisualizacionPrecio { Id = 1 } });
 
-            var result = target.ObtenerLegajoParaExternos(1, "token"); //pasa por ObtenerLegajo() también
+            var result = target.ObtenerLegajoParaExternos(1, "token", "moaoperaciones@baufest.com"); //pasa por ObtenerLegajo() también
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.ListaLegajos.GetType(), legajo.ListaLegajos.GetType());
             Assert.AreEqual(result.GetType(), legajo.GetType());

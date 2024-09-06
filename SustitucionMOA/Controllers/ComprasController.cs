@@ -881,7 +881,8 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<List<LegajoDto>>();
             try
             {
-                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor);
+                var mailUsuario = SessionPersister.getUsername();
+                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario);
             }
             catch (WSCustomException e)
             {
@@ -1419,7 +1420,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token);
+                var mailUsuario = SessionPersister.getUsername();
+                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)

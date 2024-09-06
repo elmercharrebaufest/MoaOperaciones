@@ -67,15 +67,14 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == email);
+                Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(x => x.Mail == email)
+                    ?? throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
 
-                if (usuario == null)
+                var ret = new UsuarioDto(usuario)
                 {
-                    throw new InfoCustomException(String.Format(InfoMsg.ElementoNoExiste, "Usuario", email));
-                }
-                var ret = new UsuarioDto(usuario);
-                ret.Permisos = usuario.ObtenerPermisos();
-                ret.NuevoUsuario = usuario.EsNuevoUsuario();
+                    NuevoUsuario = usuario.EsNuevoUsuario()
+                };
+                //ret.Permisos = usuario.ObtenerPermisos(); // Esto ya lo hace el constructor
 
                 return ret;
             }

@@ -4635,9 +4635,10 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor)
+        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor, string mailUsuario)
         {
             List<LegajoDto> legajo = new List<LegajoDto>();
+            var usuarioDto = usuarioService.GetUsuario(mailUsuario);
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
             var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
@@ -4979,9 +4980,9 @@ namespace SustitucionMOAUtils.Services
             if (!esProveedor)
             {
                 AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
-                AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId);
+                AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
                 AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
-                AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion);
+                AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
             }
 
             return legajo.OrderByDescending(x => x.Fecha).ToList();
@@ -8228,7 +8229,7 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
-        public LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token)
+        public LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario)
         {
             LegajoExternoDto resultado = new LegajoExternoDto();
             var adjudicacion = repositorio.Obtener<Adjudicacion>(x => x.Id == adjudicacionId && x.Token == token);
@@ -8240,7 +8241,7 @@ namespace SustitucionMOAUtils.Services
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false);
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario);
 
                 var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
                 foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)
@@ -10463,29 +10464,34 @@ namespace SustitucionMOAUtils.Services
             return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
         }
 
-        private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion)
+        private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion, UsuarioDto usuarioDto)
         {
             foreach (var cotizacion in GetCotizacionesDescargables(peticion))
             {
-                var fechaCotizacion = cotizacion.FechaCreacion;
-                legajo.Add(new LegajoDto
+                var puedenVerseLosImportes = PuedenVerseLosImportes(cotizacion, usuarioDto);
+
+                if (puedenVerseLosImportes)
                 {
-                    ArchivoId = cotizacion.Id,
-                    Fecha = fechaCotizacion,
-                    FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
-                    Leido = false,
-                    Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
-                    PeticionDeOfertaId = peticion.Id,
-                    SolpId = 0,
-                    Tipo = TipoLegajo.Cotizacion,
-                    Usuario = new UsuarioDto
+                    var fechaCotizacion = cotizacion.FechaCreacion;
+                    legajo.Add(new LegajoDto
                     {
-                        CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
-                        Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
-                        Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
-                    },
-                    UsuarioId = 0
-                });
+                        ArchivoId = cotizacion.Id,
+                        Fecha = fechaCotizacion,
+                        FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
+                        Leido = false,
+                        Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
+                        PeticionDeOfertaId = peticion.Id,
+                        SolpId = 0,
+                        Tipo = TipoLegajo.Cotizacion,
+                        Usuario = new UsuarioDto
+                        {
+                            CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                            Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
+                            Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
+                        },
+                        UsuarioId = 0
+                    });
+                }
             }
         }
 
@@ -10529,7 +10535,7 @@ namespace SustitucionMOAUtils.Services
             });
         }
 
-        private void AgregarALegajoDocumentosEnviadosPorProveedores(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId)
+        private void AgregarALegajoDocumentosEnviadosPorProveedores(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId, UsuarioDto usuarioDto)
         {
             // Buscar archivos de la cotizacion 
             if (peticion.Usuarios == null)
@@ -10542,7 +10548,9 @@ namespace SustitucionMOAUtils.Services
             {
                 var cotizacionUsuario = usuario.Cotizaciones.First();
 
-                if (cotizacionUsuario.Archivos.Count > 0 && !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id))
+                if (cotizacionUsuario.Archivos.Count > 0 &&
+                    !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id) &&
+                    PuedenVerseLosImportes(cotizacionUsuario, usuarioDto))
                 {
                     proveedoresProcesados.Add(cotizacionUsuario.UsuarioCreador_Id);
 
@@ -10567,53 +10575,13 @@ namespace SustitucionMOAUtils.Services
         {
             var estaLiberado = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
 
-            var plazoDeOfertaCierre = peticion.Cierres.Any() ? peticion.Cierres.Max(p => p.Fecha) : (DateTime?)null;
-            var plazoDeOfertaOriginal = peticion.PlazoDeOferta;
-
             var esMateriales = peticion.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
 
             if (estaLiberado)
             {
                 foreach (var peticionOfertaUsuario in peticion.Usuarios)
                 {
-                    var circular = (peticionOfertaUsuario.Circulares?
-                            .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
-                            .OrderByDescending(p => p.Circular.Id)
-                            .FirstOrDefault())?.Circular;
-
-                    var fechaCircular = circular?.FechaCreacion;
-                    var plazoDeOfertaCircular = circular?.PlazoDeOferta;
-
-                    DateTime fechaFinPlazo;
-                    if (plazoDeOfertaCierre == null && fechaCircular == null)
-                    {
-                        fechaFinPlazo = plazoDeOfertaOriginal;
-                    }
-                    else
-                    {
-                        if (plazoDeOfertaCierre == null)
-                        {
-                            fechaFinPlazo = plazoDeOfertaCircular.Value;
-                        }
-                        else
-                        {
-                            if (fechaCircular == null)
-                            {
-                                fechaFinPlazo = plazoDeOfertaCierre.Value;
-                            }
-                            else
-                            {
-                                if (plazoDeOfertaCierre.Value > fechaCircular)
-                                {
-                                    fechaFinPlazo = plazoDeOfertaCierre.Value;
-                                }
-                                else
-                                {
-                                    fechaFinPlazo = plazoDeOfertaCircular.Value;
-                                }
-                            }
-                        }
-                    }
+                    var fechaFinPlazo = CalcularFechaFinDePlazo(peticionOfertaUsuario);
 
                     var esUrgencia = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia ?? false;
                     var plazoOfertaSinFinalizar = fechaFinPlazo >= DateTime.Now && !esUrgencia;
@@ -10642,6 +10610,56 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
             }
+        }
+
+        private DateTime CalcularFechaFinDePlazo(PeticionDeOfertaUsuario peticionOfertaUsuario)
+        {
+            var peticion = peticionOfertaUsuario.PeticionDeOferta;
+
+            var plazoDeOfertaCierre = peticion.Cierres.Any() ? peticion.Cierres.Max(p => p.Fecha) : (DateTime?)null;
+            var plazoDeOfertaOriginal = peticion.PlazoDeOferta;
+
+            var circular = (
+                peticionOfertaUsuario.Circulares?
+                    .Where(p => p.Circular.RequiereCambioDeFechas == true && p.Circular.PlazoDeOferta.HasValue)
+                    .OrderByDescending(p => p.Circular.Id)
+                    .FirstOrDefault()
+                )?.Circular;
+
+            var fechaCircular = circular?.FechaCreacion;
+            var plazoDeOfertaCircular = circular?.PlazoDeOferta;
+
+            DateTime fechaFinPlazo;
+            if (plazoDeOfertaCierre == null && fechaCircular == null)
+            {
+                fechaFinPlazo = plazoDeOfertaOriginal;
+            }
+            else
+            {
+                if (plazoDeOfertaCierre == null)
+                {
+                    fechaFinPlazo = plazoDeOfertaCircular.Value;
+                }
+                else
+                {
+                    if (fechaCircular == null)
+                    {
+                        fechaFinPlazo = plazoDeOfertaCierre.Value;
+                    }
+                    else
+                    {
+                        if (plazoDeOfertaCierre.Value > fechaCircular)
+                        {
+                            fechaFinPlazo = plazoDeOfertaCierre.Value;
+                        }
+                        else
+                        {
+                            fechaFinPlazo = plazoDeOfertaCircular.Value;
+                        }
+                    }
+                }
+            }
+            return fechaFinPlazo;
         }
 
         public byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId)
@@ -10683,6 +10701,53 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return filePath;
+        }
+
+        private bool PuedenVerseLosImportes(Cotizacion cotizacion, UsuarioDto usuarioDto)
+        {
+            if (cotizacion == null || cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+            {
+                return false;
+            }
+
+            var peticionOfertaUsuario = cotizacion.PeticionDeOfertaUsuario;
+            var peticionDeOferta = peticionOfertaUsuario.PeticionDeOferta;
+
+            var estaLiberado = peticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
+            var esPeticionDeMateriales = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+            var respetaMateriales = cotizacion.RespetaMateriales ?? true;
+            var revisionEstaFinalizada = peticionDeOferta.RevisionTecnica != null && peticionDeOferta.RevisionTecnica.Finalizada;
+
+            if (!estaLiberado)
+            {
+                return false;
+            }
+
+            var puedenVerseImportes = true;
+            var fechaFinPlazo = CalcularFechaFinDePlazo(peticionOfertaUsuario);
+            var esUrgencia = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia ?? false;
+            var esAdmin = usuarioDto?.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS") ?? false;
+
+            if (fechaFinPlazo >= DateTime.Now && !esUrgencia)
+            {
+                puedenVerseImportes = false;
+            }
+            if (esPeticionDeMateriales && !respetaMateriales && !revisionEstaFinalizada)
+            {
+                puedenVerseImportes = false;
+            }
+            if (!esPeticionDeMateriales && !revisionEstaFinalizada)
+            {
+                puedenVerseImportes = false;
+            }
+
+            if (!puedenVerseImportes && esAdmin)
+            {
+                var haSolicitadoVerPrecios = !ValidarVisualizarPrecio(usuarioDto.Id, peticionDeOferta.Id);
+                puedenVerseImportes = haSolicitadoVerPrecios;
+            }
+
+            return puedenVerseImportes;
         }
     }
 
