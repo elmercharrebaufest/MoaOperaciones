@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Subject } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -81,6 +82,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     protected dashboard: DashboardComponent;
 
     @Input() ordenDeCompraSap: OrdenDeCompraSap;
+
+    @Output()
+    protected onResponsableTrabajoAutomaticallySelected: Subject<void> = new Subject();
+
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
@@ -1359,14 +1364,16 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                 this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
                     ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
                     : this.solpActual.usuarioSolicitanteList[0];
-            }
 
-            if (this.esCreacionSolp && selectResponsableTrabajoVacio) {
-                const username: string = sessionStorage.getItem("username");
+                if (this.esCreacionSolp) {
+                    const username: string = sessionStorage.getItem("username");
 
-                this.solpActual.selectResponsableTrabajo =
-                    this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username)
-                    || this.solpActual.usuarioSolicitanteList[0];
+                    const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username);
+                    if (elementoEncontrado) {
+                        this.solpActual.selectResponsableTrabajo = elementoEncontrado;
+                        this.onResponsableTrabajoAutomaticallySelected.next();
+                    }
+                }
             }
         }
     }
