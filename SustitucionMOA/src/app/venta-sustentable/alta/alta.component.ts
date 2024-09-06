@@ -14,6 +14,7 @@ import { DeclaracionConformidadComponent } from '../declaracion-conformidad/decl
 import { isUndefined } from 'util';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
+import { MessageService } from 'primeng/api';
 export interface DatosCopiar {
     NombreCampo: string;
     NombreCosecha: string;
@@ -39,7 +40,7 @@ export interface DatosCopiar {
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
-    providers: [VentaSustentableService]
+    providers: [VentaSustentableService, MessageService]
 })
 export class AltaComponent extends BaseComponent implements OnInit {
 
@@ -54,7 +55,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
-    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private messageService: MessageService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -533,6 +534,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.revisarDeclaracionJurada();
         }
     }
+    mensajeCuitsIguales = {
+        severity: 'warn',
+        summary: 'Atención',
+        detail: 'Recuerde que en el campo Proveedor y CUIT tiene que poner los datos del titular de la Carta de Porte'
+    }
 
     revisarDeclaracionJurada() {
         if ((this.CUIT == "" || this.CUIT.length == 11) && this.cosechaId > 0) {
@@ -541,6 +547,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.declaracionComformidad.razonSocialDeclaracion = this.proveedorTexto
             }
             this.declaracionComformidad.verificarDeclaracion();
+        }
+        if (this.CUIT == sessionStorage.getItem('cuit')) {
+            this.messageService.add(this.mensajeCuitsIguales);
         }
     }
     onSePreseleccionaProveedor() {

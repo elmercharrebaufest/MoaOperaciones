@@ -10,6 +10,7 @@
         <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
             (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
         </app-declaracion-conformidad>
+        <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <!--End Title-->
         <!-- Form-->
         <div class="row myRow mySearch cargaDeDatos">
@@ -66,7 +67,7 @@
 
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6" *ngIf="!ingresarProveedorPorCUIT">
-                            <p class="crearConsultaTitulos">Proveedor <span class="requerido">*</span></p>
+                            <p class="crearConsultaTitulos">Titular de la CP<span class="requerido">*</span></p>
                             <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
                                 [(valorInicial)]="CodigoProveedorEdit"
                                 (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
