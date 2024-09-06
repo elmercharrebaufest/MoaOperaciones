@@ -8241,12 +8241,10 @@ namespace SustitucionMOAUtils.Services
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario);
-
                 var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
                 foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)
                 {
-                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false));
+                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario));
                     nrosSolp.AddRange(adjudicacionMismaOC.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
                 }
                 resultado.NroSolp = string.Join(", ", nrosSolp.Distinct());
