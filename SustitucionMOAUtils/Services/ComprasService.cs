@@ -5024,9 +5024,8 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId, string mailUsuario)
         {
-
             string zipFilename;
             string filePath;
 
@@ -5045,7 +5044,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var peticion = repositorio.Obtener<PeticionDeOferta>(idPO);
                             var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
-                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo);
+                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario);
                         }
                     }
                 }
@@ -5054,13 +5053,13 @@ namespace SustitucionMOAUtils.Services
             {
                 var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
                 var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
-                zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+                zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion:yyyyMMdd}.zip";
                 filePath = $"{pathBase}/{zipFilename}";
                 using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
                 {
                     using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo);
+                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario);
                     }
                 }
             }
@@ -5068,8 +5067,9 @@ namespace SustitucionMOAUtils.Services
             return filePath;
         }
 
-        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo)
+        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo, string mailUsuario)
         {
+            var usuarioDto = usuarioService.GetUsuario(mailUsuario);
             int idPeticion = peticion.Id;
             foreach (var solp in solps)
             {
@@ -5189,7 +5189,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         var cotizacionUsuario = usuario.Cotizaciones.First();
 
-                        if (cotizacionUsuario.Archivos.Count > 0)
+                        if (cotizacionUsuario.Archivos.Count > 0 && PuedenVerseLosImportes(cotizacionUsuario, usuarioDto))
                         {
                             foreach (var item in cotizacionUsuario.Archivos)
                             {
@@ -5206,10 +5206,14 @@ namespace SustitucionMOAUtils.Services
                 // Agregar historiales de cotización al zip
                 foreach (var cotizacion in GetCotizacionesDescargables(peticion))
                 {
-                    var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
-                    var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
-                    File.WriteAllBytes(rutaHistorial, historialBytes);
-                    archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                    var puedenVerseLosImportes = PuedenVerseLosImportes(cotizacion, usuarioDto);
+                    if (puedenVerseLosImportes)
+                    {
+                        var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                        var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                        File.WriteAllBytes(rutaHistorial, historialBytes);
+                        archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                    }
                 }
             }
         }
@@ -8240,6 +8244,8 @@ namespace SustitucionMOAUtils.Services
                 List<string> nrosSolp = adjudicacion.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp).ToList();
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
+
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario);
 
                 var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
                 foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)

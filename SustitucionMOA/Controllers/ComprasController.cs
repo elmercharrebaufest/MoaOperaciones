@@ -930,10 +930,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
+                var mailUsuario = SessionPersister.getUsername();
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 
