@@ -206,6 +206,11 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         }
     }
 
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.onResponsableTrabajoAutomaticallySelected.unsubscribe();
+    }
+
     public setComponentMode(value: ComponentMode) {
         this.solpMode = value;
     }
