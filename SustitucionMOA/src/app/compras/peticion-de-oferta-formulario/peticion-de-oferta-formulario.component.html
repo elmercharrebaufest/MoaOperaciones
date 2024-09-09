@@ -241,6 +241,34 @@
                     </div>
                 </div>
 
+                <div *ngIf="this.solpCompraDto.MostrarSelectorPlazoDeOferta" class="inputCompras" style="margin-bottom: 40px;">
+                    <div class="row myRow" style="padding-top: 2px;">
+                        <div class="row">
+                            <hr style="border-top: 1px solid #d7d7d7 !important" />
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px;">
+                                    <strong>Plazo de entrega</strong>
+                                </div>
+                                <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                    <p-calendar [(ngModel)]="this.plazoDeEntrega"
+                                                [minDate]="plazoDeEntregaFechaMin()"
+                                                [locale]="locale"
+                                                [showIcon]="true"
+                                                dateFormat="dd-M-yy"
+                                                appendTo="body"
+                                                [readonlyInput]="true">
+                                    </p-calendar>
+                                    <div *ngIf="mostrarAlertaFechaInferior10Dias" class="alert alert-warning" role="alert">
+                                        <p>
+                                            La fecha de plazo de entrega es menor a 10 días.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="inputCompras" style="margin-bottom: 40px;">
                     <div class="row myRow" style="padding-top: 2px;">
                      

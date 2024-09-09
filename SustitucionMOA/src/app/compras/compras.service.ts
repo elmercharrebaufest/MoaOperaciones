@@ -777,14 +777,7 @@ export class ComprasService extends BaseService {
     }
 
     public GrabarPeticion(solp: EnvioSolpCompra) {
-        let json = JSON.stringify({
-            SolpId: solp.SolpId,
-            PosIds: solp.PosIds,
-            UsuarioIds: solp.UsuarioIds,
-            Observacion: solp.Observacion,
-            Adjuntos: solp.Adjuntos,
-            AdjuntoPliego: solp.AdjuntoPliego
-        });
+        let json = JSON.stringify(solp);
 
         var payload = new FormData();
         var archivos = solp.Adjuntos;

@@ -10,7 +10,6 @@ using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -38,6 +37,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.SqlServer;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -48,9 +48,6 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using SustitucionMOAModel.Dto.Compras;
-using System.Data.Entity.SqlServer;
-using System.Diagnostics;
 
 
 namespace SustitucionMOAUtils.Services
@@ -4363,8 +4360,6 @@ namespace SustitucionMOAUtils.Services
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
                 var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
                 var posiciones = solp.PosicionCompras.ToList();
                 var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
@@ -4514,7 +4509,37 @@ namespace SustitucionMOAUtils.Services
                         pos.NumeroRegistroInfo = registroInfo.First(a => a.PosicionId == pos.SolpPosicion_Id).Id;
                     }
                 }
-                var fechaOferta = posiciones[0].Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones[0].Solp.Pliego?.FechaHoraEntrega;
+                DateTime? fechaOferta;
+                if (posiciones[0].Solp.DebeGenerarPoAutomatica)
+                {
+                    if (posiciones[0].Solp.TrabajoYaHecho == true)
+                    {
+                        fechaOferta = DateTime.Today.AddDays(-1);
+                    }
+                    else
+                    {
+                        DateTime ultimoMomentoMañana = DateTime.Today.AddDays(2).AddSeconds(-1);
+                        if (posiciones[0].Solp.Pliego?.FechaHoraEntrega is null
+                            || posiciones[0].Solp.Pliego?.FechaHoraEntrega <= ultimoMomentoMañana)
+                        {
+                            fechaOferta = DateTime.Today.AddDays(10);
+                        }
+                        else
+                        {
+                            fechaOferta = posiciones[0].Solp.Pliego?.FechaHoraEntrega;
+                        }
+                    }
+                }
+                else
+                {
+                    if (peticionDeOferta.PlazoDeEntrega < DateTime.Today)
+                    {
+                        throw new ValidationCustomException("plazo vencido");
+                    }
+                    fechaOferta = peticionDeOferta.PlazoDeEntrega;
+                }
+
+
                 var usuarios = repositorio.Listar<Usuario>();
 
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
@@ -5089,7 +5114,7 @@ namespace SustitucionMOAUtils.Services
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
-                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-"+fileName);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
                         }
                     }
                 }
@@ -5103,7 +5128,7 @@ namespace SustitucionMOAUtils.Services
                         var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
                         var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                         File.WriteAllBytes(pdfFilePathUsuario, pdf);
-                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{ peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
                     }
                 }
 

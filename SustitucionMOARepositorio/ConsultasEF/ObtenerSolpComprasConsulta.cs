@@ -27,6 +27,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      NroSolp = solp.NroSolp,
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                      Adicional = solp.Adicional,
+                                     _plazoDeOfertaTentativo = solp.Pliego.FechaHoraEntrega,
+                                     MostrarSelectorPlazoDeOferta = /*!solp.DebeGenerarPoAutomatica*/ !((solp.TrabajoYaHecho == true) || (solp.Adicional == true) || (solp.CondEspProveedorAsignado == true)),
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
                                                         where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
                                                         orderby posicion.Indice
