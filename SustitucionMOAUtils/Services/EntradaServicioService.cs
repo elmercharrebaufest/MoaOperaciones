@@ -1419,26 +1419,27 @@ namespace SustitucionMOAUtils.Services
                 {
                     int ESNumber = GetESNumber(result.Message);
                     emailDetailCertificateDto.NumeroCertificacion = ESNumber.ToString();
-                    foreach (var ES in EntradasDeServicioTemp)
+                    try
                     {
-                        if (ES.Estado_certificacion == "Pendiente Aprobación")
+                        foreach (var ES in EntradasDeServicioTemp)
                         {
-                            try
+                            if (ES.Estado_certificacion == "Pendiente Aprobación")
                             {
-                                ES.NRO_ES_SAP = ESNumber;
-                                ES.Estado_certificacion = "Aprobada";
-                                ES.Fecha_aprobacion = DateTime.Today;
-                                result.NroESSap = ESNumber.ToString();
-                                repositorio.GuardarCambios();
-
-                                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
-
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.Log.Info(e.Message);
+                            
+                                    ES.NRO_ES_SAP = ESNumber;
+                                    ES.Estado_certificacion = "Aprobada";
+                                    ES.Fecha_aprobacion = DateTime.Today;
+                                    result.NroESSap = ESNumber.ToString();
+                                    repositorio.GuardarCambios();
+                            
                             }
                         }
+                    
+                        _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Info(e.Message);
                     }
                 }
             }

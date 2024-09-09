@@ -101,6 +101,9 @@ namespace SustitucionMOAUtils.Services.Email
         {
             StringBuilder bodyTable = new StringBuilder();
 
+            var moneda = emailDetailCertificateDto.Moneda == "ARP" ? "$ " : emailDetailCertificateDto.Moneda + " ";
+
+
             foreach (var servicio in emailDetailCertificateDto.DetalleServicio)
             {
                 bodyTable.Append("<tr>");
@@ -108,13 +111,13 @@ namespace SustitucionMOAUtils.Services.Email
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Cantidad}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.UM}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcentaje}</td>");
-                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Monto}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{moneda}{servicio.Monto}</td>");
                 bodyTable.Append("</tr>");
             }
 
             bodyTable.Append("<tr>");
             bodyTable.Append($"<td colspan='4' style='padding: 10px; border: 0px;'></td>");
-            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{emailDetailCertificateDto.MontoTotal}</strong></td>");
+            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda}{emailDetailCertificateDto.MontoTotal}</strong></td>");
             bodyTable.Append("</tr>");
 
             return bodyTable;

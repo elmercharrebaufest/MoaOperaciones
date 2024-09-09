@@ -161,7 +161,7 @@ export class AprobacionExternaComponent implements OnInit {
     //Aprobar Btn
     aprobarES() {
         try {
-            this.comprasService.enviarAprobacionES(this.cert, "ARP").subscribe((resp: any) => {
+            this.comprasService.enviarAprobacionES(this.cert, this.moneda).subscribe((resp: any) => {
 
                 switch (resp.data.Type) {
                     case "I": {
