@@ -29,7 +29,8 @@
                         <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es"></generacion1>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut]>
-                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"
+                                     [selectResponsableTrabajoChanged]="onResponsableTrabajoAutomaticallySelected"></generacion2>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut]>
                         <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es"></especificaciones>

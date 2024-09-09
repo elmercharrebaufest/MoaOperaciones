@@ -2,6 +2,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Subject } from 'rxjs';
 
 import * as uuid from 'uuid';
 
@@ -31,6 +32,9 @@ export class Generacion2Component extends ListBaseComponent {
 
     @Input('locale')
     protected locale: any;
+
+    @Input('selectResponsableTrabajoChanged')
+    protected selectResponsableTrabajoChanged: Subject<void>;
 
     //validaciones
     formulario2: FormGroup;
@@ -127,6 +131,11 @@ export class Generacion2Component extends ListBaseComponent {
                 fechaLimiteFecha: [{ value: true, disabled: true }, [Validators.required]],
                 fechaLimiteHora: [{ value: true, disabled: true }, [Validators.required]]
             });
+
+            this.selectResponsableTrabajoChanged.subscribe(() => {
+                this.onCompletarResponsable();
+            });
+
         } else {
             this.formulario2 = this.formBuilder.group({
                 supervisorTrabajo: new FormControl('', Validators.required),
