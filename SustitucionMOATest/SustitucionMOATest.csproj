@@ -119,6 +119,7 @@
     <Compile Include="Controllers\TicketPesadaControllerTest.cs" />
     <Compile Include="Controllers\OrdenDeCargaControllerTest.cs" />
     <Compile Include="Controllers\UsuarioControllerTest.cs" />
+    <Compile Include="DeployParameters\EndpointTests.cs" />
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJobTests.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJobTest.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJobTests.cs" />

@@ -490,7 +490,7 @@ namespace SustitucionMOAWS.WSConsumers
         public string EstadoSolpSap { get; set; }
         public string EstadoPosicion { get; set; }
         public DateTime FechaEstimadaLiberacionDate { get; set; }
-        public decimal Ordered { get; internal set; }
+        public decimal Ordered { get;  set; }
         public string ProveedorFijoRazonSocial { get; internal set; }
         public string CodigoDeProveedor { get; internal set; }
     }
