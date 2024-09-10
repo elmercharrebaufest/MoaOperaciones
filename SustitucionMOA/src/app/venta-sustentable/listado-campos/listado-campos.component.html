@@ -297,7 +297,7 @@
 
                                         <span>
 
-                                            <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
+                                            <a *ngIf="editarCampos"
                                                 class="animate"
                                                 [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
                                                 href="#">
