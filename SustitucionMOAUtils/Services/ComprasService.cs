@@ -10,7 +10,6 @@ using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
@@ -38,6 +37,7 @@ using System.Configuration;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.SqlServer;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -48,9 +48,6 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using SustitucionMOAModel.Dto.Compras;
-using System.Data.Entity.SqlServer;
-using System.Diagnostics;
 
 
 namespace SustitucionMOAUtils.Services
@@ -3560,6 +3557,7 @@ namespace SustitucionMOAUtils.Services
 
                 var posicionesSap =
                     comprasServiceSap.ObtenerPosiciones(todasLasOfertas.NrosSolp);
+                var posicionesPendientesSap = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posicionesSap);
 
                 var esAdmin = usuario.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
@@ -3569,7 +3567,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
                 }
-                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
+                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId, posicionesPendientesSap);
                 foreach (var usuarioPO in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
@@ -3664,7 +3662,8 @@ namespace SustitucionMOAUtils.Services
                             usuarioPO.VerImportes = false;
                         }
 
-                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Exists(x => x.CotizacionSubPosiciones.Exists(y => !y.Completado)))
+                        if (usuarioPO.Cotizacion?.CotizacionPosiciones
+                            .Exists(x => !x.Adjudicado && x.CotizacionSubPosiciones.Exists(y => !y.Completado)) == true)
                         {
                             mensaje = "La cotización tiene subposiciones sin cotizar";
                             verAdjudicar = false;
@@ -3739,7 +3738,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId)
+        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId, IEnumerable<PosicionSolpSAP> posicionesPendientes)
         {
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
 
@@ -3758,6 +3757,7 @@ namespace SustitucionMOAUtils.Services
                                 Id = posicion.SolpPosicion_Id,
                                 Cantidad = 1,
                                 Completado = false,
+                                Adjudicado = posicion.SolpPosicion.ProveedorAdjudicado_Id != null,
                                 EstaEliminado = posicion.SolpPosicion.Estado != true,
                                 NoDisponible = false,
                                 PeticionDeOfertaSolpPosicion_Id = posicion.Id,

@@ -10,6 +10,11 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp);
 
         IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<string> numerosSolp);
+
+        IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<PosicionSolpSAP> posicionesSap);
+
+        bool PosicionPendienteSap(PosicionSolpSAP position);
+
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(string numeroSolp);
 
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(IEnumerable<string> numerosSolp);
