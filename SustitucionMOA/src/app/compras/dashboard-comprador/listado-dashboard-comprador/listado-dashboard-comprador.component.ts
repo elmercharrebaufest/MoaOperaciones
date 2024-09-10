@@ -19,6 +19,8 @@ import { CircularDto } from '../../../modelos/circular-model';
 import { AdjudicacionDto, AdjudicacionEdicionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
+import { LegajoDto } from '../../../modelos/compras/legajoDto';
+import { ApiResponse } from '../../../common/models/response';
 
 declare var $: any;
 
@@ -54,7 +56,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     pageIndex: number = 1;
     subscripcionSolp: Subscription
     displayLegajo: boolean = false;
-    legajo: any;
+    legajo: LegajoDto[];
     peticion: PeticionDeOfertaDto;
     displayCircular: boolean = false;
     circular: CircularDto
@@ -296,19 +298,19 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    verLegajo(Id) {
+    idLegajoEnModal = null;
+    verLegajo(Id: number) {
         this.blockUI.start('Cargando...');
         this.service.verLegajo(Id, null, this.esProveedor)
             .subscribe(
                 (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        this.legajo = result.data;
+                    let legajoRes = this.manejarErroresApiResponse(result);
+                    if (legajoRes) {
+                        this.legajo = legajoRes;
+                        this.idLegajoEnModal = Id;
                         this.displayLegajo = true;
-                        this.blockUI.stop();
                     }
+                    this.blockUI.stop();
                 },
                 (error) => {
                     this.blockUI.stop();
@@ -345,7 +347,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(idPeticion, null)
+        this.service.descargarLegajo(idPeticion, null, this.esProveedor)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -1020,5 +1022,20 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             }
         }
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.floatMsgService.setErrorMsg(response.info);
+        }
+        return response.data || null;
     }
 }

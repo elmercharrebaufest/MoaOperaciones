@@ -3618,18 +3618,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Service References\ModificarOCWebServiceMOA\configuration91.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ModificarOCWebServiceMOA\configuration.svcinfo" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Service References\ModificarOCWebServiceMOA\Reference.svcmap">
-      <Generator>WCF Proxy Generator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Service References\AgregarRegistroInfoServiceWebMOA\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
@@ -3803,6 +3791,12 @@
     <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration91.svcinfo" />
     <None Include="Service References\CuentaCorrienteWebServiceMOA\configuration.svcinfo" />
     <None Include="Service References\CuentaCorrienteWebServiceMOA\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\ModificarOCWebServiceMOA\configuration91.svcinfo" />
+    <None Include="Service References\ModificarOCWebServiceMOA\configuration.svcinfo" />
+    <None Include="Service References\ModificarOCWebServiceMOA\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

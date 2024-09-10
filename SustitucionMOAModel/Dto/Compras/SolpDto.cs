@@ -78,7 +78,7 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<PeticionDeOfertaDto> PeticionesDeOferta { get; set; } = new List<PeticionDeOfertaDto>();
         public List<PeticionDeOfertaDto> Peticiones { get; set; } = new List<PeticionDeOfertaDto>();
         public string TipoPosicionCodigo { get; set; }
-        public bool TienePeticionDeOferta { get; set; }
+        public bool? TienePeticionDeOferta { get; set; }
         public IQueryable<AdjudicacionDto> OrdenesDeCompra { get; set; }
         public List<AdjudicacionDto> OrdenesDeCompraSolicitante { get; set; }
         public bool? TrabajoYaHecho { get; set; }
@@ -121,6 +121,10 @@ namespace SustitucionMOAModel.Dto
         public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
         public bool RequisitoCiberseguridad { get; set; }
         public string CodigoProveedorSap { get; set; }
+        public bool? TieneModificaciones { get; set; }
+        public bool? TieneRevisionTecnicaFinalizada { get; set; }
+        public int? EnvioCircularA { get; set; }
+
 
         public SolpDto() { }
         public SolpDto(Solp entity)
