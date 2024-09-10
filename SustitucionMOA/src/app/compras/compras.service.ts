@@ -627,7 +627,7 @@ export class ComprasService extends BaseService {
             });
     }
 
-    enviarEmail(emailCompose: EmailComposeModel) {
+    enviarEmail(emailCompose: EmailComposeModel<string>) {
         var payload = new FormData();
         payload.append('emailCompose', JSON.stringify(emailCompose));
         return this.http

@@ -31,7 +31,7 @@ import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { ComponentMode, setupDaysAndMonths, setupJornadaLaboralDias, setupSolpPasos } from './solp.utils';
 import { Solp } from './solp';
 import { SolpPosicion } from './solp-posicion';
-import { EmailComposeModel } from '../../common/email-compose/email-compose.model';
+import { EmailComposeModel, EmailInfo } from '../../common/email-compose/email-compose.model';
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
@@ -1188,7 +1188,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     showEmailPopup(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean) {
         this.displaySAP = false;
         this.displaySAPEditar = false;
-        const emailModel = new EmailComposeModel();
+        const emailModel = new EmailComposeModel<EmailInfo>();
         emailModel.from = this.fromEmail;
         emailModel.to = this.getToEmails();
         emailModel.cc = this.getCCEmails();
@@ -1199,9 +1199,13 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         this.emailComposeService.show(emailModel);
     }
 
-    sendEmail(emailModel: EmailComposeModel) {
+    sendEmail(emailModel: EmailComposeModel<EmailInfo>) {
         this.blockUI.start('Enviando email...');
-        this.service.enviarEmail(emailModel).subscribe(result => {
+
+        this.service.enviarEmail({
+            ...emailModel,
+            to: emailModel.to.map(x => x.CodigoDescripcion)
+        }).subscribe(result => {
             this.blockUI.stop();
             this.emailComposeService.close();
             if (result.logout == true) {
@@ -1239,7 +1243,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return ccEmails;
     }
 
-    private getToEmails(): string[] {
+    private getToEmails(): EmailInfo[] {
         const toEmails: string[] = [];
 
         if (this.solpActual.urgencia == true) {
@@ -1254,16 +1258,14 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                 }
             });
         } else {
-            if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
-                toEmails.push(this.solpActual.mail);
-            } else {
-                const username = sessionStorage.getItem("username");
-                if (username) {
-                    toEmails.push(username);
-                }
+            if (this.solpActual.tipoSolp === "SIN_PLIEGO") {
+                toEmails.push(this.solpActual.selectResponsableTrabajo.CodigoDescripcion);
+            }
+            if (this.solpActual.tipoSolp === "CON_PLIEGO") {
+                toEmails.push(this.solpActual.selectUsuarioFiscal.CodigoDescripcion);
             }
         }
-        return toEmails;
+        return toEmails.map(email => ({ Id: email, CodigoDescripcion: email }));
     }
 
     private get fromEmail(): string {
