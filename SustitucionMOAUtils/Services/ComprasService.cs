@@ -4539,7 +4539,6 @@ namespace SustitucionMOAUtils.Services
                     fechaOferta = peticionDeOferta.PlazoDeEntrega;
                 }
 
-
                 var usuarios = repositorio.Listar<Usuario>();
 
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
