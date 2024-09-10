@@ -876,5 +876,18 @@
 						match="/configuration/appSettings/add[@key='EmailRegexFormato']
                            /@value" />
 	</parameter>
+  <parameter name="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_GETLIST']
+                    /@address" />
+  </parameter>
+  <parameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                    /endpoint[@name='SI_MMRFC_BAPI_ENTRYSHEET_CREATE']
+                    /@address" />
+  </parameter>
+  
 </parameters>
 

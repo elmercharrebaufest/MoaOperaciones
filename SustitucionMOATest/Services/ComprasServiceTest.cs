@@ -3387,9 +3387,9 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(repo => repo.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
             .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now,
-                Solp = new Solp { UsuarioCreacion= new Usuario{ Id = 1}, NroSolp = "1",ProveedorAsignado_Id=1
+                Solp = new Solp { Pliego= new Pliego(), UsuarioCreacion= new Usuario{ Id = 1}, NroSolp = "1",ProveedorAsignado_Id=1
                 , Posiciones = new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now,
-                Solp = new Solp { UsuarioCreacion= new Usuario{ Id = 1}, NroSolp = "1",ProveedorAsignado_Id=1 } } }
+                Solp = new Solp { Pliego= new Pliego(), UsuarioCreacion= new Usuario{ Id = 1}, NroSolp = "1",ProveedorAsignado_Id=1 } } }
                 } } });
 
             comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))

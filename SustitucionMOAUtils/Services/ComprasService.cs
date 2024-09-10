@@ -4548,7 +4548,7 @@ namespace SustitucionMOAUtils.Services
                     Agrupada = false
                 };
 
-                peticion = repositorio.Agregar(peticion);
+                repositorio.Agregar(peticion);
                 repositorio.GuardarCambios();
 
                 if (adjuntos?.Count > 0)
@@ -5089,7 +5089,7 @@ namespace SustitucionMOAUtils.Services
                         if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
                         {
                             string fileName = Path.GetFileName(archivoSubido.Ruta);
-                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-"+fileName);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
                         }
                     }
                 }
@@ -5103,7 +5103,7 @@ namespace SustitucionMOAUtils.Services
                         var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
                         var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                         File.WriteAllBytes(pdfFilePathUsuario, pdf);
-                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{ peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
                     }
                 }
 

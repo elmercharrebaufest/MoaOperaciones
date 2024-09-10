@@ -21,18 +21,43 @@ namespace SustitucionMOATest.DeployParameters
             var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
             var prodEndpoints = ExtractEndpointsFromProd(webProdFilePathPath);
 
-            // Verificar si todos los endpoints del web.config están en NEW.PROD.DeployParameters.xml
-            var missingEndpoints = webConfigEndpoints.Except(prodEndpoints).ToList();
+            // Verificar en bloque múltiple
+            Assert.Multiple(() =>
+            {
+                // Verificar si faltan en el archivo de producción
+                var faltanEnElProd = webConfigEndpoints.Except(prodEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElProd, $"Faltan en el NEW.PROD.DeployParameters.xml: {string.Join(", ", faltanEnElProd)}");
 
-            if (missingEndpoints.Any())
-            {
-                Assert.Fail($"Faltan los siguientes endpoints en el archivo de producción: {string.Join(", ", missingEndpoints)}");
-            }
-            else
-            {
-                Assert.Pass("Todos los endpoints están presentes en el archivo de producción.");
-            }
+                // Verificar si faltan en el web.config
+                var faltanEnElWebConfig = prodEndpoints.Except(webConfigEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
+            });
         }
+
+        [Test]
+        public void VerifyAllWebConfigEndpointsAreInParametersFile()
+        {
+            string webProjectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\SustitucionMOA\");
+            string parametersFilePath = Path.Combine(webProjectPath, "parameters.xml");
+            string webConfigPath = Path.Combine(webProjectPath, "web.config");
+
+            // Extraer los endpoints de ambos archivos
+            var parametersEndpoints = ExtractEndpointsFromParameters(parametersFilePath);
+            var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
+
+            // Verificar en bloque múltiple
+            Assert.Multiple(() =>
+            {
+                // Verificar si faltan en el archivo de producción
+                var faltanEnElProd = webConfigEndpoints.Except(parametersEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElProd, $"Faltan en el parameters.xml: {string.Join(", ", faltanEnElProd)}");
+
+                // Verificar si faltan en el web.config
+                var faltanEnElWebConfig = parametersEndpoints.Except(webConfigEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
+            });
+        }
+        //      Faltan en el parameters.xml: SI_MMRFC_BAPI_ENTRYSHEET_CREATE
 
         [Test]
         public void VerifyAllWebConfigEndpointsAreInProdParameters_ExternalAPI()
@@ -45,41 +70,17 @@ namespace SustitucionMOATest.DeployParameters
             var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
             var prodEndpoints = ExtractEndpointsFromProd(webProdFilePathPath);
 
-            // Verificar si todos los endpoints del web.config están en NEW.PROD.DeployParameters.xml
-            var missingEndpoints = webConfigEndpoints.Except(prodEndpoints).ToList();
-
-            if (missingEndpoints.Any())
+            // Verificar en bloque múltiple
+            Assert.Multiple(() =>
             {
-                Assert.Fail($"Faltan los siguientes endpoints en el archivo de producción: {string.Join(", ", missingEndpoints)}");
-            }
-            else
-            {
-                Assert.Pass("Todos los endpoints están presentes en el archivo de producción.");
-            }
-        }
+                // Verificar si faltan en el archivo de producción
+                var faltanEnElProd = webConfigEndpoints.Except(prodEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElProd, $"Faltan en el NEW.PROD.DeployParameters.xml: {string.Join(", ", faltanEnElProd)}");
 
-        [Test]
-        public void VerifyAllWebConfigEndpointsAreInParametersFile()
-        {
-            string webProjectPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"..\..\..\SustitucionMOA\");
-            string parametersFilePath = Path.Combine(webProjectPath, "parameters.xml");
-            string webConfigPath = Path.Combine(webProjectPath, "web.config");
-
-            // Extraer los endpoints de ambos archivos
-            var parametersEndpoints = ExtractEndpointsFromParameters(parametersFilePath);
-            var prodEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
-
-            // Verificar si todos los endpoints de parameters.xml están en NEW.PROD.DeployParameters.xml
-            var missingEndpoints = parametersEndpoints.Except(prodEndpoints).ToList();
-
-            if (missingEndpoints.Any())
-            {
-                Assert.Fail($"Faltan los siguientes endpoints en el archivo de producción: {string.Join(", ", missingEndpoints)}");
-            }
-            else
-            {
-                Assert.Pass("Todos los endpoints están presentes en el archivo de producción.");
-            }
+                // Verificar si faltan en el web.config
+                var faltanEnElWebConfig = prodEndpoints.Except(webConfigEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
+            });
         }
 
         [Test]
@@ -91,19 +92,19 @@ namespace SustitucionMOATest.DeployParameters
 
             // Extraer los endpoints de ambos archivos
             var parametersEndpoints = ExtractEndpointsFromParameters(parametersFilePath);
-            var prodEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
+            var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
 
-            // Verificar si todos los endpoints de parameters.xml están en NEW.PROD.DeployParameters.xml
-            var missingEndpoints = parametersEndpoints.Except(prodEndpoints).ToList();
+            // Verificar en bloque múltiple
+            Assert.Multiple(() =>
+            {
+                // Verificar si faltan en el archivo de producción
+                var faltanEnElProd = webConfigEndpoints.Except(parametersEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElProd, $"Faltan en el parameters.xml: {string.Join(", ", faltanEnElProd)}");
 
-            if (missingEndpoints.Any())
-            {
-                Assert.Fail($"Faltan los siguientes endpoints en el archivo de producción: {string.Join(", ", missingEndpoints)}");
-            }
-            else
-            {
-                Assert.Pass("Todos los endpoints están presentes en el archivo de producción.");
-            }
+                // Verificar si faltan en el web.config
+                var faltanEnElWebConfig = parametersEndpoints.Except(webConfigEndpoints).ToList();
+                Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
+            });
         }
 
         private List<string> ExtractEndpointsFromParameters(string filePath)
