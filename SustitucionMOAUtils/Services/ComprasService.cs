@@ -4518,9 +4518,9 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        DateTime ultimoMomentoMañana = DateTime.Today.AddDays(2).AddSeconds(-1);
+                        DateTime lastSecondTomorrow = DateTime.Today.AddDays(2).AddSeconds(-1);
                         if (posiciones[0].Solp.Pliego?.FechaHoraEntrega is null
-                            || posiciones[0].Solp.Pliego?.FechaHoraEntrega <= ultimoMomentoMañana)
+                            || posiciones[0].Solp.Pliego?.FechaHoraEntrega <= lastSecondTomorrow)
                         {
                             fechaOferta = DateTime.Today.AddDays(10);
                         }
