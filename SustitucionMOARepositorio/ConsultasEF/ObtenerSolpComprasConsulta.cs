@@ -30,7 +30,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      _plazoDeOfertaTentativo = solp.Pliego.FechaHoraEntrega,
                                      MostrarSelectorPlazoDeOferta = /*!solp.DebeGenerarPoAutomatica*/ !((solp.TrabajoYaHecho == true) || (solp.Adicional == true) || (solp.CondEspProveedorAsignado == true)),
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
-                                                        where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
+                                                        where posicion.Solp_Id == solp.Id
+                                                            && posicion.EsConcluido == true
+                                                            && posicion.Estado
+                                                            && posicion.ProveedorAdjudicado_Id == null //ARMOA003-3133: no adjudicados
                                                         orderby posicion.Indice
                                                         select new SolpPosicionDto()
                                                         {
