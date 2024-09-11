@@ -113,6 +113,7 @@ namespace SustitucionMOAModel.Entities
             DestinatarioExisteScato = request.DestinatarioExisteScato;
             DestinoExisteScato = request.DestinoExisteScato;
             DestinoMercaderia = request.DestinoMercaderia;
+            Escalable = request.Escalable;
         }
         public override bool Equals(object obj)
         {
