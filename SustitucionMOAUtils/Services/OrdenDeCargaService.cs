@@ -465,7 +465,7 @@ namespace SustitucionMOAUtils.Services
                         Escalable = x.Escalable,
                         TipoContrato = x.TipoContrato,
                         TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
-                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id),
+                        IdsConsultasRealizadas = consultas.Where(cd => cd.Orden_Id == x.Id).Select(cd => cd.Id),
                         FleteMOA = x.FleteMOA ?? false,
                         TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
                     }).OrderByDescending(y => y.Id).ToList();
@@ -502,7 +502,7 @@ namespace SustitucionMOAUtils.Services
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
                         TipoContrato = x.TipoContrato,
-                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id)
+                        IdsConsultasRealizadas = consultas.Where(cd => cd.Orden_Id == x.Id).Select(cd => cd.Id)
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)
@@ -657,7 +657,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("La orden no puede anularse debido a su estado actual.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            
+
             //var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
             //if (puedeEnviarASAP)

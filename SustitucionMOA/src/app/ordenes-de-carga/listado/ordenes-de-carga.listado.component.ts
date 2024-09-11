@@ -13,6 +13,7 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { SendDataService } from '../../consulta/send-data.service';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -47,7 +48,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     //primerListado: any[];
     listaEnviarASAP: number[] = [];
-    
+
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
@@ -69,7 +70,16 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     tipoConrato = TipoContrato;
 
-    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
+    constructor(
+        protected service: OrdenesDeCargaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        private confirmationService: ConfirmationService,
+        private sendDataService: SendDataService
+    ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -230,7 +240,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             },
         );
     }
-    navegarAConsultas() {
+    navegarAConsultas(idConsulta: number) {
+        this.sendDataService.setDatoIdConsultaOrdenDeCarga(idConsulta);
         this.navService.navegarSeccionParam('consulta', 'mis-consultas')
     }
 }
