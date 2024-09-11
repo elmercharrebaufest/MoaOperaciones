@@ -36,6 +36,7 @@ using SustitucionMOAUtils.Email;
 using System.Globalization;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Windows.Media.Animation;
+using Microsoft.Azure.Storage.RetryPolicies;
 
 namespace SustitucionMOAUtils.Services
 
@@ -1169,6 +1170,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
+                SustitucionMOAWS.Logger.Log.Error("EntradaServicioService.GuardarDatosES: " + e.Message);
                 throw e;
             }
 

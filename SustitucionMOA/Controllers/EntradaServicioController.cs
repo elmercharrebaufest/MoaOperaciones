@@ -215,10 +215,12 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { info = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
