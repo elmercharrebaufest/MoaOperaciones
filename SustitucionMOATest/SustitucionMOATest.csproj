@@ -151,6 +151,7 @@
     <Compile Include="WS\AzureAD\AzureADConsumerTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="coverage.runsettings" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TestFiles\Example.kmz">
