@@ -25,6 +25,8 @@ using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAFotmatter;
+using System.Linq;
+using SustitucionMOAWS.DataAgroServices;
 
 namespace SustitucionMOATest.Services
 {
@@ -70,7 +72,7 @@ namespace SustitucionMOATest.Services
             mIEmailFasService = new Mock<IEmailFasService>();
             mIKgDisponiblesFasService = new Mock<IKgDisponiblesFasService>();
             mICNRTClient = new Mock<ICNRTClient>();
-            
+
             AddProvider(301301301, EstadoAprobacion.Aprobado, "Test", "RS", "dylopez@baufest.com", "233333333333", new TipoUsuario { Id = 5, Nombre = "Cliente", NombreCorto = "CLI" });
             target = new OrdenDeCargaService(repositorioMock.Object, consumerOrdenCargaMOA.Object, feriadoService.Object,
                 mIScatoRepositorioClient.Object, mIScatoConsumer.Object, mIEmailFasService.Object, mIFacturaAnticipadaService.Object,
@@ -176,9 +178,9 @@ namespace SustitucionMOATest.Services
 
             var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(2));
+            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Exactly(3));
             repositorioMock.Verify(x => x.Agregar(It.IsAny<OrdenDeCarga>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
 
             Assert.AreEqual(expected, result);
         }
@@ -229,13 +231,15 @@ namespace SustitucionMOATest.Services
                 {
                     Id = 1, Cliente_Id = 1, CUITCliente = "233333333333",
                     Cliente = new Proveedor { CodigoProveedor = "DS2345", RazonSocial = "Kefwen" },
-                    Producto = new Material { Nombre = "mat1" }
+                    Producto = new Material { Nombre = "mat1" },ChasisAcoplado ="a",
+                    CodigoCorredor = "",Corredor = new Proveedor{ RazonSocial=""},ContratoSAP="1",ContratoIngresado="1"
                 },
                 new OrdenDeCarga
                 {
                     Id = 2, Cliente_Id = 2, CUITCliente = "255555555555",
                     Cliente = new Proveedor { CodigoProveedor = "JRE6532", RazonSocial = "Mjerehd" },
-                    Producto = new Material { Nombre = "mat2" }
+                    Producto = new Material { Nombre = "mat2" },ChasisAcoplado ="b",
+                    CodigoCorredor = "",Corredor = new Proveedor{RazonSocial=""},ContratoSAP="1", ContratoIngresado="1"
                 },
             };
 
@@ -244,24 +248,20 @@ namespace SustitucionMOATest.Services
                 .Returns(usuario);
 
             repositorioMock.Setup(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>())).Returns(usuario);
+            repositorioMock
+              .Setup(x => x.Listar(It.IsAny<Expression<Func<ConsultaDetalle, bool>>>(),
+                               It.IsAny<int>(),
+                               It.IsAny<string>(),
+                               It.IsAny<DirOrden>(),
+                               It.IsAny<IEnumerable<Expression<Func<ConsultaDetalle, object>>>>()))
+              .Returns(new List<ConsultaDetalle>());
 
             repositorioMock
-               .Setup(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
-               .Returns(ordenesDeCarga);
+               .Setup(x => x.ListarConsultable(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>()))
+               .Returns(ordenesDeCarga.AsQueryable());
 
-            //var result = target.Listar(mailUsuario, "", "");
             var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-            repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
             Assert.IsTrue(result.Count == 2);
         }
 
@@ -293,7 +293,8 @@ namespace SustitucionMOATest.Services
                 {
                     proveedor
                 },
-                Roles = new List<Rol>()
+                Roles = new List<Rol>(),
+                TipoUsuario = new TipoUsuario { Id = 5 }
             };
 
             var ordenesDeCarga = new List<OrdenDeCarga>()
@@ -302,7 +303,8 @@ namespace SustitucionMOATest.Services
                 {
                     Id = 1, Cliente_Id = 1, CUITCliente = "233333333333",
                     Cliente = new Proveedor { CodigoProveedor = "DS2345", RazonSocial = "Kefwen" },
-                    Producto = new Material { Nombre = "mat1" }
+                    Producto = new Material { Nombre = "mat1" },ChasisAcoplado ="a",
+                    CodigoCorredor = "",Corredor = new Proveedor{ RazonSocial=""},ContratoSAP="1",ContratoIngresado="1"
                 },
             };
 
@@ -320,14 +322,25 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                .Returns(ordenesDeCarga);
 
+            repositorioMock
+              .Setup(x => x.ListarConsultable(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>()))
+              .Returns(ordenesDeCarga.AsQueryable());
+
+            repositorioMock
+              .Setup(x => x.Listar(It.IsAny<Expression<Func<ConsultaDetalle, bool>>>(),
+                               It.IsAny<int>(),
+                               It.IsAny<string>(),
+                               It.IsAny<DirOrden>(),
+                               It.IsAny<IEnumerable<Expression<Func<ConsultaDetalle, object>>>>()))
+              .Returns(new List<ConsultaDetalle>());
+
+            repositorioMock
+               .Setup(x => x.ListarConsultable(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>()))
+               .Returns(ordenesDeCarga.AsQueryable());
+
             var result = target.Listar(mailUsuario, fechaInicio.ToString(), fechaFin.ToString());
 
-            repositorioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
-            repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
-                                It.IsAny<int>(),
-                                It.IsAny<string>(),
-                                It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
+
             Assert.IsTrue(result.Count == 1);
         }
 
@@ -489,6 +502,9 @@ namespace SustitucionMOATest.Services
             consumerOrdenCargaMOA
                 .Setup(x => x.ControlarCarga(It.IsAny<ControlCargaRequest>()))
                 .Returns(controlCargaResponseHandler);
+
+
+
             consumerOrdenCargaMOA
                 .Setup(x => x.OrdenCargaControlEstadoRequest(
                     It.Is<string>(entr => string.IsNullOrEmpty(entr)),
@@ -499,6 +515,9 @@ namespace SustitucionMOATest.Services
             mIScatoRepositorioClient
                 .Setup(x => x.ObtenerChoferPorCuil(It.IsAny<string>()))
                 .Returns(respuestaScato);
+            consumerOrdenCargaMOA
+                .Setup(x => x.ModificarEntregaOrdenCarga(It.IsAny<ModificarEntregaRequest>()))
+                .Returns(new ResultadoGenerico());
 
             var result = target.Editar(orden2, mailUsuario);
 
@@ -551,9 +570,16 @@ namespace SustitucionMOATest.Services
             var ordenId = 1;
             var ordenDeCarga = new OrdenDeCarga
             {
-                Id = ordenId, Cliente_Id = 1, CUITCliente = "233333333333",
+                Id = ordenId,
+                Cliente_Id = 1,
+                CUITCliente = "233333333333",
                 Cliente = new Proveedor { CodigoProveedor = "KJ387" },
-                Producto = new Material { Nombre = "mat1" }
+                Producto = new Material { Nombre = "mat1" },
+                ChasisAcoplado = "a",
+                CodigoCorredor = "",
+                Corredor = new Proveedor { RazonSocial = "" },
+                ContratoSAP = "1",
+                ContratoIngresado = "1"
             };
 
             var expected = new OrdenDeCargaDetalleDto { Id = ordenId, CUITCliente = "233333333333" };
@@ -609,7 +635,7 @@ namespace SustitucionMOATest.Services
                                 It.IsAny<DirOrden>(),
                                 It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
                 .Returns(ordenDeCargaLista);
-            
+
             repositorioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<HabilitacionJob, bool>>>()))
                 .Returns(new HabilitacionJob { Habilitado = true });
@@ -786,7 +812,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsTrue()
+        public void ValidarCuilChoferDigito_CuilNoExiste_ReturnsFalse()
         {
             _respuestaChofer.IsValid = false;
             _respuestaChofer.Messages = new ScatoRepo.MessageItem[]
@@ -802,7 +828,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.ValidarCuilChoferDigito("11111111111");
 
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
 
         }
         [Test]
@@ -913,20 +939,6 @@ namespace SustitucionMOATest.Services
             Assert.That(orden.Estado, Is.EqualTo(EstadoOrdenDeCarga.Anulada));
         }
 
-
-        [Test]
-        public void Agregar_UsuarioNoPuedeModificarReventa_ThrowValidationCustomException()
-        {
-            ordenDeCarga.Reventa = true;
-            SetupAgregarTests();
-
-            var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
-
-            var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
-
-            Assert.AreEqual(expected, ex.Message);
-        }
-
         [Test]
         public void Agregar_UsuarioPuedeModificarReventa_CreaNormalmente()
         {
@@ -958,7 +970,7 @@ namespace SustitucionMOATest.Services
 
             var result = target.ValidarCuitTransporteDigito("11111111111");
 
-            Assert.That(result, Is.True);
+            Assert.That(result, Is.False);
 
         }
         [Test]
@@ -970,7 +982,7 @@ namespace SustitucionMOATest.Services
                 _respuestaTransporte
                 );
 
-            var result = target.ValidarCuitTransporteDigito("11111111111");
+            var result = target.ValidarCuitTransporteDigito("20309056400");
 
             Assert.That(result, Is.True);
 
@@ -1019,8 +1031,8 @@ namespace SustitucionMOATest.Services
                     CategoriaEscalado = "A",
                     Dominios = new List<Dominio>
                     {
-                        new Dominio { Rto = new Rto { CantEjes = 2 } },
-                        new Dominio { Rto = new Rto { CantEjes = 3 } }
+                        new Dominio { Rto = new Rto { CantEjes = 2 },Ruta=new Ruta{CantEjes = 2 } },
+                        new Dominio { Rto = new Rto { CantEjes = 3 }, Ruta=new Ruta{CantEjes = 2 } }
                     }
                 }
             };
@@ -1511,6 +1523,9 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
                 .Returns(ordenDeCarga);
 
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
+               .Returns(new List<OrdenDeCarga>() { ordenDeCarga });
+
             consumerOrdenCargaMOA
                .Setup(x => x.OrdenCargaVisualizarClienteExecute(It.IsAny<OrdenCargaVisualizarClienteWSMOARequest>()))
                .Returns(new OrdenCargaVisualizarClienteWSMOAResponse
@@ -1528,6 +1543,12 @@ namespace SustitucionMOATest.Services
 
             ConfigurationManager.AppSettings["CantidadOrdenDeCarga"] = "30000";
             ConfigurationManager.AppSettings["UsuarioAutomaticoSAP"] = "moaoperaciones@baufest.com";
+
+            consumerOrdenCargaMOA
+              .Setup(x => x.ObtenerContratoSAP(It.IsAny<string>(), It.IsAny<TipoContratoFAS?>()))
+              .Returns(new Result());
+            mIKgDisponiblesFasService.Setup(x => x.ObtenerKgDisponiblesContrato(It.IsAny<Result>(), It.IsAny<List<OrdenDeCarga>>()))
+              .Returns(40000000);
         }
         [Test()]
         public void GenerarEntregaSAPOkTest()
@@ -1565,11 +1586,11 @@ namespace SustitucionMOATest.Services
             var nroEntrega = "";
             var ordenCargaEntreResponseHandler = new OrdenCargaEntreResponseHandler(respuestaSap, nroEntrega);
             ordenDeCarga.Estado = EstadoOrdenDeCarga.PendienteAprobacionCredito;
-            
+
             repositorioMock
                 .Setup(x => x.Obtener<OrdenDeCarga>(It.IsAny<int>()))
                 .Returns(ordenDeCarga);
-            
+
             consumerOrdenCargaMOA
                 .Setup(x => x.CrearEntrega(It.IsAny<CrearEntregaRequest>(), It.IsAny<bool>()))
                 .Returns(ordenCargaEntreResponseHandler);

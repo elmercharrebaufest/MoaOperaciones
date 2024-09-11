@@ -4,6 +4,81 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 using NUnit.Framework;
+using SustitucionMOAWS.AplicacionesWebServiceMOA;
+using SustitucionMOAWS.CambioPassWebServiceMOA;
+using SustitucionMOAWS.CartaPorteDetalleWebServiceMOA;
+using SustitucionMOAWS.CartaPorteFormularioCTGWebServiceMOA;
+using SustitucionMOAWS.CartaPorteFormularioDesplegablesWebServiceMOA;
+using SustitucionMOAWS.ComprobantesNGWebServiceMOA;
+using SustitucionMOAWS.ContactoMailCategoriasWebServiceMOA;
+using SustitucionMOAWS.ContactoMailWebServiceMOA;
+using SustitucionMOAWS.ContratoDetalleWebServiceMOA;
+using SustitucionMOAWS.ContratoPDFWebServiceMOA;
+using SustitucionMOAWS.ContratosWebServiceMOA;
+using SustitucionMOAWS.CrearPedidoWebServiceMOA;
+using SustitucionMOAWS.CrearSolpWebServiceMOA;
+using SustitucionMOAWS.CrearUsuarioWebServiceMOA;
+using SustitucionMOAWS.CuentaCorrienteWebServiceMOA;
+using SustitucionMOAWS.DetalleCteWebServiceMOA;
+using SustitucionMOAWS.EcheqAnularAperturaChequeWebServiceMOA;
+using SustitucionMOAWS.EcheqCargaAperturaChequeWebServiceMOA;
+using SustitucionMOAWS.EcheqModificacionDocumentoChequeWebServiceMOA;
+using SustitucionMOAWS.EcheqModificarContratoWebServiceMOA;
+using SustitucionMOAWS.EcheqModificarFijacionWebServiceMOA;
+using SustitucionMOAWS.EcheqVisualizarDisponibleChequeWebServiceMOA;
+using SustitucionMOAWS.EcheqVisualizarPendientePagoWebServiceMOA;
+using SustitucionMOAWS.FijacionDetalleWebServiceMOA;
+using SustitucionMOAWS.FijacionesWebServiceMOA;
+using SustitucionMOAWS.FletesRelacionWebServiceMOA;
+using SustitucionMOAWS.FletesWebServiceMOA;
+using SustitucionMOAWS.FleteValidarImporteWebServiceMOA;
+using SustitucionMOAWS.HomeNGWebServiceMOA;
+using SustitucionMOAWS.HomeWebServiceMOA;
+using SustitucionMOAWS.LiquidacionesNGWebServiceMOA;
+using SustitucionMOAWS.LiquidacionesWebServiceMOA;
+using SustitucionMOAWS.ListarPesificaciones;
+using SustitucionMOAWS.LoginWebServiceMOA;
+using SustitucionMOAWS.ModificarEntregaOrdenFasWebServiceMOA;
+using SustitucionMOAWS.ModificarOrdenCargaFasWebServiceMOA;
+using SustitucionMOAWS.ModificarSolpWebServiceMOA;
+using SustitucionMOAWS.MovimientoBalanzaWebServiceMOA;
+using SustitucionMOAWS.NoticiasDetalleWebServiceMOA;
+using SustitucionMOAWS.ObtenerCecoSolpWebServiceMOA;
+using SustitucionMOAWS.ObtenerCuentasSolpWebServiceMOA;
+using SustitucionMOAWS.ObtenerMaterialesSolpWebServiceMOA;
+using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
+using SustitucionMOAWS.ObtenerOrdenSolpWebServiceMOA;
+using SustitucionMOAWS.ObtenerRegistroInfoConsumerMOA;
+using SustitucionMOAWS.ObtenerServiciosSolpWebServiceMOA;
+using SustitucionMOAWS.ObtenerSolpWebServiceMOA;
+using SustitucionMOAWS.OrdenCargaControlEstadoSAP;
+using SustitucionMOAWS.OrdenCargaControlSAP;
+using SustitucionMOAWS.OrdenCargaCrearSAP;
+using SustitucionMOAWS.OrdenCargaEstadoEntregadaSAP;
+using SustitucionMOAWS.OrdenCargaVisualizarCliente;
+using SustitucionMOAWS.PagoComprobantesWebServiceMOA;
+using SustitucionMOAWS.PagoDetalleWebServiceMOA;
+using SustitucionMOAWS.PagosNGWebServiceMOA;
+using SustitucionMOAWS.PagosWebServiceMOA;
+using SustitucionMOAWS.PDFComprobantesNGWebServiceMOA;
+using SustitucionMOAWS.PDFProformaFinalWebServiceMOA;
+using SustitucionMOAWS.PDFWebServiceMOA;
+using SustitucionMOAWS.PerfilesWebServiceMOA;
+using SustitucionMOAWS.PermisosWebServiceMOA;
+using SustitucionMOAWS.PesificacionGuadarWebServiceMOA;
+using SustitucionMOAWS.PesificacionWebServiceMOA;
+using SustitucionMOAWS.ProformaFleteProcedenciaServiceMOA;
+using SustitucionMOAWS.RecepcionesWebServiceMOA;
+using SustitucionMOAWS.UsuarioDesbloquearWebServiceMOA;
+using SustitucionMOAWS.UsuarioHabilitarWebServiceMOA;
+using SustitucionMOAWS.UsuarioInhabilitarWebServiceMOA;
+using SustitucionMOAWS.UsuarioNuevoWebServiceMOA;
+using SustitucionMOAWS.UsuarioOlvidePassWebServiceMOA;
+using SustitucionMOAWS.UsuariosWebServiceMOA;
+using SustitucionMOAWS.VendedorDetalleWebServiceMOA;
+using SustitucionMOAWS.VendedoresWebServiceMOA;
+using SustitucionMOAWS.VendedorHabilitadoWebServiceMOA;
+using SustitucionMOAWS.VinculaDetalleWebServiceMOA;
 
 namespace SustitucionMOATest.DeployParameters
 {
@@ -57,7 +132,6 @@ namespace SustitucionMOATest.DeployParameters
                 Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
             });
         }
-        //      Faltan en el parameters.xml: SI_MMRFC_BAPI_ENTRYSHEET_CREATE
 
         [Test]
         public void VerifyAllWebConfigEndpointsAreInProdParameters_ExternalAPI()
@@ -66,18 +140,14 @@ namespace SustitucionMOATest.DeployParameters
             string webConfigPath = Path.Combine(webProjectPath, "web.config");
             string webProdFilePathPath = Path.Combine(webProjectPath, "NEW.PROD.DeployParameters.xml");
 
-            // Extraer los endpoints de ambos archivos
             var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
             var prodEndpoints = ExtractEndpointsFromProd(webProdFilePathPath);
 
-            // Verificar en bloque múltiple
             Assert.Multiple(() =>
             {
-                // Verificar si faltan en el archivo de producción
                 var faltanEnElProd = webConfigEndpoints.Except(prodEndpoints).ToList();
                 Assert.IsEmpty(faltanEnElProd, $"Faltan en el NEW.PROD.DeployParameters.xml: {string.Join(", ", faltanEnElProd)}");
 
-                // Verificar si faltan en el web.config
                 var faltanEnElWebConfig = prodEndpoints.Except(webConfigEndpoints).ToList();
                 Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
             });
@@ -90,18 +160,14 @@ namespace SustitucionMOATest.DeployParameters
             string parametersFilePath = Path.Combine(webProjectPath, "parameters.xml");
             string webConfigPath = Path.Combine(webProjectPath, "web.config");
 
-            // Extraer los endpoints de ambos archivos
             var parametersEndpoints = ExtractEndpointsFromParameters(parametersFilePath);
             var webConfigEndpoints = ExtractEndpointsFromWebConfig(webConfigPath);
 
-            // Verificar en bloque múltiple
             Assert.Multiple(() =>
             {
-                // Verificar si faltan en el archivo de producción
                 var faltanEnElProd = webConfigEndpoints.Except(parametersEndpoints).ToList();
                 Assert.IsEmpty(faltanEnElProd, $"Faltan en el parameters.xml: {string.Join(", ", faltanEnElProd)}");
 
-                // Verificar si faltan en el web.config
                 var faltanEnElWebConfig = parametersEndpoints.Except(webConfigEndpoints).ToList();
                 Assert.IsEmpty(faltanEnElWebConfig, $"Faltan en el web.config: {string.Join(", ", faltanEnElWebConfig)}");
             });

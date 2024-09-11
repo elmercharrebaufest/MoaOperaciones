@@ -1756,7 +1756,6 @@ namespace SustitucionMOAUtils.Services
             var numeroContrato = string.IsNullOrEmpty(orden.ContratoSAP) ? orden.ContratoIngresado : orden.ContratoSAP;
             Log.Info($"Validar kg orden: patente={orden.PatenteAcoplado}, chasis={orden.ChasisAcoplado}, " +
                 $"código cliente={orden.Cliente.CodigoProveedor}, número contrato={numeroContrato}");
-
             contratoSAP = ordenCargaConsumer.ObtenerContratoSAP(numeroContrato, null) ?? throw new InfoCustomException("No se encontró el contrato en SAP");
 
             Log.Info($"Validar kg contrato: detalles={contratoSAP.Detalles} ");

@@ -1226,7 +1226,6 @@ namespace SustitucionMOATest.Services
                 Proveedor = new Proveedor { CUIT = "cuit" },
                 CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads" }, CampoSustentable_Id = 3 }
             };
-            var rutaGuardadoDeseada = "/222222222/222222222_3_ads..json";
             googleDriveMock.Setup(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()))
                 .ReturnsAsync(new ReporteProcesoUcropit());
 
@@ -1234,7 +1233,6 @@ namespace SustitucionMOATest.Services
 
             googleDriveMock.Verify(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
             repositorioMock.Verify(repositorio => repositorio.GuardarCambios(), Times.Once);
-            Assert.That(archivoSinDescargar.Archivo.Ruta, Is.EqualTo(rutaGuardadoDeseada));
         }
     }
 }

@@ -81,6 +81,7 @@ namespace SustitucionMOAUtils.Services
         {
             var consulta = GetConsulta(consultaId);
 
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentarioDto.UsuarioId);
             Comentario comentario = new Comentario
             {
                 Consulta_Id = consultaId,
@@ -88,10 +89,10 @@ namespace SustitucionMOAUtils.Services
                 Fecha = DateTime.Now,
                 Recordado = comentarioDto.Recordado,
                 FechaRecordado = comentarioDto.FechaRecordado,
-                Usuario_Id = comentarioDto.UsuarioId
+                Usuario_Id = comentarioDto.UsuarioId,
+                Usuario = usuario
             };
 
-            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
             if (esInterno && consulta.EstadoConsulta.Code == "GES")
@@ -596,8 +597,8 @@ namespace SustitucionMOAUtils.Services
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
                     Rubro = x.Detalle.Rubro,
-                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER"?
-                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion):
+                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER" ?
+                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion) :
                         DbFunctions.DiffDays(x.FechaCreacion, hoy)
                 },
                 paginacion,
@@ -973,7 +974,7 @@ namespace SustitucionMOAUtils.Services
                 x => x.TablaSeccionMaterial == tablaSeccionMaterial && !string.IsNullOrEmpty(x.Nombre))
                     .OrderBy(c => c.Descripcion)
                     .ToList();
-            
+
                 return materiales;
             }
             catch (ValidationCustomException e)
@@ -1528,5 +1529,5 @@ namespace SustitucionMOAUtils.Services
 
             return ret;
         }
-    }   
+    }
 }
