@@ -174,6 +174,8 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public async Task<ActionResult> CreateAsync(string request)
         {
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CreateAsync");
+
             try
             {
 

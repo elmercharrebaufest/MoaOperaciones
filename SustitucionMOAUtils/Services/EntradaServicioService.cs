@@ -683,6 +683,7 @@ namespace SustitucionMOAUtils.Services
         public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto posicion, 
             string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber,  string proveedor = null)
         {
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
             EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(posicion);
