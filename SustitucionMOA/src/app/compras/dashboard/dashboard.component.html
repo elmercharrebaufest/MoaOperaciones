@@ -310,6 +310,9 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
+                                                    <button class="publicar btn" style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
+                                                        Legajo
+                                                    </button>
                                                     <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true && licitacion.TrabajoHecho != true" style="margin-right: 10px;" (click)="validarAuditor() ? null : obtenerPeticionDeOferta(licitacion.Id, rowData)" [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">               
                                                         Revisión Técnica
                                                     </button>
@@ -413,3 +416,14 @@
                   (cerrardisplayChatEmitter)="cerrarModalChat()"
                   [(dasboardComprador)]="dasboardComprador">
 </app-chat-interno>
+
+<app-legajo
+    [(displayLegajo)]="displayLegajo"
+    [(usuarioProveedor)]="esProveedor"
+    [(legajo)]="legajo"
+    [idLegajo]="legajoIdModal"
+    [(esAuditor)]="esAuditor"
+    (cerrarLegajoEmitter)="cerrarLegajo()"
+    (descargarLegajoEmitter)="descargarLegajo()"
+    (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)">
+</app-legajo>
