@@ -102,7 +102,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
         this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
 
-        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
+        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Anulada;
 
         this.botones.verificarCuitsTercero = this.esAdmin && this.ordenDeCargaFason.NecesitaVerificarCuitsTerceros;
     }
