@@ -113,14 +113,14 @@
                         <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
                     </td>
                     <td
-                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA')">
+                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'SF')">
                         <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
                             (click)="mostrarResumenDeAprobacion(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
                         <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
                             (click)="verMotivosRechazos(rowData)"
                             [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
-                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI')"
+                        <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI' || userId === 'SF')"
                             type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
                             (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)" [disabled]="!equalsIgnoreCase(rowData.Fiscal,usuario)"></button>
                     </td>
