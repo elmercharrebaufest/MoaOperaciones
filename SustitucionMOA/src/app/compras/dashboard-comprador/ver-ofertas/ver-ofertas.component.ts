@@ -139,13 +139,19 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => {
-                if (!pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado) {
+                if (!pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado && !pos.Selected) {
                     pos.Selected = true;
                 }
             });
         } else {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => pos.Selected = false);
         }
+    }
+
+    checkSelectAllIfNeeded(): void {
+        this.TodasPosicionesSeleccionadas = this.tablaOfertas.PeticionDeOfertaPosicion
+            .filter(pos => !pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado)
+            .every(x => x.Selected);
     }
 
     verOfertas(peticionOferta_Id) {
@@ -167,8 +173,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
                         if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);
-                        } else
+                        } else {
                             this.setTextoCondicionEspecial();
+                        }
+                        this.setMensajeTabla();
                     }
                     this.blockUI.stop();
                 },
@@ -746,6 +754,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
                 }
         }
+    }
+
+    setMensajeTabla() {
+        this.tablaOfertas.Usuarios.forEach(usuario => {
+            usuario.Cotizacion.CotizacionPosiciones.forEach(cotizacionPosicion => {
+                cotizacionPosicion.MensajeTablaVerOfertas = '';
+                if (!cotizacionPosicion.Completado) { cotizacionPosicion.MensajeTablaVerOfertas = 'Sin cotizar' }
+                if (cotizacionPosicion.Adjudicado) { cotizacionPosicion.MensajeTablaVerOfertas = 'Adjudicado' }
+            });
+        });
     }
 
     public actualizarVisibilidad(proveedor, cambiarEstado) {

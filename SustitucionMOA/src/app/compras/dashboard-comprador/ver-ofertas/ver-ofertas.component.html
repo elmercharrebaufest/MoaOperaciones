@@ -76,7 +76,7 @@
             </ng-template>
             <ng-template pTemplate="frozenbody" let-peticionPosicion>
                 <tr>
-                    <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta || peticionPosicion.EstaEliminado" binary="false"></p-checkbox></td>
+                    <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta || peticionPosicion.EstaEliminado" binary="false" (ngModelChange)="checkSelectAllIfNeeded()"></p-checkbox></td>
                     <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Indice}}</td>
                     <td class="columna" style="width: 100px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Codigo}}</div></td>
                     <td class="columna" style="width: 150px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><div class="columnadiv">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</div></td>
@@ -319,7 +319,7 @@
                     <td class="headerth2 border2-right" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></td>
                 </tr>
                 <tr>
-                    <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta || peticionPosicion.EstaEliminado " binary="false"></p-checkbox></td>
+                    <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><p-checkbox name="posiciones" [(ngModel)]="peticionPosicion.Selected" [disabled]="peticionPosicion.Posicion.AdjudicacionCompleta || peticionPosicion.EstaEliminado " binary="false" (ngModelChange)="checkSelectAllIfNeeded()"></p-checkbox></td>
                     <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}"><a href="javascript:void(0)" (click)="verPosicion(peticionPosicion)"><i [ngClass]="peticionPosicion.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i></a></td>
                     <td class="columna" style="width: 40px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Indice}}</td>
                     <td class="columna border2-right" style="width: 430px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="3">{{peticionPosicion.Posicion.CodigoMaterialSap.Descripcion == null ? peticionPosicion.Posicion.Tarea : peticionPosicion.Posicion.CodigoMaterialSap.Descripcion}}</td>
@@ -440,10 +440,10 @@
                                     </ng-container>
                 
                                     <!-- Si la posición no está completada, mostramos "Sin cotizar" -->
-                                    <ng-container *ngIf="!cotizacionPosicion.Completado">
+                                    <ng-container *ngIf="cotizacionPosicion.MensajeTablaVerOfertas">
                                         <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
-                                            Sin cotizar
-                                        </td>
+                                            {{ cotizacionPosicion.MensajeTablaVerOfertas }} <!-- Sin cotizar || Adjudicado -->
+                                        </td> 
                                     </ng-container>
                                 </ng-container>
                             </ng-container>

@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp Sustitucion Utils Solpe
+﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion
 
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
@@ -22,7 +22,7 @@ namespace SustitucionMOAUtils.Services
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)
         {
-            return ObtenerPosiciones(numeroSolp).Where(posicion => posicion.Ordered < posicion.Cantidad);
+            return ObtenerPosiciones(numeroSolp).Where(PosicionPendienteSap);
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<string> numerosSolp)
@@ -39,6 +39,19 @@ namespace SustitucionMOAUtils.Services
                     )
                 );
             return result;
+        }
+
+        public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<PosicionSolpSAP> posicionesSap)
+            => posicionesSap.Where(PosicionPendienteSap);
+
+        public bool PosicionPendienteSap(PosicionSolpSAP position)
+        {
+            if (position is null)
+            {
+                throw new ArgumentNullException(nameof(position));
+            }
+
+            return position.Ordered < position.Cantidad;
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosiciones(string numeroSolp)
