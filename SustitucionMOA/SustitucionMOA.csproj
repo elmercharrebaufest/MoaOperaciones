@@ -1378,6 +1378,7 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
     <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
+    <TypeScriptCompile Include="src\app\error.interceptor.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05-routing.module.ts" />
