@@ -65,7 +65,7 @@ import { EnumEnvioCircularA } from '../enum-envio-circular';
     providers: [ComprasService, MessageService]
 })
 
-export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
+export class SolpComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -164,9 +164,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
             clear: 'Borrar'
         };
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        this.obtenerUsuarioSolicitante();
-    }
 
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
@@ -191,7 +188,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
-                this.obtenerUsuarioSolicitante();
                 if (this.solpId > 0) {
                     this.setComponentMode(ComponentMode.Edition);
                     this.traerSolpId(this.solpId);
@@ -199,6 +195,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     this.setComponentMode(ComponentMode.Creation);
                     this.setearPasos();
                     this.obtenerUltimaSolp();
+                    this.obtenerUsuarioSolicitante();
                 }
             }
 
@@ -314,7 +311,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return fecha;
     }
 
-    traerSolpId(idSolp) {
+    traerSolpId(idSolp:number) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
@@ -354,6 +351,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.blockUI.stop();
                         this.spinnerComponent.hideIt();
                         this.tituloSolpEditar(this.solpActual.nroSolp);
+                        this.obtenerUsuarioSolicitante();
                     }
                 },
                 error => {
@@ -969,7 +967,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.setupMonedaPorDefecto();
                         this.setupGrupoDeComprasServiciosPorDefecto();
                         this.setupGrupoDeArticuloServiciosPorDefecto();
-                        this.obtenerUsuarioSolicitante();
                     }
                 },
                 error => {
