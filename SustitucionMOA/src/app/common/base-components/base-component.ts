@@ -18,6 +18,7 @@ export class BaseComponent implements OnDestroy {
     }
 
     subscription: any;
+    subscriptionArray: Subscription[] = [];
     subscriptions = new Subscription();
     subscriptionDropDowns: any;
     tipoUsuario: string = sessionStorage.getItem("tipoUsuario");
@@ -59,6 +60,7 @@ export class BaseComponent implements OnDestroy {
     }
 
     public unsubscribe() {
+        this.subscriptionArray.forEach(sub => { sub.unsubscribe(); });
         if (this.subscription != undefined)
             this.subscription.unsubscribe();
         if (this.subscriptionDropDowns != undefined)

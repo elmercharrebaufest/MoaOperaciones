@@ -1,5 +1,5 @@
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -65,7 +65,7 @@ import { EnumEnvioCircularA } from '../enum-envio-circular';
     providers: [ComprasService, MessageService]
 })
 
-export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
+export class SolpComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -115,6 +115,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     condEspOriginales: CondicionesEspecialesOriginales;
     displayEnvioCircular: boolean;
     fechaLimiteDocumentacionRequerida: boolean;
+    usuarioSolicitanteListCache: any[];
 
 
     set pasoActual(value: Paso) {
@@ -164,9 +165,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
             clear: 'Borrar'
         };
     }
-    ngOnChanges(changes: SimpleChanges): void {
-        this.obtenerUsuarioSolicitante();
-    }
 
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
@@ -191,15 +189,19 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
-                this.obtenerUsuarioSolicitante();
-                if (this.solpId > 0) {
-                    this.setComponentMode(ComponentMode.Edition);
-                    this.traerSolpId(this.solpId);
-                } else {
-                    this.setComponentMode(ComponentMode.Creation);
-                    this.setearPasos();
-                    this.obtenerUltimaSolp();
-                }
+
+                let s = this.obtenerUsuarioSolicitante().subscribe(() => {
+                    // lo hago así porque lo de adentro necesita que exista la lista de usuarios
+                    if (this.solpId > 0) {
+                        this.setComponentMode(ComponentMode.Edition);
+                        this.traerSolpId(this.solpId);
+                    } else {
+                        this.setComponentMode(ComponentMode.Creation);
+                        this.setearPasos();
+                        this.obtenerUltimaSolp();
+                    }
+                });
+                this.subscriptionArray.push(s);
             }
 
             this.validarAuditor();
@@ -314,7 +316,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return fecha;
     }
 
-    traerSolpId(idSolp) {
+    traerSolpId(idSolp:number) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
@@ -329,6 +331,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.solpActual = new Solp(result.data);
+                        this.solpActual.usuarioSolicitanteList = this.usuarioSolicitanteListCache;
                         this.condEspOriginales = {
                             trabajoHecho: this.solpActual.trabajoHecho,
                             adicional: this.solpActual.adicional,
@@ -969,7 +972,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.setupMonedaPorDefecto();
                         this.setupGrupoDeComprasServiciosPorDefecto();
                         this.setupGrupoDeArticuloServiciosPorDefecto();
-                        this.obtenerUsuarioSolicitante();
                     }
                 },
                 error => {
@@ -1000,6 +1002,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.datosUltimaSolp = result.data;
                         if (this.datosUltimaSolp != null) {
                             this.completarDatosUltimaSolp();
+                            this.completarUsuarioSolicitante();
                         }
                         this.blockUI.stop();
                     }
@@ -1321,9 +1324,9 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
 
-    obtenerUsuarioSolicitante() {
+    obtenerUsuarioSolicitante():Observable<any> {
         try {
-            this.subscription = this.service.listarUsuarioSolicitante().subscribe(
+            let o = this.service.listarUsuarioSolicitante().map(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1340,15 +1343,19 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 UsuarioSap: element.UsuarioSap
                             });
                         });
-                        this.completarUsuarioSolicitante();
+
+                        this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
+                        this.usuarioSolicitanteListCache = this.solpActual.usuarioSolicitanteList;
                         this.spinnerComponent.hideIt();
                     }
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
                 }
-
             );
+
+            return o;
+
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
         }
@@ -1358,8 +1365,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         if (this.solpActual != undefined) {
             let selectUsuarioFiscalVacio: boolean = this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null;
             let selectResponsableTrabajoVacio: boolean = this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null;
-
-            this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
 
             if (selectUsuarioFiscalVacio) {
                 this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
