@@ -1,8 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
-import { map } from 'rxjs/operators';
-import { CampoProveedor } from './sustentable';
+import { CampoProveedor, CampoProveedorDetalle } from './sustentable';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
 
 @Injectable()
@@ -76,13 +75,13 @@ export class VentaSustentableService extends BaseService {
             .post('/api/CampoSustentable/CampoProveedorBorrar', payload, { headers: this.headersPost, });
     }
 
-    getCampoProveedor(proveedorId: any, campoCosechaId: any) {
+    getCampoProveedor(proveedorId: any, campoCosechaId: any): Observable<CampoProveedorDetalle> {
         let params: HttpParams = new HttpParams();
         params = params.append("proveedorId", proveedorId);
         params = params.append("campoCosechaId", campoCosechaId)
 
         return this.http
-            .get('/api/CampoSustentable/CampoProveedor', { params: params, headers: this.headers });
+            .get<CampoProveedorDetalle>('/api/CampoSustentable/CampoProveedor', { params: params, headers: this.headers });
     }
 
     verificarDeclaracion(proveedorId: number, cosechaId: number, CUIT: string) {

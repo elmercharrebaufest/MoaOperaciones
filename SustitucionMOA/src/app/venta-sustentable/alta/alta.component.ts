@@ -206,7 +206,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     onselectProveedor(proveedor?: VendedorProveedor) {
-        console.log("Run select")
         if (proveedor) {
             this.proveedorSeleccionado = proveedor;
             this.getProveedorId(this.proveedorSeleccionado.idVendedor);

@@ -67,6 +67,8 @@ export class SeleccionarProveedorComponent extends BaseComponent {
     @Input() corredorId: number;
     @Input() tipoProveedorId: number;
     @Input() valorInicial: string;
+    @Input() valorInicialRazonSocial: string;
+    @Input() valorInicialCUIT: string;
     @Input() noEditarCliente: boolean;
 
     selectEvent(item) {
@@ -145,6 +147,11 @@ export class SeleccionarProveedorComponent extends BaseComponent {
                             if (seleccionado != null && seleccionado.length > 0) {
                                 this.selected = seleccionado[0];
                             }
+                        }
+                        if (this.valorInicialRazonSocial || this.valorInicialCUIT) {
+                            const obj = { descVendedor: this.valorInicialRazonSocial, CUIT: this.valorInicialCUIT };
+                            this.data.push(obj);
+                            this.selected = obj;
                         }
                     }
                 },

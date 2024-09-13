@@ -135,6 +135,8 @@ namespace SustitucionMOAUtils.Services
             campoProveedor.CampoCosecha.Campo.Renspa = campoProveedorObj.CampoCosecha.Campo.Renspa;
             campoProveedor.CampoCosecha.Campo.Localidad_Id = campoProveedorObj.CampoCosecha.Campo.Localidad_Id;
 
+            campoProveedor.CUIT = campoProveedorObj.CUIT;
+            campoProveedor.RazonSocial = campoProveedorObj.RazonSocial;
             repositorio.GuardarCambios();
 
             //GuardarArchivoKMZ(campoProveedor, archivoKmz);

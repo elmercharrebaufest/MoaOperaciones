@@ -5,13 +5,13 @@ import { NavService } from './../../common/services/NavService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { SessionDataService } from './../../common/services/SessionDataService';
 import { MensajeComponent } from './../../common/view-child/mensaje/mensaje.component';
-import { Seccion } from './../../common/models/seccion';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
-import { AutocompleteLocalidadComponent } from "./../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
+import { CampoProveedor, CampoSustentable, CampoCosecha, CampoProveedorDetalle } from './../sustentable'
+import { VendedorProveedor } from '../../common/models/vendedorProveedor';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-edicion',
@@ -27,6 +27,10 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   @ViewChild(SpinnerComponent)
   protected spinnerComponent: SpinnerComponent;
 
+  @ViewChild("spinnerDatosGenerales")
+  protected spinnerDatosGenerales: SpinnerComponent;
+
+
   @BlockUI() blockUI: NgBlockUI;
 
   constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
@@ -41,7 +45,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
   myLocalidades = <any>[];
   localidades: any = [];
 
-  campoProveedor: any;
+  campoProveedor?: CampoProveedorDetalle;
 
   cosechas: any[];
   cosecha: any;
@@ -91,12 +95,12 @@ export class EdicionComponent extends BaseComponent implements OnInit {
 
   getCampoProveedor() {
     this.mensajeComponent.setMsgsEmpty();
-    this.spinnerComponent.showIt();
+    this.spinnerDatosGenerales.showIt();
     try {
       this.unsubscribe();
       this.subscription = this.service.getCampoProveedor(this.proveedorId, this.campoCosechaId).subscribe(
-        (result:any) => {
-          this.spinnerComponent.hideIt();
+        (result: any) => {
+          this.spinnerDatosGenerales.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
           } else if (result.error != undefined && result.error != "") {
@@ -151,8 +155,9 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       Latitud: this.campoProveedor.Latitud, Longitud: this.campoProveedor.Longitud, Proveedor_Id: this.proveedorId,
       CampoCosecha: campoCosecha,
       CampoCosecha_Id: this.campoCosechaId,
-      CUIT: "",
-      Archivo_Id:0
+      CUIT: this.campoProveedor.CUIT,
+      RazonSocial: this.campoProveedor.ProveedorNombre,
+      Archivo_Id: 0
     }
 
     this.mensajeComponent.setMsgsEmpty();
@@ -160,7 +165,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.campoProveedorEditar(campoProveedor, this.file).subscribe(
-        (result:any) => {
+        (result: any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -201,7 +206,7 @@ export class EdicionComponent extends BaseComponent implements OnInit {
     try {
       this.unsubscribe();
       this.subscription = this.service.getCosechasCampo().subscribe(
-        (result:any) => {
+        (result: any) => {
           this.spinnerComponent.hideIt();
           if (result.logout == true) {
             this.sessionDataService.logout();
@@ -271,14 +276,69 @@ export class EdicionComponent extends BaseComponent implements OnInit {
       this.mensajeComponent.setErrorMsg("Falta completar Longitud.");
       return true;
     }
-    /*
-    if (this.file.length < 1 || !this.file) {
-      this.mensajeComponent.setErrorMsg("Falta adjuntar el archivo Kmz.");
-      return true;
+    if (!this.campoProveedor.CUIT || this.campoProveedor.CUIT.length < 11) {
+      this.mensajeComponent.setErrorMsg("El CUIT ingresado no es válido.");
+      return true
     }
-    */
+    if (!this.campoProveedor.Proveedor_Id || !this.campoProveedor.ProveedorNombre) {
+      this.mensajeComponent.setErrorMsg("El proveedor no es válido.");
+      return true
+    }
     return false
   }
 
+  debeCargarCuit = false;
+  sePreseleccionoProveedor = false;
+  proveedorSeleccionado = null;
 
+  revisarProveedorSeleccionado() {
+    if (this.proveedorSeleccionado)
+      return;
+
+    this.debeCargarCuit = !this.sePreseleccionoProveedor && !this.campoProveedor.CUIT;
+    if (this.debeCargarCuit) {
+      this.proveedorSeleccionado = null;
+    }
+  }
+  onselectProveedor(proveedor?: VendedorProveedor) {
+    if (proveedor) {
+      this.proveedorSeleccionado = proveedor;
+      this.getProveedorId(this.proveedorSeleccionado.idVendedor);
+    }
+  }
+  getProveedorId(codigo: string) {
+    this.blockUI.start("Seleccionando proveedor")
+    this.subscription = this.service.getProveedor(codigo)
+      .pipe(finalize(() => this.blockUI.stop()))
+      .subscribe(
+        (result: any) => {
+          this.spinnerComponent.hideIt();
+          if (result.logout == true) {
+            this.sessionDataService.logout();
+          } else if (result.error != undefined && result.error != "") {
+            this.mensajeComponent.setErrorMsg(result.error);
+          } else if (result.info != undefined) {
+            this.mensajeComponent.setInfoMsg(result.info);
+          } else {
+            const cuit = result.CUIT ? result.CUIT : this.proveedorSeleccionado.cuit;
+            const razonSocial = result.RazonSocial ? result.RazonSocial : this.proveedorSeleccionado.descVendedor;
+            this.campoProveedor.CUIT = cuit;
+            this.campoProveedor.ProveedorNombre = razonSocial;
+          }
+        },
+        (error) => {
+          this.spinnerComponent.hideIt();
+          this.mensajeComponent.setErrorMsg(error.message);
+        }
+      );
+  }
+
+  onSePreseleccionaProveedor() {
+    this.sePreseleccionoProveedor = true;
+    this.debeCargarCuit = false
+  }
+  onQuery(value: string) {
+    this.campoProveedor.ProveedorNombre = value;
+    this.proveedorSeleccionado = null
+  }
 }
