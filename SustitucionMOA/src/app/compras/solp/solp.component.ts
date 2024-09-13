@@ -357,6 +357,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.blockUI.stop();
                         this.spinnerComponent.hideIt();
                         this.tituloSolpEditar(this.solpActual.nroSolp);
+                        this.completarUsuarioSolicitante();
                     }
                 },
                 error => {
@@ -1362,7 +1363,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     public completarUsuarioSolicitante() {
-        if (this.solpActual != undefined) {
+        if (!this.solpActual) { return; }
+
+        if (this.esCreacionSolp) {
             let selectUsuarioFiscalVacio: boolean = this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null;
             let selectResponsableTrabajoVacio: boolean = this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null;
 
@@ -1380,6 +1383,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
             this.setCurrentUseAsResponsableTrabajoIfNeeded();
         }
+
+        if (this.esEdicionSolp) {
+            const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
+            if (elementoEncontrado) {
+                this.solpActual.selectResponsableTrabajo = elementoEncontrado;
+                this.onResponsableTrabajoAutomaticallySelected.next();
+            }
+        }
+        
     }
 
     private setCurrentUseAsResponsableTrabajoIfNeeded(): void {
