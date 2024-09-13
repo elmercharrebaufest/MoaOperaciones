@@ -2887,7 +2887,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (subPosicionesBorradas.Any())
                 {
-                    var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
+                    IEnumerable<Expression<Func<SolpSubposicion, object>>> inc = new HashSet<Expression<Func<SolpSubposicion, object>>>
+                    {
+                        solpSubposicion => solpSubposicion.Cotizaciones,
+                    };
+                    List<SolpSubposicion> subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id), includes: inc);
 
                     foreach (var subpos in subposborradas.ToList())
                     {
