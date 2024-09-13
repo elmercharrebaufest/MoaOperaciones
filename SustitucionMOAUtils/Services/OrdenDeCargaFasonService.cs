@@ -167,7 +167,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var corr in corredores)
                 {
                     proveedores.AddRange(
-                    corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente)
+                    corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente && x.EsClienteDeCorredorFason)
                         .Select(x => new ProveedorDto(x, false)).ToList());
                 }
                 return proveedores;

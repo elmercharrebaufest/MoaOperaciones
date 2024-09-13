@@ -85,6 +85,7 @@ namespace SustitucionMOAModel.Entities
         public string EstadoSISA { get; set; }
 
         public bool EsRevendedor { get; set; }
+        public bool EsClienteDeCorredorFason { get; set; }
 
         public bool EsNoGranos()
         {
