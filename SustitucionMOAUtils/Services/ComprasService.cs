@@ -6668,7 +6668,7 @@ namespace SustitucionMOAUtils.Services
 
 
                             }).ToList() : null,
-                            UsuarioCreador = usuario,
+                            UsuarioCreador = peticionUsuario.Usuario,
                             FechaCreacion = DateTime.Now
                         };
 
