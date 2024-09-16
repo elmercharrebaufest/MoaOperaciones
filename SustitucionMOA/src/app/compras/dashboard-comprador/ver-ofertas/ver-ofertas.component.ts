@@ -622,6 +622,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     cerrarModalPrecios() {
         this.displayVisualizarPrecio = false;
+        // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        //     this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        // });
+    }
+
+    onVisualizarPrecioGuardado() {
+        this.displayVisualizarPrecio = false;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        });
     }
 
     abrirModalPrecios() {

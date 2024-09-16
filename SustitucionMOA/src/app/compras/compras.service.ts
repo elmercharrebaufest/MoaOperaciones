@@ -22,6 +22,7 @@ import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntr
 import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
 import { LegajoDto } from '../modelos/compras/legajoDto';
+import { ObtenerLegajoResponse } from '../modelos/compras/obtenerLegajoResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -806,7 +807,7 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<ApiResponse<LegajoDto[]>> {
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<ApiResponse<ObtenerLegajoResponse>> {
         let params: HttpParams = new HttpParams();
         params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
         if (idPeticionDeOfertaUsuario != null) {
@@ -1119,9 +1120,11 @@ export class ComprasService extends BaseService {
         const payload = new FormData();
         payload.append('json', jsonPayload);
 
-        peticion.Adjuntos.forEach((fileToUpload: File) => {
-            payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
-        });
+        if (peticion.Adjuntos) {
+            peticion.Adjuntos.forEach((fileToUpload: File) => {
+                payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
+            });
+        }
 
         return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
     }

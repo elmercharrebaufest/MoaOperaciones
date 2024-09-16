@@ -878,7 +878,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
         {
-            var response = new SustitucionMOAApiResponse<List<LegajoDto>>();
+            var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();

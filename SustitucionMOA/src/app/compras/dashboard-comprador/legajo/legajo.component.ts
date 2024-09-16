@@ -22,7 +22,8 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Input() legajo: LegajoDto[];
     @Input() esAuditor: boolean;
     @Input() idLegajo: number;
-
+    @Input() mostrarBotonVerOfertas: boolean = false;
+    @Input() esSolicitante: boolean = false;
 
     @Output() cerrarLegajoEmitter = new EventEmitter();
     @Output() descargarLegajoEmitter = new EventEmitter();
@@ -34,7 +35,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
 
     error: string;
     visualizarAlert = false;
-
+    displayVisualizarPrecio: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -295,6 +296,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
             return;
         }
     }
+
     descargarHistorialMovimientos() {
         this.blockUI.start("Descargando...");
         this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
@@ -313,5 +315,18 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     this.blockUI.stop();
                 }
             )
+    }
+
+    abrirModalVerOfertas() {
+        this.displayVisualizarPrecio = true;
+    }
+
+    cerrarModalPrecios() {
+        this.displayVisualizarPrecio = false;
+    }
+
+    onVisualizarPrecioGuardado() {
+        this.displayVisualizarPrecio = false;
+        this.onCerrarLegajo();
     }
 }
