@@ -13,6 +13,8 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using System.Globalization;
 using DocumentFormat.OpenXml.Bibliography;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -21,6 +23,9 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICATION_CERTIFICATION_REJECTED = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacionRechazada.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
+        private static readonly string TEMPLATE_NOTIFICACION_DIARIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionEsPendientesDeAprobacion.html");
+
+
         private readonly IEmailService emailService;
         protected readonly IAzureService azureService;
 
@@ -80,6 +85,32 @@ namespace SustitucionMOAUtils.Services.Email
             await emailSendTask;
         }
 
+        public void SendDailyNotification(string to, List<NotificacionEsPendientesDiariasDto> aprobaciones)
+        {
+            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
+
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
+
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = new List<string> {to},
+                Asunto = "Certificaciones pendientes de aprobación",
+                Cuerpo = body,
+            };
+
+            var emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+        }
+
+        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
+        {
+            var bodyTable = BuildTableDailyNotification(aprobaciones);
+
+            var body = string.Format(bodyTemplate, bodyTable.ToString());
+
+            return body;
+        }
+
         public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference)
         {
             string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR);
@@ -119,6 +150,29 @@ namespace SustitucionMOAUtils.Services.Email
             bodyTable.Append($"<td colspan='4' style='padding: 10px; border: 0px;'></td>");
             bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda}{emailDetailCertificateDto.MontoTotal}</strong></td>");
             bodyTable.Append("</tr>");
+
+            return bodyTable;
+        }
+
+        private StringBuilder BuildTableDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones)
+        {
+            StringBuilder bodyTable = new StringBuilder();
+
+            foreach (var item in aprobaciones)
+            {
+                var moneda = "$ ";
+
+                bodyTable.Append("<tr>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.NRO_ES_LOCAL}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Proveedor}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.NRO_OC}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Texto_breve_servicio}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Cantidad_a_certificar}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.UM}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Porcentaje_a_certificar}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{moneda}{" "}{((decimal)item.Monto_a_certificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
+                bodyTable.Append("</tr>");
+            }
 
             return bodyTable;
         }

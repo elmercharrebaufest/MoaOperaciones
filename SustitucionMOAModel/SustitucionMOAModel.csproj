@@ -88,6 +88,7 @@
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
+    <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
