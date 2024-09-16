@@ -48,29 +48,23 @@
 
                         <div class="row myRow cargaDeDatosFields">
                             <div class="col-xs-12 col-sm-12 col-md-6">
-                                <p class="crearConsultaTitulos">Titular de la CP<span class="requerido">*</span></p>
-                                <app-seleccionar-proveedor (onProveedorSeleccionado)="onselectProveedor($event)"
-                                    [(valorInicialRazonSocial)]="campoProveedor.ProveedorNombre"
-                                    [(valorInicialCUIT)]="campoProveedor.CUIT"
-                                    (onProveedorPreSeleccionado)="onSePreseleccionaProveedor()"
-                                    (onBlur)="revisarProveedorSeleccionado()" (onFocus)="sePreseleccionoProveedor=false"
-                                    (onQuery)="onQuery($event)">
-                                </app-seleccionar-proveedor>
-
+                                <p class="crearConsultaTitulos">
+                                    Titular de la CP
+                                </p>
+                                <div class="styled-select" style="overflow: initial;">
+                                    <input type="search" [value]="campoProveedor.ProveedorNombre" class="fourRounded"
+                                        aria-controls="tableModal" [disabled]="true">
+                                </div>
                             </div>
 
                             <div class="col-xs-12 col-sm-12 col-md-6">
                                 <p class="crearConsultaTitulos">
-                                    CUIT
-                                    <ng-container>
-                                        titular Carta de Porte
-                                    </ng-container>
-
-                                    <span class="requerido">*</span>
+                                    CUIT titular de la CP
                                 </p>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <input type="search" [(ngModel)]="campoProveedor.CUIT" class="fourRounded"
-                                        mask="00-00000000-0" maxlength="13" aria-controls="tableModal">
+                                    <input type="search" [value]="campoProveedor.CUIT" class="fourRounded"
+                                        mask="00-00000000-0" maxlength="13" aria-controls="tableModal"
+                                        [disabled]="true">
                                 </div>
                             </div>
                         </div>
