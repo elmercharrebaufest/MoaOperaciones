@@ -25,7 +25,7 @@ namespace SustitucionMOAWS.WSConsumers
             this.repositorio = repositorio;
         }
 
-        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor)
+        List<RegistroInfoDto> IObtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(string material, string centro, string organizacionDeCompras, string proveedor)
         {
             try
             {
@@ -35,9 +35,9 @@ namespace SustitucionMOAWS.WSConsumers
                 BAPIEINE[] INFORECORD_PURCHORG = new BAPIEINE[] { };
                 BAPIRETURN[] bAPIRETURNs = new BAPIRETURN[] { };
                 service.BAPI_INFORECORD_GETLIST("", "", "", material, bAPIMGVMATNR, "", "", centro, "", "", "",
-                                                ""/*grupoDeCompras*/,"", proveedor, "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
+                                                ""/*organizacionDeCompras*/, "", proveedor, "", "", "", ref INFORECORD_GENERAL, ref INFORECORD_PURCHORG, ref bAPIEINEs, ref bAPIRETURNs);
 
-                return Map(INFORECORD_GENERAL, INFORECORD_PURCHORG, bAPIRETURNs);
+                return Map(INFORECORD_GENERAL, INFORECORD_PURCHORG, bAPIRETURNs, centro);
             }
             catch (Exception e)
             {
@@ -45,14 +45,14 @@ namespace SustitucionMOAWS.WSConsumers
             }
         }
 
-        protected List<RegistroInfoDto> Map(BAPIEINA[] INFORECORD_GENERAL, BAPIEINE[] INFORECORD_PURCHORG, BAPIRETURN[] bAPIRETURNs)
+        protected List<RegistroInfoDto> Map(BAPIEINA[] INFORECORD_GENERAL, BAPIEINE[] INFORECORD_PURCHORG, BAPIRETURN[] bAPIRETURNs, string centro)
         {
             var registros = new List<RegistroInfoDto>();
             var hoy = DateTime.Now.Date;
             var unidadMedidaSap = repositorio.Listar<UnidadMedidaSap>();
             foreach (var info in INFORECORD_GENERAL)
             {
-                foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC))
+                foreach (var purch in INFORECORD_PURCHORG.Where(a => a.INFO_REC == info.INFO_REC && a.PLANT == centro))
                 {
                     var codigoUnidad = unidadMedidaSap.Where(a => a.UM == info.PO_UNIT).Single().Comercial;
 
