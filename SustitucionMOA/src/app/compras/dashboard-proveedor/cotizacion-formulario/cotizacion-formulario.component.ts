@@ -31,7 +31,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild('cotizacionMaterial') cotizacionMaterial: CotizacionMaterialComponent
     @ViewChild('cotizacionServicio') cotizacionServicio: CotizacionServicioComponent
-    peticion: PeticionDeOfertaDto = { Id: null, NroSolp: null, PeticionDeOfertaPosicion: null, Cotizacion: null };
+    peticion: PeticionDeOfertaDto = { Id: null, NroSolp: null, PeticionDeOfertaPosicion: null, Cotizacion: null } as unknown as PeticionDeOfertaDto;
     posicionesCompra: PeticionDeOfertaSolpPosicionDto[];
     @Input() esFinalizado: boolean;
     cotizaciones: GuardarCotizacion[];
