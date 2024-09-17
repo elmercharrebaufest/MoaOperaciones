@@ -9369,7 +9369,24 @@ namespace SustitucionMOAUtils.Services
 
         private void SetNombreDePedido(Solp solp)
         {
-            if (string.IsNullOrEmpty(solp.Pliego?.NombreObra) || solp.TipoSolpSap != (int)TipoSolpSap.Web || solp.TipoSolp == null || solp.TipoSolp.Codigo == "SIN_PLIEGO")
+            if (solp is null) { throw new ArgumentNullException(nameof(solp)); }
+
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous <-- se usa esto para que el código sea más legible
+            bool mustSetNombreDePedido = false;
+            // no usar |= ya que ese operador no respeta el cortocircuito
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.Pliego is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || string.IsNullOrWhiteSpace(solp.Pliego.NombreObra);
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolpSap is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolpSap != (int?)TipoSolpSap.Web;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolp is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolp.Codigo == "SIN_PLIEGO";
+
+            bool canSetNombreDePedido = true;
+            canSetNombreDePedido = canSetNombreDePedido && solp.Posiciones != null;
+            canSetNombreDePedido = canSetNombreDePedido && (solp.Posiciones.Count > 0);
+#pragma warning restore S2589 // Boolean expressions should not be gratuitous
+
+            if (mustSetNombreDePedido && canSetNombreDePedido)
             {
                 string nombre = solp.Posiciones.Count > 2 ? string.Join(" + ", solp.Posiciones.Take(2).Select(x => x.Tarea)) + " + Otros" :
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));
