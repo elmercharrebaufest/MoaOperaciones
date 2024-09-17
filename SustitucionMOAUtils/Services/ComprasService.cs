@@ -5226,16 +5226,12 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 // Agregar historiales de cotización al zip
-                foreach (var cotizacion in GetCotizacionesDescargables(peticion))
+                foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
                 {
-                    var puedenVerseLosImportes = PuedenVerseLosImportesDeCotizacion(cotizacion, usuarioDto);
-                    if (puedenVerseLosImportes)
-                    {
-                        var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
-                        var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
-                        File.WriteAllBytes(rutaHistorial, historialBytes);
-                        archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
-                    }
+                    var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                    var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                    File.WriteAllBytes(rutaHistorial, historialBytes);
+                    archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
                 }
             }
         }
@@ -10509,32 +10505,27 @@ namespace SustitucionMOAUtils.Services
 
         private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion, UsuarioDto usuarioDto)
         {
-            foreach (var cotizacion in GetCotizacionesDescargables(peticion))
+            foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
             {
-                var puedenVerseLosImportes = PuedenVerseLosImportesDeCotizacion(cotizacion, usuarioDto);
-
-                if (puedenVerseLosImportes)
+                var fechaCotizacion = cotizacion.FechaCreacion;
+                legajo.Add(new LegajoDto
                 {
-                    var fechaCotizacion = cotizacion.FechaCreacion;
-                    legajo.Add(new LegajoDto
+                    ArchivoId = cotizacion.Id,
+                    Fecha = fechaCotizacion,
+                    FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
+                    Leido = false,
+                    Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
+                    PeticionDeOfertaId = peticion.Id,
+                    SolpId = 0,
+                    Tipo = TipoLegajo.Cotizacion,
+                    Usuario = new UsuarioDto
                     {
-                        ArchivoId = cotizacion.Id,
-                        Fecha = fechaCotizacion,
-                        FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
-                        Leido = false,
-                        Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
-                        PeticionDeOfertaId = peticion.Id,
-                        SolpId = 0,
-                        Tipo = TipoLegajo.Cotizacion,
-                        Usuario = new UsuarioDto
-                        {
-                            CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
-                            Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
-                            Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
-                        },
-                        UsuarioId = 0
-                    });
-                }
+                        CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                        Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
+                        Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
+                    },
+                    UsuarioId = 0
+                });
             }
         }
 
@@ -10633,11 +10624,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private IEnumerable<Cotizacion> GetCotizacionesDescargables(PeticionDeOferta peticion)
+        private IEnumerable<Cotizacion> GetCotizacionesDescargables(PeticionDeOferta peticion, UsuarioDto usuarioActual)
         {
             var estaLiberado = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
 
-            var esMateriales = peticion.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+            var esMateriales = peticion.Posiciones.First().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
 
             if (estaLiberado)
             {
@@ -10666,7 +10657,7 @@ namespace SustitucionMOAUtils.Services
                             revisionTecnicaFinalizada = false;
                         }
 
-                        if (!plazoOfertaSinFinalizar && revisionTecnicaFinalizada)
+                        if ((!plazoOfertaSinFinalizar && revisionTecnicaFinalizada) || PuedenVerseLosImportesDeCotizacion(cotizacion, usuarioActual))
                         {
                             yield return cotizacion;
                         }
