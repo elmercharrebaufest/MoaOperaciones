@@ -34,7 +34,7 @@ namespace SustitucionMOAUtils.Services.Email
             this.emailService = emailService;
         }
 
-        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
+        public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, int ordenId)
         {
             var emailSenderData = new EmailSenderData
             {
@@ -45,7 +45,7 @@ namespace SustitucionMOAUtils.Services.Email
             emailService.EnviarMail(emailSenderData);
         }
 
-        public void EnviarMailAltaTempranaCuit(OrdenDeCarga ordenDeCarga, string ordenId, bool gestionaDestino, bool gestionaDestinatario)
+        public void EnviarMailAltaTempranaCuit(OrdenDeCarga ordenDeCarga, int ordenId, bool gestionaDestino, bool gestionaDestinatario)
         {
             string cuerpoDestinatario = gestionaDestinatario ? $"CUIT DESTINATARIO: {ordenDeCarga.CUITDestinatario}, Razón social: {ordenDeCarga.RazonSocialDestinatario}\n" : "";
             string cuerpoDestino = gestionaDestino ? $"CUIT DESTINO: {ordenDeCarga.CUITDestino}, Razón social: {ordenDeCarga.RazonSocialDestino}\n" : "";

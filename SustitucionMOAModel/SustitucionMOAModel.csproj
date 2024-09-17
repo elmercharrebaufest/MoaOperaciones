@@ -90,6 +90,7 @@
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
+    <Compile Include="Dto\OrdenDeCarga\GestionAltasFAS.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
     <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />

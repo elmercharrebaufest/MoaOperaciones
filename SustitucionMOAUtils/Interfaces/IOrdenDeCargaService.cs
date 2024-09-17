@@ -8,8 +8,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IOrdenDeCargaService : IOrdenDeCargaServiceBase
     {
-        Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario);
-        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario);
+        Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas);
+        Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas);
         CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false);
         List<OrdenDeCargaDto> Listar(string mailUsuario, string fechaInicio, string fechaFin, int? idProveedorSeleccionado = null);
         OrdenDeCargaDetalleDto Obtener(string mailUsuario, int ordenId);
@@ -39,7 +39,7 @@ namespace SustitucionMOAUtils.Interfaces
         string EnviarOrdenesASAP(List<int> ordenesIds, string mailUsuario);
         ValidarSisaCorredorClienteResponse ValidarSisaCorredorCliente(string corredorCodigo, string clienteCodigo);
         bool ValidarSisaCuit(string cuit, string campo);
-        bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId);
+        bool EnviarMailAltaCuitTerceros(GestionAltasFAS gestionAltas);
         bool ValidarCuitRuca(string cuit);
         ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit);
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
