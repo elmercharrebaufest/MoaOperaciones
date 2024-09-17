@@ -2207,7 +2207,7 @@ namespace SustitucionMOAUtils.Services
                         if (solp.TrabajoYaHecho != true)
                         {
                             solp.TieneModificaciones = false;
-                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar && !peticiones.Any(rt => rt.RevisionTecnica.Finalizada))
+                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
                             {
                                 EnviarCircularAutomatico(solp);
                             }
@@ -2218,6 +2218,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                 }
+
                 if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
                 {
                     try
@@ -6017,15 +6018,17 @@ namespace SustitucionMOAUtils.Services
             var peticionUsuarios = repositorio.Listar<PeticionDeOfertaUsuario>(petiUsuario =>
                                   peticionesId.Contains(petiUsuario.PeticionDeOferta_Id)).ToList();
             var proveedoresRealizaronVisita = repositorio.Listar<PeticionDeOfertaUsuario>(petiUsuario =>
-                                  peticionesId.Contains(petiUsuario.PeticionDeOferta_Id) && petiUsuario.RealizoVisita == true).Select(x => x.Usuario_Id).ToList();
-            var idsTodos = peticionUsuarios.Select(x => x.Usuario_Id).ToList();
+                                  peticionesId.Contains(petiUsuario.PeticionDeOferta_Id) && petiUsuario.RealizoVisita == true).ConvertAll(x => x.Usuario_Id);
+            var idsTodos = peticionUsuarios.ConvertAll(x => x.Usuario_Id);
             var fechaEntrega = solp.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
 
-            var circularDto = new CircularDto
+            DateTime plazoDeOferta = solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones ?? DateTime.Today.AddDays(7);
+
+            CircularDto circularDto = new CircularDto
             {
                 UsuarioId = solp.UsuarioCreacion_Id.Value,
                 Observacion = "Es necesario que se realice una cotización nuevamente",
-                PlazoDeOferta = DateTime.Now.AddDays(7),
+                PlazoDeOferta = plazoDeOferta,
                 RequiereCambioDeFecha = true,
                 FechaEntrega = fechaEntrega,
                 UsuarioIds = solp.EnvioCircularA == EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
@@ -6039,7 +6042,6 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ValidarCircular(circularDto);
-                var hoy = DateTime.Now;
                 var peticion = repositorio.Obtener<PeticionDeOferta>(circularDto.PeticionDeOferta_Id);
                 var usuario = repositorio.Obtener<Usuario>(circularDto.UsuarioId);
                 var rolUsuario = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLP";
@@ -6066,7 +6068,7 @@ namespace SustitucionMOAUtils.Services
                 circular = repositorio.Agregar(circular);
                 repositorio.GuardarCambios();
 
-                if (adjuntos != null && adjuntos.Count > 0)
+                if (adjuntos?.Count > 0)
                 {
                     GuardarArchivosCircular(circular, adjuntos);
                 }
@@ -6084,9 +6086,7 @@ namespace SustitucionMOAUtils.Services
                 respuestaGuardarSOLP.IdEntidad = circular.PeticionDeOfertaUsuarios.FirstOrDefault().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
                 try
                 {
-
                     EnviarMailCircular(circular);
-
                 }
                 catch (Exception e)
                 {
