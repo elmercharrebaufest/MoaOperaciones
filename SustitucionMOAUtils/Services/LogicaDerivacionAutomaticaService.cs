@@ -143,7 +143,7 @@ namespace SustitucionMOAUtils.Services
 
                         try
                         {
-                            entradaServicioService.NotificarReasignaciones(eSLocalesInicio);
+                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio)).Wait();
                         }
                         catch (Exception ex)
                         {
@@ -185,7 +185,7 @@ namespace SustitucionMOAUtils.Services
 
                         try
                         {
-                            entradaServicioService.NotificarReasignaciones(eSLocalesFin);
+                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesFin)).Wait();
                         }
                         catch (Exception ex)
                         {
@@ -199,12 +199,10 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Info("Error en el procesamiento de registros del proceso de reasignación: " + ex.Message);
                     throw ex;
                 }
-                
+
                 return "Exito";
             }
-            
         }
-
         /// <summary>
         /// Chequea si el usuario esta autorizado para correr el proceso.
         /// </summary>
@@ -223,6 +221,5 @@ namespace SustitucionMOAUtils.Services
 
             return allowed;
         }
-
     }
 }

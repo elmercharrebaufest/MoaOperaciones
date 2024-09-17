@@ -804,7 +804,8 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
-            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, reporte[0].Moneda);
+            
+            reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
             
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
@@ -816,7 +817,7 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
         /// </summary>
         /// <param name="ListaAp"></param>
-        public void NotificarReasignaciones(List<string> ListaAp)
+        public async Task NotificarReasignaciones(List<string> ListaAp)
         {
             //Todos los registros con mismo NRO_ES_LOCAL
             foreach(string esLocal in ListaAp)
@@ -839,11 +840,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 List<ReporteDto> reporte = new List<ReporteDto>();
 
-                _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                await NotifyCreation(completeAp, prov, userId, aprobador, reporte);
             }
             
         }
-        private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
+        private async Task<List<ReporteDto>> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";
             List<ReporteDto> nuevoReporte = new List<ReporteDto>();

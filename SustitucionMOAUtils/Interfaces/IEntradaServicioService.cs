@@ -38,6 +38,6 @@ namespace SustitucionMOAUtils.Interfaces
         EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
 
-        void NotificarReasignaciones(List<string> ListaAp);
+        Task NotificarReasignaciones(List<string> ListaAp);
     }
 }
