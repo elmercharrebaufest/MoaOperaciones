@@ -81,7 +81,6 @@ namespace SustitucionMOAUtils.Services
         {
             var consulta = GetConsulta(consultaId);
 
-            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentarioDto.UsuarioId);
             Comentario comentario = new Comentario
             {
                 Consulta_Id = consultaId,
@@ -89,10 +88,10 @@ namespace SustitucionMOAUtils.Services
                 Fecha = DateTime.Now,
                 Recordado = comentarioDto.Recordado,
                 FechaRecordado = comentarioDto.FechaRecordado,
-                Usuario_Id = comentarioDto.UsuarioId,
-                Usuario = usuario
+                Usuario_Id = comentarioDto.UsuarioId
             };
 
+            var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
             if (esInterno && consulta.EstadoConsulta.Code == "GES")

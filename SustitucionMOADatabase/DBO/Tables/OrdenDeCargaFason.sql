@@ -6,7 +6,6 @@
 	[PatenteChasis] VARCHAR(15) NOT NULL, 
 	[PatenteAcoplado] VARCHAR(15) NOT NULL, 
 	[NombreChofer] VARCHAR(120) NOT NULL,
-    [ApellidoChofer] VARCHAR(120) NOT NULL DEFAULT 'DEFAULT_ONLY_ONE_USE', 
 	[CUILChofer] VARCHAR(15) NOT NULL, 
 	[RazonSocialTransporte] VARCHAR(120) NOT NULL, 
 	[CUITTransporte] VARCHAR(15) NOT NULL, 

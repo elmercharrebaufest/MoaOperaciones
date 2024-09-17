@@ -93,7 +93,7 @@ namespace SustitucionMOAUtils.Services
 
             var contratos = ObtenerContratosDisponibles(aplicacionesDisponiblesSap.Contratos);
 
-            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
+            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(codigoProveedor);
             var cartasPorte = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesDeProcesar);
 
             return new ComboAplicacionesContratosCcppResponse { CartasPorte = cartasPorte, Contratos = contratos };
@@ -112,8 +112,7 @@ namespace SustitucionMOAUtils.Services
             if (!aplicacionACrear.ValidarContrato(contratosValidos))
                 throw new InfoCustomException("Revisar contrato seleccionado.");
 
-
-            var aplicacionesPendientesAplicar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
+            var aplicacionesPendientesAplicar = ObtenerAplicacionesPendientesDeProcesar(aplicacionACrear.ContratoSeleccionado.CodigoProveedor);
             var cartasPorteValidas = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesAplicar);
 
             if (!aplicacionACrear.ValidarCartaPorteSeleccionada(cartasPorteValidas))
@@ -150,7 +149,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("No se encontraron contratos disponibles en SAP");
             }
 
-            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(aplicacionesDisponiblesSap);
+            var aplicacionesPendientesDeProcesar = ObtenerAplicacionesPendientesDeProcesar(proveedorCodigo);
 
             var cartasPorteDisponibles = ObtenerCartasPorteDisponibles(aplicacionesDisponiblesSap.CartasDePorte, aplicacionesPendientesDeProcesar);
             if (!cartasPorteDisponibles.Any())
@@ -257,8 +256,7 @@ namespace SustitucionMOAUtils.Services
               IEnumerable<AplicacionCartaPorte> aplicacionesPendientesDeProcesar)
         {
             return cartasDePorte
-                .Select(cp =>
-                {
+                .Select(cp => {
                     var kgPendientesCargados = aplicacionesPendientesDeProcesar
                        .Where(appPendiente => appPendiente.CartaPorte == cp.NumeroCartaPorte)
                        .Sum(appPendiente => appPendiente.Kilogramos);
@@ -310,20 +308,12 @@ namespace SustitucionMOAUtils.Services
             }
             return usuario.EsCorredor() ? proveedorAsignado.CodigoProveedor : null;
         }
-        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(
-            AppCartasPortePendienteResponse appCartaPorteResponse
-            )
-        {
-            return ObtenerAplicacionesPendientesDeProcesar(appCartaPorteResponse.Contratos
-                .GroupBy(c=>c.CodigoProveedor)
-                .Select(g=>g.Key));
-        }
-        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(IEnumerable<string> codigosProveedor
-            )
+
+        private List<AplicacionCartaPorte> ObtenerAplicacionesPendientesDeProcesar(string codigoProveedorSeleccionado)
         {
             return repositorio.Listar<AplicacionCartaPorte>(app =>
                 app.Estado == EstadoAplicacionCartaPorte.Pendiente &&
-                codigosProveedor.Contains(app.Proveedor.CodigoProveedor));
+                app.Proveedor.CodigoProveedor == codigoProveedorSeleccionado);
         }
 
         private AppCCPPRequests.AppCartasPortePendienteResponse ObtenerAplicacionesDisponiblesSap(string codigoProveedor)
@@ -482,9 +472,8 @@ namespace SustitucionMOAUtils.Services
 
             var contratoConAnticipo =
                 contratosDisponiblesSap.FirstOrDefault(c =>
-                    c.CodigoProveedor == contratoSeleccionado.CodigoProveedor &&
-                    c.Material == contratoSeleccionado.Material &&
                     c.NumeroContrato != contratoSeleccionado.NumeroContrato &&
+                    c.Material == contratoSeleccionado.Material &&
                     c.TieneAnticipo);
 
             if (contratoConAnticipo != null)

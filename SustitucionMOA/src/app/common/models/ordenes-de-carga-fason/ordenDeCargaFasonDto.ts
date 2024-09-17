@@ -31,7 +31,6 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public PatenteAcoplado: string;
     public PatenteChasis: string;
     public NombreChofer: string;
-    public ApellidoChofer: string;
     public CUILChofer: string;
     public RazonSocialTransporte: string;
     public CantidadDeViajes: number;

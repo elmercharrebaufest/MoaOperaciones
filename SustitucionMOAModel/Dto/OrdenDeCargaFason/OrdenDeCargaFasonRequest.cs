@@ -21,7 +21,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string CUITTransporte { get; set; }
 
         public string NombreChofer { get; set; }
-        public string ApellidoChofer { get; set; }
 
         public string Observacion { get; set; }
 
