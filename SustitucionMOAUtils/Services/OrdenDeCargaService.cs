@@ -2057,7 +2057,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.ChasisAcoplado);
                 if (ordenesConPatentesRepetidas.Any(oc => oc.CUITCliente != ordenDeCarga.CUITCliente))
                 {
-                    emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, ordenesConPatentesRepetidas
+                    emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.ChasisAcoplado, ordenesConPatentesRepetidas
                         .Select(oc => oc.CUITCliente).Distinct().ToList());
                 }
             }
