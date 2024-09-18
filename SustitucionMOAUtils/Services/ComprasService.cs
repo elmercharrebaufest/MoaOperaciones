@@ -15,6 +15,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.sap;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
@@ -3855,23 +3856,13 @@ namespace SustitucionMOAUtils.Services
                 solpSAP.NroSolp = solpActual.NroSolp;
             }
             #region posiciones y servicios
-            int numeroPosicion = 0;
 
             //•	el problema está en que siempre debes poner en el campo OUT_LINE= "000000001", sino debieras llenar otra tabla de SAP que no la estamos cargando. Para quitarle complejidad se saco dicha tabla.
-            string outlineNumber = "000000001";
-            string numeroPaquete = "";
-            string preqItem = "";
-            string serialNumber = "";
-            string serviceAccountSerialNumber = "01";
+            const string OUTLINE_NUMBER = "000000001";
+            const string SERVICE_ACCOUNT_SERIAL_NUMBER = "01";
 
-            string docItem = "";
-
-            string textId = "B03";
-            string formatText = "*";
-
-            /* Algunas cuestiones con los números que se mandan:
-             * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
-             */
+            const string TEXT_ID = "B03";
+            const string FORMAT_TEXT = "*";
 
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
@@ -3891,17 +3882,13 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 eliminarPosicion = eliminarPosicion || !posicion.Estado;
-                numeroPosicion++;
 
-                preqItem = $"{numeroPosicion:00000}";
-                docItem = preqItem;
-                numeroPaquete = $"{numeroPosicion:0000000000}";
-                serialNumber = $"{numeroPosicion:00}";
+                NumeroPosicion numeroPosicion = posicion.Indice;
 
                 var IM_PRITEM = new ZMPES7090();
 
                 //Nombre: ZBAPIMEREQITEMIMP Denominación: Posición de SOLPED
-                IM_PRITEM.PREQ_ITEM = preqItem; //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
+                IM_PRITEM.PREQ_ITEM = numeroPosicion.AsPreqItem(); //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
@@ -3928,19 +3915,20 @@ namespace SustitucionMOAUtils.Services
                     //IM_PRITEM.PRICE_UNITSpecified = true;
 
                     //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                    BAPIMEREQACCOUNT imputacionPosicionMateriales = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
+                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                    );
 
-                    ))
+                    if (imputacionPosicionMateriales is null)
                     {
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicionMateriales = new BAPIMEREQACCOUNT
                         {
-                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
@@ -3948,11 +3936,13 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicionMateriales);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
-                            PREQ_ITEM = preqItem,
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
                             SERIAL_NO = "01",
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
@@ -3971,27 +3961,27 @@ namespace SustitucionMOAUtils.Services
                     {
                         solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
                         {
-                            PREQ_ITEM = preqItem,
-                            TEXT_ID = textId,
-                            TEXT_FORM = formatText,
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
+                            TEXT_ID = TEXT_ID,
+                            TEXT_FORM = FORMAT_TEXT,
                             TEXT_LINE = texto
                         });
                     });
 
                     solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
                         SERIAL_NO = "01",
-                        SERIAL_NO_ITEM = serialNumber,
+                        SERIAL_NO_ITEM = numeroPosicion.AsSerialNumber(),
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
                     });
 
                     solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
                         SERIAL_NO = "01",
                         SERIAL_NO_ITEM = "X",
                         //Siempre mandar esto en 100. Lo autocalcula SAP
@@ -4055,7 +4045,7 @@ namespace SustitucionMOAUtils.Services
                                                //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega; //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 IM_PRITEM.PLND_DELRYSpecified = true;
-                IM_PRITEM.PCKG_NO = numeroPaquete; //PCKG_NO PACKNO  Nº paquete
+                IM_PRITEM.PCKG_NO = numeroPosicion.AsNumeroPaquete(); //PCKG_NO PACKNO  Nº paquete
 
                 //Indica si esta borrada la posicion 
                 if (!string.IsNullOrEmpty(solpActual.NroSolp))
@@ -4069,7 +4059,7 @@ namespace SustitucionMOAUtils.Services
                 //Esta es una lista de campos que SAP nos pide que enviemos una "X" con los datos.
                 solpSAP.IM_PRITEMXList.Add(new ZMPES8000
                 {
-                    PREQ_ITEM = preqItem,
+                    PREQ_ITEM = numeroPosicion.AsPreqItem(),
                     PREQ_ITEMX = "X",
                     PUR_GROUP = "X",
                     CREATED_BY = "X",
@@ -4107,24 +4097,19 @@ namespace SustitucionMOAUtils.Services
 
 
                 //---Desde aca empiezan las subposiciones---
-                var numeroSubPosicion = 0;
+
                 var numeroSerialNumberItem = 0;
-                string serviceLineNumber = "";
-                string serialNumberItem = "";
 
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
-                    numeroSubPosicion++;
-                    serviceLineNumber = $"{subPosicion.Numero:000000000}0";
-
-                    //serialNumberItem = serialNumber;
-
+                    NumeroSubPosicion numeroSubPosicion = subPosicion.Numero;
+                    
                     //SUBPOSICION
                     var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
 
-                    IM_SERVICELINE.DOC_ITEM = docItem; //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
-                    IM_SERVICELINE.OUTLINE = outlineNumber; //OUTLINE OUTLINE_NO  Número de estructuración
-                    IM_SERVICELINE.SRV_LINE = serviceLineNumber; //SRV_LINE    EXTROW Número de línea
+                    IM_SERVICELINE.DOC_ITEM = numeroPosicion.AsDocItem(); //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
+                    IM_SERVICELINE.OUTLINE = OUTLINE_NUMBER; //OUTLINE OUTLINE_NO  Número de estructuración
+                    IM_SERVICELINE.SRV_LINE = numeroSubPosicion.AsServiceLineNumber(); //SRV_LINE    EXTROW Número de línea
                     IM_SERVICELINE.DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)); //DEL_IND DEL Indicador de borrado
 
                     if (subPosicion.ServicioSolp != null)
@@ -4144,9 +4129,9 @@ namespace SustitucionMOAUtils.Services
 
                     solpSAP.IM_SERVICELINESXList.Add(new BAPI_SRV_SERVICE_LINEX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SRV_LINE = serviceLineNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
                         DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
                         SERVICE = "X",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
@@ -4157,34 +4142,35 @@ namespace SustitucionMOAUtils.Services
                         CURRENCY = "X"
                     });
 
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO    DZEKKN  Número actual de la imputación
+                    BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
+                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ))
+                        );
+
+                    if (imputacionPosicion is null)
                     {
                         numeroSerialNumberItem++;
 
-                        serialNumberItem = $"{numeroSerialNumberItem:00}";
-
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicion = new BAPIMEREQACCOUNT
                         {
-                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = serialNumberItem, //SERIAL_NO    DZEKKN  Número actual de la imputación
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
                             PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicion);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
-                            PREQ_ITEM = preqItem,
-                            SERIAL_NO = serialNumberItem,
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
+                            SERIAL_NO = imputacionPosicion.SERIAL_NO,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
@@ -4194,36 +4180,25 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
-                    else
-                    {
-                        serialNumberItem = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO    DZEKKN  Número actual de la imputación
-                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ).SERIAL_NO;
-                    }
 
                     //IMPUTACION SUBPOSICION
                     solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SRV_LINE = serviceLineNumber,
-                        SERIAL_NO = serviceAccountSerialNumber,
-                        SERIAL_NO_ITEM = serialNumberItem,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
+                        SERIAL_NO = numeroPosicion.AsSerialNumber(),
+                        SERIAL_NO_ITEM = imputacionPosicion.SERIAL_NO,
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
                     });
 
                     solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
-                        SERIAL_NO = serviceAccountSerialNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER, //Preguntar a Ulises
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(), //Preguntar a Ulises
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = "X",
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = "X"
@@ -4244,8 +4219,8 @@ namespace SustitucionMOAUtils.Services
                     solpSAP.IM_PRADDRDELIVERYList.Add(
                     new ZMPES7110
                     {
-                        PREQ_NO = preqItem, //PREQ_NO BANFN   Numero de SOLPED
-                        PREQ_ITEM = preqItem, //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
+                        PREQ_NO = numeroPosicion.AsPreqItem(), //PREQ_NO BANFN   Numero de SOLPED
+                        PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
                         NAME = posicion.NombreEntrega, //NAME    AD_NAME1 Nombre 1
                         POSTL_COD1 = posicion.CpEntrega, //POSTL_COD1 AD_PSTCD1   Código postal de la población
                         CITY = posicion.Centro.Descripcion, //CITY    AD_CITY1 Población

@@ -122,6 +122,8 @@
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
+    <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
+    <Compile Include="Dto\sap\NumeroPosicion.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
