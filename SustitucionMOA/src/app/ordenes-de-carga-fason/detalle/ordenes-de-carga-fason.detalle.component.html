@@ -24,6 +24,26 @@
             <div class="clearfix myTables">
                 <mensaje></mensaje>
                 <spinner></spinner>
+                <p-confirmDialog #dialogoSA key="confirmarSA" header="Confirmación de anulación" [responsive]="true"
+                    appendTo="body">
+                    <p-footer>
+                        <p-message *ngIf="activaEnScato" severity="error"
+                            text="Actualmente la orden se encuentra activa en Scato."></p-message>
+                        <button style="margin-top:1rem" type="button" pButton label="No"
+                            class="ui-button-info botonModal" (click)="dialogoSA.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoSA.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoRSA key="confirmarRSA" header="Confirmación de solicitud de anulación"
+                    [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoRSA.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoRSA.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
                 <p-confirmDialog #dialogoConfirmarAnular key="confirmarAnular" header="Confirmación de anulación"
                     [responsive]="true" appendTo="body">
                     <p-footer>
@@ -33,6 +53,15 @@
                             class="ui-button-info botonModal" (click)="dialogoConfirmarAnular.reject()"></button>
                         <button type="button" pButton label="Si" class="ui-button-success botonModal"
                             (click)="dialogoConfirmarAnular.accept()"></button>
+                    </p-footer>
+                </p-confirmDialog>
+                <p-confirmDialog #dialogoConfirmarEdicion key="confirmarSolicitudEdicion"
+                    header="Confirmación de edición" [responsive]="true" appendTo="body">
+                    <p-footer>
+                        <button type="button" pButton label="No" class="ui-button-info botonModal"
+                            (click)="dialogoConfirmarEdicion.reject()"></button>
+                        <button type="button" pButton label="Si" class="ui-button-success botonModal"
+                            (click)="dialogoConfirmarEdicion.accept()"></button>
                     </p-footer>
                 </p-confirmDialog>
                 <p-confirmDialog #confirmarEdicionActiva key="confirmarEdicionActiva" [responsive]="true"
@@ -155,7 +184,7 @@
 
                                     <div class="col-xs-12 col-md-12">
                                         <p class="blue"><strong>Nombre y apellido del chofer</strong></p>
-                                        <p style="width:100%">{{ordenDeCargaFason.ApellidoChofer}}, {{ordenDeCargaFason.NombreChofer}}</p>
+                                        <p style="width:100%">{{ordenDeCargaFason.NombreChofer}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
@@ -234,9 +263,30 @@
                                 <input type="button" (click)="verificarTransporte()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Transporte">
                             </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarAnulacion">
+                                <input type="button" (click)="confirmarRechazarSolicitudAnulacion(true)"
+                                    class="btn-custom btn-add btn-grande" value="Aprobar anulación">
+                            </div>
                             <div class="col-xs-5 col-md-3" *ngIf="botones.verificarCuitsTercero">
                                 <input type="button" (click)="verificarCuitsTerceros()"
                                     class="btn-custom btn-add btn-grande" value="Verificar Cuits Terceros">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarAnulacion">
+                                <input type="button" (click)="confirmarRechazarSolicitudAnulacion(false)"
+                                    class="btn-custom btn-remove btn-grande" value="Rechazar anulación">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarEdicion">
+                                <input type="button" (click)="confirmarRechazarSolicitudEdicion(true)"
+                                    class="btn-custom btn-add btn-grande" value="Aprobar edición">
+                            </div>
+                            <div class="col-xs-5 col-md-3" *ngIf="botones.aprobarRechazarEdicion">
+                                <input type="button" (click)="confirmarRechazarSolicitudEdicion(false)"
+                                    class="btn-custom btn-remove btn-grande" value="Rechazar edición">
+                            </div>
+                            <div class="col-xs-5 col-md-3"
+                                *ngIf="botones.solicitarAnulacion && !(activaEnScato || validandoEstadoScato)">
+                                <input type="button" (click)="confirmarSolicitudAnulacion()"
+                                    class="btn-custom btn-remove btn-grande" value="Solicitar Anulación">
                             </div>
                             <div class="col-xs-5 col-md-3" *ngIf="botones.anular">
                                 <input type="button" (click)="confirmarAnulacion()"

@@ -22,7 +22,8 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     @Input() legajo: LegajoDto[];
     @Input() esAuditor: boolean;
     @Input() idLegajo: number;
-
+    @Input() mostrarBotonVerOfertas: boolean = false;
+    @Input() esSolicitante: boolean = false;
 
     @Output() cerrarLegajoEmitter = new EventEmitter();
     @Output() descargarLegajoEmitter = new EventEmitter();
@@ -34,7 +35,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
 
     error: string;
     visualizarAlert = false;
-
+    displayVisualizarPrecio: boolean = false;
 
     constructor(protected service: ComprasService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
@@ -72,34 +73,50 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
     }
 
     descargarArchivo(legajoDto: LegajoDto) {
-        if (legajoDto.Tipo == LegajoTipo.Solp || legajoDto.Tipo == LegajoTipo.Pliego) {
-            this.descargarSolp_Pliego(legajoDto.SolpId);
-        }
-        else if (legajoDto.Tipo == LegajoTipo.PeticionDeOferta && legajoDto.ArchivoId) {
-            this.descargarPeticionDeOferta(legajoDto.ArchivoId);
-        }
-        else if (legajoDto.Tipo == LegajoTipo.ChatInterno) {
-            this.descargarChatInterno(legajoDto.SolpId);
-        }
-        else if ((legajoDto.Tipo == LegajoTipo.SolpArchivos || legajoDto.Tipo == LegajoTipo.Legajo || legajoDto.Tipo == LegajoTipo.Circular) && legajoDto.ArchivoId) {
-            this.descargarSolpArchivos_Legajo_Circular(legajoDto.ArchivoId);
-        }
-        else if (legajoDto.Tipo == LegajoTipo.Cotizacion && legajoDto.ArchivoId) {
-            this.descargarHistorialCotizaciones(legajoDto.ArchivoId);
-        }
-        else if (legajoDto.Tipo == LegajoTipo.HistorialMovimientos) {
-            this.descargarHistorialMovimientos();
-        }
-        else if (legajoDto.Tipo == LegajoTipo.RevisionTecnica && legajoDto.ArchivoId) {
-            this.descargarRevisionTecnica(legajoDto.ArchivoId);
-        } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
-            this.descargarAdjuntosProveedores(legajoDto);
+        switch (legajoDto.Tipo) {
+
+            case LegajoTipo.Solp:
+            case LegajoTipo.Pliego:
+                this.descargarSolp_Pliego(legajoDto.SolpId);
+                break;
+
+            case LegajoTipo.PeticionDeOferta:
+                this.descargarPeticionDeOferta(legajoDto.ArchivoId);
+                break;
+
+            case LegajoTipo.ChatInterno:
+                this.descargarChatInterno(legajoDto.SolpId);
+                break;
+
+            case LegajoTipo.SolpArchivos:
+            case LegajoTipo.Legajo:
+            case LegajoTipo.Circular:
+            case LegajoTipo.PeticionDeOfertaVisualizacionPrecio:
+                this.descargarArchivoAdjunto(legajoDto.ArchivoId);
+                break;
+
+            case LegajoTipo.Cotizacion:
+                this.descargarHistorialCotizaciones(legajoDto.ArchivoId);
+                break;
+
+            case LegajoTipo.HistorialMovimientos:
+                this.descargarHistorialMovimientos();
+                break;
+
+            case LegajoTipo.RevisionTecnica:
+                this.descargarRevisionTecnica(legajoDto.ArchivoId);
+                break;
+
+            case LegajoTipo.CotizacionAdjunto:
+                this.descargarAdjuntosProveedores(legajoDto);
+                break;
+
+            default:
+                console.error('Tipo de archivo no implementado');
         }
     }
 
     private descargarAdjuntosProveedores(legajoDto: LegajoDto) {
-        console.log("toy", legajoDto)
-
         this.blockUI.start('Generando...');
         this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
             .subscribe(
@@ -167,29 +184,29 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
             )
     }
 
-    private descargarPeticionDeOferta(archivoId: number) {
-        this.blockUI.start("Generando...");
-        this.service.getPdfPeticionDeOfertaUsuario(archivoId)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
-
-                        this.downloadArchivoLocal(blob, result.FileDownloadName);
-                    }
-                    this.blockUI.stop();
-                },
-                (error) => {
-                    this.blockUI.stop();
-                    this.mensajeComponent.setErrorMsg(error.message);
-                }
-            )
+    private descargarPeticionDeOferta(archivoId?: number) {
+        if (archivoId) {
+            this.blockUI.start("Generando...");
+            this.service.getPdfPeticionDeOfertaUsuario(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    },
+                    () => { this.blockUI.stop(); }
+                )
+        }
     }
 
     private descargarChatInterno(solpId: number) {
@@ -217,64 +234,67 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
             )
     }
 
-    private descargarSolpArchivos_Legajo_Circular(archivoId: number) {
-        this.blockUI.start("Descargando...");
-        this.service.DescargarArchivo(archivoId)
-            .subscribe(
-                (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        var byteArray = new Uint8Array(result.FileContents);
-                        var blob = new Blob([byteArray], {
-                            type: "application/octet-stream",
-                        });
-                        this.downloadArchivoLocal(blob, result.FileDownloadName);
-                        this.blockUI.stop();
-                    }
+    private descargarArchivoAdjunto(archivoId?: number) {
+        if (archivoId) {
+            this.blockUI.start("Descargando...");
+            this.service.DescargarArchivo(archivoId)
+                .subscribe(
+                    (result) => {
+                        if (result.logout == true) {
+                            this.sessionDataService.logout();
+                        }
+                        else {
+                            var byteArray = new Uint8Array(result.FileContents);
+                            var blob = new Blob([byteArray], {
+                                type: "application/octet-stream",
+                            });
+                            this.downloadArchivoLocal(blob, result.FileDownloadName);
+                        }
+                    },
+                    (error) => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                    },
+                    () => { this.blockUI.stop(); }
+                )
+        }
+    }
+
+    private descargarHistorialCotizaciones(cotizacionId?: number) {
+        if (cotizacionId) {
+            this.blockUI.start("Descargando...");
+            this.service.descargarHistorialCotizaciones(cotizacionId).subscribe(
+                (response) => {
+                    var byteArray = new Uint8Array(response.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+                    this.downloadArchivoLocal(blob, response.FileDownloadName);
                 },
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
-                    this.blockUI.stop();
-                }
+                },
+                () => { this.blockUI.stop(); }
             )
+        }
     }
 
-    private descargarHistorialCotizaciones(cotizacionId: number) {
-        this.blockUI.start("Descargando...");
-        this.service.descargarHistorialCotizaciones(cotizacionId).subscribe(
-            (response) => {
-                var byteArray = new Uint8Array(response.FileContents);
-                var blob = new Blob([byteArray], {
-                    type: "application/octet-stream",
-                });
-                this.downloadArchivoLocal(blob, response.FileDownloadName);
-                this.blockUI.stop();
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-                this.blockUI.stop();
-            }
-        )
-    }
-
-    private descargarRevisionTecnica(peticionDeOfertaId: number) {
-        this.blockUI.start("Descargando...");
-        this.service.descargarRevisionTecnica(peticionDeOfertaId).subscribe(
-            (response) => {
-                var byteArray = new Uint8Array(response.FileContents);
-                var blob = new Blob([byteArray], {
-                    type: "application/octet-stream",
-                });
-                this.downloadArchivoLocal(blob, response.FileDownloadName);
-                this.blockUI.stop();
-            },
-            (error) => {
-                this.mensajeComponent.setErrorMsg(error.message);
-                this.blockUI.stop();
-            }
-        )
+    private descargarRevisionTecnica(peticionDeOfertaId?: number) {
+        if (peticionDeOfertaId) {
+            this.blockUI.start("Descargando...");
+            this.service.descargarRevisionTecnica(peticionDeOfertaId).subscribe(
+                (response) => {
+                    var byteArray = new Uint8Array(response.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: "application/octet-stream",
+                    });
+                    this.downloadArchivoLocal(blob, response.FileDownloadName);
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                },
+                () => { this.blockUI.stop(); }
+            )
+        }
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
@@ -295,6 +315,7 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
             return;
         }
     }
+
     descargarHistorialMovimientos() {
         this.blockUI.start("Descargando...");
         this.service.descargarArchivoHistorialMovimientos(this.idLegajo)
@@ -313,5 +334,18 @@ export class LegajoComponent extends ListBaseComponent implements OnInit {
                     this.blockUI.stop();
                 }
             )
+    }
+
+    abrirModalVerOfertas() {
+        this.displayVisualizarPrecio = true;
+    }
+
+    cerrarModalPrecios() {
+        this.displayVisualizarPrecio = false;
+    }
+
+    onVisualizarPrecioGuardado() {
+        this.displayVisualizarPrecio = false;
+        this.onCerrarLegajo();
     }
 }

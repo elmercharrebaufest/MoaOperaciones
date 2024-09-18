@@ -15,6 +15,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { ComprasService } from '../../compras.service';
 import { SelectItem } from 'primeng/api';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
+import { LegajoDto } from '../../../modelos/compras/legajoDto';
 
 @Component({
     selector: 'app-listado-dashboard-proveedor',
@@ -57,7 +58,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     subscripcionPO: Subscription
     peticion: PeticionDeOfertaDto;
     displayLegajo: boolean = false;
-    legajo: any;
+    legajo: LegajoDto[];
     usuarioProveedor: boolean = true;
     itemSelected: any;
     tablaPO: any[];
@@ -192,9 +193,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        this.legajo = result.data;
-                        this.displayLegajo = true;
-                        this.blockUI.stop();
+                        if (result.data) {
+                            this.legajo = result.data.LegajoFilas;
+                            this.displayLegajo = true;
+                            this.blockUI.stop();
+                        }
                     }
                 },
                 (error) => {

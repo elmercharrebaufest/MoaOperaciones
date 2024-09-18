@@ -180,13 +180,12 @@ namespace SustitucionMOAWS.WSConsumers
                     kgNetos = calidad.KG_NETOS,
                     porcentajeDescuento = calidad.PORC_DESC,
                     resultadoCalado = calidad.RESULTADO_CAL,
-                    resultadoCamara = calidad.CARACT.ToUpper().Contains("HUMEDAD") ? calidad.RESULTADO_CAL : calidad.RESULTADO_CAM,
-                    resultadoReconsideracion = calidad.RESULTADO_REC,
+                    resultadoCamara = calidad.RESULTADO_CAM,
+                    resultadoReconsideracion = calidad.RESULTADO_REC
                 });
-                result.camaraAPresent = calidad.CAMARA_A_PRESENT;
+
                 result.calidadTotalAplicados += calidad.KG_APLIC;
-                result.calidadTotalNetos += calidad.KG_NETOS + calidad.KG_DESC;
-                result.calidadTotalNetosDescontados += calidad.KG_NETOS;
+                result.calidadTotalNetos += calidad.KG_NETOS;
                 result.calidadTotalAplicadosUnidad = "KG";
                 result.calidadTotalNetosUnidad = "KG";
             }

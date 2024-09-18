@@ -49,7 +49,7 @@ namespace SustitucionMOAWS.Interfaces
 
     public interface IObtenerRegistroInfoConsumerMOA
     {
-        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string grupoDeCompras, string proveedor);
+        List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string organizacionDeCompras, string proveedor);
     }
     public interface IObtenerOrdenDeCompraConsumerMOA
     {

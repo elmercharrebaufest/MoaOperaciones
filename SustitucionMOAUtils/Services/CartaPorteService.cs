@@ -212,13 +212,7 @@ namespace SustitucionMOAUtils.Services
             {
                 CartaPorteDetalleExcelWSMOAResponse data = (CartaPorteDetalleExcelWSMOAResponse)new CartaPorteDetalleExcelConsumerMOA().request(proveedor, cartaporteId);
                 
-                var calidadesMapeadas = MapCalidadesComoFront(data);
-
-                return ExcelExport.ToExcelCartaPorteDetalle(
-                    data.entregasDescargas, calidadesMapeadas, data.aplicaciones, 
-                    new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, 
-                    new string[] { "Caracteristica", "Resultado", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, 
-                    new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
+                return ExcelExport.ToExcelCartaPorteDetalle(data.entregasDescargas, data.datosCalidad, data.aplicaciones, new string[] { "Vendedor", "Descripcion Vendedor", "Fecha", "Producto", "Descripcion Producto", "Centro", "Descarga Centro", "Procedencia", "Neto Descontado", "Unidad Neto Descontado", "Tipo Vehiculo", "Patente", "Acoplado", "Total Aplicados", "Unidad Total Aplicados" }, new string[] { "Caracteristica", "Resultado Calado", "Resultado Camara", "Certificado", "Resultado Reconsideracion", "Certificado Reconsideracion", "Netos", "Unidad Netos", "Descuento", "Unidad Descuento", "Aplicados", "Unidad Aplicados", "Porcentaje Descuento" }, new string[] { "Fecha", "Contrato", "Kg Aplicados", "Unidad" }, "Reporte Carta de Porte Detalle (Nro. " + cartaporteId + ")");
             }
             catch (InfoCustomException)
             {
@@ -761,21 +755,6 @@ namespace SustitucionMOAUtils.Services
                 ccpp.SetTieneDiscrepanciaEnCalidad(consultasDiscrepanciaCalidad);
             });
 
-        }
-        private List<CalidadExcel> MapCalidadesComoFront(CartaPorteDetalleExcelWSMOAResponse data)
-        {
-            var vaACamara = !string.IsNullOrEmpty(data.camaraAPresent);
-            var tieneResultadosCamara = vaACamara && !data.datosCalidad.Where(dc => !dc.caracteristica.Contains("HUMEDAD")).All(dc => dc.resultadoCamara == 0 && dc.porcentajeDescuento == 0);
-            return data.datosCalidad
-                .Where(dc =>
-                    (vaACamara && (tieneResultadosCamara || dc.caracteristica.Contains("HUMEDAD"))) || !vaACamara
-                )
-                .Select(dc =>
-                {
-                    var esHumedad = dc.caracteristica.Contains("HUMEDAD");
-                    var resultadoParaExcel = vaACamara && !esHumedad ? dc.resultadoCamara : dc.resultadoCalado;
-                    return new CalidadExcel(dc, resultadoParaExcel);
-                }).ToList();
         }
     }
 }

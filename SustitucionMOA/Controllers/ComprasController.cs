@@ -758,32 +758,31 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarOfertasComprador(int peticionOferta_Id)
         {
+            var response = new SustitucionMOAApiResponse<PeticionDeOfertaDto>();
             try
             {
                 var usuario = ObtenerUsuarioActual();
-                return JsonCustom(new
-                {
-                    data = service.ListarOfertasComprador(peticionOferta_Id, usuario)
-                });
+                response.Data = service.ListarOfertasComprador(peticionOferta_Id, usuario);
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
-            catch (WSCustomException e)
+            catch (WSCustomException wsce)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, wsce);
+                response.Error = wsce.Message;
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpPost]
@@ -878,7 +877,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
         {
-            var response = new SustitucionMOAApiResponse<List<LegajoDto>>();
+            var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();

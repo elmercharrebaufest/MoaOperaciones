@@ -58,3 +58,7 @@ GO
 CREATE NONCLUSTERED INDEX [IX_SOLP_FechaCreacion] ON [dbo].[Solp]([FechaCreacion])
 
 GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLP_PLIEGO] ON [dbo].[Solp]([Pliego_Id])
+
+GO

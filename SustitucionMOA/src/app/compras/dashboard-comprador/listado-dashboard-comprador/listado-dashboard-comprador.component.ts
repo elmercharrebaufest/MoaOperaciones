@@ -306,7 +306,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 (result) => {
                     let legajoRes = this.manejarErroresApiResponse(result);
                     if (legajoRes) {
-                        this.legajo = legajoRes;
+                        this.legajo = legajoRes.LegajoFilas;
                         this.idLegajoEnModal = Id;
                         this.displayLegajo = true;
                     }

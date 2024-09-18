@@ -717,9 +717,11 @@
 </app-textos-adjudicar>
 
 
-<app-visualizar-precio [(displayVisualizarPrecio)]="displayVisualizarPrecio"
-                       (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
-                       [(peticionOferta_Id)]="peticionOferta_Id">
+<app-visualizar-precio
+    [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+    [(peticionOferta_Id)]="peticionOferta_Id"
+    (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
+    (preciosGuardadoEmitter)="onVisualizarPrecioGuardado()">
 </app-visualizar-precio>
 
 <app-posicion-plazo [(displayPlazo)]="displayPlazo"

@@ -10,7 +10,6 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
-:r .\ActualizarApellidoChoferOrdenDeCargaFason.sql
 :r .\EstadoIngresosBrutosCoeficienteUnificado.sql
 :r .\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql
 :r .\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql

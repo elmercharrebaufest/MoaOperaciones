@@ -82,6 +82,7 @@
               <th>Estado</th>
               <th>Fecha Creación</th>
               <th>Fecha Retiro</th>
+              <th>Destino</th>
               <th>Producto</th>
               <th>Patente chasis</th>
               <th *ngIf="esAdmin"></th>
@@ -95,16 +96,13 @@
               | customFilter : 'Material' : (productoSelected  == 'Todos' ? '' : productoSelected) 
               | customFilter : 'patenteChasis' : filtroPatente | paginate: { itemsPerPage:itemsPerPage, currentPage: p }; let odd = odd"
               role="row" [class.odd]="!odd">
-              <td>{{ordenDeCargaFason.Id}}
-                <i *ngIf="ordenDeCargaFason.FleteMOA && esAdmin" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
-                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
-                </i>
-              </td>
+              <td>{{ordenDeCargaFason.Id}}</td>
               <td *ngIf="esAdmin">{{ordenDeCargaFason.RazonSocialCorredor}}</td>
               <td *ngIf="esAdmin || isCorredor()">{{ordenDeCargaFason.RazonSocialCliente}}</td>
               <td>{{ordenDeCargaFason.DescripcionEstado}}</td>
               <td>{{ordenDeCargaFason.FechaCreacion || ordenDeCargaFason.fechaCreacion}}</td>
               <td>{{ordenDeCargaFason.FechaRetiroReal || '---'}}</td>
+              <td>{{ordenDeCargaFason.LocalidadDescripcion}}</td>
               <td>{{ordenDeCargaFason.Material}}</td>
               <td>{{ordenDeCargaFason.patenteChasis}}
                 <span *ngIf="ordenDeCargaFason.Escalable" class="fa fa-truck" aria-hidden="true"></span>

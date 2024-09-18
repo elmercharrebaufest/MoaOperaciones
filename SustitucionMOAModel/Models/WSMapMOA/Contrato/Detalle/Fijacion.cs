@@ -22,6 +22,5 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public string kilosFijaString { get; set; }
 
         public string precioString { get; set; }
-        public bool verProforma { get; set; }
     }
 }

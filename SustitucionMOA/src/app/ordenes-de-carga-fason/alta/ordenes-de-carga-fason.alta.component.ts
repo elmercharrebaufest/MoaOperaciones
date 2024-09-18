@@ -186,10 +186,6 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
-        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
-            return false;
-        }
         /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
         if (
             this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11

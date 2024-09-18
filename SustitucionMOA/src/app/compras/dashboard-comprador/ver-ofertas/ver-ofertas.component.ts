@@ -20,6 +20,7 @@ import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.co
 import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-model';
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { ApiResponse } from '../../../common/models/response';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -123,11 +124,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 ObservacionTecnica: null,
                 ObservacionEconomica: null,
                 Cantidad: null,
-            };
+            } as unknown as PeticionDeOfertaDto;
         }
         if (this.adjudicacion == null || this.adjudicacion == undefined) {
             this.adjudicacion = {
-                Id: null,
+                Id: undefined,
             };
         }
     }
@@ -158,19 +159,14 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         try {
             this.blockUI.start('Cargando...');
             this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.tablaOfertas = result.data;
-                        if (this.tablaOfertas.NrosSolp.length > 1) {
+                (result) => {
+                    let peticionDto = this.manejarErroresApiResponse(result);
+                    if (peticionDto) {
+                        this.tablaOfertas = peticionDto;
+                        if (peticionDto.NrosSolp && peticionDto.NrosSolp.length > 1) {
                             this.esTipoPOMultiple = true;
                         }
-                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
+                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional || "";
                         if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);
                         } else {
@@ -178,12 +174,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         }
                         this.setMensajeTabla();
                     }
-                    this.blockUI.stop();
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    this.blockUI.stop();
-                });
+                },
+                () => { this.blockUI.stop(); });
         } catch (e) {
             this.blockUI.stop();
             this.floatMsgService.setErrorMsg(e);
@@ -622,6 +617,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     cerrarModalPrecios() {
         this.displayVisualizarPrecio = false;
+        // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        //     this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        // });
+    }
+
+    onVisualizarPrecioGuardado() {
+        this.displayVisualizarPrecio = false;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        });
     }
 
     abrirModalPrecios() {
@@ -757,13 +762,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     setMensajeTabla() {
-        this.tablaOfertas.Usuarios.forEach(usuario => {
-            usuario.Cotizacion.CotizacionPosiciones.forEach(cotizacionPosicion => {
-                cotizacionPosicion.MensajeTablaVerOfertas = '';
-                if (!cotizacionPosicion.Completado) { cotizacionPosicion.MensajeTablaVerOfertas = 'Sin cotizar' }
-                if (cotizacionPosicion.Adjudicado) { cotizacionPosicion.MensajeTablaVerOfertas = 'Adjudicado' }
+        if (this.tablaOfertas.Usuarios) {
+            this.tablaOfertas.Usuarios.forEach(usuario => {
+                if (usuario.Cotizacion && usuario.Cotizacion.CotizacionPosiciones) {
+                    usuario.Cotizacion.CotizacionPosiciones.forEach(cotizacionPosicion => {
+                        cotizacionPosicion.MensajeTablaVerOfertas = '';
+                        if (!cotizacionPosicion.Completado) {
+                            cotizacionPosicion.MensajeTablaVerOfertas = 'Sin cotizar'
+                        }
+                        if (cotizacionPosicion.Adjudicado) {
+                            cotizacionPosicion.MensajeTablaVerOfertas = 'Adjudicado'
+                        }
+                    });
+                }
             });
-        });
+        }
     }
 
     public actualizarVisibilidad(proveedor, cambiarEstado) {
@@ -909,6 +922,21 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayRegionSap = true;
 
         this.validacionTextosIncompletos();
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.floatMsgService.setInfoMsg(response.info);
+        }
+        return response.data || null;
     }
 }
 

@@ -36,6 +36,7 @@ CREATE TABLE [dbo].[Proveedor](
     [IdSolicitanteInternoAltaGranos] INT NULL, 
     [EstadoSISA] VARCHAR(150) NULL, 
     [EsRevendedor] BIT NOT NULL DEFAULT 0, 
+    [EsClienteDeCorredorFason] BIT NOT NULL DEFAULT 0,
     CONSTRAINT [PK_dbo.Proveedor] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

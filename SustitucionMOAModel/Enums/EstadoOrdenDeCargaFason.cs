@@ -9,9 +9,9 @@
         SinEstado = 4,
         PendienteCompensacion = 5,
         PendienteContabilizacion = 6,
-        //EdicionSolicitada = 7,
-        //EdicionRechazada = 8,
-        //AnulacionSolicitada = 9,
+        EdicionSolicitada = 7,
+        EdicionRechazada = 8,
+        AnulacionSolicitada = 9,
         Anulada = 10,
     }
 
@@ -33,6 +33,12 @@
                     return "Pendiente compensación";
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
                     return "Pendiente contabilizar";
+                case EstadoOrdenDeCargaFason.EdicionSolicitada:
+                    return "Edición solicitada";
+                case EstadoOrdenDeCargaFason.EdicionRechazada:
+                    return "Edición rechazada";
+                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
+                    return "Anulación solicitada";
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "Anulada";
                 default:
@@ -54,6 +60,12 @@
                     return "Orden vencida";
                 case EstadoOrdenDeCargaFason.Entregada:
                     return "Orden entregada";
+                case EstadoOrdenDeCargaFason.EdicionSolicitada:
+                    return "Edición solicitada";
+                case EstadoOrdenDeCargaFason.EdicionRechazada:
+                    return "Edición rechazada";
+                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
+                    return "Anulación solicitada";
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "Anulada";
 
@@ -69,6 +81,8 @@
                 case EstadoOrdenDeCargaFason.Vencida:
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "red";
+                case EstadoOrdenDeCargaFason.AnulacionSolicitada:
+                case EstadoOrdenDeCargaFason.EdicionSolicitada:
                 case EstadoOrdenDeCargaFason.Pendiente:
                     return "yellow";
                 case EstadoOrdenDeCargaFason.Generada:
@@ -77,6 +91,7 @@
                     return "green_entregada";
                 case EstadoOrdenDeCargaFason.PendienteCompensacion:
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
+                case EstadoOrdenDeCargaFason.EdicionRechazada:
                     return "";
                 default:
                     throw new System.Exception("Semáforo no mapeado");

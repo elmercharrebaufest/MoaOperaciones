@@ -20,8 +20,11 @@ import { BlockUI, NgBlockUI } from 'ng-block-ui';
 export class VisualizarPrecioComponent implements OnInit {
 
     @Input()
-    displayVisualizarPrecio: boolean;   
+    displayVisualizarPrecio: boolean;
+    @Input() esObligatorioAdjuntar: boolean = true;
+
     @Output() cerrarModalPreciosEmitter = new EventEmitter();
+    @Output() preciosGuardadoEmitter = new EventEmitter();
 
     peticionVisualizacionPrecio: PeticionVisualizacionPrecioDto
     visualizarAlert: boolean;
@@ -40,15 +43,19 @@ export class VisualizarPrecioComponent implements OnInit {
     
 
     ngOnInit() {       
-        
         this.peticionVisualizacionPrecio = {
             Observacion: "",
             PeticionOfertaId: this.peticionOferta_Id,
         };
     }
     
-    onCerrarPrecios() {            
+    onCerrarPrecios() {   
         this.cerrarModalPreciosEmitter.next();      
+    }
+
+    onPreciosGuardado() {
+        this.displayOkPeticion = false;
+        this.preciosGuardadoEmitter.next();
     }
         
     uploadHandler(filesUpload: any): boolean {
@@ -145,21 +152,13 @@ export class VisualizarPrecioComponent implements OnInit {
         }
     }
 
-    salir() {
-        this.onCerrarPrecios();
-        this.displayOkPeticion = false;
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
-          });
-    }
-
     validarPeticionDeOfertaVisualizacionPrecio() {
         this.visualizarAlert = false;
         if (!this.peticionVisualizacionPrecio.Observacion || this.peticionVisualizacionPrecio.Observacion.trim() === '') {            
             this.error = "La observación es obligatoria";
             this.visualizarAlert = true;
         } 
-        if(this.peticionVisualizacionPrecio.Adjuntos == undefined){
+        if(this.esObligatorioAdjuntar && this.peticionVisualizacionPrecio.Adjuntos == undefined){
             this.error = "Debe adjuntar un archivo";
             this.visualizarAlert = true;
         }

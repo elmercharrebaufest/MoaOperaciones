@@ -77,6 +77,7 @@
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
+    <Compile Include="Dto\Compras\ObtenerLegajoResponse.cs" />
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
@@ -93,6 +94,7 @@
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
     <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />

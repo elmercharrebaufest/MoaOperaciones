@@ -418,11 +418,13 @@
 </app-chat-interno>
 
 <app-legajo
+    [esSolicitante]="true"
     [(displayLegajo)]="displayLegajo"
     [(usuarioProveedor)]="esProveedor"
     [(legajo)]="legajo"
     [idLegajo]="legajoIdModal"
     [(esAuditor)]="esAuditor"
+    [(mostrarBotonVerOfertas)]="!legajoPuedeVerPrecios"
     (cerrarLegajoEmitter)="cerrarLegajo()"
     (descargarLegajoEmitter)="descargarLegajo()"
     (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)">

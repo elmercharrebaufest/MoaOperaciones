@@ -13,6 +13,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string CUITCliente { get; set; }
 
+        [JsonProperty("estado")]
         public EstadoOrdenDeCargaFason Estado { get; set; }
         public string DescripcionEstado { get; set; }
         public string DescripcionEstadoListado { get; set; }
@@ -29,7 +30,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public int Cantidad { get; set; }
         public string PatenteAcoplado { get; set; }
         public string NombreChofer { get; set; }
-        public string ApellidoChofer { get; set; }
         public string CUILChofer { get; set; }
         public string RazonSocialTransporte { get; set; }
         public string CUITTransporte { get; set; }
@@ -78,7 +78,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             Id = orden.Id;
             Material = orden.Producto.Nombre;
             NombreChofer = orden.NombreChofer;
-            ApellidoChofer = orden.ApellidoChofer;
             Producto_Id = orden.Producto.Id;
             ProductoSeleccionado = new SustitucionMOAModel.Models.DataAgro.MaterialDto
             {
@@ -111,8 +110,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             DestinoMercaderia = orden.DestinoMercaderia;
             FechaRetiroReal = orden.FechaEgreso?.ToString("dd/MM/yyyy HH:mm");
             FechaIngresoPlanta = orden.FechaIngreso?.ToString("dd/MM/yyyy HH:mm");
-            CantidadDescargada = orden.PesadaTara != null && orden.PesadaNeto != null
-                ? orden.PesadaNeto - orden.PesadaTara : null;
+            CantidadDescargada = orden.PesadaNeto;
         }
     }
 }
