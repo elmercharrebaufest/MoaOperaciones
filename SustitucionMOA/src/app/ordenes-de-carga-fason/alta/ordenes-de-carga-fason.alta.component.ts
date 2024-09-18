@@ -144,6 +144,7 @@ export class OrdenesDeCargaFasonAltaComponent
         if (!this.esAdmin) {
             if (this.isCorredor()) {
                 this.CodigoCorredor = sessionStorage.getItem("proveedor");
+                this.ordenDeCargaFason.CodigoCorredor = this.CodigoCorredor;
                 this.cargarClientes(this.CodigoCorredor);
             } else {
                 if (this.esCliente()) {

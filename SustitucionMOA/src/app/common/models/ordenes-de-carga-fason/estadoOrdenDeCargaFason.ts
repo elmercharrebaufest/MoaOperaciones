@@ -1,3 +1,4 @@
+import { EstadoOrdenDeCarga } from '../ordenes-de-carga/estadoOrdenDeCarga';
 export enum EstadoOrdenDeCargaFason {
     Generada = 0,
     Pendiente = 1,
