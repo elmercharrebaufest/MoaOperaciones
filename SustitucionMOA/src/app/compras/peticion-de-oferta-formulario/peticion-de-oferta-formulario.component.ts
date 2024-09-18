@@ -62,6 +62,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     plazoDeEntrega: Date;
     hayPosicionesPendientes(): boolean { return this.solpCompraDto.PosicionCompras.some(x => x.Cantidad > 0) };
     posicionesPendientes(): PosicionCompra[] { return this.solpCompraDto.PosicionCompras.filter(x => x.Cantidad > 0) };
+    plazoDeEntregaFechaMin: Date;
 
     locale = {
         firstDayOfWeek: 0,
@@ -110,6 +111,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
         this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
 
+        this.setPlazoDeEntregaFechaMin();
     }
 
     obtenerSolpCompras(id) {
@@ -418,8 +420,8 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.TodasPosicionesSeleccionadas = this.posicionesPendientes().every(x => x.Selected);
     }
 
-    plazoDeEntregaFechaMin(): Date {
-        return this.dateDiasDesdeHoy(0); // hoy
+    setPlazoDeEntregaFechaMin(): void {
+        this.plazoDeEntregaFechaMin = this.dateDiasDesdeHoy(0); // hoy
     }
 
     get mostrarAlertaFechaInferior10Dias(): boolean {
