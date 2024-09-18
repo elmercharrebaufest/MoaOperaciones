@@ -234,7 +234,13 @@ namespace SustitucionMOAUtils.Services
                     KmARecorrer = localidad.KmARecorrer
                 };
                 var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
-                ActualizarOrdenDeCarga(detalleActualizar, i == 0);
+                var enviaNotificacion = i == 0;
+                ActualizarOrdenDeCarga(detalleActualizar, enviaNotificacion);
+                if (enviaNotificacion)
+                {
+                    ordenEntity.Cliente = repositorio.Obtener<Proveedor>(ordenEntity.Cliente_Id);
+                    NotificacionCamionAutorizadoMultiplesOrdenes(ordenEntity);
+                }
                 repositorio.Agregar(ordenEntity);
 
                 repositorio.GuardarCambios();
@@ -288,6 +294,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
                     throw new ValidationCustomException("La orden está activa en Scato, imposible editar.");
+                NotificacionCamionAutorizadoMultiplesOrdenes(orden);
 
                 repositorio.GuardarCambios();
 
@@ -707,6 +714,24 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("El corredor no existe.");
                 }
                 request.CorredorId = corredor.Id;
+            }
+        }
+        private void NotificacionCamionAutorizadoMultiplesOrdenes(OrdenDeCargaFason ordenDeCarga)
+        {
+
+            if (!estadosParaNoNotificarChasisRepetido.Contains(ordenDeCarga.Estado))
+            {
+                var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.PatenteChasis);
+                if (ordenesConPatentesRepetidas.Any(oc => oc.Cliente.CUIT != ordenDeCarga.Cliente.CUIT))
+                {
+                    var cuits =  ordenesConPatentesRepetidas
+                        .Select(oc => oc.Cliente.CUIT).Distinct().ToList();
+                    if (!cuits.Contains(ordenDeCarga.Cliente.CUIT))
+                    {
+                        cuits.Add(ordenDeCarga.Cliente.CUIT);
+                    }
+                    emailFasonService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUILChofer, cuits);
+                }
             }
         }
     }

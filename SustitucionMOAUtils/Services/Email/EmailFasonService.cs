@@ -3,12 +3,8 @@ using System.Configuration;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
-using DocumentFormat.OpenXml.Wordprocessing;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
-using iTextSharp.tool.xml.html;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using System.Web.UI.WebControls;
-using Org.BouncyCastle.Asn1.Ocsp;
+using System.Collections.Generic;
+using System;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -92,7 +88,19 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        public void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes)
+        {
+            var cuerpo = $"El camión {patenteChasis} se encuentra autorizado en órdenes fason pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
 
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionComerciales, DireccionMesaVentaFas }),
+                Asunto = $"Camión {patenteChasis} autorizado en varias órdenes fason pendientes",
+                Cuerpo = cuerpo
+            };
+
+            emailService.EnviarMail(emailSenderData);
+        }
         private string CrearCuerpoMail(string texto, string contenido)
         {
             string cuerpo = "<!DOCTYPE html>" +
