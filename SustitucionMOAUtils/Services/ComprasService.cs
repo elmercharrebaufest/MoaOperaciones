@@ -4369,16 +4369,37 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
-                var posiciones = solp.PosicionCompras.ToList();
-                var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
+                var consultaRegistro = solp.PosicionCompras.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
                     .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
 
-                posiciones.ForEach(pos =>
+
+                bool condicionEncontrarPendienteSap(PosicionSolpSAP x, SolpPosicionDto pos)
+                    => int.Parse(x.NumeroPosicion) == pos.Indice;
+
+                if (solp.EsTipoMaterial())
                 {
-                    var posPendiente = posicionesPendientes
-                                    .FirstOrDefault(x => int.Parse(x.NumeroPosicion) == pos.Indice);
-                    pos.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
-                });
+                    solp.PosicionCompras.ForEach(posLocal =>
+                    {
+                        // Buscar las posiciones pendientes en SAP
+                        var posPendiente = posicionesPendientes
+                                .FirstOrDefault(posPendienteSap =>
+                                    condicionEncontrarPendienteSap(posPendienteSap, posLocal)
+                                );
+                        // Si están pendientes, la cantidad real es la resta
+                        // Si NO están pendientes (NO se encontró en la lista de pendientes), la cantidad real es 0
+                        posLocal.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
+                    });
+                }
+
+                if (solp.EsTipoServicio())
+                {
+                    // eliminar las posiciones NO pendientes en SAP
+                    solp.PosicionCompras.RemoveAll(posLocal =>
+                        !posicionesPendientes.Any(posPendienteSap =>
+                            condicionEncontrarPendienteSap(posPendienteSap, posLocal)
+                        )
+                    );
+                }
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {

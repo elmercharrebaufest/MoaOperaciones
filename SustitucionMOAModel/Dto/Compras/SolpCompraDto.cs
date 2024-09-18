@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -8,7 +7,7 @@ namespace SustitucionMOAModel.Dto
     {
         public int Id { get; set; }
         public string NroSolp { get; set; }
-        public IQueryable<SolpPosicionDto> PosicionCompras { get; set; }
+        public List<SolpPosicionDto> PosicionCompras { get; set; }
         public string TipoPosicionCodigo { get; set; }
         public List<RegistroInfoDto> RegistrosInfo { get; set; }
         public bool? Adicional { get; set; }
@@ -23,6 +22,15 @@ namespace SustitucionMOAModel.Dto
                 return f.ToString("O") ?? "";
             }
         }
-        public bool MostrarSelectorPlazoDeOferta{ get; set; }
+        public bool MostrarSelectorPlazoDeOferta { get; set; }
+    }
+
+    public static class SolpCompraDtoExtensions
+    {
+        public static bool EsTipoMaterial(this SolpCompraDto solpCompraDto)
+            => string.Compare(solpCompraDto.TipoPosicionCodigo, "MATERIALES", true) == 0;
+
+        public static bool EsTipoServicio(this SolpCompraDto solpCompraDto)
+            => string.Compare(solpCompraDto.TipoPosicionCodigo, "SERVICIO", true) == 0;
     }
 }

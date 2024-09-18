@@ -68,10 +68,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
                 SolpCompraDto solpCompra = new SolpCompraDto
                 {
-                    PosicionCompras = resultado
+                    PosicionCompras = resultado.ToList()
                 };
 
-                IQueryable<string> nroSolp = solpCompra.PosicionCompras.Select(pos => pos.NroSolp);
+                IEnumerable<string> nroSolp = solpCompra.PosicionCompras.Select(pos => pos.NroSolp);
                 IQueryable<Solp> solpDb = contexto.Set<Solp>()
                     .Include(solp => solp.Pliego)
                     .Where(solp => nroSolp.Contains(solp.NroSolp));
