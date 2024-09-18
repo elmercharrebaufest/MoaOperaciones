@@ -4102,10 +4102,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
                     NumeroSubPosicion numeroSubPosicion = subPosicion.Numero;
-                    //serviceLineNumber = $"{subPosicion.Numero:000000000}0";
-
-                    //serialNumberItem = serialNumber;
-
+                    
                     //SUBPOSICION
                     var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
 
