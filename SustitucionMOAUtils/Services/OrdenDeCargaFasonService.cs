@@ -196,7 +196,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ValidarRequest(request, mailUsuario);
+                var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+                ValidarRequest(request, usuario);
+                ModificarDatosRequest(request, usuario);
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
                 var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
                 var localidades = ObtenerDestinos(request.Cliente);
@@ -610,6 +612,23 @@ namespace SustitucionMOAUtils.Services
             if (!detallesOrden.existeTransporte)
             {
                 emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
+            }
+        }
+        private void ModificarDatosRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+            if (esAdmin)
+            {
+                return;
+            }
+            if (usuario.EsCorredor())
+            {
+                var corredor = usuario.Proveedores.FirstOrDefault(p => p.CodigoProveedor == request.CodigoCorredor);
+                if (corredor is null)
+                {
+                    throw new ValidationCustomException("El corredor no existe.");
+                }
+                request.CorredorId = corredor.Id;
             }
         }
     }
