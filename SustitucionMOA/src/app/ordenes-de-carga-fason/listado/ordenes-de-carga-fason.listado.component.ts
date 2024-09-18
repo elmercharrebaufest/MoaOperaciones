@@ -11,7 +11,6 @@ import { ModalService } from '../../common/services/ModalService';
 import { Material } from '../../common/models/material';
 import { ConfirmationService } from 'primeng/api';
 import { Permiso } from '../../common/enums/Permisos';
-import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 
 @Component({
@@ -80,7 +79,12 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
         { label: "En proceso", value: "En proceso" },
       ];
 
-      this.estadosSelected = ["OK"];
+      this.estadosSelected = [
+        "OK",
+        "Orden vencida",
+        "Orden entregada",
+        "En proceso"
+      ];
     }
 
     this.setTabs();
@@ -107,20 +111,16 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
             if (result.logout == true) {
               this.sessionDataService.logout();
             }
+            else if (result.error != undefined && result.error != "") {
+              this.mensajeComponent.setErrorMsg(result.error);
+            }
+            else if (result.info != undefined) {
+              this.mensajeComponent.setInfoMsg(result.info);
+            }
             else {
-              if (result.error != undefined && result.error != "") {
-                this.mensajeComponent.setErrorMsg(result.error);
-              }
-              else {
-                if (result.info != undefined) {
-                  this.mensajeComponent.setInfoMsg(result.info);
-                }
-                else {
-                  this.data = result.data.Response;
-                  this.datosAux = result.data.Response;
-                  this.filtrarListado();
-                }
-              }
+              this.data = result.data.Response;
+              this.datosAux = result.data.Response;
+              this.filtrarListado();
             }
           },
           error => {
