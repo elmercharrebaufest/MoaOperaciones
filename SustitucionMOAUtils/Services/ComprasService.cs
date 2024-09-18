@@ -4058,7 +4058,7 @@ namespace SustitucionMOAUtils.Services
                 //Esta es una lista de campos que SAP nos pide que enviemos una "X" con los datos.
                 solpSAP.IM_PRITEMXList.Add(new ZMPES8000
                 {
-                    PREQ_ITEM = preqItem,
+                    PREQ_ITEM = numeroPosicion.AsPreqItem(),
                     PREQ_ITEMX = "X",
                     PUR_GROUP = "X",
                     CREATED_BY = "X",
