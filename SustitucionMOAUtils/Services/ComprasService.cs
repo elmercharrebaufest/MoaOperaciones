@@ -3914,17 +3914,18 @@ namespace SustitucionMOAUtils.Services
                     //IM_PRITEM.PRICE_UNITSpecified = true;
 
                     //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
+                    BAPIMEREQACCOUNT imputacionPosicionMateriales = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                    );
 
-                    ))
+                    if (imputacionPosicionMateriales is null)
                     {
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicionMateriales = new BAPIMEREQACCOUNT
                         {
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
@@ -3934,7 +3935,9 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicionMateriales);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
@@ -4141,36 +4144,35 @@ namespace SustitucionMOAUtils.Services
                         CURRENCY = "X"
                     });
 
-                    string indiceImputacion = "";
-
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
+                    BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == numeroPosicion.AsSerialNumber() && //SERIAL_NO    DZEKKN  Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ))
+                        );
+
+                    if (imputacionPosicion is null)
                     {
                         numeroSerialNumberItem++;
 
-                        indiceImputacion = $"{numeroSerialNumberItem:00}";
-
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicion = new BAPIMEREQACCOUNT
                         {
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
+                            SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
                             PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicion);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
                             PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                            SERIAL_NO = indiceImputacion,
+                            SERIAL_NO = imputacionPosicion.SERIAL_NO,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
@@ -4180,17 +4182,6 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
-                    else
-                    {
-                        indiceImputacion = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
-                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == numeroPosicion.AsSerialNumber() && //SERIAL_NO    DZEKKN  Número actual de la imputación
-                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ).SERIAL_NO;
-                    }
 
                     //IMPUTACION SUBPOSICION
                     solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
@@ -4199,7 +4190,7 @@ namespace SustitucionMOAUtils.Services
                         OUTLINE = OUTLINE_NUMBER,
                         SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
                         SERIAL_NO = numeroPosicion.AsSerialNumber(),
-                        SERIAL_NO_ITEM = indiceImputacion,
+                        SERIAL_NO_ITEM = imputacionPosicion.SERIAL_NO,
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
                     });
