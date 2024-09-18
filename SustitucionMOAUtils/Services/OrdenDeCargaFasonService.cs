@@ -731,7 +731,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         cuits.Add(ordenDeCarga.Cliente.CUIT);
                     }
-                    emailFasonService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUILChofer, cuits);
+                    emailFasonService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.PatenteChasis, cuits);
                 }
             }
         }
