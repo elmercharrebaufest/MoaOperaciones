@@ -150,6 +150,7 @@ namespace SustitucionMOAUtils.Services
                     orden.Estado = EstadoOrdenDeCargaFason.Vencida;
             }
             repositorio.GuardarCambios();
+            emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenes);
 
             return ordenes;
         }

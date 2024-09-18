@@ -5,6 +5,7 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using System.Collections.Generic;
 using System;
+using System.Text;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -18,6 +19,7 @@ namespace SustitucionMOAUtils.Services.Email
 
         private static readonly string DireccionComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
+        private static readonly string DireccionAuditoriaOrdenesVencidas = ConfigurationManager.AppSettings["EmailToAuditoriaOrdenesVencidas"];
 
         private readonly IEmailService emailService;
 
@@ -101,6 +103,29 @@ namespace SustitucionMOAUtils.Services.Email
 
             emailService.EnviarMail(emailSenderData);
         }
+        public void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes)
+        {
+            var tablaOrdenes = "";
+            string descripcion;
+            if (ordenes.Count > 0)
+            {
+                descripcion = $"Se informa que el día {DateTime.Now} se han vencido las siguientes órdenes de carga fason:";
+                tablaOrdenes = CrearTablaDetalleOrden(ordenes);
+            }
+            else
+            {
+                descripcion = $"Se informa que para el día {DateTime.Now} no hay órdenes de carga fason vencidas";
+            }
+            var cuerpo = CrearCuerpoMail(descripcion, tablaOrdenes);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionComerciales, DireccionAuditoriaOrdenesVencidas }),
+                Asunto = $"Molinos Agro - Notificación de órdenes fason vencidas",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
         private string CrearCuerpoMail(string texto, string contenido)
         {
             string cuerpo = "<!DOCTYPE html>" +
@@ -122,7 +147,7 @@ namespace SustitucionMOAUtils.Services.Email
         private string CrearTablaDetalleOrden(OrdenDeCargaFason orden)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
-            return CrearTablaDetalleOrden(
+            return InicioTabla() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
@@ -131,12 +156,33 @@ namespace SustitucionMOAUtils.Services.Email
                 patenteChasis: orden.PatenteChasis,
                 patenteAcoplado: orden.PatenteAcoplado,
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
-                );
+                ) + FinalTabla();
+        }
+        private string CrearTablaDetalleOrden(List<OrdenDeCargaFason> ordenes)
+        {
+            var tablaBuilder = new StringBuilder();
+            tablaBuilder.Append(InicioTabla());
+            foreach (var orden in ordenes)
+            {
+                var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
+                tablaBuilder.Append(CrearFilaTablaDetalleOrden(
+                    ordenId: orden.Id,
+                    cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
+                    corredor: $"{detalleCorredor}",
+                    chofer: $"{orden.CUILChofer} - {orden.ApellidoChofer}, {orden.NombreChofer}",
+                    transporte: $"{orden.CUITTransporte} - {orden.RazonSocialTransporte}",
+                    patenteChasis: orden.PatenteChasis,
+                    patenteAcoplado: orden.PatenteAcoplado,
+                    fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
+                    ));
+            }
+            tablaBuilder.Append(FinalTabla());
+            return tablaBuilder.ToString();
         }
         private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
-            return CrearTablaDetalleOrden(
+            return InicioTabla() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
@@ -145,15 +191,28 @@ namespace SustitucionMOAUtils.Services.Email
                 patenteChasis: request.PatenteChasis,
                 patenteAcoplado: request.PatenteAcoplado,
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
-                );
+                ) + FinalTabla();
         }
-        private string CrearTablaDetalleOrden(
+        private string CrearFilaTablaDetalleOrden(
             long ordenId, string cliente, string corredor,
             string chofer, string transporte, string patenteChasis,
             string patenteAcoplado, string fecha)
         {
-            var cuerpo = "<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
-              "<caption >Detalle de orden FASON</caption>" +
+            return "<tr>" +
+                $"<td>{ordenId}</td>" +
+                $"<td>{cliente}</td>" +
+                $"<td>{corredor}</td>" +
+                $"<td>{chofer}</td>" +
+                $"<td>{transporte}</td>" +
+                $"<td>{patenteChasis}</td>" +
+                $"<td>{patenteAcoplado}</td>" +
+                $"<td>{fecha}</td>" +
+                "</tr>";
+        }
+        private string InicioTabla()
+        {
+            return "<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
+              "<caption >Detalles</caption>" +
               "<thead style = \"background-color: #adacac;\">" +
               "<tr>" +
               "<td scope=\"col\">Número de orden</td>" +
@@ -166,20 +225,13 @@ namespace SustitucionMOAUtils.Services.Email
               "<td scope=\"col\">Fecha carga</td>" +
               "</tr>" +
               "</thead>" +
-              "<tbody>" +
-              "<tr>" +
-              $"<td>{ordenId}</td>" +
-              $"<td>{cliente}</td>" +
-              $"<td>{corredor}</td>" +
-              $"<td>{chofer}</td>" +
-              $"<td>{transporte}</td>" +
-              $"<td>{patenteChasis}</td>" +
-              $"<td>{patenteAcoplado}</td>" +
-              $"<td>{fecha}</td>" +
-              "</tr>" +
-              "</tbody>" +
-              "</table>";
-            return cuerpo;
+              "<tbody>";
+        }
+        private string FinalTabla()
+        {
+
+            return "</tbody>" +
+            "</table>";
         }
     }
 }

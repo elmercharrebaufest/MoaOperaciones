@@ -12,5 +12,6 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailIntentoAnulacionActiva(OrdenDeCargaFason orden);
         void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request);
         void EnviarMailTransporteNoExiste(OrdenDeCargaFason ordenDeCarga);
+        void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes);
     }
 }
