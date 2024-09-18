@@ -31,6 +31,7 @@ namespace SustitucionMOAUtils.Services
         {
             using (var dbContext = _dbContextFactory())
             {
+                Logger.Log.Info("Corriendo proceso de notificación diaria ES pendientes");
 
                 dbContext.Database.CreateIfNotExists();
 

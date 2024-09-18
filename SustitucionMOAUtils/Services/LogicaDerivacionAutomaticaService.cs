@@ -39,6 +39,7 @@ namespace SustitucionMOAUtils.Services
         {
             using (var dbContext = _dbContextFactory())
             {
+                Logger.Log.Info("Corriendo proceso de reasignación automática");
 
                 dbContext.Database.CreateIfNotExists();
 
@@ -82,6 +83,7 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     //Registros fin del periodo - Dia siguiente al final de reasignación
+                    // 17/09/2024 - 16/09/2024
                     if ((today.Date - registro.FechaHasta.Date).TotalDays == 1)
                     {
                         userIdsFin.Add(registro.Usuario_Id);
@@ -160,7 +162,7 @@ namespace SustitucionMOAUtils.Services
                         string mail = user.Mail;
                         string suplente = user.Suplente;
 
-                        if ((mail != null && mail != "" && mail.Contains("@")) && (suplente != null && suplente != ""))
+                        if ((string.IsNullOrEmpty(mail) && mail.Contains("@")) && (string.IsNullOrEmpty(suplente)))
                         {
                             List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Aprobador_CDS == suplente && x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
 

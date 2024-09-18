@@ -30,7 +30,7 @@
                 <i class="pi pi-filter"></i>
                 <div class="filtro-oc">
                     <input class="filtro-oc-input" pInputText type="text" (input)="
-                            tabla.filterGlobal($event.target.value, 'contains')
+                            tabla.filter($event.target.value, 'OrdenCompra', 'contains')
                         " placeholder="Busqueda por OC" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación')" />
                 </div>
                 <div class="filtro-usuario" *ngIf="isAll">
@@ -193,7 +193,7 @@
                                   
                                     <td>{{ rowDetalle.CodigoServicio }}</td>
                                     <td class="descripcion">{{ rowDetalle.Descripcion }}</td>
-                                    <td>{{ rowDetalle.Cantidad }}</td>
+                                    <td>{{ rowDetalle.Cantidad | number: '1.0-2':'en-US' }}</td>
                                     <td>{{ rowDetalle.UM }}</td>
                                     <td>{{ rowData.Moneda === 'ARP' ? '$ ' : rowData.Moneda+ ' '}}{{ rowDetalle.PrecioUnitario | number:'1.0-2' }}</td>
                                     <td class="center-content">{{ rowDetalle.NroRemito }}</td>

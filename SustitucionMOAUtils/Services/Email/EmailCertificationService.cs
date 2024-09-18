@@ -15,6 +15,7 @@ using System.Globalization;
 using DocumentFormat.OpenXml.Bibliography;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Dto;
+using SustitucionMOARepositorio.Extensiones;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -51,9 +52,15 @@ namespace SustitucionMOAUtils.Services.Email
         private (List<string>, string, string) BuildRejectedEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate)
         {
             string subjectFormat = "Asunto: Rechazo de servicio - Certificación nro {0}";
+
+            var montoTotalSplit = emailDetail.MontoTotal.Split(' ');
+
+            var montoTotal = montoTotalSplit[0] + Convert.ToDecimal(montoTotalSplit[2]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+          
+
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.MotivoRechazo,
                 emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
+                emailDetail.Descripcion, montoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -61,9 +68,12 @@ namespace SustitucionMOAUtils.Services.Email
         private (List<string>, string, string) BuildApprovedEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate)
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
-           
+
+            string importe = Convert.ToDecimal(emailDetail.MontoTotal).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+
+
             object[] subjectArgs = { emailDetail.NumeroCertificacion , emailDetail.NumeroCertificacion , emailDetail.NroOC, emailDetail.NumeroPosicion
-                    , emailDetail.FechaCertificacion, emailDetail.Proveedor, emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.Aprobador};
+                    , emailDetail.FechaCertificacion, emailDetail.Proveedor, emailDetail.Descripcion, importe, emailDetail.Aprobador};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -134,21 +144,47 @@ namespace SustitucionMOAUtils.Services.Email
 
             var moneda = emailDetailCertificateDto.Moneda == "ARP" ? "$ " : emailDetailCertificateDto.Moneda + " ";
 
+            var montoTotal = emailDetailCertificateDto.MontoTotal;
+
+            if (emailDetailCertificateDto.MontoTotal.Contains("$"))
+            {
+                var montoTotalSplit = emailDetailCertificateDto.MontoTotal.Split(' ');
+
+                montoTotal = montoTotalSplit[0] + Convert.ToDecimal(montoTotalSplit[2]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+            }
+            else
+            {
+                montoTotal = moneda + montoTotal;
+            }
+
 
             foreach (var servicio in emailDetailCertificateDto.DetalleServicio)
             {
+                var monto = servicio.Monto;
+
+                if (servicio.Monto.Contains("$"))
+                {
+                    var montoServicio = servicio.Monto.Split(' ');
+
+                    monto = montoServicio[0] + Convert.ToDecimal(montoServicio[1]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+                }
+                else
+                {
+                    monto = moneda + monto;
+                }
+
                 bodyTable.Append("<tr>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Descripcion}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Cantidad}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.UM}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcentaje}</td>");
-                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{moneda}{servicio.Monto}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{monto}</td>");
                 bodyTable.Append("</tr>");
             }
 
             bodyTable.Append("<tr>");
             bodyTable.Append($"<td colspan='4' style='padding: 10px; border: 0px;'></td>");
-            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda}{emailDetailCertificateDto.MontoTotal}</strong></td>");
+            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{montoTotal}</strong></td>");
             bodyTable.Append("</tr>");
 
             return bodyTable;
@@ -222,7 +258,8 @@ namespace SustitucionMOAUtils.Services.Email
                     DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
                     FechaCert = fechaCarga.ToString(dateTimeFormat);
                     desc = apList[0].Texto_breve_servicio;
-                    importe = reports[0].Moneda == "ARP" ? "$ " + apList[0].Monto_total.ToString() : reports[0].Moneda + " " + apList[0].Monto_total.ToString();
+                    importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US")) 
+                        : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(reports);
                     NroPosicion = apList[0].NRO_POS;
@@ -307,7 +344,7 @@ namespace SustitucionMOAUtils.Services.Email
             //Ultima fila - solo monto total
             aprStrBuilder.Append($"<tr>" +
                 $"<td colspan='12' style='padding: 10px; border: 0px solid #333;'></td>" +
-                $"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda} {montoTotal.ToString("N2")}</strong></td>" +
+                $"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda} {montoTotal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</strong></td>" +
                 $"</tr>");
 
             return aprStrBuilder;

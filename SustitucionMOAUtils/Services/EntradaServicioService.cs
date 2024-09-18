@@ -1511,7 +1511,7 @@ namespace SustitucionMOAUtils.Services
             //MMSN-1158
             try
             {
-                _ = NotifyRejection(rechazo);
+                Task.Run(() => NotifyRejection(rechazo)).Wait();
             }
             catch(Exception e)
             {

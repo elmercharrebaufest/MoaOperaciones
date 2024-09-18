@@ -1,9 +1,11 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using NLog.Internal;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Logger;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -32,10 +34,13 @@ namespace SustitucionMOAUtils.Services
             _aprobacionesService = aprobacionesService;
             this.repositorio = repositorio;
 
-            TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(08, 00, 00));
+            string startHour = System.Configuration.ConfigurationManager.AppSettings["TimerNotification"];
+            TimeSpan startTime = TimeSpan.Parse(startHour);
+
+            TimeSpan initialDelay = CalculateInitialDelay(startTime);
+            
             /*Para prueba interna*/
             //TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(DateTime.Now.TimeOfDay.Hours, DateTime.Now.TimeOfDay.Minutes + 1, DateTime.Now.TimeOfDay.Seconds));
-
 
             TimerCallback callback = new TimerCallback(Notificar);
 

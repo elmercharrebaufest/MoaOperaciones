@@ -120,17 +120,29 @@ export class AprobacionExternaComponent implements OnInit {
                                 const year = jsonDate.getFullYear();
                                 this.fechaCarga = `${day}/${month}/${year}`;
                                 this.desc = this.aprobacionesList[0].Texto_breve_servicio;
-                                this.aprobacionesList[0].Monto_total = this.round(this.aprobacionesList[0].Monto_total, 2);
-                                this.importe = this.moneda + this.aprobacionesList[0].Monto_total.toString();
+                                this.aprobacionesList[0].Monto_total = this.aprobacionesList[0].Monto_total.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                  });
+                                this.importe = this.moneda + this.aprobacionesList[0].Monto_total.toLocaleString('en-US', {
+                                    minimumFractionDigits: 2,
+                                    maximumFractionDigits: 2
+                                  });
                                 this.aprobacionesList.forEach(ap => {
-                                    ap.Monto_a_certificar = this.round(ap.Monto_a_certificar, 2);
+                                    ap.Monto_a_certificar = ap.Monto_a_certificar.toLocaleString('en-US', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                      });
 
                                     let detServicio = {
                                         Descripcion: ap.Descripcion_ES,
                                         Cantidad: ap.Cantidad_a_certificar.toString(),
                                         UM: ap.UM,
                                         Porcentaje: ap.Porcentaje_a_certificar,
-                                        Monto: this.moneda + this.round(ap.Monto_a_certificar, 2).toString(),
+                                        Monto: this.moneda + ap.Monto_a_certificar.toLocaleString('en-US', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                          })
                                     };
 
                                     this.detalleServicios.push(detServicio);
