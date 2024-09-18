@@ -1,4 +1,6 @@
-﻿namespace SustitucionMOAModel.Dto.sap
+﻿// Ignore Spelling: Sustitucion Posicion
+
+namespace SustitucionMOAModel.Dto.sap
 {
     public class NumeroSubPosicion
     {

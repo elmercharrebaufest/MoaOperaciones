@@ -1,5 +1,11 @@
-﻿namespace SustitucionMOAModel.Dto.sap
+﻿// Ignore Spelling: Posicion Sustitucion Preq
+
+namespace SustitucionMOAModel.Dto.sap
 {
+    /// <summary>
+    /// Algunas cuestiones con los números que se mandan:
+    /// DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posición pero formateados de distintas formas
+    /// </summary>
     public class NumeroPosicion
     {
         public int Id { get; set; }

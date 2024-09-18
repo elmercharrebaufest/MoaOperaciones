@@ -3863,10 +3863,6 @@ namespace SustitucionMOAUtils.Services
             const string TEXT_ID = "B03";
             const string FORMAT_TEXT = "*";
 
-            /* Algunas cuestiones con los números que se mandan:
-             * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
-             */
-
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
             var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
