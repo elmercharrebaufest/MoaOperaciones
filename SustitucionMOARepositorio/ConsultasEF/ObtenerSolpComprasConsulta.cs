@@ -3,7 +3,6 @@ using SustitucionMOAModel.Entities;
 using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Transactions;
 
 namespace SustitucionMOARepositorio.ConsultasEF
 {
@@ -98,10 +97,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
         SolpCompraDto IConsultaEscalar<SolpCompraDto>.Ejecutar(DbContext contexto)
         {
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                return Query(contexto, Id);
-            }
+            return Query(contexto, Id);
         }
     }
 }
