@@ -4663,7 +4663,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor, string mailUsuario)
+        public ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor, string mailUsuario, bool esSolicitante)
         {
             var legajo = new List<LegajoDto>();
             var usuarioDto = usuarioService.GetUsuario(mailUsuario);
@@ -4938,7 +4938,7 @@ namespace SustitucionMOAUtils.Services
 
             //Cierres plazo de oferta
             var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            if (esProveedor != true)
+            if (!esProveedor)
             {
                 foreach (var cierre in cierres)
                 {
@@ -4993,9 +4993,13 @@ namespace SustitucionMOAUtils.Services
             if (!esProveedor)
             {
                 AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
-                AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
                 AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
-                AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
+
+                if (!esSolicitante)
+                {
+                    AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
+                    AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
+                }
             }
 
             var response = new ObtenerLegajoResponse
@@ -5043,7 +5047,7 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId, string mailUsuario)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId, string mailUsuario, bool esSolicitante)
         {
             string zipFilename;
             string filePath;
@@ -5063,7 +5067,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var peticion = repositorio.Obtener<PeticionDeOferta>(idPO);
                             var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
-                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario);
+                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario, esSolicitante);
                         }
                     }
                 }
@@ -5078,7 +5082,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario);
+                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario, esSolicitante);
                     }
                 }
             }
@@ -5086,7 +5090,7 @@ namespace SustitucionMOAUtils.Services
             return filePath;
         }
 
-        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo, string mailUsuario)
+        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo, string mailUsuario, bool esSolicitante)
         {
             var usuarioDto = usuarioService.GetUsuario(mailUsuario);
             int idPeticion = peticion.Id;
@@ -5182,17 +5186,17 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            // Agregar revisión ténica al zip
-            if (peticion?.RevisionTecnica != null)
-            {
-                var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
-                var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
-                File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
-                archivo.CreateEntryFromFile(rutaRevisionTecnica, $"PO-{idPeticion}-" + $"RevTec{peticion.Id}.xlsx");
-            }
-
             if (!esProveedor)
             {
+                // Agregar revisión ténica al zip
+                if (peticion?.RevisionTecnica != null)
+                {
+                    var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
+                    var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
+                    File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
+                    archivo.CreateEntryFromFile(rutaRevisionTecnica, $"PO-{idPeticion}-" + $"RevTec{peticion.Id}.xlsx");
+                }
+
                 // Agregar historial de movimientos al zip
                 var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
                 var zipEntry = archivo.CreateEntry($"PO-{idPeticion}-" + "Historial de Movimientos.xlsx", CompressionLevel.Fastest);
@@ -5201,34 +5205,37 @@ namespace SustitucionMOAUtils.Services
                     entryStream.Write(excelBytes, 0, excelBytes.Length);
                 }
 
-                // Agregar archivos de cotizaciones al zip
-                if (peticion.Usuarios != null)
+                if (!esSolicitante)
                 {
-                    foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                    // Agregar archivos de cotizaciones al zip
+                    if (peticion.Usuarios != null)
                     {
-                        var cotizacionUsuario = usuario.Cotizaciones.First();
-
-                        if (cotizacionUsuario.Archivos.Count > 0 && PuedenVerseLosImportesDeCotizacion(cotizacionUsuario, usuarioDto))
+                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
                         {
-                            foreach (var item in cotizacionUsuario.Archivos)
+                            var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                            if (cotizacionUsuario.Archivos.Count > 0 && PuedenVerseLosImportesDeCotizacion(cotizacionUsuario, usuarioDto))
                             {
-                                if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                foreach (var item in cotizacionUsuario.Archivos)
                                 {
-                                    string fileName = Path.GetFileName(item.Ruta);
-                                    archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                    {
+                                        string fileName = Path.GetFileName(item.Ruta);
+                                        archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
-                // Agregar historiales de cotización al zip
-                foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
-                {
-                    var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
-                    var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
-                    File.WriteAllBytes(rutaHistorial, historialBytes);
-                    archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                    // Agregar historiales de cotización al zip
+                    foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
+                    {
+                        var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                        var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                        File.WriteAllBytes(rutaHistorial, historialBytes);
+                        archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                    }
                 }
             }
         }
@@ -8259,12 +8266,12 @@ namespace SustitucionMOAUtils.Services
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario).LegajoFilas;
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario, true).LegajoFilas;
 
                 var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
                 foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)
                 {
-                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario).LegajoFilas);
+                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario, true).LegajoFilas);
                     nrosSolp.AddRange(adjudicacionMismaOC.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
                 }
                 resultado.NroSolp = string.Join(", ", nrosSolp.Distinct());

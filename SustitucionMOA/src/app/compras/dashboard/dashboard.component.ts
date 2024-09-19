@@ -1008,7 +1008,7 @@ export class DashboardComponent extends ListBaseComponent {
     
     verLegajo(peticionDeOfertaId: number) {
         this.blockUI.start('Cargando...');
-        this.service.verLegajo(peticionDeOfertaId, null, false)
+        this.service.verLegajo(peticionDeOfertaId, null, false, true)
             .subscribe(
                 (response) => {
                     let legajoRes = this.manejarErroresApiResponse(response);
@@ -1032,7 +1032,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     descargarLegajo() {
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(this.legajoIdModal, null, false, null)
+        this.service.descargarLegajo(this.legajoIdModal, null, false, null, true)
             .subscribe(
                 (response) => {
                     if (response.logout == true) {

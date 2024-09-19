@@ -808,19 +808,19 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<ApiResponse<ObtenerLegajoResponse>> {
-        let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, esSolicitante: boolean = false): Observable<ApiResponse<ObtenerLegajoResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("peticionDeOfertaId", idPeticionDeOferta.toString())
+            .append("esProveedor", esProveedor.toString())
+            .append("esSolicitante", esSolicitante.toString());
+        
         if (idPeticionDeOfertaUsuario != null) {
-            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+            params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
-        params = params.set("esProveedor", esProveedor.toString());
 
         return this.http
-            .get("/api/compras/ObtenerLegajo", {
-                params: params,
-                headers: this.headers,
-            });
+            .get<ApiResponse<ObtenerLegajoResponse>>('/api/compras/ObtenerLegajo', { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
     verLegajoParaExternos(adjudicacionId: string, token: string): Observable<any> {
@@ -859,16 +859,17 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
     }
 
-    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, adjudicacionId: number | null): Observable<any> {
-        let params: HttpParams = new HttpParams();
-        params = params.set("idPeticion", idPeticion.toString());
+    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, adjudicacionId: number | null, esSolicitante: boolean = false): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append("idPeticion", idPeticion.toString())
+            .append("esProveedor", esProveedor.toString())
+            .append("esSolicitante", esSolicitante.toString());
+        
         if (idPeticionDeOfertaUsuario != null) {
-            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+            params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
-        params = params.set("esProveedor", esProveedor.toString());
-        params = params.set("esProveedor", esProveedor.toString());
         if (adjudicacionId != null) {
-            params = params.set("adjudicacionId", adjudicacionId.toString());
+            params.append("adjudicacionId", adjudicacionId.toString());
         }
 
         return this.http

@@ -9,7 +9,7 @@ import { LegajoDto, LegajoTipo } from '../../modelos/compras/legajoDto';
 @Component({
     selector: 'app-legajo-externo',
     templateUrl: './legajo-externo.component.html',
-    styleUrls: ['./../dashboard-comprador/legajo/legajo.component.css', '../compras.component.css']
+    styleUrls: ['./../legajo/legajo.component.css', '../compras.component.css']
 })
 export class LegajoExternoComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;

@@ -875,13 +875,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
+        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, bool esSolicitante)
         {
             var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
             try
             {
                 var mailUsuario = SessionPersister.getUsername();
-                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario);
+                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
             }
             catch (WSCustomException e)
             {
@@ -925,7 +925,7 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId)
+        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, bool esSolicitante)
         {
             try
             {
@@ -933,7 +933,7 @@ namespace SustitucionMOA.Controllers
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario, esSolicitante);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 

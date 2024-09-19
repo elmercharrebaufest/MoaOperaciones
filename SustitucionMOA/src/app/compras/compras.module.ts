@@ -56,7 +56,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
-import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
+import { LegajoComponent } from './legajo/legajo.component';
 import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
