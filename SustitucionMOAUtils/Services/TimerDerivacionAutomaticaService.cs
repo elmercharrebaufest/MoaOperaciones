@@ -35,7 +35,7 @@ namespace SustitucionMOAUtils.Services
             // Calculate the initial delay
             TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(01, 00, 00)); // 1:00 AM
             //Para Testing -> Intervalo inicial de cuando levanta la app y deberia correr, descomentar, TimeOfDay.Minutes + 7 = 7 minutos a partir de ahora -> Primer ejecución
-            //TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(DateTime.Now.TimeOfDay.Hours, DateTime.Now.TimeOfDay.Minutes + 7, DateTime.Now.TimeOfDay.Seconds));
+            //TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(DateTime.Now.TimeOfDay.Hours, DateTime.Now.TimeOfDay.Minutes + 2, DateTime.Now.TimeOfDay.Seconds));
 
             TimerCallback callback = new TimerCallback(ReasignarAutomaticamente);
 

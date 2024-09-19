@@ -77,13 +77,17 @@ namespace SustitucionMOAUtils.Services
                 foreach (var registro in registrosSinDuplicados)
                 {
                     // 1 - Ver si el periodo debe procesarse  - Inicio / primer día luego del inicio del periodo
+                    //18/09/2024 -> fechaInicio
+                    //18/09/2024 -> fechaFin
+                    //18/09/2024 -> fechaHoy
+                    //17/09/2024 -> fechaAyer
                     if (registro.FechaDesde.Date == today.Date || registro.FechaDesde.Date == ayer.Date)
                     {
                         userIdsInicio.Add(registro.Usuario_Id);
                     }
 
                     //Registros fin del periodo - Dia siguiente al final de reasignación
-                    // 17/09/2024 - 16/09/2024
+                  
                     if ((today.Date - registro.FechaHasta.Date).TotalDays == 1)
                     {
                         userIdsFin.Add(registro.Usuario_Id);
@@ -125,6 +129,9 @@ namespace SustitucionMOAUtils.Services
                         {
                             //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
                             List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Aprobador_CDS == mail && x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
+                        
+                            if (aprobacionesAsociadas.Count > 0)
+                                Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
 
                             foreach (var ap in aprobacionesAsociadas)
                             {
@@ -145,7 +152,9 @@ namespace SustitucionMOAUtils.Services
 
                         try
                         {
-                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio)).Wait();
+                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio, repositorio)).Wait();
+                            Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
+
                         }
                         catch (Exception ex)
                         {
@@ -162,9 +171,12 @@ namespace SustitucionMOAUtils.Services
                         string mail = user.Mail;
                         string suplente = user.Suplente;
 
-                        if ((string.IsNullOrEmpty(mail) && mail.Contains("@")) && (string.IsNullOrEmpty(suplente)))
+                        if ((!string.IsNullOrEmpty(mail) && mail.Contains("@")) && (!string.IsNullOrEmpty(suplente)))
                         {
                             List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Aprobador_CDS == suplente && x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
+
+                            if (aprobacionesAsociadas.Count > 0)
+                                Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus fiscales por fecha de reasignación vencida");
 
                             foreach (var ap in aprobacionesAsociadas)
                             {
@@ -187,7 +199,8 @@ namespace SustitucionMOAUtils.Services
 
                         try
                         {
-                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesFin)).Wait();
+                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesFin, repositorio)).Wait();
+                            Logger.Log.Info("Notificaciones de reasignacion a fiscal enviadas");
                         }
                         catch (Exception ex)
                         {

@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Notificacion;
+using SustitucionMOARepositorio;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,6 +39,6 @@ namespace SustitucionMOAUtils.Interfaces
         EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
 
-        Task NotificarReasignaciones(List<string> ListaAp);
+        Task NotificarReasignaciones(List<string> ListaAp, RepositorioEF repositorio);
     }
 }

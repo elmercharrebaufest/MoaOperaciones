@@ -16,6 +16,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Dto;
 using SustitucionMOARepositorio.Extensiones;
+using System.Text.RegularExpressions;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -53,14 +54,11 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string subjectFormat = "Asunto: Rechazo de servicio - Certificación nro {0}";
 
-            var montoTotalSplit = emailDetail.MontoTotal.Split(' ');
-
-            var montoTotal = montoTotalSplit[0] + Convert.ToDecimal(montoTotalSplit[2]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-          
+            var montoTotal = GetImporte(emailDetail.MontoTotal);
 
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.MotivoRechazo,
-                emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, montoTotal, emailDetail.NroOC};
+            emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
+            emailDetail.Descripcion, montoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -69,14 +67,42 @@ namespace SustitucionMOAUtils.Services.Email
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
 
-            string importe = Convert.ToDecimal(emailDetail.MontoTotal).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-
+            var importe = GetImporte(emailDetail.MontoTotal);
 
             object[] subjectArgs = { emailDetail.NumeroCertificacion , emailDetail.NumeroCertificacion , emailDetail.NroOC, emailDetail.NumeroPosicion
                     , emailDetail.FechaCertificacion, emailDetail.Proveedor, emailDetail.Descripcion, importe, emailDetail.Aprobador};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
+
+
+        private string GetImporte(string importe)
+        {
+            string pattern = @"([^\d]+)\s*([\d,]+(?:\.\d+)?)";
+
+            Match match = Regex.Match(importe, pattern);
+            if (match.Success)
+            {
+                string currency = match.Groups[1].Value;
+                string numberString = match.Groups[2].Value;
+                string formattedNumberString = numberString.Replace(',', '.');
+                if (decimal.TryParse(formattedNumberString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal number))
+                {
+                    // Comprobar si ya está bien formado
+                    string formattedImporte = currency + " " + number.ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+
+                    if (importe.Trim() == formattedImporte.Trim())
+                    {
+                        return importe;
+                    }
+
+                    return formattedImporte;
+                }
+            }
+
+            return importe;
+        }
+
 
         public async Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto)
         {
@@ -144,34 +170,12 @@ namespace SustitucionMOAUtils.Services.Email
 
             var moneda = emailDetailCertificateDto.Moneda == "ARP" ? "$ " : emailDetailCertificateDto.Moneda + " ";
 
-            var montoTotal = emailDetailCertificateDto.MontoTotal;
-
-            if (emailDetailCertificateDto.MontoTotal.Contains("$"))
-            {
-                var montoTotalSplit = emailDetailCertificateDto.MontoTotal.Split(' ');
-
-                montoTotal = montoTotalSplit[0] + Convert.ToDecimal(montoTotalSplit[2]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-            }
-            else
-            {
-                montoTotal = moneda + montoTotal;
-            }
+            var montoTotal = GetImporte(emailDetailCertificateDto.MontoTotal);
 
 
             foreach (var servicio in emailDetailCertificateDto.DetalleServicio)
             {
-                var monto = servicio.Monto;
-
-                if (servicio.Monto.Contains("$"))
-                {
-                    var montoServicio = servicio.Monto.Split(' ');
-
-                    monto = montoServicio[0] + Convert.ToDecimal(montoServicio[1]).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-                }
-                else
-                {
-                    monto = moneda + monto;
-                }
+                var monto = GetImporte(servicio.Monto);
 
                 bodyTable.Append("<tr>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Descripcion}</td>");

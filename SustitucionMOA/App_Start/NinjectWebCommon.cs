@@ -227,8 +227,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InTransientScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InScope(ctx => HttpContext.Current);
 
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
