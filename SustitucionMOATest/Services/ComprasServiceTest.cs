@@ -1,9 +1,6 @@
-﻿using iTextSharp.text.pdf.qrcode;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
-using NUnit.Framework.Constraints;
 using NUnit.Framework.Internal;
-using Org.BouncyCastle.Asn1.X509;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -23,9 +20,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
-using System.Text;
 using System.Web;
-using System.Web.Security;
 
 namespace SustitucionMOATest.Services
 {
@@ -433,8 +428,18 @@ namespace SustitucionMOATest.Services
                                     CalleEntrega = "Calle",
                                     NumeroEntrega = "NroEntrega",
                                     FechaEntregaServicio = DateTime.Now,
-                                    Subposiciones = new List<SolpSubposicion> { new SolpSubposicion {
-                                        Id = 1, Tarea = "Tarea", Cantidad = 2, PrecioBruto = 500, Unidad_Id = 1, Unidad = new TablaSap { CodigoSap = "UNI" } } }
+                                    Indice = 1,
+                                    Subposiciones = new List<SolpSubposicion> {
+                                        new SolpSubposicion {
+                                            Id = 1,
+                                            Tarea = "Tarea",
+                                            Cantidad = 2,
+                                            PrecioBruto = 500,
+                                            Unidad_Id = 1,
+                                            Numero = 1,
+                                            Unidad = new TablaSap { CodigoSap = "UNI" }
+                                        }
+                                    }
                                 }
                             },
                 Pliego = new Pliego
@@ -528,7 +533,8 @@ namespace SustitucionMOATest.Services
                         Id = 1,
                         Cantidad = 1000,
                         Codigo = "123",
-                        Unidad = new TablaSapDto { Codigo = "UNI", CodigoSap = "UNI" }
+                        Unidad = new TablaSapDto { Codigo = "UNI", CodigoSap = "UNI" },
+                        Indice = 1,
                     }
                 },
                 LiberadoresSapSolp = new List<LiberadorSapSolpDto> { new LiberadorSapSolpDto { Id = 1, Solp_Id = 1, LiberadorSap_Id = 1 } }
