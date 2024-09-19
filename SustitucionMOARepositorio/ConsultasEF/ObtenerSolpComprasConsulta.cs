@@ -33,7 +33,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         where posicion.Solp_Id == solp.Id
                                                             && posicion.EsConcluido == true
                                                             && posicion.Estado
-                                                            && posicion.ProveedorAdjudicado_Id == null //ARMOA003-3133: no adjudicados
                                                         orderby posicion.Indice
                                                         select new SolpPosicionDto()
                                                         {
@@ -83,7 +82,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                         Cantidad = subPosicion.Cantidad,
                                                                                         UnidadComprasDescripcion = subPosicion.Unidad.Descripcion
                                                                                     }),
-                                                        }),
+                                                        }).ToList(),
 
                                  }).First();
 
