@@ -35,7 +35,7 @@ namespace SustitucionMOAWS.WSConsumers
         public List<string> ListarSolpPendientes()
         {
             var solps = new List<string>();
-            string ASSIGNED_ITEMS = "";
+            string ASSIGNED_ITEMS = "X";
             string CLOSED_ITEMS = "";
             string DELETED_ITEMS = "";
             string DELIV_DATE = "";
