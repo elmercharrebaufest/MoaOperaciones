@@ -271,7 +271,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-    getListarSolp() {
+    getListarSolp(idSolpSeleccionada?) {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
@@ -301,6 +301,10 @@ export class DashboardComponent extends ListBaseComponent {
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                         this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
+                        if (idSolpSeleccionada) {
+                            let solpSeleccionada = this.tablaSolp.find(solp => solp.Id == idSolpSeleccionada);
+                            this.listarPeticiones(solpSeleccionada);
+                        }
                     }
                 },
                 error => {
@@ -636,9 +640,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.listarPeticiones(this.peticion.Solp);
-        this.onBuscar();
-
+        this.getListarSolp(this.peticion.Solp.Id);
     }
 
     cancelarModal() {
@@ -1020,9 +1022,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 },
-                () => {
-                    this.blockUI.stop();
-                }
+                () => { this.blockUI.stop(); }
             )
     }
     
@@ -1063,9 +1063,7 @@ export class DashboardComponent extends ListBaseComponent {
                 (error) => {
                     this.mensajeComponent.setErrorMsg(error.message);
                 },
-                () => {
-                    this.blockUI.stop();
-                }
+                () => { this.blockUI.stop(); }
             )
     }
 
