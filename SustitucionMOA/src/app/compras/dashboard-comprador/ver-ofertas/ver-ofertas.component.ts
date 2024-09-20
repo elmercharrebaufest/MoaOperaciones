@@ -21,6 +21,7 @@ import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-mo
 import { forkJoin } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 import { ApiResponse } from '../../../common/models/response';
+import { Permiso } from '../../../common/enums/Permisos';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -82,7 +83,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
     mensajeValidacionMoneda: any;
-    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+    esAuditor: boolean = this.tienePermiso(Permiso.VerComoAuditor);
+    esComprasAdmin: boolean = this.tienePermiso(Permiso.AdjudicarDentroDelPlazoDeOfertas);
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,

@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ApiResponse } from '../models/response';
 import { MensajeComponent } from '../view-child/mensaje/mensaje.component';
 import { SessionDataService } from '../services/SessionDataService';
+import { Permiso } from '../enums/Permisos';
 
 @Component({
     selector: 'app-base',
@@ -95,6 +96,10 @@ export class BaseComponent implements OnDestroy {
     setTabs() { }
 
     isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    tienePermiso(permiso: Permiso) {
         return this.securityService.tienePermiso(permiso);
     }
 
