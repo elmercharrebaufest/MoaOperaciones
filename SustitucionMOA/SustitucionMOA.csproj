@@ -407,6 +407,10 @@
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
+    <Content Include="src\app\compras\legajo\legajo.component.css" />
+    <Content Include="src\app\compras\legajo\legajo.component.html" />
+    <Content Include="src\app\compras\legajo\legajo.component.js" />
+    <Content Include="src\app\compras\legajo\legajo.component.spec.js" />
     <Content Include="src\app\compras\panel-horas\panel-horas.component.css" />
     <Content Include="src\app\compras\panel-horas\panel-horas.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
@@ -1120,6 +1124,8 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
+    <Content Include="src\app\compras\legajo\legajo.component.js.map" />
+    <Content Include="src\app\compras\legajo\legajo.component.spec.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1310,6 +1316,8 @@
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\legajo-externo\legajo-externo.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\legajo\legajo.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
