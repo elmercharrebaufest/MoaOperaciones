@@ -1009,6 +1009,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                     msj.detail = '';
                 }
                 this.messageService.add(msj);
+                this.refreshDataTable();
                 this.blockUI.stop();
                 this.clearMessage();
             }, error => {

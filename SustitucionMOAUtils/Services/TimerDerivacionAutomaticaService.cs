@@ -32,8 +32,14 @@ namespace SustitucionMOAUtils.Services
         public TimerDerivacionAutomaticaService(ILogicaDerivacionAutomaticaService logicaDerivacionAutomaticaService)
         {
             this.logicaDerivacionAutomaticaService = logicaDerivacionAutomaticaService;
+            string startFirstHour = System.Configuration.ConfigurationManager.AppSettings["FirstTimerDerivaciones"];
+            string startSecondHour = System.Configuration.ConfigurationManager.AppSettings["SecondTimerDerivaciones"];
+
+            TimeSpan firstTime = TimeSpan.Parse(startFirstHour);
+            TimeSpan secondTime = TimeSpan.Parse(startSecondHour);
+
             // Calculate the initial delay
-            TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(01, 00, 00)); // 1:00 AM
+            TimeSpan initialDelay = CalculateInitialDelay(firstTime); // 1:00 AM
             //Para Testing -> Intervalo inicial de cuando levanta la app y deberia correr, descomentar, TimeOfDay.Minutes + 7 = 7 minutos a partir de ahora -> Primer ejecución
             //TimeSpan initialDelay = CalculateInitialDelay(new TimeSpan(DateTime.Now.TimeOfDay.Hours, DateTime.Now.TimeOfDay.Minutes + 2, DateTime.Now.TimeOfDay.Seconds));
 
@@ -42,7 +48,7 @@ namespace SustitucionMOAUtils.Services
             _timer = new Timer(callback, null, initialDelay, _interval);
 
             //Agregado - 2do Timer a las 12
-            TimeSpan initialDelay12 = CalculateInitialDelay(new TimeSpan(12, 00, 00)); // 12:00 
+            TimeSpan initialDelay12 = CalculateInitialDelay(secondTime); // 12:00 
             //Para Testing -> Intervalo inicial de cuando levanta la app y deberia correr, descomentar, TimeOfDay.Minutes + 10 = 10 minutos a partir de ahora
             //TimeSpan initialDelay12 = CalculateInitialDelay(new TimeSpan(DateTime.Now.TimeOfDay.Hours, DateTime.Now.TimeOfDay.Minutes + 10, DateTime.Now.TimeOfDay.Seconds));
 

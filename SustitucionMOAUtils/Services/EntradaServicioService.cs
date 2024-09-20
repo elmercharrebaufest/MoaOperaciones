@@ -857,7 +857,8 @@ namespace SustitucionMOAUtils.Services
                 decimal cantidadACertificar = Convert.ToDecimal(ap.Cantidad_a_certificar, CultureInfo.InvariantCulture);
                 decimal porcentajeACertificar = Convert.ToDecimal(ap.Porcentaje_a_certificar, CultureInfo.InvariantCulture);
 
-                decimal totalACertificar = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == ap.NRO_OC && x.NRO_POS == ap.NRO_POS && x.Nro_linea == ap.Nro_linea && x.Estado_certificacion == pendienteAprobacion)
+                decimal totalACertificar = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == ap.NRO_OC && x.NRO_POS == ap.NRO_POS 
+                     && x.Nro_linea == ap.Nro_linea && x.Estado_certificacion == pendienteAprobacion)
                     .Select(a => new { Cantidad = Convert.ToDecimal(a.Cantidad_a_certificar, CultureInfo.InvariantCulture) })
                     .Sum(a => a.Cantidad);
 

@@ -150,16 +150,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         repositorio.GuardarCambios();
 
-                        try
-                        {
-                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio, repositorio)).Wait();
-                            Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
-
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log.Info("Error en la notificación de reasignaciones del proceso de reasignación: " + ex.Message);
-                        }
+                        Notificar(repositorio, eSLocalesInicio);
                     }
 
 
@@ -197,15 +188,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         repositorio.GuardarCambios();
 
-                        try
-                        {
-                            Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesFin, repositorio)).Wait();
-                            Logger.Log.Info("Notificaciones de reasignacion a fiscal enviadas");
-                        }
-                        catch (Exception ex)
-                        {
-                            Logger.Log.Info("Error en la notificación de reasignaciones del proceso de reasignación: " + ex.Message);
-                        }
+                        Notificar(repositorio, eSLocalesInicio);
                     }
 
                 }
@@ -218,6 +201,21 @@ namespace SustitucionMOAUtils.Services
                 return "Exito";
             }
         }
+
+        private void Notificar(RepositorioEF repositorio, List<string> eSLocalesInicio)
+        {
+            try
+            {
+                Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio, repositorio)).Wait();
+                Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Info("Error en la notificación de reasignaciones del proceso de reasignación: " + ex.Message);
+            }
+        }
+
         /// <summary>
         /// Chequea si el usuario esta autorizado para correr el proceso.
         /// </summary>

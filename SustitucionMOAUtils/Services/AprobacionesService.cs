@@ -17,7 +17,7 @@ namespace SustitucionMOAUtils.Services
         private readonly Func<DbContext> _dbContextFactory;
         protected IRepositorio repositorio;
         protected IEmailCertificationService emailService;
-        private readonly IComprasService comprasService;
+        protected readonly IComprasService comprasService;
 
         public AprobacionesService(IRepositorio repositorio, IEmailCertificationService emailService, Func<DbContext> context, IComprasService comprasService)
         {

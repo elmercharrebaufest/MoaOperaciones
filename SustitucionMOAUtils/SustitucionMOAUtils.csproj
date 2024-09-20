@@ -187,6 +187,7 @@
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAprobacionesService.cs" />
+    <Compile Include="Interfaces\IDerivacionesAprobacionesService.cs" />
     <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\ITimerDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
@@ -260,6 +261,7 @@
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Services\AprobacionesService.cs" />
+    <Compile Include="Services\DerivacionesAprobacionesService.cs" />
     <Compile Include="Services\LogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Services\TimerDerivacionAutomaticaService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
