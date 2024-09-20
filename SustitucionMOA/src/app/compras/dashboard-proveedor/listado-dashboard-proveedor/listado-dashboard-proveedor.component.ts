@@ -524,7 +524,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
         show = show && rowData.VerCotizar;
         show = show && rowData.Estado == 'Abierto';
         show = show && rowData.CotizacionEstadoDescripcion == 'Cotizado';
-        //show = show && rowData.TieneAdjudicacion != true;
         return show;
     }
 }
