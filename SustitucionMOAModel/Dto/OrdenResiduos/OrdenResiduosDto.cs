@@ -58,7 +58,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             entity.DomicilioOrden = Domicilio?.Orden;
             entity.DomicilioTipo = Domicilio?.Tipo.ToString();
             entity.EstadoId = Estado?.Id ?? 0;
-            entity.LocalidadId = Localidad.Id;
+            entity.LocalidadId = Localidad?.Id;
             entity.MaterialId = Producto.MaterialId;
             entity.Observacion = Observaciones;
             entity.PatenteAcoplado = PatenteAcoplado;

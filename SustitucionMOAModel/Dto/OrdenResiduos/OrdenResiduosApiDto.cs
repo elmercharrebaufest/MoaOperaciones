@@ -10,7 +10,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
     public class OrdenResiduosApiDto : OrdenDeCargaApiDtoBase
     {
         public int AlmacenId { get; set; }
-
+        public string KmARecorrer { get; set; }
         public static OrdenResiduosApiDto From(Entities.OrdenResiduos ordenResiduos)
         {
             return new OrdenResiduosApiDto
@@ -27,8 +27,8 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
                 DomicilioOrden = ordenResiduos.DomicilioOrden,
                 DomicilioTipo = ordenResiduos.DomicilioTipo,
                 FechaCreacion = ordenResiduos.FechaCreacion.ToString(),
-                LocalidadDescripcion = ordenResiduos.Localidad.Nombre,
-                LocalidadId = ordenResiduos.LocalidadId,
+                LocalidadDescripcion = ordenResiduos.LocalidadScatoDescripcion,
+                LocalidadId = ordenResiduos.LocalidadScatoId,
                 NombreChofer = ordenResiduos.ChoferNombre,
                 ApellidoChofer = ordenResiduos.ChoferApellido,
                 Observacion = ordenResiduos.Observacion,
@@ -36,6 +36,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
                 PatenteChasis = ordenResiduos.PatenteChasis,
                 PlantaCodigo = ordenResiduos.PlantaCodigo,
                 RazonSocialTransporte = ordenResiduos.TransporteRazonSocial,
+                KmARecorrer = ordenResiduos.KmsARecorrer,
                 TipoOrden = TipoOrdenes.RESIDUOS
             };
         }
