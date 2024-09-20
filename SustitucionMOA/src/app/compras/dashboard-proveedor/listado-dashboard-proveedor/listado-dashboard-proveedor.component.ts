@@ -480,7 +480,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                                     );
                                     return x;
                                 });
-                                
+
                                 chat.FechaCreacionDate = new Date(
                                     this.getDateFromAspNetFormat(chat.FechaCreacionDate)
                                 );
@@ -488,7 +488,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
                             this.chat = result;
                             this.chatCompras = result.ChatCompras;
-                            this.chatProveedores = result.ChatProveedores;  
+                            this.chatProveedores = result.ChatProveedores;
                             this.displayChatInterno = true;
                         };
                     },
@@ -507,5 +507,24 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+    }
+
+    mustShowCotizar(rowData): boolean {
+        debugger;
+        let show: boolean = true;
+        show = show && rowData.VerCotizar;
+        show = show && rowData.Estado == 'Abierto';
+        show = show && rowData.CotizacionEstadoDescripcion != 'Cotizado';
+        return show;
+    }
+
+    mustShowRecotizar(rowData): boolean {
+        debugger;
+        let show: boolean = true;
+        show = show && rowData.VerCotizar;
+        show = show && rowData.Estado == 'Abierto';
+        show = show && rowData.CotizacionEstadoDescripcion == 'Cotizado';
+        //show = show && rowData.TieneAdjudicacion != true;
+        return show;
     }
 }
