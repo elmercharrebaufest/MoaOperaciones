@@ -16,10 +16,27 @@ namespace SustitucionMOAModel.Dto
         {
             get
             {
-                return (PlazoDeOfertaCierre == null && FechaCircular == null) ? PlazoDeOfertaOriginal :
-                  PlazoDeOfertaCierre == null ? PlazoDeOfertaCircular.Value :
-                  FechaCircular == null ? PlazoDeOfertaCierre.Value :
-                  PlazoDeOfertaCierre.Value > FechaCircular.Value ? PlazoDeOfertaCierre.Value : PlazoDeOfertaCircular.Value;
+                if (PlazoDeOfertaCierre == null && FechaCircular == null)
+                {
+                    return PlazoDeOfertaOriginal;
+                }
+
+                if (PlazoDeOfertaCierre == null)
+                {
+                    return PlazoDeOfertaCircular.Value;
+                }
+
+                if (FechaCircular == null)
+                {
+                    return PlazoDeOfertaCierre.Value;
+                }
+
+                if (PlazoDeOfertaCierre.Value > FechaCircular.Value)
+                {
+                    return PlazoDeOfertaCierre.Value;
+                }
+
+                return PlazoDeOfertaCircular.Value;
             }
         }
 
