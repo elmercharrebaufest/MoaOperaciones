@@ -74,6 +74,7 @@ namespace SustitucionMOAUtils.Services
             orden.Balanza = ingresosEgresos.Balanza;
             orden.IdScato = ingresosEgresos.OrdenCargaInterna;
             orden.UniMedCant = ingresosEgresos.UniMedCant;
+            orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenEntregada;
             repositorio.GuardarCambios();
         }
     }
