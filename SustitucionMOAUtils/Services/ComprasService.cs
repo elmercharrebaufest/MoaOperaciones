@@ -3917,7 +3917,7 @@ namespace SustitucionMOAUtils.Services
                     //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
                     BAPIMEREQACCOUNT imputacionPosicionMateriales = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
                             x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
@@ -3929,7 +3929,7 @@ namespace SustitucionMOAUtils.Services
                         imputacionPosicionMateriales = new BAPIMEREQACCOUNT
                         {
                             PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
@@ -3943,7 +3943,7 @@ namespace SustitucionMOAUtils.Services
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
                             PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                            SERIAL_NO = "01",
+                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             GL_ACCOUNT = "X",
@@ -3972,7 +3972,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         DOC_ITEM = numeroPosicion.AsDocItem(),
                         OUTLINE = OUTLINE_NUMBER,
-                        SERIAL_NO = "01",
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = numeroPosicion.AsSerialNumber(),
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
@@ -3982,7 +3982,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         DOC_ITEM = numeroPosicion.AsDocItem(),
                         OUTLINE = OUTLINE_NUMBER,
-                        SERIAL_NO = "01",
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = "X",
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = "X"
@@ -4103,7 +4103,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
                     NumeroSubPosicion numeroSubPosicion = subPosicion.Numero;
-                    
+
                     //SUBPOSICION
                     var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
 
@@ -4187,7 +4187,7 @@ namespace SustitucionMOAUtils.Services
                         DOC_ITEM = numeroPosicion.AsDocItem(),
                         OUTLINE = OUTLINE_NUMBER,
                         SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
-                        SERIAL_NO = numeroPosicion.AsSerialNumber(),
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = imputacionPosicion.SERIAL_NO,
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
