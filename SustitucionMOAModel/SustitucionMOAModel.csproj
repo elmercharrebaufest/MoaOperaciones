@@ -111,6 +111,7 @@
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ReporteDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\IngresosEgresosResiduos.cs" />
     <Compile Include="Dto\OrdenResiduos\OrdenResiduosApiDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
@@ -126,7 +127,6 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
-    <Compile Include="Entities\ChatInternoCompras.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
@@ -171,7 +171,6 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
-    <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
@@ -309,14 +308,12 @@
     <Compile Include="Dto\UsuarioMailDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ChatExternoCompras.cs" />
-    <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\Curso.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\Almacen.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
-    <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\ProgresoCurso.cs" />
@@ -345,7 +342,6 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
-    <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />

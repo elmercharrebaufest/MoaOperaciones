@@ -394,7 +394,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenResiduos.Localidad) {
+        if (!this.ordenResiduos.Localidad && !this.validaCPEDG) {
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
             return false;
         }
@@ -490,11 +490,14 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (orden) {
                     this.ordenResiduos = orden;
                     this.cargarClientes();
-                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => { return v.Id == this.ordenResiduos.Producto.Id }) || this.ordenResiduos.Producto;
-                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => { return v.Id == this.ordenResiduos.Almacen.Id }) || this.ordenResiduos.Almacen;
-                    this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
-                    this.autocompleteLocalidadComponent.getLocalidadById();
-                    this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
+                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => v.MaterialId == this.ordenResiduos.Producto.MaterialId) || this.ordenResiduos.Producto;
+                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => v.Id == this.ordenResiduos.Almacen.Id) || this.ordenResiduos.Almacen;
+                    if (this.ordenResiduos.Localidad) {
+                        this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
+                        this.autocompleteLocalidadComponent.getLocalidadById();
+                        this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
+                    }
+                    this.onProductoSeleccionado()
                 }
             },
             (err) => {

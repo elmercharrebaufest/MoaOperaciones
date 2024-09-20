@@ -14,7 +14,7 @@ export class OrdenCargaResiduosDto {
 
     public Producto: Material;
 
-    public Localidad: LocalidadDto;
+    public Localidad?: LocalidadDto;
     public Planta?: Planta;
     public Domicilio?: Domicilio;
     public Almacen: Almacen;

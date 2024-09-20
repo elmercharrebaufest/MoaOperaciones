@@ -32,10 +32,12 @@ namespace SustitucionMOAModel.Entities
         public string TransporteCuit { get; set; }
         public string Observacion { get; set; }
 
-        public int LocalidadId { get; set; }
+        public int? LocalidadId { get; set; }
         [ForeignKey(nameof(LocalidadId))]
         public virtual Localidad Localidad { get; set; }
 
+        public int LocalidadScatoId { get; set; }
+        public string LocalidadScatoDescripcion { get; set; }
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaEgreso { get; set; }
         public string PlantaCodigo { get; set; }
@@ -43,7 +45,14 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public string MotivoRechazo { get; set; }
-
+        public string Balanza { get; set; }
+        public string NroCertificacion { get; set; }
+        public double? PesadaTara { get; set; }
+        public double? PesadaNeto { get; set; }
+        public double? PesadaBruto { get; set; }
+        public string KmsARecorrer { get; set; }
+        public long? IdScato { get; set; }
+        public string UniMedCant { get; set; }
         public int AlmacenId { get; set; }
         [ForeignKey(nameof(AlmacenId))]
         public virtual Almacen Almacen { get; set; }
