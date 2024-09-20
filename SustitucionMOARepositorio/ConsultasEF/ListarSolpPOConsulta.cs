@@ -43,58 +43,82 @@ namespace SustitucionMOARepositorio.ConsultasEF
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
-                var resultado = from x in contexto.Set<PeticionDeOfertaUsuario>()
-                                join peticionDeOferta in contexto.Set<PeticionDeOferta>() on x.PeticionDeOferta_Id equals peticionDeOferta.Id into peticion
+                var resultado = from peticionDeOfertaUsuario in contexto.Set<PeticionDeOfertaUsuario>()
+                                join peticionDeOferta in contexto.Set<PeticionDeOferta>() on peticionDeOfertaUsuario.PeticionDeOferta_Id equals peticionDeOferta.Id into peticion
                                 from peticionDeOferta in peticion.DefaultIfEmpty()
-                                join cotizacion in contexto.Set<Cotizacion>() on x.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
+                                join cotizacion in contexto.Set<Cotizacion>() on peticionDeOfertaUsuario.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
-                                where (string.IsNullOrEmpty(NroSolp) || x.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp).Contains(NroSolp))
-                                && (string.IsNullOrEmpty(NroPo) || x.PeticionDeOferta.Id.ToString().StartsWith(NroPo))
-                                && (!NombrePedido.Any() || NombrePedido.All(p => x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
-                                && x.Usuario.CUITRegistro == CuitUsuario && x.PeticionDeOferta.RegistroInfo != true &&
-                                (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || x.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion))
-                                && x.PeticionDeOferta.Posiciones.Any(p => p.SolpPosicion.Estado == true) && x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true
+                                where (string.IsNullOrEmpty(NroSolp) || peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp).Contains(NroSolp))
+                                && (string.IsNullOrEmpty(NroPo) || peticionDeOfertaUsuario.PeticionDeOferta.Id.ToString().StartsWith(NroPo))
+                                && (!NombrePedido.Any() || NombrePedido.All(p => peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra.ToUpper().Contains(p.ToUpper())))
+                                && peticionDeOfertaUsuario.Usuario.CUITRegistro == CuitUsuario && peticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true &&
+                                (EstadoCotizacion == null || EstadoCotizacion == 0 && cotizacion == null || peticionDeOfertaUsuario.Cotizaciones.Any(c => c.CotizacionEstado_Id == EstadoCotizacion))
+                                && peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Any(p => p.SolpPosicion.Estado == true) && peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true
                                 select new PeticionDeOfertaDto
                                 {
-                                    Id = x.PeticionDeOferta.Id,
-                                    NrosSolp = x.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp),
-                                    NombreDeObra = x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego == null ? "" :
-                                    x.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra,
-                                    UsuarioCreador_Id = x.PeticionDeOferta.UsuarioCreador_Id,
-                                    UsuarioCreador = x.PeticionDeOferta.Usuario.Mail,
+                                    Id = peticionDeOfertaUsuario.PeticionDeOferta.Id,
+                                    NrosSolp = peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(posi => posi.SolpPosicion.Solp.NroSolp),
+                                    NombreDeObra = peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego == null ? "" :
+                                    peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.NombreObra,
+                                    UsuarioCreador_Id = peticionDeOfertaUsuario.PeticionDeOferta.UsuarioCreador_Id,
+                                    UsuarioCreador = peticionDeOfertaUsuario.PeticionDeOferta.Usuario.Mail,
                                     CotizacionId = cotizacion != null ? cotizacion.Id : 0,
-                                    PlazoDeOfertaCierre = peticionDeOferta.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha,
-                                    PlazoDeOfertaOriginal = x.PeticionDeOferta.PlazoDeOferta,
-                                    FechaCircular = peticionDeOferta.Usuarios.Where(u => u.Usuario.CUITRegistro == CuitUsuario).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
-                                    .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.FechaCreacion,
-                                    PlazoDeOfertaCircular = peticionDeOferta.Usuarios.Where(u => u.Usuario.CUITRegistro == CuitUsuario).GroupBy(x => x).SelectMany(x => x.Key.Circulares)
-                                    .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
-                                    .OrderByDescending(x => x.Circular.Id).FirstOrDefault().Circular.PlazoDeOferta,
+
+                                    PlazoDeOfertaCierre = peticionDeOferta
+                                        .Cierres
+                                        .OrderByDescending(p => p.Fecha)
+                                        .FirstOrDefault()
+                                        .Fecha,
+
+                                    PlazoDeOfertaOriginal = peticionDeOfertaUsuario
+                                        .PeticionDeOferta
+                                        .PlazoDeOferta,
+
+                                    FechaCircular = peticionDeOferta
+                                        .Usuarios
+                                        .Where(u => u.Usuario.CUITRegistro == CuitUsuario)
+                                        .GroupBy(x => x)
+                                        .SelectMany(x => x.Key.Circulares)
+                                        .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                        .OrderByDescending(x => x.Circular.Id)
+                                        .FirstOrDefault()
+                                        .Circular
+                                        .FechaCreacion,
+
+                                    PlazoDeOfertaCircular = peticionDeOferta
+                                        .Usuarios
+                                        .Where(u => u.Usuario.CUITRegistro == CuitUsuario)
+                                        .GroupBy(x => x)
+                                        .SelectMany(x => x.Key.Circulares)
+                                        .Where(x => x.Circular.RequiereCambioDeFechas == true && x.Circular.PlazoDeOferta.HasValue)
+                                        .OrderByDescending(x => x.Circular.Id)
+                                        .FirstOrDefault()
+                                        .Circular
+                                        .PlazoDeOferta,
 
                                     // PlazoDeOferta se resuelve internamente desde el DTO PeticionDeOfertaDto usando PlazoDeOfertaCierre, PlazoDeOfertaOriginal, FechaCircular y PlazoDeOfertaCircular
 
                                     // Estado, EstadoColor y Estado_Id se resuelven internamente desde el DTO PeticionDeOfertaDto usando valores de PlazoDeOferta
 
-                                    AdjuntoPliego = x.PeticionDeOferta.AdjuntoPliego,
+                                    AdjuntoPliego = peticionDeOfertaUsuario.PeticionDeOferta.AdjuntoPliego,
 
                                     Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto {
-                                        Id = x.Id,
-                                        PropuestaTecnicaAprobada = x.PropuestaTecnicaAprobada,
-                                        RealizoVisita = x.RealizoVisita,
-                                        UsuarioId = x.Usuario_Id,
-                                        CUIT = x.Usuario.CUITRegistro,
-                                        CircularSinLeer = x.Circulares.Any(a=>a.Leida != true),
-                                        CircularesSinLeer = x.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
-                                        EstaHabilitado = x.Usuario.Habilitado
+                                        Id = peticionDeOfertaUsuario.Id,
+                                        PropuestaTecnicaAprobada = peticionDeOfertaUsuario.PropuestaTecnicaAprobada,
+                                        RealizoVisita = peticionDeOfertaUsuario.RealizoVisita,
+                                        UsuarioId = peticionDeOfertaUsuario.Usuario_Id,
+                                        CUIT = peticionDeOfertaUsuario.Usuario.CUITRegistro,
+                                        CircularSinLeer = peticionDeOfertaUsuario.Circulares.Any(a=>a.Leida != true),
+                                        CircularesSinLeer = peticionDeOfertaUsuario.Circulares.Where(a=>a.Leida != true).Select(a=>a.Id),
+                                        EstaHabilitado = peticionDeOfertaUsuario.Usuario.Habilitado
                                     } },
                                     CotizacionEstadoDescripcion = cotizacion == null ? "Sin Cotizar" : cotizacion.CotizacionEstado.Descripcion,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
                                     ItemPorPagina = Paginacion.ItemsPorPagina,
                                     Pagina = Paginacion.Pagina,
                                     TieneAdjudicacion = cotizacion != null && cotizacion.Adjudicaciones.Any(),
-                                    VerCotizar = x.PeticionDeOferta.Posiciones.All(posi => posi.SolpPosicion.Solp.EstadoSolpSap.CodigoSap == "05"),
-                                    ChatSinLeer = x.ChatExterno.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == "SOLP"))
+                                    VerCotizar = peticionDeOfertaUsuario.PeticionDeOferta.Posiciones.All(posi => posi.SolpPosicion.Solp.EstadoSolpSap.CodigoSap == "05"),
+                                    ChatSinLeer = peticionDeOfertaUsuario.ChatExterno.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == "SOLP"))
                                 };
 
                 if (FechaDesde.HasValue || FechaHasta.HasValue || EstadoLicitacion.HasValue)
