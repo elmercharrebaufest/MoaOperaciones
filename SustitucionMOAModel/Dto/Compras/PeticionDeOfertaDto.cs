@@ -12,7 +12,6 @@ namespace SustitucionMOAModel.Dto
         public int UsuarioCreador_Id { get; set; }
         public DateTime FechaCreacion { get; set; }
 
-        private DateTime pPlazoDeOferta;
         public DateTime PlazoDeOferta
         {
             get
@@ -22,33 +21,24 @@ namespace SustitucionMOAModel.Dto
                   FechaCircular == null ? PlazoDeOfertaCierre.Value :
                   PlazoDeOfertaCierre.Value > FechaCircular.Value ? PlazoDeOfertaCierre.Value : PlazoDeOfertaCircular.Value;
             }
-            set { pPlazoDeOferta = value; }
         }
+
         public string Observaciones { get; set; }
         public string PlazoDeOfertaFormateado { get { return PlazoDeOferta.ToString("dd/MM/yyyy HH:mm"); } }
-
-        private string pEstado;
 
         public string Estado
         {
             get { return PlazoDeOferta >= DateTime.Now ? "Abierto" : "Cerrado"; }
-            set { pEstado = value; }
         }
-
-        private int pEstado_Id;
 
         public int Estado_Id
         {
             get { return PlazoDeOferta >= DateTime.Now ? 1 : 2; }
-            set { pEstado_Id = value; }
         }
-
-        private string pEstadoColor;
 
         public string EstadoColor
         {
             get { return PlazoDeOferta >= DateTime.Now ? "Green" : "Red"; }
-            set { pEstadoColor = value; }
         }
 
         public List<PeticionDeOfertaUsarioDto> Usuarios { get; set; }

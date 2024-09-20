@@ -32,7 +32,9 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     NrosSolp = po.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp),
                                     FechaCreacion = po.PeticionDeOferta.FechaCreacion,
                                     UsuarioCreador_Id = po.PeticionDeOferta.UsuarioCreador_Id,
-                                    PlazoDeOferta = po.PeticionDeOferta.PlazoDeOferta,
+                                    /* PlazoDeOferta se resuelve internamente desde el DTO PeticionDeOfertaDto usando PlazoDeOfertaCierre, PlazoDeOfertaOriginal, FechaCircular y PlazoDeOfertaCircular
+                                     *      que, por supuesto, no se cargan en esta instancia, por lo que siempre es null...
+                                     */
                                     Cotizacion = new CotizacionDto(),
                                     ObservacionCotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null ? po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.ObservacionesCotizacion : null,
                                     ObservacionTecnica = cotizacion != null ? cotizacion.ObservacionTecnica : "",
