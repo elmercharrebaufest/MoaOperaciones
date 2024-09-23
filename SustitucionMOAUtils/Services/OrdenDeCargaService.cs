@@ -70,7 +70,7 @@ namespace SustitucionMOAUtils.Services
             this.kgDisponiblesFasService = kgDisponiblesFasService;
         }
 
-        public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        public Resultado Agregar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas)
         {
             Log.Info($"Agregar orden de carga con datos: {ordenDeCarga.ToDto().ToJson()}. MailUsuario: {mailUsuario}");
             Result contratoSAP = null;
@@ -143,6 +143,8 @@ namespace SustitucionMOAUtils.Services
                 NotificarCamionAutorizadoMultiplesOrdenes(ordenDeCarga);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
+                gestionAltas.OrdenId = ordenDeCarga.Id;
+                EnviarMailAltaCuitTerceros(gestionAltas);
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
             }
@@ -185,7 +187,7 @@ namespace SustitucionMOAUtils.Services
             return mensaje;
         }
 
-        public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario)
+        public Resultado Editar(OrdenDeCarga ordenDeCarga, string mailUsuario, GestionAltasFAS gestionAltas)
         {
             Log.Info($"Editar(ordenDeCarga: {ordenDeCarga.ToDto().ToJson()}, mailUsuario: {mailUsuario})");
             var valoresAEditar = new List<string> { "NombreChofer", "CUITChofer", "PatenteAcoplado", "ChasisAcoplado", "ContratoIngresado", "NumeroPedido", "Observacion", "Cantidad", "RazonSocialTransporte", "CUITTransporte", "Producto_Id", "NumeroPedidoIngresado" };
@@ -282,6 +284,8 @@ namespace SustitucionMOAUtils.Services
                 NotificarCamionAutorizadoMultiplesOrdenes(ordenEditar);
 
                 var resultado = new Resultado { IdEntidad = ordenDeCarga.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
+                gestionAltas.OrdenId = ordenDeCarga.Id;
+                EnviarMailAltaCuitTerceros(gestionAltas);
                 Log.Info($"Result: {resultado.ToJson()}");
                 return resultado;
             }
@@ -465,7 +469,7 @@ namespace SustitucionMOAUtils.Services
                         Escalable = x.Escalable,
                         TipoContrato = x.TipoContrato,
                         TienePatentesRepetidas = VerificarOrdenConPatentesRepetidas(x, hashPatentesCargadas),
-                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id),
+                        IdsConsultasRealizadas = consultas.Where(cd => cd.Orden_Id == x.Id).Select(cd => cd.Id),
                         FleteMOA = x.FleteMOA ?? false,
                         TienePatenteMultiplesAutorizaciones = VerificarChasisConMultiplesAutorizaciones(x, hashPatentesCargadas)
                     }).OrderByDescending(y => y.Id).ToList();
@@ -502,7 +506,7 @@ namespace SustitucionMOAUtils.Services
                         EstaSeleccionado = false,
                         EdicionRechazada = x.EdicionRechazada,
                         TipoContrato = x.TipoContrato,
-                        TieneConsultasRealizadas = consultas.Any(cd => cd.Orden_Id == x.Id)
+                        IdsConsultasRealizadas = consultas.Where(cd => cd.Orden_Id == x.Id).Select(cd => cd.Id)
                     }).OrderByDescending(y => y.Id).ToList();
             }
             if (listado == null || listado.Count == 0)
@@ -657,7 +661,7 @@ namespace SustitucionMOAUtils.Services
                 throw new ValidationCustomException("La orden no puede anularse debido a su estado actual.");
 
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            
+
             //var puedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
 
             //if (puedeEnviarASAP)
@@ -1273,21 +1277,31 @@ namespace SustitucionMOAUtils.Services
             return ValidarSisa(cuitDestinatario, cuitDestino, codigoMaterial);
         }
 
-        public bool EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario, string ordenId)
+        public bool EnviarMailAltaCuitTerceros(GestionAltasFAS gestionAltas)
         {
-            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionaFlete}, " +
-                $"gestionaDestino: {gestionaDestino}, gestionaDestinatario: {gestionaDestinatario}, ordenId:{ordenId}");
-
-            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id.ToString() == ordenId);
-
-            if (gestionaFlete)
+            if (gestionAltas.OrdenId is null)
             {
-                emailFasService.EnviarMailAltaIntermediarioFlete(ordenDeCarga.CUITIntermediarioFlete, ordenDeCarga.RazonSocialIntermediarioFlete, ordenDeCarga.Id.ToString());
+                throw new Exception("No se ha especificado una orden de carga");
+            }
+            Log.Info($"EnviarMailAltaCuitTerceros params => gestionaFlete: {gestionAltas.GestionaFlete}, " +
+                $"gestionaDestino: {gestionAltas.GestionaDestino}, gestionaDestinatario: {gestionAltas.GestionaDestinatario}, ordenId:{gestionAltas.OrdenId}");
+
+            var ordenDeCarga = this.repositorio.Obtener<OrdenDeCarga>(o => o.Id == gestionAltas.OrdenId);
+
+            if (gestionAltas.GestionaFlete)
+            {
+                emailFasService.EnviarMailAltaIntermediarioFlete(
+                    ordenDeCarga.CUITIntermediarioFlete,
+                    ordenDeCarga.RazonSocialIntermediarioFlete,
+                    ordenDeCarga.Id);
             }
 
-            if (gestionaDestino || gestionaDestinatario)
+            if (gestionAltas.GestionaDestino || gestionAltas.GestionaDestinatario)
             {
-                emailFasService.EnviarMailAltaTempranaCuit(ordenDeCarga, ordenId, gestionaDestino, gestionaDestinatario);
+                emailFasService.EnviarMailAltaTempranaCuit(
+                    ordenDeCarga, gestionAltas.OrdenId ?? 0,
+                    gestionAltas.GestionaDestino,
+                    gestionAltas.GestionaDestinatario);
             }
 
             return true;
@@ -2043,7 +2057,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.ChasisAcoplado);
                 if (ordenesConPatentesRepetidas.Any(oc => oc.CUITCliente != ordenDeCarga.CUITCliente))
                 {
-                    emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.CUITChofer, ordenesConPatentesRepetidas
+                    emailFasService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.ChasisAcoplado, ordenesConPatentesRepetidas
                         .Select(oc => oc.CUITCliente).Distinct().ToList());
                 }
             }

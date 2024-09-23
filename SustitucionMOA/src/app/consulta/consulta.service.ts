@@ -102,9 +102,9 @@ export class ConsultaService extends BaseService {
         return this.http
             .get('/api/consulta/ObtenerConsultaDisconformidad', { headers: this.headers, params });
     }
-    public getConsultaDetalle(idConsulta): Observable<any> {
+    public getConsultaDetalle(idConsulta): Observable<Consulta> {
         return this.http
-            .get('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });
+            .get<Consulta>('/api/consulta/Detalle?consultaId=' + idConsulta, { headers: this.headers });
     }
 
     public agregarComentario(consultaId: string, comentario: Comentario, archivo: any = null): Observable<any> {

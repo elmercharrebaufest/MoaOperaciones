@@ -14,6 +14,7 @@ namespace SustitucionMOAModel.Entities
         public TablaSeccionMaterial TablaSeccionMaterial { get; set; }
         public bool ValidaSisaRuca { get; set; }
         public string Abreviacion { get; set; }
+        public bool EsDerivadoGranario { get; set; }
 
         [InverseProperty("Materiales")]
         public virtual ICollection<Almacen> Almacenes { get; set; }

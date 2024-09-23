@@ -2,6 +2,7 @@
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
@@ -13,6 +14,7 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,19 +25,22 @@ namespace SustitucionMOAUtils.Services
         private readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
         private readonly IFeriadoService feriadoService;
         private readonly IEmailResiduosService emailResiduosService;
+        private readonly IScatoConsumer scatoConsumer;
 
         public OrdenResiduosService(
             IRepositorioOrdenResiduos repositorio,
             IScatoRepositorioClient scatoRepositorioClient,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
             IFeriadoService feriadoService,
-            IEmailResiduosService emailResiduosService)
+            IEmailResiduosService emailResiduosService,
+            IScatoConsumer scatoConsumer)
         {
             this.repositorio = repositorio;
             this.scatoRepositorioClient = scatoRepositorioClient;
             this.ordenCargaConsumer = ordenCargaConsumer;
             this.feriadoService = feriadoService;
             this.emailResiduosService = emailResiduosService;
+            this.scatoConsumer = scatoConsumer;
         }
 
         public List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes()
@@ -152,9 +157,13 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente
             };
-
+            var producto = repositorio.Obtener<Material>(ordenDto.Producto.MaterialId);
+            var localidad = ObtenerLocalidadDeLaOrden(ordenDto, producto);
             var ordenEntity = ordenDto.ToEntity();
-            ordenEntity.FechaCreacion = DateTime.Today;
+            ordenEntity.LocalidadScatoId = localidad.Id;
+            ordenEntity.LocalidadScatoDescripcion = localidad.LocalidadDescripcion;
+            ordenEntity.KmsARecorrer = localidad.KmARecorrer;
+            ordenEntity.FechaCreacion = DateTime.Now;
             repositorio.Agregar(ordenEntity);
             repositorio.GuardarCambios();
 
@@ -401,6 +410,27 @@ namespace SustitucionMOAUtils.Services
             {
                 Log.Info($"Error Scato código {err.MessageCode}, descripción: {err.Message}");
             }
+        }
+        private List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(string cuit)
+        {
+            if (cuit.Length != 11)
+            {
+                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
+            }
+            return scatoConsumer.BuscarDestinos(cuit);
+        }
+
+        private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(OrdenResiduosDto request, Material producto)
+        {
+            var localidades = producto.EsDerivadoGranario ?
+                ObtenerDestinos(request.Cliente.CUIT) :
+                ObtenerDestinos(request.Cliente.CUIT);
+
+            if (localidades.Count == 0)
+            {
+                throw new ValidationCustomException("El cliente/destino no cuenta con ninguna localidad, imposible continuar con la carga.");
+            }
+            return localidades.First();
         }
     }
 }

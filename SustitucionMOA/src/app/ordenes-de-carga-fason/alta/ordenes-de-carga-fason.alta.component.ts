@@ -144,6 +144,7 @@ export class OrdenesDeCargaFasonAltaComponent
         if (!this.esAdmin) {
             if (this.isCorredor()) {
                 this.CodigoCorredor = sessionStorage.getItem("proveedor");
+                this.ordenDeCargaFason.CodigoCorredor = this.CodigoCorredor;
                 this.cargarClientes(this.CodigoCorredor);
             } else {
                 if (this.esCliente()) {
@@ -1203,7 +1204,7 @@ export class OrdenesDeCargaFasonAltaComponent
         );
     }
 
-    override validarExistenciaPatentes() {
+    validarExistenciaPatentes() {
         this.validacionExistenciaPatenteSub = this.service
             .validarExistenciaPatentes(
                 this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
@@ -1214,7 +1215,7 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             });
     }
-    override puedeValidarExistenciaPatentes(): boolean {
+    puedeValidarExistenciaPatentes(): boolean {
         return this.patenteChasisValido && !!this.ordenDeCargaFason.CUITCliente
     }
 }

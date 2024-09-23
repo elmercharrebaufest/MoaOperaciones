@@ -25,6 +25,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
         public string PatenteAcoplado { get; set; }
 
         public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
 
         public string CUILChofer { get; set; }
 
@@ -51,12 +52,13 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             entity.AlmacenId = Almacen.Id;
             entity.ChoferCuil = CUILChofer;
             entity.ChoferNombre = NombreChofer;
+            entity.ChoferApellido = ApellidoChofer;
             entity.ClienteId = Cliente.Id;
             entity.DomicilioDescr = Domicilio?.Descripcion;
             entity.DomicilioOrden = Domicilio?.Orden;
             entity.DomicilioTipo = Domicilio?.Tipo.ToString();
             entity.EstadoId = Estado?.Id ?? 0;
-            entity.LocalidadId = Localidad.Id;
+            entity.LocalidadId = Localidad?.Id;
             entity.MaterialId = Producto.MaterialId;
             entity.Observacion = Observaciones;
             entity.PatenteAcoplado = PatenteAcoplado;
@@ -98,6 +100,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
                 ProvinciaNombre = entity.Localidad.Provincia.Nombre
             };
             NombreChofer = entity.ChoferNombre;
+            ApellidoChofer = entity.ChoferApellido;
             Observaciones = entity.Observacion;
             PatenteAcoplado = entity.PatenteAcoplado;
             PatenteChasis = entity.PatenteChasis;

@@ -94,7 +94,7 @@
                                         <p style="width:100%">{{ordenResiduos.Producto.Descripcion}}</p>
                                     </div>
 
-                                    <div class="col-xs-12 col-md-12">
+                                    <div class="col-xs-12 col-md-12" *ngIf="!validaCPEDG">
                                         <p class="blue"><strong>Destino</strong></p>
                                         <p style="width:100%">{{ordenResiduos.Localidad.Nombre}}</p>
                                     </div>
@@ -122,8 +122,8 @@
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">
-                                        <p class="blue"><strong>Nombre y apellido del chofer</strong></p>
-                                        <p style="width:100%">{{ordenResiduos.NombreChofer}}</p>
+                                        <p class="blue"><strong>Apellido y nombre del chofer</strong></p>
+                                        <p style="width:100%">{{ordenResiduos.ApellidoChofer}}, {{ordenResiduos.NombreChofer}}</p>
                                     </div>
 
                                     <div class="col-xs-12 col-md-12">

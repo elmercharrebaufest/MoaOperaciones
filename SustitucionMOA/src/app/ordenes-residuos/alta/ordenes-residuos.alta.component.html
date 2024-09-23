@@ -23,14 +23,10 @@
                                     Cliente:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbClientes"
-                                        placeholder="Seleccione un cliente"
-                                        [disabled]="ordenResiduos.Id > 0"
-                                        [options]="listaClientes"
-                                        optionLabel="RazonSocial"
-                                        [(ngModel)]="ordenResiduos.Cliente"
-                                        (ngModelChange)="onClienteSeleccionado()"
-                                        [filter]="true"
+                                    <p-dropdown name="cmbClientes" placeholder="Seleccione un cliente"
+                                        [disabled]="ordenResiduos.Id > 0" [options]="listaClientes"
+                                        optionLabel="RazonSocial" [(ngModel)]="ordenResiduos.Cliente"
+                                        (ngModelChange)="onClienteSeleccionado()" [filter]="true"
                                         filterBy="value.RazonSocial">
                                     </p-dropdown>
                                 </div>
@@ -41,20 +37,16 @@
                                     Producto:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbProductos"
-                                        placeholder="Seleccione un producto"
-                                        [disabled]="ordenResiduos.Id > 0"
-                                        [options]="listaProductos"
-                                        optionLabel="Descripcion"
-                                        [(ngModel)]="ordenResiduos.Producto"
-                                        (ngModelChange)="onProductoSeleccionado()"
-                                        [filter]="true"
+                                    <p-dropdown name="cmbProductos" placeholder="Seleccione un producto"
+                                        [disabled]="ordenResiduos.Id > 0" [options]="listaProductos"
+                                        optionLabel="Descripcion" [(ngModel)]="ordenResiduos.Producto"
+                                        (ngModelChange)="onProductoSeleccionado()" [filter]="true"
                                         filterBy="value.Descripcion">
                                     </p-dropdown>
                                 </div>
                             </div>
 
-                            <div *ngIf="ordenResiduos.Producto" class="col-xs-12 col-md-12">
+                            <div *ngIf="ordenResiduos.Producto && !validaCPEDG" class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
                                     Destino mercadería (localidad - provincia):
                                 </div>
@@ -65,9 +57,7 @@
                                     </app-autocomplete-localidad>
                                 </div>
                                 <div *ngIf="ordenResiduos.Id > 0" class="styled-select">
-                                    <input type="text"
-                                        [(ngModel)]="localidadDescripcion"
-                                        disabled="true">
+                                    <input type="text" [(ngModel)]="localidadDescripcion" disabled="true">
                                 </div>
                             </div>
 
@@ -77,14 +67,10 @@
                                         Planta:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbPlantas"
-                                            placeholder="Seleccione una planta"
-                                            [filter]="true"
-                                            filterBy="value.Codigo"
-                                            [disabled]="NoPuedeEditarCuitsTerceros"
-                                            [options]="listaPlantas"
-                                            optionLabel="Codigo"
-                                            [(ngModel)]="ordenResiduos.Planta"
+                                        <p-dropdown name="cmbPlantas" placeholder="Seleccione una planta"
+                                            [filter]="true" filterBy="value.Codigo"
+                                            [disabled]="NoPuedeEditarCuitsTerceros" [options]="listaPlantas"
+                                            optionLabel="Codigo" [(ngModel)]="ordenResiduos.Planta"
                                             [dataKey]="'Codigo'">
                                         </p-dropdown>
                                     </div>
@@ -94,14 +80,10 @@
                                         Domicilio:
                                     </div>
                                     <div class="styled-select" style="overflow: initial;">
-                                        <p-dropdown name="cmbDomicilios"
-                                            placeholder="Seleccione un domicilio"
-                                            [filter]="true"
-                                            filterBy="value.Descripcion"
-                                            [disabled]="NoPuedeEditarCuitsTerceros"
-                                            [options]="listaDomicilios"
-                                            optionLabel="Descripcion"
-                                            [(ngModel)]="ordenResiduos.Domicilio"
+                                        <p-dropdown name="cmbDomicilios" placeholder="Seleccione un domicilio"
+                                            [filter]="true" filterBy="value.Descripcion"
+                                            [disabled]="NoPuedeEditarCuitsTerceros" [options]="listaDomicilios"
+                                            optionLabel="Descripcion" [(ngModel)]="ordenResiduos.Domicilio"
                                             [dataKey]="'Descripcion'">
                                         </p-dropdown>
                                     </div>
@@ -123,14 +105,9 @@
                                     Almacén:
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
-                                    <p-dropdown name="cmbAlmacenes"
-                                        placeholder="Seleccione un almacén"
-                                        [filter]="true"
-                                        filterBy="value.Nombre"
-                                        [options]="ordenResiduos.Producto.Almacenes"
-                                        optionLabel="Nombre"
-                                        [(ngModel)]="ordenResiduos.Almacen"
-                                        [dataKey]="'Id'">
+                                    <p-dropdown name="cmbAlmacenes" placeholder="Seleccione un almacén" [filter]="true"
+                                        filterBy="value.Nombre" [options]="ordenResiduos.Producto.Almacenes"
+                                        optionLabel="Nombre" [(ngModel)]="ordenResiduos.Almacen" [dataKey]="'Id'">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -144,12 +121,9 @@
                                     Patente chasis:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete
-                                        [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        maxlength="7"
-                                        mask="AAAAAAA"
-                                        [source]="patentesChasis"
+                                    <input auto-complete [min-chars]="2"
+                                        [no-match-found-text]="'No se encontraron resultados'" maxlength="7"
+                                        mask="AAAAAAA" [source]="patentesChasis"
                                         [(ngModel)]="ordenResiduos.PatenteChasis"
                                         (ngModelChange)="onPatenteChasisSeleccionado($event)" />
                                 </div>
@@ -160,31 +134,31 @@
                                     Patente acoplado:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete
-                                        [min-chars]="3"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        maxlength="7"
-                                        mask="AAAAAAA"
-                                        [source]="patentesAcoplados"
+                                    <input auto-complete [min-chars]="3"
+                                        [no-match-found-text]="'No se encontraron resultados'" maxlength="7"
+                                        mask="AAAAAAA" [source]="patentesAcoplados"
                                         [(ngModel)]="ordenResiduos.PatenteAcoplado"
                                         (ngModelChange)="onPatenteAcopladoSeleccionado($event)"
                                         (blur)="onPatenteAcopladoBlur()" />
-                                        <!-- (valueChanged)="onPatenteAcopladoValueChanged($event)"
+                                    <!-- (valueChanged)="onPatenteAcopladoValueChanged($event)"
                                         (ngModelChange)="onPatenteAcopladoSeleccionado()" -->
                                 </div>
                             </div>
 
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
-                                    Nombre y apellido del chofer:
+                                    Nombre del chofer:
                                 </div>
                                 <div class="styled-select">
-                                    <!-- <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
-                                            (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
-                                            type="text" maxlength="25"> -->
-                                    <input type="text" maxlength="25"
-                                        [(ngModel)]="ordenResiduos.NombreChofer"
+                                    <input type="text" maxlength="25" [(ngModel)]="ordenResiduos.NombreChofer"
                                         (ngModelChange)="ordenResiduos.NombreChofer = $event.toUpperCase()">
+                                </div>
+                                <div class="formulario-label">
+                                    Apellido del chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="text" maxlength="25" [(ngModel)]="ordenResiduos.ApellidoChofer"
+                                        (ngModelChange)="ordenResiduos.ApellidoChofer = $event.toUpperCase()">
                                 </div>
                             </div>
 
@@ -194,10 +168,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input type="text" auto-complete [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        mask="00-00000000-0"
-                                        [source]="cuilsChofer"
-                                        [(ngModel)]="ordenResiduos.CUILChofer"
+                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
+                                        [source]="cuilsChofer" [(ngModel)]="ordenResiduos.CUILChofer"
                                         (change)="validarCuilChofer()">
                                     <div *ngIf="procesandoCampo.CUILChofer">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
@@ -210,8 +182,7 @@
                                     Raz&oacute;n social transporte:
                                 </div>
                                 <div class="styled-select">
-                                    <input type="text" maxlength="50"
-                                        [(ngModel)]="ordenResiduos.RazonSocialTransporte"
+                                    <input type="text" maxlength="50" [(ngModel)]="ordenResiduos.RazonSocialTransporte"
                                         (ngModelChange)="ordenResiduos.RazonSocialTransporte = $event.toUpperCase()">
                                 </div>
                             </div>
@@ -222,10 +193,8 @@
                                 </div>
                                 <div class="styled-select autocomplete">
                                     <input type="text" auto-complete [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'"
-                                        mask="00-00000000-0"
-                                        [source]="cuitsTransporte"
-                                        [(ngModel)]="ordenResiduos.CUITTransporte"
+                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
+                                        [source]="cuitsTransporte" [(ngModel)]="ordenResiduos.CUITTransporte"
                                         (change)="validarCuitTransporte()">
                                     <div *ngIf="procesandoCampo.CUITTransporte">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
@@ -239,7 +208,8 @@
                                 Observaciones:
                             </div>
                             <div class="styled-select">
-                                <textarea id="Observacion" [(ngModel)]="ordenResiduos.Observaciones" rows="5"></textarea>
+                                <textarea id="Observacion" [(ngModel)]="ordenResiduos.Observaciones"
+                                    rows="5"></textarea>
                             </div>
                         </div>
 
@@ -275,7 +245,8 @@
     </section>
 </div>
 
-<button type="button" data-toggle="modal" data-target="#modalNotificacion" style="display:none" id="openModalNotificacion"></button>
+<button type="button" data-toggle="modal" data-target="#modalNotificacion" style="display:none"
+    id="openModalNotificacion"></button>
 
 <div class="modal fade fade-complete" id="modalNotificacion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
     data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
@@ -297,4 +268,3 @@
         </div>
     </div>
 </div>
-    

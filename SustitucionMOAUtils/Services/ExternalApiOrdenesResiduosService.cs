@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
@@ -56,6 +55,26 @@ namespace SustitucionMOAUtils.Services
                     break;
             }
 
+            repositorio.GuardarCambios();
+        }
+        public void InformarViaje(IngresosEgresosResiduos ingresosEgresos)
+        {
+            var orden = repositorio.Obtener<OrdenResiduos>(ingresosEgresos.IdOperaciones);
+            if (orden == null)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinDatos, "informar", "orden de residuos."));
+            }
+
+            orden.FechaIngreso = ingresosEgresos.FechaEntrada;
+            orden.FechaEgreso = ingresosEgresos.FechaSalida;
+            orden.PesadaTara = ingresosEgresos.PesadaTara;
+            orden.PesadaNeto = ingresosEgresos.PesadaNeto;
+            orden.PesadaBruto = ingresosEgresos.PesadaBruto;
+            orden.NroCertificacion = ingresosEgresos.NroCertificacion;
+            orden.Balanza = ingresosEgresos.Balanza;
+            orden.IdScato = ingresosEgresos.OrdenCargaInterna;
+            orden.UniMedCant = ingresosEgresos.UniMedCant;
+            orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenEntregada;
             repositorio.GuardarCambios();
         }
     }

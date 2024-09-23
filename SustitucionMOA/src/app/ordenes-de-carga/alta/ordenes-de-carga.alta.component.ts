@@ -29,6 +29,7 @@ import { MessageService } from 'primeng/api';
 import { Checkbox } from 'primeng/checkbox';
 import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { Permiso } from '../../common/enums/Permisos';
+import { GestionAltasFAS } from '../../common/models/ordenes-de-carga/gestionAltasFAS';
 
 @Component({
     selector: 'app-ordenes-de-carga.alta',
@@ -445,7 +446,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
         this.subscription = this.service
-            .agregar(this.ordenDeCarga).pipe(take(1))
+            .agregar(this.ordenDeCarga, this.getDatosGestionAlta()).pipe(take(1))
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -468,7 +469,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeSuccess = result.data.Mensaje;
                         this.ordenDeCargaId = result.data.IdEntidad;
-                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
                         document.getElementById("openModalNotificacion")
                             .click();
                     }
@@ -489,7 +489,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         this.spinnerComponent.showIt();
         this.blockUI.start('Grabando...');
         this.subscription = this.service
-            .editar(this.ordenDeCarga).pipe(take(1))
+            .editar(this.ordenDeCarga, this.getDatosGestionAlta()).pipe(take(1))
             .subscribe(
                 (result) => {
                     this.spinnerComponent.hideIt();
@@ -512,8 +512,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
                         this.mensajeComponent.setMsgsEmpty();
                         this.mensajeSuccess = result.data.Mensaje;
                         this.ordenDeCargaId = result.data.IdEntidad;
-
-                        this.gestionarAltasCuitTerceros(this.ordenDeCargaId.toString());
 
                         document.getElementById("openModalNotificacion")
                             .click();
@@ -993,21 +991,6 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         } catch (err) {
             this.mensajeComponent.setErrorMsg(err);
         }
-    }
-
-    gestionarAltasCuitTerceros(ordenId: string) {
-        this.subscription = this.service.EnviarMailAltaCuitTerceros(this.gestiona["CUITIntermediarioFlete"],
-            this.gestiona["CUITDestino"], this.gestiona["CUITDestinatario"], ordenId).subscribe(result => {
-                if (result.logout) {
-                    this.sessionDataService.logout();
-                } else if (result.error != undefined && result.error != "") {
-                    this.mensajeComponent.setErrorMsg(`${result.error}. Al intentar gestionar el alta de cuits`);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta de cuits`);
-                } else {
-                }
-            }
-            );
     }
 
     obtenerCorredores() {
@@ -1564,7 +1547,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
             this.ordenDeCarga.PatenteAcoplado.trim().length >= 6 &&
             this.esPatenteValida(this.ordenDeCarga.PatenteAcoplado));
     }
-    
+
     get chasisAcopladoValido() {
         return (
             this.ordenDeCarga.ChasisAcoplado &&
@@ -1682,6 +1665,14 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
         const esValida = exprReg.test(patente);
         // console.log("Patente " + patente + " es válida? -> " + esValida);
         return esValida;
+    }
+
+    getDatosGestionAlta(): GestionAltasFAS {
+        return {
+            GestionaDestinatario: this.gestiona["CUITDestinatario"],
+            GestionaDestino: this.gestiona["CUITDestino"],
+            GestionaFlete: this.gestiona["CUITIntermediarioFlete"],
+        }
     }
 }
 

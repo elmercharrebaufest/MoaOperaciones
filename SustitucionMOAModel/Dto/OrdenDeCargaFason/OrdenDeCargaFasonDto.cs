@@ -114,8 +114,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             DestinoMercaderia = orden.DestinoMercaderia;
             FechaRetiroReal = orden.FechaEgreso?.ToString("dd/MM/yyyy HH:mm");
             FechaIngresoPlanta = orden.FechaIngreso?.ToString("dd/MM/yyyy HH:mm");
-            CantidadDescargada = orden.PesadaTara != null && orden.PesadaNeto != null
-                ? orden.PesadaNeto - orden.PesadaTara : null;
+            CantidadDescargada = orden.PesadaNeto;
         }
     }
 }

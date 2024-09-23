@@ -7,7 +7,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -18,13 +17,12 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using SustitucionMOAWS.ResponseHandler.OrdenCarga;
-using SustitucionMOAModel.Util;
 using SustitucionMOAModel.Models.WSMapMOA.OrdenCarga;
-using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOAWS.OrdenCargaControlSAP;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Dto.OrdenDeCarga;
 
 namespace SustitucionMOATest.Services
 {
@@ -172,7 +170,7 @@ namespace SustitucionMOATest.Services
 
             SetupAgregarSuccess();
 
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario, NoSeGestionaNingunAlta());
 
             var expected = new Resultado { IdEntidad = 1, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
 
@@ -500,7 +498,7 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.ObtenerChoferPorCuil(It.IsAny<string>()))
                 .Returns(respuestaScato);
 
-            var result = target.Editar(orden2, mailUsuario);
+            var result = target.Editar(orden2, mailUsuario, NoSeGestionaNingunAlta());
 
             Assert.AreEqual(orderId, result.IdEntidad);
             Assert.AreEqual(SuccessMsg.OrdenDeCargaActualizada, result.Mensaje);
@@ -922,7 +920,7 @@ namespace SustitucionMOATest.Services
 
             var expected = $"Cliente {_proveedorUsuario.RazonSocial}({_proveedorUsuario.CUIT}) no es revendedor. No puede modificar campo reventa";
 
-            var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario));
+            var ex = Assert.Throws<ValidationCustomException>(() => target.Agregar(ordenDeCarga, _mailSesionUsuario, NoSeGestionaNingunAlta()));
 
             Assert.AreEqual(expected, ex.Message);
         }
@@ -937,7 +935,7 @@ namespace SustitucionMOATest.Services
             SetupAgregarTests();
             SetupAgregarSuccess();
 
-            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario);
+            var result = target.Agregar(ordenDeCarga, _mailSesionUsuario, NoSeGestionaNingunAlta());
 
             Assert.That(result.Mensaje, Is.EqualTo(SuccessMsg.OrdenDeCargaAgregada));
 
@@ -1688,6 +1686,15 @@ namespace SustitucionMOATest.Services
             var resp = target.ValidarChofer(cuilChofer, cuitCliente);
 
             Assert.That(resp.EsCuilValido);
+        }
+        private GestionAltasFAS NoSeGestionaNingunAlta()
+        {
+            return new GestionAltasFAS
+            {
+                GestionaDestinatario = false,
+                GestionaDestino = false,
+                GestionaFlete = false
+            };
         }
     }
 }

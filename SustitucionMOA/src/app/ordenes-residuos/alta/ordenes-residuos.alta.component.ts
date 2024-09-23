@@ -15,10 +15,7 @@ import { OrdenCargaResiduosDto } from "../../common/models/ordenes-residuos/orde
 import { Permiso } from "../../common/enums/Permisos";
 import { ApiResponse } from "../../common/models/response";
 import { SessionDataService } from "../../common/services/SessionDataService";
-import { LocalidadDto } from "../../common/models/common/localidadDto";
 import { Proveedor } from "../../common/models/proveedor";
-import { debounceTime, finalize } from 'rxjs/operators';
-import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Planta } from "../../common/models/ordenes-residuos/planta";
 import { Domicilio } from "../../common/models/ordenes-residuos/domicilio";
 import { EstadoOrdenResiduosEnum } from "../../common/models/ordenes-residuos/estadoOrdenResiduos";
@@ -42,7 +39,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     private messagesContainer?: ElementRef<HTMLDivElement>;
     @ViewChild(AutocompleteLocalidadComponent)
     private autocompleteLocalidadComponent: AutocompleteLocalidadComponent;
-    
+
     constructor(
         protected service: OrdenesResiduosService,
         protected navService: NavService,
@@ -52,9 +49,9 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         protected sessionDataService: SessionDataService,
         protected modalService: ModalService,
         private route: ActivatedRoute) {
-            super(navService, securityService, floatMsgService, modalService)
-        }
-    
+        super(navService, securityService, floatMsgService, modalService)
+    }
+
     listaClientes: Proveedor[] = [];
     listaProductos: Material[];
     listaPlantas: Planta[] = [];
@@ -97,7 +94,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.cargarClientes();
         }
     }
-    
+
 
     obtenerProductos = () => {
         this.service.getMateriales().subscribe(
@@ -112,13 +109,13 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             }
         );
     }
-    
+
     onProductoSeleccionado() {
         if (!this.ordenResiduos.Producto)
             return;
 
         this.validaCPEDG = this.ordenResiduos.Producto.ValidaSisaRuca;
-        
+
         if (!this.validaCPEDG) {
             this.ordenResiduos.Planta = undefined;
             this.ordenResiduos.Domicilio = undefined;
@@ -162,7 +159,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             }
         )
     }
-    
+
     cargarClienteDirecto(clienteId: number) {
         if (this.ordenResiduos.Cliente && this.ordenResiduos.Cliente.Id == clienteId) {
             this.listaClientes = [this.ordenResiduos.Cliente];
@@ -188,7 +185,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.obtenerDomicilios();
         this.obtenerIdsTransportes();
     }
-    
+
     ordenarYFiltrarProveedores(proveedores: Proveedor[]): Proveedor[] {
         let filtrados = proveedores.filter(
             (thing, i, arr) => arr.findIndex(t => t.CUIT === thing.CUIT) === i
@@ -329,7 +326,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             () => { this.procesandoCampo.CUITTransporte = false; }
         );
     }
-    
+
     esFormatoCuilCuitValido(cuit: string): boolean {
         return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
     }
@@ -357,6 +354,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     validarOrdenDeCargaResiduos(): boolean {
         if (this.ordenResiduos.NombreChofer == undefined || this.ordenResiduos.NombreChofer.trim().length < 2) {
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
+            return false;
+        }
+        if (this.ordenResiduos.ApellidoChofer == undefined || this.ordenResiduos.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
         if (this.ordenResiduos.CUILChofer == undefined || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
@@ -393,7 +394,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenResiduos.Localidad) {
+        if (!this.ordenResiduos.Localidad && !this.validaCPEDG) {
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
             return false;
         }
@@ -489,11 +490,14 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (orden) {
                     this.ordenResiduos = orden;
                     this.cargarClientes();
-                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => { return v.Id == this.ordenResiduos.Producto.Id}) || this.ordenResiduos.Producto;
-                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => { return v.Id == this.ordenResiduos.Almacen.Id }) || this.ordenResiduos.Almacen;
-                    this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
-                    this.autocompleteLocalidadComponent.getLocalidadById();
-                    this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
+                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => v.MaterialId == this.ordenResiduos.Producto.MaterialId) || this.ordenResiduos.Producto;
+                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => v.Id == this.ordenResiduos.Almacen.Id) || this.ordenResiduos.Almacen;
+                    if (this.ordenResiduos.Localidad) {
+                        this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
+                        this.autocompleteLocalidadComponent.getLocalidadById();
+                        this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
+                    }
+                    this.onProductoSeleccionado()
                 }
             },
             (err) => {
@@ -511,7 +515,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         document.getElementById("botonCerrarModal").click();
         this.redirigirAListadoOrdenesResiduos();
     }
-    
+
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
         this.mensajeComponent.setMsgsEmpty();
@@ -546,7 +550,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         }
         return response.data || null;
     }
-    
+
     scrollAMensaje() {
         if (this.messagesContainer)
             this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' });

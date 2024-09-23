@@ -110,10 +110,6 @@ namespace SustitucionMOAUtils.Services
         public Resultado Editar(string mailUsuario, CampoProveedor campoProveedorObj, HttpPostedFileBase archivoKmz)
         {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-            var editarAdmin = usuario.TienePermiso(PermisoEnum.EdicionCamposCreados);
-            var editarComercial = usuario.TienePermiso(PermisoEnum.ComercialCamposSustentables);
-            if (!(editarAdmin || editarComercial))
-                throw new ValidationCustomException(ErrorMsg.ErrorSinPermiso);
 
             ValidarUsuario(usuario, campoProveedorObj.Proveedor_Id);
 
@@ -187,7 +183,7 @@ namespace SustitucionMOAUtils.Services
                 },
                 cp => cp.CUIT == CUIT && cp.CampoCosecha.Cosecha_Id == cosecha.Id && cp.CampoCosecha.ToneladasAprobadas != -1);
 
-            var declaracion = repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
+            var declaracion = ObtenerDeclaracion(cosechaId, CUIT);
 
             var datosDeclaracionJurada = new DeclaracionCampoSustentableDto
             {
@@ -340,7 +336,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
-        {   
+        {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarUsuario(usuario, proveedorId);
@@ -961,5 +957,9 @@ namespace SustitucionMOAUtils.Services
 
         }
 
+        private DeclaracionCampoSustentable ObtenerDeclaracion(int cosechaId, string CUIT)
+        {
+            return repositorio.Obtener<DeclaracionCampoSustentable>(d => d.Cosecha_Id == cosechaId && d.CUIT == CUIT);
+        }
     }
 }

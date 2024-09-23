@@ -37,12 +37,34 @@ namespace SustitucionMOAExternalAPI.Controllers
         }
 
         [Authorize(Roles = "API ORDENES RESIDUOS")]
+        [Route("external/api/ActualizarOrdenesResiduos")]
         [HttpPatch]
         public IHttpActionResult Actualizar([FromBody] ActualizarOrdenResiduosExternalDto datos)
         {
             try
             {
                 ordenResiduoService.ActualizarOrden(datos);
+                return Json(new { data = true });
+            }
+            catch (InfoCustomException ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(ex);
+            }
+            catch (Exception ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(new Exception("Hubo un error al procesar la solicitud"));
+            }
+        }
+        [Authorize(Roles = "API ORDENES RESIDUOS")]
+        [Route("external/api/InformarViajeOrdenesResiduos")]
+        [HttpPatch]
+        public IHttpActionResult InformarViaje([FromBody] IngresosEgresosResiduos ingresosEgresosFasones)
+        {
+            try
+            {
+                ordenResiduoService.InformarViaje(ingresosEgresosFasones);
                 return Json(new { data = true });
             }
             catch (InfoCustomException ex)

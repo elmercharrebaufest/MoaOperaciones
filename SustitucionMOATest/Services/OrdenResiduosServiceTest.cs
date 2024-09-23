@@ -26,6 +26,7 @@ namespace SustitucionMOATest.Services
         private Mock<IOrdenCargaConsumerMOA> mIOrdenCargaConsumerMOA;
         private Mock<IEmailResiduosService> mIEmailResiduosService;
         private Mock<IFeriadoService> mIFeriadoService;
+        private Mock<IScatoConsumer> mIScatoConsumer;
         private IOrdenResiduosService target;
 
         [SetUp]
@@ -36,12 +37,14 @@ namespace SustitucionMOATest.Services
             mIOrdenCargaConsumerMOA = new Mock<IOrdenCargaConsumerMOA>();
             mIFeriadoService = new Mock<IFeriadoService>();
             mIEmailResiduosService = new Mock<IEmailResiduosService>();
+            mIScatoConsumer = new Mock<IScatoConsumer>();
             target = new OrdenResiduosService(
                 mIRepositorioOrdenResiduos.Object,
                 mIScatoRepositorioClient.Object,
                 mIOrdenCargaConsumerMOA.Object,
                 mIFeriadoService.Object,
-                mIEmailResiduosService.Object);
+                mIEmailResiduosService.Object,
+                mIScatoConsumer.Object);
         }
 
         [Test]

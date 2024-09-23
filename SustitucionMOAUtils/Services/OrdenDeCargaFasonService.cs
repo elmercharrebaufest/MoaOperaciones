@@ -150,6 +150,7 @@ namespace SustitucionMOAUtils.Services
                     orden.Estado = EstadoOrdenDeCargaFason.Vencida;
             }
             repositorio.GuardarCambios();
+            emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenes);
 
             return ordenes;
         }
@@ -184,7 +185,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var corr in corredores)
                 {
                     proveedores.AddRange(
-                    corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente)
+                    corr.Proveedores.Where(x => x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente && x.EsClienteDeCorredorFason)
                         .Select(x => new ProveedorDto(x, false)).ToList());
                 }
                 return proveedores;
@@ -211,51 +212,44 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado Crear(CrearOrdenDeCargaFasonRequest request, string mailUsuario)
         {
-            try
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            ValidarRequest(request, usuario);
+            ModificarDatosRequest(request, usuario);
+            var existeTransporte = TransporteExiste(request.CUITTransporte);
+            var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
+
+            var producto = repositorio.Obtener<Material>(request.Producto_Id);
+            var localidad = ObtenerLocalidadDeLaOrden(request, producto);
+
+            request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
+            request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+
+            long ultimoId = 0;
+            for (int i = 0; i < request.CantidadDeViajes; i++)
             {
-                ValidarRequest(request, mailUsuario);
-                var existeTransporte = TransporteExiste(request.CUITTransporte);
-                var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
-                var localidades = ObtenerDestinos(request.Cliente);
-                if (localidades.Count == 0)
+                var ordenEntity = new OrdenDeCargaFason(request)
                 {
-                    return new Resultado { error = "El cliente no cuenta con ninguna localidad, imposible continuar con la carga." };
-                }
-                if (request.CantidadDeViajes > 3)
+                    Producto = producto,
+                    LocalidadId = localidad.LocalidadId,
+                    LocalidadDescripcion = localidad.LocalidadDescripcion,
+                    KmARecorrer = localidad.KmARecorrer
+                };
+                var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
+                var enviaNotificacion = i == 0;
+                ActualizarOrdenDeCarga(detalleActualizar, enviaNotificacion);
+                if (enviaNotificacion)
                 {
-                    return new Resultado { error = "No puede generar más de 3(tres) viajes." };
+                    ordenEntity.Cliente = repositorio.Obtener<Proveedor>(ordenEntity.Cliente_Id);
+                    NotificacionCamionAutorizadoMultiplesOrdenes(ordenEntity);
                 }
-                var localidad = localidades.First();
-                request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
-                request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+                repositorio.Agregar(ordenEntity);
 
-                var producto = repositorio.Obtener<Material>(request.Producto_Id);
-                int? ultimoId = null;
-                for (int i = 0; i < request.CantidadDeViajes; i++)
-                {
-                    var ordenEntity = new OrdenDeCargaFason(request)
-                    {
-                        Producto = producto,
-                        LocalidadId = localidad.LocalidadId,
-                        LocalidadDescripcion = localidad.LocalidadDescripcion,
-                        KmARecorrer = localidad.KmARecorrer
-                    };
-                    var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
-                    ActualizarOrdenDeCarga(detalleActualizar, i == 0);
-                    repositorio.Agregar(ordenEntity);
-
-                    repositorio.GuardarCambios();
-                    ultimoId = (int)ordenEntity.Id;
-                }
-
-                var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = ultimoId ?? 0 };
-                return resultado;
+                repositorio.GuardarCambios();
+                ultimoId = ordenEntity.Id;
             }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                throw new WSCustomException(ErrorMsg.ErrorWS, ex);
-            }
+
+            var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = (int)ultimoId };
+            return resultado;
         }
 
         public Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario)
@@ -263,9 +257,15 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+                var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
                 ValidarRequest(request, usuario);
                 var orden = repositorio.Obtener<OrdenDeCargaFason>(request.Id);
 
+                if (ValidarOrdenActivaScato(request.Id) && !esAdmin)
+                {
+                    emailFasonService.EnviarMailIntentoEdicionActiva(orden, request);
+                    throw new InfoCustomException("La orden no se puede editar por estar el camión en planta");
+                }
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
                 orden.CorredorId = request.CorredorId;
@@ -292,9 +292,10 @@ namespace SustitucionMOAUtils.Services
                 orden.Escalable = request.Escalable;
                 ActualizarOrdenDeCarga(orden);
 
-                var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+
                 if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
                     throw new ValidationCustomException("La orden está activa en Scato, imposible editar.");
+                NotificacionCamionAutorizadoMultiplesOrdenes(orden);
 
                 repositorio.GuardarCambios();
 
@@ -309,12 +310,8 @@ namespace SustitucionMOAUtils.Services
 
         public List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(int clienteId)
         {
-            Proveedor proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
-            if (proveedor.CUIT.Length != 11)
-            {
-                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
-            }
-            return scatoConsumer.BuscarDestinos(proveedor.CUIT);
+            var proveedor = repositorio.Obtener<Proveedor>(a => a.Id == clienteId);
+            return ObtenerDestinos(proveedor.CUIT);
         }
 
         public void VerificarTransporteJob()
@@ -333,11 +330,18 @@ namespace SustitucionMOAUtils.Services
         public OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+
             if (orden.Estado == EstadoOrdenDeCargaFason.Entregada)
             {
                 throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada.");
             }
-            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+            if (ValidarOrdenActivaScato(ordenId) && !esAdmin)
+            {
+                emailFasonService.EnviarMailIntentoAnulacionActiva(orden);
+                throw new InfoCustomException("La orden no se puede anular por estar el camión en planta");
+            }
             orden.Estado = EstadoOrdenDeCargaFason.Anulada;
             repositorio.GuardarCambios();
             return OrdenDeCargaFasonDto(orden, usuario);
@@ -604,6 +608,11 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
+            if (request.CantidadDeViajes > 3)
+            {
+                throw new ValidationCustomException("No puede generar más de 3(tres) viajes.");
+            }
+
             Log.Info($"FASON - Validar Request {request.ToJson()}  usuario: {usuario.Mail}");
             var fleteMOA = usuario.TieneRol(RolEnum.FleteMOA);
             Log.Info($"FASON - Validar Request: RolFleteMOA={fleteMOA}");
@@ -667,6 +676,63 @@ namespace SustitucionMOAUtils.Services
             if (!detallesOrden.existeTransporte)
             {
                 emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
+            }
+        }
+
+        private List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(string cuit)
+        {
+            if (cuit.Length != 11)
+            {
+                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
+            }
+            return scatoConsumer.BuscarDestinos(cuit);
+        }
+
+        private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)
+        {
+            var localidades = producto.EsDerivadoGranario ?
+                ObtenerDestinos(request.CUITDestino) :
+                ObtenerDestinos(request.Cliente);
+
+            if (localidades.Count == 0)
+            {
+                throw new ValidationCustomException("El cliente/destino no cuenta con ninguna localidad, imposible continuar con la carga.");
+            }
+            return localidades.First();
+        }
+        private void ModificarDatosRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+            if (esAdmin)
+            {
+                return;
+            }
+            if (usuario.EsCorredor())
+            {
+                var corredor = usuario.Proveedores.FirstOrDefault(p => p.CodigoProveedor == request.CodigoCorredor);
+                if (corredor is null)
+                {
+                    throw new ValidationCustomException("El corredor no existe.");
+                }
+                request.CorredorId = corredor.Id;
+            }
+        }
+        private void NotificacionCamionAutorizadoMultiplesOrdenes(OrdenDeCargaFason ordenDeCarga)
+        {
+
+            if (!estadosParaNoNotificarChasisRepetido.Contains(ordenDeCarga.Estado))
+            {
+                var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.PatenteChasis);
+                if (ordenesConPatentesRepetidas.Any(oc => oc.Cliente.CUIT != ordenDeCarga.Cliente.CUIT))
+                {
+                    var cuits =  ordenesConPatentesRepetidas
+                        .Select(oc => oc.Cliente.CUIT).Distinct().ToList();
+                    if (!cuits.Contains(ordenDeCarga.Cliente.CUIT))
+                    {
+                        cuits.Add(ordenDeCarga.Cliente.CUIT);
+                    }
+                    emailFasonService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.PatenteChasis, cuits);
+                }
             }
         }
     }
