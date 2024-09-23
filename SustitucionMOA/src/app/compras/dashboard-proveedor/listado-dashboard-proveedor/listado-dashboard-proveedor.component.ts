@@ -510,7 +510,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     mustShowCotizar(rowData): boolean {
-        debugger;
         let show: boolean = true;
         show = show && rowData.VerCotizar;
         show = show && rowData.Estado == 'Abierto';
@@ -519,7 +518,6 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     }
 
     mustShowRecotizar(rowData): boolean {
-        debugger;
         let show: boolean = true;
         show = show && rowData.VerCotizar;
         show = show && rowData.Estado == 'Abierto';
