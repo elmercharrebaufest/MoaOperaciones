@@ -1100,4 +1100,23 @@ export class DashboardComponent extends ListBaseComponent {
         }
         return response.data || null;
     }
+
+    mustShowCircular(rowData, licitacion): boolean {
+        let res: boolean = true;
+
+        res = res && (rowData.VerCircular == true);
+        res = res && (licitacion.RevisionFinalizada != true);
+        res = res && (licitacion.TrabajoHecho != true);
+
+        return res;
+    }
+
+    mustShowRevisionTecnica(rowData, licitacion): boolean {
+        let res: boolean = true;
+
+        res = res && (licitacion.RevisionFinalizada != true);
+        res = res && (licitacion.TrabajoHecho != true);
+
+        return res;
+    }
 }
