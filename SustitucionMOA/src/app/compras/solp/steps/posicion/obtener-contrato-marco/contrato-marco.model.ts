@@ -10,6 +10,7 @@ export class ContratoMarco {
     public inicioPeriodoValidez: string;
     public finPeriodoValidez: string;
     public posiciones: Array<ContratoMarcoPosicion> = new Array<ContratoMarcoPosicion>();
+    public estaVigente: boolean;
 
     constructor(entity: any = null) {
         if (entity != null) {
@@ -23,6 +24,10 @@ export class ContratoMarco {
             this.claveMoneda = entity.ClaveMoneda;
             this.inicioPeriodoValidez = entity.InicioPeriodoValidez;
             this.finPeriodoValidez = entity.FinPeriodoValidez;
+            const hoy = new Date();
+            const finPeriodoValidezDate = new Date(entity.FinPeriodoValidez);
+            this.estaVigente = finPeriodoValidezDate >= hoy;            
+            
             if (entity.Posiciones && entity.Posiciones.length) {
                 this.posiciones = new Array<ContratoMarcoPosicion>();
                 entity.Posiciones.forEach(pos => {

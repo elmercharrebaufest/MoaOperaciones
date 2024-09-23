@@ -40,7 +40,7 @@ export class ObtenerContratoMarcoComponent implements OnInit {
     private formBuilder: FormBuilder) {
     this.obtenerContratoMarcoService.toogleOn.subscribe(value => {
       this.visible = value;
-        this.onClear();
+      this.onClear();
     });
   }
   
@@ -175,6 +175,13 @@ export class ObtenerContratoMarcoComponent implements OnInit {
         posicionesSeleccionadas = this.contratoMarcoModel.posiciones.filter(p => p.selected);
       }
       return posicionesSeleccionadas.length > 0;
+  }
+
+  eliminarCerosIniciales(numero: string | number): string {
+    if (typeof numero === 'number') {
+      numero = numero.toString();
+    }
+    return numero.replace(/^0+/, '');
   }
 
 }

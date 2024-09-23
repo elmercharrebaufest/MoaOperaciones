@@ -53,7 +53,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var result = service.SI_MMRFC_MODIFICAR_SOLPED(
                                                        solpSAP.NroSolp,
-                                                       solpSAP.IM_PRACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5690
+                                                       solpSAP.IM_PRACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.BAPIMEREQACCOUNT
                                                        {
                                                            ASSET_NO = a.ASSET_NO,
                                                            BUS_AREA = a.BUS_AREA,
@@ -69,7 +69,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            QUANTITYSpecified = a.QUANTITYSpecified,
                                                            SERIAL_NO = a.SERIAL_NO
                                                        }).ToArray(),
-                                                       solpSAP.IM_PRACCOUNTXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5680
+                                                       solpSAP.IM_PRACCOUNTXList.Select(a => new ModificarSolpWebServiceMOA.BAPIMEREQACCOUNTX
                                                        {
                                                            ASSET_NO = a.ASSET_NO,
                                                            BUS_AREA = a.BUS_AREA,
@@ -86,7 +86,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            SUB_NUMBER = a.SUB_NUMBER,
                                                            SERIAL_NO = a.SERIAL_NO
                                                        }).ToArray(),
-                                                       solpSAP.IM_PRADDRDELIVERYList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5750
+                                                       solpSAP.IM_PRADDRDELIVERYList.Select(a => new ModificarSolpWebServiceMOA.ZMPES7110
                                                        {
                                                            ADDR_NO = a.ADDR_NO,
                                                            CITY = a.CITY,
@@ -106,7 +106,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            TEXT_ID = a.TEXT_ID,
                                                            TEXT_LINE = a.TEXT_LINE
                                                        }).ToArray(),
-                                                       solpSAP.IM_PRITEMList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5700
+                                                       solpSAP.IM_PRITEMList.Select(a => new ModificarSolpWebServiceMOA.ZMPES7090
                                                        {
                                                            ACCTASSCAT = a.ACCTASSCAT,
                                                            PREQ_ITEM = a.PREQ_ITEM,
@@ -158,7 +158,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            TEXT_ID = a.TEXT_ID,
                                                            TEXT_LINE = a.TEXT_LINE
                                                        }).ToArray(),
-                                                       solpSAP.IM_PRITEMXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5660
+                                                       solpSAP.IM_PRITEMXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES8000
                                                        {
                                                            ACCTASSCAT = a.ACCTASSCAT,
                                                            PREQ_ITEM = a.PREQ_ITEM,
@@ -196,7 +196,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            VAL_TYPE = a.VAL_TYPE,
                                                            PREQ_ITEMX = a.PREQ_ITEMX
                                                        }).ToArray(),
-                                                       solpSAP.IM_SERVICEACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5790
+                                                       solpSAP.IM_SERVICEACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.BAPI_SRV_ACC_DATA
                                                        {
                                                            DEL_IND = a.DEL_IND,
                                                            DOC_ITEM = a.DOC_ITEM,
@@ -223,7 +223,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            SERIAL_NO_ITEM = a.SERIAL_NO_ITEM,
                                                            SRV_LINE = a.SRV_LINE
                                                        }).ToArray(),
-                                                       solpSAP.IM_SERVICELINESList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5780
+                                                       solpSAP.IM_SERVICELINESList.Select(a => new ModificarSolpWebServiceMOA.BAPI_SRV_SERVICE_LINE
                                                        {
                                                            SRV_LINE = a.SRV_LINE,
                                                            QUANTITYSpecified = a.QUANTITYSpecified,
@@ -242,7 +242,7 @@ namespace SustitucionMOAWS.WSConsumers
                                                            UOM = a.UOM,
                                                            UOM_ISO = a.UOM_ISO
                                                        }).ToArray(),
-                                                       solpSAP.IM_SERVICELINESXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5720
+                                                       solpSAP.IM_SERVICELINESXList.Select(a => new ModificarSolpWebServiceMOA.BAPI_SRV_SERVICE_LINEX
                                                        {
                                                            SRV_LINE = a.SRV_LINE,
                                                            OUTLINE = a.OUTLINE,

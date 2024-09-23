@@ -37,3 +37,11 @@
     font-family: Roboto Regular !important;
     font-weight:bold;
 }
+
+.vigente {
+    background-color: transparent !important;
+}
+
+.no-vigente {
+    background-color: #FFD6D6 !important; /* Color para contratos no vigentes */
+}

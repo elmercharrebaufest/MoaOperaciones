@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
@@ -19,6 +21,7 @@ namespace SustitucionMOAUtils.Export
 {
     public static class ExcelExport
     {
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcel(object dataList, string[] headers, string titulo)
         {
 
@@ -53,7 +56,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCartaPorteDetalle(object entregasDescargasList, object datosCalidadList, object aplicacionesList, string[] entregasDescargasHeaders, string[] datosCalidadHeaders, string[] aplicacionesHeaders, string titulo)
         {
 
@@ -179,7 +182,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelContratoDetalle(object ampliacionesAnulacionesList, object aplicacionesList, List<CalidadContratoDetalleExcel> calidadList, object caracteristicasList, object condicionesPagoList, object fijacionesList, object hijosList, object liquidacionesList, object pagosList, object resumenList, string[] ampliacionesAnulacionesHeaders, string[] aplicacionesHeaders, string[] calidadHeaders, string[] caracteristicasHeaders, string[] condicionesPagoHeaders, string[] fijacionesHeaders, string[] hijosHeaders, string[] liquidacionesHeaders, string[] pagosHeaders, string[] resumenHeaders, string titulo)
         {
 
@@ -604,7 +607,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelPagoDetalle(object cabecerasList, object salidasList, object vendedoresList, string[] cabecerasHeaders, string[] salidasHeaders, string[] vendedoresHeaders, string titulo)
         {
 
@@ -750,8 +753,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCuentaCorrienteAgrupada(List<CuentaCorrienteAgrupada> list, string[] headers, string titulo)
         {
 
@@ -830,7 +832,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelCuentaCorrientePartidasAbiertas(List<CuentaCorrienteAgrupada> list, string[] headers, string titulo)
         {
 
@@ -909,7 +911,7 @@ namespace SustitucionMOAUtils.Export
 
             return sw.ToString();
         }
-
+        [Obsolete("Esta funcionalidad está deprecada, ya que utiliza un html en vez de la funcionalidad de OpenXml.")]
         public static string ToExcelViajesAgrupados(List<ViajeAgrupadoExcel> list, string[] headers, string titulo)
         {
 
@@ -1328,7 +1330,6 @@ namespace SustitucionMOAUtils.Export
             return columns;
         }
 
-
         private static Dictionary<int, int> GetMaxCharacterWidth(SheetData sheetData)
         {
             //iterate over all cells getting a max char value for each column
@@ -1377,6 +1378,60 @@ namespace SustitucionMOAUtils.Export
             }
 
             return maxColWidth;
+        }
+        public static byte[] ComprasHistorialMovimientosToExcel(HistorialDeFechaDto historial)
+        {
+            var memStream = new MemoryStream();
+            using (SpreadsheetDocument document = SpreadsheetDocument.Create(memStream, SpreadsheetDocumentType.Workbook))
+            {
+                WorkbookPart workbookPart = document.AddWorkbookPart();
+                workbookPart.Workbook = new Workbook();
+
+                WorksheetPart worksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                SheetData sheetData = new SheetData();
+                worksheetPart.Worksheet = new Worksheet(sheetData);
+
+                Sheets sheets = document.WorkbookPart.Workbook.AppendChild(new Sheets());
+                Sheet sheet = new Sheet() { Id = document.WorkbookPart.GetIdOfPart(worksheetPart), SheetId = 1, Name = "Sheet1" };
+                sheets.Append(sheet);
+
+                foreach (var solp in historial.ListaSolp)
+                {
+                    AddRow(sheetData, "Nro de SOLP:", solp.NroSolp);
+                    AddRow(sheetData, "Fecha de Creación:", solp.FechaCreacionFormateada);
+                    AddRow(sheetData, "Fecha de Liberación:", solp.FechaLiberacionSapFormateada);
+                    AddRow(sheetData, "Fecha de creación de PO:", historial.FechaCreacionPOFormateada);
+                }
+
+                AddEmptyRow(sheetData);
+
+                foreach (var row in historial.Cuerpo)
+                {
+                    AddRow(sheetData, row.ToArray());
+                }
+
+                workbookPart.Workbook.Save();
+            }
+            return memStream.ToArray();
+        }
+
+        public static void AddRow(SheetData sheetData, params string[] values)
+        {
+            Row row = new Row();
+            foreach (var value in values)
+            {
+                Cell cell = new Cell() { CellValue = new CellValue(value), DataType = CellValues.String };
+                row.Append(cell);
+            }
+            sheetData.Append(row);
+        }
+
+        public static void AddEmptyRow(SheetData sheetData)
+        {
+            Row row = new Row();
+            Cell cell = new Cell() { CellValue = new CellValue(""), DataType = CellValues.String };
+            row.Append(cell);
+            sheetData.Append(row);
         }
     }
 

@@ -122,6 +122,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             _NFM_BAPIDOCITM[] NFMETALLITMS = modificarPedidoSAP.NFMETALLITMS?.ToArray();
             BAPIMEPOHEADER result = service.SI_MMRFC_MODIFICAR_OC(
+                modificarPedidoSAP.IM_URL ?? "",
                 modificarPedidoSAP.MEMORY_COMPLETE,
                 modificarPedidoSAP.MEMORY_UNCOMPLETE,
                 modificarPedidoSAP.NO_AUTHORITY,
@@ -598,6 +599,8 @@ namespace SustitucionMOAWS.WSConsumers
                 });
             }
 
+            modificarPedidoSAP.IM_URL = ConfigurationManager.AppSettings["SpaUrl"] + "/verLegajoOrdenDeCompra/" + adjudicacion.Id + "/" + adjudicacion.Token;
+
             return modificarPedidoSAP;
         }
 
@@ -720,6 +723,7 @@ namespace SustitucionMOAWS.WSConsumers
             public List<BAPIMEPOSERIALNOX> SERIALNUMBERX { get; set; } = new List<BAPIMEPOSERIALNOX>();
             public BAPIEIKP EXPPOEXPIMPHEADER { get; set; }
             public List<_NFM_BAPIDOCITM> NFMETALLITMS { get; set; } = new List<_NFM_BAPIDOCITM>();
+            public string IM_URL { get;  set; }
         }
 
     }

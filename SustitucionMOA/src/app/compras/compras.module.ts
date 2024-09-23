@@ -53,7 +53,7 @@ import { ContratoMarcoComponent } from './solp/steps/posicion/contrato-marco/con
 import { ObtenerContratoMarcoComponent } from './solp/steps/posicion/obtener-contrato-marco/obtener-contrato-marco.component';
 import { PaginatorModule } from 'primeng/paginator';
 import { TabViewModule } from 'primeng/tabview';
-import {TooltipModule} from 'primeng/tooltip';
+import { TooltipModule } from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
 import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
@@ -75,7 +75,7 @@ import { PanelHorasComponent } from './panel-horas/panel-horas.component';
 import { OrdenDeCompraDetalleComponent } from './dashboard-comprador/orden-de-compra-detalle/ordenDeCompraDetalle.component';
 import { TextosAdjudicarComponent } from './dashboard-comprador/ver-ofertas/textos-adjudicar/textos-adjudicar.component';
 
-import {AccordionModule} from 'primeng/accordion';
+import { AccordionModule } from 'primeng/accordion';
 import { RegistroInfoComponent } from './peticion-de-oferta-formulario/registro-info/registro-info/registro-info.component';
 import { CerrarCotizacionComponent } from './dashboard-comprador/cerrar-cotizacion/cerrar-cotizacion.component';
 import { PlazoDeOfertaComponent } from './dashboard-proveedor/cotizacion-formulario/cotizacion-material/plazo-de-oferta/plazo-de-oferta.component';
@@ -94,6 +94,7 @@ import { FiltroDashboardCertificacionDeServiciosComponent } from './dashboard-en
 import { ListadoEstadoCertificacionesComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones/listado-estado-certificaciones.component';
 import { ModalAltaEntradaDeServicioComponent } from './dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
 import { AdjuntosSolpComponent } from './agrupar-po-th/adjuntos-solp/adjuntos-solp.component';
+import { ActualizarFechaVigenciaComponent } from './dashboard-comprador/ver-ofertas/actualizar-fecha-vigencia/actualizar-fecha-vigencia.component';
 
 
 import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
@@ -210,7 +211,8 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
         AuxPannelComponent,
         RecalculandoSpinnerComponent,
         FileModalComponent,
-        AdjuntosSolpComponent
+        AdjuntosSolpComponent,
+        ActualizarFechaVigenciaComponent
     ],
     providers: [
         ComprasService,

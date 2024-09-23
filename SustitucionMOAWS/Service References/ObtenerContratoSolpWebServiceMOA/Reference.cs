@@ -25,12 +25,12 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
-    public partial class ZMPES5800 : object, System.ComponentModel.INotifyPropertyChanged {
+    public partial class ZMPES7150 : object, System.ComponentModel.INotifyPropertyChanged {
         
         private string sIGNField;
         
@@ -99,7 +99,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -299,7 +299,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -443,7 +443,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -685,7 +685,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -843,7 +843,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -917,7 +917,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -991,12 +991,86 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
     public partial class ZMPES5880 : object, System.ComponentModel.INotifyPropertyChanged {
+        
+        private string sIGNField;
+        
+        private string oPTIONField;
+        
+        private string lOWField;
+        
+        private string hIGHField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=0)]
+        public string SIGN {
+            get {
+                return this.sIGNField;
+            }
+            set {
+                this.sIGNField = value;
+                this.RaisePropertyChanged("SIGN");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=1)]
+        public string OPTION {
+            get {
+                return this.oPTIONField;
+            }
+            set {
+                this.oPTIONField = value;
+                this.RaisePropertyChanged("OPTION");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=2)]
+        public string LOW {
+            get {
+                return this.lOWField;
+            }
+            set {
+                this.lOWField = value;
+                this.RaisePropertyChanged("LOW");
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified, Order=3)]
+        public string HIGH {
+            get {
+                return this.hIGHField;
+            }
+            set {
+                this.hIGHField = value;
+                this.RaisePropertyChanged("HIGH");
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:sap-com:document:sap:rfc:functions")]
+    public partial class ZMPES5800 : object, System.ComponentModel.INotifyPropertyChanged {
         
         private string sIGNField;
         
@@ -1074,8 +1148,9 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
         public string IM_COMP_CODE;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=1)]
-        [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        public string IM_CONTRACT;
+        [System.Xml.Serialization.XmlArrayAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [System.Xml.Serialization.XmlArrayItemAttribute("item", Form=System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable=false)]
+        public SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES7150[] IM_CONTRACT;
         
         [System.ServiceModel.MessageBodyMemberAttribute(Namespace="urn:sap-com:document:sap:rfc:functions", Order=2)]
         [System.Xml.Serialization.XmlElementAttribute(Form=System.Xml.Schema.XmlSchemaForm.Unqualified)]
@@ -1112,7 +1187,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
         public SI_MMRFC_OBTENER_CONTRATORequest() {
         }
         
-        public SI_MMRFC_OBTENER_CONTRATORequest(string IM_COMP_CODE, string IM_CONTRACT, string IM_DETAIL, string IM_ITEM_NO, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5880[] IM_NOM_VENDOR, string IM_PLANT, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5810[] IM_TEXT_POS, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5870[] IM_VENDOR) {
+        public SI_MMRFC_OBTENER_CONTRATORequest(string IM_COMP_CODE, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES7150[] IM_CONTRACT, string IM_DETAIL, string IM_ITEM_NO, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5880[] IM_NOM_VENDOR, string IM_PLANT, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5810[] IM_TEXT_POS, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5870[] IM_VENDOR) {
             this.IM_COMP_CODE = IM_COMP_CODE;
             this.IM_CONTRACT = IM_CONTRACT;
             this.IM_DETAIL = IM_DETAIL;
@@ -1198,7 +1273,7 @@ namespace SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA {
             return base.Channel.SI_MMRFC_OBTENER_CONTRATO(request);
         }
         
-        public string SI_MMRFC_OBTENER_CONTRATO(string IM_COMP_CODE, string IM_CONTRACT, string IM_DETAIL, string IM_ITEM_NO, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5880[] IM_NOM_VENDOR, string IM_PLANT, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5810[] IM_TEXT_POS, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5870[] IM_VENDOR, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5890[] EX_HEADER, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5900[] EX_ITEM, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.BAPIRETURN[] EX_RETURN, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5910[] EX_SUB_ITEM) {
+        public string SI_MMRFC_OBTENER_CONTRATO(string IM_COMP_CODE, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES7150[] IM_CONTRACT, string IM_DETAIL, string IM_ITEM_NO, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5800[] IM_MATERIAL, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5880[] IM_NOM_VENDOR, string IM_PLANT, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5810[] IM_TEXT_POS, SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5870[] IM_VENDOR, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5890[] EX_HEADER, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5900[] EX_ITEM, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.BAPIRETURN[] EX_RETURN, out SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.ZMPES5910[] EX_SUB_ITEM) {
             SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.SI_MMRFC_OBTENER_CONTRATORequest inValue = new SustitucionMOAWS.ObtenerContratoSolpWebServiceMOA.SI_MMRFC_OBTENER_CONTRATORequest();
             inValue.IM_COMP_CODE = IM_COMP_CODE;
             inValue.IM_CONTRACT = IM_CONTRACT;
