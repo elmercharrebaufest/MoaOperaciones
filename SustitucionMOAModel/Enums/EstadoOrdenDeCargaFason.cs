@@ -66,9 +66,9 @@
         {
             switch (me)
             {
-                case EstadoOrdenDeCargaFason.Vencida:
                 case EstadoOrdenDeCargaFason.Anulada:
                     return "red";
+                case EstadoOrdenDeCargaFason.Vencida:
                 case EstadoOrdenDeCargaFason.Pendiente:
                     return "yellow";
                 case EstadoOrdenDeCargaFason.Generada:
