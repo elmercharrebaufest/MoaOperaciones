@@ -84,7 +84,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @Input() ordenDeCompraSap: OrdenDeCompraSap;
 
     @Output()
-    protected onResponsableTrabajoAutomaticallySelected: Subject<void> = new Subject();
+    protected onResponsableTrabajoAutomaticallySelected: Subject<null> = new Subject();
 
 
     cambiosGuardados: boolean = false;
@@ -316,7 +316,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return fecha;
     }
 
-    traerSolpId(idSolp:number) {
+    traerSolpId(idSolp: number) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
@@ -1325,7 +1325,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
 
-    obtenerUsuarioSolicitante():Observable<any> {
+    obtenerUsuarioSolicitante(): Observable<any> {
         try {
             let o = this.service.listarUsuarioSolicitante().map(
                 (result: any) => {
@@ -1385,13 +1385,21 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
 
         if (this.esEdicionSolp) {
-            const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
-            if (elementoEncontrado) {
-                this.solpActual.selectResponsableTrabajo = elementoEncontrado;
+            const elementoEncontradoSolicitante = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
+            if (elementoEncontradoSolicitante) {
+                this.solpActual.selectResponsableTrabajo = elementoEncontradoSolicitante;
+            }
+
+            const elementoEncontradoFiscal = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail);
+            if (elementoEncontradoFiscal) {
+                this.solpActual.selectUsuarioFiscal = elementoEncontradoFiscal;
+            }
+
+            if (elementoEncontradoSolicitante
+                || elementoEncontradoFiscal) {
                 this.onResponsableTrabajoAutomaticallySelected.next();
             }
         }
-        
     }
 
     private setCurrentUseAsResponsableTrabajoIfNeeded(): void {

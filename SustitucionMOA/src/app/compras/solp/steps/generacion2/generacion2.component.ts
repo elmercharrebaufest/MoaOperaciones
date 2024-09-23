@@ -132,6 +132,7 @@ export class Generacion2Component extends ListBaseComponent {
                 fechaLimiteHora: [{ value: true, disabled: true }, [Validators.required]]
             });
 
+            // esto mismo se usa en generacion1.component.ts para las solp que NO son SIN_PLIEGO
             this.selectResponsableTrabajoChanged.subscribe(() => {
                 this.onCompletarResponsable();
             });
@@ -284,7 +285,6 @@ export class Generacion2Component extends ListBaseComponent {
                 this.model.mail = this.model.selectResponsableTrabajo.CodigoDescripcion;
                 this.model.supervisorTrabajo = this.model.selectResponsableTrabajo.CodigoDescripcion;
             }
-
         }
     }
 }
