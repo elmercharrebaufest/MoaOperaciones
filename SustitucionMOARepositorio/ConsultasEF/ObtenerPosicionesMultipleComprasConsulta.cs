@@ -78,13 +78,21 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 solpCompra.MostrarSelectorPlazoDeOferta =
                     solpDb.Any(solp => /*!solp.DebeGenerarPoAutomatica*/ !((solp.TrabajoYaHecho == true) || (solp.Adicional == true) || (solp.CondEspProveedorAsignado == true)));
 
-                solpCompra._plazoDeOfertaTentativo =
+                DateTime plazoDeOfertaTentativoPredeterminado = DateTime.Today.AddDays(10);
+                DateTime? plazoDeOfertaTentativo =
                     solpDb
                         /* CS8072 - An expression tree lambda may not contain a null propagating operator. */
                         .Where(solp => solp.Pliego != null && solp.Pliego.FechaHoraEntrega != null)
                         .Select(solp => solp.Pliego.FechaHoraEntrega)
-                        .DefaultIfEmpty(DateTime.Today.AddDays(10))
+                        .DefaultIfEmpty(plazoDeOfertaTentativoPredeterminado)
                         .Max();
+                if (plazoDeOfertaTentativo < DateTime.Today)
+                {
+                    // en caso que esté vencida, 10 días a futuro
+                    plazoDeOfertaTentativo = plazoDeOfertaTentativoPredeterminado;
+                }
+
+                solpCompra._plazoDeOfertaTentativo = plazoDeOfertaTentativo;
 
                 return solpCompra;
             }
