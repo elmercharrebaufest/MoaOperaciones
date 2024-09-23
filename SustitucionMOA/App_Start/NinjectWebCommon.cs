@@ -27,7 +27,6 @@ using System.Web;
 using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOARepositorio.Repositorios;
-using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive;
 
@@ -145,6 +144,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
             kernel.Bind<ICcSsObtenerArchivosUcropJob>().To(typeof(CcSsObtenerArchivosUcropJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarCamposUcropitJob>().To(typeof(EnviarCamposUcropitJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<IDerivacionAutomaticaJob>().To(typeof(DerivacionesAutomaticaJob)).InScope(ctx => OperationContext.Current);
+            kernel.Bind<INotificarAprobacionesPendientesJob>().To(typeof(NotificarAprobacionesPendientesJob)).InScope(ctx => OperationContext.Current);
 
 
             #region Registro
@@ -227,8 +228,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InTransientScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InScope(ctx => HttpContext.Current);
 
-            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InTransientScope();
-            kernel.Bind<IRepositorio>().To<RepositorioEF>().InTransientScope();
+            kernel.Bind<DbContext>().To<MOAOperacionesDbContext>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);

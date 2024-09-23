@@ -189,7 +189,6 @@
     <Compile Include="Interfaces\IAprobacionesService.cs" />
     <Compile Include="Interfaces\IDerivacionesAprobacionesService.cs" />
     <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
-    <Compile Include="Interfaces\ITimerDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
@@ -263,7 +262,6 @@
     <Compile Include="Services\AprobacionesService.cs" />
     <Compile Include="Services\DerivacionesAprobacionesService.cs" />
     <Compile Include="Services\LogicaDerivacionAutomaticaService.cs" />
-    <Compile Include="Services\TimerDerivacionAutomaticaService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />
@@ -321,7 +319,6 @@
     <Compile Include="Services\TicketPesadaService.cs" />
     <Compile Include="Services\LogPesificacionService.cs" />
     <Compile Include="Services\ExternalApiService.cs" />
-    <Compile Include="Services\TimerNotificarAprobacionesService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
     <Compile Include="Validadores\OrdenDeCarga\CrearOrdenEnSAPRequestValidator.cs" />
