@@ -6799,7 +6799,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ValidarCreacionDeRegistroInfo(cotizacion))
                 {
-                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
+                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null))
                     {
                         var registros = CrearRegistroInfoDto(cotizacion);
                         if (registros.Any(x => !x.EsModificar))
@@ -6831,8 +6831,7 @@ namespace SustitucionMOAUtils.Services
         private static bool ValidarCreacionDeRegistroInfo(Cotizacion cotizacion)
         {
             return cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                                && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES" &&
-                                cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null;
+                                && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
         }
 
         private void CrearRegistroInfo(Cotizacion cotizacion, List<RegistroInfoDto> registros)
