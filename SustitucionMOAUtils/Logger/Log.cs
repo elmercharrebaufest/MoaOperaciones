@@ -7,9 +7,36 @@ using System;
 using System.IO;
 using System.Web.Hosting;
 using System.ServiceModel.Channels;
+using System.Configuration;
+using NLog;
+using DocumentFormat.OpenXml.VariantTypes;
+using System.Linq;
+using System.Collections;
 
 namespace SustitucionMOAUtils.Logger
 {
+    public class LogConfig
+    {
+        public static void ConfigureNLog()
+        {
+            var config = LogManager.Configuration;
+
+            if (config == null)
+            {
+                // Aquí configuras la conexión si es necesario
+                config = new LoggingConfiguration();
+            }
+            // Obtener el connection string desde el web.config
+            var connectionString = ConfigurationManager.ConnectionStrings["CONTEXTO"].ConnectionString;
+
+            // Asignar el valor al parámetro de NLog
+            LogManager.Configuration.Variables["dbConnectionString"] = connectionString;
+
+            // Aplicar la nueva configuración
+            LogManager.ReconfigExistingLoggers();
+
+        }
+    }
     public class Log
     {
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
@@ -20,6 +47,7 @@ namespace SustitucionMOAUtils.Logger
 
         public Log()
         {
+            ConfigLog();
         }
 
         public static string ConfigLog()
@@ -47,8 +75,10 @@ namespace SustitucionMOAUtils.Logger
                 logPath = Path.Combine(rutaSitioWeb, "nlog.pre.config");
                 config = new XmlLoggingConfiguration(logPath);
             }
+            
             // Configura LogManager con la nueva configuración
             NLog.LogManager.Configuration = config;
+            LogConfig.ConfigureNLog();
 
             var target = GetTarget(config);
 
@@ -72,8 +102,8 @@ namespace SustitucionMOAUtils.Logger
             foreach (var target in config.AllTargets)
             {
                 if (target is FileTarget fileTarget)
-                {                    
-                        return fileTarget;                    
+                {
+                    return fileTarget;
                 }
             }
             return null;
@@ -240,7 +270,7 @@ namespace SustitucionMOAUtils.Logger
             }
             catch (Exception e)
             {
-                Log.Error("","","","",e.Message);
+                Log.Error("", "", "", "", e.Message);
                 Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
             }
         }

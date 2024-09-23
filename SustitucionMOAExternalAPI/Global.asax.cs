@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAExternalAPI.Handlers;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,9 @@ namespace SustitucionMOAExternalAPI
 
             // Autenticación por Message Handler
             GlobalConfiguration.Configuration.MessageHandlers.Add(new ApiKeyAuthMessageHandler());
+
+            // Configurar NLog con la cadena de conexión desde web.config
+            LogConfig.ConfigureNLog();
         }
     }
 }

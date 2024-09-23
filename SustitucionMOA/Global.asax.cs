@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using SustitucionMOAUtils.Logger;
 
 namespace SustitucionMOA
 {
@@ -22,6 +23,8 @@ namespace SustitucionMOA
            // Habilita TLS 1.2
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
+            // Configurar NLog con la cadena de conexión desde web.config
+            LogConfig.ConfigureNLog();
         }
 
         protected void Application_Error()
