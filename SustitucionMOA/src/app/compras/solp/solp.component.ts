@@ -84,7 +84,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     @Input() ordenDeCompraSap: OrdenDeCompraSap;
 
     @Output()
-    protected onResponsableTrabajoAutomaticallySelected: Subject<null> = new Subject();
+    protected onResponsableTrabajoAutomaticallySelected: Subject<void> = new Subject();
 
 
     cambiosGuardados: boolean = false;
