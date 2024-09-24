@@ -18,7 +18,7 @@ export interface PeticionDeOfertaDto {
     Mail?: string,
     NroOrdenDeCompraAdicional?: string,
     NroSolp?: string,
-    NrosSolp?: any[],
+    NrosSolp?: string[],
     ObservacionCotizacion?: string,
     ObservacionEconomica?: string,
     ObservacionEconomicaOriginal?: any,

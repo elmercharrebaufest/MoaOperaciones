@@ -1505,6 +1505,8 @@
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
+    <TypeScriptCompile Include="src\pipes\customDecimalPipe.pipe.ts" />
+    <TypeScriptCompile Include="src\pipes\replace.pipe.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />
