@@ -8,7 +8,6 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -20,7 +19,7 @@ namespace SustitucionMOA.Controllers
         readonly IOrdenDeCargaService ordenDeCargaService;
         private readonly IFacturaAnticipadaService _facturaAnticipadaService;
         private readonly IConsultaService consultaService;
-
+        private readonly object _lockCreacionOrdenes = new Object();
         public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService, IFacturaAnticipadaService facturaAnticipadaService)
         {
             this.consultaService = consultaService;
@@ -33,10 +32,15 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-                var gestionAltas = JsonConvert.DeserializeObject<GestionAltasFAS>(gestionAltaFASJson);
-                var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario, gestionAltas) });
+                lock (_lockCreacionOrdenes)
+                {
+
+                    var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
+                    var gestionAltas = JsonConvert.DeserializeObject<GestionAltasFAS>(gestionAltaFASJson);
+                    var mailUsuario = SessionPersister.getUsername();
+                    return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario, gestionAltas) });
+                }
+
             }
             catch (InfoCustomException e)
             {
