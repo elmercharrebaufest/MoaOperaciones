@@ -313,13 +313,13 @@
                                                     <button class="publicar btn" style="margin: 5px;" (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
-                                                    <button class="publicar btn" *ngIf="licitacion.RevisionFinalizada != true && licitacion.TrabajoHecho != true"
+                                                    <button class="publicar btn" *ngIf="mustShowRevisionTecnica(rowData, licitacion)"
                                                             style="margin: 5px;" (click)="validarAuditor() ? null : obtenerPeticionDeOferta(licitacion.Id, rowData)"
-                                                            [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">               
+                                                            [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">
                                                         Revisión Técnica
                                                     </button>
                                                     <button class="publicar btn"
-                                                            *ngIf="(rowData.VerCircular == true && licitacion.RevisionFinalizada != true) && licitacion.TrabajoHecho != true"
+                                                            *ngIf="mustShowCircular(rowData, licitacion)"
                                                             style="margin: 5px;" (click)="validarAuditor() ? null : obtenerPeticionDeOfertaCircular(licitacion.Id, rowData)"
                                                             [style.cursor]="validarAuditor() ? 'not-allowed' : 'pointer'">
                                                         Circular

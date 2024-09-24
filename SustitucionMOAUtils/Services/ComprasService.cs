@@ -2171,67 +2171,84 @@ namespace SustitucionMOAUtils.Services
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
             var estadoSolpSapLiberada = repositorio.Obtener<TablaSap>(x => x.Tabla == "EstadoSolpSap" && x.CodigoSap == "05").Id;
 
-            if (solp != null)
+            if (solp == null) { return; }
+
+            var enviarMail = solp.SeEnvioMailLiberacion != true;
+            solp.FechaLiberacionSap = fechaLiberacion;
+            solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
+            solp.SeEnvioMailLiberacion = true;
+            repositorio.GuardarCambios();
+            var posicionesSolp = solp.Posiciones.Select(x => x.Id);
+            var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
+            .Any(posi => posicionesSolp.Contains(posi))).ToList();
+
+            if (!peticiones.Any())
             {
-                var enviarMail = solp.SeEnvioMailLiberacion != true;
-                solp.FechaLiberacionSap = fechaLiberacion;
-                solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
-                solp.SeEnvioMailLiberacion = true;
-                repositorio.GuardarCambios();
-                var posicionesSolp = solp.Posiciones.Select(x => x.Id);
-                var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
-                .Any(posi => posicionesSolp.Contains(posi))).ToList();
-
-                if (!peticiones.Any())
+                if (solp.TrabajoYaHecho == true)
                 {
-                    if (solp.TrabajoYaHecho == true)
-                    {
-                        CrearCotizacionConTrabajoYaHecho(solp);
-                    }
-
-                    if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
-                    {
-                        CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
-                    }
+                    CrearCotizacionConTrabajoYaHecho(solp);
                 }
 
-                var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
-                                .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
-
-                var esServicio = solp.Posiciones.Any() && solp.Posiciones.First().TipoPosicion.Codigo == "SERVICIO";
-
-                if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
+                if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
                 {
-                    ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
-                    {
-                        if (solp.TrabajoYaHecho != true)
-                        {
-                            solp.TieneModificaciones = false;
-                            if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
-                            {
-                                EnviarCircularAutomatico(solp);
-                            }
-                        }
-                        else
-                        {
-                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
-                        }
-                    }
+                    CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                 }
+            }
 
-                if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
+            var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
+                            .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
+
+            var esServicio = solp.Posiciones.Any() && solp.Posiciones.First().TipoPosicion.Codigo == "SERVICIO";
+
+            if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
+            {
+                ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
+                if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
                 {
-                    try
+                    if (solp.TrabajoYaHecho != true)
                     {
-                        emailComprasService.EnviarMailSolpLiberada(solp);
+                        solp.TieneModificaciones = false;
+                        if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
+                        {
+                            EnviarCircularAutomatico(solp);
+                        }
                     }
-                    catch (Exception)
+                    else
                     {
-                        Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
+                        AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
                     }
                 }
             }
+
+            if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
+            {
+                try
+                {
+                    emailComprasService.EnviarMailSolpLiberada(solp);
+                }
+                catch (Exception)
+                {
+                    Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
+                }
+            }
+
+            List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
+                solp.Posiciones?
+                .Where(posicion => posicion.Peticiones?.Count > 0)
+                .SelectMany(posicion => posicion.Peticiones)
+                .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
+                .Select(x => x.PeticionDeOferta.RevisionTecnica)
+                .Distinct()
+                .ToList();
+
+            if (revisionesTecnicas?.Count > 0)
+            {
+                foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
+                {
+                    revisionTecnica.Finalizada = false;
+                }
+            }
+
             repositorio.GuardarCambios();
         }
 
