@@ -1083,6 +1083,7 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
+    <Content Include="Template\NotificacionOrdenesDeCargaFason.html" />
     <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
     <Content Include="Template\NuevaConsultaInterna.html" />
     <Content Include="Template\ReporteAltaES.html" />
