@@ -337,8 +337,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.lista != undefined) {
             for (let index = 0; index < this.lista.length; index++) {
                 if (this.lista[index].PlazoDeEntrega != null) {
-                    var milliseconds = parseInt(this.lista[index].PlazoDeEntrega.substring(6));
-                    var date = new Date(milliseconds);
+                    let date = new Date(this.lista[index].PlazoDeEntrega);
                     this.lista[index].PlazoDeEntrega = date
                 }
             }
