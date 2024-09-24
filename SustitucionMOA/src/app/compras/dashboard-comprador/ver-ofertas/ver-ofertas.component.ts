@@ -162,7 +162,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.blockUI.start('Cargando...');
             this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
                 (result) => {
-                    let peticionDto = this.manejarErroresApiResponse(result);
+                    let peticionDto: PeticionDeOfertaDto = this.manejarErroresApiResponse(result);
                     if (peticionDto) {
                         this.tablaOfertas = peticionDto;
                         if (peticionDto.NrosSolp && peticionDto.NrosSolp.length > 1) {
@@ -202,7 +202,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
                     this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
                     this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;   
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
                     this.setTextoCondicionEspecial();
                     this.blockUI.stop();
                 }
@@ -741,24 +741,24 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 
-    verificarCondicionEspecial(){
+    verificarCondicionEspecial(): boolean {
         return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
     }
 
-    setTextoCondicionEspecial() {
+    setTextoCondicionEspecial(): void {
         if (this.verificarCondicionEspecial()) {
-            if(!this.adjudicacion.TextoDeCabecera){
+            if (!this.adjudicacion.TextoDeCabecera) {
                 this.adjudicacion.TextoDeCabecera = "";
             }
 
-            if(this.adjudicacion.TextoDeCabecera != undefined && 
-                this.adjudicacion.TextoDeCabecera != "" && 
-                this.modalTexto.adjudicacion.TextoDeCabecera != 
-                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp){
-                    this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
-                } else {
-                    this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
-                }
+            if (this.adjudicacion.TextoDeCabecera != undefined &&
+                this.adjudicacion.TextoDeCabecera != "" &&
+                this.modalTexto.adjudicacion.TextoDeCabecera !=
+                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp) {
+                this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+            } else {
+                this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+            }
         }
     }
 
@@ -862,9 +862,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
     posicionesSinVigencia = [];
     validarFechaVigenciaRegistroInfo(usuario) {
-        const listaAvalidar=this.lista
+        const listaAvalidar = this.lista
             .filter(x => x.EsMaterialCatalogado);
-        if(!listaAvalidar.length){
+        if (!listaAvalidar.length) {
             this.mostrarModalRegionSap(usuario)
             return
         }
