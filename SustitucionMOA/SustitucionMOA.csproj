@@ -882,7 +882,6 @@
     <Content Include="Documentacion\Formulario alta Prov Granos MOA vendedor Directo - Alta.doc" />
     <Content Include="Documentacion\Pesificados carga masiva.docx" />
     <Content Include="angular.json" />
-    <Content Include="Documentacion\Código de Conducta para Proveedores MOA.pdf" />
     <Content Include="Documentacion\Instructivo - Pago de Tasa Municipal con Mercado Pago.pdf" />
     <Content Include="officetohtml\files\demo.docx" />
     <Content Include="officetohtml\files\demo.pdf" />
@@ -1005,7 +1004,6 @@
     <Content Include="officetohtml\layout\styles\fonts\fontawesome-webfont.woff2" />
     <Content Include="officetohtml\layout\styles\fonts\FontAwesome.otf" />
     <Content Include="src\app\alta-proveedores\empresa-no-granos\empresa-no-granos.component.scss" />
-    <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
     <Content Include="dist\Content\files\InformeComercial.doc" />
     <Content Include="dist\Content\fonts\fontawesome-webfont.eot" />
     <Content Include="dist\Content\fonts\fontawesome-webfont.ttf" />
@@ -1070,6 +1068,7 @@
     <Content Include="Content\fonts\Roboto-MediumItalic.ttf" />
     <Content Include="Content\fonts\Roboto-Thin.ttf" />
     <Content Include="Content\fonts\Roboto-ThinItalic.ttf" />
+    <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
