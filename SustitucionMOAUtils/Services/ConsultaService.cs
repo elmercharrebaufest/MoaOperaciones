@@ -27,7 +27,6 @@ using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
-using DocumentFormat.OpenXml.Spreadsheet;
 using System.Data.Entity;
 
 namespace SustitucionMOAUtils.Services
@@ -596,7 +595,7 @@ namespace SustitucionMOAUtils.Services
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
                     Rubro = x.Detalle.Rubro,
-                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER"?
+                    DiasReclamo = x.EstadoConsulta.Code == "CER"?
                         DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion):
                         DbFunctions.DiffDays(x.FechaCreacion, hoy)
                 },
