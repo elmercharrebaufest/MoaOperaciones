@@ -209,7 +209,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServiciosProveedores");
-        this.filtroFechaComponent.setPeriodoInitial('2');
+        this.filtroFechaComponent.setPeriodoInitial('3');
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }

@@ -227,7 +227,7 @@ namespace SustitucionMOAUtils.Services.Email
                 List<string> dest = new List<string>();
                 dest.Add(destinatario);
 
-                string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} ";
+                string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} - {prov.RazonSocial} - {apList[0].Texto_breve_servicio}";
 
                 try
                 {
