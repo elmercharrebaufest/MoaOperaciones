@@ -172,46 +172,7 @@ export class OrdenesDeCargaFasonAltaComponent
         );
     }
 
-    //Validaciones
     validar() {
-        if (this.ordenDeCargaFason.NombreChofer == undefined || this.ordenDeCargaFason.NombreChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
-            return false;
-        }
-        /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (
-            this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11
-            || this.mensajesOrdenDeCargaFason.CUILChofer
-        ) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == undefined || this.ordenDeCargaFason.PatenteAcoplado.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
-            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.CUITTransporte == undefined || this.ordenDeCargaFason.CUITTransporte.toString().trim().length != 11
-            || this.mensajesOrdenDeCargaFason.CUITTransporte
-        ) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
-            return false;
-        }
         if (this.esAdmin && !this.clienteSeleccionado) {
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
@@ -221,12 +182,48 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
+        if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.PatenteAcoplado == undefined || this.ordenDeCargaFason.PatenteAcoplado.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
+            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.NombreChofer == undefined || this.ordenDeCargaFason.NombreChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUILChofer) || this.mensajesOrdenDeCargaFason.CUILChofer) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITTransporte) || this.mensajesOrdenDeCargaFason.CUITTransporte) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
+            return false;
+        }
         if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
             this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
             return false;
         }
         if (this.ordenDeCargaFason.CUITIntermediarioFlete && this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete) {
             this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
+            return false;
+        }
+        if (this.ordenDeCargaFason.CUITIntermediarioFlete && !this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITIntermediarioFlete)) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT Intermediario flete válido.");
             return false;
         }
         if (this.validaCPEDG) {
@@ -256,7 +253,6 @@ export class OrdenesDeCargaFasonAltaComponent
                 return false;
             }
         }
-
         return true;
     }
 
@@ -599,7 +595,7 @@ export class OrdenesDeCargaFasonAltaComponent
             } else if (result.info != undefined) {
                 this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
             } else {
-                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la CUIT: ${cuit}`;
             }
 
         })
@@ -1211,11 +1207,16 @@ export class OrdenesDeCargaFasonAltaComponent
             .subscribe(res => {
                 const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
                 if (notificarExistencia) {
-                    this.floatMsgService.setInfoMsg("El camión ya fué autorizado por otro cliente.");
+                    this.floatMsgService.setInfoMsg("El camión ya fue autorizado por otro cliente.");
                 }
             });
     }
+
     puedeValidarExistenciaPatentes(): boolean {
         return this.patenteChasisValido && !!this.ordenDeCargaFason.CUITCliente
+    }
+
+    esFormatoCuilCuitValido(cuit: string): boolean {
+        return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
     }
 }
