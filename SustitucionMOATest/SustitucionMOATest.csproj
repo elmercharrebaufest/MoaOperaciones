@@ -123,6 +123,7 @@
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJobTests.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJobTest.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJobTests.cs" />
+    <Compile Include="Jobs\NotificacionErroresJobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorio\RepositorioOrdenResiduosTest.cs" />
     <Compile Include="Services\AplicacionCartaPorteTest.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />
     <Compile Include="Services\FacturaAnticipadaServiceTest.cs" />
+    <Compile Include="Services\LogTableServiceTests.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
     <Compile Include="WS\AzureAD\AzureADConsumerTest.cs" />
