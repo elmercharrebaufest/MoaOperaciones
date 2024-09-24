@@ -4,6 +4,7 @@ using NUnit.Framework;
 using SustitucionMOA.Jobs;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
@@ -39,6 +40,7 @@ namespace SustitucionMOATests.Jobs
 
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Configuracion, bool>>>(), It.IsAny<Expression<Func<Configuracion, string>>>()))
                 .Returns("5");
+            httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
         }
 
@@ -51,7 +53,7 @@ namespace SustitucionMOATests.Jobs
             job.Execute();
 
             // Assert
-            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<AlternateView>(),null,null,null,null,null), Times.Never);
+            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<AlternateView>(), null, null, null, null, null), Times.Never);
         }
 
         [Test]
@@ -77,7 +79,10 @@ namespace SustitucionMOATests.Jobs
             job.Execute();
 
             // Assert
-            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<string>>(), It.IsAny<AlternateView>(), null, null, null, null, null), Times.Once);
+            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<List<string>>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<List<string>>(), It.IsAny<AlternateView>(), It.IsAny<byte[]>(), It.IsAny<string>(), It.IsAny<string>(),
+                It.IsAny<List<string>>(), It.IsAny<Dictionary<string, byte[]>>()),
+                Times.Once);
         }
     }
 }
