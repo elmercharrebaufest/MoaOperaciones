@@ -1093,7 +1093,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                if (posNueva && actualizarEstadoCotizacion && solpEntity.TrabajoYaHecho == false)
+                if (posNueva && actualizarEstadoCotizacion)
                 {
                     foreach (var poUsusario in po.Usuarios)
                     {
@@ -1114,6 +1114,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
         private void ActualizarPosiciones(SolpDto solp, Solp solpEntity)
         {
             if (solp.Posiciones != null)
@@ -6996,21 +6997,28 @@ namespace SustitucionMOAUtils.Services
 
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
-            var cotizaciones = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).ToList();
-            if (cotizacion.CotizacionPosiciones != null && cotizaciones.Count > 0)
+            if (cotizacionDto == null) { throw new ArgumentNullException(nameof(cotizacionDto)); }
+            if (cotizacion == null) { throw new ArgumentNullException(nameof(cotizacion)); }
+            if (info == null) { throw new ArgumentNullException(nameof(info)); }
+
+            List<CotizacionPosicion> posicionesDb = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado).ToList();
+            if (cotizacion.CotizacionPosiciones != null && posicionesDb.Count > 0)
             {
-                foreach (var cotizacionPosicion in cotizaciones)
+                foreach (CotizacionPosicion cotizacionPosicion in posicionesDb)
                 {
-                    var cotizacionPos = cotizacionDto.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).FirstOrDefault();
+                    GuardarCotizacionPosicionDto cotizacionPos = cotizacionDto.CotizacionPosiciones
+                        .SingleOrDefault(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id);
+                    if (cotizacionPos == default) { continue; }
+
                     cotizacionPosicion.Cantidad = cotizacionPos.Cantidad;
                     cotizacionPosicion.Precio = cotizacionPos.Precio;
-                    cotizacionPosicion.FechaDeEntrega = (DateTime?)cotizacionPos.FechaDeEntrega;
+                    cotizacionPosicion.FechaDeEntrega = cotizacionPos.FechaDeEntrega;
                     cotizacionPosicion.Moneda_Id = cotizacionPos.MonedaId > 0 ? cotizacionPos.MonedaId : (int?)null;
                     cotizacionPosicion.UnidadDeMedida_Id = cotizacionPos.UnidadDeMedidaId > 0 ? cotizacionPos.UnidadDeMedidaId : (int?)null;
-                    cotizacionPosicion.Moneda = cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Where(moneda => moneda.Id == cotizacionPos.MonedaId).FirstOrDefault() : null;
-                    cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Where(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId).FirstOrDefault() : null;
+                    cotizacionPosicion.Moneda = cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Find(moneda => moneda.Id == cotizacionPos.MonedaId) : null;
+                    cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Find(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId) : null;
                     cotizacionPosicion.NoDisponible = cotizacionPos.NoDisponible;
-                    cotizacionPosicion.FechaDeVigencia = (DateTime?)cotizacionPos.FechaDeVigencia;
+                    cotizacionPosicion.FechaDeVigencia = cotizacionPos.FechaDeVigencia;
                     cotizacionPosicion.PrimerPlazoDeOferta = cotizacionPos.PrimerPlazoDeOferta;
                     cotizacionPosicion.PrimeraCantidad = cotizacionPos.PrimeraCantidad;
                     cotizacionPosicion.SegundoPlazoDeOferta = cotizacionPos.SegundoPlazoDeOferta;
@@ -7018,26 +7026,25 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.TercerPlazoDeOferta = cotizacionPos.TercerPlazoDeOferta;
                     cotizacionPosicion.TerceraCantidad = cotizacionPos.TerceraCantidad;
 
-                    if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count > 0)
+                    if (cotizacionPosicion.CotizacionSubPosiciones?.Count > 0)
                     {
-
                         foreach (var item in cotizacionPosicion.CotizacionSubPosiciones)
                         {
-                            var sub = cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == item.Id).FirstOrDefault();
+                            var sub = cotizacionDto.CotizacionSubposiciones.Find(x => x.CotizacionSubPosicionId == item.Id);
                             if (sub != null)
                             {
                                 item.Cantidad = sub.Cantidad;
                                 item.Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null;
-                                item.Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null;
+                                item.Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null;
                                 item.Precio = sub.Precio;
                                 item.UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null;
-                                item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null;
+                                item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null;
                                 item.SolpSubPosicion_Id = sub.SolpSubPosicionId;
                             }
                         }
                     }
 
-                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null).Any())
+                    if (cotizacionDto.CotizacionSubposiciones.Exists(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null))
                     {
                         foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => (x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null) &&
                         x.CotizacionPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id))
@@ -7046,10 +7053,10 @@ namespace SustitucionMOAUtils.Services
                             {
                                 Cantidad = sub.Cantidad,
                                 Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null,
-                                Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null,
+                                Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null,
                                 Precio = sub.Precio,
                                 UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null,
-                                UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
+                                UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null,
                                 CotizacionPosicion_Id = sub.CotizacionPosicionId,
                                 SolpSubPosicion_Id = sub.SolpSubPosicionId
                             });
@@ -7059,16 +7066,16 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                cotizacion.CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
+                cotizacion.CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.ConvertAll(x => new CotizacionPosicion
                 {
                     Cantidad = x.Cantidad,
                     FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : (DateTime?)null,
                     Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
                     Precio = x.Precio,
                     UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
-                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
+                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == x.UnidadDeMedidaId) : null,
                     PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
-                    Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
+                    Moneda = x.MonedaId > 0 ? info.Find(moneda => moneda.Id == x.MonedaId) : null,
                     NoDisponible = x.NoDisponible,
                     PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
                     PrimeraCantidad = x.PrimeraCantidad,
@@ -7080,14 +7087,14 @@ namespace SustitucionMOAUtils.Services
                     {
                         Cantidad = sub.Cantidad,
                         Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null,
-                        Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null,
+                        Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null,
                         Precio = sub.Precio,
                         UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null,
-                        UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
+                        UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null,
                         CotizacionPosicion_Id = sub.CotizacionPosicionId,
                         SolpSubPosicion_Id = sub.SolpSubPosicionId
                     }).ToList() : null,
-                }).ToList();
+                });
             }
             CompletarCotizacionPosicionYSubposicionNueva(cotizacionDto, cotizacion, info);
         }
