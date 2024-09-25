@@ -23,7 +23,8 @@ namespace SustitucionMOATest.Services
         private UsuarioService target;
         private Mock<IRepositorioUsuario> repositorioUsuarioMock;
         private Mock<IVendedorService> vendedorServiceMock;
-        private Mock<IAzureADConsumer> azureADConsumerMock; 
+        private Mock<IAzureADConsumer> azureADConsumerMock;
+        private Mock<IDerivacionesAprobacionesService> derivacionesAprobacionesServiceMock;
 
 
         [SetUp]
@@ -32,7 +33,7 @@ namespace SustitucionMOATest.Services
             repositorioUsuarioMock = new Mock<IRepositorioUsuario>();
             vendedorServiceMock = new Mock<IVendedorService>();
             azureADConsumerMock = new Mock<IAzureADConsumer>();
-            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object);
+            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object, derivacionesAprobacionesServiceMock.Object);
         }
 
         [Test]

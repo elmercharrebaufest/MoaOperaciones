@@ -303,6 +303,20 @@ i#btn-reasignacion {
     cursor: pointer;
 }
 
+i#btn-exportar {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5; /* Esto le da un aspecto de deshabilitado */
+  }
+
 .filtro-nro-orden>input[type=text],
 :host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text] {
     border-radius: 4px;

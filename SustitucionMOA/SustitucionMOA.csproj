@@ -28,7 +28,8 @@
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <TypeScriptCompileBlocked>true</TypeScriptCompileBlocked>
-    <Use64BitIISExpress>false</Use64BitIISExpress>
+    <Use64BitIISExpress>
+    </Use64BitIISExpress>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -455,6 +456,7 @@
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
     <Content Include="Template\EnvioCamposSustentablesUcropit.html" />
+    <Content Include="Template\NotificacionEsPendientesDeAprobacion.html" />
     <Content Include="Template\NotificacionOrdenesDeCarga.html" />
     <Content Include="src\app\aduana\camara\consolidacion\camara.consolidacion.component.html" />
     <Content Include="src\app\aduana\camara\muelle\camara.muelle.component.html" />
@@ -1185,8 +1187,10 @@
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
+    <Compile Include="Jobs\DerivacionesAutomaticasJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
     <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
+    <Compile Include="Jobs\NotificarAprobacionesPendientesJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
     <Compile Include="Jobs\VerificarOrdenesFacturasCompensadasJob.cs" />
     <Compile Include="Jobs\VerificarTransporteOrdenesDeCargaFasonJob.cs" />
@@ -1653,6 +1657,7 @@
     <Folder Include="Views\Facturado\" />
     <Folder Include="Views\Localidad\" />
     <Folder Include="Views\LogPesificacion\" />
+    <Folder Include="Views\NotificacionDiariaAprobacionesPendientes\" />
     <Folder Include="Views\OrdenDeCarga\" />
     <Folder Include="Views\ReporteContrato\" />
     <Folder Include="Views\ReporteES\" />

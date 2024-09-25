@@ -91,11 +91,14 @@ namespace SustitucionMOAWS.WSConsumers
 
                     EntradaServicioCreateRespuestaDto returnInfo = ParseReturnInfo(createMessage);
 
+                    SustitucionMOAWS.Logger.Log.Info("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + returnInfo);
+
                     return returnInfo;
                 }
             }
             catch (Exception e)
             {
+                SustitucionMOAWS.Logger.Log.Error("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + e.Message);
                 throw e;
             }
         }   

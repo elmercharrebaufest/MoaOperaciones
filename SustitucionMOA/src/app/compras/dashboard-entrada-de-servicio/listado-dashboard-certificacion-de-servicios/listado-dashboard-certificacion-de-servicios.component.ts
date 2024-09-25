@@ -214,6 +214,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         descriptions: this.formBuilder.array([])
     });
 
+    periodo: string | undefined | null;
+
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
 
@@ -235,7 +237,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.filtroFechaComponent.setPeriodoInitial('2');
+
+        if (sessionStorage.getItem('periodo-certificaciones') != undefined) {
+            this.periodo = sessionStorage.getItem('periodo-certificaciones');
+        }else{
+            this.periodo = '1';
+        }
+
+        this.filtroFechaComponent.setPeriodoInitial(this.periodo);
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }

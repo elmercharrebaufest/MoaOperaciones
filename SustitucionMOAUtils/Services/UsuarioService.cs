@@ -24,12 +24,14 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorioUsuario repositorio;
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
+        protected readonly IDerivacionesAprobacionesService derivacionesAprobacionesService;
 
-        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
+        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer, IDerivacionesAprobacionesService derivacionesAprobacionesService)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
             this.azureADConsumer = azureADConsumer;
+            this.derivacionesAprobacionesService = derivacionesAprobacionesService;
         }
 
         public void SeccionVisitada(string mailUsuario, string seccion)
@@ -231,10 +233,11 @@ namespace SustitucionMOAUtils.Services
                 //}
 
             }
-            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            else if((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(usuario.Suplente)))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
+
                 if(periodos.Count > 0)
                 {
                     int[] periodosIds = new int[periodos.Count];
@@ -249,9 +252,10 @@ namespace SustitucionMOAUtils.Services
                         UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
+
+                    derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, suplente);
                     
                 }
-
             }
 
             foreach (int idRol in idRoles)

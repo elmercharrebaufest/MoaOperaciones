@@ -31,7 +31,7 @@ namespace SustitucionMOA
 
             var kernel = NinjectWebCommon.GetKernel();
 
-            var timerService = kernel.Get<ITimerDerivacionAutomaticaService>();
+
         }
     }
 }

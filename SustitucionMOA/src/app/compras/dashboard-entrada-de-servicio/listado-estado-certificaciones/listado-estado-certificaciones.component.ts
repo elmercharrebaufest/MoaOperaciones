@@ -664,6 +664,15 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   setColumsByUserProfile(entradasDeServicio: any, user: any): string {
     const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
     if (pendienteAprobacion.length > 0) {
+
+      const sf = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Fiscal, user) && this.equalsIgnoreCase(pa.Suplente, user));
+      if (sf.length > 0) {
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
+        });
+        return "SF";
+      }
+
       const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
       if (fai.length > 0) {
         this.defaultTablesConfig[0].columns.forEach((col: any) => {
@@ -1000,6 +1009,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                     msj.detail = '';
                 }
                 this.messageService.add(msj);
+                this.refreshDataTable();
                 this.blockUI.stop();
                 this.clearMessage();
             }, error => {

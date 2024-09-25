@@ -36,6 +36,7 @@ using SustitucionMOAUtils.Email;
 using System.Globalization;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Windows.Media.Animation;
+using Microsoft.Azure.Storage.RetryPolicies;
 
 namespace SustitucionMOAUtils.Services
 
@@ -682,6 +683,7 @@ namespace SustitucionMOAUtils.Services
         public async Task<EntradaServicioCreateRespuestaDto> CrearEntradaServicio(EntradaServicioCreateParamsDto posicion, 
             string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber,  string proveedor = null)
         {
+            SustitucionMOAWS.Logger.Log.Info("EntradaServicioService.CrearEntradaServicio");
 
             // 3 - Si alguna de las validaciones es correcta, alta automatica.
             EntradaServicioCreateRespuestaDto result = await new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicioAsync(posicion);
@@ -802,7 +804,8 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
-            reporte = NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, reporte[0].Moneda);
+            
+            reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
             
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
@@ -814,13 +817,13 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
         /// </summary>
         /// <param name="ListaAp"></param>
-        public void NotificarReasignaciones(List<string> ListaAp)
+        public async Task NotificarReasignaciones(List<string> ListaAp, RepositorioEF Repositorio)
         {
             //Todos los registros con mismo NRO_ES_LOCAL
             foreach(string esLocal in ListaAp)
             {
                 //Todos los registros con mismo NRO_ES_LOCAL
-                List<Aprobaciones> completeAp = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
+                List<Aprobaciones> completeAp = Repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
                 //Buscar Proveedor
                 OrderParamsDto orderParams = new OrderParamsDto();
                 orderParams.OrdenCompraId = completeAp[0].NRO_OC;
@@ -829,7 +832,7 @@ namespace SustitucionMOAUtils.Services
 
                 //MMSN-1030: Fix
                 string aprobador = completeAp[0].Aprobador_CDS;
-                var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                var user = Repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
                 int userId = 0;
                 if (user != null)
                 {
@@ -837,11 +840,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 List<ReporteDto> reporte = new List<ReporteDto>();
 
-                _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                await NotifyCreation(completeAp, prov, userId, aprobador, reporte);
             }
             
         }
-        private List<ReporteDto> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
+        private async Task<List<ReporteDto>> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";
             List<ReporteDto> nuevoReporte = new List<ReporteDto>();
@@ -854,7 +857,8 @@ namespace SustitucionMOAUtils.Services
                 decimal cantidadACertificar = Convert.ToDecimal(ap.Cantidad_a_certificar, CultureInfo.InvariantCulture);
                 decimal porcentajeACertificar = Convert.ToDecimal(ap.Porcentaje_a_certificar, CultureInfo.InvariantCulture);
 
-                decimal totalACertificar = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == ap.NRO_OC && x.NRO_POS == ap.NRO_POS && x.Nro_linea == ap.Nro_linea && x.Estado_certificacion == pendienteAprobacion)
+                decimal totalACertificar = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == ap.NRO_OC && x.NRO_POS == ap.NRO_POS 
+                     && x.Nro_linea == ap.Nro_linea && x.Estado_certificacion == pendienteAprobacion)
                     .Select(a => new { Cantidad = Convert.ToDecimal(a.Cantidad_a_certificar, CultureInfo.InvariantCulture) })
                     .Sum(a => a.Cantidad);
 
@@ -1169,6 +1173,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
+                SustitucionMOAWS.Logger.Log.Error("EntradaServicioService.GuardarDatosES: " + e.Message);
                 throw e;
             }
 
@@ -1419,26 +1424,27 @@ namespace SustitucionMOAUtils.Services
                 {
                     int ESNumber = GetESNumber(result.Message);
                     emailDetailCertificateDto.NumeroCertificacion = ESNumber.ToString();
-                    foreach (var ES in EntradasDeServicioTemp)
+                    try
                     {
-                        if (ES.Estado_certificacion == "Pendiente Aprobación")
+                        foreach (var ES in EntradasDeServicioTemp)
                         {
-                            try
+                            if (ES.Estado_certificacion == "Pendiente Aprobación")
                             {
-                                ES.NRO_ES_SAP = ESNumber;
-                                ES.Estado_certificacion = "Aprobada";
-                                ES.Fecha_aprobacion = DateTime.Today;
-                                result.NroESSap = ESNumber.ToString();
-                                repositorio.GuardarCambios();
-
-                                _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
-
-                            }
-                            catch (Exception e)
-                            {
-                                Logger.Log.Info(e.Message);
+                            
+                                    ES.NRO_ES_SAP = ESNumber;
+                                    ES.Estado_certificacion = "Aprobada";
+                                    ES.Fecha_aprobacion = DateTime.Today;
+                                    result.NroESSap = ESNumber.ToString();
+                                    repositorio.GuardarCambios();
+                            
                             }
                         }
+                    
+                        _ = NotifyApproval(emailDetailCertificateDto, nro_es_local);
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.Log.Info(e.Message);
                     }
                 }
             }
@@ -1506,7 +1512,7 @@ namespace SustitucionMOAUtils.Services
             //MMSN-1158
             try
             {
-                _ = NotifyRejection(rechazo);
+                Task.Run(() => NotifyRejection(rechazo)).Wait();
             }
             catch(Exception e)
             {
