@@ -1152,9 +1152,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     asignarRemitenteComercial() {
         this.ordenDeCargaFason.RemitenteComercial = this.usaRemitenteComercial;
-        if (!this.ordenDeCargaFason.RemitenteComercial) {
-            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
-        } else {
+        if (this.ordenDeCargaFason.RemitenteComercial) {
             this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
         }
     }
