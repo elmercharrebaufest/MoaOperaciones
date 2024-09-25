@@ -157,7 +157,6 @@ export class DashboardComponent extends ListBaseComponent {
     displayLegajo: boolean = false;
     legajo: LegajoDto[];
     legajoIdModal: number;
-    legajoPuedeVerPrecios: boolean;
     esProveedor: boolean = false;
 
     cards = [
@@ -1015,7 +1014,6 @@ export class DashboardComponent extends ListBaseComponent {
                     if (legajoRes) {
                         this.legajo = legajoRes.LegajoFilas;
                         this.legajoIdModal = peticionDeOfertaId;
-                        this.legajoPuedeVerPrecios = legajoRes.PuedeVerPrecios;
                         this.displayLegajo = true;
                     }
                 },
