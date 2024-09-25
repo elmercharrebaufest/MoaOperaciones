@@ -7007,7 +7007,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     GuardarCotizacionPosicionDto cotizacionPos = cotizacionDto.CotizacionPosiciones
                         .SingleOrDefault(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id);
-                    if (cotizacionPos == default) { throw new InvalidOperationException($"No se encontró la posición (id:{cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id}) en el dto"); }
+                    if (cotizacionPos == default) { continue; }
 
                     cotizacionPosicion.Cantidad = cotizacionPos.Cantidad;
                     cotizacionPosicion.Precio = cotizacionPos.Precio;
