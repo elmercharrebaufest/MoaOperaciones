@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using Microsoft.Owin.Security;
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -12,6 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static System.Net.WebRequestMethods;
 
 namespace SustitucionMOA.Controllers
 {
@@ -32,6 +34,57 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Index(string nroESLocal)
         {
+
+            try
+            {
+                //if (!Request.IsAuthenticated)
+                //{
+                //    throw new ValidationCustomException("Su sesión ha expirado. Por favor, ingrese nuevamente.");
+                //}
+
+
+                if (!Request.IsAuthenticated)
+                {
+                    var returnUrl = HttpContext.Request.UrlReferrer;
+                    var returnUrl2 = HttpContext.Request.Url;
+                   
+
+
+                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = returnUrl, ExpiresUtc = DateTime.Now.AddMinutes(1) });
+
+                    return null;
+                    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
+                }
+
+                //return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new
+                {
+                    info = e.Message
+                }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+
+
+
+
+
+
             try
             {
                 string nulled = "Anulada";
