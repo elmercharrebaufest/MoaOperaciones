@@ -19,6 +19,7 @@ using System.Linq;
 using System.Collections;
 using System.Data.Entity;
 using System.Linq.Expressions;
+using SustitucionMOAModel.Util;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -266,12 +267,13 @@ namespace SustitucionMOAUtils.Services
                     emailFasonService.EnviarMailIntentoEdicionActiva(orden, request);
                     throw new InfoCustomException("La orden no se puede editar por estar el camión en planta");
                 }
+                var listaValoresDiferentes = ObtenerListaValoresDiferentes(orden, request);
+
                 orden.Cantidad = request.Cantidad;
                 orden.Cliente_Id = request.Cliente;
                 orden.CorredorId = request.CorredorId;
                 orden.CUILChofer = request.CUILChofer;
                 orden.CUITTransporte = request.CUITTransporte;
-                //orden.FechaCreacion = DateTime.Now;
                 orden.NombreChofer = request.NombreChofer;
                 orden.ApellidoChofer = request.ApellidoChofer;
                 orden.Observacion = request.Observacion;
@@ -290,10 +292,13 @@ namespace SustitucionMOAUtils.Services
                 orden.DomicilioDescr = request.DomicilioDescr;
                 orden.RazonSocialDestino = request.RazonSocialDestino;
                 orden.Escalable = request.Escalable;
+
                 ActualizarOrdenDeCarga(orden);
-
                 NotificacionCamionAutorizadoMultiplesOrdenes(orden);
-
+                if (!esAdmin)
+                {
+                    emailFasonService.EnviarMailNotificacionEdicion(orden, listaValoresDiferentes);
+                }
                 repositorio.GuardarCambios();
 
                 return new Resultado { IdEntidad = request.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
@@ -731,6 +736,46 @@ namespace SustitucionMOAUtils.Services
                     emailFasonService.EnviarMailCamionAutorizadoEnVariasOrdenes(ordenDeCarga.PatenteChasis, cuits);
                 }
             }
+        }
+        private List<Variance> ObtenerListaValoresDiferentes(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
+        {
+            var ordenEditada = new OrdenDeCargaFason {
+                Cantidad = request.Cantidad,
+                Cliente_Id = request.Cliente,
+                CorredorId = request.CorredorId,
+                CUILChofer = request.CUILChofer,
+                CUITTransporte = request.CUITTransporte,
+                NombreChofer = request.NombreChofer,
+                ApellidoChofer = request.ApellidoChofer,
+                Observacion = request.Observacion,
+                PatenteAcoplado = request.PatenteAcoplado,
+                PatenteChasis = request.PatenteChasis,
+                Producto_Id = request.Producto_Id,
+                RazonSocialTransporte = request.RazonSocialTransporte,
+                FleteMOA = request.FleteMOA,
+                CUITIntermediarioFlete = request.CUITIntermediarioFlete,
+                RazonSocialIntermediarioFlete = request.RazonSocialIntermediarioFlete,
+                ClienteComoRemitenteComercial = !string.IsNullOrEmpty(request.CUITDestino) &&
+                    request.CUITDestino != request.CUITCliente.ToString(),
+                PlantaCodigo = request.PlantaCodigo,
+                DomicilioTipo = request.DomicilioTipo,
+                DomicilioOrden = request.DomicilioOrden,
+                DomicilioDescr = request.DomicilioDescr,
+                RazonSocialDestino = request.RazonSocialDestino,
+                Escalable = request.Escalable,
+                //Campos Con valores que no cambian
+                Producto = orden.Producto,
+                Cliente = orden.Cliente,
+                Corredor = orden.Corredor,
+                Estado = orden.Estado,
+                Id = orden.Id,
+                LocalidadId = orden.LocalidadId,
+                DestinoMercaderia = orden.DestinoMercaderia,
+                FechaCreacion = orden.FechaCreacion,
+                LocalidadDescripcion = orden.LocalidadDescripcion,
+                KmARecorrer = orden.KmARecorrer
+            };
+            return orden.Compare(ordenEditada);
         }
     }
 }

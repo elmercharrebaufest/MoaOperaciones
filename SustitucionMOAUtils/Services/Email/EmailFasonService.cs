@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using System.Collections.Generic;
 using System;
 using System.Text;
+using SustitucionMOAModel.Util;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -126,6 +127,22 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        public void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes)
+        {
+            var descripcion = $"Se informa que el día {DateTime.Now} "+
+                $"se han realizado las siguientes modificaciones para la orden fason {orden.Id}";
+            var tablaCambios = CrearTablaCambios(listaValoresDiferentes);
+            var cuerpo = CrearCuerpoMail(descripcion, tablaCambios);
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionComerciales, DireccionMesaVentaFas }),
+                Asunto = $"Molinos Agro - Edición en su orden fason n°: {orden.Id}, {orden.Cliente.RazonSocial}",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
         private string CrearCuerpoMail(string texto, string contenido)
         {
             string cuerpo = "<!DOCTYPE html>" +
@@ -147,7 +164,7 @@ namespace SustitucionMOAUtils.Services.Email
         private string CrearTablaDetalleOrden(OrdenDeCargaFason orden)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
-            return InicioTabla() + CrearFilaTablaDetalleOrden(
+            return InicioTablaDetalle() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
@@ -161,7 +178,7 @@ namespace SustitucionMOAUtils.Services.Email
         private string CrearTablaDetalleOrden(List<OrdenDeCargaFason> ordenes)
         {
             var tablaBuilder = new StringBuilder();
-            tablaBuilder.Append(InicioTabla());
+            tablaBuilder.Append(InicioTablaDetalle());
             foreach (var orden in ordenes)
             {
                 var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
@@ -182,7 +199,7 @@ namespace SustitucionMOAUtils.Services.Email
         private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
-            return InicioTabla() + CrearFilaTablaDetalleOrden(
+            return InicioTablaDetalle() + CrearFilaTablaDetalleOrden(
                 ordenId: orden.Id,
                 cliente: $"{orden.Cliente.CUIT} - {orden.Cliente.RazonSocial}",
                 corredor: $"{detalleCorredor}",
@@ -209,7 +226,7 @@ namespace SustitucionMOAUtils.Services.Email
                 $"<td>{fecha}</td>" +
                 "</tr>";
         }
-        private string InicioTabla()
+        private string InicioTablaDetalle()
         {
             return "<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
               "<caption >Detalles</caption>" +
@@ -232,6 +249,33 @@ namespace SustitucionMOAUtils.Services.Email
 
             return "</tbody>" +
             "</table>";
+        }
+        private string CrearTablaCambios(List<Variance> listaValoresDiferentes)
+        {
+            var tablaBuilder = new StringBuilder();
+            var ahora = DateTime.Now;
+            tablaBuilder.Append("<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
+              "<caption >Cambios</caption>" +
+              "<thead style = \"background-color: #adacac;\">" +
+              "<tr>" +
+              "<td scope=\"col\">Nombre de la Columna</td>" +
+              "<td scope=\"col\">Antes del cambio</td>" +
+              "<td scope=\"col\">Despues del cambio</td>" +
+              "<td scope=\"col\">Fecha</td>" +
+              "</tr>" +
+              "</thead>" +
+              "<tbody>");
+            foreach (var diferencia in listaValoresDiferentes)
+            {
+                tablaBuilder.Append("<tr>" +
+                $"<td>{diferencia.PropertyName}</td>" +
+                $"<td>{diferencia.valA}</td>" +
+                $"<td>{diferencia.valB}</td>" +
+                $"<td>{ahora}</td>" +
+                "</tr>");
+            }
+            tablaBuilder.Append(FinalTabla());
+            return tablaBuilder.ToString();
         }
     }
 }
