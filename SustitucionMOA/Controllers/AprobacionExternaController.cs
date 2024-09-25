@@ -43,18 +43,18 @@ namespace SustitucionMOA.Controllers
                 //}
 
 
-                if (!Request.IsAuthenticated)
-                {
-                    var returnUrl = HttpContext.Request.UrlReferrer;
-                    var returnUrl2 = HttpContext.Request.Url;
+                //if (!Request.IsAuthenticated)
+                //{
+                //    var returnUrl = HttpContext.Request.UrlReferrer;
+                //    var returnUrl2 = HttpContext.Request.Url;
                    
                     
 
-                    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = returnUrl.ToString(), ExpiresUtc = DateTime.Now.AddMinutes(1) });
+                //    HttpContext.GetOwinContext().Authentication.Challenge(new AuthenticationProperties { RedirectUri = returnUrl.ToString(), ExpiresUtc = DateTime.Now.AddMinutes(1) });
 
-                    return null;
-                    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
-                }
+                //    return null;
+                //    //return Json(new { tieneSesion = false }, JsonRequestBehavior.AllowGet);
+                //}
 
                 //return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);
             }
