@@ -1,5 +1,6 @@
 ﻿using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Util;
 using System.Collections.Generic;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -11,6 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
         void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes);
         void EnviarMailIntentoAnulacionActiva(OrdenDeCargaFason orden);
         void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request);
+        void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes);
         void EnviarMailTransporteNoExiste(OrdenDeCargaFason ordenDeCarga);
         void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes);
     }
