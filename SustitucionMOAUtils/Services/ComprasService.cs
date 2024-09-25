@@ -1093,7 +1093,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                if (posNueva && actualizarEstadoCotizacion && solpEntity.TrabajoYaHecho == false)
+                if (posNueva && actualizarEstadoCotizacion)
                 {
                     foreach (var poUsusario in po.Usuarios)
                     {
@@ -1114,6 +1114,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
         private void ActualizarPosiciones(SolpDto solp, Solp solpEntity)
         {
             if (solp.Posiciones != null)
