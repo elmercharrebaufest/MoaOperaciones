@@ -292,9 +292,6 @@ namespace SustitucionMOAUtils.Services
                 orden.Escalable = request.Escalable;
                 ActualizarOrdenDeCarga(orden);
 
-
-                if (!esAdmin && ValidarOrdenActivaScato(orden.Id))
-                    throw new ValidationCustomException("La orden está activa en Scato, imposible editar.");
                 NotificacionCamionAutorizadoMultiplesOrdenes(orden);
 
                 repositorio.GuardarCambios();
