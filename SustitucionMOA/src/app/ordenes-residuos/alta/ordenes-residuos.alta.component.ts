@@ -408,6 +408,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 return false;
             }
         }
+        if (!this.ordenResiduos.Id && !this.ordenResiduos.CantidadDeViajes) {
+            this.mensajeComponent.setInfoMsg("Ingrese la cantidad de viajes.");
+            return false;
+        }
         return true;
     }
 
@@ -434,7 +438,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                     let resData = this.manejarErroresApiResponse(resp);
                     if (resData) {
                         this.mensajeSuccess = resData.Mensaje;
-                        this.ordenResiduos.Id = resData.IdOrden;
                         document.getElementById("openModalNotificacion").click();
                     }
                 },

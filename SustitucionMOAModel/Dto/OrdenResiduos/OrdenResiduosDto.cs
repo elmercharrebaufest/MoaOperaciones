@@ -41,6 +41,8 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
 
         public string FechaEgreso { get; set; }
 
+        public int? CantidadDeViajes { get; set; }
+
         public Entities.OrdenResiduos ToEntity()
         {
             return ToEntity(new Entities.OrdenResiduos());

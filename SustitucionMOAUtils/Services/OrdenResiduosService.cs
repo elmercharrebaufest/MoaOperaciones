@@ -159,12 +159,17 @@ namespace SustitucionMOAUtils.Services
             };
             var producto = repositorio.Obtener<Material>(ordenDto.Producto.MaterialId);
             var localidad = ObtenerLocalidadDeLaOrden(ordenDto, producto);
-            var ordenEntity = ordenDto.ToEntity();
-            ordenEntity.LocalidadScatoId = localidad.Id;
-            ordenEntity.LocalidadScatoDescripcion = localidad.LocalidadDescripcion;
-            ordenEntity.KmsARecorrer = localidad.KmARecorrer;
-            ordenEntity.FechaCreacion = DateTime.Now;
-            repositorio.Agregar(ordenEntity);
+            for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
+            {
+                var ordenEntity = ordenDto.ToEntity();
+                ordenEntity.DomicilioDescr = ordenEntity.DomicilioDescr.Substring(ordenEntity.DomicilioDescr.IndexOf(" ") + 1);
+                ordenEntity.LocalidadScatoId = localidad.Id;
+                ordenEntity.LocalidadScatoDescripcion = localidad.LocalidadDescripcion;
+                ordenEntity.KmsARecorrer = localidad.KmARecorrer;
+                ordenEntity.FechaCreacion = DateTime.Now;
+                repositorio.Agregar(ordenEntity);
+            }
+
             repositorio.GuardarCambios();
 
             if (!existeTransporte)
@@ -172,7 +177,7 @@ namespace SustitucionMOAUtils.Services
                 emailResiduosService.EnviarMailTransporteNoExiste(ordenDto.RazonSocialTransporte, ordenDto.CUITTransporte);
             }
 
-            return new GrabarOrdenResponse { IdOrden = ordenEntity.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
+            return new GrabarOrdenResponse { Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
         public GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario)
@@ -364,6 +369,10 @@ namespace SustitucionMOAUtils.Services
 
         private void ValidarOrden(OrdenResiduosDto ordenDto)
         {
+            if (ordenDto.Id == 0 && (ordenDto.CantidadDeViajes is null || ordenDto.CantidadDeViajes < 1 || ordenDto.CantidadDeViajes > 3))
+            {
+                throw new InfoCustomException("Revisar campo cantidad de viajes.");
+            }
             if (!ordenDto.Producto.ValidaSisaRuca)
             {
                 ordenDto.Domicilio = null;

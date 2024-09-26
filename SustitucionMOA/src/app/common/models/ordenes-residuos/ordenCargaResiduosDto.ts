@@ -31,6 +31,8 @@ export class OrdenCargaResiduosDto {
     public FechaIngreso: string;
     public FechaEgreso: string;
 
+    public CantidadDeViajes?: number;
+
     constructor() {
         this.Cliente = new Proveedor();
         this.Producto = new Material();
