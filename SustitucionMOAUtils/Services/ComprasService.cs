@@ -2233,9 +2233,22 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
+            if (DeboMarcarRevisionesTecnicasComoNoFinalizadas(solp))
             {
-                List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
+                MarcarRevisionesTecnicasComoNoFinalizadas(solp);
+            }
+
+            repositorio.GuardarCambios();
+        }
+
+        private static bool DeboMarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
+            return solp.EnvioCircularA != EnviarCircularEnum.NoEnviar;
+        }
+
+        private static void MarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
+            List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
                     solp.Posiciones?
                     .Where(posicion => posicion.Peticiones?.Count > 0)
                     .SelectMany(posicion => posicion.Peticiones)
@@ -2244,16 +2257,13 @@ namespace SustitucionMOAUtils.Services
                     .Distinct()
                     .ToList();
 
-                if (revisionesTecnicas?.Count > 0)
+            if (revisionesTecnicas?.Count > 0)
+            {
+                foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
                 {
-                    foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
-                    {
-                        revisionTecnica.Finalizada = false;
-                    }
+                    revisionTecnica.Finalizada = false;
                 }
             }
-
-            repositorio.GuardarCambios();
         }
 
         private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
