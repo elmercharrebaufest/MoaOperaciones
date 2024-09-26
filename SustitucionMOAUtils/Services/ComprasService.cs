@@ -2233,14 +2233,29 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            if (DeboMarcarRevisionesTecnicasComoNoFinalizadas(solp))
+            {
+                MarcarRevisionesTecnicasComoNoFinalizadas(solp);
+            }
+
+            repositorio.GuardarCambios();
+        }
+
+        private static bool DeboMarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
+            return solp.EnvioCircularA != EnviarCircularEnum.NoEnviar;
+        }
+
+        private static void MarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
             List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
-                solp.Posiciones?
-                .Where(posicion => posicion.Peticiones?.Count > 0)
-                .SelectMany(posicion => posicion.Peticiones)
-                .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
-                .Select(x => x.PeticionDeOferta.RevisionTecnica)
-                .Distinct()
-                .ToList();
+                    solp.Posiciones?
+                    .Where(posicion => posicion.Peticiones?.Count > 0)
+                    .SelectMany(posicion => posicion.Peticiones)
+                    .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
+                    .Select(x => x.PeticionDeOferta.RevisionTecnica)
+                    .Distinct()
+                    .ToList();
 
             if (revisionesTecnicas?.Count > 0)
             {
@@ -2249,8 +2264,6 @@ namespace SustitucionMOAUtils.Services
                     revisionTecnica.Finalizada = false;
                 }
             }
-
-            repositorio.GuardarCambios();
         }
 
         private void EnviarMailSolpFinalizadaConUrgencia(Solp solp)
