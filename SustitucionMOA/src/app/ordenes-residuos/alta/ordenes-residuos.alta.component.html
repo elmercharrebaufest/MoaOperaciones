@@ -3,7 +3,7 @@
     <section class="container-fluid clearfix">
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10">
-                <strong *ngIf="ordenResiduos.Id == 0">Nueva orden de carga</strong>
+                <strong *ngIf="!ordenResiduos.Id">Nueva orden de carga</strong>
                 <strong *ngIf="ordenResiduos.Id > 0">Editar orden de carga #{{ordenResiduos.Id}}</strong>
             </div>
         </div>
@@ -199,6 +199,14 @@
                                     <div *ngIf="procesandoCampo.CUITTransporte">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12" *ngIf="!ordenResiduos.Id">
+                                <div class="formulario-label">
+                                    Cantidad de viajes:
+                                </div>
+                                <div class="styled-select">
+                                    <input type="number" max="3" [(ngModel)]="ordenResiduos.CantidadDeViajes">
                                 </div>
                             </div>
                         </div>
