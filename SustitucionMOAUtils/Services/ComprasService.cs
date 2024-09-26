@@ -2233,20 +2233,23 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
-                solp.Posiciones?
-                .Where(posicion => posicion.Peticiones?.Count > 0)
-                .SelectMany(posicion => posicion.Peticiones)
-                .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
-                .Select(x => x.PeticionDeOferta.RevisionTecnica)
-                .Distinct()
-                .ToList();
-
-            if (revisionesTecnicas?.Count > 0)
+            if (solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
             {
-                foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
+                List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
+                    solp.Posiciones?
+                    .Where(posicion => posicion.Peticiones?.Count > 0)
+                    .SelectMany(posicion => posicion.Peticiones)
+                    .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
+                    .Select(x => x.PeticionDeOferta.RevisionTecnica)
+                    .Distinct()
+                    .ToList();
+
+                if (revisionesTecnicas?.Count > 0)
                 {
-                    revisionTecnica.Finalizada = false;
+                    foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
+                    {
+                        revisionTecnica.Finalizada = false;
+                    }
                 }
             }
 
