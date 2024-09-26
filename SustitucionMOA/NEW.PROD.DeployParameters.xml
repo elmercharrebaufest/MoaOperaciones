@@ -65,6 +65,7 @@
 	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar,auditoria.interna@molinosagro.com.ar" />
 	<setParameter name="EmailToReporteLogins Config" value="Santiago.Barbarotta@molinosagro.com.ar, mariasoledad.romero@molinosagro.com.ar, gonzalo.delatorre@molinosagro.com.ar, plataformacompras@baufest.com" />
   <setParameter name="EmailRegistroInfo Config" value="plataformacompras@baufest.com, ignacio.gonzalez@molinosagro.com.ar" />
+  <setParameter name="EmailRerporteSolpTo Config" value="moaoperaciones@baufest.com,fernando.poncedeleon@molinosagro.com.ar,marian.rabellato@molinosagro.com.ar" />
 
 	<setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
 	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" name="SI_MMRFC_OBTENER_CONTRATO" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+<wsdl:definitions xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:rfc="urn:sap-com:document:sap:rfc:functions" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:p1="urn:OPERACIONES" name="SI_MMRFC_OBTENER_CONTRATO" targetNamespace="urn:OPERACIONES" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
   <wsdl:documentation />
   <wsp:UsingPolicy wsdl:required="true" />
   <wsp:Policy wsu:Id="OP_SI_MMRFC_OBTENER_CONTRATO" />
@@ -57,11 +57,11 @@
               </xsd:simpleType>
             </xsd:element>
             <xsd:element minOccurs="0" name="IM_CONTRACT">
-              <xsd:simpleType>
-                <xsd:restriction base="xsd:string">
-                  <xsd:maxLength value="10" />
-                </xsd:restriction>
-              </xsd:simpleType>
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" type="rfc:ZMPES7150" />
+                </xsd:sequence>
+              </xsd:complexType>
             </xsd:element>
             <xsd:element minOccurs="0" name="IM_DETAIL">
               <xsd:simpleType>
@@ -116,14 +116,58 @@
           </xsd:all>
         </xsd:complexType>
       </xsd:element>
-      <xsd:simpleType name="date">
-        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:date rfc:genericDate" />
-      </xsd:simpleType>
       <xsd:simpleType name="genericDate">
         <xsd:restriction base="xsd:string">
           <xsd:pattern value="....-..-.." />
         </xsd:restriction>
       </xsd:simpleType>
+      <xsd:simpleType name="date">
+        <xsd:union xmlns="urn:sap-com:document:sap:rfc:functions" memberTypes="xsd:date rfc:genericDate" />
+      </xsd:simpleType>
+      <xsd:complexType name="ZMPES7150">
+        <xsd:sequence>
+          <xsd:element minOccurs="0" name="SIGN">
+            <xsd:annotation>
+              <xsd:documentation>Debit/Credit Sign (+/-)</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="1" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="OPTION">
+            <xsd:annotation>
+              <xsd:documentation>Option for ranges tables</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="2" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="LOW">
+            <xsd:annotation>
+              <xsd:documentation>Vendor's account number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+          <xsd:element minOccurs="0" name="HIGH">
+            <xsd:annotation>
+              <xsd:documentation>Vendor's account number</xsd:documentation>
+            </xsd:annotation>
+            <xsd:simpleType>
+              <xsd:restriction base="xsd:string">
+                <xsd:maxLength value="10" />
+              </xsd:restriction>
+            </xsd:simpleType>
+          </xsd:element>
+        </xsd:sequence>
+      </xsd:complexType>
       <xsd:complexType name="ZMPES5890">
         <xsd:sequence>
           <xsd:element minOccurs="0" name="NUMBER">

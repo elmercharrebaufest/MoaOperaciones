@@ -702,6 +702,7 @@ namespace SustitucionMOAUtils.Services
             }
             return localidades.First();
         }
+
         private void ModificarDatosRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
             var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
@@ -719,6 +720,7 @@ namespace SustitucionMOAUtils.Services
                 request.CorredorId = corredor.Id;
             }
         }
+
         private void NotificacionCamionAutorizadoMultiplesOrdenes(OrdenDeCargaFason ordenDeCarga)
         {
 

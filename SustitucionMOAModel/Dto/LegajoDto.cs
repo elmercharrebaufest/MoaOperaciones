@@ -14,5 +14,6 @@ namespace SustitucionMOAModel.Dto
         public string FechaFormateado { get; set; }
         public bool Leido { get; set; } = true;
         public string Tipo { get; set; }
+        public int? PeticionDeOfertaUsuarioId { get; set; }
     }
 }

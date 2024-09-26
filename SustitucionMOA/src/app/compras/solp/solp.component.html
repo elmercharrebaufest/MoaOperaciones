@@ -157,3 +157,17 @@
                [(solpActual)]="solpActual"
                [(tieneAdjuntos)]="tieneAdjuntos">
 </email-compose>
+
+<p-dialog [(visible)]="displayEnvioCircular" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        Envío de circular automática
+    </p-header>
+    <br> ¿Desea enviar circulares a los proveedores?
+    <br>
+    <br>
+    <p-footer>
+        <button class="btn btn-success botonesComprasColor" (click)="salirModalCircular()">No</button>
+        <button class="btn btn-secondary botonesCompras" (click)="enviarCircularTodos()">A todos</button>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="enviarCircularVisitaRealizada()">A los que realizaron la visita</button>
+    </p-footer>
+</p-dialog>

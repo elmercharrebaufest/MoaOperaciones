@@ -52,6 +52,13 @@ namespace SustitucionMOAModel.Dto
         public int PeticionDeOferta_Id { get; set; }
     }
 
+    public class AdjudicacionMailDto
+    {
+        public List<string> Copia { get; set; }
+        public List<string> EnviarA { get; set; }
+        public string RazonSocial { get; set; }
+    }
+
     public class AdjudicacionResultDto
     {
         public int Cotizacion_Id { get; set; }

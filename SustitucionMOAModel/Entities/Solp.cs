@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -39,6 +40,8 @@ namespace SustitucionMOAModel.Entities
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
         public bool? TieneModificaciones { get; set; }
+        public int? EnvioCircularA { get; set; }
+
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }

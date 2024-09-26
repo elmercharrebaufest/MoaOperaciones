@@ -1,6 +1,5 @@
 import { Archivo } from "../common/models/archivo"
 import { AdjudicacionDto } from "./adjudicacion"
-import { LegajoDto } from "./legajoDto"
 import { PeticionDeOfertaDto } from "./peticion-de-oferta-model"
 
 export interface CotizacionDto {

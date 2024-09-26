@@ -386,7 +386,7 @@
     <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"
                 (cerrarLegajoEmitter)="cerrarLegajo()" (descargarArchivoEmitter)="descargarArchivo($event)"
                 (descargarLegajoEmitter)="descargarLegajo()" (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
-                [(legajo)]="legajo" [(esAuditor)]="esAuditor">
+                [(legajo)]="legajo" [(esAuditor)]="esAuditor" [idLegajo]="idLegajoEnModal">
     </app-legajo>
 
     <app-circular [(locale)]="es"

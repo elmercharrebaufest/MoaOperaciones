@@ -120,7 +120,7 @@ export class FiltroFechaComponent implements OnInit {
     }
 
     setPeriodoInitial(periodo: string) {
-        if (periodo == "4") {
+        if (periodo == "4" || periodo == "2") {
             this.setFechaIncio(sessionStorage.getItem("fechaInicio") ? sessionStorage.getItem("fechaInicio") : Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 1))));
             this.setFechaFin(sessionStorage.getItem("fechaFin") ? sessionStorage.getItem("fechaFin") : Formatter.DateToSting(new Date()));
             sessionStorage.setItem("fechaInicio", this.fecha_inicio);
