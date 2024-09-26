@@ -531,9 +531,9 @@ namespace SustitucionMOAUtils.Services
                 Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
 
                 usuario.Roles = new List<Rol>
-            {
-                nuevoNoGranos
-            };
+                {
+                    nuevoNoGranos
+                };
 
                 usuario.Proveedores = new List<Proveedor>();
 
@@ -553,15 +553,15 @@ namespace SustitucionMOAUtils.Services
                 };
 
                 proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
-            {
-                new ProveedorHistorialAprobacion()
                 {
-                    Fecha = DateTime.Now,
-                    EstadoAprobacion = estadoAprobacion,
-                    Observacion = "Registro de usuario",
-                    Usuario_Id = usuario.Id
-                }
-            };
+                    new ProveedorHistorialAprobacion()
+                    {
+                        Fecha = DateTime.Now,
+                        EstadoAprobacion = estadoAprobacion,
+                        Observacion = "Registro de usuario",
+                        Usuario_Id = usuario.Id
+                    }
+                };
 
                 if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario))
                 {
@@ -598,25 +598,25 @@ namespace SustitucionMOAUtils.Services
 
         public ResultadoGenerico ValidarDatosProveedor(ProveedorDto proveedorDto, ResultadoGenerico resultado)
         {
-            if (String.IsNullOrEmpty(proveedorDto.Mail))
+            if (string.IsNullOrWhiteSpace(proveedorDto.Mail))
             {
                 resultado.Errores.Add(new ErrorMessage(1, "El mail es obligatorio"));
                 return resultado;
             }
 
-            if (String.IsNullOrEmpty(proveedorDto.CUIT))
+            if (string.IsNullOrWhiteSpace(proveedorDto.CUIT))
             {
                 resultado.Errores.Add(new ErrorMessage(1, "El CUIT es obligatorio"));
                 return resultado;
             }
 
-            if (String.IsNullOrEmpty(proveedorDto.RazonSocial))
+            if (string.IsNullOrWhiteSpace(proveedorDto.RazonSocial))
             {
-                resultado.Errores.Add(new ErrorMessage(1, "La razon social es obligatoria"));
+                resultado.Errores.Add(new ErrorMessage(1, "La razón social es obligatoria"));
                 return resultado;
             }
 
-            var existeMail = repositorio.Existe<Entidades.Usuario>(x => x.Mail == proveedorDto.Mail);
+            var existeMail = repositorio.Existe<Usuario>(x => x.Mail == proveedorDto.Mail);
 
             if (existeMail)
             {
