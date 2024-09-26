@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -15,6 +17,7 @@ using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.ScatoComandosWebService;
 using SustitucionMOAWS.WSConsumers;
 
 namespace SustitucionMOAUtils.Services
@@ -55,32 +58,40 @@ namespace SustitucionMOAUtils.Services
 
                 List<EcheqNegocioDto> result = echeqVisualizarPendientePagoConsumerMOA.Request(proveedor, fechas, contrato);
 
-                result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque == true).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
-                result.Where(x => x.Clasificacion != "PRODUCTOR" && x.Documentos.Any(e => e.MarcaCheque == true)).ToList().ForEach(k => k.MarcaCheque = true);
+                result.Where(x => x.Clasificacion == "PRODUCTOR" && x.MarcaCheque).ToList().ForEach(x => x.Documentos.ForEach(k => k.MarcaCheque = true));
+                result.Where(x => x.Clasificacion != "PRODUCTOR" && x.Documentos.Exists(e => e.MarcaCheque)).ToList().ForEach(k => k.MarcaCheque = true);
 
                 List<string> cttosConCesionPago = this.GetContratosConCesionPago(result, proveedor);
                 var resultFiltrado = result.Where(x => !cttosConCesionPago.Contains(x.Contrato)).ToList();
 
-                List<string> documentos = result.Where(a => a.MarcaCheque).SelectMany(a => a.Documentos.Where(b => b.MarcaCheque).Select(b => b.Documento)).ToList();
-                var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado == true &&
-                   documentos.Contains(x.EcheqLiquidacion.Documento));
+                var documentos = result.Where(a => a.MarcaCheque).SelectMany(a => a.Documentos.Where(b => b.MarcaCheque).Select(b => new { b.Documento, b.Ejercicio })).ToList();
+
+                var numeroContratos = result.Where(a => a.MarcaCheque).Select(c => c.Contrato).ToList();
+                var includes = new List<Expression<Func<EcheqLiquidacion, object>>>();
+                includes.Add(x => x.EcheqNegocio);
+                includes.Add(x => x.Aperturas);
+                var liquidaciones = repositorio.Listar<EcheqLiquidacion>(x => numeroContratos.Contains(x.EcheqNegocio.Contrato), 0, null, DirOrden.Asc, includes);
+                var aperturas = liquidaciones.AsEnumerable().Where(x =>
+                documentos.Exists(d => d.Documento == x.Documento &&
+                                    d.Ejercicio == x.Ejercicio)).SelectMany(a => a.Aperturas).ToList();
 
                 foreach (var apertura in aperturas)
                 {
                     EcheqLiquidacionDto liquidacion = resultFiltrado
                         .Where(a => a.Contrato == apertura.EcheqLiquidacion.EcheqNegocio.Contrato && a.Pedido == apertura.EcheqLiquidacion.EcheqNegocio.Pedido)
-                        .SelectMany(a => a.Documentos).Where(a => a.Documento == apertura.EcheqLiquidacion.Documento).SingleOrDefault();
-                    liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
+                        .SelectMany(a => a.Documentos).Single(a => a.Documento == apertura.EcheqLiquidacion.Documento);
+
+                        liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
                 }
                 return resultFiltrado;
             }
             catch (ValidationCustomException e)
             {
-                throw e;
+                throw;
             }
             catch (InfoCustomException e)
             {
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -95,7 +106,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (string ctto in cttos)
             {
-               if(this.ContratoTieneCesionDePago(proveedor, ctto))
+                if (this.ContratoTieneCesionDePago(proveedor, ctto))
                 {
                     cttosConCesionPago.Add(ctto);
                 }
@@ -152,7 +163,7 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        if (ObtenerNegocio(request)!= null)
+                        if (ObtenerNegocio(request) != null)
                         {
                             this.UpdateEcheq(request, true, echeqNegocio);
                         }
@@ -386,7 +397,7 @@ namespace SustitucionMOAUtils.Services
                         apertura.UsuarioModificacionId = request.UsuarioCreacionId;
                         apertura.FechaModificacion = DateTime.Now;
 
-                        if(apertura.OrdenCheque > 0)
+                        if (apertura.OrdenCheque > 0)
                         {
                             var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
                             if (resultadoAnularAperturaCheque.HayError)
@@ -568,11 +579,11 @@ namespace SustitucionMOAUtils.Services
                 var hoy = DateTime.Now;
                 liquidacion = CrearLiquidacion(request);
                 echeqModificacionDocumentoChequeConsumerMOA.Request(
-                    IM_CONTRATO:request.Contrato, IM_DOCUMENTO:request.Documento,
-                    IM_EJERCICIO: liquidacion.Ejercicio,IM_FECHA: hoy.ToString("yyyy-MM-dd"),
+                    IM_CONTRATO: request.Contrato, IM_DOCUMENTO: request.Documento,
+                    IM_EJERCICIO: liquidacion.Ejercicio, IM_FECHA: hoy.ToString("yyyy-MM-dd"),
                     IM_HORA: hoy.ToString("HH:mm:ss"), IM_PEDIDO: request.Pedido,
-                    IM_PROVEEDOR: request.CodigoProveedor, IM_REFERENCIA: liquidacion.NumeroCOE, 
-                    IM_SOCIEDAD:"MOA", IM_USUARIO:"", IM_ZLSCH:"=");
+                    IM_PROVEEDOR: request.CodigoProveedor, IM_REFERENCIA: liquidacion.NumeroCOE,
+                    IM_SOCIEDAD: "MOA", IM_USUARIO: "", IM_ZLSCH: "=");
             }
 
             //ANULAR APERTURAS ANTERIORES
@@ -587,7 +598,7 @@ namespace SustitucionMOAUtils.Services
                     var resultadoAnularAperturaCheque = echeqAnularAperturaChequeConsumerMOA.Request(apertura.OrdenCheque.ToString(), liquidacion.Documento, liquidacion.Ejercicio, DateTime.Now.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH:mm:ss"), "MOA", "");
                     if (resultadoAnularAperturaCheque.HayError)
                     {
-                        mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo)? mensajeErrorBloqueoReemplazo : x.Message).ToList());
+                        mensaje = string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message.Contains(mensajeErrorBloqueo) ? mensajeErrorBloqueoReemplazo : x.Message).ToList());
                         throw new ValidationCustomException(mensaje);
                         //throw new ValidationCustomException(string.Join(", ", resultadoAnularAperturaCheque.Errores.Select(x => x.Message).ToList()));
                     }
@@ -719,7 +730,7 @@ namespace SustitucionMOAUtils.Services
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
                 {
                     RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,
-                    Mail = x.UsuarioModificacionId!=null? x.UsuarioModificacion.Mail : x.UsuarioCreacion.Mail,
+                    Mail = x.UsuarioModificacionId != null ? x.UsuarioModificacion.Mail : x.UsuarioCreacion.Mail,
                     CodigoProveedor = x.EcheqNegocio.Proveedor.CodigoProveedor,
                     Contrato = x.EcheqNegocio.Contrato,
                     LiquidacionMarcada = x.MarcaCheque,
