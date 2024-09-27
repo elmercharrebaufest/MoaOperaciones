@@ -183,7 +183,10 @@ namespace SustitucionMOAUtils.Services
 
         public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
         {
+            Entidades.Usuario currentUsuario = repositorio.ObtenerNoTracking<Entidades.Usuario>(u => u.Id == idUsuario);
+
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+
 
             usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
 
@@ -233,7 +236,7 @@ namespace SustitucionMOAUtils.Services
                 //}
 
             }
-            else if((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(usuario.Suplente)))
+            else if((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
@@ -253,7 +256,7 @@ namespace SustitucionMOAUtils.Services
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
 
-                    derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, suplente);
+                    derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, currentUsuario.Suplente);
                     
                 }
             }
