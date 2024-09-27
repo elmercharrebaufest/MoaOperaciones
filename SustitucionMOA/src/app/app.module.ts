@@ -91,7 +91,8 @@ import { ButtonModule } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
 import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
 import { CalendarModule } from 'primeng/calendar';
-import { ErrorInterceptor } from "./error.interceptor";
+import { ErrorInterceptor } from "./error.interceptor";;
+import { LogViewerComponent } from './log-viewer/log-viewer.component'
 
 @NgModule({
   imports: [
@@ -163,7 +164,8 @@ import { ErrorInterceptor } from "./error.interceptor";
     ModalNotificacionesComponent,
     ComunicacionesComponent,
     AprobacionExternaComponent,
-    MessageSpinnerComponent
+    MessageSpinnerComponent,
+    LogViewerComponent
     ],
     providers: [
         DatePipe,
