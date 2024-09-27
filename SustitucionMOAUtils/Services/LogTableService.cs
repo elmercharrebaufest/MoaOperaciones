@@ -13,6 +13,7 @@ using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Echeq;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
@@ -52,6 +53,11 @@ namespace SustitucionMOAUtils.Services
             return agrupado;
         }
 
+        public List<LogTableCountErrors> ObtenerLogs(LogRequest request)
+        {
+            List<LogTableCountErrors> agrupado = repositorio.ListarConsulta(new ObtenerLogsConsulta(request));
+            return agrupado;
+        }
     }
 
 }

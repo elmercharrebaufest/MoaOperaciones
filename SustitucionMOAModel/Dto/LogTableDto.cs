@@ -9,7 +9,8 @@ namespace SustitucionMOAModel.Dto
 {
     public class LogTableDto
     {
-        public LogTableDto() { 
+        public LogTableDto()
+        {
         }
 
         public LogTableDto(LogTable l)
@@ -34,7 +35,18 @@ namespace SustitucionMOAModel.Dto
     {
         public string Logger { get; set; }
         public string Level { get; set; }
+        public string LoggerLevel { get; set; }
         public int Count { get; set; }
-        public List<LogTableDto> Errors { get; set; } = new List<LogTableDto>();
+        public IEnumerable<LogTableDto> Errors { get; set; }
+
+    }
+
+    public class LogRequest
+    {
+        public DateTime? Desde { get; set; }
+        public DateTime? Hasta { get; set; }
+        public List<string> Levels { get; set; } = new List<string>();
+        public List<string> Loggers { get; set; } = new List<string>();
+
     }
 }

@@ -10,5 +10,6 @@ namespace SustitucionMOAUtils.Interfaces
     public interface ILogTableService
     {
         List<LogTableCountErrors> ObtenerLogs(DateTime? desde, bool soloErrores);
+        List<LogTableCountErrors> ObtenerLogs(LogRequest request);
     }
 }
