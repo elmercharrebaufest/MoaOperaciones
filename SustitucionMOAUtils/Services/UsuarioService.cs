@@ -516,6 +516,8 @@ namespace SustitucionMOAUtils.Services
                                                  EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta,
                                                  bool mantenerEstadoAprobacionExistente = false)
         {
+            if (proveedorDto == null) { throw new ArgumentNullException(nameof(proveedorDto)); }
+
             TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
 
             UsuarioNoGranos usuario = new UsuarioNoGranos
