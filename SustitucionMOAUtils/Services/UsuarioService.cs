@@ -1,4 +1,6 @@
-﻿using SustitucionMOAAssets;
+﻿// Ignore Spelling: Aprobacion
+
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -191,13 +193,13 @@ namespace SustitucionMOAUtils.Services
 
             usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
 
-            if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
+            if (!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
                 string dateTimeFormat = "yyyy-MM-dd";
                 DateTime fechaDesdeDT = new DateTime();
                 DateTime fechaHastaDT = new DateTime();
                 DateTime auxFDesde;
-                if(DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
                 {
                     fechaDesdeDT = auxFDesde;
                 };
@@ -219,7 +221,7 @@ namespace SustitucionMOAUtils.Services
                     //Evitar duplicacion de periodos
                     var per = GetPeriodoReasignacion(idUsuario);
 
-                    if(per.Id == 0)
+                    if (per.Id == 0)
                     {
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
@@ -227,15 +229,15 @@ namespace SustitucionMOAUtils.Services
                     {
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
-                
+
                 }
 
             }
-            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            else if (string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
-                if(periodos.Count > 0)
+                if (periodos.Count > 0)
                 {
                     int[] periodosIds = new int[periodos.Count];
 
@@ -249,7 +251,7 @@ namespace SustitucionMOAUtils.Services
                         UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
-                    
+
                 }
 
             }
@@ -302,14 +304,14 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
-            
+
             List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
 
             foreach (var aprobacion in aprobaciones)
             {
                 aprobacion.Suplente = suplente;
             }
-            
+
             repositorio.GuardarCambios();
 
 
@@ -352,7 +354,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     periodoDto = new UsuarioReasignacionDto(periodo);
                 }
-                 
+
                 return periodoDto;
             }
             catch (Exception)
@@ -510,8 +512,12 @@ namespace SustitucionMOAUtils.Services
             return proveedores.ToList();
         }
 
-        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta, bool mantenerEstadoAprobacionExistente = false)
+        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto,
+                                                 EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                                                 bool mantenerEstadoAprobacionExistente = false)
         {
+            TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
+
             UsuarioNoGranos usuario = new UsuarioNoGranos
             {
                 Mail = proveedorDto.Mail,
@@ -519,11 +525,8 @@ namespace SustitucionMOAUtils.Services
                 SeccionesVisitadas = "",
                 Proveedores = new List<Proveedor>(),
                 Roles = new List<Rol>(),
+                TipoUsuario = tipoUsuario,
             };
-
-            TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
-
-            usuario.TipoUsuario = tipoUsuario;
 
             var resultado = new ResultadoGenerico();
 
@@ -538,20 +541,9 @@ namespace SustitucionMOAUtils.Services
             Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
             usuario.Roles.Add(nuevoNoGranos);
 
-            string cuit = usuario.CUITRegistro;
-            string mailUsuario = usuario.Mail;
-
-            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario);
-            if (proveedor == null)
-            {
-                // existe con otro mail
-                proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit);
-            }
-
-            if (proveedor == null)
-            {
-                // no existe
-                proveedor = new Proveedor
+            // obtener proveedor registrado con el CUIT ingresado o, si no existe, crear uno nuevo
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == usuario.CUITRegistro)
+                ?? new Proveedor
                 {
                     CUIT = usuario.CUITRegistro,
                     EstadoAprobacion = estadoAprobacion,
@@ -562,7 +554,6 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedorDto.RazonSocial,
                     CodigoProveedor = setCodigoProveedor,
                 };
-            }
 
             if (!mantenerEstadoAprobacionExistente)
             {
@@ -599,9 +590,15 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.GuardarCambios();
 
-            resultado.Descripcion = $"{proveedor.RazonSocial} ({proveedor.CUIT}) - {proveedor.Mail}";
+            resultado.Descripcion = $"{proveedor.RazonSocial} ({proveedor.CUIT}) - {usuario.Mail}";
 
-            var proveedorResultado = new ProveedorDto() { Mail = proveedorDto.Mail, CUIT = proveedorDto.CUIT, Id = usuario.Id, RazonSocial = proveedorDto.RazonSocial };
+            ProveedorDto proveedorResultado = new ProveedorDto()
+            {
+                Mail = usuario.Mail,
+                CUIT = proveedor.CUIT,
+                Id = usuario.Id,
+                RazonSocial = proveedorDto.RazonSocial
+            };
 
             resultado.ProveedorDto = proveedorResultado;
 
@@ -1078,7 +1075,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(configuracion);
             }
-            
+
             configuracion.Valor = valor;
             repositorio.GuardarCambios();
         }
