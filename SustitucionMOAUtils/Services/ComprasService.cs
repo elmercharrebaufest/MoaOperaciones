@@ -3668,6 +3668,22 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
                     }
+
+                    switch (usuarioPO.ProveedorEstadoAprobacion)
+                    {
+                        case EstadoAprobacion.Aprobado:
+                            //do nothing
+                            break;
+                        case EstadoAprobacion.AltaIncompleta:
+                            mensaje = "Completar alta";
+                            verAdjudicar = false;
+                            break;
+                        default:
+                            mensaje = "Proveedor NO habilitado";
+                            verAdjudicar = false;
+                            break;
+                    }
+
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
                         if (!respetaMateriales && !todasLasOfertas.RevisionFinalizada)
