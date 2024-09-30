@@ -94,7 +94,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var sinSolps = !Solps.Any();
                 var resultado = from x in contexto.Set<Solp>()
                                 where (sinSolps || Solps.Contains(x.NroSolp)) &&
-                                !string.IsNullOrWhiteSpace(x.NroSolp) &&
+                                !string.IsNullOrEmpty(x.NroSolp) &&
                                 (/* area "mostrar de acuerdo al selector de pendientes" */
                                     (ListarPendiente == EstadoListarTratamientoSolp.Todas)
                                     || (ListarPendiente == EstadoListarTratamientoSolp.Pendientes && SolpsPendientesSap.Contains(x.NroSolp))

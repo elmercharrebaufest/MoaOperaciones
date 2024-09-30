@@ -3492,13 +3492,12 @@ namespace SustitucionMOAUtils.Services
         {
             if (listarPendiente == EstadoListarTratamientoSolp.None)
             {
-                throw new ArgumentOutOfRangeException(nameof(listarPendiente),
-                    $"El valor {Enum.GetName(typeof(EstadoListarTratamientoSolp), listarPendiente)} ({(uint)listarPendiente}) no es válido al momento de listar SOLP");
+                listarPendiente = EstadoListarTratamientoSolp.Todas;
             }
 
             var solps = new List<string>();
             List<string> solpPendientesSap = new List<string>();
-            if(listarPendiente != EstadoListarTratamientoSolp.Todas)
+            if (listarPendiente != EstadoListarTratamientoSolp.Todas)
             {
                 solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
@@ -10911,6 +10910,15 @@ namespace SustitucionMOAUtils.Services
             }
 
             return puedenVerseImportes;
+        }
+
+        public List<KeyValuePair<EstadoListarTratamientoSolp, string>> ListarPendienteListComboOptions()
+        {
+            return Enum.GetValues(typeof(EstadoListarTratamientoSolp))
+                .Cast<EstadoListarTratamientoSolp>()
+                .Where(x => x != EstadoListarTratamientoSolp.None)
+                .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.ToString()))
+                .ToList();
         }
     }
 

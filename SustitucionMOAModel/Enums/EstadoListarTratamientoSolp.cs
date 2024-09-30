@@ -3,7 +3,7 @@
 namespace SustitucionMOAModel.Enums
 {
     [Flags]
-    public enum EstadoListarTratamientoSolp : uint
+    public enum EstadoListarTratamientoSolp
     {
         None = 0,
 

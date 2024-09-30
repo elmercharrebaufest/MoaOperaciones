@@ -121,6 +121,8 @@ namespace SustitucionMOA.Controllers
                     }),
 
                     Provincia = service.ListarProvincia(),
+
+                    ListarPendienteList = service.ListarPendienteListComboOptions(),
                 });
             }
             catch (InfoCustomException e)

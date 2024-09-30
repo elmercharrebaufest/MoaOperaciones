@@ -123,5 +123,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId);
 
         string DescargarAdjuntosProveedores(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
+
+        List<KeyValuePair<EstadoListarTratamientoSolp, string>> ListarPendienteListComboOptions();
     }
 }
