@@ -3,8 +3,6 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pago.NoGranos;
 using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
@@ -19,6 +17,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
     {
         private readonly Paginacion Paginacion;
         private readonly List<string> Solps;
+        private readonly List<string> SolpsPendientesSap;
         private readonly DateTime? FechaDesde;
         private readonly DateTime? FechaHasta;
         private readonly bool Sap;
@@ -33,14 +32,34 @@ namespace SustitucionMOARepositorio.ConsultasEF
         private readonly List<int> ClaseDocumento;
         private readonly List<string> TipoImputacion;
         private readonly List<int> ValorTipoImputacion;
-        private readonly bool? ListarPendiente;
+        private readonly EstadoListarTratamientoSolp ListarPendiente;
         private readonly bool ContratoMarco;
         private readonly string[] NombrePedido;
 
-        public ListarSolpConsulta(Paginacion paginacion, List<string> solps, string[] nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios, List<int> estados, List<int> centros, List<int> grupoDeCompras, int usuario_Id, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListarSolpConsulta(Paginacion paginacion,
+                                  List<string> solps,
+                                  List<string> solpsPendientesSap,
+                                  string[] nombrePedido,
+                                  DateTime? desde,
+                                  DateTime? hasta,
+                                  bool sap,
+                                  bool mantenimiento,
+                                  bool web,
+                                  bool repoAutomatica,
+                                  EstadoListarTratamientoSolp listarPendiente,
+                                  bool contratoMarco,
+                                  List<int> usuarios,
+                                  List<int> estados,
+                                  List<int> centros,
+                                  List<int> grupoDeCompras,
+                                  int usuario_Id,
+                                  List<int> claseDocumento = null,
+                                  List<string> tipoImputacion = null,
+                                  List<int> valorTipoImputacion = null)
         {
             Paginacion = paginacion;
             Solps = solps;
+            SolpsPendientesSap = solpsPendientesSap;
             FechaDesde = desde;
             FechaHasta = hasta.HasValue ? hasta.Value.AddDays(1) : hasta;
             Sap = sap;
@@ -75,6 +94,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var sinSolps = !Solps.Any();
                 var resultado = from x in contexto.Set<Solp>()
                                 where (sinSolps || Solps.Contains(x.NroSolp)) &&
+                                (/* area "mostrar de acuerdo al selector de pendientes" */
+                                    (ListarPendiente == EstadoListarTratamientoSolp.Todas)
+                                    || (ListarPendiente == EstadoListarTratamientoSolp.Pendientes && SolpsPendientesSap.Contains(x.NroSolp))
+                                    || (ListarPendiente == EstadoListarTratamientoSolp.Completas && !SolpsPendientesSap.Contains(x.NroSolp))
+                                /* fin area "mostrar de acuerdo al selector de pendientes" */ ) &&
                                 (!Usuarios.Any() || (x.UsuarioCreacion_Id != null && Usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
                                 (!Estados.Any() || (x.EstadoSolpSap_Id != null && Estados.Contains((int)x.EstadoSolpSap_Id))) &&
                                 (!Centros.Any() || x.Posiciones.Any(c => Centros.Contains(c.Centro_Id))) &&
@@ -123,7 +147,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Pagina = Paginacion.Pagina,
                                     EstadoSolpSap = x.EstadoSolpSap_Id != null ? new TablaSapDto { Id = x.EstadoSolpSap_Id ?? 0, CodigoSap = x.EstadoSolpSap.CodigoSap, Descripcion = x.EstadoSolpSap.Descripcion } : new TablaSapDto { Id = 0, CodigoSap = "", Descripcion = "" },
                                     TodasLasPosicionesBorradas = x.Posiciones.All(p => p.Estado == false),
-                                    VerPublicar = ((x.EstadoSolpSap.CodigoSap == "05" || x.EstadoSolpSap.CodigoSap == "02") 
+                                    VerPublicar = ((x.EstadoSolpSap.CodigoSap == "05" || x.EstadoSolpSap.CodigoSap == "02")
                                                         && x.TrabajoYaHecho != true && x.Adicional != true)
                                                     || (!string.IsNullOrEmpty(x.NroSolp)
                                                         && x.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO")
@@ -159,7 +183,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                           })
                                 };
                 var pagina = Paginacion;
-                if (ListarPendiente == true)
+                if ((ListarPendiente | EstadoListarTratamientoSolp.Pendientes) != 0)
                 {
                     pagina = new Paginacion("Id", DirOrden.Asc, 1, resultado.Count());
                 }
