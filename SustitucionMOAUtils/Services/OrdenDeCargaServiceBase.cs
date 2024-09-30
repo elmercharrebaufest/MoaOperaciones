@@ -14,7 +14,7 @@ using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
 using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
-using ModelScatoRepo =  SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using ModelScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -94,7 +94,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
                 }
-                throw new ValidationCustomException("Error al obtener Plantas");
+                if (plantasRes.Messages.Any(mensaje => mensaje.MessageType == 1 &&
+                    mensaje.Message == "800 - No existen solicitudes para los parámetros indicados."))
+                {
+                    throw new InfoCustomException("Sin plantas habilitadas.");
+                }
+                throw new ValidationCustomException("Error al obtener Plantas.");
             }
             else
             {
@@ -275,7 +280,7 @@ namespace SustitucionMOAUtils.Services
         }
         public bool ValidarDigitoCuit(string cuit)
         {
-            if(cuit.Length != 11)
+            if (cuit.Length != 11)
             {
                 throw new ValidationCustomException($"El cuit que se ha intentado validar no es correcto ({cuit})");
             }
@@ -288,7 +293,8 @@ namespace SustitucionMOAUtils.Services
             if (auxiliar == 11)
             {
                 auxiliar = 0;
-            }else if (auxiliar == 10)
+            }
+            else if (auxiliar == 10)
             {
                 auxiliar = 9;
             }
