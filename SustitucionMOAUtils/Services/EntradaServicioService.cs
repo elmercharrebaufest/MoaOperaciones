@@ -630,7 +630,7 @@ namespace SustitucionMOAUtils.Services
                             //Si no coincide el email con el campo solicitante, buscar el valor de campo solicitante (EN MAYUSCULAS Y SIN ESPACIOS) (todo junto sin espacios).
                             //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
                             string solicitante = pos.Solicitante.Replace(" ", "");
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == solicitante.ToUpper());
+                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.Trim().ToUpper() == solicitante.Trim().ToUpper());
 
                             if (usuario != null && usuario.Mail == userMail)
                             {
