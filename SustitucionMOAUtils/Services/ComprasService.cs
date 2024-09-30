@@ -3490,9 +3490,15 @@ namespace SustitucionMOAUtils.Services
                                                           List<string> tipoImputacion = null,
                                                           List<int> valorTipoImputacion = null)
         {
+            if (listarPendiente == EstadoListarTratamientoSolp.None)
+            {
+                throw new ArgumentOutOfRangeException(nameof(listarPendiente),
+                    $"El valor {Enum.GetName(typeof(EstadoListarTratamientoSolp), listarPendiente)} ({(uint)listarPendiente}) no es válido al momento de listar SOLP");
+            }
+
             var solps = new List<string>();
             List<string> solpPendientesSap = new List<string>();
-            if(listarPendiente != EstadoListarTratamientoSolp.None)
+            if(listarPendiente != EstadoListarTratamientoSolp.Todas)
             {
                 solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
