@@ -25,6 +25,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -3490,7 +3491,7 @@ namespace SustitucionMOAUtils.Services
                                                           List<string> tipoImputacion = null,
                                                           List<int> valorTipoImputacion = null)
         {
-            if (listarPendiente == EstadoListarTratamientoSolp.None)
+            if (listarPendiente == EstadoListarTratamientoSolp.NotConfigured)
             {
                 listarPendiente = EstadoListarTratamientoSolp.Todas;
             }
@@ -10916,8 +10917,8 @@ namespace SustitucionMOAUtils.Services
         {
             return Enum.GetValues(typeof(EstadoListarTratamientoSolp))
                 .Cast<EstadoListarTratamientoSolp>()
-                .Where(x => x != EstadoListarTratamientoSolp.None)
-                .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.ToString()))
+                .Where(x => x != EstadoListarTratamientoSolp.NotConfigured)
+                .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.GetDescription()))
                 .ToList();
         }
     }
