@@ -1,4 +1,6 @@
-﻿using SustitucionMOARepositorio;
+﻿// Ignore Spelling: Sustitucion
+
+using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ListarSolpPendienteWebServiceMOA;
 using System;
@@ -26,7 +28,6 @@ namespace SustitucionMOAWS.WSConsumers
 
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-
         }
 
         public List<string> ListarSolpPendientes()
@@ -38,27 +39,26 @@ namespace SustitucionMOAWS.WSConsumers
                     return solps;
                 }
 
-                solps = new List<string>();
-                string ASSIGNED_ITEMS = "X";
-                string CLOSED_ITEMS = "";
-                string DELETED_ITEMS = "";
-                string DELIV_DATE = "";
-                string DOC_TYPE = "";
-                string MATERIAL = "";
+                const string ASSIGNED_ITEMS = "X";
+                const string CLOSED_ITEMS = "";
+                const string DELETED_ITEMS = "";
+                const string DELIV_DATE = "";
+                const string DOC_TYPE = "";
+                const string MATERIAL = "";
                 BAPIMGVMATNR MATERIAL_EVG = new BAPIMGVMATNR();
-                string MATERIAL_LONG = "";
-                string MAT_GRP = "";
-                string ONLY_NON_MATERIAL_ITEMS = "";
-                string OPEN_ITEMS = "X";  // Valor agregado
-                string PARTIALLY_ORDERED_ITEMS = "X";
-                string PLANT = "";
-                string PREQ_DATE = "";
-                string PREQ_NAME = "";
-                string PREQ_NO = "";
-                string PUR_GROUP = "";
-                string REL_DATE = "";
-                string SHORT_TEXT = "";
-                string TRACKINGNO = "";
+                const string MATERIAL_LONG = "";
+                const string MAT_GRP = "";
+                const string ONLY_NON_MATERIAL_ITEMS = "";
+                const string OPEN_ITEMS = "X";  // Valor agregado
+                const string PARTIALLY_ORDERED_ITEMS = "X";
+                const string PLANT = "";
+                const string PREQ_DATE = "";
+                const string PREQ_NAME = "";
+                const string PREQ_NO = "";
+                const string PUR_GROUP = "";
+                const string REL_DATE = "";
+                const string SHORT_TEXT = "";
+                const string TRACKINGNO = "";
                 BAPIEBANC[] REQUISITION_ITEMS = new List<BAPIEBANC>().ToArray(); // Array vacío
                 BAPIRETURN[] RETURN = new List<BAPIRETURN>().ToArray(); // Array vacío
 
@@ -67,12 +67,9 @@ namespace SustitucionMOAWS.WSConsumers
                     MATERIAL_EVG, MATERIAL_LONG, MAT_GRP, ONLY_NON_MATERIAL_ITEMS, OPEN_ITEMS,
                     PARTIALLY_ORDERED_ITEMS, PLANT, PREQ_DATE, PREQ_NAME, PREQ_NO, PUR_GROUP,
                     REL_DATE, SHORT_TEXT, TRACKINGNO, ref REQUISITION_ITEMS, ref RETURN);
-                var solpsSAP = REQUISITION_ITEMS.ToList();
+                List<BAPIEBANC> solpsSAP = REQUISITION_ITEMS.ToList();
 
-                if (solpsSAP.Count > 0)
-                {
-                    solps.AddRange(solpsSAP.Select(x => x.PREQ_NO));
-                }
+                solps = solpsSAP.ConvertAll(x => x.PREQ_NO);
 
                 Cache.Agregar(CACHE_KEY, solps, CACHE_EXPIRATION);
 
@@ -81,10 +78,8 @@ namespace SustitucionMOAWS.WSConsumers
         }
     }
 
-
     public interface IListarSolpPendientesConsumerMOA
     {
         List<string> ListarSolpPendientes();
     }
-
 }
