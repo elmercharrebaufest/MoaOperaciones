@@ -34,6 +34,7 @@ namespace SustitucionMOAWS.WSConsumers
         {
             lock (_lockObject)
             {
+                // en caso de parametrizar el método ListarSolpPendientes(), agregar parámetros a la CACHE_KEY.
                 if (Cache.IntentarObtener(CACHE_KEY, out List<string> solps))
                 {
                     return solps;
