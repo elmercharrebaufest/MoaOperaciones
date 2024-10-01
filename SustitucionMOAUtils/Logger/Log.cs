@@ -75,7 +75,7 @@ namespace SustitucionMOAUtils.Logger
                 logPath = Path.Combine(rutaSitioWeb, "nlog.pre.config");
                 config = new XmlLoggingConfiguration(logPath);
             }
-            
+
             // Configura LogManager con la nueva configuración
             NLog.LogManager.Configuration = config;
             LogConfig.ConfigureNLog();
@@ -109,27 +109,13 @@ namespace SustitucionMOAUtils.Logger
             return null;
         }
 
-        public static void Error(string ip, string usuario, string controller, string method, string error)
-        {
-            try
-            {
-                ConfigLog();
-
-                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR en LogService:" + e.Message);
-                Console.WriteLine("ERROR heredado:" + error);
-            }
-        }
+        
         public static void Error(string ip, string usuario, string controller, string method, Exception exception)
         {
             try
             {
                 ConfigLog();
-
-                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
+                DefaultLogger.Error(exception, String.Format(ErrorMsg.ErrorLogMensaje, controller, method, usuario, ip, ""));
             }
             catch (Exception e)
             {
@@ -255,7 +241,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                FrontLogger.Info(message);
+                FrontLogger.Error(message);
             }
             catch (Exception e)
             {
@@ -270,7 +256,7 @@ namespace SustitucionMOAUtils.Logger
             }
             catch (Exception e)
             {
-                Log.Error("", "", "", "", e.Message);
+                Log.Error(e);
                 Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
             }
         }
