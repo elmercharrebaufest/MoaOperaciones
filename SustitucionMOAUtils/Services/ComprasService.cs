@@ -3491,7 +3491,7 @@ namespace SustitucionMOAUtils.Services
                                                           List<string> tipoImputacion = null,
                                                           List<int> valorTipoImputacion = null)
         {
-            if (listarPendiente == EstadoListarTratamientoSolp.NotConfigured)
+            if (listarPendiente == EstadoListarTratamientoSolp.None)
             {
                 listarPendiente = EstadoListarTratamientoSolp.Todas;
             }
@@ -10917,7 +10917,7 @@ namespace SustitucionMOAUtils.Services
         {
             return Enum.GetValues(typeof(EstadoListarTratamientoSolp))
                 .Cast<EstadoListarTratamientoSolp>()
-                .Where(x => x != EstadoListarTratamientoSolp.NotConfigured)
+                .Where(x => x != EstadoListarTratamientoSolp.None)
                 .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.GetDescription()))
                 .ToList();
         }
