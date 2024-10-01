@@ -184,10 +184,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                           })
                                 };
                 var pagina = Paginacion;
-                if ((ListarPendiente | EstadoListarTratamientoSolp.Pendientes) != 0)
-                {
-                    pagina = new Paginacion("Id", DirOrden.Asc, 1, resultado.Count());
-                }
+                
                 var result = resultado.OrdenarPaginarLista(pagina);
                 return result;
             }
