@@ -16,7 +16,7 @@ namespace SustitucionMOAUtils.Interfaces
         void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario);
 
         CargaMasivaResponse ProcesarCargaMasiva(HttpPostedFileBase archivo, string usuarioMail, string proveedorCodigo, bool esCodigoCorredor);
-        void AprobarAplicacionPendiente(int idAplicacion);
-        void RechazarAplicacionPendiente(int idAplicacion, string motivo);
+        void AprobarAplicacionesPendientes(List<int> idsAplicaciones);
+        void RechazarAplicacionesPendientes(List<int> idsAplicaciones, string motivo);
     }
 }

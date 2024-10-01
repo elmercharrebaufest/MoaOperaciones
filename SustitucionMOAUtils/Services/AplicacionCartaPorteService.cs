@@ -216,29 +216,39 @@ namespace SustitucionMOAUtils.Services
             return response;
         }
 
-        public void AprobarAplicacionPendiente(int idAplicacion)
+        public void AprobarAplicacionesPendientes(List<int> idsAplicaciones)
         {
-            var aplicacion = repositorio.Obtener<AplicacionCartaPorte>(idAplicacion) ?? throw new Exception("Aplicación no encontrada");
-
-            if (aplicacion.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion)
+            var aplicaciones = repositorio.Listar<AplicacionCartaPorte>(x => idsAplicaciones.Contains(x.Id));
+            
+            foreach (var idAplicacion in idsAplicaciones.Distinct())
             {
-                aplicacion.Estado = EstadoAplicacionCartaPorte.Pendiente;
-                repositorio.GuardarCambios();
+                var aplicacion = aplicaciones.FirstOrDefault(x => x.Id == idAplicacion);
+
+                if (aplicacion != null && aplicacion.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion)
+                {
+                    aplicacion.Estado = EstadoAplicacionCartaPorte.Pendiente;
+                }
             }
+            repositorio.GuardarCambios();
         }
 
-        public void RechazarAplicacionPendiente(int idAplicacion, string motivo)
+        public void RechazarAplicacionesPendientes(List<int> idsAplicaciones, string motivo)
         {
-            var aplicacion = repositorio.Obtener<AplicacionCartaPorte>(idAplicacion) ?? throw new Exception("Aplicación no encontrada");
+            var aplicaciones = repositorio.Listar<AplicacionCartaPorte>(x => idsAplicaciones.Contains(x.Id));
 
-            if (aplicacion.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion)
+            foreach (var idAplicacion in idsAplicaciones.Distinct())
             {
-                aplicacion.Estado = EstadoAplicacionCartaPorte.Rechazada;
-                aplicacion.Error = motivo;
-                repositorio.GuardarCambios();
+                var aplicacion = aplicaciones.FirstOrDefault(x => x.Id == idAplicacion);
 
-                emailAplicacionCPService.EnviarMailAplicacionRechazada(aplicacion.CartaPorte, aplicacion.Contrato, motivo, aplicacion.Usuario.Mail);
+                if (aplicacion.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion)
+                {
+                    aplicacion.Estado = EstadoAplicacionCartaPorte.Rechazada;
+                    aplicacion.Error = motivo;
+
+                    emailAplicacionCPService.EnviarMailAplicacionRechazada(aplicacion.CartaPorte, aplicacion.Contrato, motivo, aplicacion.Usuario.Mail);
+                }
             }
+            repositorio.GuardarCambios();
         }
 
         private void ValidarSchema<T>(T schema, string controller, string metodo)
