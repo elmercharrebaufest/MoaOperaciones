@@ -2950,7 +2950,7 @@ namespace SustitucionMOATest.Services
             var listaSolp = new ListaPaginada<SolpDto>(new List<SolpDto> { new SolpDto { Id = 1, ItemsTotales = 7 } }, 1, 10, 5);
             repositorioMock.Setup(y => y.ListarConsultaPaginada(It.IsAny<ListarSolpConsulta>())).Returns(listaSolp);
 
-            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", "", null, null, false, false, false, true, false, false);
+            var result = target.ListarSolpComprador(1, new Paginacion(), "nroSolp", "", null, null, false, false, false, true, EstadoListarTratamientoSolp.Todas, false);
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(listaSolp.GetType(), result.GetType());
         }
