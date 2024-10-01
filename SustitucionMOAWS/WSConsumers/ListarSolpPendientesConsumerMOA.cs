@@ -15,7 +15,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         private readonly ICache Cache;
         private const string CACHE_KEY = "SI_MMRFC_BAPI_REQUISITION_GETITEMSClientCache";
-        private readonly DateTimeOffset CACHE_EXPIRATION = DateTimeOffset.Now.AddMinutes(1);
+        private readonly DateTimeOffset CACHE_EXPIRATION = DateTimeOffset.Now.AddSeconds(15);
         private static readonly object _lockObject = new object();
 
         public ListarSolpPendientesConsumerMOA(ICache cache)
