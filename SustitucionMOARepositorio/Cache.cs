@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Caching;
-using Ninject.Extensions.Logging;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOARepositorio
 {
@@ -37,6 +32,14 @@ namespace SustitucionMOARepositorio
         public TEntidad Obtener<TEntidad>(string clave) where TEntidad : class
         {
             return (TEntidad)cache.Get(clave);
+        }
+
+        public bool IntentarObtener<TEntidad>(string clave, out TEntidad objeto) where TEntidad : class
+        {
+            objeto = null;
+            if (!Existe(clave)) { return false; }
+            objeto = Obtener<TEntidad>(clave);
+            return true;
         }
 
         public void Remover(string clave)

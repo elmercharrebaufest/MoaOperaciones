@@ -121,6 +121,8 @@ namespace SustitucionMOA.Controllers
                     }),
 
                     Provincia = service.ListarProvincia(),
+
+                    ListarPendienteList = service.ListarPendienteListComboOptions(),
                 });
             }
             catch (InfoCustomException e)
@@ -185,14 +187,33 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nombrePedido = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+        public ActionResult ListarSolpComprador(int? pagina = null,
+                                                int? itemsPorPagina = null,
+                                                string orden = null,
+                                                string columna = null,
+                                                string nroSolp = null,
+                                                string nombrePedido = null,
+                                                string estados = null,
+                                                string usuarios = null,
+                                                string centros = null,
+                                                string grupoDeCompras = null,
+                                                DateTime? fechaDesde = null,
+                                                DateTime? fechaHasta = null,
+                                                bool sap = false,
+                                                bool mantenimiento = false,
+                                                bool web = false,
+                                                bool repoAutomatica = false,
+                                                EstadoListarTratamientoSolp listarPendiente = EstadoListarTratamientoSolp.Todas,
+                                                bool contratoMarco = false,
+                                                string claseDocumento = null,
+                                                string tipoImputacion = null,
+                                                string valorTipoImputacion = null)
         {
             try
             {
                 //service.EditarOrdenDeCompra(new AdjudicacionEditarDto());
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : (listarPendiente == false && itemsPorPagina.Value == 1) ? 20 : itemsPorPagina.Value);
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 var usuario_Id = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(new

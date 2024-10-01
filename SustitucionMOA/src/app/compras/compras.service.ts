@@ -47,7 +47,7 @@ export class ComprasService extends BaseService {
         mantenimiento: true,
         web: true,
         repoAutomatica: true,
-        listarPendiente: true,
+        listarPendiente: 3, // todas
         contratoMarco: true,
         usuarioId: null,
         centros: "",
@@ -660,7 +660,7 @@ export class ComprasService extends BaseService {
         mantenimiento: boolean = this.filtros.mantenimiento,
         web: boolean = this.filtros.web,
         repoAutomatica: boolean = this.filtros.repoAutomatica,
-        listarPendiente: boolean = this.filtros.listarPendiente,
+        listarPendiente: number = this.filtros.listarPendiente,
         contratoMarco: boolean = this.filtros.contratoMarco,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
