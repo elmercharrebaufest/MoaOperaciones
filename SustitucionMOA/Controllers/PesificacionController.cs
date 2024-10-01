@@ -84,7 +84,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, "SetComprobante(string contrato) " + (contrato ?? "null"));
+                Log.Info($"{System.Web.HttpContext.Current.Request.UserHostAddress}, {SessionPersister.getUsername()}, {this.GetType().Name}, {System.Reflection.MethodBase.GetCurrentMethod().Name}, SetComprobante(string contrato)  {contrato ?? "null"})");
                 var contratoJson = JsonConvert.DeserializeObject<ContratoContenido>(contrato);
 
                 //registro MOAOperaciones el alta de una pesificacion
