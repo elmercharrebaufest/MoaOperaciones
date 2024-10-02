@@ -1489,25 +1489,27 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult ObtenerChat(int solpId)
+        public ActionResult ObtenerChat(int solpId)
         {
+            var response = new SustitucionMOAApiResponse<ChatsDto>();
             try
             {
-                return JsonCustom(service.ObtenerChat(solpId, ObtenerUsuarioActual().Id));
+                response.Data = service.ObtenerChat(solpId, ObtenerUsuarioActual().Id);
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpGet]
