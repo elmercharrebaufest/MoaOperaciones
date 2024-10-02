@@ -3700,7 +3700,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         if (usuarioPO.Cotizacion?.CotizacionPosiciones
-                            .Exists(x => !x.Adjudicado && x.CotizacionSubPosiciones.Exists(y => !y.Completado)) == true)
+                            .Exists(x => !x.EstaEliminado && !x.Adjudicado && x.CotizacionSubPosiciones.Exists(y => !y.Completado)) == true)
                         {
                             mensaje = "La cotización tiene subposiciones sin cotizar";
                             verAdjudicar = false;
