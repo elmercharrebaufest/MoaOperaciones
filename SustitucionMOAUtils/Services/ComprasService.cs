@@ -9866,7 +9866,7 @@ namespace SustitucionMOAUtils.Services
                 if (numeroPo != null)
                 {
                     return posicionMaterial
-                        .Where(posicion => posicion.ListaPO.Any(x => x == numeroPo.ToString()))
+                        .Where(posicion => posicion.ListaPO?.Any(x => x == numeroPo.ToString()) == true)
                         .ToList();
                 }
 
