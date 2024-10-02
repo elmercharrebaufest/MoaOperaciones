@@ -110,7 +110,7 @@
                             <tr *ngFor="let aplicacion of aplicaciones 
                   | customFilter:'Contrato':contratoFiltro.value
                   | customFilter:'CartaPorte':ccppFiltro.value
-                  | customFilter:'LabelEstado':estadoFiltro.value
+                  | customFilter:'Estado':estadoFiltro.value
                   | customFilter:'RazonSocialCuit':clienteFiltro.value
                   | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
                   ;let odd=odd" role="row" [class.odd]="!odd">
