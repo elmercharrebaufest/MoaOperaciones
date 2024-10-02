@@ -38,6 +38,7 @@ export class ProveedorPeticionComponent implements OnInit {
     proveedorSeleccionado: any;
     proveedor: PeticionDeOfertaUsarioDto;
     proveedorAdicional: PeticionDeOfertaUsarioAdicionalDto;
+    displayAltaProveedor: boolean = false;
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -197,4 +198,14 @@ export class ProveedorPeticionComponent implements OnInit {
         this.validarProveedor(null);
     }
 
+    abrirPopupProveedor() {
+        this.displayAltaProveedor = true;
+    }
+    salirPopupProveedor() {
+        this.displayAltaProveedor = false;
+    }
+    agregarProveedor(event) {
+        debugger;
+        this.selectProveedor(event.proveedorDto);
+    }
 }
