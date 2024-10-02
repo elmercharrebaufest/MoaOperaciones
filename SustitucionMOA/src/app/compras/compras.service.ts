@@ -1327,6 +1327,7 @@ export class ComprasService extends BaseService {
         tipoImputacion: any,
         valorTipoImputacion: any,
         tratada: boolean | null,
+        numeroPo?: number,
 
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -1343,6 +1344,7 @@ export class ComprasService extends BaseService {
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
+        params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }

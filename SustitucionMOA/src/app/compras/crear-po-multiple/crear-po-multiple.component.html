@@ -23,21 +23,30 @@
   </div>
   
   <div class="row myRow">
-      <div class="col-md-3 col-lg-3">
+      <div class="col-md-3 ">
           <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
                          [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
       </div>
-      <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+      <div class="col-md-3" style="padding-right: 30px;">
           <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
                          [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
       </div>
 
-      <div class="col-md-2 col-lg-4">
-        <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
-                    dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                    [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                    (onClearClick)="returnToTodaysDate()">
-        </p-calendar>
+      <div class="col-md-3" #rangeDatesDiv>
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
+                      dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" [appendTo]="rangeDatesDiv"
+                      [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                      (onClearClick)="returnToTodaysDate()"
+                      [style]="{'width':'94%'}" [inputStyle]="{'width':'94%'}">
+          </p-calendar>
+      </div>
+      <div class="col-md-3">
+          <input class="inputAltura"
+                 pInputText type="number"
+                 [(ngModel)]="numeroPo"
+                 pattern="[0-9]*" inputmode="numeric"
+                 placeholder="Número de PO" 
+                 style="-webkit-appearance: textfield; -moz-appearance: textfield;"/>
       </div>
   </div>
 
