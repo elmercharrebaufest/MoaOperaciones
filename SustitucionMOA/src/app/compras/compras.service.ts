@@ -1145,12 +1145,12 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(solpId: string): Observable<ChatsDto> {
+    public obtenerChat(solpId: string): Observable<ApiResponse<ChatsDto>> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
 
         return this.http
-            .get<ChatsDto>("/api/compras/ObtenerChat", {
+            .get<ApiResponse<ChatsDto>>("/api/compras/ObtenerChat", {
                 params: params,
                 headers: this.headers
             });
