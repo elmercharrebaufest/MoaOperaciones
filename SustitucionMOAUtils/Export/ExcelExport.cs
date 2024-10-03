@@ -1,4 +1,5 @@
 ﻿using BigExcelCreator;
+using BigExcelCreator.Ranges;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -1442,8 +1443,10 @@ namespace SustitucionMOAUtils.Export
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
+        /// <param name="createAutoFilterOnFirstColumn"></param>
         /// <returns></returns>
-        public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data)
+        public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data,
+                                                                          bool addAutoFilterOnFirstColumn = false)
             where T : class
         {
             // probado con POPosicionDto
@@ -1456,7 +1459,8 @@ namespace SustitucionMOAUtils.Export
             MemoryStream stream = new MemoryStream();
             using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook))
             {
-                excelWriter.CreateAndOpenSheet($"PoMUltiple-{DateTime.Today:dd-MM-yyyy}");
+                string sheetName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+                excelWriter.CreateAndOpenSheet(sheetName);
 
                 IOrderedEnumerable<PropertyInfo> sortedColumns = typeof(T)
                     .GetProperties()
@@ -1468,6 +1472,12 @@ namespace SustitucionMOAUtils.Export
                 IEnumerable<string> columnNames = sortedColumns
                     .Select(x => x.GetCustomAttribute<ExcelColumnNameAttribute>()?.Name ?? x.Name);
                 excelWriter.WriteTextRow(columnNames);
+
+                if (addAutoFilterOnFirstColumn)
+                {
+                    CellRange autoFilterRange = new CellRange(1, 1, columnNames.Count(), 1, sheetName);
+                    excelWriter.AddAutofilter(autoFilterRange);
+                }
 
                 foreach (T filaDto in data)
                 {

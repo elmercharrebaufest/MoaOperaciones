@@ -1,6 +1,5 @@
 ﻿// Ignore Spelling: Solp
 
-using BigExcelCreator;
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
 using iTextSharp.text;
@@ -13,7 +12,6 @@ using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Attributes;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -9883,7 +9881,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public MemoryStream  DescargarPosicionesPOMultiple(DateTime? desde,
+        public MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
                                                               DateTime? hasta,
                                                               bool sap,
                                                               bool mantenimiento,
@@ -9913,7 +9911,7 @@ namespace SustitucionMOAUtils.Services
                                                        valorTipoImputacion,
                                                        numeroPo);
 
-            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data);
+            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data, true);
             return stream;
         }
 
