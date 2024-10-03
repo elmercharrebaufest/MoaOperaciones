@@ -802,6 +802,7 @@ export class DetalleConsultaComponent extends BaseComponent {
             this.tieneSubcategorias = true;
         } else {
             this.tieneSubcategorias = false;
+            this.subcategoriaId = null;
         }
         return this.subcategoriasList;
     }
