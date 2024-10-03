@@ -162,7 +162,7 @@ namespace SustitucionMOAUtils.Services
             for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
             {
                 var ordenEntity = ordenDto.ToEntity();
-                ordenEntity.DomicilioDescr = ordenEntity.DomicilioDescr.Substring(ordenEntity.DomicilioDescr.IndexOf(" ") + 1);
+                ordenEntity.DomicilioDescr = ordenEntity.DomicilioDescr?.Substring(ordenEntity.DomicilioDescr.IndexOf(" ") + 1);
                 ordenEntity.LocalidadScatoId = localidad.Id;
                 ordenEntity.LocalidadScatoDescripcion = localidad.LocalidadDescripcion;
                 ordenEntity.KmsARecorrer = localidad.KmARecorrer;
