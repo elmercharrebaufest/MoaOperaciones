@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+﻿using BigExcelCreator;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Attributes;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle;
 using SustitucionMOAModel.Models.WSMapMOA.CuentaCorriente;
 using SustitucionMOAModel.Models.WSMapMOA.Flete;
 using SustitucionMOAModel.Models.WSMapMOA.Pago.Detalle;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using FontSize = DocumentFormat.OpenXml.Spreadsheet.FontSize;
 using X14 = DocumentFormat.OpenXml.Office2010.Excel;
 using X15 = DocumentFormat.OpenXml.Office2013.Excel;
@@ -1432,6 +1434,84 @@ namespace SustitucionMOAUtils.Export
             Cell cell = new Cell() { CellValue = new CellValue(""), DataType = CellValues.String };
             row.Append(cell);
             sheetData.Append(row);
+        }
+
+        /// <summary>
+        /// Desde una lista de objetos.
+        /// Se recomienda usar los atributos ExcelIgnoreAttribute, ExcelColumnNameAttribute y ExcelColumnOrderAttribute para controlar las columnas.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data)
+            where T : class
+        {
+            // probado con POPosicionDto
+
+            /* en caso de requerir algún formato especial, m´sa hojas, o alguna otra cosa, 
+             * crear un método nuevo
+             * (tal vez sea buena idea evitar usar reflexión)
+             */
+
+            MemoryStream stream = new MemoryStream();
+            using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook))
+            {
+                excelWriter.CreateAndOpenSheet($"PoMUltiple-{DateTime.Today:dd-MM-yyyy}");
+
+                IOrderedEnumerable<PropertyInfo> sortedColumns = typeof(T)
+                    .GetProperties()
+                    .Where(x => x.GetCustomAttribute<ExcelIgnoreAttribute>() == null)
+                    .OrderBy(x => x.GetCustomAttribute<ExcelColumnOrderAttribute>()?.Order ?? int.MaxValue);
+
+                // Encabezado (se usan propiedades / decoradores del dto para definir texto real y orden)
+                // también se puede hacer a mano
+                IEnumerable<string> columnNames = sortedColumns
+                    .Select(x => x.GetCustomAttribute<ExcelColumnNameAttribute>()?.Name ?? x.Name);
+                excelWriter.WriteTextRow(columnNames);
+
+                foreach (T filaDto in data)
+                {
+                    excelWriter.BeginRow();
+                    foreach (PropertyInfo columnName in sortedColumns)
+                    {
+                        ExcelCellType cellType =
+                            columnName.GetCustomAttribute<ExcelColumnTypeAttribute>()?.Type ?? ExcelCellType.Text;
+                        object cellData = columnName.GetValue(filaDto);
+
+                        switch (cellType)
+                        {
+                            case ExcelCellType.Number:
+                                if (cellData != null)
+                                {
+                                    float cellDataNumber = Convert.ToSingle(cellData);
+                                    excelWriter.WriteNumberCell(cellDataNumber);
+                                }
+                                else
+                                {
+                                    excelWriter.WriteTextCell(string.Empty);
+                                }
+                                break;
+                            case ExcelCellType.Formula:
+                                string cellDataFormula = cellData?.ToString();
+                                if (!string.IsNullOrWhiteSpace(cellDataFormula))
+                                {
+                                    excelWriter.WriteFormulaCell(cellDataFormula);
+                                }
+                                else
+                                {
+                                    excelWriter.WriteTextCell(string.Empty);
+                                }
+                                break;
+                            case ExcelCellType.Text:
+                                string cellDataString = cellData?.ToString() ?? "";
+                                excelWriter.WriteTextCell(cellDataString);
+                                break;
+                        }
+                    }
+                    excelWriter.EndRow();
+                }
+            }
+            return stream;
         }
     }
 

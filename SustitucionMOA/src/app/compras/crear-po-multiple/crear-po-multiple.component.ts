@@ -328,14 +328,12 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        debugger;
                         var byteArray = new Uint8Array(result.file);
                         var blob = new Blob([byteArray], {
                             type: result.contentType,
                         });
 
                         this.downloadArchivoLocal(blob, result.fileName);
-
 
                         this.blockUI.stop();
                     }

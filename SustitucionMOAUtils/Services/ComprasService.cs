@@ -13,6 +13,7 @@ using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Attributes;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -9912,12 +9913,7 @@ namespace SustitucionMOAUtils.Services
                                                        valorTipoImputacion,
                                                        numeroPo);
 
-            MemoryStream stream = new MemoryStream();
-            using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook))
-            {
-                excelWriter.CreateAndOpenSheet("hola");
-                excelWriter.WriteTextRow(new List<string> { "hola" });
-            }
+            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data);
             return stream;
         }
 
