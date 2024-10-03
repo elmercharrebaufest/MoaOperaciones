@@ -54,6 +54,7 @@ export class CotizacionComponent extends ListBaseComponent {
     hoy: Date = new Date();
     condicionEspecial: boolean;
     condicionEspecialOriginal: boolean;
+    ajustePolinomicaDisabled: boolean;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService,
@@ -583,8 +584,14 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     private adjustFormControlsBasedOnConditions(): void {
+        if (this.model.trabajoHecho && this.model.urgencia) {
+            this.model.thAjustePolinomica = false;
+            this.ajustePolinomicaDisabled = true;
+        } else {
+            this.ajustePolinomicaDisabled = false;
+        }
+
         this.condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
-        
         this.habilitarCondicionesEspeciales(this.condicionEspecial)
 
         if(this.model.editarCondicionesEspeciales == false){
