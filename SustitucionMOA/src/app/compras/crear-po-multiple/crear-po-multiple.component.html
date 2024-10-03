@@ -23,21 +23,30 @@
   </div>
   
   <div class="row myRow">
-      <div class="col-md-3 col-lg-3">
+      <div class="col-md-3 ">
           <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
                          [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
       </div>
-      <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+      <div class="col-md-3" style="padding-right: 30px;">
           <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
                          [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
       </div>
 
-      <div class="col-md-2 col-lg-4">
-        <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
-                    dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                    [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                    (onClearClick)="returnToTodaysDate()">
-        </p-calendar>
+      <div class="col-md-3" #rangeDatesDiv>
+          <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
+                      dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" [appendTo]="rangeDatesDiv"
+                      [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                      (onClearClick)="returnToTodaysDate()"
+                      [style]="{'width':'94%'}" [inputStyle]="{'width':'94%'}">
+          </p-calendar>
+      </div>
+      <div class="col-md-3">
+          <input class="inputAltura"
+                 pInputText type="number"
+                 [(ngModel)]="numeroPo"
+                 pattern="[0-9]*" inputmode="numeric"
+                 placeholder="Número de PO" 
+                 style="-webkit-appearance: textfield; -moz-appearance: textfield;"/>
       </div>
   </div>
 
@@ -101,27 +110,37 @@
                       </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
-                      <tr>
-                        <td>
-                            <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
-                        </td>
-                        <td class="columna">{{posicionCompra.NroSolp}}</td>
-                        <td class="columna">{{posicionCompra.Indice}}</td>
-                        <td class="columna">{{posicionCompra.Codigo}}</td>
-                        <td class="columna">{{posicionCompra.Tarea}}</td>
-                        <td class="columna">{{posicionCompra.CentroComprasDescripcion}}</td>
-                        <td class="columna">{{posicionCompra.AlmacenComprasDescripcion}}</td>
-                        <td class="columna">{{posicionCompra.TextoSuministro}}</td>
-                        <td class="columna">{{posicionCompra.Modelo}}</td>
-                        <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
-                        <td class="columna">{{posicionCompra.Cantidad | number:'1.2-2'}}</td>
-                        <td class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
-                        <td class="columna">{{posicionCompra.MonedaSolpDescripcion}}</td>
-                        <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
-                        <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
-                        <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
-                        <td class="columna">{{posicionCompra.TieneCotizacion ? posicionCompra.ListaPO.join('-'):"-"}}</td>
-                      </tr>
+                        <tr>
+                            <td>
+                                <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                            </td>
+                            <td class="columna">{{posicionCompra.NroSolp}}</td>
+                            <td class="columna">{{posicionCompra.Indice}}</td>
+                            <td class="columna">{{posicionCompra.Codigo}}</td>
+                            <td class="columna">{{posicionCompra.Tarea}}</td>
+                            <td class="columna">{{posicionCompra.CentroComprasDescripcion}}</td>
+                            <td class="columna">{{posicionCompra.AlmacenComprasDescripcion}}</td>
+                            <td class="columna">{{posicionCompra.TextoSuministro}}</td>
+                            <td class="columna">{{posicionCompra.Modelo}}</td>
+                            <td class="columna">{{posicionCompra.GrupoComprasDescripcion}}</td>
+                            <td class="columna">{{posicionCompra.Cantidad | number:'1.2-2'}}</td>
+                            <td class="columna">{{posicionCompra.UnidadComprasDescripcion}}</td>
+                            <td class="columna">{{posicionCompra.MonedaSolpDescripcion}}</td>
+                            <td class="columna">{{posicionCompra.FechaEntregaServicio | customDateFormat | date :'d/M/yyyy' }}</td>
+                            <td class="columna">{{posicionCompra.PlazoEntrega}}</td>
+                            <td class="columna">{{posicionCompra.FechaOferta | customDateFormat | date :'d/M/yyyy'}}</td>
+                            <!-- posicionCompra.ListaPO -->
+                            <td class="columna" *ngIf="!posicionCompra.TieneCotizacion">-</td>
+                            <td class="columna" *ngIf="posicionCompra.TieneCotizacion && !numeroPo">{{posicionCompra.ListaPO.join('-')}}</td>
+                            <td class="columna" *ngIf="posicionCompra.TieneCotizacion && numeroPo">
+                                <span *ngFor="let lpoElem of posicionCompra.ListaPO; last as isLast">
+                                    <mark *ngIf="lpoElem == numeroPo.toString()">{{lpoElem}}</mark>
+                                    <span *ngIf="lpoElem != numeroPo.toString()">{{lpoElem}}</span>
+                                    <span *ngIf="!isLast">-</span>
+                                </span>
+                            </td>
+                            <!-- fin posicionCompra.ListaPO -->
+                        </tr>
                     </ng-template>
                   </p-table>
                 </div>

@@ -1880,16 +1880,39 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarPosicionesPOMultiple(bool? tratada, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+        public ActionResult ListarPosicionesPOMultiple(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null)
         {
             try
             {
                 return JsonCustom(new
                 {
-                    data = service.ListarPosicionesPOMultiple(fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, contratoMarco,
-                     !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+                    data = service.ListarPosicionesPOMultiple(fechaDesde,
+                                                              fechaHasta,
+                                                              sap,
+                                                              mantenimiento,
+                                                              web,
+                                                              repoAutomatica,
+                                                              tratada,
+                                                              contratoMarco,
+                                                              !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                              !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              numeroPo)
                 });
             }
             catch (InfoCustomException e)
