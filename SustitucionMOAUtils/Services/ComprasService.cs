@@ -1,5 +1,7 @@
 ﻿// Ignore Spelling: Solp
 
+using BigExcelCreator;
+using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -9878,6 +9880,45 @@ namespace SustitucionMOAUtils.Services
                 Log.Error(e);
                 throw;
             }
+        }
+
+        public MemoryStream  DescargarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null)
+        {
+            List<POPosicionDto> data = this.ListarPosicionesPOMultiple(desde,
+                                                       hasta,
+                                                       sap,
+                                                       mantenimiento,
+                                                       web,
+                                                       repoAutomatica,
+                                                       tratada,
+                                                       contratoMarco,
+                                                       centros,
+                                                       grupoDeCompras,
+                                                       claseDocumento,
+                                                       tipoImputacion,
+                                                       valorTipoImputacion,
+                                                       numeroPo);
+
+            MemoryStream stream = new MemoryStream();
+            using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook))
+            {
+                excelWriter.CreateAndOpenSheet("hola");
+                excelWriter.WriteTextRow(new List<string> { "hola" });
+            }
+            return stream;
         }
 
         public SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId)

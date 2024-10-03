@@ -1349,6 +1349,42 @@ export class ComprasService extends BaseService {
         return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
     }
 
+    public descargarPosicionesPOMultiple(
+        fechaDesde: any,
+        fechaHasta: any,
+        sap: boolean = false,
+        mantenimiento: boolean,
+        web: boolean,
+        repoAutomatica: boolean,
+        contratoMarco: boolean,
+        centros: any,
+        grupoDeCompras: any,
+        claseDocumento: any,
+        tipoImputacion: any,
+        valorTipoImputacion: any,
+        tratada: boolean | null,
+        numeroPo?: number,
+
+    ): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
+        params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
+        params = params.set('sap', sap.toString());
+        params = params.set('mantenimiento', mantenimiento.toString());
+        params = params.set('web', web.toString());
+        params = params.set('repoAutomatica', repoAutomatica.toString());
+        params = params.set('contratoMarco', contratoMarco.toString());
+        params = params.set('centros', centros);
+        params = params.set('grupoDeCompras', grupoDeCompras);
+        params = params.set('claseDocumento', claseDocumento);
+        params = params.set('tipoImputacion', tipoImputacion);
+        params = params.set('valorTipoImputacion', valorTipoImputacion);
+        params = params.set('tratada', tratada != null ? tratada.toString() : null);
+        params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
+
+        return this.http.get('/api/compras/DescargarPosicionesPOMultiple', { params: params, headers: this.headers });
+    }
+
 
     public enviarMotivoRechazoES(motivo: any): Observable<any> {
         let json = JSON.stringify(motivo);
