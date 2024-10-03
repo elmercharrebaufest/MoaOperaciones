@@ -196,7 +196,9 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                ValidarRequest(request, mailUsuario);
+                var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
+                ValidarRequest(request, usuario);
+                ModificarDatosRequest(request, usuario);
                 var existeTransporte = TransporteExiste(request.CUITTransporte);
                 var existeIntermediarioFlete = string.IsNullOrEmpty(request.CUITIntermediarioFlete) || TransporteExiste(request.CUITIntermediarioFlete);
                 var localidades = ObtenerDestinos(request.Cliente);
@@ -330,11 +332,10 @@ namespace SustitucionMOAUtils.Services
 
             return OrdenDeCargaFasonDto(orden, usuario);
         }
+
         public OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario)
         {
-            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId);
-            if (orden == null)
-                throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorio.Obtener<OrdenDeCargaFason>(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.Estado == EstadoOrdenDeCargaFason.AnulacionSolicitada)
                 throw new InfoCustomException("La anulación de esta orden ya fue solicitada.");
             var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
@@ -342,14 +343,15 @@ namespace SustitucionMOAUtils.Services
             if (esAdmin)
                 throw new InfoCustomException("Usuario administrador, debería anular directamente.");
             if (ValidarOrdenActivaScato(ordenId))
-                throw new InfoCustomException("La orden está en activa, imposible editar.");
+                throw new InfoCustomException("La orden ya está activa, imposible editar.");
 
             orden.Estado = EstadoOrdenDeCargaFason.AnulacionSolicitada;
-
             repositorio.GuardarCambios();
+            NotificarSolicitudAnulacion(orden);
 
             return OrdenDeCargaFasonDto(orden, usuario);
         }
+
         public OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud)
         {
             var orden = repositorio.Obtener<OrdenDeCargaFason>(estadoSolicitud.OrdenId);
@@ -490,7 +492,6 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarOrdenActivaScato(long ordenId)
         {
-
             Log.Info($"Obteniendo estado de la orden fason {ordenId} en Scato con nro Entrega");
             var result = this.scatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroIdFason(ordenId);
             if (result == null)
@@ -498,6 +499,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"ScatoConsumer.ObtenerRecorridoNoRechazadoPorNumeroDocumento Params => OrdenId: {ordenId}, Response => Terminado:{result.Terminado}");
             return !result.Terminado;
         }
+
         public bool ValidarSisaCliente(string codigoCliente, string codigoMaterial)
         {
             var controlarCargaReq = new ControlCargaRequest
@@ -610,6 +612,35 @@ namespace SustitucionMOAUtils.Services
             if (!detallesOrden.existeTransporte)
             {
                 emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
+            }
+        }
+        private void ModificarDatosRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
+        {
+            var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
+            if (esAdmin)
+            {
+                return;
+            }
+            if (usuario.EsCorredor())
+            {
+                var corredor = usuario.Proveedores.FirstOrDefault(p => p.CodigoProveedor == request.CodigoCorredor);
+                if (corredor is null)
+                {
+                    throw new ValidationCustomException("El corredor no existe.");
+                }
+                request.CorredorId = corredor.Id;
+            }
+        }
+
+        private void NotificarSolicitudAnulacion(OrdenDeCargaFason orden)
+        {
+            try
+            {
+                emailFasonService.EnviarMailSolicitudAnulacion(orden);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error al enviar la notificación de solicitud de anulación de la orden {orden.Id}", ex);
             }
         }
     }
