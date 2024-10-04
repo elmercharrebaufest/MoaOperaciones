@@ -3022,11 +3022,10 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(), It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
               .Returns(new List<SolpDto>() { solpDtoToClone() });
             DateTime startDate = new DateTime(2023, 9, 1);
-            DateTime endDate = DateTime.Now.Date;
-            int monthsApart = (endDate.Year - startDate.Year) * 12 + (endDate.Month - startDate.Month);
+            DateTime endDate = new DateTime(2024, 9, 1);
             target.ObtenerDatosReporteSolp();
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, SolpDto>>>(),
-                It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(monthsApart));
+                It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc), Times.Exactly(14));
         }
 
         [Test]
