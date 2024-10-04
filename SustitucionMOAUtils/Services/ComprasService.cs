@@ -4701,7 +4701,7 @@ namespace SustitucionMOAUtils.Services
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
             var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
-            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
+            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Distinct();
 
             // Primero, filtra las SOLP según la condición deseada
             var solpsAgrupadas = peticion.Posiciones
@@ -4711,7 +4711,9 @@ namespace SustitucionMOAUtils.Services
 
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
-            foreach (var solp in solps.Distinct())
+            bool esMultipleSolp = solps.Count() > 1;
+
+            foreach (var solp in solps)
             {
                 var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
                 var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
@@ -4720,7 +4722,7 @@ namespace SustitucionMOAUtils.Services
                     solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                     solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
-                if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
+                if (!esMultipleSolp && ( tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO"))
                 {
                     //invento registro con id de archivo 0 para bajar el pliego
                     legajo.Add(new LegajoDto
