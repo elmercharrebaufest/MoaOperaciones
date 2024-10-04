@@ -4715,7 +4715,7 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var solp in solps)
             {
-                if (ocultarArchivosPliego)
+                if (!ocultarArchivosPliego)
                 {
                     var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
                     var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
