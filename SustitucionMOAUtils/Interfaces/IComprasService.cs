@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
