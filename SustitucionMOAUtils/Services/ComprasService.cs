@@ -2589,19 +2589,18 @@ namespace SustitucionMOAUtils.Services
                 List<int> subPosicionesBorradas = new List<int>();
 
                 List<string> tablasSapAConsultar = new List<string>
-     {
-         TablasSap.Moneda,
-         TablasSap.Almacen,
-         TablasSap.Centro,
-         TablasSap.GrupoCompras,
-         TablasSap.GrupoArticulo,
-         TablasSap.Unidad,
-         TablasSap.ClaseDocumento,
-         TablasSap.CecoSolpSap,
-         TablasSap.CentroBeneficio,
-         TablasSap.CuentasSolpSap,
-
-     };
+                 {
+                     TablasSap.Moneda,
+                     TablasSap.Almacen,
+                     TablasSap.Centro,
+                     TablasSap.GrupoCompras,
+                     TablasSap.GrupoArticulo,
+                     TablasSap.Unidad,
+                     TablasSap.ClaseDocumento,
+                     TablasSap.CecoSolpSap,
+                     TablasSap.CentroBeneficio,
+                     TablasSap.CuentasSolpSap,
+                 };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
                 var tablaGeneral = repositorio.Listar<TablaGeneral>(x => x.Tabla == "TipoSolp");
@@ -2948,7 +2947,6 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento && !string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
                 {
-
                     ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
 
                     repositorio.GuardarCambios();
@@ -3007,6 +3005,7 @@ namespace SustitucionMOAUtils.Services
                 solp.Pliego.ObservacionesGeneracion = observaciones;
             }
         }
+
         private void CompletarObservacionSegunCondEspOT(Solp solp, string observaciones)
         {
             if (!ValidarCondicionEspecial(solp))
@@ -3055,17 +3054,15 @@ namespace SustitucionMOAUtils.Services
         {
             CompletarCondicionEspecial(posicion.NumeroRequerimientoInterno, solp);
 
-            if (!ValidarCondicionEspecial(solp)) return;
-
-            if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
-            {
-                EnviarMailErrorCondicionEspecial(solp, "Debe ingresar un proveedor");
-                ReiniciarCondicionEspecial(solp);
-                return;
-            }
-
             try
             {
+                if (!ValidarCondicionEspecial(solp)) { return; }
+
+                if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
+                {
+                    throw new WSCustomException("Debe ingresar un proveedor");
+                }
+
                 if (solp.Adicional != true)
                 {
                     var proveedor = ObtenerProveedorCompras(posicion.ProveedorDeseado);
@@ -3105,10 +3102,16 @@ namespace SustitucionMOAUtils.Services
             solp.ProveedorAsignado_Id = ordenDeCompra.Cabecera.Usuario_Id;
         }
 
-
         private bool ValidarCondicionEspecial(Solp solp)
         {
-            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
+            bool isOk = solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
+
+            if ((solp.TrabajoYaHecho == true) && (solp.Urgencia == true) && (solp.THAjustePolinomica == true))
+            {
+                throw new WSCustomException("Una SOLP \"Trabajo ya hecho\" con \"Urgencia\" no puede ser de tipo \"Ajuste Polinómica\"");
+            }
+
+            return isOk;
         }
 
         private bool ValidarCondicionEspecialArchivosYObservaciones(Solp solp)
