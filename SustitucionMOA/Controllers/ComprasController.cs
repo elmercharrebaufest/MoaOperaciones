@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
@@ -1913,6 +1914,69 @@ namespace SustitucionMOA.Controllers
                                                               !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
                                                               !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                                                               numeroPo)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DescargarPosicionesPOMultiple(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null)
+        {
+            try
+            {
+                MemoryStream data = service.DescargarPosicionesPOMultiple(fechaDesde,
+                                                          fechaHasta,
+                                                          sap,
+                                                          mantenimiento,
+                                                          web,
+                                                          repoAutomatica,
+                                                          tratada,
+                                                          contratoMarco,
+                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          numeroPo);
+
+                string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+                const string contentType = CustomMediaTypeNames.Application.xlsx;
+
+                return JsonCustom(new
+                {
+                    file = data.ToArray(),
+                    contentType,
+                    fileName,
                 });
             }
             catch (InfoCustomException e)
