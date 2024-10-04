@@ -1,5 +1,6 @@
 ﻿using BigExcelCreator;
 using BigExcelCreator.Ranges;
+using BigExcelCreator.Styles;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -1437,6 +1438,8 @@ namespace SustitucionMOAUtils.Export
             sheetData.Append(row);
         }
 
+        private const string tableHeaderDefaultFormatName = "tableHeader";
+
         /// <summary>
         /// Desde una lista de objetos.
         /// Se recomienda usar los atributos ExcelIgnoreAttribute, ExcelColumnNameAttribute y ExcelColumnOrderAttribute para controlar las columnas.
@@ -1446,7 +1449,8 @@ namespace SustitucionMOAUtils.Export
         /// <param name="createAutoFilterOnFirstColumn"></param>
         /// <returns></returns>
         public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data,
-                                                                          bool addAutoFilterOnFirstColumn = false)
+                                                                          bool addAutoFilterOnFirstColumn = false,
+                                                                          StyleList styleList = default)
             where T : class
         {
             // probado con POPosicionDto
@@ -1456,8 +1460,10 @@ namespace SustitucionMOAUtils.Export
              * (tal vez sea buena idea evitar usar reflexión)
              */
 
+            if (styleList == default) { styleList = DefaultMoaStyleSheet(); }
+
             MemoryStream stream = new MemoryStream();
-            using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook))
+            using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook, true, styleList.GetStylesheet()))
             {
                 string sheetName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
                 excelWriter.CreateAndOpenSheet(sheetName);
@@ -1471,7 +1477,16 @@ namespace SustitucionMOAUtils.Export
                 // también se puede hacer a mano
                 IEnumerable<string> columnNames = sortedColumns
                     .Select(x => x.GetCustomAttribute<ExcelColumnNameAttribute>()?.Name ?? x.Name);
-                excelWriter.WriteTextRow(columnNames);
+
+                int headerStyle = styleList.GetIndexByName(tableHeaderDefaultFormatName);
+                if (headerStyle >= 0)
+                {
+                    excelWriter.WriteTextRow(columnNames, styleList.GetIndexByName(tableHeaderDefaultFormatName));
+                }
+                else
+                {
+                    excelWriter.WriteTextRow(columnNames);
+                }
 
                 if (addAutoFilterOnFirstColumn)
                 {
@@ -1523,6 +1538,20 @@ namespace SustitucionMOAUtils.Export
             }
             return stream;
         }
-    }
 
+        public static StyleList DefaultMoaStyleSheet()
+        {
+            StyleList styleList = new StyleList();
+            styleList.NewStyle(font: new Font(new Bold(),
+                                              new Color() { Rgb = new HexBinaryValue() { Value = "FFFFFF" } }),
+                               fill: new Fill(new PatternFill(new ForegroundColor() { Rgb = "666666" })
+                               { PatternType = PatternValues.Solid }),
+                               border: new Border(new VerticalBorder(new Color() { Rgb = new HexBinaryValue() { Value = "FFFFFF" } })
+                               { Style = BorderStyleValues.Medium }),
+                               numberingFormat: null,
+                               name: tableHeaderDefaultFormatName);
+
+            return styleList;
+        }
+    }
 }
