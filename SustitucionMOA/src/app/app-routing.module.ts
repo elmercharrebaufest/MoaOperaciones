@@ -27,6 +27,7 @@ import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
+import { LogViewerComponent } from "./log-viewer/log-viewer.component";
 
 
 const appRoutes: Routes = [
@@ -204,6 +205,8 @@ const appRoutes: Routes = [
                 loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule"
             },
             { path: "mis-novedades", component: ListadoNovedadesComponent },
+            { path: "log-viewer", component: LogViewerComponent },
+
 
         ],
     },

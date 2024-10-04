@@ -1,16 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOACrypting
 {
     public class CryptoServiceProvider
     {
-        static readonly string PasswordHash = "M0L1n@s4gR0+weB9r0vE3d0R3$!";
+        static readonly string PasswordHash = ConfigurationManager.AppSettings["CryptoServicePasswordHash"];
         static readonly string SaltKey = "S4Lt&K3yM0@";
         static readonly string VIKey = "#9a8B7c6D5E4f3G2i";
 

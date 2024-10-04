@@ -351,6 +351,7 @@
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.css" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.html" />
+    <TypeScriptCompile Include="src\app\common\models\log-table.ts" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\seleccionar-proveedor\seleccionar-proveedor.component.css" />
@@ -367,8 +368,6 @@
     <Content Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\circular\circular.component.html" />
-    <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.css" />
-    <Content Include="src\app\compras\dashboard-comprador\legajo\legajo.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.css" />
     <Content Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.html" />
     <Content Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.css" />
@@ -407,6 +406,8 @@
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.css" />
     <Content Include="src\app\compras\dashboard\revision-tecnica\revision-tecnica.component.html" />
     <Content Include="src\app\compras\legajo-externo\legajo-externo.component.html" />
+    <Content Include="src\app\compras\legajo\legajo.component.css" />
+    <Content Include="src\app\compras\legajo\legajo.component.html" />
     <Content Include="src\app\compras\panel-horas\panel-horas.component.css" />
     <Content Include="src\app\compras\panel-horas\panel-horas.component.html" />
     <Content Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.css" />
@@ -443,6 +444,8 @@
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.html" />
+    <Content Include="src\app\log-viewer\log-viewer.component.css" />
+    <Content Include="src\app\log-viewer\log-viewer.component.html" />
     <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.css" />
     <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.html" />
     <Content Include="src\app\ordenes-de-carga-fason\alta\ordenes-de-carga-fason.alta.component.css" />
@@ -1146,7 +1149,6 @@
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
-    <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
     <Compile Include="Controllers\CursoController.cs" />
     <Compile Include="Controllers\EntradaServicioController.cs" />
     <Compile Include="Controllers\LoggerController.cs" />
@@ -1201,6 +1203,7 @@
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
+    <Compile Include="Jobs\NotificacionErroresJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />
     <Compile Include="Jobs\EnviarMailReporteSOLPJob.cs" />
     <Compile Include="Jobs\VencimientoOrdenesResiduosJob.cs" />
@@ -1282,8 +1285,6 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.spec.ts" />
-    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
@@ -1312,6 +1313,8 @@
     <TypeScriptCompile Include="src\app\compras\enum-tipo-imputacion.ts" />
     <TypeScriptCompile Include="src\app\compras\enum-tipo-solp-sap.ts" />
     <TypeScriptCompile Include="src\app\compras\legajo-externo\legajo-externo.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\legajo\legajo.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\compras\legajo\legajo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\panel-horas\panel-horas.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
@@ -1379,6 +1382,7 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
     <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
+    <TypeScriptCompile Include="src\app\error.interceptor.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05-routing.module.ts" />
@@ -1394,6 +1398,9 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
+    <TypeScriptCompile Include="src\app\log-viewer\log-viewer.service.ts" />
+    <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.ts" />
     <TypeScriptCompile Include="src\app\modelos\adjudicacion.ts" />
     <TypeScriptCompile Include="src\app\modelos\area.ts" />
     <TypeScriptCompile Include="src\app\modelos\circular-model.ts" />
@@ -1505,6 +1512,8 @@
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
+    <TypeScriptCompile Include="src\pipes\customDecimalPipe.pipe.ts" />
+    <TypeScriptCompile Include="src\pipes\replace.pipe.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.component.ts" />
     <TypeScriptCompile Include="src\app\aduana\aduana.service.ts" />

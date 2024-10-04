@@ -82,6 +82,8 @@ namespace SustitucionMOAModel.Dto
         public decimal TodasTotalARPCotizacionPosicion { get; set; }
         public int PosicionId { get; set; }
         public bool Completado { get; set; }
+
+        public bool Adjudicado { get; set; }
     }
 
     public class CotizacionSubPosicionDto

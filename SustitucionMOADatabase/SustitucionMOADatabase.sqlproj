@@ -67,6 +67,7 @@
     <Folder Include="scripts\Comunicacion" />
     <Folder Include="scripts\Notificaciones\" />
     <Folder Include="DBO\Sequence" />
+    <Folder Include="LOGS" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -253,6 +254,8 @@
     <Build Include="DBO\Stored Procedures\ObtenerSiguienteValorSecuencia.sql" />
     <None Include="scripts\PostDeployment\UsuariosParaExternalAPI.sql" />
     <Build Include="DBO\Tables\ConfiguracionUsuario.sql" />
+    <Build Include="LOGS\LogTable.sql" />
+    <Build Include="LOGS\schema.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -299,5 +302,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\PostDeployment\Curso.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\ActualizarApellidoChoferOrdenDeCargaFason.sql" />
   </ItemGroup>
 </Project>

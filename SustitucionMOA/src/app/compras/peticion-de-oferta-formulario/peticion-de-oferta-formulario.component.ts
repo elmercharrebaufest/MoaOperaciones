@@ -59,6 +59,21 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     TodasPosicionesSeleccionadas: boolean = false;
     pliegoDeGeneralidades: boolean = false;
     esTipoPOMultiple: boolean = false;
+    plazoDeEntrega: Date;
+    hayPosicionesPendientes(): boolean { return this.solpCompraDto.PosicionCompras.some(x => x.Cantidad > 0) };
+    posicionesPendientes(): PosicionCompra[] { return this.solpCompraDto.PosicionCompras.filter(x => x.Cantidad > 0) };
+    plazoDeEntregaFechaMin: Date;
+
+    locale = {
+        firstDayOfWeek: 0,
+        dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+        dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+        dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+        monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+        monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+        today: 'Hoy',
+        clear: 'Borrar'
+    };
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -75,11 +90,11 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
         this.route.params.subscribe(params => {
             let ids = params['id'];
-  
-            if(!isNaN(ids)){
+
+            if (!isNaN(ids)) {
                 this.obtenerSolpCompras(ids);
                 this.esTipoPOMultiple = false;
-                
+
 
             } else {
                 this.obtenerPosicionesMultipleCompras(ids);
@@ -96,6 +111,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
         this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
 
+        this.setPlazoDeEntregaFechaMin();
     }
 
     obtenerSolpCompras(id) {
@@ -151,6 +167,8 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.proveedoresValidos = this.mostrarProveedores(validos);
         this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
         this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
+
+        this.plazoDeEntrega = new Date(this.solpCompraDto.PlazoDeOfertaTentativo);
     }
 
     obtenerPosicionesMultipleCompras(ids) {
@@ -185,7 +203,7 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
 
     public get esTipoMaterial(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo  == "MATERIALES" || (this.solpCompraDto.PosicionCompras != null && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == "MATERIALES");
+        return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES" || (this.solpCompraDto.PosicionCompras != null && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == "MATERIALES");
     }
 
     public get esTipoServicio(): boolean {
@@ -301,13 +319,14 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
     guardarPeticion() {
         this.blockUI.start("Grabando...");
         try {
-            let envio = {
+            let envio: EnvioSolpCompra = {
                 Adjuntos: this.archivos,
                 Observacion: this.observaciones,
                 PosIds: this.solpCompraDto.PosicionCompras.filter(x => x.Selected == true).map(a => a.Id),
                 SolpId: this.solpCompraDto.Id,
                 UsuarioIds: this.proveedoresSeleccionados.map(a => a.Id),
-                AdjuntoPliego: this.pliegoDeGeneralidades
+                AdjuntoPliego: this.pliegoDeGeneralidades,
+                PlazoDeEntrega: this.plazoDeEntrega,
             }
             this.subscription = this.service.GrabarPeticion(envio).subscribe(
                 (result: any) => {
@@ -386,9 +405,40 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
-            this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = true);
+            this.solpCompraDto.PosicionCompras
+                .filter(x =>
+                    !(x.Cantidad <= 0)
+                    && !x.Selected // por checkSelectAllIfNeeded, prevenir ciclos
+                )
+                .map(pos => pos.Selected = true);
         } else {
             this.solpCompraDto.PosicionCompras.map(pos => pos.Selected = false);
         }
+    }
+
+    checkSelectAllIfNeeded(): void {
+        this.TodasPosicionesSeleccionadas = this.posicionesPendientes().every(x => x.Selected);
+    }
+
+    setPlazoDeEntregaFechaMin(): void {
+        this.plazoDeEntregaFechaMin = this.dateDiasDesdeHoy(0); // hoy
+    }
+
+    get mostrarAlertaFechaInferior10Dias(): boolean {
+        if (!this.plazoDeEntrega) { return false; }
+        let limite = this.dateDiasDesdeHoy(10);
+        return this.plazoDeEntrega < limite;
+    }
+
+    dateDiasDesdeHoy(cantidadDeDiasParaSumar: number): Date {
+        cantidadDeDiasParaSumar *= 24; // convertir días a horas
+        cantidadDeDiasParaSumar *= 60; // convertir a minutos
+        cantidadDeDiasParaSumar *= 60; // convertir a segundos
+        cantidadDeDiasParaSumar *= 1000; // se representa en milisegundos;
+
+        let returnValue: Date = new Date(Date.now() + (cantidadDeDiasParaSumar))
+        returnValue.setHours(0, 0, 0, 0);
+
+        return returnValue;
     }
 }

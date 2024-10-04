@@ -340,7 +340,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public byte[] GenerarDeclaracionProveedor(string mailUsuario, int proveedorId, int cosechaId, double hectareasTotales, string CUITDeclaracion, string razonSocialDeclaracion)
-        {   
+        {
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             ValidarUsuario(usuario, proveedorId);
@@ -604,7 +604,7 @@ namespace SustitucionMOAUtils.Services
             };
             var content = JsonConvert.SerializeObject(datos);
 
-            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+            Log.Info( $"CampoSustentableService, GenerarPDFDeclaracion, {content}");
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);

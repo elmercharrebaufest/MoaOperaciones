@@ -36,9 +36,9 @@ export interface CotizacionPosicionDto {
     PlazoDeEntrega: number
     Id: number,
     Cotizacion_Id: number,
-    PeticionDeOfertaSolpPosicion_Id: number, 
+    PeticionDeOfertaSolpPosicion_Id: number,
     Cantidad: number,
-    UnidadDeMedida_Id: any, 
+    UnidadDeMedida_Id: any,
     Moneda_Id: any,
     Precio: number,
     PrecioTotal: number,
@@ -58,8 +58,12 @@ export interface CotizacionPosicionDto {
     PrimeraCantidad: number
     SegundoPlazoDeOferta: number
     SegundaCantidad: number
-    TercerPlazoDeOferta : number
-    TerceraCantidad : number
+    TercerPlazoDeOferta: number
+    TerceraCantidad: number,
+    Completado: Boolean,
+    Adjudicado: Boolean,
+
+    MensajeTablaVerOfertas: string,
 }
 
 export interface CotizacionSubPosicionDto {

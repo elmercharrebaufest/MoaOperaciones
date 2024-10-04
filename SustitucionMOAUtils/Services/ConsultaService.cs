@@ -596,8 +596,8 @@ namespace SustitucionMOAUtils.Services
                     GeneradaExternamente = x.UsuarioInterno_Id == null,
                     MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
                     Rubro = x.Detalle.Rubro,
-                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER"?
-                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion):
+                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER" ?
+                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion) :
                         DbFunctions.DiffDays(x.FechaCreacion, hoy)
                 },
                 paginacion,
@@ -973,7 +973,7 @@ namespace SustitucionMOAUtils.Services
                 x => x.TablaSeccionMaterial == tablaSeccionMaterial && !string.IsNullOrEmpty(x.Nombre))
                     .OrderBy(c => c.Descripcion)
                     .ToList();
-            
+
                 return materiales;
             }
             catch (ValidationCustomException e)
@@ -1528,5 +1528,5 @@ namespace SustitucionMOAUtils.Services
 
             return ret;
         }
-    }   
+    }
 }

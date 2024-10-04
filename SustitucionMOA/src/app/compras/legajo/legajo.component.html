@@ -16,19 +16,30 @@
                <strong>Error! </strong>{{ error }}</ngb-alert>
         </p>
         <div class="col-md-12 titulosModal" style="margin-right: 1em;">
-            <span *ngIf="usuarioProveedor == false">
-                <p-fileUpload #fileUpload
-                              name="myfile[]"
-                              customUpload="true"
-                              (uploadHandler)="onBasicUploadAuto($event, fileUpload)"
-                              multiple="multiple"
-                              auto="auto"
-                              chooseLabel="Adjuntar"
-                              [style.pointer-events]="esAuditor ? 'none' : 'auto'"
-                              [style.opacity]="esAuditor ? '0.6' : '5'">
-                    <ng-template let-file pTemplate="file"></ng-template>
-                </p-fileUpload>
-            </span>
+            <div class="row">
+                <div class="col">
+                    <span *ngIf="usuarioProveedor == false" class="col-md-6">
+                        <p-fileUpload #fileUpload
+                                    name="myfile[]"
+                                    customUpload="true"
+                                    (uploadHandler)="onBasicUploadAuto($event, fileUpload)"
+                                    multiple="multiple"
+                                    auto="auto"
+                                    chooseLabel="Adjuntar"
+                                    [style.pointer-events]="esAuditor ? 'none' : 'auto'"
+                                    [style.opacity]="esAuditor ? '0.6' : '5'">
+                            <ng-template let-file pTemplate="file"></ng-template>
+                        </p-fileUpload>
+                    </span>
+                </div>
+                <div class="col">
+                    <span class="col-sm-6 letraTitulo" *ngIf="mostrarBotonVerOfertas" style="text-align: end; padding-top: 9px;">
+                        <button class="publicar btn btn-success" style="width: 140px;" (click)="abrirModalVerOfertas()">
+                            Ver ofertas
+                        </button>
+                    </span>
+                </div>
+            </div>
             <p-table [value]="legajo" responsiveLayout="scroll | stack" [scrollable]="true" scrollHeight="300px" >
                 <ng-template pTemplate="header">
                     <tr>
@@ -59,3 +70,11 @@
 
     </p-footer>
 </p-dialog>
+
+<app-visualizar-precio
+    [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+    [(peticionOferta_Id)]="idLegajo"
+    [(esObligatorioAdjuntar)]="!esSolicitante"
+    (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
+    (preciosGuardadoEmitter)="onVisualizarPrecioGuardado()">
+</app-visualizar-precio>

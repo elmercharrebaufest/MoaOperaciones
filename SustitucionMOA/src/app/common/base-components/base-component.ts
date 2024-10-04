@@ -7,6 +7,7 @@ import { Subscription } from 'rxjs';
 import { ApiResponse } from '../models/response';
 import { MensajeComponent } from '../view-child/mensaje/mensaje.component';
 import { SessionDataService } from '../services/SessionDataService';
+import { Permiso } from '../enums/Permisos';
 
 @Component({
     selector: 'app-base',
@@ -18,6 +19,7 @@ export class BaseComponent implements OnDestroy {
     }
 
     subscription: any;
+    subscriptionArray: Subscription[] = [];
     subscriptions = new Subscription();
     subscriptionDropDowns: any;
     tipoUsuario: string = sessionStorage.getItem("tipoUsuario");
@@ -59,6 +61,7 @@ export class BaseComponent implements OnDestroy {
     }
 
     public unsubscribe() {
+        this.subscriptionArray.forEach(sub => { sub.unsubscribe(); });
         if (this.subscription != undefined)
             this.subscription.unsubscribe();
         if (this.subscriptionDropDowns != undefined)
@@ -93,6 +96,10 @@ export class BaseComponent implements OnDestroy {
     setTabs() { }
 
     isAuthorized(permiso: string) {
+        return this.securityService.tienePermiso(permiso);
+    }
+
+    tienePermiso(permiso: Permiso) {
         return this.securityService.tienePermiso(permiso);
     }
 

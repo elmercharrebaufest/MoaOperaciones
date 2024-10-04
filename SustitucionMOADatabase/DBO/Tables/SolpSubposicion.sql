@@ -14,8 +14,8 @@
 
 
 [TipoImputacion_Id] INT NULL, 
-    [Estado] BIT NULL DEFAULT 1, 
-    CONSTRAINT [PK_dbo.SolpSubposicion] PRIMARY KEY CLUSTERED 
+	[Estado] BIT NULL DEFAULT 1, 
+	CONSTRAINT [PK_dbo.SolpSubposicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
@@ -27,3 +27,9 @@
 	CONSTRAINT [FK_SolpSubposicion_TablaSap_CuentaMayorSap] FOREIGN KEY (CuentaMayor_Id) REFERENCES [TablaSap]([Id]),
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 
+GO
+
+
+CREATE NONCLUSTERED INDEX [IX_SolpSubposicion_SolpPosicion_Id] ON [dbo].[SolpSubposicion]([SolpPosicion_Id])
+
+GO

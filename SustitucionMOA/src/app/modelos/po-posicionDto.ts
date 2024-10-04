@@ -18,4 +18,5 @@ export interface POPosicionDto {
     TieneCotizacion: boolean,
     Selected: boolean,
     TodasPosicionesSeleccionadas: boolean,
+    ListaPO?:  string[],
 }

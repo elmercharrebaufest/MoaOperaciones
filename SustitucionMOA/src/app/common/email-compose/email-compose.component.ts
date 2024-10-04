@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { EmailComposeModel } from './email-compose.model';
+import { EmailComposeModel, EmailInfo } from './email-compose.model';
 import { EmailComposeService } from './email-compose.service';
 import { Solp } from '../../compras/solp/solp';
 
@@ -12,28 +12,27 @@ import { Solp } from '../../compras/solp/solp';
 export class EmailComposeComponent implements OnInit {
 
   @Output()
-  sendEmailWrapperEmitter = new EventEmitter<EmailComposeModel>(); 
+  sendEmailWrapperEmitter = new EventEmitter<EmailComposeModel<EmailInfo>>();
 
   @Input() solpActual: Solp;
 
   public visible: boolean = false;
-  public model: EmailComposeModel = new EmailComposeModel();
+  public model: EmailComposeModel<EmailInfo> = new EmailComposeModel();
 
   formGroupEmail: FormGroup
   tieneAdjuntos: boolean;
 
   constructor(private emailComposeService: EmailComposeService,
     private formBuilder: FormBuilder) {
-    this.emailComposeService.toogleOn.subscribe(value => 
-      {
-        this.visible = value.visible; 
-        this.model = value.model;
-      });
+    this.emailComposeService.toogleOn.subscribe(value => {
+      this.visible = value.visible;
+      this.model = value.model;
+    });
   }
 
   ngOnInit(): void {
-    this.formGroupEmail = this.formBuilder.group({    
-      from: new FormControl('', Validators.required),            
+    this.formGroupEmail = this.formBuilder.group({
+      from: new FormControl('', Validators.required),
       to: new FormControl('', Validators.required),
       cc: new FormControl(''),
       bcc: new FormControl(''),
@@ -44,7 +43,7 @@ export class EmailComposeComponent implements OnInit {
 
   showInputError(fieldName: string): boolean {
     if (this.formGroupEmail && this.formGroupEmail.controls) {
-        return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required));
+      return (this.formGroupEmail.controls[fieldName].invalid || (this.formGroupEmail.controls[fieldName].errors && this.formGroupEmail.controls[fieldName].errors.required));
     }
 
     return false;
@@ -53,7 +52,7 @@ export class EmailComposeComponent implements OnInit {
   isEmailInvalid(value: any) {
     const EMAIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (value != null && value !== '') {
-        return EMAIL_REGEXP.test(value)
+      return EMAIL_REGEXP.test(value)
     }
   }
 
@@ -63,18 +62,22 @@ export class EmailComposeComponent implements OnInit {
       return;
     }
     if (!this.isEmailInvalid(value)) {
-      this.model.cc.pop(); 
+      this.model.cc.pop();
     }
   }
 
-  validateToEmailAddress(event: any): void {
-    let value = event.value;
+  validateToEmailAddress(event: any): boolean {
+    let value = event.query;
     if (!value) {
-      return;
+      return false;
     }
     if (!this.isEmailInvalid(value)) {
-      this.model.to.pop(); 
+      return false;
     }
+    const emailInfo = { Id: value, CodigoDescripcion: value };
+    this.solpActual.usuarioSolicitanteList.push(emailInfo);
+    this.model.to.push(emailInfo);
+    return true;
   }
 
   validateBccEmailAddress(event: any): void {
@@ -83,7 +86,7 @@ export class EmailComposeComponent implements OnInit {
       return;
     }
     if (!this.isEmailInvalid(value)) {
-      this.model.bcc.pop(); 
+      this.model.bcc.pop();
     }
   }
 
@@ -107,8 +110,24 @@ export class EmailComposeComponent implements OnInit {
       return true;
     }
     const molinosAgroDomain = "molinosagro.com.ar";
-    const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") +1);
+    const fromEmaildomain = this.model.from.substring(this.model.from.lastIndexOf("@") + 1);
     return molinosAgroDomain == fromEmaildomain.toLocaleLowerCase();
   }
 
+  addWithEnterOrTab(event: KeyboardEvent): void {
+    if (event.code === "Enter" || event.code === "Tab") {
+      const input = event.target as HTMLInputElement;
+      const fueAgregado = this.validateToEmailAddress({ query: input.value });
+      if (fueAgregado) {
+        input.value = '';
+      }
+    }
+  }
+
+  resultadosMailsFiltrados: string[];
+
+  search(event) {
+    this.resultadosMailsFiltrados = this.solpActual.usuarioSolicitanteList
+      .filter((x) => x.CodigoDescripcion.toLowerCase().includes(event.query.toLowerCase()));
+  }
 }

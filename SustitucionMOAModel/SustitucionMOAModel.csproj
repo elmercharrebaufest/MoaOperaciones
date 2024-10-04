@@ -77,6 +77,7 @@
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
+    <Compile Include="Dto\Compras\ObtenerLegajoResponse.cs" />
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
@@ -90,9 +91,11 @@
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
+    <Compile Include="Dto\LogTableDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
+    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
     <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />
@@ -120,6 +123,8 @@
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
+    <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
+    <Compile Include="Dto\sap\NumeroPosicion.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
@@ -129,6 +134,7 @@
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\LogTable.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
@@ -206,7 +212,6 @@
     <Compile Include="Dto\DolarMaterialDto.cs" />
     <Compile Include="Dto\NotificacionPrioridadDto.cs" />
     <Compile Include="Dto\NotificacionSinAdjuntosDto.cs" />
-    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudEdicionFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\ClienteSAPResponse.cs" />
     <Compile Include="Dto\LegajoExternoDto.cs" />

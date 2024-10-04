@@ -7,7 +7,7 @@ import {
     NO_ERRORS_SCHEMA
 } from "@angular/core";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { ReCaptchaModule } from "angular2-recaptcha";
@@ -91,6 +91,8 @@ import { ButtonModule } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
 import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
 import { CalendarModule } from 'primeng/calendar';
+import { ErrorInterceptor } from "./error.interceptor";;
+import { LogViewerComponent } from './log-viewer/log-viewer.component'
 
 @NgModule({
   imports: [
@@ -162,7 +164,8 @@ import { CalendarModule } from 'primeng/calendar';
     ModalNotificacionesComponent,
     ComunicacionesComponent,
     AprobacionExternaComponent,
-    MessageSpinnerComponent
+    MessageSpinnerComponent,
+    LogViewerComponent
     ],
     providers: [
         DatePipe,
@@ -185,7 +188,8 @@ import { CalendarModule } from 'primeng/calendar';
         ConsultaService,
         ConfirmationService,
         ApikeyService,
-        { provide: ErrorHandler, useClass: GlobalErrorHandler }
+        { provide: ErrorHandler, useClass: GlobalErrorHandler },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true } 
     ],
     bootstrap: [AppComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA]

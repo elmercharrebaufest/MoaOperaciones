@@ -280,11 +280,11 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado,bool esCodigoCorredor)
+        private string ObtenerCodigoProveedorSeleccionado(Usuario usuario, Proveedor proveedorAsignado, string codigoSeleccionado, bool esCodigoCorredor)
         {
             var puedeSeleccionarProveedor = usuario.TienePermiso(PermisoEnum.SeleccionarVendedor);
             if (
-                usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado) || 
+                usuario.EsCorredor() && (!puedeSeleccionarProveedor || proveedorAsignado.CodigoProveedor == codigoSeleccionado) ||
                 (proveedorAsignado.CodigoProveedor != codigoSeleccionado && esCodigoCorredor))
             {
                 return null;
