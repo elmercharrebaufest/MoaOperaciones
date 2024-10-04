@@ -4711,10 +4711,11 @@ namespace SustitucionMOAUtils.Services
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
             bool esMultipleSolp = solps.Count() > 1;
+            bool ocultarArchivosPliego = esProveedor && esMultipleSolp;
 
             foreach (var solp in solps)
             {
-                if (!esMultipleSolp)
+                if (ocultarArchivosPliego)
                 {
                     var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
                     var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
