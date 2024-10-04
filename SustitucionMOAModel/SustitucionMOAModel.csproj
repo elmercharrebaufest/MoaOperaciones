@@ -376,6 +376,8 @@
     <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
     <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
     <Compile Include="Enums\PermisoEnum.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnHiddenAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnWidthAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnTypeAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />

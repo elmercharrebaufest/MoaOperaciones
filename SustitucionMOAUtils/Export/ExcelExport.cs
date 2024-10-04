@@ -1450,7 +1450,8 @@ namespace SustitucionMOAUtils.Export
         /// <returns></returns>
         public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data,
                                                                           bool addAutoFilterOnFirstColumn = false,
-                                                                          StyleList styleList = default)
+                                                                          StyleList styleList = default,
+                                                                          List<Column> columns = default)
             where T : class
         {
             // probado con POPosicionDto
@@ -1461,17 +1462,18 @@ namespace SustitucionMOAUtils.Export
              */
 
             if (styleList == default) { styleList = DefaultMoaStyleSheet(); }
+            if (columns?.Any() != true)
+            {
+                columns = CreateColumnsFromObject(typeof(T));
+            }
 
             MemoryStream stream = new MemoryStream();
             using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook, true, styleList.GetStylesheet()))
             {
                 string sheetName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
-                excelWriter.CreateAndOpenSheet(sheetName);
+                excelWriter.CreateAndOpenSheet(sheetName, columns);
 
-                IOrderedEnumerable<PropertyInfo> sortedColumns = typeof(T)
-                    .GetProperties()
-                    .Where(x => x.GetCustomAttribute<ExcelIgnoreAttribute>() == null)
-                    .OrderBy(x => x.GetCustomAttribute<ExcelColumnOrderAttribute>()?.Order ?? int.MaxValue);
+                IOrderedEnumerable<PropertyInfo> sortedColumns = GetColumnsOrdered(typeof(T));
 
                 // Encabezado (se usan propiedades / decoradores del dto para definir texto real y orden)
                 // también se puede hacer a mano
@@ -1539,6 +1541,13 @@ namespace SustitucionMOAUtils.Export
             return stream;
         }
 
+        public static IOrderedEnumerable<PropertyInfo> GetColumnsOrdered(Type type)
+        {
+            return type.GetProperties()
+                    .Where(x => x.GetCustomAttribute<ExcelIgnoreAttribute>() == null)
+                    .OrderBy(x => x.GetCustomAttribute<ExcelColumnOrderAttribute>()?.Order ?? int.MaxValue);
+        }
+
         public static StyleList DefaultMoaStyleSheet()
         {
             StyleList styleList = new StyleList();
@@ -1552,6 +1561,28 @@ namespace SustitucionMOAUtils.Export
                                name: tableHeaderDefaultFormatName);
 
             return styleList;
+        }
+
+        public static List<Column> CreateColumnsFromObject(Type type)
+        {
+            List<Column> columns = new List<Column>();
+
+            var dtoCols = GetColumnsOrdered(type);
+            foreach (var dtoCol in dtoCols)
+            {
+                bool hidden = dtoCol.GetCustomAttribute<ExcelColumnHiddenAttribute>() != null;
+                uint? width = dtoCol.GetCustomAttribute<ExcelColumnWidthAttribute>()?.Width;
+                bool customWidth = width != null;
+                Column column = new Column() { CustomWidth = customWidth, Hidden = hidden };
+                if (customWidth)
+                {
+                    column.Width = width;
+                }
+
+                columns.Add(column);
+            }
+
+            return columns;
         }
     }
 }
