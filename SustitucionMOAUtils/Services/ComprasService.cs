@@ -4694,18 +4694,17 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor, string mailUsuario, bool esSolicitante)
+        public ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, string mailUsuario, bool esSolicitante)
         {
             var legajo = new List<LegajoDto>();
             var usuarioDto = usuarioService.GetUsuario(mailUsuario);
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
-            var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
             var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Distinct();
 
             // Primero, filtra las SOLP según la condición deseada
             var solpsAgrupadas = peticion.Posiciones
-                .Where(x => x.PeticionDeOferta.Agrupada == true)
+                .Where(x => x.PeticionDeOferta.Agrupada)
                 .Select(x => x.SolpPosicion.Solp.NroSolp)
                 .ToList();
 
@@ -4715,39 +4714,44 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var solp in solps)
             {
-                var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
-                var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
-                var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
-                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
-                    solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
-
-                if (!esMultipleSolp && ( tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO"))
+                if (!esMultipleSolp)
                 {
-                    //invento registro con id de archivo 0 para bajar el pliego
-                    legajo.Add(new LegajoDto
+                    var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+                    var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
+                    var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                        solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
+                        solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
+
+                    if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
-                        ArchivoId = 0,
-                        Observacion = pdfFilename,
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = solp.Id,
-                        Fecha = solp.FechaCreacion,
-                        FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto
+                        //invento registro con id de archivo 0 para bajar el pliego
+                        legajo.Add(new LegajoDto
                         {
-                            CUIT = solp.UsuarioCreacion.CUITRegistro,
-                            Mail = solp.UsuarioCreacion.Mail,
-                            Id = solp.UsuarioCreacion_Id.Value
-                        },
-                        Tipo = TipoLegajo.Pliego
-                    });
+                            ArchivoId = 0,
+                            Observacion = pdfFilename,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = solp.Id,
+                            Fecha = solp.FechaCreacion,
+                            FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto
+                            {
+                                CUIT = solp.UsuarioCreacion.CUITRegistro,
+                                Mail = solp.UsuarioCreacion.Mail,
+                                Id = solp.UsuarioCreacion_Id.Value
+                            },
+                            Tipo = TipoLegajo.Pliego
+                        });
+                    }
                 }
 
                 var tieneCondicionEspecial = solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
 
                 // buscar archivos de la solp y considerar condiciones especiales
-                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                   x.FileKey == FileKeys.AdjuntoCotizacionesSolp || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
+                if (solp.Pliego?.Archivos?.Any(x => x.FileKey == FileKeys.AdjuntoSolp
+                                                            || x.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                                                            || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
+                                                                && (!esProveedor || !tieneCondicionEspecial))) == true)
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
@@ -4773,7 +4777,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //mostrar observación de condiciones especielas ingresada en el paso 4 
-                if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
+                if (solp.Pliego != null && !esProveedor && tieneCondicionEspecial)
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -4789,7 +4793,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //Chat interno
-                if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0 && esProveedor != true)
+                if (solp.ChatInternoCompras?.Count > 0 && !esProveedor)
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -4824,7 +4828,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Agrupar po th
-            if (peticion.Agrupada == true)
+            if (peticion.Agrupada)
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4840,7 +4844,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            foreach (var item in peticion.Archivos.Where(a => idPeticionDeOfertaUsuario == null || (idPeticionDeOfertaUsuario != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4851,14 +4855,14 @@ namespace SustitucionMOAUtils.Services
                     Fecha = item.Fecha,
                     FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
                     Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                    Tipo = peticiondeOfertaUsuarioId == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
+                    Tipo = idPeticionDeOfertaUsuario == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
                 });
             }
 
             // pdf peticion de oferta materiales
-            if (peticion.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+            if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
             {
-                foreach (var peticionUsuario in peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId))
+                foreach (var peticionUsuario in peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario))
                 {
                     var pdfPOUsuario = $"PO - {peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                     legajo.Add(new LegajoDto
@@ -4881,15 +4885,15 @@ namespace SustitucionMOAUtils.Services
             }
 
             //circular
-            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario).Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
 
             foreach (var circular in circulares)
             {
                 bool noLeido = false;
-                if (peticiondeOfertaUsuarioId.HasValue)
+                if (idPeticionDeOfertaUsuario.HasValue)
                 {
-                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true);
+                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true);
                 }
 
                 //buscar archivos de la circular
@@ -4960,7 +4964,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (noLeido)
                 {
-                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true))
+                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true))
                     {
                         circularNoLeida.Leida = true;
                         circularNoLeida.FechaLeida = DateTime.Now;
