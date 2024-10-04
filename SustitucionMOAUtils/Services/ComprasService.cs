@@ -9911,7 +9911,16 @@ namespace SustitucionMOAUtils.Services
                                                        valorTipoImputacion,
                                                        numeroPo);
 
-            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data, true);
+            /* las siguientes 2 líneas no son necesarias si se usa la configuración predeterminada
+             * ya que estas mismas llamadas se hacen dentro del método CreateColumnsFromObject
+             * cuando no se especifican los parámetros.
+             * Sin embargo, como esta invocación seguro va a ser usada como ejemplo,
+             * especifico acá las configuraciones
+             */
+            var columnas = ExcelExport.CreateColumnsFromObject(data.GetType().GetGenericArguments()[0]);
+            var styleSheet = ExcelExport.DefaultMoaStyleSheet();
+
+            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data, true, styleSheet, columnas);
             return stream;
         }
 

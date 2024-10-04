@@ -1441,12 +1441,14 @@ namespace SustitucionMOAUtils.Export
         private const string tableHeaderDefaultFormatName = "tableHeader";
 
         /// <summary>
-        /// Desde una lista de objetos.
+        /// Desde una lista de objetos, crea un archivo Excel con una hoja.
         /// Se recomienda usar los atributos ExcelIgnoreAttribute, ExcelColumnNameAttribute y ExcelColumnOrderAttribute para controlar las columnas.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="data"></param>
-        /// <param name="createAutoFilterOnFirstColumn"></param>
+        /// <param name="addAutoFilterOnFirstColumn"></param>
+        /// <param name="styleList"></param>
+        /// <param name="columns"></param>
         /// <returns></returns>
         public static MemoryStream ExportDtoToSingleStandardExcelSheet<T>(IEnumerable<T> data,
                                                                           bool addAutoFilterOnFirstColumn = false,
@@ -1456,92 +1458,107 @@ namespace SustitucionMOAUtils.Export
         {
             // probado con POPosicionDto
 
+            // en caso de necesitar más hojas hay que hacer otro método (se deja preparado método para agregar una hoja).
+
             /* en caso de requerir algún formato especial, m´sa hojas, o alguna otra cosa, 
              * crear un método nuevo
              * (tal vez sea buena idea evitar usar reflexión)
              */
 
             if (styleList == default) { styleList = DefaultMoaStyleSheet(); }
-            if (columns?.Any() != true)
-            {
-                columns = CreateColumnsFromObject(typeof(T));
-            }
 
             MemoryStream stream = new MemoryStream();
             using (BigExcelWriter excelWriter = new BigExcelWriter(stream, SpreadsheetDocumentType.Workbook, true, styleList.GetStylesheet()))
             {
                 string sheetName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
-                excelWriter.CreateAndOpenSheet(sheetName, columns);
 
-                IOrderedEnumerable<PropertyInfo> sortedColumns = GetColumnsOrdered(typeof(T));
-
-                // Encabezado (se usan propiedades / decoradores del dto para definir texto real y orden)
-                // también se puede hacer a mano
-                IEnumerable<string> columnNames = sortedColumns
-                    .Select(x => x.GetCustomAttribute<ExcelColumnNameAttribute>()?.Name ?? x.Name);
-
-                int headerStyle = styleList.GetIndexByName(tableHeaderDefaultFormatName);
-                if (headerStyle >= 0)
-                {
-                    excelWriter.WriteTextRow(columnNames, styleList.GetIndexByName(tableHeaderDefaultFormatName));
-                }
-                else
-                {
-                    excelWriter.WriteTextRow(columnNames);
-                }
-
-                if (addAutoFilterOnFirstColumn)
-                {
-                    CellRange autoFilterRange = new CellRange(1, 1, columnNames.Count(), 1, sheetName);
-                    excelWriter.AddAutofilter(autoFilterRange);
-                }
-
-                foreach (T filaDto in data)
-                {
-                    excelWriter.BeginRow();
-                    foreach (PropertyInfo columnName in sortedColumns)
-                    {
-                        ExcelCellType cellType =
-                            columnName.GetCustomAttribute<ExcelColumnTypeAttribute>()?.Type ?? ExcelCellType.Text;
-                        object cellData = columnName.GetValue(filaDto);
-
-                        switch (cellType)
-                        {
-                            case ExcelCellType.Number:
-                                if (cellData != null)
-                                {
-                                    float cellDataNumber = Convert.ToSingle(cellData);
-                                    excelWriter.WriteNumberCell(cellDataNumber);
-                                }
-                                else
-                                {
-                                    excelWriter.WriteTextCell(string.Empty);
-                                }
-                                break;
-                            case ExcelCellType.Formula:
-                                string cellDataFormula = cellData?.ToString();
-                                if (!string.IsNullOrWhiteSpace(cellDataFormula))
-                                {
-                                    excelWriter.WriteFormulaCell(cellDataFormula);
-                                }
-                                else
-                                {
-                                    excelWriter.WriteTextCell(string.Empty);
-                                }
-                                break;
-                            case ExcelCellType.Text:
-                                string cellDataString = cellData?.ToString() ?? "";
-                                excelWriter.WriteTextCell(cellDataString);
-                                break;
-                        }
-                    }
-                    excelWriter.EndRow();
-                }
+                AddSheetFromObject(excelWriter, sheetName, data, styleList, addAutoFilterOnFirstColumn, columns);
             }
             return stream;
         }
 
-        public static IOrderedEnumerable<PropertyInfo> GetColumnsOrdered(Type type)
+        private static void AddSheetFromObject<T>(BigExcelWriter excelWriter,
+                                                  string sheetName,
+                                                  IEnumerable<T> data,
+                                                  StyleList styleList,
+                                                  bool addAutoFilterOnFirstColumn = false,
+                                                  List<Column> columns = default)
+        {
+            if (columns?.Any() != true)
+            {
+                columns = CreateColumnsFromObject(typeof(T));
+            }
+
+            excelWriter.CreateAndOpenSheet(sheetName, columns);
+
+            IOrderedEnumerable<PropertyInfo> sortedColumns = GetColumnsOrdered(typeof(T));
+
+            // Encabezado (se usan propiedades / decoradores del dto para definir texto real y orden)
+            // también se puede hacer a mano
+            IEnumerable<string> columnNames = sortedColumns
+                .Select(x => x.GetCustomAttribute<ExcelColumnNameAttribute>()?.Name ?? x.Name);
+
+            int headerStyle = styleList.GetIndexByName(tableHeaderDefaultFormatName);
+            if (headerStyle >= 0)
+            {
+                excelWriter.WriteTextRow(columnNames, styleList.GetIndexByName(tableHeaderDefaultFormatName));
+            }
+            else
+            {
+                excelWriter.WriteTextRow(columnNames);
+            }
+
+            if (addAutoFilterOnFirstColumn)
+            {
+                CellRange autoFilterRange = new CellRange(1, 1, columnNames.Count(), 1, sheetName);
+                excelWriter.AddAutofilter(autoFilterRange);
+            }
+
+            foreach (T filaDto in data)
+            {
+                excelWriter.BeginRow();
+                foreach (PropertyInfo columnName in sortedColumns)
+                {
+                    ExcelCellType cellType =
+                        columnName.GetCustomAttribute<ExcelColumnTypeAttribute>()?.Type ?? ExcelCellType.Text;
+                    object cellData = columnName.GetValue(filaDto);
+
+                    switch (cellType)
+                    {
+                        case ExcelCellType.Number:
+                            if (cellData != null)
+                            {
+                                float cellDataNumber = Convert.ToSingle(cellData);
+                                excelWriter.WriteNumberCell(cellDataNumber);
+                            }
+                            else
+                            {
+                                excelWriter.WriteTextCell(string.Empty);
+                            }
+                            break;
+                        case ExcelCellType.Formula:
+                            string cellDataFormula = cellData?.ToString();
+                            if (!string.IsNullOrWhiteSpace(cellDataFormula))
+                            {
+                                excelWriter.WriteFormulaCell(cellDataFormula);
+                            }
+                            else
+                            {
+                                excelWriter.WriteTextCell(string.Empty);
+                            }
+                            break;
+                        case ExcelCellType.Text:
+                            string cellDataString = cellData?.ToString() ?? "";
+                            excelWriter.WriteTextCell(cellDataString);
+                            break;
+                    }
+                }
+                excelWriter.EndRow();
+            }
+            excelWriter.CloseSheet();
+        }
+
+        private static IOrderedEnumerable<PropertyInfo> GetColumnsOrdered(Type type)
         {
             return type.GetProperties()
                     .Where(x => x.GetCustomAttribute<ExcelIgnoreAttribute>() == null)
