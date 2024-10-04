@@ -3,6 +3,7 @@ using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,8 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
+                Log.ExternalAPIInfo("InformarViajeOrdenesDeCargaFason: " + ingresosEgresosFasones.ToJson());
+
                 var result = _ordenesCargaApi.InformarViajeOrdenesDeCargaFason(ingresosEgresosFasones);
                 if (result.Errores.Count > 0)
                 {

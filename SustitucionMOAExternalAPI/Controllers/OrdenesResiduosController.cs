@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Util;
 using System;
 using System.Web.Http;
 
@@ -43,6 +45,8 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
+                Log.ExternalAPIInfo("OrdenesResiduos Actualizar: " + datos.ToJson());
+
                 ordenResiduoService.ActualizarOrden(datos);
                 return Json(new { data = true });
             }
@@ -64,6 +68,8 @@ namespace SustitucionMOAExternalAPI.Controllers
         {
             try
             {
+                Log.ExternalAPIInfo("OrdenesResiduos InformarViaje: " + ingresosEgresosFasones.ToJson());
+
                 ordenResiduoService.InformarViaje(ingresosEgresosFasones);
                 return Json(new { data = true });
             }
