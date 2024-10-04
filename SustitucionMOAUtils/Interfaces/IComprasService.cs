@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -54,7 +53,7 @@ namespace SustitucionMOAUtils.Interfaces
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
         List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
-        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
+        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, EstadoListarTratamientoSolp listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
@@ -102,7 +101,34 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible);
         List<UsuarioDto> ListarUsuarioSolicitante();
         List<CotizacionHistorialDto> ObtenerHistorial(int id);
-        List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
+        List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null);
+        MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null);
         SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
 
         HistorialDeFechaDto ListarHistorialDeFechas(int peticionDeOfertaId);
@@ -123,5 +149,7 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId);
 
         string DescargarAdjuntosProveedores(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
+
+        List<KeyValuePair<EstadoListarTratamientoSolp, string>> ListarPendienteListComboOptions();
     }
 }

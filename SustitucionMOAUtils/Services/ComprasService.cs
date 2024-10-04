@@ -1,5 +1,6 @@
 ﻿// Ignore Spelling: Solp
 
+using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -25,6 +26,7 @@ using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAUtils.Export;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -3470,44 +3472,64 @@ namespace SustitucionMOAUtils.Services
             return result.ContratosSolp;
         }
 
-        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id,
+                                                          Paginacion paginacion,
+                                                          string nroSolp,
+                                                          string nombrePedido,
+                                                          DateTime? desde,
+                                                          DateTime? hasta,
+                                                          bool sap,
+                                                          bool mantenimiento,
+                                                          bool web,
+                                                          bool repoAutomatica,
+                                                          EstadoListarTratamientoSolp listarPendiente,
+                                                          bool contratoMarco,
+                                                          List<int> usuarios = null,
+                                                          List<int> estados = null,
+                                                          List<int> centros = null,
+                                                          List<int> grupoDeCompras = null,
+                                                          List<int> claseDocumento = null,
+                                                          List<string> tipoImputacion = null,
+                                                          List<int> valorTipoImputacion = null)
         {
+            if (listarPendiente == EstadoListarTratamientoSolp.None)
+            {
+                listarPendiente = EstadoListarTratamientoSolp.Todas;
+            }
+
             var solps = new List<string>();
-            string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (listarPendiente)
+            List<string> solpPendientesSap = new List<string>();
+            if (listarPendiente != EstadoListarTratamientoSolp.Todas)
             {
-                solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
-            else
+
+            if (!string.IsNullOrEmpty(nroSolp))
             {
-                if (!string.IsNullOrEmpty(nroSolp))
+                nroSolp = nroSolp.Trim();
+
+                if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
                 {
-                    nroSolp = nroSolp.Trim();
-
-                    if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
-                    {
-                        nroSolp = "0" + nroSolp;
-                    }
-
-                    solps.Add(nroSolp);
+                    nroSolp = "0" + nroSolp; /* TODO: no creo que haya que ponerle siempre un 0,
+                                              * sino que se debería hacer algo del tipo PAD LEFT con X caracteres.
+                                              * Por ahora lo dejo como estaba.
+                                              * (fseckel, 2024-09-30)
+                                              */
                 }
+
+                solps.Add(nroSolp);
             }
 
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
+            string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, solpPendientesSap, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
 
             if (todasLasSolp?.Any() == true)
             {
                 var listId = todasLasSolp.Select(y => y.Id.Value).ToList();
                 var solpsDB = repositorio.Listar<Solp>(x => listId.Contains(x.Id));
                 todasLasSolp.First().ItemsTotales = todasLasSolp.ItemsTotales;
-                if (listarPendiente)
-                {
-                    todasLasSolp.First().ItemPorPagina = todasLasSolp.Count();
-                }
-                else
-                {
-                    todasLasSolp.First().ItemPorPagina = 10;
-                }
+                todasLasSolp.First().ItemPorPagina = 10;
 
                 foreach (var item in todasLasSolp.Items)
                 {
@@ -3681,6 +3703,22 @@ namespace SustitucionMOAUtils.Services
                         mensaje = "Proveedor desahabilitado";
                         verAdjudicar = false;
                     }
+
+                    switch (usuarioPO.ProveedorEstadoAprobacion)
+                    {
+                        case EstadoAprobacion.Aprobado:
+                            //do nothing
+                            break;
+                        case EstadoAprobacion.AltaIncompleta:
+                            mensaje = "Completar alta";
+                            verAdjudicar = false;
+                            break;
+                        default:
+                            mensaje = "Proveedor NO habilitado";
+                            verAdjudicar = false;
+                            break;
+                    }
+
                     if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                     {
                         if (!respetaMateriales && !todasLasOfertas.RevisionFinalizada)
@@ -9723,8 +9761,20 @@ namespace SustitucionMOAUtils.Services
             return usuarios;
         }
 
-        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool? tratada, bool contratoMarco,
-            List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
+        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null)
         {
             try
             {
@@ -9820,6 +9870,14 @@ namespace SustitucionMOAUtils.Services
                             po => po.Peticiones.Select(p => p.Id.ToString())).ToList();
                     }
                 }
+
+                if (numeroPo != null)
+                {
+                    return posicionMaterial
+                        .Where(posicion => posicion.ListaPO?.Any(x => x == numeroPo.ToString()) == true)
+                        .ToList();
+                }
+
                 return posicionMaterial;
             }
             catch (Exception e)
@@ -9828,6 +9886,49 @@ namespace SustitucionMOAUtils.Services
                 Log.Error(e);
                 throw;
             }
+        }
+
+        public MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null)
+        {
+            List<POPosicionDto> data = this.ListarPosicionesPOMultiple(desde,
+                                                       hasta,
+                                                       sap,
+                                                       mantenimiento,
+                                                       web,
+                                                       repoAutomatica,
+                                                       tratada,
+                                                       contratoMarco,
+                                                       centros,
+                                                       grupoDeCompras,
+                                                       claseDocumento,
+                                                       tipoImputacion,
+                                                       valorTipoImputacion,
+                                                       numeroPo);
+
+            /* las siguientes 2 líneas no son necesarias si se usa la configuración predeterminada
+             * ya que estas mismas llamadas se hacen dentro del método CreateColumnsFromObject
+             * cuando no se especifican los parámetros.
+             * Sin embargo, como esta invocación seguro va a ser usada como ejemplo,
+             * especifico acá las configuraciones
+             */
+            var columnas = ExcelExport.CreateColumnsFromObject(data.GetType().GetGenericArguments()[0]);
+            var styleSheet = ExcelExport.DefaultMoaStyleSheet();
+
+            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data, true, styleSheet, columnas);
+            return stream;
         }
 
         public SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId)
@@ -10881,6 +10982,15 @@ namespace SustitucionMOAUtils.Services
             }
 
             return puedenVerseImportes;
+        }
+
+        public List<KeyValuePair<EstadoListarTratamientoSolp, string>> ListarPendienteListComboOptions()
+        {
+            return Enum.GetValues(typeof(EstadoListarTratamientoSolp))
+                .Cast<EstadoListarTratamientoSolp>()
+                .Where(x => x != EstadoListarTratamientoSolp.None)
+                .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.GetDescription()))
+                .ToList();
         }
     }
 

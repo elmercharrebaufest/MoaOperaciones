@@ -85,8 +85,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     repoAutomatica: boolean = false;
     contratoMarco: boolean = false;
     posiciones: POPosicionDto[] = [];
+    numeroPo?: number = null;
 
-    tratada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
+    tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
     selectTratada: boolean | null = null;
 
     filtrosPOMultiple: {
@@ -104,6 +105,25 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         fechaDesde: string;
         fechaHasta: string;
         tratada: boolean | null;
+        numeroPo?: number;
+    };
+
+    private readonly filtrosPOMultipleDefault: {
+        sap: boolean;
+        mantenimiento: boolean;
+        web: boolean;
+        repoAutomatica: boolean;
+        contratoMarco: boolean;
+        gruposCompras: string[];
+        centros: string[];
+        claseDocumento: string[];
+        tipoImputacion: string[];
+        valorTipoImputacion: string[];
+        subtipoImputacionCombo: SelectItem[];
+        fechaDesde: string;
+        fechaHasta: string;
+        tratada: boolean | null;
+        numeroPo?: number;
     } = {
             sap: false,
             mantenimiento: false,
@@ -118,27 +138,13 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             subtipoImputacionCombo: [],
             fechaDesde: null,
             fechaHasta: null,
-            tratada: null
+            tratada: null,
+            numeroPo: null,
         };
 
     ngOnInit() {
 
-        this.filtrosPOMultiple = {
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            contratoMarco: false,
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            tratada: null
-        };
+        this.filtrosPOMultiple = this.filtrosPOMultipleDefault;
         this.recuperarFiltros();
         this.listarPosicionesPOMultiple();
     }
@@ -247,8 +253,21 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         try {
             this.blockUI.start('Cargando...');
 
-            this.subscription = this.service.listarPosicionesPOMultiple(this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
-                this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","), this.selectTratada
+            this.subscription = this.service.listarPosicionesPOMultiple(
+                this.fechaInicio,
+                this.fechaFin,
+                this.sap,
+                this.mantenimiento,
+                this.web,
+                this.repoAutomatica,
+                this.contratoMarco,
+                this.selectCentro.join(","),
+                this.selectGrupoCompras.join(","),
+                this.selectClaseDocumento.join(","),
+                this.selectTipoImputacion.join(","),
+                this.selectValorTipoImputacion.join(","),
+                this.selectTratada,
+                this.numeroPo
             ).subscribe(
                 (result: any) => {
 
@@ -277,6 +296,85 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     onBuscar() {
+        this.listarPosicionesPOMultiple();
+        this.guardarFiltros();
+    }
+
+    download() {
+        try {
+            this.blockUI.start('Cargando...');
+
+            this.subscription = this.service.descargarPosicionesPOMultiple(
+                this.fechaInicio,
+                this.fechaFin,
+                this.sap,
+                this.mantenimiento,
+                this.web,
+                this.repoAutomatica,
+                this.contratoMarco,
+                this.selectCentro.join(","),
+                this.selectGrupoCompras.join(","),
+                this.selectClaseDocumento.join(","),
+                this.selectTipoImputacion.join(","),
+                this.selectValorTipoImputacion.join(","),
+                this.selectTratada,
+                this.numeroPo
+            ).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        var byteArray = new Uint8Array(result.file);
+                        var blob = new Blob([byteArray], {
+                            type: result.contentType,
+                        });
+
+                        this.downloadArchivoLocal(blob, result.fileName);
+
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void { // esto habría que moverlo a otro lado, hay demasiadas copias del mismo código.
+        if ((window.navigator as any).msSaveOrOpenBlob) {
+            // IE11
+            (window.navigator as any).msSaveOrOpenBlob(blob, nombreArchivo);
+        }
+        else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
+    }
+
+    clearFilters(): void {
+        this.filtrosPOMultiple = this.filtrosPOMultipleDefault;
+    }
+
+    private guardarFiltros(): void {
         this.filtrosPOMultiple.sap = this.sap;
         this.filtrosPOMultiple.mantenimiento = this.mantenimiento;
         this.filtrosPOMultiple.web = this.web;
@@ -291,11 +389,11 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.filtrosPOMultiple.fechaDesde = this.fechaInicio;
         this.filtrosPOMultiple.fechaHasta = this.fechaFin;
         this.filtrosPOMultiple.tratada = this.selectTratada;
-        this.listarPosicionesPOMultiple();
+        this.filtrosPOMultiple.numeroPo = this.numeroPo;
         sessionStorage.setItem('filtrosPOMultiple', JSON.stringify(this.filtrosPOMultiple));
     }
 
-    recuperarFiltros() {
+    private recuperarFiltros() {
         const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
         if (filtrosGuardados) {
             this.sap = filtrosGuardados.sap;
@@ -312,6 +410,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             this.fechaInicio = filtrosGuardados.fechaDesde;
             this.fechaFin = filtrosGuardados.fechaHasta;
             this.selectTratada = filtrosGuardados.tratada;
+            this.numeroPo = filtrosGuardados.numeroPo;
             if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
                 const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaFin != undefined && this.fechaFin.length > 0) {

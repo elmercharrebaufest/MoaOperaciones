@@ -29,7 +29,7 @@ namespace SustitucionMOAUtils.Interfaces
         ProveedorDto VerificarYObtenerProveedor(string mailUsuario, string codigoCorredor, string codigoProveedor);
         string ObtenerNuevoApiKey(string usuario);
         List<ProveedorDto> ListarProveedores(string filtro);
-        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta);
+        ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta, bool mantenerEstadoAprobacionExistente = false);
         UsuarioDto GetUsuarioPorId(int id);
         List<ProveedorDto> GetProvedoresEmail(int tipoProveedorId, string email, string cuitUsuario);
         List<TipoUsuarioDto> GetTipoUsuario();

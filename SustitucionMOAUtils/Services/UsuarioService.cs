@@ -1,4 +1,6 @@
-﻿using SustitucionMOAAssets;
+﻿// Ignore Spelling: Aprobacion
+
+using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
@@ -191,13 +193,13 @@ namespace SustitucionMOAUtils.Services
 
             usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
 
-            if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
+            if (!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
                 string dateTimeFormat = "yyyy-MM-dd";
                 DateTime fechaDesdeDT = new DateTime();
                 DateTime fechaHastaDT = new DateTime();
                 DateTime auxFDesde;
-                if(DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
                 {
                     fechaDesdeDT = auxFDesde;
                 };
@@ -219,7 +221,7 @@ namespace SustitucionMOAUtils.Services
                     //Evitar duplicacion de periodos
                     var per = GetPeriodoReasignacion(idUsuario);
 
-                    if(per.Id == 0)
+                    if (per.Id == 0)
                     {
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
@@ -227,15 +229,15 @@ namespace SustitucionMOAUtils.Services
                     {
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
-                
+
                 }
 
             }
-            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            else if (string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
-                if(periodos.Count > 0)
+                if (periodos.Count > 0)
                 {
                     int[] periodosIds = new int[periodos.Count];
 
@@ -249,7 +251,7 @@ namespace SustitucionMOAUtils.Services
                         UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
-                    
+
                 }
 
             }
@@ -302,14 +304,14 @@ namespace SustitucionMOAUtils.Services
                 }
 
             }
-            
+
             List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>().Where(a => a.Aprobador_CDS == usuario.Mail).ToList();
 
             foreach (var aprobacion in aprobaciones)
             {
                 aprobacion.Suplente = suplente;
             }
-            
+
             repositorio.GuardarCambios();
 
 
@@ -352,7 +354,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     periodoDto = new UsuarioReasignacionDto(periodo);
                 }
-                 
+
                 return periodoDto;
             }
             catch (Exception)
@@ -510,37 +512,40 @@ namespace SustitucionMOAUtils.Services
             return proveedores.ToList();
         }
 
-        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto, EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta)
+        public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto,
+                                                 EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta,
+                                                 bool mantenerEstadoAprobacionExistente = false)
         {
-            UsuarioNoGranos usuario = new UsuarioNoGranos { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "" };
+            if (proveedorDto == null) { throw new ArgumentNullException(nameof(proveedorDto)); }
 
             TipoUsuario tipoUsuario = repositorio.Obtener<TipoUsuario>(t => t.NombreCorto == "NG");
 
-            //Entidades.Usuario usuario = new Entidades.Usuario { Mail = proveedorDto.Mail, CUITRegistro = proveedorDto.CUIT, SeccionesVisitadas = "", TipoUsuario = tipoUsuario };
-
-            usuario.TipoUsuario = tipoUsuario;
+            UsuarioNoGranos usuario = new UsuarioNoGranos
+            {
+                Mail = proveedorDto.Mail,
+                CUITRegistro = proveedorDto.CUIT,
+                SeccionesVisitadas = "",
+                Proveedores = new List<Proveedor>(),
+                Roles = new List<Rol>(),
+                TipoUsuario = tipoUsuario,
+            };
 
             var resultado = new ResultadoGenerico();
 
             ValidarDatosProveedor(proveedorDto, resultado);
-            if (!resultado.HayError)
-            {
 
-                var setCodigoProveedor = proveedorDto.EsProveedorExterior == true ? proveedorDto.CUIT.Substring(1) : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+            if (resultado.HayError) { return resultado; }
 
-                Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+            var setCodigoProveedor = proveedorDto.EsProveedorExterior
+                ? proveedorDto.CUIT.Substring(1)
+                : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
 
-                usuario.Roles = new List<Rol>
-            {
-                nuevoNoGranos
-            };
+            Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
+            usuario.Roles.Add(nuevoNoGranos);
 
-                usuario.Proveedores = new List<Proveedor>();
-
-                string cuit = usuario.CUITRegistro;
-                string mailUsuario = usuario.Mail;
-
-                Proveedor proveedor = new Proveedor
+            // obtener proveedor registrado con el CUIT ingresado o, si no existe, crear uno nuevo
+            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == usuario.CUITRegistro)
+                ?? new Proveedor
                 {
                     CUIT = usuario.CUITRegistro,
                     EstadoAprobacion = estadoAprobacion,
@@ -549,74 +554,80 @@ namespace SustitucionMOAUtils.Services
                     TipoProveedor = tipoUsuario,
                     FechaSolicitud = DateTime.Now,
                     RazonSocial = proveedorDto.RazonSocial,
-                    CodigoProveedor = setCodigoProveedor
+                    CodigoProveedor = setCodigoProveedor,
                 };
 
-                proveedor.HistorialAprobaciones = new List<ProveedorHistorialAprobacion>
+            if (!mantenerEstadoAprobacionExistente)
             {
+                proveedor.EstadoAprobacion = estadoAprobacion;
+            }
+
+            proveedor.HistorialAprobaciones = proveedor.HistorialAprobaciones ?? new List<ProveedorHistorialAprobacion>();
+
+            proveedor.HistorialAprobaciones.Add(
                 new ProveedorHistorialAprobacion()
                 {
                     Fecha = DateTime.Now,
-                    EstadoAprobacion = estadoAprobacion,
+                    EstadoAprobacion = proveedor.EstadoAprobacion,
                     Observacion = "Registro de usuario",
                     Usuario_Id = usuario.Id
                 }
+            );
+
+            if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
+            {
+                var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
+
+                usuario.RemoverRoles();
+                usuario.AgregarRol(rolUsuarioNoGranos);
+            }
+
+            usuario.Proveedores.Add(proveedor);
+
+            usuario.Habilitado = true;
+
+            repositorio.Agregar(usuario);
+
+            proveedor = repositorio.Agregar(proveedor);
+
+            repositorio.GuardarCambios();
+
+            resultado.Descripcion = $"{proveedor.RazonSocial} ({proveedor.CUIT}) - {usuario.Mail}";
+
+            ProveedorDto proveedorResultado = new ProveedorDto()
+            {
+                Mail = usuario.Mail,
+                CUIT = proveedor.CUIT,
+                Id = usuario.Id,
+                RazonSocial = proveedorDto.RazonSocial
             };
 
-                if (repositorio.Existe<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario))
-                {
-                    proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == cuit && x.Mail == mailUsuario);
-                }
+            resultado.ProveedorDto = proveedorResultado;
 
-                if (proveedor.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                {
-                    var rolUsuarioNoGranos = ObtenerRolPorCodigo("NOGRAN");
-
-                    usuario.RemoverRoles();
-                    usuario.AgregarRol(rolUsuarioNoGranos);
-                }
-
-                usuario.Proveedores.Add(proveedor);
-
-                usuario.Habilitado = true;
-
-                repositorio.Agregar(usuario);
-                //return repositorio.GuardarCambios() == 1;
-
-                proveedor = repositorio.Agregar(proveedor);
-
-                repositorio.GuardarCambios();
-
-                resultado.Descripcion = $"{proveedor.RazonSocial} ({proveedor.CUIT}) - {proveedor.Mail}";
-
-                var proveedorResultado = new ProveedorDto() { Mail = proveedorDto.Mail, CUIT = proveedorDto.CUIT, Id = usuario.Id, RazonSocial = proveedorDto.RazonSocial };
-
-                resultado.ProveedorDto = proveedorResultado;
-            }
             return resultado;
         }
 
         public ResultadoGenerico ValidarDatosProveedor(ProveedorDto proveedorDto, ResultadoGenerico resultado)
         {
-            if (String.IsNullOrEmpty(proveedorDto.Mail))
+            if (string.IsNullOrWhiteSpace(proveedorDto.Mail))
             {
                 resultado.Errores.Add(new ErrorMessage(1, "El mail es obligatorio"));
                 return resultado;
             }
 
-            if (String.IsNullOrEmpty(proveedorDto.CUIT))
+            if (string.IsNullOrWhiteSpace(proveedorDto.CUIT))
             {
                 resultado.Errores.Add(new ErrorMessage(1, "El CUIT es obligatorio"));
                 return resultado;
             }
 
-            if (String.IsNullOrEmpty(proveedorDto.RazonSocial))
+            if (string.IsNullOrWhiteSpace(proveedorDto.RazonSocial))
             {
-                resultado.Errores.Add(new ErrorMessage(1, "La razon social es obligatoria"));
+                resultado.Errores.Add(new ErrorMessage(1, "La razón social es obligatoria"));
                 return resultado;
             }
 
-            var existeMail = repositorio.Existe<Entidades.Usuario>(x => x.Mail == proveedorDto.Mail);
+            var existeMail = repositorio.Existe<Usuario>(x => x.Mail == proveedorDto.Mail);
 
             if (existeMail)
             {
@@ -1066,7 +1077,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(configuracion);
             }
-            
+
             configuracion.Valor = valor;
             repositorio.GuardarCambios();
         }
