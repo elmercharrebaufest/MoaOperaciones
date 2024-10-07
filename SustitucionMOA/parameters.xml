@@ -212,7 +212,7 @@
 	</parameter>
 	<parameter name="EmailAltaTransporteFasonTo Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
-							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasTo']
+							match="/configuration/appSettings/add[@key='EmailAltaTransporteFasonTo']
                            /@value" />
 	</parameter>
 	<parameter name="EmailAltaTransporteFasonCC Config">
