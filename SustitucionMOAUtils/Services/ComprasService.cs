@@ -87,6 +87,8 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
+        private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
+
         private readonly IEmailService emailService;
         private readonly IEmailComprasService emailComprasService;
         private readonly IComprasArchivosService comprasArchivosService;
@@ -2911,9 +2913,9 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.Info($"Error al agregar la SOLP {posicion.NumeroSolicitud} - NumeroPosicion {posicion.NumeroPosicion}");
-                        Logger.Log.Error(e);
-                        continue;
+                        var asunto = $"Error al agregar la SOLP {posicion.NumeroSolicitud} - NumeroPosicion {posicion.NumeroPosicion}";
+                        Log.Error(asunto, e);
+                        ErroToMail(e, asunto);
                     }
                 }
 
@@ -2987,11 +2989,35 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);
+                var asunto = $"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}";
+                Logger.Log.Error(asunto, e);
+                ErroToMail(e, asunto);
                 throw;
             }
             Debug.WriteLine($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
 
+        }
+
+        private void ErroToMail(Exception e, string asunto)
+        {
+            try
+            {
+                string errorMessage = $"Error: {e.Message}\nStack Trace: {e.StackTrace}\n";
+                if (e.InnerException != null)
+                {
+                    errorMessage += $"Inner Exception: {e.InnerException.Message}\nInner Stack Trace: {e.InnerException.StackTrace}\n";
+                }
+                emailService.EnviarMail(new SustitucionMOAUtils.Email.EmailSenderData
+                {
+                    Asunto = asunto,
+                    Cuerpo = errorMessage,
+                    Mails = EmailEnvioErrores.Split(';').ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error("Error al enviar mail de error", ex);
+            }
         }
 
         private void CompletarObservacionSegunCondEsp(Solp solp, string observaciones)
