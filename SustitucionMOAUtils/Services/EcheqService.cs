@@ -73,7 +73,7 @@ namespace SustitucionMOAUtils.Services
                 var liquidaciones = repositorio.Listar<EcheqLiquidacion>(x => numeroContratos.Contains(x.EcheqNegocio.Contrato), 0, null, DirOrden.Asc, includes);
                 var aperturas = liquidaciones.AsEnumerable().Where(x =>
                 documentos.Exists(d => d.Documento == x.Documento &&
-                                    d.Ejercicio == x.Ejercicio)).SelectMany(a => a.Aperturas).ToList();
+                                    d.Ejercicio == x.Ejercicio)).SelectMany(a => a.Aperturas).Where(a => a.Estado).ToList();
 
                 foreach (var apertura in aperturas)
                 {
@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
                         .Where(a => a.Contrato == apertura.EcheqLiquidacion.EcheqNegocio.Contrato && a.Pedido == apertura.EcheqLiquidacion.EcheqNegocio.Pedido)
                         .SelectMany(a => a.Documentos).Single(a => a.Documento == apertura.EcheqLiquidacion.Documento);
 
-                        liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
+                    liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
                 }
                 return resultFiltrado;
             }
