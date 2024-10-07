@@ -2907,7 +2907,13 @@ namespace SustitucionMOATest.Services
                         Posiciones = new SolpPosicionDto { Codigo = "000000000050224373",Indice=1 } }
                 },
                 NrosSolp = new List<string> { "102002020" },
-                SolpDto = new SolpDto { ObservacionesCotizacionLista = new List<String> { "Observacion" } }
+                SolpDto = new SolpDto
+                {
+                    ObservacionesCotizacionLista = new List<NroSolpObservacionCondEspDto> {
+                        new NroSolpObservacionCondEspDto() {
+                            NroSolp = "102002020",
+                            ObservacionesCotizacionCondEsp = "Observacion" } }
+                }
             });
             var cotizacionLocal = cotizacionToClone();
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<PeticionDeOfertaSolpPosicion, bool>>>(),
