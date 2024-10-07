@@ -3812,7 +3812,19 @@ namespace SustitucionMOAUtils.Services
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
-                todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
+                StringBuilder ObservacionesCotizacionCondEspBuilder = new StringBuilder();
+                foreach (var ObservacionesCotizacionSolp in todasLasOfertas.SolpDto.ObservacionesCotizacionLista)
+                {
+                    ObservacionesCotizacionCondEspBuilder
+                        .Append("Solp ")
+                        .Append(ObservacionesCotizacionSolp.NroSolp)
+                        .Append(": ")
+                        .Append(ObservacionesCotizacionSolp.ObservacionesCotizacionCondEsp)
+                        .Append("\n") // no usar AppendNewLine
+                        ;
+                }
+                todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = ObservacionesCotizacionCondEspBuilder.ToString();
+                //todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
                 foreach (SolpPosicionDto posicion in todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion))
                 {
