@@ -119,7 +119,7 @@ namespace SustitucionMOAModel.Dto
         public string ProveedorAsignadoCuit { get; set; }
         public string ProveedorAsignadoRazonSocial { get; set; }
         public int? ProveedorAdicional_Id { get; set; }
-        public IEnumerable<string> ObservacionesCotizacionLista { get; set; }
+        public IEnumerable<NroSolpObservacionCondEspDto> ObservacionesCotizacionLista { get; set; }
         public bool RequisitoCiberseguridad { get; set; }
         public string CodigoProveedorSap { get; set; }
         public bool? TieneModificaciones { get; set; }
@@ -466,5 +466,12 @@ namespace SustitucionMOAModel.Dto
         public string Cantidad { get; set; }
         public string Periodo { get; set; }
 
+    }
+
+    public class NroSolpObservacionCondEspDto
+    {
+        public string NroSolp { get; set; }
+
+        public string ObservacionesCotizacionCondEsp { get; set; }
     }
 }
