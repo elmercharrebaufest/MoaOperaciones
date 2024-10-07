@@ -1,12 +1,14 @@
 import { CotizacionPosicionDto } from "../modelos/cotizacionDto"
 import { RegistroInfoDto } from "../modelos/registro-info"
 
-export interface SolpCompraDto{
+export interface SolpCompraDto {
     Id: number,
-    NroSolp: string,   
+    NroSolp: string,
     PosicionCompras: PosicionCompra[],
     TipoPosicionCodigo: string,
-    RegistrosInfo?: RegistroInfoDto[]
+    RegistrosInfo?: RegistroInfoDto[],
+    PlazoDeOfertaTentativo?: Date,
+    MostrarSelectorPlazoDeOferta?: boolean,
 }
 
 export interface PosicionCompra{
@@ -75,8 +77,8 @@ export interface EnvioSolpCompra{
     UsuarioIds: number[],
     Adjuntos: Array<File>,
     Id?: number,
-    AdjuntoPliego: boolean
-
+    AdjuntoPliego: boolean,
+    PlazoDeEntrega: Date,
 }
 
 export interface AltaNuevoProveedor{

@@ -11,6 +11,7 @@ import { ComprasService } from '../../../compras.service'
 import { Solp } from '../../solp';
 import { ValidadorPasoSolpService } from '../../../validadorPasoSolpService';
 import { EnumPasoSolp } from '../../../enum-paso-solp';
+import { Subject } from 'rxjs';
 
 declare var $: any;
 
@@ -27,6 +28,9 @@ export class Generacion1Component extends ListBaseComponent  {
 
     @Input('locale')
     protected locale: any;
+
+    @Input('selectResponsableTrabajoChanged')
+    protected selectResponsableTrabajoChanged: Subject<void>;
 
     @Output() onEstCompleto = new EventEmitter<any>();
 
@@ -75,6 +79,16 @@ export class Generacion1Component extends ListBaseComponent  {
             this.validadorPasoSolpService.aplicarValidaciones()
         }
         this.model.cargoPasoUno = true;
+
+        if (this.model.tipoSolp != "SIN_PLIEGO") {
+            /* para el paso 1 el tipo solp nunca debería ser SIN_PLIEGO
+             * se deja esta validación para diferenciar con respecto al paso 2 (generacion2.component.ts)
+             * dónde esta condición se ejecuta para las solp tipo SIN_PLIEGO
+             */
+            this.selectResponsableTrabajoChanged.subscribe(() => {
+                this.onAutocompletarResponsable();
+            });
+        }
     }    
 
     ngOnDestroy()

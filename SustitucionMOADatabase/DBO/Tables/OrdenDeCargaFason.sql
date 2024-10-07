@@ -5,7 +5,7 @@
 	[Cantidad] INT DEFAULT 30000 NOT NULL, 
 	[PatenteChasis] VARCHAR(15) NOT NULL, 
 	[PatenteAcoplado] VARCHAR(15) NOT NULL, 
-	[NombreChofer] VARCHAR(120) NOT NULL, 
+	[NombreChofer] VARCHAR(120) NOT NULL,
 	[CUILChofer] VARCHAR(15) NOT NULL, 
 	[RazonSocialTransporte] VARCHAR(120) NOT NULL, 
 	[CUITTransporte] VARCHAR(15) NOT NULL, 

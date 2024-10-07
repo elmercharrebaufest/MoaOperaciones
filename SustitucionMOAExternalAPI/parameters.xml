@@ -49,13 +49,6 @@
                            /@address" />
 	</parameter>
   
-  <parameter name="BasicHttpBinding_IServicioSuscriptor Service Endpoint Address">
-    <parameterEntry kind="XmlFile" scope="Web.config"
-						match="/configuration/system.serviceModel/client
-                           /endpoint[@name='BasicHttpBinding_IServicioSuscriptor']
-                           /@address" />
-  </parameter>
-
   <parameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address">
 	<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/system.serviceModel/client
@@ -80,6 +73,18 @@
     <parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailAsuntoPrefijo']
                            /@value" />
+  </parameter>
+  <parameter name="BasicHttpBinding_IAuthService Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IAuthService']
+                           /@address" />
+  </parameter>
+  <parameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/system.serviceModel/client
+                           /endpoint[@name='BasicHttpBinding_IDataAgroServices']
+                           /@address" />
   </parameter>
   
 </parameters>

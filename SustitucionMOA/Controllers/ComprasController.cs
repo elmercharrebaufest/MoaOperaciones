@@ -3,20 +3,20 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using HttpHelper = System.Web.Http;
 using System.Web.Mvc;
-using SustitucionMOAWS.WSConsumers;
+using HttpHelper = System.Web.Http;
 
 namespace SustitucionMOA.Controllers
 {
@@ -32,7 +32,7 @@ namespace SustitucionMOA.Controllers
         }
 
         [ValidateInput(false)]
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
         public ActionResult GuardarSolp(string solpJson)
         {
             try
@@ -197,7 +197,7 @@ namespace SustitucionMOA.Controllers
 
                 return JsonCustom(new
                 {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido,fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
                 });
@@ -473,7 +473,7 @@ namespace SustitucionMOA.Controllers
                                                        ? "SOLP no disponible para descarga."
                                                         : "El token no coincide; no tiene permiso para realizar la descarga.";
 
-                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos) 
+                if (puedeDescargar == SolpDescargaZipPorLink.SinArchivos)
                 {
                     errorMsg = "SOLP no disponible para descarga.";
                 }
@@ -758,32 +758,31 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarOfertasComprador(int peticionOferta_Id)
         {
+            var response = new SustitucionMOAApiResponse<PeticionDeOfertaDto>();
             try
             {
                 var usuario = ObtenerUsuarioActual();
-                return JsonCustom(new
-                {
-                    data = service.ListarOfertasComprador(peticionOferta_Id, usuario)
-                });
+                response.Data = service.ListarOfertasComprador(peticionOferta_Id, usuario);
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
-            catch (WSCustomException e)
+            catch (WSCustomException wsce)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, wsce);
+                response.Error = wsce.Message;
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpPost]
@@ -876,12 +875,13 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor)
+        public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, bool esSolicitante)
         {
-            var response = new SustitucionMOAApiResponse<List<LegajoDto>>();
+            var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
             try
             {
-                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor);
+                var mailUsuario = SessionPersister.getUsername();
+                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
             }
             catch (WSCustomException e)
             {
@@ -925,14 +925,15 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor)
+        public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, bool esSolicitante)
         {
             try
             {
+                var mailUsuario = SessionPersister.getUsername();
                 var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
                 Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor);
+                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario, esSolicitante);
                 byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
                 string fileName = Path.GetFileName(rutaZip);
 
@@ -1146,7 +1147,7 @@ namespace SustitucionMOA.Controllers
             catch (WSCustomException e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1419,7 +1420,8 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token);
+                var mailUsuario = SessionPersister.getUsername();
+                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
                 return JsonCustom(new { data = result });
             }
             catch (WSCustomException e)
@@ -1433,7 +1435,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
-        
+
         [HttpPost]
         public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
         {
@@ -1487,25 +1489,27 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult ObtenerChat(int solpId)
+        public ActionResult ObtenerChat(int solpId)
         {
+            var response = new SustitucionMOAApiResponse<ChatsDto>();
             try
             {
-                return JsonCustom(service.ObtenerChat(solpId, ObtenerUsuarioActual().Id));
+                response.Data = service.ObtenerChat(solpId, ObtenerUsuarioActual().Id);
             }
-            catch (InfoCustomException e)
+            catch (InfoCustomException ice)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                response.Info = ice.Message;
             }
-            catch (ValidationCustomException e)
+            catch (ValidationCustomException vce)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                response.Error = vce.Message;
             }
             catch (Exception e)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpGet]
@@ -1955,11 +1959,11 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-               var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
+                var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
                 var ordenar = filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
                 var paginacion = new Paginacion((!string.IsNullOrEmpty(filtro.Columna) ? filtro.Columna : null), ordenar, (filtro.Pagina == null) ? 0 : filtro.Pagina.Value, (filtro.ItemsPorPagina == 0 || !filtro.ItemsPorPagina.HasValue) ? 10 : filtro.ItemsPorPagina.Value);
                 var resultado = service.ListarSolpCondicionEspecial(filtro);
-                return JsonCustom(new { data = resultado });                
+                return JsonCustom(new { data = resultado });
             }
             catch (InfoCustomException e)
             {
@@ -2074,11 +2078,36 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult GuardarEnvioCircularProveedor(int id, int enviarCircularA)
+        public ActionResult GuardarEnvioCircularProveedor(int id, EnviarCircularEnum enviarCircularA, string fechaLimite)
         {
             try
             {
-                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA);
+                DateTime? fechaLimiteD;
+
+                if (string.IsNullOrWhiteSpace(fechaLimite))
+                {
+                    if (enviarCircularA != EnviarCircularEnum.NoEnviar)
+                    {
+                        throw new ValidationCustomException("La fecha límite es obligatoria cuando se enviará una circular");
+                    }
+                    fechaLimiteD = null;
+                }
+                else
+                {
+#pragma warning disable IDE0018 // Inline variable declaration <--> se deba actualizar langVersion.
+                    DateTime fl;
+#pragma warning restore IDE0018 // Inline variable declaration
+                    if (!DateTime.TryParse(fechaLimite, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out fl))
+                    {
+                        throw new ValidationCustomException("La fecha límite no es válida.");
+                    }
+                    else
+                    {
+                        fechaLimiteD = fl; // estas asignaciones raras las tengo que hacer porque el DateTime.TryParse no permite hacer DateTime? (language version??).
+                    }
+                }
+
+                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, fechaLimiteD);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)

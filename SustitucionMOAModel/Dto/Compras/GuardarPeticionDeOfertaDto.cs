@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -15,5 +16,6 @@ namespace SustitucionMOAModel.Dto
         public bool RegistroInfo { get; set; }
         public bool AdjuntoPliego { get; set; }
 
+        public DateTime? PlazoDeEntrega { get; set; }
     }
 }

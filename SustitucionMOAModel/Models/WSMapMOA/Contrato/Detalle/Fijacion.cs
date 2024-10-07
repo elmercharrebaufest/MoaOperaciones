@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public string moneda { get; set; }
     }
 
-    public class FijacionView : Fijacion  
+    public class FijacionView : Fijacion
     {
 
         public string kilosFijaString { get; set; }

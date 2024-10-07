@@ -18,6 +18,8 @@ import { Paginator } from 'primeng/paginator';
 import { PeticionDeOfertaDto, PeticionDeOfertaRevisionTecnicaDto } from '../../modelos/peticion-de-oferta-model';
 import { AdjudicacionDto, AdjudicacionPosicionDto } from '../../modelos/adjudicacion';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../chat-interno/chat-interno.interface';
+import { LegajoDto } from '../../modelos/compras/legajoDto';
+import { ApiResponse } from '../../common/models/response';
 
 declare var $: any;
 
@@ -144,12 +146,18 @@ export class DashboardComponent extends ListBaseComponent {
     checkedFilterMantenimiento = false;
     checkedFilterWeb = false;
     verTodas: boolean = this.isAuthorized('VER TODAS SOLPS') || this.isAuthorized('VER COMO AUDITOR');
+    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
 
     public chat: ChatsDto;
     public chatCompras: ChatComprasDto;
     public chatProveedores: ChatProveedorDto[] = [];
     clasesDocumento: number[] = [];
     dasboardComprador: boolean = false;
+
+    displayLegajo: boolean = false;
+    legajo: LegajoDto[];
+    legajoIdModal: number;
+    esProveedor: boolean = false;
 
     cards = [
         { nombre: "Con documento de pliego", path: "/compras/solp/0", tipoSolp: "CON_PLIEGO" },
@@ -262,7 +270,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     }
 
-    getListarSolp() {
+    getListarSolp(idSolpSeleccionada?) {
         try {
             this.spinnerComponent.showIt();
             let multiSelectValues = this.selectEstadoSolp.join(",")
@@ -292,6 +300,10 @@ export class DashboardComponent extends ListBaseComponent {
                         this.pageSize = result.data.length > 0 ? result.data[0].ItemPorPagina : 10;
                         this.pageIndex = result.data.length > 0 ? result.data[0].Pagina : 1;
                         this.paginator.first = this.pageIndex * this.pageSize - this.pageSize;
+                        if (idSolpSeleccionada) {
+                            let solpSeleccionada = this.tablaSolp.find(solp => solp.Id == idSolpSeleccionada);
+                            this.listarPeticiones(solpSeleccionada);
+                        }
                     }
                 },
                 error => {
@@ -627,9 +639,7 @@ export class DashboardComponent extends ListBaseComponent {
 
     cerrarModalRevisionTecnica() {
         this.displayRevisionTecnica = false;
-        this.listarPeticiones(this.peticion.Solp);
-        this.onBuscar();
-
+        this.getListarSolp(this.peticion.Solp.Id);
     }
 
     cancelarModal() {
@@ -845,70 +855,15 @@ export class DashboardComponent extends ListBaseComponent {
             rowData.ChatSinLeer = false;
             this.subscription = this.service.obtenerChat(rowData.Id)
                 .subscribe(
-                    (result: any) => {
+                    (result) => {
                         this.blockUI.stop();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-                            result = result as ChatsDto;
-                            result.ChatCompras = result.ChatCompras as ChatComprasDto;
-                            result.ChatProveedores = result.ChatProveedores as ChatProveedorDto;
-
-                            result.ChatCompras.Mensajes = result.ChatCompras.Mensajes.map((x) => {
-                                x.FechaEnvioDate = new Date(
-                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                );
-                                return x;
-                            });
-                            result.ChatCompras.FechaCreacionDate = new Date(
-                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
-                            );
-
-                            result.ChatProveedores.forEach((chat) => {
-                                chat.Mensajes = chat.Mensajes.map((x) => {
-                                    x.FechaEnvioDate = new Date(
-                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                    );
-                                    return x;
-                                });
-                                
-                                chat.FechaCreacionDate = new Date(
-                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
-                                );
-                                
-
-                            });
-
-                            result.ChatProveedores.forEach((chat) => {
-                                chat.Mensajes = chat.Mensajes.map((x) => {
-                                    x.FechaEnvioDate = new Date(
-                                        this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                    );
-                                    return x;
-                                });
-                            
-                                chat.FechaCreacionDate = new Date(
-                                    this.getDateFromAspNetFormat(chat.FechaCreacionDate)
-                                );
-                            
-                                // Si chat.Mensajes es vacío o tiene longitud 0, establecer chat.ChatSinLeer en false
-                                if (!chat.Mensajes || chat.Mensajes.length === 0) {
-                                    chat.Mensajes = chat.Mensajes.map((c) => {
-                                        c.ChatSinLeer = false;
-                                        return c;
-                                    })
-                                };
-                            });                    
-
-                            this.chat = result;
-                            this.chatCompras = result.ChatCompras;
-                            this.chatProveedores = result.ChatProveedores;
+                        let chatsDto = this.manejarErroresApiResponse(result);
+                        if (chatsDto) {
+                            this.chat = chatsDto;
+                            this.chatCompras = chatsDto.ChatCompras;
+                            this.chatProveedores = chatsDto.ChatProveedores;
                             this.displayChatInterno = true;
-                        };
+                        }
                     },
                     (error) => {
                         this.blockUI.stop();
@@ -990,8 +945,121 @@ export class DashboardComponent extends ListBaseComponent {
     cerrarExpansiones(): void {
         this.tabla.value.forEach(row => {
             if (this.tabla.isRowExpanded(row)) {
-              this.tabla.toggleRow(row);
+                this.tabla.toggleRow(row);
             }
-          });
-      }
+        });
+    }
+    
+    verLegajo(peticionDeOfertaId: number) {
+        this.blockUI.start('Cargando...');
+        this.service.verLegajo(peticionDeOfertaId, null, false, true)
+            .subscribe(
+                (response) => {
+                    let legajoRes = this.manejarErroresApiResponse(response);
+                    if (legajoRes) {
+                        this.legajo = legajoRes.LegajoFilas;
+                        this.legajoIdModal = peticionDeOfertaId;
+                        this.displayLegajo = true;
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                },
+                () => { this.blockUI.stop(); }
+            )
+    }
+    
+    cerrarLegajo() {
+        this.displayLegajo = false;
+    }
+
+    descargarLegajo() {
+        this.blockUI.start('Generando...');
+        this.service.descargarLegajo(this.legajoIdModal, null, false, null, true)
+            .subscribe(
+                (response) => {
+                    if (response.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(response.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) { // IE11
+                            window.navigator.msSaveOrOpenBlob(blob, response.FileDownloadName);
+                        }
+                        else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = response.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                        }
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                },
+                () => { this.blockUI.stop(); }
+            )
+    }
+
+    adjuntarArchivoLegajo(files) {
+        this.blockUI.start('Subiendo archivos...');
+        this.service.adjuntarArchivoLegajo(this.legajoIdModal, files)
+            .subscribe(
+                (response) => {
+                    if (response.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        this.verLegajo(this.legajoIdModal);
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                },
+                () => { this.blockUI.stop(); }
+            )
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.floatMsgService.setErrorMsg(response.info);
+        }
+        return response.data || null;
+    }
+
+    mustShowCircular(rowData, licitacion): boolean {
+        let res: boolean = true;
+
+        res = res && (rowData.VerCircular == true);
+        res = res && (licitacion.RevisionFinalizada != true);
+        res = res && (licitacion.TrabajoHecho != true);
+
+        return res;
+    }
+
+    mustShowRevisionTecnica(rowData, licitacion): boolean {
+        let res: boolean = true;
+
+        res = res && (licitacion.RevisionFinalizada != true);
+        res = res && (licitacion.TrabajoHecho != true);
+
+        return res;
+    }
 }

@@ -91,7 +91,7 @@ namespace SustitucionMOAUtils.Services
                     }
             }
             catch (Exception e) {
-                Logger.Log.Error("Server", "Server", "Job", "Copy", e.Message);
+                Logger.Log.Error("Server", "Server", "Job", "Copy", e);
             }
         }
     }

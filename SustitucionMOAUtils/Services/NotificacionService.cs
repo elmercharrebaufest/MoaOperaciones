@@ -180,8 +180,8 @@ namespace SustitucionMOAUtils.Services
             if (usuario.Roles.Any(r => r.Codigo == "COMPRADOR" || r.Codigo == "SOLP"))
             {
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
-                var peticiones = repositorio.Listar<PeticionDeOferta, IEnumerable<int>>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Solp_Id), x => x.UsuarioCreador_Id == usuario.Id).ToList();
-                List<int> solpIds = peticiones.SelectMany(lista => lista).ToList();
+                var peticiones = repositorio.Listar<PeticionDeOfertaSolpPosicion, int>(peti => peti.SolpPosicion.Solp_Id, x => x.PeticionDeOferta.UsuarioCreador_Id == usuario.Id).ToList();
+                List<int> solpIds = peticiones.Distinct().ToList();
                 var chatSinLeer = repositorio.Listar<ChatInternoCompras, NotificacionDto>(
                     x => new NotificacionDto
                     {

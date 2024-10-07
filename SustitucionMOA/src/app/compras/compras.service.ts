@@ -1,5 +1,6 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
+import { formatDate } from '@angular/common';
 import { Observable, Subject, throwError } from 'rxjs';
 import { BaseService } from '../common/services/BaseService';
 import { Solp } from './solp/solp';
@@ -21,6 +22,7 @@ import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntr
 import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
 import { LegajoDto } from '../modelos/compras/legajoDto';
+import { ObtenerLegajoResponse } from '../modelos/compras/obtenerLegajoResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -626,7 +628,7 @@ export class ComprasService extends BaseService {
             });
     }
 
-    enviarEmail(emailCompose: EmailComposeModel) {
+    enviarEmail(emailCompose: EmailComposeModel<string>) {
         var payload = new FormData();
         payload.append('emailCompose', JSON.stringify(emailCompose));
         return this.http
@@ -731,11 +733,12 @@ export class ComprasService extends BaseService {
             );
     }
 
-    public getListarOfertasComprador(peticionOferta_Id): Observable<any> {
+    public getListarOfertasComprador(peticionOferta_Id): Observable<ApiResponse<PeticionDeOfertaDto>> {
         let params: HttpParams = new HttpParams()
         params = params.set('peticionOferta_Id', peticionOferta_Id);
+        
         return this.http
-            .get<any[]>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
+            .get<ApiResponse<PeticionDeOfertaDto>>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
     }
 
     listarContratosAsociar(posiciones: SolpPosicion[]): Observable<any> {
@@ -776,14 +779,7 @@ export class ComprasService extends BaseService {
     }
 
     public GrabarPeticion(solp: EnvioSolpCompra) {
-        let json = JSON.stringify({
-            SolpId: solp.SolpId,
-            PosIds: solp.PosIds,
-            UsuarioIds: solp.UsuarioIds,
-            Observacion: solp.Observacion,
-            Adjuntos: solp.Adjuntos,
-            AdjuntoPliego: solp.AdjuntoPliego
-        });
+        let json = JSON.stringify(solp);
 
         var payload = new FormData();
         var archivos = solp.Adjuntos;
@@ -812,19 +808,19 @@ export class ComprasService extends BaseService {
             .get<SolpCompraDto>('/api/compras/ListarProveedores', { params: params, headers: this.headers })
     }
 
-    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<ApiResponse<LegajoDto[]>> {
-        let params: HttpParams = new HttpParams();
-        params = params.set("peticionDeOfertaId", idPeticionDeOferta.toString());
+    verLegajo(idPeticionDeOferta: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, esSolicitante: boolean = false): Observable<ApiResponse<ObtenerLegajoResponse>> {
+        let params: HttpParams = new HttpParams()
+            .append("peticionDeOfertaId", idPeticionDeOferta.toString())
+            .append("esProveedor", esProveedor.toString())
+            .append("esSolicitante", esSolicitante.toString());
+        
         if (idPeticionDeOfertaUsuario != null) {
-            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+            params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
-        params = params.set("esProveedor", esProveedor.toString());
 
         return this.http
-            .get("/api/compras/ObtenerLegajo", {
-                params: params,
-                headers: this.headers,
-            });
+            .get<ApiResponse<ObtenerLegajoResponse>>('/api/compras/ObtenerLegajo', { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
     verLegajoParaExternos(adjudicacionId: string, token: string): Observable<any> {
@@ -863,13 +859,19 @@ export class ComprasService extends BaseService {
             .post<Solp>('/api/compras/GuardarAdjuntosPeticionDeOferta', payload, { headers: this.headers });
     }
 
-    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean): Observable<any> {
-        let params: HttpParams = new HttpParams();
-        params = params.set("idPeticion", idPeticion.toString());
+    descargarLegajo(idPeticion: number, idPeticionDeOfertaUsuario: number | null, esProveedor: boolean, adjudicacionId: number | null, esSolicitante: boolean = false): Observable<any> {
+        let params: HttpParams = new HttpParams()
+            .append("idPeticion", idPeticion.toString())
+            .append("esProveedor", esProveedor.toString())
+            .append("esSolicitante", esSolicitante.toString());
+        
         if (idPeticionDeOfertaUsuario != null) {
-            params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
+            params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
-        params = params.set("esProveedor", esProveedor.toString());
+        if (adjudicacionId != null) {
+            params.append("adjudicacionId", adjudicacionId.toString());
+        }
+
         return this.http
             .get("/api/compras/DescargarLegajo", {
                 params: params,
@@ -1120,9 +1122,11 @@ export class ComprasService extends BaseService {
         const payload = new FormData();
         payload.append('json', jsonPayload);
 
-        peticion.Adjuntos.forEach((fileToUpload: File) => {
-            payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
-        });
+        if (peticion.Adjuntos) {
+            peticion.Adjuntos.forEach((fileToUpload: File) => {
+                payload.append("filePeticionDeOfertaVisualizacionPrecio", fileToUpload, fileToUpload.name);
+            });
+        }
 
         return this.http.post<any>('/api/compras/GrabarPeticionDeOfertaVisualizacionPrecio', payload, { headers: this.headers });
     }
@@ -1141,12 +1145,12 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public obtenerChat(solpId: string): Observable<ChatsDto> {
+    public obtenerChat(solpId: string): Observable<ApiResponse<ChatsDto>> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", solpId);
 
         return this.http
-            .get<ChatsDto>("/api/compras/ObtenerChat", {
+            .get<ApiResponse<ChatsDto>>("/api/compras/ObtenerChat", {
                 params: params,
                 headers: this.headers
             });
@@ -1475,10 +1479,14 @@ export class ComprasService extends BaseService {
             });
     }
 
-    public guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
+    public guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         var payload = new FormData();
         payload.append('id', id.toString());
         payload.append('enviarCircularA', enviarCircularA.toString());
+
+        if (fechaLimite != null) {
+            payload.append('fechaLimite', formatDate(fechaLimite, 'yyyy-MM-dd', 'es-AR'));
+        }
 
         return this.http
             .post<any>('/api/compras/GuardarEnvioCircularProveedor', payload, { headers: this.headers });
@@ -1533,10 +1541,10 @@ export class ComprasService extends BaseService {
                 throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    descargarAdjuntosProveedores(idPeticion: number, idPeticionDeOfertaUsuario: number): Observable<any> {
+    descargarAdjuntosProveedores(idPeticion: number, idPeticionDeOfertaUsuario?: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("idPeticion", idPeticion.toString());
-        if (idPeticionDeOfertaUsuario != null) {
+        if (idPeticionDeOfertaUsuario) {
             params = params.set("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
         return this.http

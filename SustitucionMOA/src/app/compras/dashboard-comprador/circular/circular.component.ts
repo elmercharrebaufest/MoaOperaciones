@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
@@ -45,6 +45,9 @@ export class CircularComponent implements OnInit, OnChanges {
     error: string = "";
     visualizarAlert = false;
     hoy: Date = new Date();
+
+    @ViewChild('errorMsgContainer')
+    errorMsgContainer: ElementRef<HTMLParagraphElement>;
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -116,7 +119,10 @@ export class CircularComponent implements OnInit, OnChanges {
     grabarCircular() {
         this.armarCircular();
         this.validarCircular();
-        if (!this.visualizarAlert) {
+        if (this.visualizarAlert) {
+            this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        else {
             this.blockUI.start("Grabando...");
             try {
                 this.subscription = this.service.GrabarCircular(this.circular).subscribe(
@@ -126,10 +132,12 @@ export class CircularComponent implements OnInit, OnChanges {
                         } else if (result.error != undefined && result.error != "") {
                             this.error = result.error;
                             this.visualizarAlert = true;
+                            this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             // this.floatMsgService.setErrorMsg(result.error);
                         } else if (result.info != undefined) {
                             this.error = result.info;
                             this.visualizarAlert = true;
+                            this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             //  this.floatMsgService.setInfoMsg(result.info);
                         } else {
                             this.nroCircular = result.data.IdEntidad;
@@ -141,6 +149,7 @@ export class CircularComponent implements OnInit, OnChanges {
                         //this.floatMsgService.setErrorMsg(error.message);
                         this.error = error.message;
                         this.visualizarAlert = true;
+                        this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                         this.blockUI.stop();
 
                     });
@@ -148,6 +157,7 @@ export class CircularComponent implements OnInit, OnChanges {
                 //this.floatMsgService.setErrorMsg(e);
                 this.error = e;
                 this.visualizarAlert = true;
+                this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 this.blockUI.stop();
                 return false; //<-- Prevent Refresh
             }
@@ -161,6 +171,7 @@ export class CircularComponent implements OnInit, OnChanges {
         this.archivos = filesUpload["files"];
         if (archivoWeb > 10000000) {
             this.error = "El archivo adjuntado no debe superar los 10Mb";
+            this.errorMsgContainer.nativeElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
             if (this.archivos.length > 0) {
                 this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
             }

@@ -330,7 +330,7 @@ export class CotizacionServicioComponent extends ListBaseComponent implements On
             EsNuevaCotizacion: this.peticion.EsNuevaCotizacion,
             CotizacionSubposiciones: this.subposiciones,
             PorcentajeDeHoras: this.index == 0 ? this.peticion.PorcentajeDeHoras : 0,
-            RequisitoCiberseguridad : this.peticion.RequisitoCiberseguridad
+            RequisitoCiberseguridad: this.peticion.RequisitoCiberseguridad
         }
         return coti;
     }

@@ -1,6 +1,5 @@
 ﻿using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
-using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,17 +29,7 @@ namespace SustitucionMOARepositorio
         public TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class
         {
             return Set<TEntidad>().Add(entidad);
-        }
-
-        public void AgregarTodos<TEntidad>(IEnumerable<TEntidad> items, List<KeyValuePair<string, string>> properties = null) where TEntidad : class
-        {
-            var enumerable = items as IList<TEntidad> ?? items.ToList();
-            if (enumerable.Any())
-            {
-                var dataTable = enumerable.ToDataTable(true, properties);
-                context.SqlBulkInsert(dataTable, dataTable.TableName);
-            }
-        }
+        }       
 
         public int Contar<TEntidad>() where TEntidad : class
         {

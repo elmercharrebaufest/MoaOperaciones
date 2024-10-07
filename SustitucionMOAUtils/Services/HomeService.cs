@@ -222,7 +222,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         var liquidacion = todasLiquidaciones.data.liquidaciones.Find(lp => lp.contrato == palabra) ?? null;
                         var liquidaciones = todasLiquidaciones.data.liquidaciones.Where(lp => lp.contrato == palabra).ToList();
-                        if (liquidaciones != null && liquidaciones.Count() > 0)
+                        if (liquidaciones != null && liquidaciones.Any())
                         {
                             var value = string.Join("|", liquidaciones.Select(a => a.documento).ToList());
                             listaResultados.Add(new BuscadorOption { Link = "", Tipo = "liquidación emitida", Value = value + "," + liquidacion.ejercicio, Code = TipoBusqueda.Liquidacion, CtaParams = 1 });

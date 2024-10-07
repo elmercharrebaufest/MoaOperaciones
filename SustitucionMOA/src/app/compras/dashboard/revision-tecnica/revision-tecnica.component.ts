@@ -74,7 +74,7 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 Usuarios: new Array(),
                 SolpDto: null,
                 Selected: null,
-            }
+            } as unknown as PeticionDeOfertaDto
         } else {
             if (this.peticion.RevisionTecnica == null || this.peticion.RevisionTecnica == undefined) {
                 this.peticion.RevisionTecnica = {

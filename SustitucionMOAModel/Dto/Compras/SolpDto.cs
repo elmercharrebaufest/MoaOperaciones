@@ -1,7 +1,8 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -123,7 +124,7 @@ namespace SustitucionMOAModel.Dto
         public string CodigoProveedorSap { get; set; }
         public bool? TieneModificaciones { get; set; }
         public bool? TieneRevisionTecnicaFinalizada { get; set; }
-        public int? EnvioCircularA { get; set; }
+        public EnviarCircularEnum? EnvioCircularA { get; set; }
 
 
         public SolpDto() { }
@@ -464,6 +465,6 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioCreadorMail { get; set; }
         public string Cantidad { get; set; }
         public string Periodo { get; set; }
-    
+
     }
 }
