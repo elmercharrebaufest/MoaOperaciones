@@ -662,7 +662,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (pos.Subposiciones != null)
                 {
-                    foreach (var subpos in pos.Subposiciones)
+                    int numeroPosicionConsecutivo = 1; /* para que las subposiciones tengan un numero consecutivo
+                                                        * mantener el orden de las subposiciones con OrderBy en el ciclo.
+                                                        */
+
+                    foreach (var subpos in pos.Subposiciones.OrderBy(sp => sp.Numero))
                     {
                         SolpSubposicion subposEntity = null;
 
@@ -681,7 +685,7 @@ namespace SustitucionMOAUtils.Services
                         if (subpos.CuentaMayor != null)
                             subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
 
-                        subposEntity.Numero = subpos.Numero;
+                        subposEntity.Numero = numeroPosicionConsecutivo++;
                         subposEntity.PrecioBruto = subpos.PrecioBruto;
                         subposEntity.Tarea = subpos.Tarea;
 
