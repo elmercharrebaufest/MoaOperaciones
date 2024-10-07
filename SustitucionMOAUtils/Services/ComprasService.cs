@@ -552,16 +552,11 @@ namespace SustitucionMOAUtils.Services
 
         private Solp PosicionesNuevasActualizadas(Solp solpEntity, SolpDto solp)
         {
-            SolpPosicion postEntitySubPosicionesEliminadas = null;
             //posiciones nuevas y actualizadas
             foreach (var pos in solp.Posiciones)
             {
-                SolpPosicion posEntity = null;
-                postEntitySubPosicionesEliminadas = null;
-                posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
-                postEntitySubPosicionesEliminadas = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo);
-                if (posEntity == null)
-                    posEntity = new SolpPosicion();
+                SolpPosicion posEntity = solpEntity.Posiciones.FirstOrDefault(y => y.Codigo == pos.Codigo)
+                    ?? new SolpPosicion();
 
                 List<SolpSubposicion> lstSubPosicion = posEntity.Subposiciones != null ? posEntity.Subposiciones.ToList() : new List<SolpSubposicion>();
                 var lstSubPosicionesUnicas = lstSubPosicion.CloneList();
@@ -584,16 +579,26 @@ namespace SustitucionMOAUtils.Services
                 posEntity.Tarea = pos.Tarea;
                 posEntity.Cantidad = pos.Cantidad;
                 if (pos.Unidad != null)
+                {
                     posEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == pos.Unidad.Codigo);
+                }
                 posEntity.PrecioBruto = pos.PrecioBruto;
                 if (pos.CuentaMayor != null)
+                {
                     posEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == pos.CuentaMayor.Codigo);
+                }
                 if (pos.TipoImputacionValor != null)
+                {
                     posEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == pos.TipoImputacionValor.Tabla && x.Codigo == pos.TipoImputacionValor.Codigo);
+                }
                 if (pos.TipoPosicion != null)
+                {
                     posEntity.TipoPosicion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoPosicionSolp && x.Codigo == pos.TipoPosicion.Codigo);
+                }
                 if (pos.TipoImputacion != null)
+                {
                     posEntity.TipoImputacion = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoImputacionSolp && x.Codigo == pos.TipoImputacion.Codigo);
+                }
                 if (pos.Almacen != null)
                 {
                     posEntity.Almacen = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Almacen && x.Codigo == pos.Almacen.Codigo);
@@ -604,7 +609,10 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 if (pos.Centro != null)
+                {
                     posEntity.Centro = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Centro && x.Codigo == pos.Centro.Codigo);
+                }
+
                 if (pos.GrupoCompras != null)
                 {
                     posEntity.GrupoCompras = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.GrupoCompras && x.Codigo == pos.GrupoCompras.Codigo);
@@ -624,7 +632,9 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 if (pos.Moneda != null)
+                {
                     posEntity.Moneda = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Moneda && x.Codigo == pos.Moneda.Codigo);
+                }
 
                 if (pos.CodigoMaterialSap != null)
                 {
@@ -637,8 +647,9 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 if (pos.CodigoServicioSap != null)
+                {
                     posEntity.ServicioSolp = repositorio.Obtener<ServicioSolp>(x => x.CodigoSap == pos.CodigoServicioSap.Codigo);
-
+                }
 
                 if (pos.Provincia != null)
                 {
@@ -658,7 +669,9 @@ namespace SustitucionMOAUtils.Services
                 posEntity.NumeroPedido = pos.NumeroPedido;
 
                 if (posEntity.Subposiciones == null)
+                {
                     posEntity.Subposiciones = new List<SolpSubposicion>();
+                }
 
                 if (pos.Subposiciones != null)
                 {
@@ -668,29 +681,32 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var subpos in pos.Subposiciones.OrderBy(sp => sp.Numero))
                     {
-                        SolpSubposicion subposEntity = null;
-
-                        subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero);
-
-                        if (subposEntity == null)
-                            subposEntity = new SolpSubposicion();
+                        SolpSubposicion subposEntity =
+                            posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero)
+                            ?? new SolpSubposicion();
 
                         subposEntity.Codigo = subpos.Codigo;
                         subposEntity.Cantidad = subpos.Cantidad;
                         subposEntity.Estado = true;
 
                         if (subpos.TipoImputacionValor != null)
+                        {
                             subposEntity.TipoImputacionSap = repositorio.Obtener<TablaSap>(x => x.Tabla == subpos.TipoImputacionValor.Tabla && x.Codigo == subpos.TipoImputacionValor.Codigo);
+                        }
 
                         if (subpos.CuentaMayor != null)
+                        {
                             subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
+                        }
 
                         subposEntity.Numero = numeroPosicionConsecutivo++;
                         subposEntity.PrecioBruto = subpos.PrecioBruto;
                         subposEntity.Tarea = subpos.Tarea;
 
                         if (subpos.Unidad != null)
+                        {
                             subposEntity.Unidad = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Unidad && x.Codigo == subpos.Unidad.Codigo);
+                        }
 
                         if (subpos.CodigoServicioSap != null)
                         {
@@ -707,12 +723,9 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (var subpos2 in lstSubPosicionesUnicas.Where(x => pos.Subposiciones == null || !pos.Subposiciones.Any(y => y.Codigo == x.Codigo)))
                     {
-                        SolpSubposicion subposEntity = null;
-
-                        subposEntity = posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos2.Codigo || y.Numero == subpos2.Numero);
-
-                        if (subposEntity == null)
-                            subposEntity = new SolpSubposicion();
+                        SolpSubposicion subposEntity =
+                            posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos2.Codigo || y.Numero == subpos2.Numero)
+                            ?? new SolpSubposicion();
 
                         subposEntity.Codigo = subpos2.Codigo;
                         subposEntity.Cantidad = subpos2.Cantidad;
@@ -725,7 +738,9 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 if (posEntity.Proveedores == null)
+                {
                     posEntity.Proveedores = new List<SolpProveedor>();
+                }
 
                 //proveedores eliminados 
                 if (posEntity.Proveedores.Count > 0)
@@ -742,12 +757,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     foreach (var prov in pos.Proveedores)
                     {
-                        SolpProveedor provEntity = null;
-
-                        provEntity = posEntity.Proveedores.FirstOrDefault(x => x.RazonSocial == prov.RazonSocial);
-
-                        if (provEntity == null)
-                            provEntity = new SolpProveedor();
+                        SolpProveedor provEntity =
+                            posEntity.Proveedores.FirstOrDefault(x => x.RazonSocial == prov.RazonSocial)
+                            ?? new SolpProveedor();
 
                         provEntity.RazonSocial = prov.RazonSocial;
                         //pendiente otros campos
