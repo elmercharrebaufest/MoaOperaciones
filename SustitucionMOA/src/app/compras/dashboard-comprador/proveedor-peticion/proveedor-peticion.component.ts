@@ -118,12 +118,12 @@ export class ProveedorPeticionComponent implements OnInit {
         //     this.error = "Debe seleccionar un proveedor que no este asociado.";
         //     return this.visualizarAlert = true;
         // }
-        if(event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)){
+        if (event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)) {
             this.error = "Debe seleccionar un proveedor que no este asociado.";
             this.visualizarAlert = true;
         }
 
-        if(!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)){
+        if (!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)) {
             this.error = "Debe seleccionar un proveedor que no este asociado.";
             this.visualizarAlert = true;
         }
@@ -181,12 +181,12 @@ export class ProveedorPeticionComponent implements OnInit {
     }
 
     selectProveedor(event) {
-        try {          
-                this.validarProveedor(event);
-                if (!this.visualizarAlert) {
-                    this.proveedoresSeleccionados.push(event);
-                }
-          
+        try {
+            this.validarProveedor(event);
+            if (!this.visualizarAlert) {
+                this.proveedoresSeleccionados.push(event);
+            }
+
             this.proveedorSeleccionado = null;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -205,7 +205,6 @@ export class ProveedorPeticionComponent implements OnInit {
         this.displayAltaProveedor = false;
     }
     agregarProveedor(event) {
-        debugger;
         this.selectProveedor(event.proveedorDto);
     }
 }

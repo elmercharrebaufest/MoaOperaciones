@@ -20,13 +20,13 @@
                 </b>
             </strong>
         </div>
-        
+
         <div class="col-sm-2 letraTitulo" *ngIf="tablaOfertas.VerBotonVerPrecio" style="text-align: end;">
             <button class="publicar btn btn-success" style="width: 140px;" (click)="abrirModalPrecios()">
                 Ver Precios
             </button>
         </div>
-        <div class="col-sm-2 letraTitulo" *ngIf="!tablaOfertas.VerBotonVerPrecio">           
+        <div class="col-sm-2 letraTitulo" *ngIf="!tablaOfertas.VerBotonVerPrecio">
         </div>
         <div class="col-sm-2 letraTitulo">
             <button class="publicar btn btn-success" style="margin-right: 10px;" (click)="abrirModalMovimientos()">
@@ -99,7 +99,8 @@
                     <td class="columna border2-right" style="width: 60px !important;" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}">{{peticionPosicion.Posicion.Unidad.Descripcion}}</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="8" style="width: 620px !important;"><strong>Total global</strong>
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important;">
+                        <strong>Total global</strong>
                         {{ tablaOfertas.TienePosicionesEliminadas ? '/ Total con eliminadas' : '' }}
                     </td>
                 </tr>
@@ -139,7 +140,7 @@
                         style="background-color: #4760ac !important; width: 660px !important;">
                         <!-- <span> <p-checkbox name="visible" [readonly]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
                         <button class="btn btn-xs btn-primary" *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes" style="cursor:pointer; vertical-align: middle;padding: 0px 5px;"
-                            (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                                (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
                             <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
                         </button>
                         <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
@@ -204,8 +205,8 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
-                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }} 
-                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }} 
+                                {{ proveedor.VerImportes ? 'ARP ' + (proveedor.Cotizacion.TotalGlobal | number:'1.2-2') : '' }}
+                                {{ proveedor.VerImportes && proveedor.Cotizacion.TodasTotalGlobal > 0 ? '/ ' + (proveedor.Cotizacion.TodasTotalGlobal | number:'1.2-2') : '' }}
                                 <ng-container *ngIf="proveedor.VerImportes">
                                     <ng-container *ngFor="let item of proveedor.TotalesPorMoneda">
                                         - {{item.Moneda}} {{item.Total}}
@@ -351,7 +352,8 @@
                 </tr>
 
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
-                    <td class="columna border2-right" colspan="6" style="width: 550px !important;"><strong>Total global</strong>
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important;">
+                        <strong>Total global</strong>
                         {{ tablaOfertas.TienePosicionesEliminadas ? ' / Total con eliminadas' : ''}}
                     </td>
                 </tr>
@@ -402,12 +404,12 @@
                         style="background-color: #4760ac !important; width: 540px !important;">
                         <!-- <span [ngClass]="{'disabled-checkbox': !proveedor.VerAdjudicar}"> <p-checkbox name="visible" [disabled]="!proveedor.VerAdjudicar" [(ngModel)]="proveedor.VisibleSolicitante" (click)="actualizarVisibilidad(proveedor, !proveedor.VerAdjudicar)" binary="false"></p-checkbox></span> -->
                         <button class="btn btn-xs btn-primary"
-                            *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes"
-                            style="cursor:pointer; vertical-align: middle; padding: 0px 5px;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
+                                *ngIf="proveedor.Cotizacion != null && proveedor.Cotizacion.length != 0 && proveedor.VerImportes"
+                                style="cursor:pointer; vertical-align: middle; padding: 0px 5px;" (click)="abrirModalHistorial(proveedor.Cotizacion.Id)">
                             <i class="glyphicon glyphicon-hourglass" style="color: rgb(252, 249, 249);font-size: 12px;"></i>
                         </button>
                         <span style="margin-left: 9px;">{{proveedor.RazonSocial}}</span>
-                    </th>                
+                    </th>
                 </tr>
                 <tr>
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
@@ -427,7 +429,7 @@
                                     <!-- Si la posición está completada, mostramos sus datos -->
                                     <ng-container *ngIf="cotizacionPosicion.Completado">
                                         <td class="columna border2-left" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
-                                            <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>                                    
+                                            <div *ngIf="proveedor.VerImportes" [innerHTML]="getTotalPreciosPorMoneda(cotizacionPosicion)"></div>
                                             <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                         </td>
                                         <td class="columna" [ngStyle]="{'background-color': cotizacionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" style="width: 120px !important;" colspan="3">
@@ -438,17 +440,17 @@
                                             {{cotizacionPosicion.PrimerPlazoDeOferta != null ? cotizacionPosicion.PrimerPlazoDeOferta + ' días' : 'sin plazo' }}
                                         </td>
                                     </ng-container>
-                
+
                                     <!-- Si la posición no está completada, mostramos "Sin cotizar" -->
                                     <ng-container *ngIf="cotizacionPosicion.MensajeTablaVerOfertas">
                                         <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
                                             {{ cotizacionPosicion.MensajeTablaVerOfertas }} <!-- Sin cotizar || Adjudicado -->
-                                        </td> 
+                                        </td>
                                     </ng-container>
                                 </ng-container>
                             </ng-container>
                         </ng-container>
-                
+
                         <!-- Si el proveedor no tiene cotizaciones -->
                         <ng-container *ngIf="proveedor.Cotizacion == null">
                             <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
@@ -457,7 +459,7 @@
                         </ng-container>
                     </ng-container>
                 </tr>
-                
+
 
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="espacio" colspan="9" style="background-color: white; width: 540px !important; ">&nbsp;</td>
@@ -503,7 +505,7 @@
                                                     <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                                                 </td>
                                             </ng-container>
-                                            
+
                                             <!-- Si la cotización de subposición no está completada, mostramos "Sin cotizar" -->
                                             <ng-container *ngIf="!cotizacionSubpo.Completado">
                                                 <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
@@ -514,7 +516,7 @@
                                     </ng-container>
                                 </ng-container>
                             </ng-container>
-                
+
                             <!-- Si el proveedor no tiene cotizaciones -->
                             <ng-container *ngIf="proveedor.Cotizacion == null">
                                 <td class="columna border2-left" [ngStyle]="{'background-color': peticionPosicion.EstaEliminado ? '#ff00002e' : 'transparent'}" colspan="9" style="width: 540px !important;">
@@ -524,7 +526,7 @@
                         </ng-container>
                     </tr>
                 </ng-container>
-                
+
 
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="espacio" colspan="9" style="background-color: white;  width: 540px !important;">&nbsp;</td>
@@ -580,7 +582,7 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left" [style.color]="proveedor.EstadoPropuestaTecnicaColor">
-                                {{proveedor.EstadoPropuestaTecnica}} 
+                                {{proveedor.EstadoPropuestaTecnica}}
                                 <span *ngIf="tablaOfertas.TrabajoHecho">- {{proveedor.THCategoria}}</span>
 
                                 <span *ngIf="proveedor.PropuestaTecnicaAprobada == false"
@@ -717,11 +719,10 @@
 </app-textos-adjudicar>
 
 
-<app-visualizar-precio
-    [(displayVisualizarPrecio)]="displayVisualizarPrecio"
-    [(peticionOferta_Id)]="peticionOferta_Id"
-    (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
-    (preciosGuardadoEmitter)="onVisualizarPrecioGuardado()">
+<app-visualizar-precio [(displayVisualizarPrecio)]="displayVisualizarPrecio"
+                       [(peticionOferta_Id)]="peticionOferta_Id"
+                       (cerrarModalPreciosEmitter)="cerrarModalPrecios()"
+                       (preciosGuardadoEmitter)="onVisualizarPrecioGuardado()">
 </app-visualizar-precio>
 
 <app-posicion-plazo [(displayPlazo)]="displayPlazo"
@@ -730,15 +731,14 @@
                     [(lista)]="lista">
 </app-posicion-plazo>
 
-<app-cotizacion-historial 
-    [(displayHistorial)]="displayHistorial"
-    (cerrarHistorialEmitter)="cerrarHistorial()"
-    [(historiales)]="historiales">
+<app-cotizacion-historial [(displayHistorial)]="displayHistorial"
+                          (cerrarHistorialEmitter)="cerrarHistorial()"
+                          [(historiales)]="historiales">
 </app-cotizacion-historial>
 
 <app-visualizar-movimiento [(displayVisualizarMovimientos)]="displayVisualizarMovimientos"
-                       (cerrarModalMovimientosEmitter)="cerrarModalMovimientos()"
-                       [(peticionOferta_Id)]="peticionOferta_Id">
+                           (cerrarModalMovimientosEmitter)="cerrarModalMovimientos()"
+                           [(peticionOferta_Id)]="peticionOferta_Id">
 </app-visualizar-movimiento>
 
 <p-dialog [(visible)]="displayGenerarOCMoneda" modal="modal" [width]="600" [draggable]="false" [closable]="true"
@@ -790,6 +790,5 @@
 </p-dialog>
 
 <app-actualizar-fecha-vigencia [posicionesSinVigencia]="posicionesSinVigencia"
-    (cerrarActualizarFechaVigenciaEmitter)="onCerrarActualizarSinVigenciaModal()"
->
+                               (cerrarActualizarFechaVigenciaEmitter)="onCerrarActualizarSinVigenciaModal()">
 </app-actualizar-fecha-vigencia>

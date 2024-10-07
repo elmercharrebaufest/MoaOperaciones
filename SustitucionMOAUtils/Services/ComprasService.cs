@@ -3824,7 +3824,6 @@ namespace SustitucionMOAUtils.Services
                         ;
                 }
                 todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = ObservacionesCotizacionCondEspBuilder.ToString();
-                //todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
                 foreach (SolpPosicionDto posicion in todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion))
                 {
