@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp
+﻿// Ignore Spelling: Solp href noopener noreferrer
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -5583,72 +5583,105 @@ namespace SustitucionMOAUtils.Services
             var configuracion = repositorio.Obtener<Configuracion>(con => con.Code == "PliegoDeGeneralidades");
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
-            string htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} generada con Molinos Agro S.A <br />";
 
-            if (!esProveedor)
+            StringBuilder htmlBody = new StringBuilder();
+            htmlBody
+                .Append("En el presente mail se informa la nueva PO")
+                .Append(" ")
+                .Append(peticion.Id)
+                .Append(" ");
+
+            if (esProveedor)
             {
-                htmlBody = $"En el presente mail se informa la nueva PO {peticion.Id} que se envió a los siguientes proveedores: <br />";
+                htmlBody.Append("generada con Molinos Agro S.A <br />");
+            }
+            else
+            {
+                htmlBody.Append("que se envió a los siguientes proveedores: <br />");
                 foreach (var proveedor in proveedores)
                 {
-                    htmlBody += proveedor + "<br />";
+                    htmlBody.Append(proveedor).Append("<br />");
                 }
             }
+
             if (!string.IsNullOrEmpty(peticion.Observaciones))
             {
                 string observacionesFormatted = peticion.Observaciones.Replace("\n", "<br />");
-
-                htmlBody += $"<br />Observaciones: {observacionesFormatted} <br /><br />";
+                htmlBody
+                    .Append("<br />Observaciones: ")
+                    .Append(observacionesFormatted)
+                    .Append(" <br /><br />");
             }
 
             if (esProveedor)
             {
-                var posicion = peticion.Posiciones.FirstOrDefault().SolpPosicion;
-                var esServicio = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO";
+                var posicion = peticion.Posiciones.First().SolpPosicion;
+                var esServicio = peticion.Posiciones.First().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO";
 
                 bool casoConPliego = ValidarSolpSiTienePliego(posicion);
 
                 if (esServicio && casoConPliego)
                 {
                     var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
-                        peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Id + "&token=" + peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.EmailLinkToken;
+                        peticion.Posiciones.First().SolpPosicion.Solp.Id + "&token=" + peticion.Posiciones.First().SolpPosicion.Solp.EmailLinkToken;
 
-                    htmlBody += "<p" +
-                               "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
-                               "align = 'center' >" +
-                               " Para descargar el legajo, haga  " +
-                               $"<a href = '{downloadLinkUrl}' download rel='noopener noreferrer'>" +
-                               "click aquí" +
-                               "</a></p> <br />";
+                    htmlBody.Append("<p")
+                              .Append("style = 'line-height: 24px; font-size: 16px; margin: 0;'")
+                              .Append("align = 'center' >")
+                              .Append(" Para descargar el legajo, haga  ")
+                              .Append("<a href = '").Append(downloadLinkUrl).Append("' download rel='noopener noreferrer'>")
+                              .Append("click aquí")
+                              .Append("</a>")
+                              .Append("</p> <br />");
                 }
+
                 if (peticion.AdjuntoPliego == true)
                 {
-                    htmlBody += "<p" +
-                               "style = 'line-height: 24px; font-size: 16px; margin: 0;'" +
-                               "align = 'center' >" +
-                               "Para descargar el pliego de generalidades, haga " +
-                               $"<a href = '{configuracion.Value}' download rel='noopener noreferrer'>" +
-                               "click aquí" +
-                               "</a></p> <br />";
+                    htmlBody.Append("<p")
+                               .Append("style = 'line-height: 24px; font-size: 16px; margin: 0;'")
+                               .Append("align = 'center' >")
+                               .Append("A continuación, se listan los documentos de pliego de generalidades y documentación relevante para la contratista:");
+
+                    List<string> archivos = new List<string>();
+
+                    htmlBody.Append("<ul>");
+                    foreach (var item in archivos)
+                    {
+                        htmlBody
+                            .Append("<li>")
+
+                            .Append("<a href=LINK>").Append("nombre")//ETC.
+
+                            .Append("</li>");
+                    }
+                    htmlBody.Append("</ul>");
+
+                    //.Append("Para descargar el pliego de generalidades, haga ")
+                    //.Append("<a href = '").Append(configuracion.Value).Append("' download rel='noopener noreferrer'>")
+                    //.Append("click aquí")
+                    //.Append("</a>")
+                    //.Append("</p> <br />");
                 }
+
                 if (posicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
                 {
-                    htmlBody += "<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>";
-                    htmlBody += "<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>";
-                    htmlBody += "<ul>";
-                    htmlBody += "<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>";
-                    htmlBody += "<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>";
-                    htmlBody += "<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>";
-                    htmlBody += "</ul>";
-                    htmlBody += "<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>";
+                    htmlBody.Append("<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>");
+                    htmlBody.Append("<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>");
+                    htmlBody.Append("<ul>");
+                    htmlBody.Append("<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>");
+                    htmlBody.Append("<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>");
+                    htmlBody.Append("<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>");
+                    htmlBody.Append("</ul>");
+                    htmlBody.Append("<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>");
                 }
             }
 
-            htmlBody += "<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
-                "<br/><br/>Saludos Cordiales<br/>" +
-                "Molinos Agro S.A. <br/><br/> " +
-                 @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
+            htmlBody.Append("<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar ")
+                .Append("<br/><br/>Saludos Cordiales<br/>")
+                .Append("Molinos Agro S.A. <br/><br/> ")
+                .Append("<img width:'5%' src='cid:").Append(res.ContentId).Append("'/>");
 
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
+            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody.ToString(), null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
         }
