@@ -188,7 +188,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         repositorio.GuardarCambios();
 
-                        Notificar(repositorio, eSLocalesInicio);
+                        Notificar(repositorio, eSLocalesFin);
                     }
 
                 }

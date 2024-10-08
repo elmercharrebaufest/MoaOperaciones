@@ -378,7 +378,7 @@ namespace SustitucionMOAUtils.Services
                             if (!pos.Solicitante.IsNullOrWhiteSpace())
                             {
                                 string solicitante = pos.Solicitante.Replace(" ", "");
-                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante.ToUpper());
+                                var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == solicitante.ToUpper());
                                 if (usuario != null)
                                 {
                                     if (!string.IsNullOrEmpty(usuario.Mail))
@@ -630,7 +630,7 @@ namespace SustitucionMOAUtils.Services
                             //Si no coincide el email con el campo solicitante, buscar el valor de campo solicitante (EN MAYUSCULAS Y SIN ESPACIOS) (todo junto sin espacios).
                             //Si existe, traer los datos del usuario, y comparar usuario.email con usermail, si son iguales, aprobación automatica.
                             string solicitante = pos.Solicitante.Replace(" ", "");
-                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante.ToUpper());
+                            var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.Trim().ToUpper() == solicitante.Trim().ToUpper());
 
                             if (usuario != null && usuario.Mail == userMail)
                             {
@@ -1080,7 +1080,7 @@ namespace SustitucionMOAUtils.Services
                             {
                                 string aprobador = detalleSolPed.SupervisorTrabajo[0].Replace(" ", "");
                                 aprobador = aprobador.ToUpper();
-                                    var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == aprobador);
+                                    var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == aprobador);
                                     if (usuario != null)
                                 {
                                     user = usuario;
@@ -1098,7 +1098,7 @@ namespace SustitucionMOAUtils.Services
                                 {
                                     string solicitante = pos.Solicitante.Replace(" ", "");
                                         solicitante = solicitante.ToUpper();
-                                        var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap == solicitante);
+                                        var usuario = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.UsuarioSap.ToUpper() == solicitante);
                                         if (usuario != null)
                                     {
                                         user = usuario;
