@@ -5580,7 +5580,11 @@ namespace SustitucionMOAUtils.Services
         private AlternateView CuerpoMailPeticionDeOferta(PeticionDeOferta peticion, bool esProveedor, List<string> proveedores = null)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
-            var configuracion = repositorio.Obtener<Configuracion>(con => con.Code == "PliegoDeGeneralidades");
+            string archivosJson = repositorio
+                .Obtener<Configuracion>(con => con.Code == "ListaArchivosMailPeticionDeOferta")
+                .Value;
+            List<FileDto> archivos = JsonConvert.DeserializeObject<List<FileDto>>(archivosJson);
+
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
 
@@ -5600,7 +5604,8 @@ namespace SustitucionMOAUtils.Services
                 htmlBody.Append("que se envió a los siguientes proveedores: <br />");
                 foreach (var proveedor in proveedores)
                 {
-                    htmlBody.Append(proveedor).Append("<br />");
+                    htmlBody.Append(proveedor)
+                        .AppendLine("<br />");
                 }
             }
 
@@ -5610,7 +5615,7 @@ namespace SustitucionMOAUtils.Services
                 htmlBody
                     .Append("<br />Observaciones: ")
                     .Append(observacionesFormatted)
-                    .Append(" <br /><br />");
+                    .AppendLine(" <br /><br />");
             }
 
             if (esProveedor)
@@ -5632,7 +5637,8 @@ namespace SustitucionMOAUtils.Services
                               .Append("<a href = '").Append(downloadLinkUrl).Append("' download rel='noopener noreferrer'>")
                               .Append("click aquí")
                               .Append("</a>")
-                              .Append("</p> <br />");
+                              .Append("</p>")
+                              .AppendLine("<br />");
                 }
 
                 if (peticion.AdjuntoPliego == true)
@@ -5642,44 +5648,37 @@ namespace SustitucionMOAUtils.Services
                                .Append("align = 'center' >")
                                .Append("A continuación, se listan los documentos de pliego de generalidades y documentación relevante para la contratista:");
 
-                    List<string> archivos = new List<string>();
-
-                    htmlBody.Append("<ul>");
-                    foreach (var item in archivos)
+                    htmlBody.AppendLine("<ul>");
+                    foreach (FileDto archivo in archivos)
                     {
-                        htmlBody
-                            .Append("<li>")
+                        htmlBody.AppendLine("<li>");
 
-                            .Append("<a href=LINK>").Append("nombre")//ETC.
+                        htmlBody.Append("<a href='").Append(archivo.Url).Append("' download rel='noopener noreferrer'>")
+                            .Append(archivo.Filename)
+                            .Append("</a>");
 
-                            .Append("</li>");
+                        htmlBody.AppendLine("</li>");
                     }
-                    htmlBody.Append("</ul>");
-
-                    //.Append("Para descargar el pliego de generalidades, haga ")
-                    //.Append("<a href = '").Append(configuracion.Value).Append("' download rel='noopener noreferrer'>")
-                    //.Append("click aquí")
-                    //.Append("</a>")
-                    //.Append("</p> <br />");
+                    htmlBody.AppendLine("</ul>");
                 }
 
                 if (posicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
                 {
-                    htmlBody.Append("<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>");
-                    htmlBody.Append("<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>");
-                    htmlBody.Append("<ul>");
-                    htmlBody.Append("<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>");
-                    htmlBody.Append("<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>");
-                    htmlBody.Append("<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>");
-                    htmlBody.Append("</ul>");
-                    htmlBody.Append("<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>");
+                    htmlBody.AppendLine("<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>");
+                    htmlBody.AppendLine("<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>");
+                    htmlBody.AppendLine("<ul>");
+                    htmlBody.AppendLine("<li>Si el servicio es prestado directamente por su empresa, el documento debe firmarlo el titular o apoderado legal de la empresa.</li>");
+                    htmlBody.AppendLine("<li>Si el servicio es prestado por un colaborador de la empresa, el documento deberá ser firmado por la empresa principal y no por su colaborador.</li>");
+                    htmlBody.AppendLine("<li>Cualquier otra prestación en la que se conecten a la red LAN y/o VPN, o aplicaciones internas de Molinos Agro requerirá la firma de la empresa principal.</li>");
+                    htmlBody.AppendLine("</ul>");
+                    htmlBody.AppendLine("<p>Puede descargar el documento de requisitos de ciberseguridad desde el siguiente enlace: <a href='https://b2cmoagro.blob.core.windows.net/moaopublic/Requisitos%20de%20seguridad%20de%20terceros_v1.4.docx' download rel='noopener noreferrer'>Requisitos de seguridad de terceros_v1.4</a></p>");
                 }
             }
 
-            htmlBody.Append("<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar ")
-                .Append("<br/><br/>Saludos Cordiales<br/>")
-                .Append("Molinos Agro S.A. <br/><br/> ")
-                .Append("<img width:'5%' src='cid:").Append(res.ContentId).Append("'/>");
+            htmlBody.AppendLine("<br />En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar ")
+                .AppendLine("<br/><br/>Saludos Cordiales<br/>")
+                .AppendLine("Molinos Agro S.A. <br/><br/> ")
+                .AppendLine("<img width:'5%' src='cid:").Append(res.ContentId).Append("'/>");
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody.ToString(), null, "text/html");
             alternateView.LinkedResources.Add(res);
