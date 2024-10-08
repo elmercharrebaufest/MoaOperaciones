@@ -1008,10 +1008,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         if (grupoComprasAux) {
             posicion.selectGrupoCompras = grupoComprasAux;
         }
-        //var cuentaMayorAux = this.combos.CuentaMayor.find(x => x.Descripcion == posicion.codigoServicio.CuentaMayor.Descripcion);
-        if (posicion.codigoServicio.CuentaMayor && posicion.codigoServicio.CuentaMayor.Id > 0) {
-            posicion.cuentaMayor = posicion.codigoServicio.CuentaMayor;
-        }
     }
 
     private autocompleteMaterialRFC(posicion: SolpPosicion): Observable<any> {
