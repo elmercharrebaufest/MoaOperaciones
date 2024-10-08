@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -5585,8 +5585,10 @@ namespace SustitucionMOAUtils.Services
                 .Value;
             List<FileDto> archivos = JsonConvert.DeserializeObject<List<FileDto>>(archivosJson);
 
-            LinkedResource res = new LinkedResource(filePath);
-            res.ContentId = Guid.NewGuid().ToString();
+            LinkedResource res = new LinkedResource(filePath)
+            {
+                ContentId = Guid.NewGuid().ToString()
+            };
 
             StringBuilder htmlBody = new StringBuilder();
             htmlBody
@@ -5685,7 +5687,7 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
-        private bool ValidarSolpSiTienePliego(SolpPosicion posicion)
+        private static bool ValidarSolpSiTienePliego(SolpPosicion posicion)
         {
             bool tieneCondicionEspecial = posicion.Solp.TrabajoYaHecho == true || posicion.Solp.Urgencia == true || posicion.Solp.Adicional == true || posicion.Solp.CondEspProveedorAsignado == true;
             var casoConPliego = posicion.Solp.TipoSolp?.Codigo == "CON_PLIEGO" || (posicion.Solp.TipoSolp?.Codigo == "SIN_PLIEGO" &&

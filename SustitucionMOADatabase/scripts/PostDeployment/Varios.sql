@@ -66,12 +66,18 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizCotizaci
 BEGIN
 	insert into Configuracion values ('DolarMaizCotizacion','340')
 END
-IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'PliegoDeGeneralidades') 
+
+IF EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'PliegoDeGeneralidades') 
 BEGIN
-	insert into Configuracion values ('PliegoDeGeneralidades','https://b2cmoagro.blob.core.windows.net/moaopublic/PliegoGeneralidades.pdf')
+	DELETE FROM Configuracion WHERE [Code] = 'PliegoDeGeneralidades'
 END
 
 declare @configuracionListaArchivosMailPeticionDeOferta varchar(max) = '[
+	{
+		"Filename": "F-2285-4 PLIEGO GENERALIDADES",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/F-2285_PLIEGO_GENERALIDADES.pdf",
+		"MimeType": "application/pdf"
+	},
 	{
 		"Filename": "Chequeo de orden y limpieza aplicable a obras desarrolladas por terceros",
 		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/Chequeo_de_orden_y_limpieza_aplicable_a_obras_desarrolladas_por_terceros.pdf",
@@ -85,11 +91,6 @@ declare @configuracionListaArchivosMailPeticionDeOferta varchar(max) = '[
 	{
 		"Filename": "CONDICIONES COMERCIALES",
 		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/CONDICIONES_COMERCIALES.pdf",
-		"MimeType": "application/pdf"
-	},
-	{
-		"Filename": "F-2285-4 PLIEGO GENERALIDADES",
-		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/F-2285_PLIEGO_GENERALIDADES.pdf",
 		"MimeType": "application/pdf"
 	},
 	{
