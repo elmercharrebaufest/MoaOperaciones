@@ -170,24 +170,12 @@ export class CotizacionComponent extends ListBaseComponent {
 
     uploadHandler(filesUpload: any): void {
         this.model.archivosCotizacionesNuevos = filesUpload["files"];
-        this.verificarTamanoYEliminarSiEsNecesario(this.model.archivosCotizacionesNuevos, "El archivo adjunto no debe superar los 10Mb");
         this.validarChecks();
     }
     
     uploadHandlerCondEsp(filesUpload: any): void {
         this.model.archivosCotizacionesNuevosCondEsp = filesUpload["files"];
-        this.verificarTamanoYEliminarSiEsNecesario(this.model.archivosCotizacionesNuevosCondEsp, "El archivo adjunto no debe superar los 10Mb");
         this.validarChecks();
-    }
-
-    private verificarTamanoYEliminarSiEsNecesario(modeloArchivos: any[], mensajeError: string): void {
-        const tamanoTotal = modeloArchivos.reduce((sum, file) => sum + file.size, 0);
-        if (tamanoTotal > 10000000) {
-            if (modeloArchivos.length > 0) {
-                this.eliminarAdjuntoNuevo(modeloArchivos[modeloArchivos.length - 1]);
-            }
-            this.floatMsgService.setErrorMsg(mensajeError);
-        }
     }
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
