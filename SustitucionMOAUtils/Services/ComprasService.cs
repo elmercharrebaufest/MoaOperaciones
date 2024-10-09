@@ -4863,7 +4863,15 @@ namespace SustitucionMOAUtils.Services
             // pdf peticion de oferta materiales
             if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
             {
-                foreach (var peticionUsuario in peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario))
+                bool peticionesUsuario(PeticionDeOfertaUsuario u)
+                {
+                    if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
+                    if (idPeticionDeOfertaUsuario == u.Id) { return true; }
+                    if (usuarioDto?.Id == u.Usuario_Id) { return true; }
+                    return false;
+                }
+
+                foreach (var peticionUsuario in peticion.Usuarios.Where(peticionesUsuario))
                 {
                     var pdfPOUsuario = $"PO - {peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                     legajo.Add(new LegajoDto
