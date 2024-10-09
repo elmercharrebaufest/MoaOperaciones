@@ -17,6 +17,7 @@ import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { POPosicionDto } from '../../modelos/po-posicionDto';
 import { Subscription } from 'rxjs';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -144,7 +145,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
 
     ngOnInit() {
 
-        this.filtrosPOMultiple = this.filtrosPOMultipleDefault;
+        this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
         this.recuperarFiltros();
         this.listarPosicionesPOMultiple();
     }
@@ -371,7 +372,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     clearFilters(): void {
-        this.filtrosPOMultiple = this.filtrosPOMultipleDefault;
+        this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
+        this.aplicarFiltrosDesdeGuardados();
     }
 
     private guardarFiltros(): void {
@@ -394,23 +396,27 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     private recuperarFiltros() {
-        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
-        if (filtrosGuardados) {
-            this.sap = filtrosGuardados.sap;
-            this.mantenimiento = filtrosGuardados.mantenimiento;
-            this.web = filtrosGuardados.web;
-            this.repoAutomatica = filtrosGuardados.repoAutomatica;
-            this.contratoMarco = filtrosGuardados.contratoMarco;
-            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
-            this.selectCentro = filtrosGuardados.centros;
-            this.selectClaseDocumento = filtrosGuardados.claseDocumento;
-            this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
-            this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
-            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
-            this.fechaInicio = filtrosGuardados.fechaDesde;
-            this.fechaFin = filtrosGuardados.fechaHasta;
-            this.selectTratada = filtrosGuardados.tratada;
-            this.numeroPo = filtrosGuardados.numeroPo;
+        this.filtrosPOMultiple = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
+        this.aplicarFiltrosDesdeGuardados();
+    }
+
+    private aplicarFiltrosDesdeGuardados(): void {
+        if (this.filtrosPOMultiple) {
+            this.sap = this.filtrosPOMultiple.sap;
+            this.mantenimiento = this.filtrosPOMultiple.mantenimiento;
+            this.web = this.filtrosPOMultiple.web;
+            this.repoAutomatica = this.filtrosPOMultiple.repoAutomatica;
+            this.contratoMarco = this.filtrosPOMultiple.contratoMarco;
+            this.selectGrupoCompras = this.filtrosPOMultiple.gruposCompras;
+            this.selectCentro = this.filtrosPOMultiple.centros;
+            this.selectClaseDocumento = this.filtrosPOMultiple.claseDocumento;
+            this.selectTipoImputacion = this.filtrosPOMultiple.tipoImputacion;
+            this.selectValorTipoImputacion = this.filtrosPOMultiple.valorTipoImputacion;
+            this.valorTipoImputacionFiltro = this.filtrosPOMultiple.subtipoImputacionCombo;
+            this.fechaInicio = this.filtrosPOMultiple.fechaDesde;
+            this.fechaFin = this.filtrosPOMultiple.fechaHasta;
+            this.selectTratada = this.filtrosPOMultiple.tratada;
+            this.numeroPo = this.filtrosPOMultiple.numeroPo;
             if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
                 const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaFin != undefined && this.fechaFin.length > 0) {
