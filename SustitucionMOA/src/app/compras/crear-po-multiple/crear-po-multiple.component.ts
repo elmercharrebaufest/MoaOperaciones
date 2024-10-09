@@ -91,41 +91,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
     selectTratada: boolean | null = null;
 
-    filtrosPOMultiple: {
-        sap: boolean;
-        mantenimiento: boolean;
-        web: boolean;
-        repoAutomatica: boolean;
-        contratoMarco: boolean;
-        gruposCompras: string[];
-        centros: string[];
-        claseDocumento: string[];
-        tipoImputacion: string[];
-        valorTipoImputacion: string[];
-        subtipoImputacionCombo: SelectItem[];
-        fechaDesde: string;
-        fechaHasta: string;
-        tratada: boolean | null;
-        numeroPo?: number;
-    };
+    filtrosPOMultiple: iFiltrosPoMultiple;
 
-    private readonly filtrosPOMultipleDefault: {
-        sap: boolean;
-        mantenimiento: boolean;
-        web: boolean;
-        repoAutomatica: boolean;
-        contratoMarco: boolean;
-        gruposCompras: string[];
-        centros: string[];
-        claseDocumento: string[];
-        tipoImputacion: string[];
-        valorTipoImputacion: string[];
-        subtipoImputacionCombo: SelectItem[];
-        fechaDesde: string;
-        fechaHasta: string;
-        tratada: boolean | null;
-        numeroPo?: number;
-    } = {
+    private readonly filtrosPOMultipleDefault: iFiltrosPoMultiple = {
             sap: false,
             mantenimiento: false,
             web: false,
@@ -396,7 +364,13 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     private recuperarFiltros() {
-        this.filtrosPOMultiple = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
+        let filtrosPOMultipleParsed: iFiltrosPoMultiple = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
+        if (filtrosPOMultipleParsed) {
+            this.filtrosPOMultiple = _.cloneDeep(filtrosPOMultipleParsed);
+        }
+        else {
+            this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
+        }
         this.aplicarFiltrosDesdeGuardados();
     }
 
@@ -487,10 +461,22 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
         }
     }
-
-
-
 }
 
-
-
+interface iFiltrosPoMultiple {
+    sap: boolean;
+    mantenimiento: boolean;
+    web: boolean;
+    repoAutomatica: boolean;
+    contratoMarco: boolean;
+    gruposCompras: string[];
+    centros: string[];
+    claseDocumento: string[];
+    tipoImputacion: string[];
+    valorTipoImputacion: string[];
+    subtipoImputacionCombo: SelectItem[];
+    fechaDesde: string;
+    fechaHasta: string;
+    tratada: boolean | null;
+    numeroPo?: number;
+}
