@@ -115,7 +115,7 @@ namespace SustitucionMOA
             RecurringJob.AddOrUpdate<Jobs.IDerivacionAutomaticaJob>(
                 "DerivacionesAutomaticaJob",
                 j => j.Execute(),
-                "0 12,1 * * *", tz);
+                "0 1 * * *", tz);
 
             RecurringJob.AddOrUpdate<Jobs.INotificarAprobacionesPendientesJob>(
                 "NotificarAprobacionesPendientesJob",

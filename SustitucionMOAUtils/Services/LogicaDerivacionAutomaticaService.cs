@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Services
                     //18/09/2024 -> fechaFin
                     //18/09/2024 -> fechaHoy
                     //17/09/2024 -> fechaAyer
-                    if (registro.FechaDesde.Date == today.Date || registro.FechaDesde.Date == ayer.Date)
+                    if (registro.FechaDesde.Date == today.Date)
                     {
                         userIdsInicio.Add(registro.Usuario_Id);
                     }
@@ -179,7 +179,10 @@ namespace SustitucionMOAUtils.Services
                                     eSLocalesFin.Add(ap.NRO_ES_LOCAL);
                                 }
                             }
-
+                            
+                            UsuarioReasignacion registroReasignacion = repositorio.Obtener<UsuarioReasignacion>(x => x.Usuario_Id == user.Id);
+                            if (registroReasignacion != null)
+                                repositorio.Remover(registroReasignacion);
                         }
                     }
 
