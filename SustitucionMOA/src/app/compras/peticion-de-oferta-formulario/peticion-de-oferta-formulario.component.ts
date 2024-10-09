@@ -168,7 +168,9 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
         this.proveedoresInvalidos = this.mostrarProveedores(invalidos);
         this.proveedoresNoSugeridos = this.mostrarProveedores(noSugeridos);
 
-        this.plazoDeEntrega = new Date(this.solpCompraDto.PlazoDeOfertaTentativo);
+        if (this.solpCompraDto.PlazoDeOfertaTentativo) {
+            this.plazoDeEntrega = new Date(this.solpCompraDto.PlazoDeOfertaTentativo);
+        }
     }
 
     obtenerPosicionesMultipleCompras(ids) {
