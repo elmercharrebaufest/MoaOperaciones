@@ -2247,9 +2247,9 @@ namespace SustitucionMOAUtils.Services
                 {
                     emailComprasService.EnviarMailSolpLiberada(solp);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
+                    Log.Error($"Error ActualizarFechaLiberacion.EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}", e);
                 }
             }
 
