@@ -22,7 +22,8 @@ namespace SustitucionMOAUtils.Services
         public List<OrdenResiduosApiDto> ObtenerOrdenes(string patenteChasis = null)
         {
             var listado = repositorio.Listar<OrdenResiduos>(
-                    or => string.IsNullOrEmpty(patenteChasis) || or.PatenteChasis == patenteChasis
+                    or => (string.IsNullOrEmpty(patenteChasis) || or.PatenteChasis == patenteChasis) 
+                    && or.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada
                 ).Select(
                     or => OrdenResiduosApiDto.From(or)
                 );
