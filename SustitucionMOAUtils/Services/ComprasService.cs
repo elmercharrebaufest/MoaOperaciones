@@ -4959,7 +4959,7 @@ namespace SustitucionMOAUtils.Services
             {
                 bool peticionesUsuario(PeticionDeOfertaUsuario u)
                 {
-                    if (esProveedor) { return true; }
+                    if (!esProveedor) { return true; }
                     if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
                     if (idPeticionDeOfertaUsuario == u.Id) { return true; }
                     if (usuarioDto?.Id == u.Usuario_Id) { return true; }
