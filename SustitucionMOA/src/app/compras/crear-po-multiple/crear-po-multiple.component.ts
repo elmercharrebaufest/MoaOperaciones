@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ComprasService } from '../compras.service';
-import { UsuarioService } from '../../usuario/usuario.service';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SelectItem } from 'primeng/api';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -12,10 +10,7 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
-import { SolpCompraDto, PosicionCompra, SolpSubposicionDto, SolpProveedorDto, EnvioSolpCompra, AltaNuevoProveedor } from '../solp-compra';
-import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { POPosicionDto } from '../../modelos/po-posicionDto';
-import { Subscription } from 'rxjs';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import _ from 'lodash';
 
@@ -30,7 +25,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
+        protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.usuario = sessionStorage.getItem("username");
