@@ -94,22 +94,22 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     filtrosPOMultiple: iFiltrosPoMultiple;
 
     private readonly filtrosPOMultipleDefault: iFiltrosPoMultiple = {
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            contratoMarco: false,
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            tratada: null,
-            numeroPo: null,
-        };
+        sap: false,
+        mantenimiento: false,
+        web: false,
+        repoAutomatica: false,
+        contratoMarco: false,
+        gruposCompras: [],
+        centros: [],
+        claseDocumento: [],
+        tipoImputacion: [],
+        valorTipoImputacion: [],
+        subtipoImputacionCombo: [],
+        fechaDesde: null,
+        fechaHasta: null,
+        tratada: null,
+        numeroPo: null,
+    };
 
     ngOnInit() {
 

@@ -21,9 +21,9 @@
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} clases elegidas"></p-multiSelect>
         </div>
 
-        <div class="col-md-3" #rangeDatesDiv>
+        <div class="col-md-3">
             <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Fecha de creacion"
-                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" [appendTo]="rangeDatesDiv"
+                        dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
                         [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
                         (onClearClick)="returnToTodaysDate()"
                         [style]="{'width':'94%'}" [inputStyle]="{'width':'94%'}">
