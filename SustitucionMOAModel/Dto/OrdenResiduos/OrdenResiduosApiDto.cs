@@ -30,7 +30,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
                 LocalidadDescripcion = ordenResiduos.LocalidadScatoDescripcion,
                 LocalidadId = ordenResiduos.LocalidadScatoId,
                 NombreChofer = ordenResiduos.ChoferNombre,
-                ApellidoChofer = ordenResiduos.ChoferApellido,
+                ChoferApellido = ordenResiduos.ChoferApellido,
                 Observacion = ordenResiduos.Observacion,
                 PatenteAcoplado = ordenResiduos.PatenteAcoplado,
                 PatenteChasis = ordenResiduos.PatenteChasis,
