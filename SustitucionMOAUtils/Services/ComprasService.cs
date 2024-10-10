@@ -4663,7 +4663,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (peticionDeOferta.PlazoDeEntrega < DateTime.Today)
                     {
-                        throw new ValidationCustomException("plazo vencido");
+                        throw new ValidationCustomException("El plazo de entrega no puede ser anterior al día de hoy");
                     }
                     fechaOferta = peticionDeOferta.PlazoDeEntrega;
                 }
@@ -4727,8 +4727,9 @@ namespace SustitucionMOAUtils.Services
 
                 return respuestaGuardarSOLP;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Log.Error(e);
                 throw;
             }
         }
