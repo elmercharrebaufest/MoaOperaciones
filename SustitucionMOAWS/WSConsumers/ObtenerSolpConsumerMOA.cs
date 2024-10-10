@@ -45,6 +45,7 @@ namespace SustitucionMOAWS.WSConsumers
                 string IM_DELIVERY_ADDRESS = "X";
                 string IM_ITEM_TEXT = "X";
                 string IM_HEADER_TEXT = "X";
+                string IM_DELETE_TEXT = "X";
 
                 ZMPES5640[] IM_USUARIOS = new ZMPES5640[0];
 
@@ -53,7 +54,7 @@ namespace SustitucionMOAWS.WSConsumers
                             IM_ACCOUNT_ASSIGNMENT,
                             "",
                             "",
-                            "",
+                            IM_DELETE_TEXT,
                             IM_DELIVERY_ADDRESS,
                             IM_HEADER_TEXT,
                             "",
@@ -263,7 +264,6 @@ namespace SustitucionMOAWS.WSConsumers
                     NumeroSolicitud = posicion.PREQ_NO,
                     NumeroPosicion = posicion.PREQ_ITEM,
                     TipoDocumento = posicion.DOC_TYPE,
-                    ImputacionActiva = posicion.DELETE_IND,
                     NumeroPaquete = posicion.PCKG_NO,
                     OrigenCreacion = posicion.CREATE_IND,
                     IndicadorDeLiberacion = posicion.REL_IND,
@@ -447,7 +447,6 @@ namespace SustitucionMOAWS.WSConsumers
         public string NumeroSolicitud { get; set; }
         public string NumeroPosicion { get; set; }
         public string TipoDocumento { get; set; }
-        public string ImputacionActiva { get; set; }
         public string NumeroPaquete { get; set; }
         public string OrigenCreacion { get; set; }
         public string IndicadorDeLiberacion { get; set; }
