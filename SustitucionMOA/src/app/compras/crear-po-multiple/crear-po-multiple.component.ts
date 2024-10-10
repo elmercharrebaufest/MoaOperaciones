@@ -394,6 +394,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 } else {
                     this.rangeDates = [new Date(year, month - 1, day)];
                 }
+            } else {
+                this.rangeDates = undefined;
             }
         }
     }
