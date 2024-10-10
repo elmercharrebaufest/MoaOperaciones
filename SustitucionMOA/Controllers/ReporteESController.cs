@@ -73,7 +73,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
            
         }
