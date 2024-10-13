@@ -22,7 +22,7 @@
         </div>
 
         <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
-          <app-filtro-fecha-fas (ClickEvent)="getListado()"></app-filtro-fecha-fas>
+          <app-filtro-fecha-fas (ClickEvent)="getListado()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></app-filtro-fecha-fas>
         </div>
         <div *ngIf="esAdmin" id="searchCliente" class="col-xs-12 col-sm-6 col-md-15">
           <p>Por Cliente:</p>

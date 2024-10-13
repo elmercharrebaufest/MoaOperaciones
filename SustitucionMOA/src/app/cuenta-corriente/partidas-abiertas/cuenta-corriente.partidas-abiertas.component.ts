@@ -13,6 +13,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { Seccion } from '../../common/models/seccion';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 
 
@@ -28,20 +29,27 @@ export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBas
     constructor(protected service: CuentaCorrientePartidasAbiertasService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService, route, router);
 
-        this.granosSelected = sessionStorage.getItem("granosSelected");
+        this.filtroFechaPeriodoDefault = this.isGranos() ? TipoPeriodo.UltimosDosDias : TipoPeriodo.UltimaSemana;
+        this.filtroFechaKey = this.isGranos() ? 'GCCPartAb_Periodo' : (this.isNoGranos() ? 'NGCCPartAb_Periodo' : '');
+    }
 
-        sessionDataService.granosSelected$.subscribe(
-            granosSelected => {
-                this.granosSelected = granosSelected;
-            });
-
+    ngOnInit() {
+        this.setTabs();
+        this.checkPermisos();
+        this.navService.setSeccionList(
+            [
+                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
+                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de Pagos'),
+                new Seccion('/cuenta-corriente/partidas-abiertas', 'cuenta-corriente', 'Partidas Abiertas'),
+            ]
+        );
+        this.getData();
     }
 
     tituloArchivo = "ReporteCuentasCorrientesAgrupadas.xls";
     itemsEnPantalla = 5;
     showMostrarMas = false;
     filtroNroLegal = "";
-    granosSelected: string;
 
     setTabs() {
         this.setMenuSeccionTab("cuenta-corriente", "Partidas Abiertas");
@@ -49,7 +57,7 @@ export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBas
 
     isVisible(): boolean {
         if (this.data) {
-            if (this.isSinAgruparVisible() || this.isAgrupadasVisible) {
+            if (this.isSinAgruparVisible() || this.isAgrupadasVisible()) {
                 return true;
             }else
                 return false;
@@ -80,10 +88,6 @@ export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBas
         this.showMostrarMas = false;
     }
 
-    isGranos() {
-        return this.granosSelected == "G";
-    }
-
     showModalTableAgrupadaResponsive(CuentaCorriente: any, agrupador: string) {
         this.modalService.openModalTableResponsive("Detalle de pagos", [
             { etiqueta: "Agrupador", valor: agrupador },
@@ -95,18 +99,4 @@ export class CuentaCorrientePartidasAbiertasComponent extends CuentaCorrienteBas
         ]);
         return false;
     }
-
-    ngOnInit() {
-        this.setTabs();
-        this.checkPermisos();
-        this.navService.setSeccionList(
-            [
-                new Seccion('/cuenta-corriente/simple', 'cuenta-corriente', 'Cuenta Corriente'),
-                new Seccion('/cuenta-corriente/agrupada', 'cuenta-corriente', 'Detalle de Pagos'),
-                new Seccion('/cuenta-corriente/partidas-abiertas', 'cuenta-corriente', 'Partidas Abiertas'),
-            ]
-        );
-        this.getData();
-    }
-
 }

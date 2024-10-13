@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContratoBaseComponent } from './../contrato.component';
 import { ContratoService, ContratoAmpliacionService } from './../contrato.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-contrato-ampliacion',
@@ -10,6 +11,8 @@ import { ContratoService, ContratoAmpliacionService } from './../contrato.servic
 export class ContratoAmpliacionComponent extends ContratoBaseComponent {
 
     tituloArchivo = "ReporteAnulaciones.xls";
+    filtroFechaKey: string = 'GContrAmpl_Periodo'
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
 
     setTabs() {
         this.setMenuSeccionTab("contrato", "Ampliaciones");

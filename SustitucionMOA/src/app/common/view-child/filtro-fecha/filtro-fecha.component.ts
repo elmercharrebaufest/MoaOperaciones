@@ -1,6 +1,7 @@
 ﻿import { Component, Output, EventEmitter, ViewChild, OnInit, Input, ElementRef } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
+import { TipoPeriodo } from '../../enums/TipoPeriodo';
 declare var $: any;
 
 @Component({
@@ -20,6 +21,7 @@ export class FiltroFechaComponent implements OnInit {
     @ViewChild('dtp_input2') dtpInput2?: ElementRef;
 
     @Input() key: string;
+    @Input() periodoDefault: TipoPeriodo;
 
     periodo: string;
     fecha_inicio: string;
@@ -28,10 +30,10 @@ export class FiltroFechaComponent implements OnInit {
 
     constructor() {
         this.dropdownComponent = new DropdownComponent();
-        this.setPeriodoInitial(this.obtenerPeriodo());
     }
 
     ngOnInit() {
+        this.setPeriodoInitial(this.periodoDefault || this.obtenerPeriodo());
         this.dropdownComponent.setSelectItem(this.obtenerPeriodo());
     }
 
@@ -123,9 +125,7 @@ export class FiltroFechaComponent implements OnInit {
         if (periodo == "4" || periodo == "2") {
             this.setFechaIncio(sessionStorage.getItem("fechaInicio") ? sessionStorage.getItem("fechaInicio") : Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 1))));
             this.setFechaFin(sessionStorage.getItem("fechaFin") ? sessionStorage.getItem("fechaFin") : Formatter.DateToSting(new Date()));
-            sessionStorage.setItem("fechaInicio", this.fecha_inicio);
-            sessionStorage.setItem("fechaFin", this.fecha_fin);
-            this.periodo = periodo;
+            this.guardarFechasYSetarPeriodo(periodo);
         } else {
             this.setPeriodo(periodo);
         }

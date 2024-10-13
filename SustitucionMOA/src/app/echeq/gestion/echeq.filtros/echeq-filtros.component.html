@@ -26,7 +26,7 @@
 
         <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15" style="padding-left: 20px;">
             <p>Fecha de Operacion</p>
-            <filtro-fecha (ClickEvent)="onChangeFecha()" ></filtro-fecha>
+            <filtro-fecha (ClickEvent)="onChangeFecha()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
         </div>       
     </div>
 </div>

@@ -14,6 +14,7 @@ import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
 import { SendDataService } from '../../consulta/send-data.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -70,6 +71,9 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     tipoConrato = TipoContrato;
 
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
+    filtroFechaKey: string = 'NGOCFas_Periodo';
+
     constructor(
         protected service: OrdenesDeCargaService,
         protected navService: NavService,
@@ -84,7 +88,6 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     }
 
     ngOnInit() {
-        // console.debug(' puedeEnviarASAP: ', this.puedeEnviarASAP);
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {

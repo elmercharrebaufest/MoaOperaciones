@@ -77,7 +77,7 @@ export class DropdownComponent implements OnInit {
 
     setPeriodos() {
         this.setOptions([
-            new DropdownOption("1", "Últimos dos dias"),
+            new DropdownOption("1", "Últimos dos días"),
             new DropdownOption("2", "Última semana"),
             new DropdownOption("3", "Último mes"),
             new DropdownOption("5", "Últimos dos meses"),
