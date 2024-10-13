@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { ContratoBaseComponent } from './../contrato.component';
 import { ContratoService, ContratoVigenteService } from './../contrato.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-contrato-vigente',
@@ -10,6 +11,8 @@ import { ContratoService, ContratoVigenteService } from './../contrato.service';
 export class ContratoVigenteComponent extends ContratoBaseComponent {
 
     tituloArchivo = "ReporteContratoVigentes.xls";
+    filtroFechaKey: string = 'GcontrVig_Periodo'
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
 
     setTabs() {
         this.setMenuSeccionTab("contrato", "Vigentes");

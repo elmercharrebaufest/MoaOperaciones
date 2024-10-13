@@ -1,6 +1,7 @@
 ﻿import { Component, OnInit, ViewChild } from '@angular/core';
 import { FleteBaseComponent } from './../flete.component';
 import { FleteService, FletePendienteService } from './../flete.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-flete-pendiente',
@@ -10,6 +11,8 @@ import { FleteService, FletePendienteService } from './../flete.service';
 export class FletePendienteComponent extends FleteBaseComponent {
 
     tituloArchivo = "FletesPendientes.xls";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+    filtroFechaKey: string = 'NGFletPend_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("flete", "Viajes Pendientes");

@@ -9,7 +9,7 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-9 "><strong>Información</strong></div>
             <div id="searchVer" class="col-xs-12 col-sm-3 homeFiltro">
-                <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                <filtro-fecha (ClickEvent)="getData()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
             </div>
         </div>
         <!--End Title-->

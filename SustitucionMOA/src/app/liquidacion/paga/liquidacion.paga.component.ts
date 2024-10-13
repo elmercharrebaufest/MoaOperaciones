@@ -10,6 +10,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { SecurityService } from './../../common/services/SecurityService';
 import { ModalService } from './../../common/services/ModalService';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 
 
@@ -23,6 +24,9 @@ export class LiquidacionPagaComponent extends LiquidacionBaseComponent {
     constructor(protected service: LiquidacionPagaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
+
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimosDosDias;
+    filtroFechaKey: string = 'GLiqPagas_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("liquidacion", "Pagas");

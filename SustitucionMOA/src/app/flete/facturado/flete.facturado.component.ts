@@ -6,6 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 declare var $: any;
 
 @Component({
@@ -20,6 +21,8 @@ export class FleteFacturadoComponent extends FleteBaseComponent {
     }
 
     tituloArchivo = "FletesFacturados.xls";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+    filtroFechaKey: string = 'NGFletFact_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("flete", "Viajes Facturados");

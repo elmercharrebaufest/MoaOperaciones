@@ -1,6 +1,7 @@
 import { Component, Output, EventEmitter, ViewChild, OnInit, Input } from '@angular/core';
 import { Formatter } from './../../formatter/Formatter';
 import { DropdownComponent, DropdownOption } from './../dropdown/dropdown.component';
+import { TipoPeriodo } from '../../enums/TipoPeriodo';
 declare var $: any;
 
 @Component({
@@ -17,17 +18,20 @@ export class FiltroFechaFasComponent implements OnInit {
     @ViewChild(DropdownComponent)
     private dropdownComponent: DropdownComponent;
 
+    @Input() key: string;
+    @Input() periodoDefault: TipoPeriodo;
+
     periodo: string;
     fecha_inicio: string;
     fecha_fin: string;
 
     constructor() {
         this.dropdownComponent = new DropdownComponent();
-        this.setPeriodoInitial(sessionStorage.getItem("periodo") ? sessionStorage.getItem("periodo") : "1");
     }
 
     ngOnInit() {
-        this.dropdownComponent.setSelectItem(sessionStorage.getItem("periodo") ? sessionStorage.getItem("periodo") : "1");
+        this.setPeriodoInitial(this.periodoDefault || this.obtenerPeriodo());
+        this.dropdownComponent.setSelectItem(this.obtenerPeriodo());
     }
 
     ngAfterViewInit(): void {
@@ -65,6 +69,13 @@ export class FiltroFechaFasComponent implements OnInit {
                 maxView: 4
             });
         });
+    }
+    
+    obtenerPeriodo(): string {
+        let keySesion = this.key || 'periodo';
+        let periodoInicial = sessionStorage.getItem(keySesion) || "1";
+        this.periodo = periodoInicial;
+        return periodoInicial;
     }
 
     setDropdownOptions(options: Array<DropdownOption>) {
@@ -105,9 +116,7 @@ export class FiltroFechaFasComponent implements OnInit {
         if (periodo == "4") {
             this.setFechaIncio(sessionStorage.getItem("fechaInicio") ? sessionStorage.getItem("fechaInicio") : Formatter.DateToSting(new Date(new Date().setDate(new Date().getDate() - 1))));
             this.setFechaFin(sessionStorage.getItem("fechaFin") ? sessionStorage.getItem("fechaFin") : Formatter.DateToSting(new Date()));
-            sessionStorage.setItem("fechaInicio", this.fecha_inicio);
-            sessionStorage.setItem("fechaFin", this.fecha_fin);
-            this.periodo = periodo;
+            this.guardarFechasYSetarPeriodo(periodo);
         } else {
             this.setPeriodo(periodo);
         }
@@ -159,7 +168,8 @@ export class FiltroFechaFasComponent implements OnInit {
         sessionStorage.setItem("fechaInicio", this.fecha_inicio);
         sessionStorage.setItem("fechaFin", this.fecha_fin);
         this.dropdownComponent.setSelectItem(periodo);
-        sessionStorage.setItem("periodo", periodo);
+        const keyName = this.key || "periodo"
+        sessionStorage.setItem(keyName, periodo);
         this.periodo = periodo;
     }
 
