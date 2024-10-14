@@ -14,6 +14,7 @@ import { ListBaseComponent } from '../../common/base-components/list-base-compon
 import { EstadoOrdenDeCargaFason } from '../../common/models/ordenes-de-carga-fason/estadoOrdenDeCargaFason';
 import { Rol } from '../../common/enums/Roles';
 import { Permiso } from '../../common/enums/Permisos';
+import { finalize } from 'rxjs/operators';
 
 export interface BotonesDetalleFason {
     editar: boolean;
@@ -52,6 +53,9 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     estadoOrdenDeCargaFason = EstadoOrdenDeCargaFason;
 
     validaCPEDG = false;
+    validandoEstadoScato = false;
+
+    activaEnScato = false;
 
     estadosPermitenEdicion = [
         EstadoOrdenDeCargaFason.Generada,
@@ -82,6 +86,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
         this.navService.setSeccionList([]);
         this.obtenerOrdenDeCargaFason();
 
+        this.verificarOrdenActivaScato()
     }
 
     verificarBotones() {
@@ -97,7 +102,7 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
         this.botones.solicitarAnulacion = this.esClienteFason && this.estadosPermitenSolicitarAnulacion.includes(this.ordenDeCargaFason.Estado)
 
-        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada;
+        this.botones.anular = this.esAdmin && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Entregada && this.ordenDeCargaFason.Estado != EstadoOrdenDeCargaFason.Anulada;
 
         this.botones.verificarCuitsTercero = this.esAdmin && this.ordenDeCargaFason.NecesitaVerificarCuitsTerceros;
     }
@@ -129,7 +134,22 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
 
 
     editarOrden() {
-        this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        if (this.validandoEstadoScato) {
+            return;
+        }
+        if (!this.activaEnScato) {
+            this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+        } else {
+            this.confirmationService.confirm({
+                key: 'confirmarEdicionActiva',
+                message: `La orden está activa en SCATO, ¿seguro que quiere continuar con la edición?`,
+                accept: () => {
+                    this.goToSeccion('/ordenes-de-carga-fason/alta/' + this.ordenDeCargaFason.Id);
+                },
+                reject: () => {
+                }
+            })
+        }
     }
 
     verificarTransporte() {
@@ -201,9 +221,9 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
     confirmarRechazarSolicitudEdicion(aprobado: boolean) {
         this.confirmationService.confirm({
             key: 'confirmarSolicitudEdicion',
-            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
+            message: `¿Desea ${aprobado ? 'aprobar' : 'rechazar'} la solicitud de edición?`,
             accept: () => {
-                this.solicitudAnulacion(aprobado)
+                this.solicitudEdicion(aprobado)
             },
             reject: () => {
             }
@@ -366,6 +386,27 @@ export class OrdenesDeCargaFasonDetalleComponent extends ListBaseComponent imple
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+        }
+    }
+
+    verificarOrdenActivaScato() {
+        this.validandoEstadoScato = true;
+        this.spinnerComponent.showIt();
+        try {
+            this.service.validarOrdenActivaScato(this.ordenDeCargaFasonId).pipe(
+                finalize(() => { this.blockUI.stop(); this.spinnerComponent.hideIt(); this.validandoEstadoScato = false; })
+            ).subscribe(
+                result => {
+                    const estadoEnScato = this.manejarApiResponse(result, this.sessionDataService, this.mensajeComponent)
+                    this.activaEnScato = !!estadoEnScato
+                },
+                error => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                }
+            );
+        } catch (e) {
+            this.spinnerComponent.hideIt();
+            this.blockUI.stop();
         }
     }
 }

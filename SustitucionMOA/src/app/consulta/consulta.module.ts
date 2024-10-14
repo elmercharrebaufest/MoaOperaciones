@@ -27,7 +27,7 @@ import { AngularEditorModule } from '@kolkov/angular-editor';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {DataViewModule} from 'primeng/dataview';
 import { InputMaskModule } from 'primeng/inputmask';
-
+import {PaginatorModule} from 'primeng/paginator';
 @NgModule({
   imports: [
     CommonModule,
@@ -52,6 +52,7 @@ import { InputMaskModule } from 'primeng/inputmask';
     ProgressSpinnerModule,
     DataViewModule,
     InputMaskModule,
+    PaginatorModule
   ],
   declarations: [
     MisConsultasComponent,

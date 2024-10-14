@@ -26,10 +26,12 @@
                 <!-- contenido -->
                 <div class="col-xs-12 col-md-12" [ngSwitch]="pasoActual.Codigo">
                     <div *ngSwitchCase="enumSolp.PliegoGeneracion1" [@fadeInOut]>
-                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es"></generacion1>
+                        <generacion1 #paso1 [(model)]="solpActual" [(locale)]="es"
+                                     [selectResponsableTrabajoChanged]="onResponsableTrabajoAutomaticallySelected"></generacion1>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoGeneracion2" [@fadeInOut]>
-                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"></generacion2>
+                        <generacion2 #paso2 [(model)]="solpActual" [(locale)]="es"
+                                     [selectResponsableTrabajoChanged]="onResponsableTrabajoAutomaticallySelected"></generacion2>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoEspecificacion" [@fadeInOut]>
                         <especificaciones #paso3 [(model)]="solpActual" [(locale)]="es"></especificaciones>
@@ -157,3 +159,37 @@
                [(solpActual)]="solpActual"
                [(tieneAdjuntos)]="tieneAdjuntos">
 </email-compose>
+
+<p-dialog [(visible)]="displayEnvioCircular"
+          [width]="600" modal="modal" appendTo="body"
+          [draggable]="false"
+          [contentStyle]="{'overflow':'visible', 'max-height':'200px', 'min-height':'100px'}"
+          [closable]="false">
+    <p-header class="headerModal">
+        Envío de circular automática
+    </p-header>
+    <div class="m-2">
+        <label for="icondisplay">Fecha límite para la Nueva Cotización</label>
+        <p-calendar #fechaLimiteReenvioDocumentacionPorCambioCondiciones
+                    showButtonBar="false" [showIcon]="true"
+                    [inputStyleClass]="classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    [styleClass]="classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    class="{{ classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones }}"
+                    appendTo="body"
+                    dateFormat="dd/mm/yy"
+                    [(ngModel)]="solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones"
+                    selectionMode="single" [readonlyInput]="true" [locale]="locale"
+                    [inputStyle]="{'width': '70%'}"
+                    [style]="{'width': '70%'}"
+                    [autoZIndex]="true">
+        </p-calendar>
+        <div class="text-right" style="margin-top:1em; margin-bottom:0;">
+            ¿Desea enviar circulares a los proveedores?
+        </div>
+    </div>
+    <p-footer>
+        <button class="btn btn-danger botonesComprasColor" (click)="salirModalCircular()">No</button>
+        <button class="btn btn-primary botonesComprasColor" (click)="enviarCircularTodos()">A todos</button>
+        <button class="btn btn-success botonesComprasColor botonModal" (click)="enviarCircularVisitaRealizada()">A los que realizaron la visita</button>
+    </p-footer>
+</p-dialog>

@@ -273,8 +273,8 @@
                                 <div class="col-sm-2">
 
                                     <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
-                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId">
-
+                                        [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId"
+                                        [pendienteProcesarUcropit]="campo.ToneladasAprobadas == -1">
                                     </app-impresion-declaracion>
 
                                 </div>

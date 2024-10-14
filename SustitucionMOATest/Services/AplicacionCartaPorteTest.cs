@@ -22,6 +22,7 @@ namespace SustitucionMOATest.Services
     {
         private Mock<IRepositorio> repositorio;
         private Mock<IAplicacionCartaPorteConsumer> consumer;
+        private Mock<IEmailAplicacionCPService> mIEmailAplicacionCPService;
         private IAplicacionCartaPorteService aplicacionCCPPService;
 
 
@@ -33,7 +34,8 @@ namespace SustitucionMOATest.Services
         {
             repositorio = new Mock<IRepositorio>();
             consumer = new Mock<IAplicacionCartaPorteConsumer>();
-            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object);
+            mIEmailAplicacionCPService = new Mock<IEmailAplicacionCPService>();
+            aplicacionCCPPService = new AplicacionCartaPorteService(repositorio.Object, consumer.Object, mIEmailAplicacionCPService.Object);
         }
 
         [Test]
@@ -83,12 +85,16 @@ namespace SustitucionMOATest.Services
             SetCartaPorteListada(kgMaximo, material);
 
 
-            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte (contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
+            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
             var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
 
             var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado, cartaPorteListada };
-            SetupGuardarAplicacion(mailUsuario, codigoProveedor,aplicacionesRespuestaSAP);
-
+            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
+            consumer.Setup(c => c.ObtenerPendientesDeAplicar(It.IsAny<AppCartasPortePendienteRequest>())).Returns(new AppCartasPortePendienteResponse
+            {
+                CartasDePorte = new List<AplicacionPendienteCartaPorte> { new AplicacionPendienteCartaPorte { Cantidad = 1, Material = "0012", NumeroCartaPorte = "123142" } },
+                Contratos = new List<AplicacionPendienteContrato> { new AplicacionPendienteContrato { NumeroContrato = "1" } }
+            });
 
             var aplicacionAGuardar = new CrearAplicacionCartaPorte
             {
@@ -129,7 +135,7 @@ namespace SustitucionMOATest.Services
             };
 
             Assert.That(
-                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar,mailUsuario),
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
@@ -149,7 +155,11 @@ namespace SustitucionMOATest.Services
 
             var aplicacionesRespuestaSAP = new ZMPES7070[] { cartaPorteListada };
             SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
-
+            consumer.Setup(c => c.ObtenerPendientesDeAplicar(It.IsAny<AppCartasPortePendienteRequest>())).Returns(new AppCartasPortePendienteResponse
+            {
+                CartasDePorte = new List<AplicacionPendienteCartaPorte> { new AplicacionPendienteCartaPorte { } },
+                Contratos = new List<AplicacionPendienteContrato> { new AplicacionPendienteContrato { } }
+            });
 
             var aplicacionAGuardar = new CrearAplicacionCartaPorte
             {
@@ -161,37 +171,7 @@ namespace SustitucionMOATest.Services
             Assert.That(
                 () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
                 Throws.TypeOf<InfoCustomException>());
-        }
-        [Test]
-        public void GuardarAplicacion_CartaPorteNoEstaEnRespuestaDeSAP_ThrowErrorInfoValidacion()
-        {
-            var mailUsuario = "tester@baufest.com";
-            var codigoProveedor = "49012";
-            var material = "0012";
-            var kgMaximo = 4500;
-
-            SetContratoListado(codigoProveedor, material);
-            SetCartaPorteListada(kgMaximo, material);
-
-
-            var contratoSeleccionado = new ContratoParaAplicacionCartaPorte(contratoListado.CONTRATO, contratoListado.MATERIAL, contratoListado.PROVEEDOR);
-            var cartaPorteSeleccionada = new CartaPorteParaAplicacionCartaPorte(cartaPorteListada.CCPP, cartaPorteListada.CANTIDAD, cartaPorteListada.MATERIAL);
-
-            var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado };
-            SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
-
-
-            var aplicacionAGuardar = new CrearAplicacionCartaPorte
-            {
-                ContratoSeleccionado = contratoSeleccionado,
-                CartaPorteSeleccionada = cartaPorteSeleccionada,
-                Kilogramos = kgMaximo
-            };
-
-            Assert.That(
-                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
-                Throws.TypeOf<InfoCustomException>());
-        }
+        }        
         [Test]
         public void GuardarAplicacion_MaterialesDiferentesEnCartaPorteContrato_ThrowErrorInfoValidacion()
         {
@@ -210,7 +190,11 @@ namespace SustitucionMOATest.Services
 
             var aplicacionesRespuestaSAP = new ZMPES7070[] { contratoListado, cartaPorteListada };
             SetupGuardarAplicacion(mailUsuario, codigoProveedor, aplicacionesRespuestaSAP);
-
+            consumer.Setup(c => c.ObtenerPendientesDeAplicar(It.IsAny<AppCartasPortePendienteRequest>())).Returns(new AppCartasPortePendienteResponse
+            {
+                CartasDePorte = new List<AplicacionPendienteCartaPorte> { new AplicacionPendienteCartaPorte { } },
+                Contratos = new List<AplicacionPendienteContrato> { new AplicacionPendienteContrato { } }
+            });
 
             var aplicacionAGuardar = new CrearAplicacionCartaPorte
             {
@@ -223,18 +207,22 @@ namespace SustitucionMOATest.Services
                 () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
                 Throws.TypeOf<InfoCustomException>());
         }
+        
+        
         private void SetContratoListado(string codigoProveedor, string material)
         {
-           contratoListado = new ZMPES7070 { CONTRATO = "12345", PROVEEDOR = codigoProveedor, MATERIAL = material };
+            contratoListado = new ZMPES7070 { CONTRATO = "1", PROVEEDOR = codigoProveedor, MATERIAL = material };
         }
         private void SetCartaPorteListada(decimal kgMaximo, string material)
         {
             cartaPorteListada = new ZMPES7070 { CCPP = "123142", CANTIDAD = kgMaximo, MATERIAL = material };
         }
-        private void SetupGuardarAplicacion(string mailUsuario, string codigoProveedor , ZMPES7070[] aplicacionesRespuestaSAP, List<AplicacionCartaPorte> aplicacionesCargadas = null)
+      
+        private void SetupGuardarAplicacion(string mailUsuario, string codigoProveedor, ZMPES7070[] aplicacionesRespuestaSAP, List<AplicacionCartaPorte> aplicacionesCargadas = null)
         {
-            repositorio.Setup(r => r.Obtener<Usuario>(u => u.Mail== mailUsuario)).Returns(
-                new Usuario {
+            repositorio.Setup(r => r.Obtener<Usuario>(u => u.Mail == mailUsuario)).Returns(
+                new Usuario
+                {
                     Roles = new Rol[] {
                         new Rol
                         {
@@ -246,8 +234,13 @@ namespace SustitucionMOATest.Services
                     },
                 }
             );
-            consumer.Setup(c=>c.ObtenerAplicacionesPendientes(It.IsAny<AppCartasPortePendienteRequest>())).Returns( aplicacionesRespuestaSAP);
-            repositorio.Setup(r => r.Listar(It.IsAny<Expression<Func<AplicacionCartaPorte, bool>>>(),0,null,DirOrden.Asc,null)).Returns(
+            consumer.Setup(c => c.ObtenerAplicacionesPendientes(It.IsAny<AppCartasPortePendienteRequest>())).Returns(aplicacionesRespuestaSAP);
+            consumer.Setup(c => c.ObtenerPendientesDeAplicar(It.IsAny<AppCartasPortePendienteRequest>())).Returns(new AppCartasPortePendienteResponse
+            {
+                Contratos = new List<AplicacionPendienteContrato> { new AplicacionPendienteContrato { NumeroContrato = "1" } }
+            });
+
+            repositorio.Setup(r => r.Listar(It.IsAny<Expression<Func<AplicacionCartaPorte, bool>>>(), 0, null, DirOrden.Asc, null)).Returns(
                 aplicacionesCargadas ?? new List<AplicacionCartaPorte>()
             );
             repositorio.Setup(r => r.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>())).Returns(

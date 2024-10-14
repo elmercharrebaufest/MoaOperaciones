@@ -10,6 +10,7 @@ namespace SustitucionMOAModel.Entities
         [Key]
         public int Id { get; set; }
 
+        [StringLength(400)]
         public string FileKey { get; set; }
 
         public string Ruta { get; set; }

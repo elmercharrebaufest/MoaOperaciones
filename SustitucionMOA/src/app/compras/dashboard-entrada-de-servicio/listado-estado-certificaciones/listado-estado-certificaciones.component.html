@@ -203,7 +203,7 @@
                                     <!-- * 1  is just to turn it into a number -->
                                     <td class="anterior">{{ rowDetalle.CantidadAnterior | number:'1.0-2' }}</td>
                                     <td class="anterior">{{ getPorcentajeAnterior(rowDetalle.CantidadAnterior, rowDetalle.Cantidad)}}</td>
-                                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.PrecioUnitario, rowData.Moneda)}}</td>
+                                    <td class="anterior text-right">{{ getMontoAnterior(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowData.Moneda)}}</td>
 
                                     <!-- A certificar -->
                                     <td>{{ rowDetalle.CantidadCertificar | number:'1.0-2' }}</td>
@@ -213,7 +213,7 @@
                                     <!-- Acumulado -->
                                     <td class="acumulado">{{ (rowDetalle.CantidadAnterior * 1) + (rowDetalle.CantidadCertificar * 1) | number:'1.0-2' }}</td>
                                     <td class="acumulado">{{ getPorcentajeAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Cantidad, rowDetalle.PorcentajeCertificar)}}</td>
-                                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.PrecioUnitario, rowDetalle.CantidadCertificar, rowData.Moneda)}}</td>
+                                    <td class="acumulado text-right">{{ getMontoAcumulado(rowDetalle.CantidadAnterior, rowDetalle.Monto, rowDetalle.CantidadCertificar, rowData.Moneda)}}</td>
                                 </tr>
                             </ng-template>
                             <!-- TABLE 2 BODY END -->

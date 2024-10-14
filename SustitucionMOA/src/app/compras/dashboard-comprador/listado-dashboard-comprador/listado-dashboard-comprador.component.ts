@@ -19,6 +19,8 @@ import { CircularDto } from '../../../modelos/circular-model';
 import { AdjudicacionDto, AdjudicacionEdicionDto, AdjudicacionPosicionDto } from '../../../modelos/adjudicacion';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
+import { LegajoDto } from '../../../modelos/compras/legajoDto';
+import { ApiResponse } from '../../../common/models/response';
 
 declare var $: any;
 
@@ -54,7 +56,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     pageIndex: number = 1;
     subscripcionSolp: Subscription
     displayLegajo: boolean = false;
-    legajo: any;
+    legajo: LegajoDto[];
     peticion: PeticionDeOfertaDto;
     displayCircular: boolean = false;
     circular: CircularDto
@@ -84,7 +86,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     selectValorTipoImputacion: string[] = [];
     usuariosResult: any;
     displayChatInterno: boolean = false;
-    public chat: ChatComprasDto;
+    public chat: ChatsDto;
     tratada: any;
     fechaDesde: string = null;
     fechaHasta: string = null;
@@ -296,19 +298,19 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             )
     }
 
-    verLegajo(Id) {
+    idLegajoEnModal = null;
+    verLegajo(Id: number) {
         this.blockUI.start('Cargando...');
         this.service.verLegajo(Id, null, this.esProveedor)
             .subscribe(
                 (result) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    }
-                    else {
-                        this.legajo = result.data;
+                    let legajoRes = this.manejarErroresApiResponse(result);
+                    if (legajoRes) {
+                        this.legajo = legajoRes.LegajoFilas;
+                        this.idLegajoEnModal = Id;
                         this.displayLegajo = true;
-                        this.blockUI.stop();
                     }
+                    this.blockUI.stop();
                 },
                 (error) => {
                     this.blockUI.stop();
@@ -345,7 +347,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(idPeticion, null)
+        this.service.descargarLegajo(idPeticion, null, this.esProveedor, null)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -639,51 +641,15 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             rowData.ChatSinLeer = false;
             this.subscription = this.service.obtenerChat(rowData.Id)
                 .subscribe(
-                    (result: any) => {
+                    (result) => {
                         this.blockUI.stop();
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
-                        } else {
-
-                            result = result as ChatsDto;
-                            result.ChatCompras = result.ChatCompras as ChatComprasDto;
-                            result.ChatProveedores = result.ChatProveedores as ChatProveedorDto;
-
-                            result.ChatCompras.Mensajes = result.ChatCompras.Mensajes.map((x) => {
-                                x.FechaEnvioDate = new Date(
-                                    this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                );
-                                return x;
-                            });
-                            result.ChatCompras.FechaCreacionDate = new Date(
-                                this.getDateFromAspNetFormat(result.FechaCreacionDate)
-                            );
-
-                            if(result.ChatProveedores != null){
-                                result.ChatProveedores.forEach((chat) => {
-                                    chat.Mensajes = chat.Mensajes.map((x) => {
-                                        x.FechaEnvioDate = new Date(
-                                            this.getDateFromAspNetFormat(x.FechaEnvioDate)
-                                        );
-                                        return x;
-                                    });
-                                    
-                                    chat.FechaCreacionDate = new Date(
-                                        this.getDateFromAspNetFormat(chat.FechaCreacionDate)
-                                    );
-                                });
-                            }
-                            
-
-                            this.chat = result;
-                            this.chatCompras = result.ChatCompras;
-                            this.chatProveedores = result.ChatProveedores;  
+                        let chatsDto = this.manejarErroresApiResponse(result);
+                        if (chatsDto) {
+                            this.chat = chatsDto;
+                            this.chatCompras = chatsDto.ChatCompras;
+                            this.chatProveedores = chatsDto.ChatProveedores;  
                             this.displayChatInterno = true;
-                        };
+                        }
                     },
                     (error) => {
                         this.blockUI.stop();
@@ -1020,5 +986,20 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 }
             }
         }
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.floatMsgService.setErrorMsg(response.info);
+        }
+        return response.data || null;
     }
 }

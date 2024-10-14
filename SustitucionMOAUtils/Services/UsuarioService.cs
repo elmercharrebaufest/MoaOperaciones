@@ -10,6 +10,7 @@ using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -160,6 +161,7 @@ namespace SustitucionMOAUtils.Services
                 "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
                 "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
                 "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION", "AUDITOR COMPRAS"
+                ,"ADMIN_CURSOS"
             };
 
             List<string> contacto = new List<string>
@@ -917,8 +919,10 @@ namespace SustitucionMOAUtils.Services
         public bool PuedeEliminarseUsuario(Entidades.Usuario usuario)
         {
             var tieneActividad = repositorio.VerificarActividadUsuario(usuario);
+            var proveedor = usuario.ObtenerProveedorAsignado();
+            var altaProveedorIniciada = proveedor != null && proveedor.HistorialAprobaciones.Count > 1;
 
-            return !tieneActividad && usuario.Proveedores.Count() <= 1;
+            return !tieneActividad && usuario.Proveedores.Count() <= 1 && !altaProveedorIniciada;
         }
 
         public Entidades.Usuario obtenerUsuarioDelVendedor(Entidades.Proveedor prov)
@@ -1045,6 +1049,50 @@ namespace SustitucionMOAUtils.Services
         }
         #endregion
 
+        public List<string> GetMailUsuarios(string mail)
+        {
+            var likeString = $"%{mail}%";
+            return repositorio.Listar<Usuario, string>(
+                u => u.Mail
+                , u => DbFunctions.Like(u.Mail, likeString));
+        }
 
+        public void GuardarConfiguracionUsuario(string mailUsuario, string valor, TipoConfiguracionUsuario tipo)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            if (usuario == null)
+            {
+                throw new InfoCustomException("Usuario inexistente");
+            }
+            var configuracion = repositorio.Obtener<ConfiguracionUsuario>(c => c.Usuario_Id == usuario.Id && c.Tipo == tipo);
+            if (configuracion == null)
+            {
+                configuracion = new ConfiguracionUsuario
+                {
+                    Tipo = tipo,
+                    Usuario = usuario
+                };
+
+                repositorio.Agregar(configuracion);
+            }
+            
+            configuracion.Valor = valor;
+            repositorio.GuardarCambios();
+        }
+        public string ObtenerConfiguracion(string mailUsuario, TipoConfiguracionUsuario tipo)
+        {
+            var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
+            if (usuario == null)
+            {
+                throw new InfoCustomException("Usuario inexistente");
+            }
+            var configuracion = repositorio.Obtener<ConfiguracionUsuario>(c => c.Usuario_Id == usuario.Id && c.Tipo == tipo);
+            if (configuracion == null)
+            {
+                throw new InfoCustomException("No tiene configuracion guardada: " + tipo);
+            }
+
+            return configuracion.Valor;
+        }
     }
 }

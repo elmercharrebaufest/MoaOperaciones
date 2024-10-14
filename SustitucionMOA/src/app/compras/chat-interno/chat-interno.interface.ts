@@ -42,8 +42,9 @@ export interface ChatProveedorDto {
     Mensajes?: ChatExternoComprasDto[], 
     Mail?: string,
     FechaDiaEnvio?: string,
-    FechaEnvioDate?: Date
-    CuitProveedor?: string
+    FechaEnvioDate?: Date,
+    FechaCreacionDate?: Date,
+    CuitProveedor?: string,
     RazonSocialProveedor?: string
 }
 

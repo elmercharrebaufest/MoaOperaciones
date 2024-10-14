@@ -4,9 +4,9 @@
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseName>MoaOperacionesQA</TargetDatabaseName>
     <DeployScriptFileName>Base de Datos.sql</DeployScriptFileName>
-    <TargetConnectionString>data source=APPAGLQA.molinosagro.ad; User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQA;Pooling=False</TargetConnectionString>
+    <TargetConnectionString>Data Source=APPAGLQA.molinosagro.ad,1450;Integrated Security=False;User ID=MOAOPQAUSR;Password=Ymei3658Ledq3;Pooling=False;Trust Server Certificate=True;</TargetConnectionString>
     <ProfileVersionNumber>1</ProfileVersionNumber>
-    <ScriptDatabaseOptions>True</ScriptDatabaseOptions>
+    <ScriptDatabaseOptions>False</ScriptDatabaseOptions>
     <BlockOnPossibleDataLoss>False</BlockOnPossibleDataLoss>
   </PropertyGroup>
 </Project>

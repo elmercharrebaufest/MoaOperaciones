@@ -36,7 +36,10 @@ declare var $: any;
 @Component({
     selector: "consulta-detalle",
     templateUrl: `consulta-detalle.component.html`,
-    styleUrls: ['consulta-detalle.component.css'],
+    styleUrls: [
+        'consulta-detalle.component.css',
+        'estilo-solo-detalle.component.css'
+    ],
     providers: [{ provide: ConsultaService, useClass: ConsultaService }],
 })
 export class DetalleConsultaComponent extends BaseComponent {
@@ -135,6 +138,10 @@ export class DetalleConsultaComponent extends BaseComponent {
     htmlContent: string;
 
     config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
+
+    datosExtrasMinimizado = false;
+    @Input() modalMaximizado = false;
+    iconDatosExtras = 'pi pi-minus'
 
     checkPermisos() {
         this.securityService.tienePermisoRedirect("CONTACTO MAIL");
@@ -844,5 +851,9 @@ export class DetalleConsultaComponent extends BaseComponent {
                     this.spinnerModal.hideIt();
                 }
             );
+    }
+    toggleDatosExtras() {
+        this.datosExtrasMinimizado = !this.datosExtrasMinimizado;
+        this.iconDatosExtras = this.datosExtrasMinimizado ? 'pi pi-plus' : 'pi pi-minus'
     }
 }

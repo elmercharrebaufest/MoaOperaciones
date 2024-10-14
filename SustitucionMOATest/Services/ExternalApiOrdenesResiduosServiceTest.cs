@@ -33,10 +33,10 @@ namespace SustitucionMOATest.Services
             var patente1 = "123456";
             var patente2 = "654321";
 
-            Expression<Func<OrdenesDeCargaApiDto, bool>> filter1 =
+            Expression<Func<OrdenResiduosApiDto, bool>> filter1 =
                 or => string.IsNullOrEmpty(patente1) || or.PatenteChasis == patente1;
 
-            Expression<Func<OrdenesDeCargaApiDto, bool>> filter2 =
+            Expression<Func<OrdenResiduosApiDto, bool>> filter2 =
                 or => string.IsNullOrEmpty(patente2) || or.PatenteChasis == patente2;
 
             var listaRaw1 = new OrdenResiduos[]

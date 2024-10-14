@@ -198,7 +198,7 @@
     </modal-footer>
 </modal>
 
-<div class="main-panel">
+<div class="main-panel w-full">
     <!--User-->
     <div class="header">
         <div class="logo">
@@ -233,18 +233,7 @@
                                 </div>
                             </li>
                         </ng-template>
-                        <!-- <li *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')"><a
-                                (click)="goToSeccion('/dato-fiscal/documentacion')" href="#" class="animate"><span
-                                    class="fa fa-file-text" aria-hidden="true"></span>Documentación </a></li>
-                        <li><a (click)="editarCuenta()" href="#" class="animate"><span
-                                    class="fa fa-key" aria-hidden="true"></span>Editar cuenta</a></li>
-                        <li *ngIf="isAuthorized('SELECCIONAR VENDEDOR')"><a
-                                (click)="goToSeccion('/usuario/cambio-vendedor')" class="animate" href="#"><span
-                                    class="fa fa-id-badge" aria-hidden="true"></span>Cambio de vendedor </a></li>
-                        <li><a (click)="cerrarSesion()" href="#" class="animate"><span class="fa fa-sign-out"
-                                    aria-hidden="true"></span>Cerrar sesión</a></li> -->
                         <li>
-
                             <div id="UserNotification" class="clearfix"> <span id="notificationOpen"
                                     onClick="notificationOpen()"> <span class="fa fa-bell-o" aria-hidden="true"></span>
                                     <span class="badge">{{cantidadNot()}}</span>
@@ -295,10 +284,23 @@
     <div *ngIf="menuSmall" class="col-xs-12 col-md-12">
         <app-buscador-inteligente-small></app-buscador-inteligente-small>
     </div>
+    <div *ngIf="!($sidebarVisible | async) && !menuSmall" [@fadeIn]
+        class="sidebar h-full w-fit p-8 pt-10px pl-75px ml-2 pr-2 border-hover" appHoverLeftBorder
+        (hoverLeftBorder)="toggleSidebar(true)">
+        <i class="pi pi-angle-double-right cursor-pointer scale-17" (click)="toggleSidebar()" aria-hidden="true"></i>
+    </div>
     <!-- Navegación -->
-    <barra-nav id="mySidenav" class="sidebar">
+    <barra-nav id="mySidenav" class="sidebar h-80vh"
+        [@animateSidebar]="($sidebarVisible | async) || menuSmall ? 'open' : 'closed'" appMouseLeave
+        (mouseLeave)="toggleSidebar(false)">
         <div class="sidebar-wrapper">
-            <div class="switch" *ngIf="isAmbos()">
+            <div class="switch mb-0 mt-0 bg-transparent pt-10px" *ngIf="!menuSmall">
+                <i class="pi cursor-pointer scale-17" [ngClass]="{
+                'pi-angle-double-left ':mainSidebarToggle,
+                'pi-angle-double-right ':!mainSidebarToggle
+               }" (click)="toggleSidebar()" aria-hidden="true"></i>
+            </div>
+            <div class="switch" [ngClass]="{'mt-0':!menuSmall}" *ngIf="isAmbos()">
                 <input type="radio" class="switch-input" name="view" value="week" id="week"
                     [checked]="isGranosSelected()" (click)="setGranos()">
                 <label for="week" class="switch-label switch-label-off">GRANOS</label>
@@ -307,7 +309,7 @@
                 <label for="month" class="switch-label switch-label-on">NO GRANOS</label>
                 <span class="switch-selection"></span>
             </div>
-            <div id="accordionMenu" role="tablist" aria-multiselectable="true">
+            <div id="accordionMenu" role="tablist" aria-multiselectable="true" style="width:200px;">
                 <div class="panel panel-default" *ngIf="isAuthorized('MENU')">
                     <div class="panel-heading seccion" role="tab" id="misOperaciones">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
@@ -468,8 +470,9 @@
                 <div class="panel panel-default">
                     <div class="panel-heading seccion" role="tab" id="documentacion">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
-                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                            href="#collapseDoc" aria-expanded="false" aria-controls="collapseDoc">
+                            {{isGranosSelected() ? 'Alta y Documentaci&oacute;n' : 'Documentaci&oacute;n'}} <span
+                                class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseDoc" class="collapse" aria-labelledby="documentacion" role="tabpanel">
@@ -494,7 +497,8 @@
                                     <!--data-toggle="tab">-->Documentos e Informaci&oacute;n &uacute;til
                                 </a>
                             </div>
-                            <div *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
+                            <div
+                                *ngIf="isGranosSelected() && isAuthorized('ALTA EMPRESA GRANOS') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES') && !esUsuarioComercial">
                                 <a (click)="goToSeccion('/alta-empresa-granos')" href="#">
                                     <!--data-toggle="tab">-->Alta Empresa
                                 </a>
@@ -504,7 +508,8 @@
                                     <!--data-toggle="tab">-->Alta Proveedor
                                 </a>
                             </div>
-                            <div *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
+                            <div
+                                *ngIf="isAuthorized('ESTADO SOLICITUD') && !isAuthorized('CONSULTAR VENDEDOR PENDIENTES')">
                                 <a (click)="goToSeccion('/estado-solicitud')" href="#">
                                     <!--data-toggle="tab">-->Estado solicitud
                                 </a>
@@ -541,19 +546,19 @@
 
     <!-- Esto está repetido aproposito. Si puede CARGAR CONSULTA lo direcciona a la parte de alta. Caso contrario lo lleva al listado-->
                 <div class="panel panel-default"
-                     *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && !isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse"
-                           (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
+                            (click)="goToSeccion('/consulta/mis-consultas')" href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
                 </div>
                 <div class="panel panel-default"
-                     *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
+                    *ngIf="isAuthorized('CONTACTO MAIL') && isAuthorized('CARGAR CONSULTA') ">
                     <div class="panel-heading seccion" role="tab" id="contacto">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/consulta')"
-                           href="#" data-parent="#accordionMenu">
+                            href="#" data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Contacto
                         </a>
                     </div>
@@ -569,18 +574,18 @@
                 <div class="panel panel-default" *ngIf="isAuthorized('CONTACTO MAIL')">
                     <div class="panel-heading seccion" role="tab" id="faq">
                         <a class="link-header collapsed" data-toggle="collapse" (click)="goToSeccion('/faq')" href="#"
-                           data-parent="#accordionMenu">
+                            data-parent="#accordionMenu">
                             <!--data-toggle="tab">-->Preguntas Frecuentes
                         </a>
                     </div>
                 </div>
                 <div class="panel panel-default"
-                     *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) ">
+                    *ngIf="(isAuthorized('ABM USUARIOS') || isAuthorized('ABM EMPRESAS') || isAuthorized('VER ALTAS NO GRANOS') || isAuthorized('ABM NOTIFICACIONES')) ">
                     <div class="panel-heading seccion" role="tab" id="usuarios">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseU" aria-expanded="false" aria-controls="collapseU">
+                            href="#collapseU" aria-expanded="false" aria-controls="collapseU">
                             Administraci&oacute;n <span class="glyphicon glyphicon-chevron-down"
-                                                        aria-hidden="true"></span>
+                                aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseU" class="collapse" aria-labelledby="usuarios" role="tabpanel">
@@ -615,15 +620,20 @@
                                     Gestion de Impuestos
                                 </a>
                             </div>
+                            <!--<div *ngIf="isAuthorized('ABM USUARIOS')">
+                                <a (click)="goToSeccion('/log-viewer')" href="#">
+                                    Log Viewer
+                                </a>
+                            </div>-->
                         </div>
                     </div>
                 </div>
 
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="compras"
-                         *ngIf="isAuthorized('VER SOLAPA COMPRA')">
+                        *ngIf="isAuthorized('VER SOLAPA COMPRA')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
+                            href="#collapseCompras" aria-expanded="false" aria-controls="collapseCompras">
                             Compras <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
@@ -689,12 +699,12 @@
                 <div class="panel panel-default" *ngIf="!isAmbos() || isNoGranosSelected()">
                     <div class="panel-heading seccion" role="tab" id="apikey" *ngIf="isAuthorized('APIKEY')">
                         <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
-                           href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
+                            href="#collapseApikey" aria-expanded="false" aria-controls="collapseApikey">
                             API <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
                         </a>
                     </div>
                     <div id="collapseApikey" class="collapse" aria-labelledby="apikey" role="tabpanel"
-                         *ngIf="isAuthorized('APIKEY')">
+                        *ngIf="isAuthorized('APIKEY')">
                         <div class="panel-body">
                             <div>
                                 <a (click)="goToSeccion('/apikey')" href="#">
@@ -705,7 +715,29 @@
                     </div>
                 </div>
 
-
+                <div class="panel panel-default" *ngIf="isAuthorized('REALIZAR CURSOS')">
+                    <div class="panel-heading seccion" role="tab" id="cursos"
+                        style="padding: 1rem; padding-right:0px; padding-left:0px">
+                        <a class="link-header collapsed" data-toggle="collapse" data-parent="#accordionMenu"
+                            href="#collapseCursos" aria-expanded="false" aria-controls="collapseCursos">
+                            Cursos <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
+                        </a>
+                    </div>
+                    <div id="collapseCursos" class="collapse" aria-labelledby="cursos" role="tabpanel">
+                        <div class="panel-body" style="padding:0px">
+                            <div *ngIf="isAuthorized('REALIZAR CURSOS')">
+                                <a (click)="goToSeccion('/cursos/mis-cursos')" href="#">
+                                    Mis Cursos
+                                </a>
+                            </div>
+                            <div *ngIf="isAuthorized('ADMINISTRAR CURSOS')">
+                                <a (click)="goToSeccion('/cursos/administrar-cursos')" href="#">
+                                    Administrar Cursos
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- DEPRECADO! -->
                 <!-- <nav>
         <ul class="nav">
@@ -741,68 +773,75 @@
             </div>
         </div>
     </barra-nav>
-    <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert"><button
-            type="button" class="close" (click)="mensajeError = ''"><span aria-hiden="true">&times;</span></button><i
-            class="fa fa-exclamation-triangle" aria-hidden="true"></i>{{mensajeError}}</div>
-    <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
-        <button type="button" class="close" (click)="mensajeInfo = ''"><span aria-hiden="true">&times;</span></button><i
-            class="fa fa-thumbs-o-down" aria-hidden="true"></i>{{mensajeInfo}}
-    </div>
-    <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
-        <button type="button" class="close" (click)="mensajeSuccess = ''"><span
-                aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
-            aria-hidden="true"></i>{{mensajeSuccess}}
-    </div>
-    <!-- Tab panes -->
-    <div class="SubMenu-wrapper row">
-        <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
-            <div class="tab-content ">
-                <div class="tab-pane fade active in" id="Inicio">
-                    <ul class="nav">
-                        <li *ngFor="let seccion of seccionList"><a class="animate"
-                                [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
-                                (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
+    <div [@animateMain]="($sidebarVisible | async) && !menuSmall ? 'openMain' : 'closedMain'"
+        [ngClass]="{'left-0':menuSmall}">
+        <div class="alert alert-danger alert-dismissible flotante fade in" *ngIf="mensajeError != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeError = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-exclamation-triangle"
+                aria-hidden="true"></i>{{mensajeError}}
+        </div>
+        <div class="alert alert-warning alert-dismissible flotante fade in" *ngIf="mensajeInfo != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeInfo = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-down"
+                aria-hidden="true"></i>{{mensajeInfo}}
+        </div>
+        <div class="alert alert-success alert-dismissible flotante fade in" *ngIf="mensajeSuccess != ''" role="alert">
+            <button type="button" class="close" (click)="mensajeSuccess = ''"><span
+                    aria-hiden="true">&times;</span></button><i class="fa fa-thumbs-o-up"
+                aria-hidden="true"></i>{{mensajeSuccess}}
+        </div>
+        <!-- Tab panes -->
+        <div class="SubMenu-wrapper row">
+            <div class="SubMenu myTab clearfix col-xs-12 col-sm-10" [hidden]="!tieneSecciones">
+                <div class="tab-content ">
+                    <div class="tab-pane fade active in" id="Inicio">
+                        <ul class="nav">
+                            <li *ngFor="let seccion of seccionList"><a class="animate"
+                                    [ngClass]="(isSelectedSeccion(seccion.nombre)) ? 'active' : ''"
+                                    (click)="goToSeccion(seccion.link)" href="#">{{seccion.nombre}}</a></li>
 
-                    </ul>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
-            style="float: right;">
-            <div class="tooltipAyuda">
-                <img src="Content/images/buttons/information.svg" />
-                <span>Ayuda</span>
+            <div *ngIf="isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
+                style="float: right;">
+                <div class="tooltipAyuda">
+                    <img src="Content/images/buttons/information.svg" />
+                    <span>Ayuda</span>
+                </div>
+                <span class="tooltiptexto" aria-hidden="true">
+                    <label [innerHTML]="textoTooltip"></label>
+                    <br>
+                    <label [innerHTML]="textoTooltip2"></label>
+                </span>
             </div>
-            <span class="tooltiptexto" aria-hidden="true">
-                <label [innerHTML]="textoTooltip"></label>
-                <br>
-                <label [innerHTML]="textoTooltip2"></label>
-            </span>
-        </div>
 
 
-        <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
-            style="float: right;">
-            <div class="tooltipAyuda">
-                <img src="Content/images/buttons/information.svg" />
-                <span>Ayuda</span>
+            <div *ngIf="!isSeccionVisitada() && textoTooltip" class="tooltipscontainer col-2 col-xs-1 col-sm-1"
+                style="float: right;">
+                <div class="tooltipAyuda">
+                    <img src="Content/images/buttons/information.svg" />
+                    <span>Ayuda</span>
+                </div>
+                <span class="tooltiptextoPrimerLog" aria-hidden="true">
+                    <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
+                            class="glyphicon glyphicon-remove"></i></button>
+                    <br>
+                    <label [innerHTML]="textoTooltip"></label>
+                    <br>
+                    <label [innerHTML]="textoTooltip2"></label>
+                </span>
             </div>
-            <span class="tooltiptextoPrimerLog" aria-hidden="true">
-                <button id="botonTransparente" class="botonTransparente" (click)="actualizarSeccionVisitada()"><i
-                        class="glyphicon glyphicon-remove"></i></button>
-                <br>
-                <label [innerHTML]="textoTooltip"></label>
-                <br>
-                <label [innerHTML]="textoTooltip2"></label>
-            </span>
         </div>
+
+        <!-- END Tab panes -->
+
+
+        <router-outlet></router-outlet>
+
     </div>
-
-    <!-- END Tab panes -->
-
-
-    <router-outlet></router-outlet>
 </div>
 <header-user id="userSmall" style="display:none; margin-right: 25px;">
     <usuario-small id="usuarioSmall" class="clearfix">

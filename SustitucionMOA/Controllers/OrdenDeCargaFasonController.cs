@@ -8,11 +8,9 @@ using SustitucionMOAAssets;
 using SustitucionMOAUtils.Logger;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
-using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Controllers
 {
@@ -689,6 +687,52 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
+        }
+        [HttpGet]
+        public ActionResult ValidarOrdenActivaScato(long ordenId)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaFasonService.ValidarOrdenActivaScato(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ActionResult ValidarSisaCliente(string codigoCliente, string codigoMaterial)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaFasonService.ValidarSisaCliente(codigoCliente,codigoMaterial);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
         }
     }
 }

@@ -14,10 +14,14 @@ import { Table } from 'primeng/table';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { PeticionDeOfertaDto, PeticionDeOfertaSolpPosicionDto, PeticionDeOfertaUsarioDto } from '../../../modelos/peticion-de-oferta-model';
 import { Solp } from '../../solp/solp';
-import { CotizacionHoraDto, CotizacionDto, CotizacionPosicionDto } from '../../../modelos/cotizacionDto';
+import { CotizacionHoraDto, CotizacionDto } from '../../../modelos/cotizacionDto';
 import { AdjudicacionDto } from '../../../modelos/adjudicacion';
 import { TextosAdjudicarComponent } from './textos-adjudicar/textos-adjudicar.component';
 import { CotizacionHistorialDto } from '../../../modelos/cotizacion-historial-model';
+import { forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { ApiResponse } from '../../../common/models/response';
+import { Permiso } from '../../../common/enums/Permisos';
 
 @Component({
     selector: 'app-ver-ofertas',
@@ -79,7 +83,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     esTipoPOMultiple: boolean;
     displayVisualizarMovimientos: boolean;
     mensajeValidacionMoneda: any;
-    esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+    esAuditor: boolean = this.tienePermiso(Permiso.VerComoAuditor);
+    esComprasAdmin: boolean = this.tienePermiso(Permiso.AdjudicarDentroDelPlazoDeOfertas);
 
 
     constructor(protected service: ComprasService, protected usuarioService: UsuarioService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -121,11 +126,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 ObservacionTecnica: null,
                 ObservacionEconomica: null,
                 Cantidad: null,
-            };
+            } as unknown as PeticionDeOfertaDto;
         }
         if (this.adjudicacion == null || this.adjudicacion == undefined) {
             this.adjudicacion = {
-                Id: null,
+                Id: undefined,
             };
         }
     }
@@ -137,7 +142,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     seleccionarTodo() {
         if (this.TodasPosicionesSeleccionadas) {
             this.tablaOfertas.PeticionDeOfertaPosicion.map(pos => {
-                if (!pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado) {
+                if (!pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado && !pos.Selected) {
                     pos.Selected = true;
                 }
             });
@@ -146,34 +151,36 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
+    checkSelectAllIfNeeded(): void {
+        this.TodasPosicionesSeleccionadas = this.tablaOfertas.PeticionDeOfertaPosicion
+            .filter(pos => !pos.Posicion.AdjudicacionCompleta && !pos.EstaEliminado)
+            .every(x => x.Selected);
+    }
+
     verOfertas(peticionOferta_Id) {
         try {
             this.blockUI.start('Cargando...');
             this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.tablaOfertas = result.data;
-                        if (this.tablaOfertas.NrosSolp.length > 1) {
+                (result) => {
+                    let peticionDto: PeticionDeOfertaDto = this.manejarErroresApiResponse(result);
+                    if (peticionDto) {
+                        this.tablaOfertas = peticionDto;
+                        if (peticionDto.NrosSolp && peticionDto.NrosSolp.length > 1) {
                             this.esTipoPOMultiple = true;
                         }
-                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional;
+                        this.nroOC = this.tablaOfertas.NroOrdenDeCompraAdicional || "";
                         if (this.tablaOfertas.Adicional == true) {
                             this.obtenerAdjudicacion(this.nroOC);
-                        } else
+                        } else {
                             this.setTextoCondicionEspecial();
+                        }
+                        this.setMensajeTabla();
                     }
-                    this.blockUI.stop();
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
-                    this.blockUI.stop();
-                });
+                },
+                () => { this.blockUI.stop(); });
         } catch (e) {
             this.blockUI.stop();
             this.floatMsgService.setErrorMsg(e);
@@ -195,7 +202,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.adjudicacion.CondicionesDeEntrega = this.ordenDeCompra.CondicionesDeEntrega;
                     this.adjudicacion.CondicionesDePago = this.ordenDeCompra.CondicionesDePago;
                     this.adjudicacion.Garantias = this.ordenDeCompra.Garantias;
-                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;   
+                    this.adjudicacion.TextoDeCabecera = this.ordenDeCompra.TextoDeCabecera;
                     this.setTextoCondicionEspecial();
                     this.blockUI.stop();
                 }
@@ -298,6 +305,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                                 MonedaPO: peticion.Posicion.MonedaId,
                                 MonedaId: cotizacionPos.Moneda_Id,
                                 CentroPosicion: peticion.Posicion.Centro,
+                                EsMaterialCatalogado: this.tablaOfertas.TipoPosicionCodigo == 'MATERIALES' && !!peticion.Posicion.CodigoMaterialSap.Codigo,
+                                CodigoMaterialSap: peticion.Posicion.CodigoMaterialSap.Codigo,
+                                CodigoCentroSap: peticion.Posicion.Centro.CodigoSap,
+                                CodigoGrupoComprasSap: peticion.Posicion.GrupoCompras.CodigoSap,
                                 Descripcion: peticion.Posicion.CodigoMaterialSap.Descripcion == null ? peticion.Posicion.Tarea : peticion.Posicion.CodigoMaterialSap.Descripcion
                             })
                     })
@@ -316,21 +327,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición válida para adjudicar");
                 return;
             }
-            var posRegion = this.lista[0].CentroPosicion.CodigoSap;
-
-            if (posRegion) {
-                this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
-                this.selectedRegion = { label: this.centroDire.label, value: this.centroDire.value };
-            }
-
-            this.adjudicacion.AdjudicacionPosiciones = this.lista;
-            this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
-            this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
-
-            this.displayRegionSap = true;
-
-            this.validacionTextosIncompletos();
-
+            this.validarFechaVigenciaRegistroInfo(usuario);
         } else {
             this.floatMsgService.setInfoMsg("Debe seleccionar alguna posición para adjudicar");
         }
@@ -340,8 +337,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.lista != undefined) {
             for (let index = 0; index < this.lista.length; index++) {
                 if (this.lista[index].PlazoDeEntrega != null) {
-                    var milliseconds = parseInt(this.lista[index].PlazoDeEntrega.substring(6));
-                    var date = new Date(milliseconds);
+                    let date = new Date(this.lista[index].PlazoDeEntrega);
                     this.lista[index].PlazoDeEntrega = date
                 }
             }
@@ -430,38 +426,38 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
-    validarMonedasDiferentes(){
+    validarMonedasDiferentes() {
         if (this.adjudicacion != undefined) {
             this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
-        this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
-            (result) => {
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                }
-                else {
-                    if(result.data.Errores.length > 0){
-                        this.mensajeValidacionMoneda = result.data.Errores[0];
-                        this.displayValidacionMoneda = true;
-                    }else{
-                        this.confirmacionAdjudicar();
+            this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
                     }
-                   
+                    else {
+                        if (result.data.Errores.length > 0) {
+                            this.mensajeValidacionMoneda = result.data.Errores[0];
+                            this.displayValidacionMoneda = true;
+                        } else {
+                            this.confirmacionAdjudicar();
+                        }
+
+                    }
+                },
+                (error) => {
+                    this.blockUI.stop();
+                    this.mensajeComponent.setErrorMsg(error.message);
                 }
-            },
-            (error) => {
-                this.blockUI.stop();
-                this.mensajeComponent.setErrorMsg(error.message);
-            }
-        )
-    }
+            )
+        }
     }
 
-    onCerrarValidacionMoneda(){
+    onCerrarValidacionMoneda() {
         this.displayValidacionMoneda = false;
     }
 
-    onSiguientePasoValidacionMoneda(){
+    onSiguientePasoValidacionMoneda() {
         this.displayValidacionMoneda = false;
         this.confirmacionAdjudicar();
     }
@@ -622,6 +618,16 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     cerrarModalPrecios() {
         this.displayVisualizarPrecio = false;
+        // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        //     this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        // });
+    }
+
+    onVisualizarPrecioGuardado() {
+        this.displayVisualizarPrecio = false;
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['compras/ver-ofertas/' + this.peticionOferta_Id]);
+        });
     }
 
     abrirModalPrecios() {
@@ -735,24 +741,42 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.mostrarModalGenerarOCMoneda(this.usuario)
     }
 
-    verificarCondicionEspecial(){
+    verificarCondicionEspecial(): boolean {
         return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
     }
 
-    setTextoCondicionEspecial() {
+    setTextoCondicionEspecial(): void {
         if (this.verificarCondicionEspecial()) {
-            if(!this.adjudicacion.TextoDeCabecera){
+            if (!this.adjudicacion.TextoDeCabecera) {
                 this.adjudicacion.TextoDeCabecera = "";
             }
 
-            if(this.adjudicacion.TextoDeCabecera != undefined && 
-                this.adjudicacion.TextoDeCabecera != "" && 
-                this.modalTexto.adjudicacion.TextoDeCabecera != 
-                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp){
-                    this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
-                } else {
-                    this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+            if (this.adjudicacion.TextoDeCabecera != undefined &&
+                this.adjudicacion.TextoDeCabecera != "" &&
+                this.modalTexto.adjudicacion.TextoDeCabecera !=
+                this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp) {
+                this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+            } else {
+                this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+            }
+        }
+    }
+
+    setMensajeTabla() {
+        if (this.tablaOfertas.Usuarios) {
+            this.tablaOfertas.Usuarios.forEach(usuario => {
+                if (usuario.Cotizacion && usuario.Cotizacion.CotizacionPosiciones) {
+                    usuario.Cotizacion.CotizacionPosiciones.forEach(cotizacionPosicion => {
+                        cotizacionPosicion.MensajeTablaVerOfertas = '';
+                        if (!cotizacionPosicion.Completado) {
+                            cotizacionPosicion.MensajeTablaVerOfertas = 'Sin cotizar'
+                        }
+                        if (cotizacionPosicion.Adjudicado) {
+                            cotizacionPosicion.MensajeTablaVerOfertas = 'Adjudicado'
+                        }
+                    });
                 }
+            });
         }
     }
 
@@ -819,7 +843,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     getTotalPreciosPorMoneda(cotizacionPosicion: any): string {
         const preciosPorMoneda: { [key: string]: number } = {};
         for (const subpos of cotizacionPosicion.CotizacionSubPosiciones) {
-            
             if (!subpos.MonedaDescripcion) {
                 continue;
             }
@@ -831,14 +854,90 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.resultado = '';
         for (const moneda in preciosPorMoneda) {
             if (preciosPorMoneda.hasOwnProperty(moneda)) {
-                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });            
+                const precioFormateado = preciosPorMoneda[moneda].toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 this.resultado += `${moneda} ${precioFormateado}<br>`;
             }
         }
         return this.resultado;
     }
-   
+    posicionesSinVigencia = [];
+    validarFechaVigenciaRegistroInfo(usuario) {
+        const listaAvalidar = this.lista
+            .filter(x => x.EsMaterialCatalogado);
+        if (!listaAvalidar.length) {
+            this.mostrarModalRegionSap(usuario)
+            return
+        }
+        this.blockUI.start('Validando fechas de vigencia ...');
+        forkJoin(listaAvalidar
+            .map(({ CodigoGrupoComprasSap, CodigoCentroSap, CodigoMaterialSap, CotizacionPosicion_Id }) =>
+                this.service.validarFechaVigenciaRegistroInfo({
+                    grupoComprasCodigoSap: CodigoGrupoComprasSap,
+                    centroCodigoSap: CodigoCentroSap,
+                    materialCodigoSap: CodigoMaterialSap,
+                    cotizacionPosicionId: CotizacionPosicion_Id
+                })))
+            .pipe(
+                finalize(() => this.blockUI.stop())
+            )
+            .subscribe(res => {
+                const errores = res.filter(x => x.error);
+                if (errores.length > 0) {
+                    this.floatMsgService.setErrorMsg(errores[0].error);
+                    return;
+                }
+                this.posicionesSinVigencia = this.lista.filter(x =>
+                    x.EsMaterialCatalogado
+                    && this.obtenerInfoRespuestaRegistroVencido(x.CotizacionPosicion_Id, res)
+                ).map(x => ({
+                    ...x,
+                    FechaVigencia:
+                        this.obtenerInfoRespuestaRegistroVencido(x.CotizacionPosicion_Id, res)
+                            .data.FechaVigencia
+                }));
+                if (!this.posicionesSinVigencia.length) {
+                    this.mostrarModalRegionSap(usuario)
+                }
+            })
+    }
 
+    onCerrarActualizarSinVigenciaModal() {
+        this.posicionesSinVigencia = [];
+    }
+    obtenerInfoRespuestaRegistroVencido(cotizacionPosicionId, listaRespuesta) {
+        return listaRespuesta.find(y => y.data.CotizacionPosicionId === cotizacionPosicionId && !y.data.EstaVigente)
+    }
 
+    mostrarModalRegionSap(usuario) {
+        var posRegion = this.lista[0].CentroPosicion.CodigoSap;
+
+        if (posRegion) {
+            this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
+            this.selectedRegion = { label: this.centroDire.label, value: this.centroDire.value };
+        }
+
+        this.adjudicacion.AdjudicacionPosiciones = this.lista;
+        this.adjudicacion.Cotizacion_Id = usuario.Cotizacion.Id;
+        this.adjudicacion.Solp_Id = this.tablaOfertas.Solp_Id;
+
+        this.displayRegionSap = true;
+
+        this.validacionTextosIncompletos();
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return null;
+        }
+        if (response.error) {
+            this.floatMsgService.setErrorMsg(response.error);
+            return null;
+        }
+        if (response.info) {
+            this.floatMsgService.setInfoMsg(response.info);
+        }
+        return response.data || null;
+    }
 }
 

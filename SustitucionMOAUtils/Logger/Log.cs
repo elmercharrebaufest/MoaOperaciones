@@ -7,9 +7,36 @@ using System;
 using System.IO;
 using System.Web.Hosting;
 using System.ServiceModel.Channels;
+using System.Configuration;
+using NLog;
+using DocumentFormat.OpenXml.VariantTypes;
+using System.Linq;
+using System.Collections;
 
 namespace SustitucionMOAUtils.Logger
 {
+    public class LogConfig
+    {
+        public static void ConfigureNLog()
+        {
+            var config = LogManager.Configuration;
+
+            if (config == null)
+            {
+                // Aquí configuras la conexión si es necesario
+                config = new LoggingConfiguration();
+            }
+            // Obtener el connection string desde el web.config
+            var connectionString = ConfigurationManager.ConnectionStrings["CONTEXTO"].ConnectionString;
+
+            // Asignar el valor al parámetro de NLog
+            LogManager.Configuration.Variables["dbConnectionString"] = connectionString;
+
+            // Aplicar la nueva configuración
+            LogManager.ReconfigExistingLoggers();
+
+        }
+    }
     public class Log
     {
         private static readonly NLog.Logger DefaultLogger = NLog.LogManager.GetLogger("defaultLogger");
@@ -20,6 +47,7 @@ namespace SustitucionMOAUtils.Logger
 
         public Log()
         {
+            ConfigLog();
         }
 
         public static string ConfigLog()
@@ -47,8 +75,10 @@ namespace SustitucionMOAUtils.Logger
                 logPath = Path.Combine(rutaSitioWeb, "nlog.pre.config");
                 config = new XmlLoggingConfiguration(logPath);
             }
+
             // Configura LogManager con la nueva configuración
             NLog.LogManager.Configuration = config;
+            LogConfig.ConfigureNLog();
 
             var target = GetTarget(config);
 
@@ -72,34 +102,20 @@ namespace SustitucionMOAUtils.Logger
             foreach (var target in config.AllTargets)
             {
                 if (target is FileTarget fileTarget)
-                {                    
-                        return fileTarget;                    
+                {
+                    return fileTarget;
                 }
             }
             return null;
         }
 
-        public static void Error(string ip, string usuario, string controller, string method, string error)
-        {
-            try
-            {
-                ConfigLog();
-
-                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, error }));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("ERROR en LogService:" + e.Message);
-                Console.WriteLine("ERROR heredado:" + error);
-            }
-        }
+        
         public static void Error(string ip, string usuario, string controller, string method, Exception exception)
         {
             try
             {
                 ConfigLog();
-
-                DefaultLogger.Error(String.Format(ErrorMsg.ErrorLogMensaje, new string[] { controller, method, usuario, ip, exception.ToString() }));
+                DefaultLogger.Error(exception, String.Format(ErrorMsg.ErrorLogMensaje, controller, method, usuario, ip, ""));
             }
             catch (Exception e)
             {
@@ -150,6 +166,21 @@ namespace SustitucionMOAUtils.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
+
+        public static void Debug(string mensaje)
+        {
+            try
+            {
+                ConfigLog();
+
+                DefaultLogger.Debug(mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
+            }
+        }
+
         public static void Info(string mensaje)
         {
             try
@@ -210,7 +241,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                FrontLogger.Info(message);
+                FrontLogger.Error(message);
             }
             catch (Exception e)
             {
@@ -225,7 +256,7 @@ namespace SustitucionMOAUtils.Logger
             }
             catch (Exception e)
             {
-                Log.Error("","","","",e.Message);
+                Log.Error(e);
                 Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
             }
         }

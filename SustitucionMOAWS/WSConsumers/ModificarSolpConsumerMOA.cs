@@ -1,19 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using SustitucionMOARepositorio;
+using SustitucionMOAWS.CredentialService;
+using SustitucionMOAWS.ModificarSolpWebServiceMOA;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOAWS.CredentialService;
-using SustitucionMOAWS.ModificarSolpWebServiceMOA;
-using SustitucionMOARepositorio;
-using SustitucionMOAModel.Dto;
-using AutoMapper;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -51,213 +45,247 @@ namespace SustitucionMOAWS.WSConsumers
             fileCrear.Directory.Create();
             File.WriteAllText(fileCrear.FullName, xml);
 
+            string IM_NUMBER = solpSAP.NroSolp;
+            BAPIMEREQACCOUNT[] IM_PRACCOUNT = solpSAP.IM_PRACCOUNTList
+                .Select(a => new BAPIMEREQACCOUNT
+                {
+                    ASSET_NO = a.ASSET_NO,
+                    BUS_AREA = a.BUS_AREA,
+                    COSTCENTER = a.COSTCENTER,
+                    COSTOBJECT = a.COSTOBJECT,
+                    CO_AREA = a.CO_AREA,
+                    GL_ACCOUNT = a.GL_ACCOUNT,
+                    ORDERID = a.ORDERID,
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    PROFIT_CTR = a.PROFIT_CTR,
+                    SUB_NUMBER = a.SUB_NUMBER,
+                    QUANTITY = a.QUANTITY,
+                    QUANTITYSpecified = a.QUANTITYSpecified,
+                    SERIAL_NO = a.SERIAL_NO
+                })
+                .ToArray();
+            BAPIMEREQACCOUNTX[] IM_PRACCOUNTX = solpSAP.IM_PRACCOUNTXList
+                .Select(a => new BAPIMEREQACCOUNTX
+                {
+                    ASSET_NO = a.ASSET_NO,
+                    BUS_AREA = a.BUS_AREA,
+                    COSTCENTER = a.COSTCENTER,
+                    COSTOBJECT = a.COSTOBJECT,
+                    CO_AREA = a.CO_AREA,
+                    GL_ACCOUNT = a.GL_ACCOUNT,
+                    ORDERID = a.ORDERID,
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    PROFIT_CTR = a.PROFIT_CTR,
+                    QUANTITY = a.QUANTITY,
+                    PREQ_ITEMX = a.PREQ_ITEMX,
+                    SERIAL_NOX = a.SERIAL_NOX,
+                    SUB_NUMBER = a.SUB_NUMBER,
+                    SERIAL_NO = a.SERIAL_NO
+                })
+                .ToArray();
+            ZMPES7110[] IM_PRADDRDELIVERY = solpSAP.IM_PRADDRDELIVERYList
+                .Select(a => new ZMPES7110
+                {
+                    ADDR_NO = a.ADDR_NO,
+                    CITY = a.CITY,
+                    HOUSE_NO = a.HOUSE_NO,
+                    NAME = a.NAME,
+                    POSTL_COD1 = a.POSTL_COD1,
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    PREQ_NO = a.PREQ_NO,
+                    STREET = a.STREET,
+                    TEL1_NUMBR = a.TEL1_NUMBR
+                })
+                .ToArray();
+            BAPIMEREQHEADTEXT[] IM_PRHEADERTEXT = solpSAP.IM_PRHEADERTEXTList
+                .Select(a => new BAPIMEREQHEADTEXT
+                {
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    PREQ_NO = a.PREQ_NO,
+                    TEXT_FORM = a.TEXT_FORM,
+                    TEXT_ID = a.TEXT_ID,
+                    TEXT_LINE = a.TEXT_LINE
+                })
+                .ToArray();
+            ZMPES7090[] IM_PRITEM = solpSAP.IM_PRITEMList
+                .Select(a => new ZMPES7090
+                {
+                    ACCTASSCAT = a.ACCTASSCAT,
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    AGMT_ITEM = a.AGMT_ITEM,
+                    AGREEMENT = a.AGREEMENT,
+                    CLOSED = a.CLOSED,
+                    CREATED_BY = a.CREATED_BY,
+                    CURRENCY = a.CURRENCY,
+                    CURRENCY_ISO = a.CURRENCY_ISO,
+                    DELETE_IND = a.DELETE_IND,
+                    DELIV_DATE = a.DELIV_DATE,
+                    DES_VENDOR = a.DES_VENDOR,
+                    FIXED_VEND = a.FIXED_VEND,
+                    GR_PR_TIME = a.GR_PR_TIME,
+                    GR_PR_TIMESpecified = a.GR_PR_TIMESpecified,
+                    INFO_REC = a.INFO_REC,
+                    ITEM_CAT = a.ITEM_CAT,
+                    MATERIAL = a.MATERIAL,
+                    MATL_GROUP = a.MATL_GROUP,
+                    PCKG_NO = a.PCKG_NO,
+                    PLANT = a.PLANT,
+                    PLND_DELRY = a.PLND_DELRY,
+                    PLND_DELRYSpecified = a.PLND_DELRYSpecified,
+                    PREQ_DATE = a.PREQ_DATE,
+                    PREQ_NAME = a.PREQ_NAME,
+                    PREQ_PRICE = a.PREQ_PRICE,
+                    PREQ_PRICESpecified = a.PREQ_PRICESpecified,
+                    PREQ_UNIT_ISO = a.PREQ_UNIT_ISO,
+                    PRICE_UNIT = a.PRICE_UNIT,
+                    PRICE_UNITSpecified = a.PRICE_UNITSpecified,
+                    PURCH_ORG = a.PURCH_ORG,
+                    PUR_GROUP = a.PUR_GROUP,
+                    QUANTITY = a.QUANTITY,
+                    QUANTITYSpecified = a.QUANTITYSpecified,
+                    REL_DATE = a.REL_DATE,
+                    SHORT_TEXT = a.SHORT_TEXT,
+                    STORE_LOC = a.STORE_LOC,
+                    TRACKINGNO = a.TRACKINGNO,
+                    UNIT = a.UNIT,
+                    VAL_TYPE = a.VAL_TYPE
+                })
+                .ToArray();
+            BAPIMEREQITEMTEXT[] IM_PRITEMTEXT = solpSAP.IM_PRITEMTEXTList
+                .Select(a => new BAPIMEREQITEMTEXT
+                {
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    PREQ_NO = a.PREQ_NO,
+                    TEXT_FORM = a.TEXT_FORM,
+                    TEXT_ID = a.TEXT_ID,
+                    TEXT_LINE = a.TEXT_LINE
+                })
+                .ToArray();
+            ZMPES8000[] IM_PRITEMX = solpSAP.IM_PRITEMXList
+                .Select(a => new ZMPES8000
+                {
+                    ACCTASSCAT = a.ACCTASSCAT,
+                    PREQ_ITEM = a.PREQ_ITEM,
+                    AGMT_ITEM = a.AGMT_ITEM,
+                    AGREEMENT = a.AGREEMENT,
+                    CLOSED = a.CLOSED,
+                    CREATED_BY = a.CREATED_BY,
+                    CURRENCY = a.CURRENCY,
+                    CURRENCY_ISO = a.CURRENCY_ISO,
+                    DELETE_IND = a.DELETE_IND,
+                    DELIV_DATE = a.DELIV_DATE,
+                    DES_VENDOR = a.DES_VENDOR,
+                    FIXED_VEND = a.FIXED_VEND,
+                    GR_PR_TIME = a.GR_PR_TIME,
+                    INFO_REC = a.INFO_REC,
+                    ITEM_CAT = a.ITEM_CAT,
+                    MATERIAL = a.MATERIAL,
+                    MATL_GROUP = a.MATL_GROUP,
+                    PCKG_NO = a.PCKG_NO,
+                    PLANT = a.PLANT,
+                    PLND_DELRY = a.PLND_DELRY,
+                    PREQ_DATE = a.PREQ_DATE,
+                    PREQ_NAME = a.PREQ_NAME,
+                    PREQ_PRICE = a.PREQ_PRICE,
+                    PREQ_UNIT_ISO = a.PREQ_UNIT_ISO,
+                    PRICE_UNIT = a.PRICE_UNIT,
+                    PURCH_ORG = a.PURCH_ORG,
+                    PUR_GROUP = a.PUR_GROUP,
+                    QUANTITY = a.QUANTITY,
+                    REL_DATE = a.REL_DATE,
+                    SHORT_TEXT = a.SHORT_TEXT,
+                    STORE_LOC = a.STORE_LOC,
+                    TRACKINGNO = a.TRACKINGNO,
+                    UNIT = a.UNIT,
+                    VAL_TYPE = a.VAL_TYPE,
+                    PREQ_ITEMX = a.PREQ_ITEMX
+                })
+                .ToArray();
+            BAPI_SRV_ACC_DATA[] IM_SERVICEACCOUNT = solpSAP.IM_SERVICEACCOUNTList
+                .Select(a => new BAPI_SRV_ACC_DATA
+                {
+                    DEL_IND = a.DEL_IND,
+                    DOC_ITEM = a.DOC_ITEM,
+                    NET_VALUE = a.NET_VALUE,
+                    NET_VALUESpecified = a.NET_VALUESpecified,
+                    QUANTITY = a.QUANTITY,
+                    OUTLINE = a.OUTLINE,
+                    PERCENT = a.PERCENT,
+                    PERCENTSpecified = a.PERCENTSpecified,
+                    QUANTITYSpecified = a.QUANTITYSpecified,
+                    SERIAL_NO = a.SERIAL_NO,
+                    SERIAL_NO_ITEM = a.SERIAL_NO_ITEM,
+                    SRV_LINE = a.SRV_LINE
+                })
+                .ToArray();
+            BAPI_SRV_ACC_DATAX[] IM_SERVICEACCOUNTX = solpSAP.IM_SERVICEACCOUNTXList
+                .Select(a => new BAPI_SRV_ACC_DATAX
+                {
+                    DEL_IND = a.DEL_IND,
+                    DOC_ITEM = a.DOC_ITEM,
+                    NET_VALUE = a.NET_VALUE,
+                    QUANTITY = a.QUANTITY,
+                    OUTLINE = a.OUTLINE,
+                    PERCENT = a.PERCENT,
+                    SERIAL_NO = a.SERIAL_NO,
+                    SERIAL_NO_ITEM = a.SERIAL_NO_ITEM,
+                    SRV_LINE = a.SRV_LINE
+                })
+                .ToArray();
+            BAPI_SRV_SERVICE_LINE[] IM_SERVICELINES = solpSAP.IM_SERVICELINESList
+                .Select(a => new BAPI_SRV_SERVICE_LINE
+                {
+                    SRV_LINE = a.SRV_LINE,
+                    QUANTITYSpecified = a.QUANTITYSpecified,
+                    OUTLINE = a.OUTLINE,
+                    QUANTITY = a.QUANTITY,
+                    CURRENCY = a.CURRENCY,
+                    DEL_IND = a.DEL_IND,
+                    DOC_ITEM = a.DOC_ITEM,
+                    GROSS_PRICE = a.GROSS_PRICE,
+                    GROSS_PRICESpecified = a.GROSS_PRICESpecified,
+                    MATL_GROUP = a.MATL_GROUP,
+                    NET_PRICE = a.NET_PRICE,
+                    NET_PRICESpecified = a.NET_PRICESpecified,
+                    SERVICE = a.SERVICE,
+                    SHORT_TEXT = a.SHORT_TEXT,
+                    UOM = a.UOM,
+                    UOM_ISO = a.UOM_ISO
+                })
+                .ToArray();
+            BAPI_SRV_SERVICE_LINEX[] IM_SERVICELINESX = solpSAP.IM_SERVICELINESXList
+                .Select(a => new BAPI_SRV_SERVICE_LINEX
+                {
+                    SRV_LINE = a.SRV_LINE,
+                    OUTLINE = a.OUTLINE,
+                    QUANTITY = a.QUANTITY,
+                    CURRENCY = a.CURRENCY,
+                    DEL_IND = a.DEL_IND,
+                    DOC_ITEM = a.DOC_ITEM,
+                    GROSS_PRICE = a.GROSS_PRICE,
+                    MATL_GROUP = a.MATL_GROUP,
+                    NET_PRICE = a.NET_PRICE,
+                    SERVICE = a.SERVICE,
+                    SHORT_TEXT = a.SHORT_TEXT,
+                    UOM = a.UOM,
+                    UOM_ISO = a.UOM_ISO
+                })
+                .ToArray();
+
+
             var result = service.SI_MMRFC_MODIFICAR_SOLPED(
-                                                       solpSAP.NroSolp,
-                                                       solpSAP.IM_PRACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5690
-                                                       {
-                                                           ASSET_NO = a.ASSET_NO,
-                                                           BUS_AREA = a.BUS_AREA,
-                                                           COSTCENTER = a.COSTCENTER,
-                                                           COSTOBJECT = a.COSTOBJECT,
-                                                           CO_AREA = a.CO_AREA,
-                                                           GL_ACCOUNT = a.GL_ACCOUNT,
-                                                           ORDERID = a.ORDERID,
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           PROFIT_CTR = a.PROFIT_CTR,
-                                                           SUB_NUMBER = a.SUB_NUMBER,
-                                                           QUANTITY = a.QUANTITY,
-                                                           QUANTITYSpecified = a.QUANTITYSpecified,
-                                                           SERIAL_NO = a.SERIAL_NO
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRACCOUNTXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5680
-                                                       {
-                                                           ASSET_NO = a.ASSET_NO,
-                                                           BUS_AREA = a.BUS_AREA,
-                                                           COSTCENTER = a.COSTCENTER,
-                                                           COSTOBJECT = a.COSTOBJECT,
-                                                           CO_AREA = a.CO_AREA,
-                                                           GL_ACCOUNT = a.GL_ACCOUNT,
-                                                           ORDERID = a.ORDERID,
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           PROFIT_CTR = a.PROFIT_CTR,
-                                                           QUANTITY = a.QUANTITY,
-                                                           PREQ_ITEMX = a.PREQ_ITEMX,
-                                                           SERIAL_NOX = a.SERIAL_NOX,
-                                                           SUB_NUMBER = a.SUB_NUMBER,
-                                                           SERIAL_NO = a.SERIAL_NO
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRADDRDELIVERYList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5750
-                                                       {
-                                                           ADDR_NO = a.ADDR_NO,
-                                                           CITY = a.CITY,
-                                                           HOUSE_NO = a.HOUSE_NO,
-                                                           NAME = a.NAME,
-                                                           POSTL_COD1 = a.POSTL_COD1,
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           PREQ_NO = a.PREQ_NO,
-                                                           STREET = a.STREET,
-                                                           TEL1_NUMBR = a.TEL1_NUMBR
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRHEADERTEXTList.Select(a => new ModificarSolpWebServiceMOA.BAPIMEREQHEADTEXT
-                                                       {
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           PREQ_NO = a.PREQ_NO,
-                                                           TEXT_FORM = a.TEXT_FORM,
-                                                           TEXT_ID = a.TEXT_ID,
-                                                           TEXT_LINE = a.TEXT_LINE
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRITEMList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5700
-                                                       {
-                                                           ACCTASSCAT = a.ACCTASSCAT,
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           AGMT_ITEM = a.AGMT_ITEM,
-                                                           AGREEMENT = a.AGREEMENT,
-                                                           CLOSED = a.CLOSED,
-                                                           CREATED_BY = a.CREATED_BY,
-                                                           CURRENCY = a.CURRENCY,
-                                                           CURRENCY_ISO = a.CURRENCY_ISO,
-                                                           DELETE_IND = a.DELETE_IND,
-                                                           DELIV_DATE = a.DELIV_DATE,
-                                                           DES_VENDOR = a.DES_VENDOR,
-                                                           FIXED_VEND = a.FIXED_VEND,
-                                                           GR_PR_TIME = a.GR_PR_TIME,
-                                                           GR_PR_TIMESpecified = a.GR_PR_TIMESpecified,
-                                                           INFO_REC = a.INFO_REC,
-                                                           ITEM_CAT = a.ITEM_CAT,
-                                                           MATERIAL = a.MATERIAL,
-                                                           MATL_GROUP = a.MATL_GROUP,
-                                                           PCKG_NO = a.PCKG_NO,
-                                                           PLANT = a.PLANT,
-                                                           PLND_DELRY = a.PLND_DELRY,
-                                                           PLND_DELRYSpecified = a.PLND_DELRYSpecified,
-                                                           PREQ_DATE = a.PREQ_DATE,
-                                                           PREQ_NAME = a.PREQ_NAME,
-                                                           PREQ_PRICE = a.PREQ_PRICE,
-                                                           PREQ_PRICESpecified = a.PREQ_PRICESpecified,
-                                                           PREQ_UNIT_ISO = a.PREQ_UNIT_ISO,
-                                                           PRICE_UNIT = a.PRICE_UNIT,
-                                                           PRICE_UNITSpecified = a.PRICE_UNITSpecified,
-                                                           PURCH_ORG = a.PURCH_ORG,
-                                                           PUR_GROUP = a.PUR_GROUP,
-                                                           QUANTITY = a.QUANTITY,
-                                                           QUANTITYSpecified = a.QUANTITYSpecified,
-                                                           REL_DATE = a.REL_DATE,
-                                                           SHORT_TEXT = a.SHORT_TEXT,
-                                                           STORE_LOC = a.STORE_LOC,
-                                                           TRACKINGNO = a.TRACKINGNO,
-                                                           UNIT = a.UNIT,
-                                                           VAL_TYPE = a.VAL_TYPE
-
-
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRITEMTEXTList.Select(a => new ModificarSolpWebServiceMOA.BAPIMEREQITEMTEXT
-                                                       {
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           PREQ_NO = a.PREQ_NO,
-                                                           TEXT_FORM = a.TEXT_FORM,
-                                                           TEXT_ID = a.TEXT_ID,
-                                                           TEXT_LINE = a.TEXT_LINE
-                                                       }).ToArray(),
-                                                       solpSAP.IM_PRITEMXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5660
-                                                       {
-                                                           ACCTASSCAT = a.ACCTASSCAT,
-                                                           PREQ_ITEM = a.PREQ_ITEM,
-                                                           AGMT_ITEM = a.AGMT_ITEM,
-                                                           AGREEMENT = a.AGREEMENT,
-                                                           CLOSED = a.CLOSED,
-                                                           CREATED_BY = a.CREATED_BY,
-                                                           CURRENCY = a.CURRENCY,
-                                                           CURRENCY_ISO = a.CURRENCY_ISO,
-                                                           DELETE_IND = a.DELETE_IND,
-                                                           DELIV_DATE = a.DELIV_DATE,
-                                                           DES_VENDOR = a.DES_VENDOR,
-                                                           FIXED_VEND = a.FIXED_VEND,
-                                                           GR_PR_TIME = a.GR_PR_TIME,
-                                                           INFO_REC = a.INFO_REC,
-                                                           ITEM_CAT = a.ITEM_CAT,
-                                                           MATERIAL = a.MATERIAL,
-                                                           MATL_GROUP = a.MATL_GROUP,
-                                                           PCKG_NO = a.PCKG_NO,
-                                                           PLANT = a.PLANT,
-                                                           PLND_DELRY = a.PLND_DELRY,
-                                                           PREQ_DATE = a.PREQ_DATE,
-                                                           PREQ_NAME = a.PREQ_NAME,
-                                                           PREQ_PRICE = a.PREQ_PRICE,
-                                                           PREQ_UNIT_ISO = a.PREQ_UNIT_ISO,
-                                                           PRICE_UNIT = a.PRICE_UNIT,
-                                                           PURCH_ORG = a.PURCH_ORG,
-                                                           PUR_GROUP = a.PUR_GROUP,
-                                                           QUANTITY = a.QUANTITY,
-                                                           REL_DATE = a.REL_DATE,
-                                                           SHORT_TEXT = a.SHORT_TEXT,
-                                                           STORE_LOC = a.STORE_LOC,
-                                                           TRACKINGNO = a.TRACKINGNO,
-                                                           UNIT = a.UNIT,
-                                                           VAL_TYPE = a.VAL_TYPE,
-                                                           PREQ_ITEMX = a.PREQ_ITEMX
-                                                       }).ToArray(),
-                                                       solpSAP.IM_SERVICEACCOUNTList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5790
-                                                       {
-                                                           DEL_IND = a.DEL_IND,
-                                                           DOC_ITEM = a.DOC_ITEM,
-                                                           NET_VALUE = a.NET_VALUE,
-                                                           NET_VALUESpecified = a.NET_VALUESpecified,
-                                                           QUANTITY = a.QUANTITY,
-                                                           OUTLINE = a.OUTLINE,
-                                                           PERCENT = a.PERCENT,
-                                                           PERCENTSpecified = a.PERCENTSpecified,
-                                                           QUANTITYSpecified = a.QUANTITYSpecified,
-                                                           SERIAL_NO = a.SERIAL_NO,
-                                                           SERIAL_NO_ITEM = a.SERIAL_NO_ITEM,
-                                                           SRV_LINE = a.SRV_LINE
-                                                       }).ToArray(),
-                                                       solpSAP.IM_SERVICEACCOUNTXList.Select(a => new ModificarSolpWebServiceMOA.BAPI_SRV_ACC_DATAX
-                                                       {
-                                                           DEL_IND = a.DEL_IND,
-                                                           DOC_ITEM = a.DOC_ITEM,
-                                                           NET_VALUE = a.NET_VALUE,
-                                                           QUANTITY = a.QUANTITY,
-                                                           OUTLINE = a.OUTLINE,
-                                                           PERCENT = a.PERCENT,
-                                                           SERIAL_NO = a.SERIAL_NO,
-                                                           SERIAL_NO_ITEM = a.SERIAL_NO_ITEM,
-                                                           SRV_LINE = a.SRV_LINE
-                                                       }).ToArray(),
-                                                       solpSAP.IM_SERVICELINESList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5780
-                                                       {
-                                                           SRV_LINE = a.SRV_LINE,
-                                                           QUANTITYSpecified = a.QUANTITYSpecified,
-                                                           OUTLINE = a.OUTLINE,
-                                                           QUANTITY = a.QUANTITY,
-                                                           CURRENCY = a.CURRENCY,
-                                                           DEL_IND = a.DEL_IND,
-                                                           DOC_ITEM = a.DOC_ITEM,
-                                                           GROSS_PRICE = a.GROSS_PRICE,
-                                                           GROSS_PRICESpecified = a.GROSS_PRICESpecified,
-                                                           MATL_GROUP = a.MATL_GROUP,
-                                                           NET_PRICE = a.NET_PRICE,
-                                                           NET_PRICESpecified = a.NET_PRICESpecified,
-                                                           SERVICE = a.SERVICE,
-                                                           SHORT_TEXT = a.SHORT_TEXT,
-                                                           UOM = a.UOM,
-                                                           UOM_ISO = a.UOM_ISO
-                                                       }).ToArray(),
-                                                       solpSAP.IM_SERVICELINESXList.Select(a => new ModificarSolpWebServiceMOA.ZMPES5720
-                                                       {
-                                                           SRV_LINE = a.SRV_LINE,
-                                                           OUTLINE = a.OUTLINE,
-                                                           QUANTITY = a.QUANTITY,
-                                                           CURRENCY = a.CURRENCY,
-                                                           DEL_IND = a.DEL_IND,
-                                                           DOC_ITEM = a.DOC_ITEM,
-                                                           GROSS_PRICE = a.GROSS_PRICE,
-                                                           MATL_GROUP = a.MATL_GROUP,
-                                                           NET_PRICE = a.NET_PRICE,
-                                                           SERVICE = a.SERVICE,
-                                                           SHORT_TEXT = a.SHORT_TEXT,
-                                                           UOM = a.UOM,
-                                                           UOM_ISO = a.UOM_ISO
-                                                       }).ToArray(),
+                                                       IM_NUMBER,
+                                                       IM_PRACCOUNT,
+                                                       IM_PRACCOUNTX,
+                                                       IM_PRADDRDELIVERY,
+                                                       IM_PRHEADERTEXT,
+                                                       IM_PRITEM,
+                                                       IM_PRITEMTEXT,
+                                                       IM_PRITEMX,
+                                                       IM_SERVICEACCOUNT,
+                                                       IM_SERVICEACCOUNTX,
+                                                       IM_SERVICELINES,
+                                                       IM_SERVICELINESX,
                                                        out BAPIRETURN[] EX_RETURN);
 
 

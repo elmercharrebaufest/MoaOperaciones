@@ -43,7 +43,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
                                     UsuarioCreador_Id = po.UsuarioCreador_Id,
-                                    PlazoDeOferta = po.PlazoDeOferta,
+                                    // PlazoDeOferta se resuelve internamente desde el DTO PeticionDeOfertaDto usando PlazoDeOfertaCierre, PlazoDeOfertaOriginal, FechaCircular y PlazoDeOfertaCircular
                                     Observaciones = po.Observaciones,
                                     TienePosicionesEliminadas = po.Posiciones.Any(x => x.SolpPosicion.Estado != true),
                                     FechaCreacionSolp = po.Posiciones.Select(x => x.SolpPosicion.Solp).Select(solp => solp.FechaCreacion).OrderBy(fc => fc).FirstOrDefault(),
@@ -101,7 +101,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                             CodigoSap = pop.SolpPosicion.Centro.CodigoSap
                                                                         },
                                                                         CentroId = pop.SolpPosicion.Centro_Id,
-
+                                                                        GrupoCompras = new TablaSapDto
+                                                                        {
+                                                                            Descripcion = pop.SolpPosicion.GrupoCompras.Descripcion,
+                                                                            CodigoSap = pop.SolpPosicion.GrupoCompras.CodigoSap,
+                                                                        },
                                                                         Subposiciones = pop.SolpPosicion.Subposiciones.Select(s => new SolpSubposicionDto
                                                                         {
                                                                             Id = s.Id,

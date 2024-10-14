@@ -14,20 +14,18 @@ namespace SustitucionMOAUtils.Services
 {
     public class CuentaCorrienteService : ICuentaCorrienteService
     {
-        public CuentaCorrienteService()
-        {
+        public CuentaCorrienteService() { }
 
-        }
         public CuentaCorrienteViewModel GetCuentasCorrientes(string proveedor, string sociedad, string fechaInicio, string fechaFin, string contrato, string pago, string retencion)
         {
             try
             {
                 FechaWS fechas = CommonUtil.toDate(fechaInicio, fechaFin);
 
-                CuentaCorrienteViewModel dataView = new CuentaCorrienteViewModel
+                var dataView = new CuentaCorrienteViewModel
                 {
                     filtroConcepto = new DropdownContent(),
-                    data = (CuentaCorrienteWSMOAResponse)new CuentaCorrientesConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion)
+                    data = new CuentaCorrientesConsumerMOA().Request("", proveedor, sociedad, fechas, contrato, pago, retencion)
                 };
 
                 dataView.data.msj = ValidarRespuesta(dataView.data);
@@ -68,7 +66,7 @@ namespace SustitucionMOAUtils.Services
                 CuentaCorrienteAgrupadaViewModel dataView = new CuentaCorrienteAgrupadaViewModel
                 {
                     filtroConcepto = new DropdownContent(),
-                    data = (CuentaCorrienteAgrupadaWSMOAResponse)new CuentaCorrientesAgrupadaConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion)
+                    data = new CuentaCorrientesAgrupadaConsumerMOA().Request("X", proveedor, sociedad, fechas, contrato, pago, retencion)
                 };
 
                 dataView.data.msj = ValidarRespuesta(dataView.data);
@@ -95,7 +93,7 @@ namespace SustitucionMOAUtils.Services
             {
                 FechaWS fechas = CommonUtil.toDate(fechaInicio, fechaFin);
                 
-                CuentaCorrienteExcelWSMOAResponse data = (CuentaCorrienteExcelWSMOAResponse)new CuentaCorrientesExcelConsumerMOA().request("", proveedor, sociedad, fechas, contrato, pago, retencion);
+                var data = new CuentaCorrientesExcelConsumerMOA().Request("", proveedor, sociedad, fechas, contrato, pago, retencion);
 
                 ValidarRespuesta(data);
 
@@ -123,7 +121,7 @@ namespace SustitucionMOAUtils.Services
             {
                 FechaWS fechas = CommonUtil.toDate(fechaInicio, fechaFin);
 
-                CuentaCorrienteAgrupadaExcelWSMOAResponse data = (CuentaCorrienteAgrupadaExcelWSMOAResponse)new CuentaCorrientesAgrupadaExcelConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
+                var data = new CuentaCorrientesAgrupadaExcelConsumerMOA().Request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
                 ValidarRespuesta(data);
                 List<CuentaCorrienteAgrupada> list = new List<CuentaCorrienteAgrupada>();
 
@@ -154,7 +152,7 @@ namespace SustitucionMOAUtils.Services
             {
                 FechaWS fechas = CommonUtil.toDate(fechaInicio, fechaFin);
 
-                CuentaCorrienteAgrupadaExcelWSMOAResponse data = (CuentaCorrienteAgrupadaExcelWSMOAResponse)new CuentaCorrientesAgrupadaExcelConsumerMOA().request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
+                var data = new CuentaCorrientesAgrupadaExcelConsumerMOA().Request("X", proveedor, sociedad, fechas, contrato, pago, retencion);
                 ValidarRespuesta(data);
                 List<CuentaCorrienteAgrupada> list = new List<CuentaCorrienteAgrupada>();
 

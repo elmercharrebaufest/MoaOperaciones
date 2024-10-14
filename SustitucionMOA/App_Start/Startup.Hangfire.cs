@@ -24,6 +24,7 @@ namespace SustitucionMOA
 
         }
 
+        [Obsolete]
         private void Register()
         {
             var tz = TimeZoneInfo.FindSystemTimeZoneById("Argentina Standard Time");
@@ -111,6 +112,17 @@ namespace SustitucionMOA
                 "VencimientoOrdenesResiduosJob",
                 j => j.Execute(),
                 "30 8 * * *", tz);
+            RecurringJob.AddOrUpdate<Jobs.IEnviarMailReporteSOLPJob>(
+              "EnviarMailReporteSOLPJob",
+              j => j.Execute(),
+              "0 10 1,15 * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.INotificacionErroresJob>(
+            "NotificacionErroresJob",
+            j => j.Execute(),
+            "*/5 * * * *",
+            tz);
+
 
             RecurringJob.AddOrUpdate<Jobs.IDerivacionAutomaticaJob>(
                 "DerivacionesAutomaticaJob",

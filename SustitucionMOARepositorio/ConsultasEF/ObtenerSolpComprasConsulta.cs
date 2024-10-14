@@ -3,7 +3,6 @@ using SustitucionMOAModel.Entities;
 using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Transactions;
 
 namespace SustitucionMOARepositorio.ConsultasEF
 {
@@ -27,8 +26,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                      NroSolp = solp.NroSolp,
                                      TipoPosicionCodigo = solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault(),
                                      Adicional = solp.Adicional,
+                                     _plazoDeOfertaTentativo = solp.Pliego.FechaHoraEntrega,
+                                     MostrarSelectorPlazoDeOferta = /*!solp.DebeGenerarPoAutomatica*/ !((solp.TrabajoYaHecho == true) || (solp.Adicional == true) || (solp.CondEspProveedorAsignado == true)),
                                      PosicionCompras = (from posicion in contexto.Set<SolpPosicion>()
-                                                        where posicion.Solp_Id == solp.Id && posicion.EsConcluido == true && posicion.Estado == true
+                                                        where posicion.Solp_Id == solp.Id
+                                                            && posicion.EsConcluido == true
+                                                            && posicion.Estado
                                                         orderby posicion.Indice
                                                         select new SolpPosicionDto()
                                                         {
@@ -78,7 +81,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                         Cantidad = subPosicion.Cantidad,
                                                                                         UnidadComprasDescripcion = subPosicion.Unidad.Descripcion
                                                                                     }),
-                                                        }),
+                                                        }).ToList(),
 
                                  }).First();
 
@@ -94,10 +97,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
 
         SolpCompraDto IConsultaEscalar<SolpCompraDto>.Ejecutar(DbContext contexto)
         {
-            using (new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted }))
-            {
-                return Query(contexto, Id);
-            }
+            return Query(contexto, Id);
         }
     }
 }

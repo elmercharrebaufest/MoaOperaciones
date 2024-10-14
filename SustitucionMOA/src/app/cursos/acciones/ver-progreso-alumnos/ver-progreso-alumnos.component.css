@@ -1,0 +1,40 @@
+.pt-4 {
+    padding-top: 1rem;
+}
+
+.pt-2 {
+    padding-top: 0.5rem;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.max-h-150px {
+    max-height: 150px;
+}
+
+hr {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.max-h-425px {
+    max-height: 425px;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.h-fit {
+    height: fit-content;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-content-center {
+    justify-content: center;
+}

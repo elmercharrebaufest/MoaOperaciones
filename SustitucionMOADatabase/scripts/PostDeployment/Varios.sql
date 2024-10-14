@@ -227,3 +227,18 @@ END
 BEGIN
 	insert into Configuracion values ('EnvioMailLiberacionOC','1')
 END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresMinutos')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresMinutos','5')
+END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresCantidad')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresCantidad','5')
+END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresEnviarA')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresEnviarA','moaoperaciones@baufest.com;plataformacompras@baufest.com')
+END

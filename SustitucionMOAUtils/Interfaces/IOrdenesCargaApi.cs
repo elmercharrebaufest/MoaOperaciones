@@ -6,8 +6,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IOrdenDeCargaApiService
     {
-        List<OrdenesDeCargaApiDto> ObtenerOrdenes(string patenteChasis, bool fason, bool fas);
+        List<OrdenesDeCargaApiDto> ObtenerOrdenesFas(string patenteChasis, bool fason, bool fas);
         ResultadoGenerico InformarViajeOrdenesDeCargaFason(IngresosEgresosFasones ingresosEgresosFasones);
         ResultadoGenerico InformarViajeOrdenesDeCargaFas(IngresosEgresosFas ingresosEgresosFas);
+        List<OrdenDeCargaFasonApiDto> ObtenerOrdenesFason(string patenteChasis);
     }
 }

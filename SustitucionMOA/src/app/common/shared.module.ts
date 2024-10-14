@@ -53,8 +53,11 @@ import { FormatNumericDirective } from './directive/format.numeric.directive';
 import { CustomTipoProveedorFilter } from './pipes/customTipoProveedorFilter';
 import { CustomFilterEstados } from './pipes/customFilterEstados';
 
-import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe'
-import { CustomNumberFormatterPipe } from './pipes/customNumberFormatter.pipe'
+import { CustomDefaultDataPipe } from './pipes/customDefaultData.pipe';
+import { CustomNumberFormatterPipe } from './pipes/customNumberFormatter.pipe';
+import { DefaultNumberParser } from './pipes/defaultNumber';
+import { HoverLeftBorderDirective } from './directive/hover-left-border.directive';
+import { MouseLeaveDirective } from './directive/on-mouse-leave.directive';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -93,7 +96,10 @@ const declaredAndExported = [
     CustomTipoProveedorFilter,
     CustomFilterEstados,
     CustomDefaultDataPipe,
-    CustomNumberFormatterPipe
+    CustomNumberFormatterPipe,
+    DefaultNumberParser,
+    HoverLeftBorderDirective,
+    MouseLeaveDirective,
 ];
 @NgModule({
     imports: [CommonModule,

@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="Cache.cs" />
     <Compile Include="ConsultasEF\ListarSolpCondicionEspecialConsulta.cs" />
+    <Compile Include="ConsultasEF\ObtenerLogsConsulta.cs" />
     <Compile Include="ConsultasEF\ObtenerPosicionesMultipleComprasConsulta.cs" />
     <Compile Include="ConsultasEF\TraerCotizacionConsulta.cs" />
     <Compile Include="ConsultasEF\ComparadorOfertasConsulta.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="EntidadReferenciadaException.cs" />
     <Compile Include="Extensiones\DataTableExtension.cs" />
     <Compile Include="Extensiones\Extensiones.cs" />
-    <Compile Include="Extensiones\SqlBulkExtension.cs" />
     <Compile Include="ICache.cs" />
     <Compile Include="IConsulta.cs" />
     <Compile Include="IConsultaEscalar.cs" />
@@ -99,9 +99,13 @@
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioConsultas.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenResiduos.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
     <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\RepositorioConsultas.cs" />
+    <Compile Include="Repositorios\RepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\RepositorioOrdenResiduos.cs" />
     <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>

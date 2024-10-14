@@ -150,7 +150,10 @@ namespace SustitucionMOAFotmatter
             if (monto == 0)
                 return string.Format("{0}{1}", FormatearMoneda(moneda), "0,00");
             else
-                return string.Format("{0}{1}", FormatearMoneda(moneda), monto.ToString("N", new CultureInfo("is-IS")));
+            {
+                string formatoDecimal = (moneda.ToUpper() == "USD" || moneda.ToUpper() == "USDM") ? "N3" : "N2";
+                return string.Format("{0}{1}", FormatearMoneda(moneda), monto.ToString(formatoDecimal, new CultureInfo("is-IS")));
+            }
         }
 
         public static string FormatearMonto(decimal montoNumerador, decimal montoDenominador, string moneda)

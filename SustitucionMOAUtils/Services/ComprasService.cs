@@ -1,11 +1,8 @@
-﻿using DocumentFormat.OpenXml.ExtendedProperties;
-using DocumentFormat.OpenXml.EMMA;
+﻿// Ignore Spelling: Solp
+
 using HandlebarsDotNet;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.parser.clipper;
 using iTextSharp.tool.xml;
 using iTextSharp.tool.xml.html;
 using iTextSharp.tool.xml.parser;
@@ -17,17 +14,16 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.sap;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
-using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Extensiones;
-using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Export;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
@@ -41,6 +37,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.SqlServer;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -48,12 +46,9 @@ using System.Linq.Expressions;
 using System.Net;
 using System.Net.Mail;
 using System.Reflection;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Text;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
-using SustitucionMOAModel.Dto.Compras;
-using System.Data.Entity.SqlServer;
 
 
 namespace SustitucionMOAUtils.Services
@@ -91,7 +86,11 @@ namespace SustitucionMOAUtils.Services
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly IEmailService emailService;
+        private readonly IEmailComprasService emailComprasService;
+        private readonly IComprasArchivosService comprasArchivosService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
+
+        private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
@@ -117,7 +116,10 @@ namespace SustitucionMOAUtils.Services
             IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA,
             IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA,
             IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
-            IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA)
+            IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
+            IEmailComprasService emailComprasService,
+            IComprasArchivosService comprasArchivosService,
+            IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -148,6 +150,9 @@ namespace SustitucionMOAUtils.Services
             this.listarSolpPendienteConsumeMOA = listarSolpPendienteConsumeMOA;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
+            this.emailComprasService = emailComprasService;
+            this.comprasArchivosService = comprasArchivosService;
+            this.comprasServiceSap = comprasServiceSap;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -268,6 +273,11 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
                 solpEntity.THProveedorDirecto = solp.THProveedorDirecto;
                 solpEntity.THServicioPermanente = solp.THServicioPermanente;
+
+                solpEntity.EnvioCircularA = EnviarCircularEnum.NoEnviar; /* el se marca con el valor definitivo en GuardarEnvioCircularProveedor
+                                                                               * (llamar desde el front)
+                                                                               */
+
                 pliegoEntity.FiscalContrato = solp.FiscalContrato;
                 pliegoEntity.Telefono = solp.Telefono;
                 pliegoEntity.Email = solp.Email;
@@ -399,6 +409,41 @@ namespace SustitucionMOAUtils.Services
 
                     }
                 }
+
+                string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
+
+                if (!string.IsNullOrEmpty(pliegoEntity.ObservacionesGeneracion))
+                {
+                    int index = pliegoEntity.ObservacionesGeneracion.IndexOf("Justificación de condición especial:");
+                    if (index != -1)
+                    {
+                        pliegoEntity.ObservacionesGeneracion = pliegoEntity.ObservacionesGeneracion.Substring(0, index).TrimEnd();
+                    }
+
+                    pliegoEntity.ObservacionesGeneracion += "\n\n" + justificacionTexto;
+                }
+                else
+                {
+                    pliegoEntity.ObservacionesGeneracion = justificacionTexto;
+                }
+
+
+
+            }
+            else
+            {
+                solpEntity.ProveedorAsignado_Id = null;
+                if (!string.IsNullOrEmpty(solpEntity.Pliego.ObservacionesGeneracion))
+                {
+                    string fraseABuscar = "Justificación de condición especial:";
+
+                    int indice = solpEntity.Pliego.ObservacionesGeneracion.IndexOf(fraseABuscar);
+                    if (indice != -1)
+                        solpEntity.Pliego.ObservacionesGeneracion = solpEntity.Pliego.ObservacionesGeneracion.Substring(0, indice);
+                    solpEntity.Pliego.ObservacionesCotizacionCondEsp = null;
+                }
+                if (solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any())
+                    repositorio.RemoverTodos(solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).ToList());
             }
             SetNombreDePedido(solpEntity);
             ExistenPosicionesNuevas(solp, solpEntity);
@@ -413,6 +458,10 @@ namespace SustitucionMOAUtils.Services
                 Solp = solp
             };
             respuestaGuardarSOLP.Solp.NroSolp = solpEntity.NroSolp ?? "";
+            respuestaGuardarSOLP.Solp.TieneModificaciones = solpEntity.TieneModificaciones;
+            respuestaGuardarSOLP.Solp.TienePeticionDeOferta = solpEntity.Posiciones != null && solpEntity.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any());
+
+
             if (solp.Finalizar)
             {
                 try
@@ -736,87 +785,38 @@ namespace SustitucionMOAUtils.Services
         private SolpDto GuardarAdjuntosSolp(SolpDto solp, HttpFileCollectionBase files, Pliego pliego)
         {
             var ruta = ObtenerRutaArchivos(solp.Id.Value, "Solp");
+            Directory.CreateDirectory(ruta);
 
-            var filesEspecificaciones = files.GetMultiple("fileEspecificaciones");
-            for (int i = 0; i < filesEspecificaciones.Count; i++)
-            {
-                var file = filesEspecificaciones[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoSolp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
-
-            var filesCotizaciones = files.GetMultiple("fileCotizaciones");
-
-            for (int i = 0; i < filesCotizaciones.Count; i++)
-            {
-                var file = filesCotizaciones[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoCotizacionesSolp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
-
-            var fileCotizacionesCondEsp = files.GetMultiple("fileCotizacionesCondEsp");
-
-            for (int i = 0; i < fileCotizacionesCondEsp.Count; i++)
-            {
-                var file = fileCotizacionesCondEsp[i];
-                var rutaArchivo = CrearRutaArchivo(string.Concat(ruta, "/", Path.GetFileName(file.FileName)), pliego.Archivos);
-
-                if (File.Exists(rutaArchivo))
-                {
-                    file.SaveAs(rutaArchivo);
-                    continue;
-                }
-
-                Directory.CreateDirectory(ruta);
-
-                pliego.Archivos.Add(new Archivo
-                {
-                    FileKey = FileKeys.AdjuntoCotizacionesSolpCondEsp,
-                    Ruta = rutaArchivo,
-                });
-
-                file.SaveAs(rutaArchivo);
-            }
+            GuardarArchivosSolp(files.GetMultiple("fileEspecificaciones"), ruta, pliego, FileKeys.AdjuntoSolp);
+            GuardarArchivosSolp(files.GetMultiple("fileCotizaciones"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolp);
+            GuardarArchivosSolp(files.GetMultiple("fileCotizacionesCondEsp"), ruta, pliego, FileKeys.AdjuntoCotizacionesSolpCondEsp);
 
             repositorio.GuardarCambios();
 
-            solp.Adjuntos = pliego.Archivos.Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Select(x => new ArchivoDto()
-            {
-                Id = x.Id,
-                FileKey = x.FileKey,
-                Nombre = x.ObtenerNombre(x.Ruta)
-            }).ToList();
+            solp.Adjuntos = pliego.Archivos
+                .Where(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp)
+                .Select(x => new ArchivoDto()
+                {
+                    Id = x.Id,
+                    FileKey = x.FileKey,
+                    Nombre = x.ObtenerNombre(x.Ruta)
+                }).ToList();
+
             return solp;
+        }
+
+        private void GuardarArchivosSolp(IEnumerable<HttpPostedFileBase> archivos, string ruta, Pliego pliego, string fileKey)
+        {
+            foreach (var file in archivos)
+            {
+                var rutaArchivo = CrearRutaArchivo(Path.Combine(ruta, Path.GetFileName(file.FileName)), pliego.Archivos);
+                file.SaveAs(rutaArchivo);
+                pliego.Archivos.Add(new Archivo
+                {
+                    FileKey = fileKey,
+                    Ruta = rutaArchivo,
+                });
+            }
         }
 
         private string CrearRutaArchivo(string ruta, ICollection<Archivo> archivos, int numeroIncremental = 0)
@@ -854,7 +854,7 @@ namespace SustitucionMOAUtils.Services
             //var crearSolpComsumer = crearSolp(solpEntity);
             //var modificarSolpConsumer = modificarSolp(solpEntity);
             //var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
-          
+
             var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
             resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
             respuestaGuardarSOLP.Errores = new List<string>();
@@ -864,13 +864,13 @@ namespace SustitucionMOAUtils.Services
 
                 try
                 {
-                   resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                    resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
                 }
                 catch (Exception e)
                 {
-                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E"});
+                    resultadoCrearSolp.Errores.Add(new CrearSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
                 }
-               
+
                 respuestaGuardarSOLP.Errores = new List<string>();
 
                 foreach (var error in resultadoCrearSolp.Errores.Where(x => x.Tipo == "E"))
@@ -923,7 +923,7 @@ namespace SustitucionMOAUtils.Services
                         resultadoEditarSolp.Errores.Add(new ModificarSolpConsumerMOAError { Mensaje = "Server Error", Tipo = "E" });
                     }
 
-                }               
+                }
 
                 foreach (var error in resultadoEditarSolp.Errores.Where(x => x.Tipo == "E"))
                 {
@@ -1093,7 +1093,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                if (posNueva && actualizarEstadoCotizacion && solpEntity.TrabajoYaHecho == false)
+                if (posNueva && actualizarEstadoCotizacion)
                 {
                     foreach (var poUsusario in po.Usuarios)
                     {
@@ -1114,6 +1114,7 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
         }
+
         private void ActualizarPosiciones(SolpDto solp, Solp solpEntity)
         {
             if (solp.Posiciones != null)
@@ -1282,7 +1283,7 @@ namespace SustitucionMOAUtils.Services
                 (!valorTipoImputacion.Any() || x.Posiciones.Any(p => valorTipoImputacion.Contains((int)p.ValorTipoImputacion_Id)) || x.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))));
 
 
-                if (todasLasSolp.Items != null && todasLasSolp.Items.Count() > 0)
+                if (todasLasSolp.Items != null && todasLasSolp.Items.Any())
                 {
                     todasLasSolp.Items.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
                 }
@@ -1409,7 +1410,11 @@ namespace SustitucionMOAUtils.Services
                 LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(l => new LiberadorSapSolpDto(l)).ToList(),
                 THAjustePolinomica = solp.THAjustePolinomica,
                 THProveedorDirecto = solp.THProveedorDirecto,
-                THServicioPermanente = solp.THServicioPermanente
+                THServicioPermanente = solp.THServicioPermanente,
+                TienePeticionDeOferta = solp.Posiciones.Any(p => p.Peticiones.Any()),
+                TieneModificaciones = solp.TieneModificaciones,
+                TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
+                EnvioCircularA = solp.EnvioCircularA,
             };
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
@@ -1459,7 +1464,7 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioCreacion);
             includes.Add(u => u.UsuarioModificacion);
 
-            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp,0,null,DirOrden.Asc, includes).ToList().FirstOrDefault();
+            var solp = repositorio.Listar<Solp>(s => s.NroSolp == nroSolp, 0, null, DirOrden.Asc, includes).ToList().FirstOrDefault();
 
             if (solp == null)
             {
@@ -1526,7 +1531,7 @@ namespace SustitucionMOAUtils.Services
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,
                 NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional,
-               // DeshabilitarAdicional = solp.Adjudicacions.Any(),
+                // DeshabilitarAdicional = solp.Adjudicacions.Any(),
 
                 Adjuntos = solp.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoSolp || a.FileKey == FileKeys.AdjuntoCotizacionesSolp).Select(s => new ArchivoDto
                 {
@@ -2128,33 +2133,6 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        public ObtenerSolpSAPResponse ObtenerSolpsSAP(DateTime fechaDesde, DateTime fechaHasta, string numeroSolp,
-                                    string centroLogistico, string filtroTipoPosicion, string indicadorDeLiberacion, string origenCreacion, List<string> creadoPorUsuarios,
-                                    string tipoDeImputacion, bool ObtenerDireccionDeEntrega, bool ObtenerImputacion, bool ObtenerServicios, bool MostrarItemsBorrados
-                                    )
-        {
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = numeroSolp,
-                CentroLogistico = centroLogistico,
-                FiltroTipoPosicion = filtroTipoPosicion,
-                IndicadorDeLiberacion = indicadorDeLiberacion,
-                OrigenCreacion = origenCreacion,
-                CreadoPorUsuarios = creadoPorUsuarios,
-                TipoDeImputacion = tipoDeImputacion,
-                ObtenerDireccionDeEntrega = ObtenerDireccionDeEntrega,
-                ObtenerImputacion = ObtenerImputacion,
-                ObtenerServicios = ObtenerServicios,
-                MostrarItemsBorrados = MostrarItemsBorrados,
-
-            };
-            var solps = obtenerSolpConsumerMOA.Request(filtros);
-
-            return solps;
-        }
-
         public List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos)
         {
             var ret = new List<TablaSapDto>();
@@ -2194,61 +2172,96 @@ namespace SustitucionMOAUtils.Services
             var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nrosolp);
             var estadoSolpSapLiberada = repositorio.Obtener<TablaSap>(x => x.Tabla == "EstadoSolpSap" && x.CodigoSap == "05").Id;
 
-            if (solp != null)
+            if (solp == null) { return; }
+
+            var enviarMail = solp.SeEnvioMailLiberacion != true;
+            solp.FechaLiberacionSap = fechaLiberacion;
+            solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
+            solp.SeEnvioMailLiberacion = true;
+            repositorio.GuardarCambios();
+            var posicionesSolp = solp.Posiciones.Select(x => x.Id);
+            var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
+            .Any(posi => posicionesSolp.Contains(posi))).ToList();
+
+            if (!peticiones.Any())
             {
-                var enviarMail = solp.SeEnvioMailLiberacion != true;
-                solp.FechaLiberacionSap = fechaLiberacion;
-                solp.EstadoSolpSap_Id = estadoSolpSapLiberada;
-                solp.SeEnvioMailLiberacion = true;
-                repositorio.GuardarCambios();
-                var posicionesSolp = solp.Posiciones.Select(x => x.Id);
-                var peticiones = repositorio.Listar<PeticionDeOferta>(peti => peti.Posiciones.Select(x => x.SolpPosicion.Id)
-                .Any(posi => posicionesSolp.Contains(posi))).ToList();
-
-                if (!peticiones.Any())
+                if (solp.TrabajoYaHecho == true)
                 {
-                    if (solp.TrabajoYaHecho == true)
-                    {
-                        CrearCotizacionConTrabajoYaHecho(solp);
-                    }
-
-                    if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
-                    {
-                        CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
-                    }
+                    CrearCotizacionConTrabajoYaHecho(solp);
                 }
 
-                var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
-                                .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
-
-                var esServicio = solp.Posiciones.Any() && solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
-
-                if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
+                if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
                 {
-                    ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
-                    if (cotizaciones != null && cotizaciones.Count > 0 && solp.TieneModificaciones == true)
+                    CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
+                }
+            }
+
+            var cotizaciones = repositorio.Listar<Cotizacion>(coti => coti.CotizacionPosiciones.Any(posicion => posicion.PeticionDeOfertaSolpPosicion
+                            .SolpPosicion.Solp.NroSolp == solp.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
+
+            var esServicio = solp.Posiciones.Any() && solp.Posiciones.First().TipoPosicion.Codigo == "SERVICIO";
+
+            if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
+            {
+                ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
+                if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
+                {
+                    if (solp.TrabajoYaHecho != true)
                     {
-                        if (solp.TrabajoYaHecho != true)
+                        solp.TieneModificaciones = false;
+                        if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
                         {
-                            solp.TieneModificaciones = false;
-                            //EnviarCircularAutomatico(solp);
+                            EnviarCircularAutomatico(solp);
                         }
-                        else
-                        {
-                            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
-                        }
+                    }
+                    else
+                    {
+                        AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
                     }
                 }
-                if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
+            }
+
+            if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
+            {
+                try
                 {
-                    try
-                    {
-                        EnviarMailSolpLiberada(solp, "");
-                    }
-                    catch (Exception)
-                    {
-                        Logger.Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
-                    }
+                    emailComprasService.EnviarMailSolpLiberada(solp);
+                }
+                catch (Exception)
+                {
+                    Log.Info($"EnviarMailSolpLiberada Nro de SOLP: {solp.NroSolp}");
+                }
+            }
+
+            if (DeboMarcarRevisionesTecnicasComoNoFinalizadas(solp))
+            {
+                MarcarRevisionesTecnicasComoNoFinalizadas(solp);
+            }
+
+            repositorio.GuardarCambios();
+        }
+
+        private static bool DeboMarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
+            return solp.EnvioCircularA != EnviarCircularEnum.NoEnviar;
+        }
+
+        private static void MarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
+        {
+            List<PeticionDeOfertaRevisionTecnica> revisionesTecnicas =
+                    solp.Posiciones?
+                    .Where(posicion => posicion.Peticiones?.Count > 0)
+                    .SelectMany(posicion => posicion.Peticiones)
+                    .Where(posicionPeticionDeOferta => posicionPeticionDeOferta.PeticionDeOferta?.RevisionTecnica != null)
+                    .Select(x => x.PeticionDeOferta.RevisionTecnica)
+                    .Distinct()
+                    .ToList();
+
+            if (revisionesTecnicas?.Count > 0)
+            {
+                foreach (PeticionDeOfertaRevisionTecnica revisionTecnica in revisionesTecnicas)
+                {
+                    revisionTecnica.Finalizada = false;
                 }
             }
         }
@@ -2316,161 +2329,46 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
-        private void EnviarMailSolpLiberada(Solp solp, string mensaje = "")
-        {
-            try
-            {
-                Log.Info($"EnviarMailSolpLiberada Nro de SOLP {solp.NroSolp}");
-                Log.Info($"Copia mail comprador {solp.UsuarioCompras.Mail}");
-                Log.Info($"Copia mail creador {solp.UsuarioCreacion.Mail}");
-                Log.Info($"Fecha {DateTime.Now}");
-
-                var copia = new List<string> { };
-                if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
-                {
-                    copia.Add(solp.UsuarioCreacion.Mail);
-                    Log.Info($"Copia mail solicitante {solp.UsuarioCreacion.Mail}");
-                }
-
-                if (!string.IsNullOrEmpty(solp?.Pliego.Email))
-                {
-                    //Mail del solicitante
-                    copia.Add(solp.Pliego.Email);
-                    Log.Info($"Copia mail solicitante paso 1 {solp.Pliego.Email}");
-                }
-
-                if (!string.IsNullOrEmpty(solp?.Pliego.SupervisorTrabajo))
-                {
-                    //Supervisor
-                    copia.Add(solp.Pliego.SupervisorTrabajo);
-                    Log.Info($"Copia mail responsable de trabajo paso 2 {solp.Pliego.SupervisorTrabajo}");
-                }
-
-                var asunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada";
-                asunto += $": {solp.NroSolp}";
-                if (solp.Adicional == true) asunto += $" - con Adicional OC: {solp.NroOrdenDeCompraAdicional}";
-                var enviarA = new List<string> { solp.UsuarioCompras.Mail };
-
-                emailService.EnviarMail(enviarA, asunto, "", copia, CuerpoMailSolpLiberada(solp, mensaje), null, "");
-            }
-            catch (Exception e)
-            {
-                Log.Info($"Error al enviar mail {solp.UsuarioCompras.Mail} - Nro de SOLP {solp.NroSolp}");
-                Log.Error(e);
-            }
-        }
-
-        private AlternateView CuerpoMailSolpLiberada(Solp solp, string mensaje)
-        {
-            var filePath = httpContextService.ObtenerPathLogoMail();
-            LinkedResource res = new LinkedResource(filePath);
-            res.ContentId = Guid.NewGuid().ToString();
-            string htmlBody = "";
-            htmlBody += $"En el presente mail se informa la liberación de la SOLP {solp.NroSolp} generada con Molinos Agro S.A. <br />";
-            htmlBody += mensaje + "<br/>";
-            var esMaterial = solp.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "MATERIALES";
-
-            // Agregar la tabla de posiciones y subposiciones
-            if (solp.Posiciones != null && solp.Posiciones.Any())
-            {
-                htmlBody += "<b>Detalle:</b><br/>";
-                htmlBody += "<br/>";
-
-                foreach (var posicion in solp.Posiciones)
-                {
-                    htmlBody += "<table style=\"border-collapse: collapse; border: 2px solid #ddd; text-align: center; font-size: 13px; width: 100%;\">";
-                    htmlBody += "<tr>" +
-                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 100px;\">Posición</th>" +
-                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 100px;\">Centro</th>" +
-                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Descripción</th>";
-                    if (esMaterial)
-                    {
-                        htmlBody += "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">UM</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Cantidad</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Precio Bruto</th>";
-                    }
-
-                    htmlBody += "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Moneda</th>" +
-                                "<th style=\"border: 2px solid #ddd; background-color: #017940; color: white; padding: 5px 0; width: 250px;\">Grupo de compras</th>" +
-                                "</tr>";
-
-                    // Agregar la fila para la posición
-                    htmlBody += "<tr>" +
-                                $"<td style=\"border: 2px solid #ddd;\">{posicion.Indice}</td>" +
-                                $"<td style=\"border: 2px solid #ddd;\">{posicion.Centro.Codigo}</td>" +
-                                $"<td style=\"border: 2px solid #ddd;\">{(!string.IsNullOrEmpty(posicion.MaterialSolp?.Descripcion) ? posicion.MaterialSolp.Descripcion : posicion.Tarea)}</td>";
-
-                    if (esMaterial)
-                    {
-                        htmlBody += $"<td style=\"border: 2px solid #ddd;\">{posicion.Unidad?.CodigoSap}</td>" +
-                                    $"<td style=\"border: 2px solid #ddd;\">{posicion.Cantidad.Value.ToString("n2")}</td>" +
-                                    $"<td style=\"border: 2px solid #ddd;\">{posicion.PrecioBruto.Value.ToString("n2")}</td>";
-                    }
-
-                    htmlBody += $"<td style=\"border: 2px solid #ddd;\">{posicion.Moneda?.CodigoSap}</td>" +
-                                $"<td style=\"border: 2px solid #ddd;\">{posicion.GrupoCompras?.CodigoSap}</td>" +
-                                "</tr>";
-
-                    if (!esMaterial)
-                    {
-                        htmlBody += "<tr>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Subposición</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Tarea a subcontratar</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Cantidad</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">UM</th>" +
-                                    "<th style=\"border: 2px solid #ddd; background-color: #2e8b57; color: white; padding: 5px 0; width: 250px;\">Precio bruto</th>" +
-                                    "</tr>";
-
-                        foreach (var subpos in posicion.Subposiciones)
-                        {
-                            htmlBody += "<tr>" +
-                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Numero}</td>" +
-                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Tarea}</td>" +
-                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Cantidad.Value.ToString("n2")}</td>" +
-                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.Unidad.CodigoSap}</td>" +
-                                        $"<td style=\"border: 2px solid #ddd;\">{subpos.PrecioBruto.Value.ToString("n2")}</td>" +
-                                        "</tr>";
-                        }
-                    }
-
-                    htmlBody += "</table>";
-                    htmlBody += "<br/>";
-                }
-            }
-
-            htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
-                "<br/><br/>Saludos Cordiales<br/>" +
-                "Molinos Agro S.A. <br/><br/> " +
-                 @"<img width='15%' src='cid:" + res.ContentId + @"'/>";
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-            alternateView.LinkedResources.Add(res);
-            return alternateView;
-        }
-
         public void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion)
         {
             try
             {
-                var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
-                Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
-                foreach (var adjudicacionOC in adjudicaciones)
+                var configuracion = repositorio.Obtener<Configuracion>(x => x.Code == "EnvioMailLiberacionOC");
+                if (configuracion != null && configuracion.Value == "1")
                 {
-                    adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
-                }
+                    var adjudicaciones = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == nroOc);
+                    Log.Info("Encontradas " + adjudicaciones.Count + " adjudicaciones para el OC: " + nroOc);
+                    foreach (var adjudicacionOC in adjudicaciones)
+                    {
+                        adjudicacionOC.FechaLiberacionSap = fechaLiberacion;
+                    }
 
-                if (adjudicaciones.Count > 0)
-                {
-                    repositorio.GuardarCambios();
+                    if (adjudicaciones.Count > 0)
+                    {
+                        repositorio.GuardarCambios();
 
-                    //try
-                    //{
-                    //    EnviarMailOrdenCompra(adjudicaciones.Last(), "");
-                    //}
-                    //catch (Exception e)
-                    //{
-                    //    Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
-                    //    Log.Error(e);
-                    //}
+                        try
+                        {
+                            EnviarMailOrdenCompra(adjudicaciones.Last(), "");
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(new Exception($"Error al enviar mail ActualizarFechaLiberacionOC. Adjudicacion_Id: " + adjudicaciones.Last().Id));
+                            Log.Error(e);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            EnviarMailOrdenCompraSAP(nroOc);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(new Exception($"Error al enviar mail EnviarMailOrdenCompraSAP ActualizarFechaLiberacionOC. Adjudicacion_Id: " + nroOc));
+                            Log.Error(e);
+                        }
+                    }
                 }
             }
             catch (Exception)
@@ -2478,6 +2376,42 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
+        public void EnviarMailOrdenCompraSAP(string nroOc)
+        {
+            var adjudicacionMail = ObtenerDatosParaEnviarMailOrdenCompraSAP(nroOc);
+            var asunto = $"Nueva OC creada - {nroOc} - {adjudicacionMail.RazonSocial}";
+            var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
+            emailService.EnviarMail(adjudicacionMail.EnviarA, asunto, "", adjudicacionMail.Copia, CuerpoMailOrdenCompra(nroOc, ""), pdf, $"Orden de Compra {nroOc}.pdf");
+        }
+
+        public AdjudicacionMailDto ObtenerDatosParaEnviarMailOrdenCompraSAP(string nroOc)
+        {
+            var ordenDeCompra = ObtenerOrdenDeCompra(nroOc);
+            var nroSolps = ordenDeCompra.Posiciones.Select(x => x.NroSolp).ToList();
+            var solps = repositorio.Listar<Solp>(x => nroSolps.Contains(x.NroSolp));
+            var copia = new List<string> { };
+            var enviarA = new List<string> { };
+
+            var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList() ?? new List<string>();
+            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
+            var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList() ?? new List<string>();
+
+            copia.AddRange(mailPliego.Where(x => x != null));
+            copia.AddRange(mailCreador.Where(x => x != null));
+
+            enviarA.Add(ordenDeCompra.Cabecera.MailProveedor);
+
+            var adjudicacionMail = new AdjudicacionMailDto
+            {
+                Copia = copia.Distinct().ToList(),
+                EnviarA = enviarA?.Distinct().ToList(),
+                RazonSocial = ordenDeCompra.Cabecera.RazonSocialProveedor,
+            };
+
+            return adjudicacionMail;
+        }
+
 
         public void ActualizarServiciosSolp()
         {
@@ -2640,39 +2574,32 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
+                Debug.WriteLine($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
                 //TODO: ver como actualizar Solp.EstadoDocumento_Id segun la RFC
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob inicio");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob desde {obtenerSolpRequest.FechaDesde.ToString()} hasta {obtenerSolpRequest.FechaHasta.ToString()}");
                 Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+
                 if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
                 ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
                 Log.Info(JsonConvert.SerializeObject(result));
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob fin obtener solps");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Posiciones {result.Posiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob Direcciones {result.Direcciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob ImputacionesSuposiciones {result.ImputacionesSuposiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob ServiciosSuposiciones {result.ServiciosSuposiciones.Count()}");
-                //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob TipoImputaciones {result.TipoImputaciones.Count()}");
 
                 List<TablaSap> ordenes = new List<TablaSap>();
 
                 List<int> subPosicionesBorradas = new List<int>();
 
                 List<string> tablasSapAConsultar = new List<string>
-            {
-                TablasSap.Moneda,
-                TablasSap.Almacen,
-                TablasSap.Centro,
-                TablasSap.GrupoCompras,
-                TablasSap.GrupoArticulo,
-                TablasSap.Unidad,
-                TablasSap.ClaseDocumento,
-                TablasSap.CecoSolpSap,
-                TablasSap.OrdenSolpSap,
-                TablasSap.CentroBeneficio,
-                TablasSap.CuentasSolpSap,
+     {
+         TablasSap.Moneda,
+         TablasSap.Almacen,
+         TablasSap.Centro,
+         TablasSap.GrupoCompras,
+         TablasSap.GrupoArticulo,
+         TablasSap.Unidad,
+         TablasSap.ClaseDocumento,
+         TablasSap.CecoSolpSap,
+         TablasSap.CentroBeneficio,
+         TablasSap.CuentasSolpSap,
 
-            };
+     };
 
                 var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
                 var tablaGeneral = repositorio.Listar<TablaGeneral>(x => x.Tabla == "TipoSolp");
@@ -2683,14 +2610,16 @@ namespace SustitucionMOAUtils.Services
                     var imputacionesTemp = result.TipoImputaciones.ToList();
                     foreach (var impTemp in imputacionesTemp)
                     {
-                        ordenes = tablaSap.Where(x => x.Tabla == TablasSap.OrdenSolpSap).ToList();
                         if (!String.IsNullOrEmpty(impTemp.IdOrden))
                         {
-                            var existeOrden = ordenes.Where(x => x.Codigo == impTemp.IdOrden).ToList();
+                            var existeOrden = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.OrdenSolpSap && x.Codigo == impTemp.IdOrden).ToList();
                             if (existeOrden.Count == 0)
                             {
-                                //this.ActualizarTablaSap(ObtenerOrdenesSap(impTemp.IdOrden), TablasSap.OrdenSolpSap);
                                 listaSap.AddRange(ObtenerOrdenesSap(impTemp.IdOrden));
+                            }
+                            else
+                            {
+                                ordenes.AddRange(existeOrden);
                             }
                         }
                     }
@@ -2703,16 +2632,30 @@ namespace SustitucionMOAUtils.Services
                 List<TipoSolpPosicionSAP> tiposSolpPosicionSAP = repositorio.Listar<TipoSolpPosicionSAP>();
                 List<SustitucionMOAModel.Entities.TipoImputacionSAP> tiposImputacionSAP = repositorio.Listar<SustitucionMOAModel.Entities.TipoImputacionSAP>();
 
-                List<MaterialSolp> materialesSap = repositorio.Listar<MaterialSolp>();
+                var materialesParaConsultar = result.Posiciones.Select(x => x.Material).ToList();
+                List<MaterialSolp> materialesSap = new List<MaterialSolp>();
+                if (result.Posiciones.Any(x => x.Tipo == "0"))
+                {
+                    materialesSap = repositorio.Listar<MaterialSolp>(x =>
+                        materialesParaConsultar.Contains(x.Codigo)
+                    ).ToList();
+                }
+
+                var usuarioParaConsultar = result.Posiciones.Select(x => x.UsuarioCreado).ToList();
+
+                List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(
+                    a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap },
+                    a => a.UsuarioSap != null && a.UsuarioSap != "" && usuarioParaConsultar.Contains(a.UsuarioSap)).ToList();
+
+
+                List<TablaSap> centros = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> monedas = tablaSap.Where(x => x.Tabla == TablasSap.Moneda).ToList();
                 List<TablaSap> almacenes = tablaSap.Where(x => x.Tabla == TablasSap.Almacen).ToList();
-                List<TablaSap> centros = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> gruposCompras = tablaSap.Where(x => x.Tabla == TablasSap.GrupoCompras).ToList();
                 List<TablaSap> gruposArticulos = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
                 List<TablaSap> unidadesDeMedida = tablaSap.Where(x => x.Tabla == TablasSap.Unidad).ToList();
                 List<TablaSap> clasesDeDocumento = tablaSap.Where(x => x.Tabla == TablasSap.ClaseDocumento).ToList();
                 List<TablaSap> centrosDeCosto = tablaSap.Where(x => x.Tabla == TablasSap.CecoSolpSap).ToList();
-                List<UsuarioDto> usuarios = repositorio.Listar<Usuario, UsuarioDto>(a => new UsuarioDto { Id = a.Id, UsuarioSap = a.UsuarioSap }, a => a.UsuarioSap != null && a.UsuarioSap != "").ToList();
                 List<TablaSap> centrosDeBeneficio = tablaSap.Where(x => x.Tabla == TablasSap.CentroBeneficio).ToList();
                 List<TablaSap> cuentasSolpesSap = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
                 var listaEstadosSolpSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.EstadoSolpSap).Select(x => new TablaSapDto(x)).ToList();
@@ -2857,7 +2800,7 @@ namespace SustitucionMOAUtils.Services
                                 CompletarTipoImputacion(ordenes, centrosDeCosto, centrosDeBeneficio, tipoImputacion, tipoImputacionPosicion, posicionEntity);
                             }
 
-                            
+
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
 
@@ -2972,12 +2915,16 @@ namespace SustitucionMOAUtils.Services
                         continue;
                     }
                 }
-            
 
 
-                if (subPosicionesBorradas.Count() > 0)
+
+                if (subPosicionesBorradas.Any())
                 {
-                    var subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id));
+                    IEnumerable<Expression<Func<SolpSubposicion, object>>> inc = new HashSet<Expression<Func<SolpSubposicion, object>>>
+                    {
+                        solpSubposicion => solpSubposicion.Cotizaciones,
+                    };
+                    List<SolpSubposicion> subposborradas = repositorio.Listar<SolpSubposicion>(x => subPosicionesBorradas.Contains(x.Id), includes: inc);
 
                     foreach (var subpos in subposborradas.ToList())
                     {
@@ -2992,31 +2939,36 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
+                repositorio.GuardarCambios();
                 SetNombreDePedido(solp);
 
-                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                string observaciones = result.ObservacionesGeneracion;
+
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento && !string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
                 {
-                    solp.Pliego.ObservacionesCotizacionCondEsp = result.ObservacionesGeneracion;
 
-                    if (!string.IsNullOrEmpty(result.Posiciones.FirstOrDefault().NumeroRequerimientoInterno))
-                    {
-                        ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
-                    }
-                    repositorio.GuardarCambios();                
+                    ProcesarCondicionEspecial(result.Posiciones.FirstOrDefault(), solp, result.TipoImputaciones.FirstOrDefault(dir => dir.NumeroSolicitud == result.Posiciones.FirstOrDefault().NumeroSolicitud && dir.NumeroPosicion == result.Posiciones.FirstOrDefault().NumeroPosicion));
 
+                    repositorio.GuardarCambios();
+
+                    CompletarObservacionSegunCondEspOT(solp, observaciones);
                     GrabarArchivosSapEnPliego(solp, result.Archivos);
 
                     if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar un adjunto para las SOLPs con condición especial");
-                        //ReiniciarCondicionEspecial(solp);
+                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                            $"Recuerde ingresar un adjunto para completar la SOLP.");
                     }
 
                     if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se debe ingresar una observacion para las SOLPs con condición especial");
-                        //ReiniciarCondicionEspecial(solp);
+                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                            $"Recuerde ingresar la justificacion para completar la SOLP.");
                     }
+                }
+                else
+                {
+                    CompletarObservacionSegunCondEsp(solp, observaciones);
                 }
 
                 repositorio.GuardarCambios();
@@ -3038,7 +2990,33 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error($"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}", e);
                 throw;
             }
+            Debug.WriteLine($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+
         }
+
+        private void CompletarObservacionSegunCondEsp(Solp solp, string observaciones)
+        {
+            if (string.IsNullOrEmpty(observaciones) && ValidarCondicionEspecial(solp))
+            {
+                solp.Pliego.ObservacionesCotizacionCondEsp = observaciones;
+            }
+            else
+            {
+                solp.Pliego.ObservacionesGeneracion = observaciones;
+            }
+        }
+        private void CompletarObservacionSegunCondEspOT(Solp solp, string observaciones)
+        {
+            if (!ValidarCondicionEspecial(solp))
+            {
+                solp.Pliego.ObservacionesGeneracion = observaciones;
+            }
+            else
+            {
+                solp.Pliego.ObservacionesCotizacionCondEsp = observaciones;
+            }
+        }
+
         private static void CompletarTipoImputacion(List<TablaSap> ordenes, List<TablaSap> centrosDeCosto, List<TablaSap> centrosDeBeneficio, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion, SustitucionMOAModel.Entities.TipoImputacionSAP tipoImputacionPosicion, SolpPosicion posicionEntity)
         {
             switch (tipoImputacionPosicion.Descripcion)
@@ -3080,7 +3058,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar un proveedor");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3099,7 +3077,7 @@ namespace SustitucionMOAUtils.Services
             catch (WSCustomException ex)
             {
                 EnviarMailErrorCondicionEspecial(solp, ex.Message);
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
             }
         }
 
@@ -3108,7 +3086,7 @@ namespace SustitucionMOAUtils.Services
             if (string.IsNullOrEmpty(tipoImputacion.NumeroOrdenDeCompra) && solp.Adicional == true)
             {
                 EnviarMailErrorCondicionEspecial(solp, "Debe ingresar una orden de compra");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3117,7 +3095,7 @@ namespace SustitucionMOAUtils.Services
             if (!solp.Posiciones.All(x => x.Moneda.CodigoSap == ordenDeCompra.Cabecera.Moneda))
             {
                 EnviarMailErrorCondicionEspecial(solp, $"La moneda de la OC {ordenDeCompra.Cabecera.Moneda} no es compatible con la moneda de la SOLP {solp.Posiciones.FirstOrDefault().Moneda.CodigoSap}");
-                //ReiniciarCondicionEspecial(solp);
+                ReiniciarCondicionEspecial(solp);
                 return;
             }
 
@@ -3494,10 +3472,9 @@ namespace SustitucionMOAUtils.Services
 
         public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
         {
-            var solpsSAP = new List<string>();
             var solps = new List<string>();
             string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            if (listarPendiente == true)
+            if (listarPendiente)
             {
                 solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
             }
@@ -3518,54 +3495,28 @@ namespace SustitucionMOAUtils.Services
 
             var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
 
-            if (todasLasSolp != null && todasLasSolp.Count() > 0)
+            if (todasLasSolp?.Any() == true)
             {
                 var listId = todasLasSolp.Select(y => y.Id.Value).ToList();
                 var solpsDB = repositorio.Listar<Solp>(x => listId.Contains(x.Id));
-                todasLasSolp.FirstOrDefault().ItemsTotales = todasLasSolp.ItemsTotales;
-                if (listarPendiente == true)
+                todasLasSolp.First().ItemsTotales = todasLasSolp.ItemsTotales;
+                if (listarPendiente)
                 {
-                    todasLasSolp.FirstOrDefault().ItemPorPagina = todasLasSolp.Count();
+                    todasLasSolp.First().ItemPorPagina = todasLasSolp.Count();
                 }
                 else
                 {
-                    todasLasSolp.FirstOrDefault().ItemPorPagina = 10;
+                    todasLasSolp.First().ItemPorPagina = 10;
                 }
-                var solpIds = solpsDB != null ? solpsDB.Select(solp => solp.Id) : null;
-
-                var adjudicaciones = new List<Adjudicacion>();
-                if (solpIds != null)
-                {
-                    adjudicaciones = repositorio.Listar<Adjudicacion>(adju => adju.Posiciones
-                 .Any(posi => solpIds.Contains(posi.Posicion.Solp_Id)));
-                }
-
-
-                //Unable to create a constant value of type 'SustitucionMOAModel.Entities.Solp'.Only primitive types or enumeration types are supported in this context.
 
                 foreach (var item in todasLasSolp.Items)
                 {
                     item.CentroFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.CentroCodigo).GroupBy(x => x.CentroCodigo).Select(x => x.Key)) : "";
                     item.GrupoCompraFormateado = item.PosicionCompras != null ? string.Join(", ", item.PosicionCompras.OrderBy(x => x.GrupoComprasCodigo).GroupBy(x => x.GrupoComprasCodigo).Select(x => x.Key)) : "";
 
-                    if (item.VerPublicar == true && item.PosicionCompras.Count() > 0)
+                    if (item.VerPublicar && item.PosicionCompras.Any())
                     {
                         var solpDB = solpsDB.First(i => i.Id == item.Id);
-                        if (item.PosicionCompras.First().TipoPosicion.Codigo == "SERVICIO")
-                        {
-                            if (adjudicaciones.Any(x => x.Posiciones.Any(posi => posi.Posicion.Solp_Id == solpDB.Id)))
-                            {
-                                item.VerPublicar = false;
-                            }
-                        }
-                        else
-                        {
-                            var verPublicarDeshabilitado = solpDB.Posiciones.All(d => d.Cantidad <= d.AdjudicacionPosiciones.Sum(ap => ap.Cantidad));
-                            if (verPublicarDeshabilitado)
-                            {
-                                item.VerPublicar = false;
-                            }
-                        }
 
                         if (solpDB.CondEspProveedorAsignado == true)
                         {
@@ -3581,6 +3532,8 @@ namespace SustitucionMOAUtils.Services
                         {
                             item.VerPublicar = false;
                         }
+
+                        item.VerPublicar &= comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(item.NroSolp).Any();
                     }
                 }
             }
@@ -3606,7 +3559,7 @@ namespace SustitucionMOAUtils.Services
                 var usuarioRol = rol.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
 
 
-                if (todasLasPO != null && todasLasPO.Count() > 0)
+                if (todasLasPO != null && todasLasPO.Any())
                 {
                     var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
                     todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
@@ -3638,25 +3591,12 @@ namespace SustitucionMOAUtils.Services
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
                 var destino = repositorio.Obtener<TablaSap>(x => x.Codigo == "ARP" && x.Tabla == TablasSap.Moneda);
                 var posicionesId = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.SolpPosicion_Id).ToList();
-                var adjudicaciones = repositorio.Listar<Adjudicacion>(x => x.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
-                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
 
-                var solps = new List<ObtenerSolpSAPResponse>();
+                var posicionesSap =
+                    comprasServiceSap.ObtenerPosiciones(todasLasOfertas.NrosSolp);
+                var posicionesPendientesSap = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posicionesSap);
 
-                foreach (var nroSolp in todasLasOfertas.NrosSolp)
-                {
-                    var filtros = new ObtenerSolpRequest
-                    {
-                        FechaDesde = fechaDesde,
-                        FechaHasta = fechaHasta,
-                        NumeroSolp = nroSolp
-                    };
-
-                    solps.Add(obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros));
-                }
-
-                var esAdmin = usuario.Permisos.Any(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
+                var esAdmin = usuario.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS");
 
                 var noSolicitoVerPrecios = ValidarVisualizarPrecio(usuario.Id, PeticionOferta_Id);
                 var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
@@ -3664,11 +3604,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
                 }
-                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
+                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId, posicionesPendientesSap);
                 foreach (var usuarioPO in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
-                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones != null)
+                    if (usuarioPO.Cotizacion?.CotizacionPosiciones != null)
                     {
                         if (usuarioPO.Cotizacion.RespetaMateriales == false)
                             respetaMateriales = false;
@@ -3696,8 +3636,6 @@ namespace SustitucionMOAUtils.Services
                         usuarioPO.Cotizacion.TodasTotalGlobal = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalPesos);
                         usuarioPO.Cotizacion.TodasTotalGlobalSubPos = usuarioPO.Cotizacion.CotizacionPosiciones.Sum(x => x.TodasTotalARPCotizacionPosicion);
                     }
-                    //  item.VerAdjudicar = item.Cotizacion == null ? false : item.Cotizacion != null && item.PlazoDeOferta.Date <= hoy && item.Cotizacion.CotizacionEstadoDescripcion == "Cotizado" ? false : item.EstaHabilitado ? false : todasLasOfertas.EstaLiberado ? false: true;
-
 
                     var mensaje = "Adjudicar";
                     var verAdjudicar = true;
@@ -3708,7 +3646,7 @@ namespace SustitucionMOAUtils.Services
                         verAdjudicar = false;
                         usuarioPO.VerImportes = false;
                     }
-                    if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+                    if (usuarioPO.Cotizacion?.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
                     {
                         mensaje = "Oferta sin finalizar";
                         verAdjudicar = false;
@@ -3761,7 +3699,8 @@ namespace SustitucionMOAUtils.Services
                             usuarioPO.VerImportes = false;
                         }
 
-                        if (usuarioPO.Cotizacion != null && usuarioPO.Cotizacion.CotizacionPosiciones.Any(x => x.CotizacionSubPosiciones.Any(y => y.Completado == false)))
+                        if (usuarioPO.Cotizacion?.CotizacionPosiciones
+                            .Exists(x => !x.EstaEliminado && !x.Adjudicado && x.CotizacionSubPosiciones.Exists(y => !y.Completado)) == true)
                         {
                             mensaje = "La cotización tiene subposiciones sin cotizar";
                             verAdjudicar = false;
@@ -3776,74 +3715,54 @@ namespace SustitucionMOAUtils.Services
                     usuarioPO.MensajeAdjudicar = mensaje;
                     usuarioPO.VerAdjudicar = verAdjudicar;
 
-                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.All(d => d.MonedaDescripcion == "ARP")) 
+                    if (usuarioPO.Cotizacion != null && !usuarioPO.Cotizacion.CotizacionPosiciones.TrueForAll(d => d.MonedaDescripcion == "ARP"))
                     {
                         if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true).GroupBy(x => x.MonedaDescripcion)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado).GroupBy(x => x.MonedaDescripcion)
                                                           .Select(grupo => new MonedaTotalDto
                                                           {
-                                                              Moneda = grupo.Key.ToString(),
+                                                              Moneda = grupo.Key,
                                                               Total = grupo.Sum(x => x.PrecioTotal).ToString("N2")
                                                           }).ToList();
                         }
                         else
                         {
-                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado == true)
+                            usuarioPO.TotalesPorMoneda = usuarioPO.Cotizacion.CotizacionPosiciones.Where(x => x.Completado)
                                                             .SelectMany(pos => pos.CotizacionSubPosiciones)
-                                                            .Where(x => x.Completado == true)
+                                                            .Where(x => x.Completado)
                                                             .GroupBy(sub => sub.MonedaDescripcion)
                                                             .Select(grupo => new MonedaTotalDto
                                                             {
-                                                                Moneda = grupo.Key.ToString(),
+                                                                Moneda = grupo.Key,
                                                                 Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
                                                             }).ToList();
 
                         }
                     }
-                   
+
                 }
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
 
                 todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = string.Join(", ", todasLasOfertas.SolpDto.ObservacionesCotizacionLista);
 
-                foreach (var posicion in todasLasOfertas.PeticionDeOfertaPosicion)
+                foreach (SolpPosicionDto posicion in todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion))
                 {
-                    var solp = solps.FirstOrDefault(x => x.Posiciones.Any(y => y.NumeroSolicitud == posicion.Posicion.NroSolp));
+                    PosicionSolpSAP posicionSap =
+                        posicionesSap
+                        .Single(sap => sap.NumeroSolicitud == posicion.NroSolp
+                                                && int.Parse(sap.NumeroPosicion) == posicion.Indice);
 
-                    posicion.Posicion.CantidadAdjudicada = solp != null && solp.Posiciones.Count > 0 &&
-                        solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                       (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice).FirstOrDefault().Ordered) : 0; //Cantidad que ya se adjudico
+                    posicion.CantidadAdjudicada = posicionSap.Ordered; //Cantidad que ya se adjudico
 
-                    posicion.Posicion.CantidadPendiente = solp != null && solp.Posiciones.Count > 0 && solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == posicion.Posicion.Indice) ?
-                        (posicion.Posicion.Cantidad - posicion.Posicion.CantidadAdjudicada) : posicion.Posicion.Cantidad; //Cantidad Pendiente
+                    posicion.Cantidad = posicionSap.Cantidad;
 
-                    posicion.Posicion.CantidadAdjudicacion = posicion.Posicion.CantidadPendiente; //Cantidad A Adjudicar 
+                    posicion.CantidadPendiente = posicionSap.Cantidad - posicionSap.Ordered; //Cantidad Pendiente
 
-                    if (todasLasOfertas.TipoPosicionCodigo == "MATERIALES")
-                    {
-                        if (posicion.Posicion.CantidadPendiente <= 0)
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = true;
-                        }
-                        else
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = false;
-                        }
-                    }
-                    else
-                    {
-                        if (adjudicaciones.Any(x => x.Posiciones.Any(y => y.Posicion.Solp_Id == posicion.SolpId)) &&
-                            adjudicaciones.Any(x => x.Posiciones.Any(y => y.SolpPosicion_Id == posicion.SolpPosicion_Id)))
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = true;
-                        }
-                        else
-                        {
-                            posicion.Posicion.AdjudicacionCompleta = false;
-                        }
-                    }
+                    posicion.CantidadAdjudicacion = posicion.CantidadPendiente; //Cantidad A Adjudicar 
+
+                    posicion.AdjudicacionCompleta = posicion.CantidadPendiente <= 0;
                 }
 
                 return todasLasOfertas;
@@ -3856,7 +3775,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId)
+        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId, IEnumerable<PosicionSolpSAP> posicionesPendientes)
         {
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
 
@@ -3875,6 +3794,7 @@ namespace SustitucionMOAUtils.Services
                                 Id = posicion.SolpPosicion_Id,
                                 Cantidad = 1,
                                 Completado = false,
+                                Adjudicado = posicion.SolpPosicion.ProveedorAdjudicado_Id != null,
                                 EstaEliminado = posicion.SolpPosicion.Estado != true,
                                 NoDisponible = false,
                                 PeticionDeOfertaSolpPosicion_Id = posicion.Id,
@@ -3967,23 +3887,13 @@ namespace SustitucionMOAUtils.Services
                 solpSAP.NroSolp = solpActual.NroSolp;
             }
             #region posiciones y servicios
-            int numeroPosicion = 0;
 
             //•	el problema está en que siempre debes poner en el campo OUT_LINE= "000000001", sino debieras llenar otra tabla de SAP que no la estamos cargando. Para quitarle complejidad se saco dicha tabla.
-            string outlineNumber = "000000001";
-            string numeroPaquete = "";
-            string preqItem = "";
-            string serialNumber = "";
-            string serviceAccountSerialNumber = "01";
+            const string OUTLINE_NUMBER = "000000001";
+            const string SERVICE_ACCOUNT_SERIAL_NUMBER = "01";
 
-            string docItem = "";
-
-            string textId = "B03";
-            string formatText = "*";
-
-            /* Algunas cuestiones con los números que se mandan:
-             * DOC_ITEM, PREQ_ITEM, OUTLINE, SERIAL_NO, PCKG_NO, corresponden al número de la posicion pero formateados de distintas formas
-             */
+            const string TEXT_ID = "B03";
+            const string FORMAT_TEXT = "*";
 
             solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
 
@@ -4003,17 +3913,13 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 eliminarPosicion = eliminarPosicion || !posicion.Estado;
-                numeroPosicion++;
 
-                preqItem = $"{numeroPosicion:00000}";
-                docItem = preqItem;
-                numeroPaquete = $"{numeroPosicion:0000000000}";
-                serialNumber = $"{numeroPosicion:00}";
+                NumeroPosicion numeroPosicion = posicion.Indice;
 
                 var IM_PRITEM = new ZMPES7090();
 
                 //Nombre: ZBAPIMEREQITEMIMP Denominación: Posición de SOLPED
-                IM_PRITEM.PREQ_ITEM = preqItem; //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
+                IM_PRITEM.PREQ_ITEM = numeroPosicion.AsPreqItem(); //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
                 IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
                 IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
                 IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
@@ -4040,32 +3946,35 @@ namespace SustitucionMOAUtils.Services
                     //IM_PRITEM.PRICE_UNITSpecified = true;
 
                     //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == "01" && //SERIAL_NO	DZEKKN	Número actual de la imputación
+                    BAPIMEREQACCOUNT imputacionPosicionMateriales = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
+                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
                             x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
+                    );
 
-                    ))
+                    if (imputacionPosicionMateriales is null)
                     {
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicionMateriales = new BAPIMEREQACCOUNT
                         {
-                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = "01", //SERIAL_NO	DZEKKN	Número actual de la imputación
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
                             GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
                             PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
                             BUS_AREA = "GENE",
                             CO_AREA = "MOA"
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicionMateriales);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
-                            PREQ_ITEM = preqItem,
-                            SERIAL_NO = "01",
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
+                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             GL_ACCOUNT = "X",
@@ -4083,28 +3992,28 @@ namespace SustitucionMOAUtils.Services
                     {
                         solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
                         {
-                            PREQ_ITEM = preqItem,
-                            TEXT_ID = textId,
-                            TEXT_FORM = formatText,
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
+                            TEXT_ID = TEXT_ID,
+                            TEXT_FORM = FORMAT_TEXT,
                             TEXT_LINE = texto
                         });
                     });
 
                     solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SERIAL_NO = "01",
-                        SERIAL_NO_ITEM = serialNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
+                        SERIAL_NO_ITEM = numeroPosicion.AsSerialNumber(),
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
                     });
 
                     solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SERIAL_NO = "01",
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = "X",
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = "X"
@@ -4167,7 +4076,7 @@ namespace SustitucionMOAUtils.Services
                                                //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
                 IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega; //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
                 IM_PRITEM.PLND_DELRYSpecified = true;
-                IM_PRITEM.PCKG_NO = numeroPaquete; //PCKG_NO PACKNO  Nº paquete
+                IM_PRITEM.PCKG_NO = numeroPosicion.AsNumeroPaquete(); //PCKG_NO PACKNO  Nº paquete
 
                 //Indica si esta borrada la posicion 
                 if (!string.IsNullOrEmpty(solpActual.NroSolp))
@@ -4181,7 +4090,7 @@ namespace SustitucionMOAUtils.Services
                 //Esta es una lista de campos que SAP nos pide que enviemos una "X" con los datos.
                 solpSAP.IM_PRITEMXList.Add(new ZMPES8000
                 {
-                    PREQ_ITEM = preqItem,
+                    PREQ_ITEM = numeroPosicion.AsPreqItem(),
                     PREQ_ITEMX = "X",
                     PUR_GROUP = "X",
                     CREATED_BY = "X",
@@ -4219,24 +4128,19 @@ namespace SustitucionMOAUtils.Services
 
 
                 //---Desde aca empiezan las subposiciones---
-                var numeroSubPosicion = 0;
+
                 var numeroSerialNumberItem = 0;
-                string serviceLineNumber = "";
-                string serialNumberItem = "";
 
                 foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
                 {
-                    numeroSubPosicion++;
-                    serviceLineNumber = $"{subPosicion.Numero:000000000}0";
-
-                    //serialNumberItem = serialNumber;
+                    NumeroSubPosicion numeroSubPosicion = subPosicion.Numero;
 
                     //SUBPOSICION
                     var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
 
-                    IM_SERVICELINE.DOC_ITEM = docItem; //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
-                    IM_SERVICELINE.OUTLINE = outlineNumber; //OUTLINE OUTLINE_NO  Número de estructuración
-                    IM_SERVICELINE.SRV_LINE = serviceLineNumber; //SRV_LINE    EXTROW Número de línea
+                    IM_SERVICELINE.DOC_ITEM = numeroPosicion.AsDocItem(); //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
+                    IM_SERVICELINE.OUTLINE = OUTLINE_NUMBER; //OUTLINE OUTLINE_NO  Número de estructuración
+                    IM_SERVICELINE.SRV_LINE = numeroSubPosicion.AsServiceLineNumber(); //SRV_LINE    EXTROW Número de línea
                     IM_SERVICELINE.DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)); //DEL_IND DEL Indicador de borrado
 
                     if (subPosicion.ServicioSolp != null)
@@ -4256,9 +4160,9 @@ namespace SustitucionMOAUtils.Services
 
                     solpSAP.IM_SERVICELINESXList.Add(new BAPI_SRV_SERVICE_LINEX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SRV_LINE = serviceLineNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
                         DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
                         SERVICE = "X",
                         SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
@@ -4269,34 +4173,35 @@ namespace SustitucionMOAUtils.Services
                         CURRENCY = "X"
                     });
 
-                    if (!solpSAP.IM_PRACCOUNTList.Any(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO    DZEKKN  Número actual de la imputación
+                    BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
+                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
                             x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
                             x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
                             x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ))
+                        );
+
+                    if (imputacionPosicion is null)
                     {
                         numeroSerialNumberItem++;
 
-                        serialNumberItem = $"{numeroSerialNumberItem:00}";
-
-                        solpSAP.IM_PRACCOUNTList.Add(new BAPIMEREQACCOUNT
+                        imputacionPosicion = new BAPIMEREQACCOUNT
                         {
-                            PREQ_ITEM = preqItem, //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = serialNumberItem, //SERIAL_NO    DZEKKN  Número actual de la imputación
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
+                            SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
                             QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
                             GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
                             COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
                             ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
                             PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        });
+                        };
+
+                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicion);
 
                         solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
                         {
-                            PREQ_ITEM = preqItem,
-                            SERIAL_NO = serialNumberItem,
+                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
+                            SERIAL_NO = imputacionPosicion.SERIAL_NO,
                             PREQ_ITEMX = "X",
                             SERIAL_NOX = "X",
                             QUANTITY = "X",
@@ -4306,36 +4211,25 @@ namespace SustitucionMOAUtils.Services
                             PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
                         });
                     }
-                    else
-                    {
-                        serialNumberItem = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
-                            x.PREQ_ITEM == preqItem && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == serialNumber && //SERIAL_NO    DZEKKN  Número actual de la imputación
-                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        ).SERIAL_NO;
-                    }
 
                     //IMPUTACION SUBPOSICION
                     solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber,
-                        SRV_LINE = serviceLineNumber,
-                        SERIAL_NO = serviceAccountSerialNumber,
-                        SERIAL_NO_ITEM = serialNumberItem,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER,
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
+                        SERIAL_NO_ITEM = imputacionPosicion.SERIAL_NO,
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = 100
                     });
 
                     solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
                     {
-                        DOC_ITEM = docItem,
-                        OUTLINE = outlineNumber, //Preguntar a Ulises
-                        SRV_LINE = serviceLineNumber, //Preguntar a Ulises
-                        SERIAL_NO = serviceAccountSerialNumber,
+                        DOC_ITEM = numeroPosicion.AsDocItem(),
+                        OUTLINE = OUTLINE_NUMBER, //Preguntar a Ulises
+                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(), //Preguntar a Ulises
+                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
                         SERIAL_NO_ITEM = "X",
                         //Siempre mandar esto en 100. Lo autocalcula SAP
                         PERCENT = "X"
@@ -4356,8 +4250,8 @@ namespace SustitucionMOAUtils.Services
                     solpSAP.IM_PRADDRDELIVERYList.Add(
                     new ZMPES7110
                     {
-                        PREQ_NO = preqItem, //PREQ_NO BANFN   Numero de SOLPED
-                        PREQ_ITEM = preqItem, //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
+                        PREQ_NO = numeroPosicion.AsPreqItem(), //PREQ_NO BANFN   Numero de SOLPED
+                        PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
                         NAME = posicion.NombreEntrega, //NAME    AD_NAME1 Nombre 1
                         POSTL_COD1 = posicion.CpEntrega, //POSTL_COD1 AD_PSTCD1   Código postal de la población
                         CITY = posicion.Centro.Descripcion, //CITY    AD_CITY1 Población
@@ -4369,7 +4263,21 @@ namespace SustitucionMOAUtils.Services
 
             //Este metodo lo usamos para enviar el texto de observaciones. Solo se pueden enviar 132 caracteres por linea
 
-            var linesObservacion = getLinesFromTextoSuministro(solpActual.Pliego.ObservacionesGeneracion);
+            var textosObservacion = "";
+
+            //Enviar observaciones del paso 2 o las observaciones de las condiciones especiales segun prioridad
+            if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesGeneracion))
+            {
+                // Si ObservacionesGeneracion tiene algún valor, se envía este.
+                textosObservacion = solpActual.Pliego.ObservacionesGeneracion;
+            }
+            else if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesCotizacionCondEsp))
+            {
+                // Si ObservacionesGeneracion está vacío y ObservacionesCotizacionCondEsp tiene algún valor, se envía este.
+                textosObservacion = solpActual.Pliego.ObservacionesCotizacionCondEsp;
+            }
+
+            var linesObservacion = getLinesFromTextoSuministro(textosObservacion);
 
             linesObservacion.ForEach(texto =>
             {
@@ -4466,41 +4374,62 @@ namespace SustitucionMOAUtils.Services
                 var solp = repositorio.ObtenerConsultaEscalar(new ObtenerSolpCompras(id));
                 var hoy = DateTime.Now.Date;
                 var tablaSap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-                DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-                var filtros = new ObtenerSolpRequest
-                {
-                    FechaDesde = fechaDesde,
-                    FechaHasta = fechaHasta,
-                    NumeroSolp = solp.NroSolp,
-                };
-                var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
-                var posiciones = solp.PosicionCompras.ToList();
-                var consultaRegistro = posiciones.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
+                var posicionesPendientes = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(solp.NroSolp);
+                var consultaRegistro = solp.PosicionCompras.Where(a => !string.IsNullOrEmpty(a.MaterialComprasCodigo))
                     .GroupBy(x => new { Centro = x.Centro.CodigoSap, Material = x.MaterialComprasCodigo, GrupoDeCompras = x.GrupoCompras.CodigoSap });
+
+
+                bool condicionEncontrarPendienteSap(PosicionSolpSAP x, SolpPosicionDto pos)
+                    => int.Parse(x.NumeroPosicion) == pos.Indice;
+
+                if (solp.EsTipoMaterial())
+                {
+                    solp.PosicionCompras.ForEach(posLocal =>
+                    {
+                        // Buscar las posiciones pendientes en SAP
+                        var posPendiente = posicionesPendientes
+                                .FirstOrDefault(posPendienteSap =>
+                                    condicionEncontrarPendienteSap(posPendienteSap, posLocal)
+                                );
+                        // Si están pendientes, la cantidad real es la resta
+                        // Si NO están pendientes (NO se encontró en la lista de pendientes), la cantidad real es 0
+                        posLocal.Cantidad = posPendiente != null ? posPendiente.Cantidad - posPendiente.Ordered : 0;
+                    });
+                }
+
+                if (solp.EsTipoServicio())
+                {
+                    // eliminar las posiciones NO pendientes en SAP
+                    solp.PosicionCompras.RemoveAll(posLocal =>
+                        !posicionesPendientes.Any(posPendienteSap =>
+                            condicionEncontrarPendienteSap(posPendienteSap, posLocal)
+                        )
+                    );
+                }
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
-                        CrearProveedor(registros.Select(x => x.Vendedor).ToList());
+                        CrearProveedor(registros.ConvertAll(x => x.Vendedor));
                         foreach (var posicion in posicionAgrupada)
                         {
                             foreach (var registroInfo in registros)
                             {
                                 var i = 0;
                                 var proveedor = repositorio.Obtener<Proveedor>(x => x.CodigoProveedor == registroInfo.Vendedor && x.TipoProveedor.Id == (int)TipoUsuarioEnum.NoGranos);
-                                var usuario = proveedor?.UsuariosAsociados.Where(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id).FirstOrDefault();
+                                var usuario = proveedor?.UsuariosAsociados.FirstOrDefault(a => a.Mail == proveedor.Mail && a.CUITRegistro == proveedor.CUIT && a.TipoUsuario.Id == proveedor.TipoProveedor.Id);
                                 if (proveedor != null && usuario != null)
                                 {
                                     decimal pendienteAdjudicar = 0;
 
-                                    var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
+                                    PosicionSolpSAP solpSAPPosicion = posicionesPendientes.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == posicion.Indice);
                                     if (solpSAPPosicion != null)
                                     {
                                         pendienteAdjudicar = solpSAPPosicion.Cantidad - solpSAPPosicion.Ordered;
                                     }
+
                                     try
                                     {
                                         registrosInfo.Add(new RegistroInfoDto
@@ -4528,7 +4457,6 @@ namespace SustitucionMOAUtils.Services
                                             MaterialCodigo = registroInfo.MaterialCodigo,
                                             NumeroOrdenDeCompra = registroInfo.NumeroOrdenDeCompra
                                         });
-
                                     }
                                     catch (Exception e)
                                     {
@@ -4595,16 +4523,57 @@ namespace SustitucionMOAUtils.Services
                     throw new ValidationCustomException("Debe seleccionar al menos una posición");
                 }
 
-                var posiciones = repositorio.Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id));
-                var posicionesPeticion = posiciones.Select(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id }).ToList();
-                if (registroInfo != null && registroInfo.Count > 0)
+                List<Expression<Func<SolpPosicion, object>>> inc = new List<Expression<Func<SolpPosicion, object>>>()
+                {
+                    x => x.Solp,
+                };
+
+                List<SolpPosicion> posiciones = repositorio
+                    .Listar<SolpPosicion>(x => peticionDeOferta.PosIds.Contains(x.Id), includes: inc);
+
+                if (!TodasLasPosicionesEstanPendientes(posiciones))
+                {
+                    throw new ValidationCustomException("La posición está completa");
+                }
+
+                var posicionesPeticion = posiciones.ConvertAll(x => new PeticionDeOfertaSolpPosicion { SolpPosicion_Id = x.Id });
+                if (registroInfo?.Count > 0)
                 {
                     foreach (var pos in posicionesPeticion)
                     {
                         pos.NumeroRegistroInfo = registroInfo.First(a => a.PosicionId == pos.SolpPosicion_Id).Id;
                     }
                 }
-                var fechaOferta = posiciones.First().Solp.TrabajoYaHecho == true ? DateTime.Today.AddDays(-1) : posiciones.First().Solp.Pliego?.FechaHoraEntrega;
+                DateTime? fechaOferta;
+                if (posiciones[0].Solp.DebeGenerarPoAutomatica)
+                {
+                    if (posiciones[0].Solp.TrabajoYaHecho == true)
+                    {
+                        fechaOferta = DateTime.Today.AddDays(-1);
+                    }
+                    else
+                    {
+                        DateTime lastSecondTomorrow = DateTime.Today.AddDays(2).AddSeconds(-1);
+                        if (posiciones[0].Solp.Pliego?.FechaHoraEntrega is null
+                            || posiciones[0].Solp.Pliego?.FechaHoraEntrega <= lastSecondTomorrow)
+                        {
+                            fechaOferta = DateTime.Today.AddDays(10);
+                        }
+                        else
+                        {
+                            fechaOferta = posiciones[0].Solp.Pliego?.FechaHoraEntrega;
+                        }
+                    }
+                }
+                else
+                {
+                    if (peticionDeOferta.PlazoDeEntrega < DateTime.Today)
+                    {
+                        throw new ValidationCustomException("plazo vencido");
+                    }
+                    fechaOferta = peticionDeOferta.PlazoDeEntrega;
+                }
+
                 var usuarios = repositorio.Listar<Usuario>();
 
                 List<PeticionDeOfertaUsuario> poUsuarios = new List<PeticionDeOfertaUsuario>();
@@ -4621,14 +4590,12 @@ namespace SustitucionMOAUtils.Services
                             poUsuariosAdicionales.Add(new PeticionDeOfertaUsuarioAdicional { Usuario_Id = adicional.Id });
                         }
                     }
-
                 }
-                var usuario = repositorio.Obtener<Usuario>(peticionDeOferta.UsuarioActual.Id);
 
                 var peticion = new PeticionDeOferta()
                 {
                     UsuarioCreador_Id = peticionDeOferta.UsuarioActual.Id,
-                    Usuario = usuarios.Where(x => x.Id == peticionDeOferta.UsuarioActual.Id).FirstOrDefault(),
+                    Usuario = usuarios.Find(x => x.Id == peticionDeOferta.UsuarioActual.Id),
                     FechaCreacion = DateTime.Now,
                     Observaciones = peticionDeOferta.Observacion ?? "",
                     Posiciones = posicionesPeticion,
@@ -4640,10 +4607,10 @@ namespace SustitucionMOAUtils.Services
                     Agrupada = false
                 };
 
-                peticion = repositorio.Agregar(peticion);
+                repositorio.Agregar(peticion);
                 repositorio.GuardarCambios();
 
-                if (adjuntos != null && adjuntos.Count > 0)
+                if (adjuntos?.Count > 0)
                 {
                     GuardarArchivosPeticionDeOferta(peticion, adjuntos);
                 }
@@ -4670,6 +4637,29 @@ namespace SustitucionMOAUtils.Services
             {
                 throw;
             }
+        }
+
+        private bool TodasLasPosicionesEstanPendientes(List<SolpPosicion> posiciones)
+        {
+            //tex:
+            // sea $ posicionesPendientesSap $ las posiciones marcadas en SAP como pendientes
+            IEnumerable<PosicionSolpSAP> posicionesPendientesSap =
+                comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posiciones.Select(x => x.Solp.NroSolp));
+
+            //tex:
+            //se define que una posición $pos$ está pendiente de la siguiente forma:
+            //$$ \{ \exists posPendieteSap \in posicionesPendientesSap \|
+            //pos.Solp.NroSolp = posPendieteSap.NumeroSolicitud
+            //\land pos.Indice = posPendieteSap.NumeroPosicion \} $$
+            bool posicionPendiente(SolpPosicion pos) =>
+                                posicionesPendientesSap.Any(posPendieteSap =>
+                                            posPendieteSap.NumeroSolicitud == pos.Solp.NroSolp
+                                            && int.Parse(posPendieteSap.NumeroPosicion) == pos.Indice);
+
+            //tex:
+            // Returns todas las posiciones recibidas están pendientes:
+            // $$ \{\forall pos \in posiciones \| posicionPendiente\} $$
+            return posiciones.TrueForAll(posicionPendiente);
         }
 
         private void GuardarArchivosPeticionDeOferta(PeticionDeOferta peticion, HttpFileCollectionBase files)
@@ -4704,64 +4694,65 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? peticiondeOfertaUsuarioId, bool esProveedor)
+        public ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, string mailUsuario, bool esSolicitante)
         {
-            List<LegajoDto> legajo = new List<LegajoDto>();
+            var legajo = new List<LegajoDto>();
+            var usuarioDto = usuarioService.GetUsuario(mailUsuario);
             var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
-            var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId);
-            var peticionDeOfertaUsuario = repositorio.Obtener<PeticionDeOfertaUsuario>(peticiondeOfertaUsuarioId);
 
-            var peticionPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionDeOfertaId);
-
-            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
+            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Distinct();
 
             // Primero, filtra las SOLP según la condición deseada
             var solpsAgrupadas = peticion.Posiciones
-                .Where(x => x.PeticionDeOferta.Agrupada == true)
+                .Where(x => x.PeticionDeOferta.Agrupada)
                 .Select(x => x.SolpPosicion.Solp.NroSolp)
                 .ToList();
 
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
-            foreach (var solp in solps.Distinct())
+            bool esMultipleSolp = solps.Count() > 1;
+            bool ocultarArchivosPliego = esProveedor && esMultipleSolp;
+
+            foreach (var solp in solps)
             {
-
-                var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
-                var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
-                var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
-                    solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
-                    solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
-
-
-
-
-                if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
+                if (!ocultarArchivosPliego)
                 {
-                    //invento registro con id de archivo 0 para bajar el pliego
-                    legajo.Add(new LegajoDto
+                    var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+                    var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
+                    var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                        solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
+                        solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
+
+                    if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
-                        ArchivoId = 0,
-                        Observacion = pdfFilename,
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = solp.Id,
-                        Fecha = solp.FechaCreacion,
-                        FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto
+                        //invento registro con id de archivo 0 para bajar el pliego
+                        legajo.Add(new LegajoDto
                         {
-                            CUIT = solp.UsuarioCreacion.CUITRegistro,
-                            Mail = solp.UsuarioCreacion.Mail,
-                            Id = solp.UsuarioCreacion_Id.Value
-                        },
-                        Tipo = TipoLegajo.Pliego
-                    });
+                            ArchivoId = 0,
+                            Observacion = pdfFilename,
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = solp.Id,
+                            Fecha = solp.FechaCreacion,
+                            FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto
+                            {
+                                CUIT = solp.UsuarioCreacion.CUITRegistro,
+                                Mail = solp.UsuarioCreacion.Mail,
+                                Id = solp.UsuarioCreacion_Id.Value
+                            },
+                            Tipo = TipoLegajo.Pliego
+                        });
+                    }
                 }
 
                 var tieneCondicionEspecial = solp.TrabajoYaHecho == true || solp.Urgencia == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
 
                 // buscar archivos de la solp y considerar condiciones especiales
-                if (solp.Pliego != null && solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp ||
-                   x.FileKey == FileKeys.AdjuntoCotizacionesSolp || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp && (!esProveedor || !tieneCondicionEspecial))))
+                if (solp.Pliego?.Archivos?.Any(x => x.FileKey == FileKeys.AdjuntoSolp
+                                                            || x.FileKey == FileKeys.AdjuntoCotizacionesSolp
+                                                            || (x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp
+                                                                && (!esProveedor || !tieneCondicionEspecial))) == true)
                 {
                     foreach (var archivoSubido in solp.Pliego.Archivos)
                     {
@@ -4787,7 +4778,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //mostrar observación de condiciones especielas ingresada en el paso 4 
-                if (solp.Pliego != null && esProveedor != true && (tieneCondicionEspecial))
+                if (solp.Pliego != null && !esProveedor && tieneCondicionEspecial)
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -4803,7 +4794,7 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //Chat interno
-                if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0 && esProveedor != true)
+                if (solp.ChatInternoCompras?.Count > 0 && !esProveedor)
                 {
                     legajo.Add(new LegajoDto
                     {
@@ -4838,7 +4829,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             // Agrupar po th
-            if (peticion.Agrupada == true)
+            if (peticion.Agrupada)
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4854,7 +4845,7 @@ namespace SustitucionMOAUtils.Services
             }
 
             //buscar archivos de la peticion ( menos lo de legajo cuando es un usuario proveedor)
-            foreach (var item in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+            foreach (var item in peticion.Archivos.Where(a => idPeticionDeOfertaUsuario == null || (idPeticionDeOfertaUsuario != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
             {
                 legajo.Add(new LegajoDto
                 {
@@ -4865,14 +4856,23 @@ namespace SustitucionMOAUtils.Services
                     Fecha = item.Fecha,
                     FechaFormateado = item.Fecha.ToString("dd/MM/yyyy"),
                     Usuario = new UsuarioDto { CUIT = peticion.Usuario.CUITRegistro, Mail = peticion.Usuario.Mail, Id = peticion.UsuarioCreador_Id },
-                    Tipo = peticiondeOfertaUsuarioId == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
+                    Tipo = idPeticionDeOfertaUsuario == null ? TipoLegajo.Legajo : TipoLegajo.PeticionDeOferta
                 });
             }
 
             // pdf peticion de oferta materiales
-            if (peticion.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
+            if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
             {
-                foreach (var peticionUsuario in peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId))
+                bool peticionesUsuario(PeticionDeOfertaUsuario u)
+                {
+                    if (!esProveedor) { return true; }
+                    if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
+                    if (idPeticionDeOfertaUsuario == u.Id) { return true; }
+                    if (usuarioDto?.Id == u.Usuario_Id) { return true; }
+                    return false;
+                }
+
+                foreach (var peticionUsuario in peticion.Usuarios.Where(peticionesUsuario))
                 {
                     var pdfPOUsuario = $"PO - {peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
                     legajo.Add(new LegajoDto
@@ -4889,17 +4889,21 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            if (!esProveedor)
+            {
+                AgregarALegajoPeticionVisualizarPrecio(legajo, peticion);
+            }
+
             //circular
-            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+            var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => idPeticionDeOfertaUsuario == null || u.Id == idPeticionDeOfertaUsuario).Select(u => u.Id).ToList();
             var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
-            var peticionVisualizacionPrecio = repositorio.Listar<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticion.Id);
 
             foreach (var circular in circulares)
             {
                 bool noLeido = false;
-                if (peticiondeOfertaUsuarioId.HasValue)
+                if (idPeticionDeOfertaUsuario.HasValue)
                 {
-                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true);
+                    noLeido = circular.PeticionDeOfertaUsuarios.Any(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true);
                 }
 
                 //buscar archivos de la circular
@@ -4968,26 +4972,9 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                //buscar archivos de la peticion visualizacion de precio
-                if (peticionVisualizacionPrecio.Count > 0 && esProveedor != true)
-                {
-                    legajo.Add(new LegajoDto
-                    {
-                        ArchivoId = peticionPrecio.Archivo.Id,
-                        Observacion = "PeticionDeOfertaVisualizacionPrecio" + peticionPrecio.Observaciones,
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                        Fecha = peticionPrecio.FechaCreacion,
-                        FechaFormateado = peticionPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = peticionPrecio.Usuario.CUITRegistro, Mail = peticionPrecio.Usuario.Mail, Id = peticionPrecio.UsuarioCreador_Id },
-                        Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
-
-                    });
-                }
-
                 if (noLeido)
                 {
-                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == peticiondeOfertaUsuarioId && a.Leida != true))
+                    foreach (var circularNoLeida in circular.PeticionDeOfertaUsuarios.Where(a => a.PeticionDeOfertaUsuario_Id == idPeticionDeOfertaUsuario && a.Leida != true))
                     {
                         circularNoLeida.Leida = true;
                         circularNoLeida.FechaLeida = DateTime.Now;
@@ -4998,7 +4985,7 @@ namespace SustitucionMOAUtils.Services
 
             //Cierres plazo de oferta
             var cierres = repositorio.Listar<PeticionDeOfertaCierre>(a => a.PeticionDeOferta_Id == peticionDeOfertaId);
-            if (esProveedor != true)
+            if (!esProveedor)
             {
                 foreach (var cierre in cierres)
                 {
@@ -5033,21 +5020,42 @@ namespace SustitucionMOAUtils.Services
                         });
                     }
 
-                    legajo.Add(new LegajoDto
+                    if (peticion.RevisionTecnica.Finalizada)
                     {
-                        ArchivoId = null,
-                        Observacion = "Finalización revisión tecnica",
-                        PeticionDeOfertaId = peticionDeOfertaId,
-                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
-                        Fecha = peticion.RevisionTecnica.Fecha,
-                        FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
-                        Tipo = TipoLegajo.RevisionTecnica
-                    });
+                        legajo.Add(new LegajoDto
+                        {
+                            ArchivoId = null,
+                            Observacion = "Finalización revisión técnica",
+                            PeticionDeOfertaId = peticionDeOfertaId,
+                            SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                            Fecha = peticion.RevisionTecnica.Fecha,
+                            FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                            Usuario = new UsuarioDto { CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro, Mail = peticion.RevisionTecnica.Usuario.Mail, Id = peticion.RevisionTecnica.Usuario.Id },
+                            Tipo = TipoLegajo.RevisionTecnica
+                        });
+                    }
                 }
             }
 
-            return legajo.OrderByDescending(x => x.Fecha).ToList();
+            if (!esProveedor)
+            {
+                AgregarALegajoDescargaRevisionTecnica(legajo, peticion);
+                AgregarALegajoHistorialDeMovimientos(legajo, peticion, peticionDeOfertaId);
+
+                if (!esSolicitante)
+                {
+                    AgregarALegajoDocumentosEnviadosPorProveedores(legajo, peticion, peticionDeOfertaId, usuarioDto);
+                    AgregarALegajoDescargaHistorialDeCotizaciones(legajo, peticion, usuarioDto);
+                }
+            }
+
+            var response = new ObtenerLegajoResponse
+            {
+                LegajoFilas = legajo.OrderByDescending(x => x.Fecha).ToList(),
+                PuedeVerPrecios = PuedenVerseLosImportes(peticion, usuarioDto, circulares)
+            };
+
+            return response;
         }
 
         public Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto)
@@ -5086,111 +5094,211 @@ namespace SustitucionMOAUtils.Services
             return new Resultado();
         }
 
-        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId)
+        public string DescargarLegajo(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, int? adjudicacionId, string mailUsuario, bool esSolicitante)
         {
-            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
-            var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
-            var zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
-            var filePath = $"{pathBase}/{zipFilename}";
+            string zipFilename;
+            string filePath;
 
-            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            if (adjudicacionId > 0)
             {
-                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                var nroOC = repositorio.Obtener<Adjudicacion, string>(x => x.Id == adjudicacionId, x => x.NumeroOrdenDeCompra);
+                var idsPeticiones = repositorio.Listar<Adjudicacion, int>(x => x.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, x => x.NumeroOrdenDeCompra == nroOC);
+                zipFilename = $"OC-{nroOC}.zip";
+                filePath = $"{pathBase}/{zipFilename}";
+
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
                 {
-                    foreach (var solp in solps)
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
                     {
-                        var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
-                        var pliegoFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
-                        var pdfFilePath = $"{pathBase}/{pliegoFilename}";
-                        File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
-
-                        // Agregar archivos de pliego al zip
-                        archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
-
-                        // Agregar archivos adjuntos del solp al zip
-                        if (solp.Pliego.Archivos != null)
+                        foreach (var idPO in idsPeticiones)
                         {
-                            foreach (var archivoSubido in solp.Pliego.Archivos)
-                            {
-                                if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
-                                {
-                                    string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                    archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
-                                }
-                            }
-                        }
-
-                        // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
-                        if (solp.Posiciones.Any(a => a.TipoPosicion_Id != null && a.TipoPosicion.Codigo == "MATERIALES"))
-                        {
-                            foreach (var peticionUsuario in peticion.Usuarios)
-                            {
-                                string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
-                                var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
-                                var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
-                                File.WriteAllBytes(pdfFilePathUsuario, pdf);
-                                archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
-                            }
-                        }
-
-                        // Agregar archivos de circulares al zip
-                        var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
-                        var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
-                        foreach (var circular in circulares)
-                        {
-                            foreach (var item in circular.Archivos)
-                            {
-                                if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
-                                {
-                                    string fileName = Path.GetFileName(item.Ruta);
-                                    archivo.CreateEntryFromFile(item.Ruta, fileName);
-                                }
-                            }
-                        }
-
-                        // Agregar archivos de chat interno al zip
-                        if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0)
-                        {
-                            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                            Directory.CreateDirectory(path);
-                            string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, null);
-                            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                            string fileName = Path.GetFileName(rutaTxt);
-                            archivo.CreateEntryFromFile(rutaTxt, fileName);
-                            Directory.Delete(path, true);
-                        }
-
-                        // Agregar archivos de chat externo al zip
-                        if (peticion.Usuarios != null)
-                        {
-                            foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
-                            {
-                                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                                Directory.CreateDirectory(path);
-                                string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, usuario.Id);
-                                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                                string fileName = Path.GetFileName(rutaTxt);
-                                archivo.CreateEntryFromFile(rutaTxt, fileName);
-                                Directory.Delete(path, true);
-                            }
-                        }
-                    }
-
-                    // Agregar archivos de la petición de oferta al zip
-                    if (peticion.Archivos != null)
-                    {
-                        foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
-                        {
-                            if (File.Exists(archivoSubido.Archivo.Ruta))
-                            {
-                                string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, fileName);
-                            }
+                            var peticion = repositorio.Obtener<PeticionDeOferta>(idPO);
+                            var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
+                            DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario, esSolicitante);
                         }
                     }
                 }
             }
+            else
+            {
+                var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+                var solps = peticion.Posiciones.Select(posi => posi.SolpPosicion.Solp).Distinct();
+                zipFilename = $"PO-{peticion.Id}-{peticion.FechaCreacion:yyyyMMdd}.zip";
+                filePath = $"{pathBase}/{zipFilename}";
+                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+                {
+                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                    {
+                        DescargarLegajoPO(pathBase, peticiondeOfertaUsuarioId, esProveedor, peticion, solps, archivo, mailUsuario, esSolicitante);
+                    }
+                }
+            }
+
             return filePath;
+        }
+
+        private void DescargarLegajoPO(string pathBase, int? peticiondeOfertaUsuarioId, bool esProveedor, PeticionDeOferta peticion, IEnumerable<Solp> solps, ZipArchive archivo, string mailUsuario, bool esSolicitante)
+        {
+            var usuarioDto = usuarioService.GetUsuario(mailUsuario);
+            int idPeticion = peticion.Id;
+            foreach (var solp in solps)
+            {
+                var middleFileName = solp.NroSolp == null ? (solp.Pliego.NombreObra == null ? "xxxx" : solp.Pliego.NombreObra) : solp.NroSolp;
+                var pliegoFilename = $"PO-{idPeticion}-Solp-{middleFileName}-pliego-{DateTime.Now.ToString("yyyyMMdd")}.pdf";
+                var pdfFilePath = $"{pathBase}/{pliegoFilename}";
+                File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(solp.Id));
+
+                // Agregar archivos de pliego al zip
+                archivo.CreateEntryFromFile(pdfFilePath, pliegoFilename);
+
+                // Agregar archivos adjuntos del solp al zip
+                if (solp.Pliego.Archivos != null)
+                {
+                    foreach (var archivoSubido in solp.Pliego.Archivos)
+                    {
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                        {
+                            string fileName = Path.GetFileName(archivoSubido.Ruta);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, $"PO-{idPeticion}-" + fileName);
+                        }
+                    }
+                }
+
+                // Agregar archivos PDF de PeticionDeOfertaMateriales al zip
+                if (solp.Posiciones.Any(a => a.TipoPosicion_Id != null && a.TipoPosicion.Codigo == "MATERIALES"))
+                {
+                    foreach (var peticionUsuario in peticion.Usuarios)
+                    {
+                        string codigoProveedor = peticionUsuario.Usuario.ObtenerProveedor().CodigoProveedor;
+                        var pdf = GenerarPDFPeticionDeOferta(peticion, codigoProveedor);
+                        var pdfFilePathUsuario = $"{pathBase}/PO-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf";
+                        File.WriteAllBytes(pdfFilePathUsuario, pdf);
+                        archivo.CreateEntryFromFile(pdfFilePathUsuario, $"PO-{idPeticion}-{peticionUsuario.Usuario.ObtenerProveedor().CUIT}.pdf");
+                    }
+                }
+
+                // Agregar archivos de circulares al zip
+                var peticionDeOfertaUsuarios_Id = peticion.Usuarios.Where(u => peticiondeOfertaUsuarioId == null || u.Id == peticiondeOfertaUsuarioId).Select(u => u.Id).ToList();
+                var circulares = repositorio.Listar<Circular>(x => x.PeticionDeOfertaUsuarios.Any(a => peticionDeOfertaUsuarios_Id.Contains(a.PeticionDeOfertaUsuario_Id)));
+                foreach (var circular in circulares)
+                {
+                    foreach (var item in circular.Archivos)
+                    {
+                        if ((peticionDeOfertaUsuarios_Id != null && item.FileKey != FileKeys.PeticionDeOfertaLegajo) || peticionDeOfertaUsuarios_Id == null)
+                        {
+                            string fileName = Path.GetFileName(item.Ruta);
+                            archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                        }
+                    }
+                }
+
+                // Agregar archivos de chat interno al zip
+                if (solp.ChatInternoCompras != null && solp.ChatInternoCompras.Count > 0)
+                {
+                    var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                    Directory.CreateDirectory(path);
+                    string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, null);
+                    byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                    string fileName = Path.GetFileName(rutaTxt);
+                    archivo.CreateEntryFromFile(rutaTxt, $"PO-{idPeticion}-" + fileName);
+                    Directory.Delete(path, true);
+                }
+
+                // Agregar archivos de chat externo al zip
+                if (peticion.Usuarios != null)
+                {
+                    foreach (var usuario in peticion.Usuarios.Where(x => x.ChatExterno.Count > 0))
+                    {
+                        var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+                        Directory.CreateDirectory(path);
+                        string rutaTxt = ExportarChatInternoAtexto(solp.Id, path, usuario.Id);
+                        byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+                        string fileName = Path.GetFileName(rutaTxt);
+                        archivo.CreateEntryFromFile(rutaTxt, $"PO-{idPeticion}-" + fileName);
+                        Directory.Delete(path, true);
+                    }
+                }
+            }
+
+            // Agregar archivos de la petición de oferta al zip
+            if (peticion.Archivos != null)
+            {
+                foreach (var archivoSubido in peticion.Archivos.Where(a => peticiondeOfertaUsuarioId == null || (peticiondeOfertaUsuarioId != null && a.Archivo.FileKey != FileKeys.PeticionDeOfertaLegajo)))
+                {
+                    if (File.Exists(archivoSubido.Archivo.Ruta))
+                    {
+                        string fileName = Path.GetFileName(archivoSubido.Archivo.Ruta);
+                        archivo.CreateEntryFromFile(archivoSubido.Archivo.Ruta, $"PO-{idPeticion}-" + fileName);
+                    }
+                }
+            }
+
+            if (!esProveedor)
+            {
+                // Agregar revisión ténica al zip
+                if (peticion?.RevisionTecnica != null)
+                {
+                    var revisionBytes = comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
+                    var rutaRevisionTecnica = $"{pathBase}/RevTec{peticion.Id}.xlsx";
+                    File.WriteAllBytes(rutaRevisionTecnica, revisionBytes);
+                    archivo.CreateEntryFromFile(rutaRevisionTecnica, $"PO-{idPeticion}-" + $"RevTec{peticion.Id}.xlsx");
+                }
+
+                // Agregar historial de movimientos al zip
+                var excelBytes = GenerarExcelHistorialMovimientos(idPeticion);
+                var zipEntry = archivo.CreateEntry($"PO-{idPeticion}-" + "Historial de Movimientos.xlsx", CompressionLevel.Fastest);
+                using (var entryStream = zipEntry.Open())
+                {
+                    entryStream.Write(excelBytes, 0, excelBytes.Length);
+                }
+
+                if (!esSolicitante)
+                {
+                    // Agregar archivos de cotizaciones al zip
+                    if (peticion.Usuarios != null)
+                    {
+                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+                        {
+                            var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                            if (cotizacionUsuario.Archivos.Count > 0 && PuedenVerseLosImportesDeCotizacion(cotizacionUsuario, usuarioDto))
+                            {
+                                foreach (var item in cotizacionUsuario.Archivos)
+                                {
+                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                    {
+                                        string fileName = Path.GetFileName(item.Ruta);
+                                        archivo.CreateEntryFromFile(item.Ruta, $"PO-{idPeticion}-" + fileName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Agregar historiales de cotización al zip
+                    foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
+                    {
+                        var historialBytes = GenerarHistorialCotizaciones(cotizacion.Id);
+                        var rutaHistorial = $"{pathBase}/HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx";
+                        File.WriteAllBytes(rutaHistorial, historialBytes);
+                        archivo.CreateEntryFromFile(rutaHistorial, $"PO-{idPeticion}-" + $"HC-{cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor().CUIT}.xlsx");
+                    }
+                }
+            }
+        }
+
+        public byte[] GenerarHistorialCotizaciones(int cotizacionId)
+        {
+            var historialCotizaciones = ObtenerHistorial(cotizacionId);
+
+            return comprasArchivosService.GenerarExcelHistorialCotizaciones(historialCotizaciones);
+        }
+
+        public byte[] GenerarArchivoRevisionTecnica(int peticionDeOfertaId)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(peticionDeOfertaId);
+
+            return comprasArchivosService.GenerarExcelRevisionTecnica(peticion);
         }
 
         private byte[] GenerarPDFPeticionDeOferta(PeticionDeOferta peticion, string codigoProveedor)
@@ -5264,14 +5372,16 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado == true && x.SolpPosicion.EsConcluido == true);
+                var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.First().SolpPosicion.Solp.NroSolp);
                 foreach (var peti in listaPosiciones)
                 {
                     var item = peti.SolpPosicion;
+                    var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice);
                     posiciones +=
                     $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
                     $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
                     $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea)} </td>" +
-                    $"<td style='font-size: 8px;'>{item.Cantidad}</td>" +
+                    $"<td style='font-size: 8px;'>{(valorEnSAP != null ? valorEnSAP.Cantidad - valorEnSAP.Ordered : 0)}</td>" +
                     $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
                     $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
                     $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
@@ -5755,7 +5865,7 @@ namespace SustitucionMOAUtils.Services
 
                 var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(adjudicacion.NumeroOrdenDeCompra);
 
-                emailService.EnviarMail(enviarA, asunto, "", copia.Distinct().ToList(), CuerpoMailOrdenCompra(adjudicacion, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
+                emailService.EnviarMail(enviarA, asunto, "", copia.Distinct().ToList(), CuerpoMailOrdenCompra(adjudicacion.NumeroOrdenDeCompra, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
             }
             catch (Exception e)
             {
@@ -5764,13 +5874,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private AlternateView CuerpoMailOrdenCompra(Adjudicacion adjudicacion, string mensaje)
+        private AlternateView CuerpoMailOrdenCompra(string nroOc, string mensaje)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
             LinkedResource res = new LinkedResource(filePath);
             res.ContentId = Guid.NewGuid().ToString();
             string htmlBody = "";
-            htmlBody += $"En el presente mail se informa la nueva OC {adjudicacion.NumeroOrdenDeCompra} generada con Molinos Agro S.A. <br />";
+            htmlBody += $"En el presente mail se informa la nueva OC {nroOc} generada con Molinos Agro S.A. <br />";
             htmlBody += mensaje + "<br/>";
 
             htmlBody += "En caso de tener alguna consulta, ingresar a www.moaoperaciones.com.ar " +
@@ -5938,15 +6048,21 @@ namespace SustitucionMOAUtils.Services
             var peticionesId = peticiones.Select(peticion => peticion.Id);
             var peticionUsuarios = repositorio.Listar<PeticionDeOfertaUsuario>(petiUsuario =>
                                   peticionesId.Contains(petiUsuario.PeticionDeOferta_Id)).ToList();
+            var proveedoresRealizaronVisita = repositorio.Listar<PeticionDeOfertaUsuario>(petiUsuario =>
+                                  peticionesId.Contains(petiUsuario.PeticionDeOferta_Id) && petiUsuario.RealizoVisita == true).ConvertAll(x => x.Usuario_Id);
+            var idsTodos = peticionUsuarios.ConvertAll(x => x.Usuario_Id);
             var fechaEntrega = solp.Posiciones.OrderByDescending(x => x.FechaEntregaServicio).FirstOrDefault()?.FechaEntregaServicio;
-            var circularDto = new CircularDto
+
+            DateTime plazoDeOferta = solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones ?? DateTime.Today.AddDays(7);
+
+            CircularDto circularDto = new CircularDto
             {
                 UsuarioId = solp.UsuarioCreacion_Id.Value,
                 Observacion = "Es necesario que se realice una cotización nuevamente",
-                PlazoDeOferta = DateTime.Now.AddDays(7),
+                PlazoDeOferta = plazoDeOferta,
                 RequiereCambioDeFecha = true,
                 FechaEntrega = fechaEntrega,
-                UsuarioIds = peticionUsuarios.Select(x => x.Usuario_Id).ToList(),
+                UsuarioIds = solp.EnvioCircularA == EnviarCircularEnum.EnviarRealizaronVisita ? proveedoresRealizaronVisita : idsTodos
             };
 
             GrabarCircular(circularDto, null, true, peticionUsuarios);
@@ -5957,7 +6073,6 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 ValidarCircular(circularDto);
-                var hoy = DateTime.Now;
                 var peticion = repositorio.Obtener<PeticionDeOferta>(circularDto.PeticionDeOferta_Id);
                 var usuario = repositorio.Obtener<Usuario>(circularDto.UsuarioId);
                 var rolUsuario = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "COMPRADOR" : "SOLP";
@@ -5984,7 +6099,7 @@ namespace SustitucionMOAUtils.Services
                 circular = repositorio.Agregar(circular);
                 repositorio.GuardarCambios();
 
-                if (adjuntos != null && adjuntos.Count > 0)
+                if (adjuntos?.Count > 0)
                 {
                     GuardarArchivosCircular(circular, adjuntos);
                 }
@@ -6002,9 +6117,7 @@ namespace SustitucionMOAUtils.Services
                 respuestaGuardarSOLP.IdEntidad = circular.PeticionDeOfertaUsuarios.FirstOrDefault().PeticionDeOfertaUsuario.PeticionDeOferta_Id;
                 try
                 {
-
                     EnviarMailCircular(circular);
-
                 }
                 catch (Exception e)
                 {
@@ -6546,6 +6659,34 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
+                var peticionCotizacionAgrupadas = peticionCotizacion.PeticionDeOfertaPosicion.GroupBy(a => a.Posiciones.NroSolp);
+                foreach (var posicionCotizacionDtos in peticionCotizacionAgrupadas)
+                {
+                    var posicionesPendientesAdjudicar = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posicionCotizacionDtos.Key);
+                    foreach (var posicion in posicionCotizacionDtos.Select(x => x.Posiciones).ToList())
+                    {
+                        var posicionPendienteAdjudicar = posicionesPendientesAdjudicar.SingleOrDefault(x => int.Parse(x.NumeroPosicion) == posicion.Indice);
+                        if (posicionPendienteAdjudicar != null)
+                        {
+                            posicion.Cantidad = posicionPendienteAdjudicar.Cantidad - posicionPendienteAdjudicar.Ordered;
+                        }
+                        else
+                        {
+                            posicion.Cantidad = 0;
+                        }
+                    }
+                }
+                peticionCotizacion.PeticionDeOfertaPosicion = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0).ToList();
+                if (!peticionCotizacion.PeticionDeOfertaPosicion.Any())
+                    throw new WSCustomException("La petición de oferta no tiene posiciones pendientes, por favor contáctese con el área de compras.");
+                if (peticionCotizacion.ArchivosPaso4Cotizacion != null)
+                {
+                    peticionCotizacion.ArchivosPaso4Cotizacion = peticionCotizacion.ArchivosPaso4Cotizacion.Select(archivo => new ArchivoDto
+                    {
+                        Id = archivo.Id,
+                        Nombre = Path.GetFileName(archivo.Ruta),
+                    }).ToList();
+                }
                 return peticionCotizacion;
             }
             catch (Exception e)
@@ -6620,7 +6761,7 @@ namespace SustitucionMOAUtils.Services
 
 
                             }).ToList() : null,
-                            UsuarioCreador = usuario,
+                            UsuarioCreador = peticionUsuario.Usuario,
                             FechaCreacion = DateTime.Now
                         };
 
@@ -6693,7 +6834,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
                     {
-                        EnviarMailCotizacion(cotizacion);
+                        emailComprasService.EnviarMailCotizacionCreada(cotizacion);
                     }
                 }
                 catch (Exception e)
@@ -6705,7 +6846,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ValidarCreacionDeRegistroInfo(cotizacion))
                 {
-                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true))
+                    if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null))
                     {
                         var registros = CrearRegistroInfoDto(cotizacion);
                         if (registros.Any(x => !x.EsModificar))
@@ -6737,13 +6878,16 @@ namespace SustitucionMOAUtils.Services
         private static bool ValidarCreacionDeRegistroInfo(Cotizacion cotizacion)
         {
             return cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.RegistroInfo != true && cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado
-                                && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES" &&
-                                cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null;
+                                && cotizacion.CotizacionPosiciones.FirstOrDefault().PeticionDeOfertaSolpPosicion.SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
         }
 
         private void CrearRegistroInfo(Cotizacion cotizacion, List<RegistroInfoDto> registros)
         {
-            var respuesta = agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
+            if (!ProveedorExisteEnSAP(cotizacion.UsuarioCreador.ObtenerCodigoProveedor()))
+            {
+                return;
+            }
+            var respuesta = CrearOActualizarRegistrosInfoEnSap(registros);
             if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
             {
                 try
@@ -6882,21 +7026,28 @@ namespace SustitucionMOAUtils.Services
 
         private void GuardarCotizacionPosicion(GuardarCotizacion cotizacionDto, Cotizacion cotizacion, List<TablaSap> info)
         {
-            var cotizaciones = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true).ToList();
-            if (cotizacion.CotizacionPosiciones != null && cotizaciones.Count > 0)
+            if (cotizacionDto == null) { throw new ArgumentNullException(nameof(cotizacionDto)); }
+            if (cotizacion == null) { throw new ArgumentNullException(nameof(cotizacion)); }
+            if (info == null) { throw new ArgumentNullException(nameof(info)); }
+
+            List<CotizacionPosicion> posicionesDb = cotizacion.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado).ToList();
+            if (cotizacion.CotizacionPosiciones != null && posicionesDb.Count > 0)
             {
-                foreach (var cotizacionPosicion in cotizaciones)
+                foreach (CotizacionPosicion cotizacionPosicion in posicionesDb)
                 {
-                    var cotizacionPos = cotizacionDto.CotizacionPosiciones.Where(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id).FirstOrDefault();
+                    GuardarCotizacionPosicionDto cotizacionPos = cotizacionDto.CotizacionPosiciones
+                        .SingleOrDefault(x => x.PeticionDeOfertaSolpPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id);
+                    if (cotizacionPos == default) { continue; }
+
                     cotizacionPosicion.Cantidad = cotizacionPos.Cantidad;
                     cotizacionPosicion.Precio = cotizacionPos.Precio;
-                    cotizacionPosicion.FechaDeEntrega = (DateTime?)cotizacionPos.FechaDeEntrega;
+                    cotizacionPosicion.FechaDeEntrega = cotizacionPos.FechaDeEntrega;
                     cotizacionPosicion.Moneda_Id = cotizacionPos.MonedaId > 0 ? cotizacionPos.MonedaId : (int?)null;
                     cotizacionPosicion.UnidadDeMedida_Id = cotizacionPos.UnidadDeMedidaId > 0 ? cotizacionPos.UnidadDeMedidaId : (int?)null;
-                    cotizacionPosicion.Moneda = cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Where(moneda => moneda.Id == cotizacionPos.MonedaId).FirstOrDefault() : null;
-                    cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Where(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId).FirstOrDefault() : null;
+                    cotizacionPosicion.Moneda = cotizacionPos.MonedaId > 0 && cotizacionPos.MonedaId != null ? info.Find(moneda => moneda.Id == cotizacionPos.MonedaId) : null;
+                    cotizacionPosicion.UnidadDeMedida = cotizacionPos.UnidadDeMedidaId > 0 && cotizacionPos.UnidadDeMedidaId != null ? info.Find(unidad => unidad.Id == cotizacionPos.UnidadDeMedidaId) : null;
                     cotizacionPosicion.NoDisponible = cotizacionPos.NoDisponible;
-                    cotizacionPosicion.FechaDeVigencia = (DateTime?)cotizacionPos.FechaDeVigencia;
+                    cotizacionPosicion.FechaDeVigencia = cotizacionPos.FechaDeVigencia;
                     cotizacionPosicion.PrimerPlazoDeOferta = cotizacionPos.PrimerPlazoDeOferta;
                     cotizacionPosicion.PrimeraCantidad = cotizacionPos.PrimeraCantidad;
                     cotizacionPosicion.SegundoPlazoDeOferta = cotizacionPos.SegundoPlazoDeOferta;
@@ -6904,26 +7055,25 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.TercerPlazoDeOferta = cotizacionPos.TercerPlazoDeOferta;
                     cotizacionPosicion.TerceraCantidad = cotizacionPos.TerceraCantidad;
 
-                    if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count > 0)
+                    if (cotizacionPosicion.CotizacionSubPosiciones?.Count > 0)
                     {
-
                         foreach (var item in cotizacionPosicion.CotizacionSubPosiciones)
                         {
-                            var sub = cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == item.Id).FirstOrDefault();
+                            var sub = cotizacionDto.CotizacionSubposiciones.Find(x => x.CotizacionSubPosicionId == item.Id);
                             if (sub != null)
                             {
                                 item.Cantidad = sub.Cantidad;
                                 item.Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null;
-                                item.Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null;
+                                item.Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null;
                                 item.Precio = sub.Precio;
                                 item.UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null;
-                                item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null;
+                                item.UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null;
                                 item.SolpSubPosicion_Id = sub.SolpSubPosicionId;
                             }
                         }
                     }
 
-                    if (cotizacionDto.CotizacionSubposiciones.Where(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null).Count() > 0)
+                    if (cotizacionDto.CotizacionSubposiciones.Exists(x => x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null))
                     {
                         foreach (var sub in cotizacionDto.CotizacionSubposiciones.Where(x => (x.CotizacionSubPosicionId == 0 || x.CotizacionSubPosicionId == null) &&
                         x.CotizacionPosicionId == cotizacionPosicion.PeticionDeOfertaSolpPosicion_Id))
@@ -6932,10 +7082,10 @@ namespace SustitucionMOAUtils.Services
                             {
                                 Cantidad = sub.Cantidad,
                                 Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null,
-                                Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null,
+                                Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null,
                                 Precio = sub.Precio,
                                 UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null,
-                                UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
+                                UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null,
                                 CotizacionPosicion_Id = sub.CotizacionPosicionId,
                                 SolpSubPosicion_Id = sub.SolpSubPosicionId
                             });
@@ -6945,16 +7095,16 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                cotizacion.CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.Select(x => new CotizacionPosicion
+                cotizacion.CotizacionPosiciones = cotizacionDto.CotizacionPosiciones.ConvertAll(x => new CotizacionPosicion
                 {
                     Cantidad = x.Cantidad,
                     FechaDeEntrega = x.FechaDeEntrega != null ? x.FechaDeEntrega.Value : (DateTime?)null,
                     Moneda_Id = x.MonedaId > 0 ? x.MonedaId : (int?)null,
                     Precio = x.Precio,
                     UnidadDeMedida_Id = x.UnidadDeMedidaId > 0 ? x.UnidadDeMedidaId : (int?)null,
-                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == x.UnidadDeMedidaId).FirstOrDefault() : null,
+                    UnidadDeMedida = x.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == x.UnidadDeMedidaId) : null,
                     PeticionDeOfertaSolpPosicion_Id = x.PeticionDeOfertaSolpPosicionId,
-                    Moneda = x.MonedaId > 0 ? info.Where(moneda => moneda.Id == x.MonedaId).FirstOrDefault() : null,
+                    Moneda = x.MonedaId > 0 ? info.Find(moneda => moneda.Id == x.MonedaId) : null,
                     NoDisponible = x.NoDisponible,
                     PrimerPlazoDeOferta = x.PrimerPlazoDeOferta,
                     PrimeraCantidad = x.PrimeraCantidad,
@@ -6966,14 +7116,14 @@ namespace SustitucionMOAUtils.Services
                     {
                         Cantidad = sub.Cantidad,
                         Moneda_Id = sub.MonedaId > 0 ? sub.MonedaId : (int?)null,
-                        Moneda = sub.MonedaId > 0 ? info.Where(moneda => moneda.Id == sub.MonedaId).FirstOrDefault() : null,
+                        Moneda = sub.MonedaId > 0 ? info.Find(moneda => moneda.Id == sub.MonedaId) : null,
                         Precio = sub.Precio,
                         UnidadDeMedida_Id = sub.UnidadDeMedidaId > 0 ? sub.UnidadDeMedidaId : (int?)null,
-                        UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Where(unidad => unidad.Id == sub.UnidadDeMedidaId).FirstOrDefault() : null,
+                        UnidadDeMedida = sub.UnidadDeMedidaId > 0 ? info.Find(unidad => unidad.Id == sub.UnidadDeMedidaId) : null,
                         CotizacionPosicion_Id = sub.CotizacionPosicionId,
                         SolpSubPosicion_Id = sub.SolpSubPosicionId
                     }).ToList() : null,
-                }).ToList();
+                });
             }
             CompletarCotizacionPosicionYSubposicionNueva(cotizacionDto, cotizacion, info);
         }
@@ -7137,28 +7287,6 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        private void EnviarMailCotizacion(Cotizacion cotizacion)
-        {
-            var peticion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta;
-            var asunto = "";
-            var enviarA = new List<string> { peticion.Usuario.Mail };
-
-            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
-            var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
-            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
-            var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
-
-            enviarA.AddRange(mailPliego);
-            enviarA.AddRange(mailCreador);
-
-            Log.Info($"Copia mail solicitante paso 1: {mailPliego.ToJson()}");
-            Log.Info($"Copia mail solicitante: {mailCreador.ToJson()}");
-
-
-            asunto += "NUEVA cotización creada - SOLPs " + string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct());
-            emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", null, CuerpoMailCotizacion(cotizacion), null, null, null, null);
-        }
-
         private void EnviarMailAvisoDeErrorRegistroInfo(Cotizacion cotizacion)
         {
             var asunto = "";
@@ -7167,48 +7295,6 @@ namespace SustitucionMOAUtils.Services
 
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString("Se informa que al momento de finalizar una cotizacion, el registro info no se pudo generar, revisar los logs", null, "text/html");
             emailService.EnviarMail(enviarA, asunto, "", null, alternateView, null, null, null, null);
-        }
-
-        private AlternateView CuerpoMailCotizacion(Cotizacion cotizacion)
-        {
-            var filePath = httpContextService.ObtenerPathLogoMail();
-            LinkedResource res = new LinkedResource(filePath);
-            res.ContentId = Guid.NewGuid().ToString();
-            var proveedor = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor();
-            string htmlBody = "";
-            htmlBody += $"En el presente mail se informa la cotización realizada para la SOLP " +
-                $"{string.Join(", ", cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct())} y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";
-
-            var todasLasPosicionesNoDisponibles = cotizacion.CotizacionPosiciones.All(x => x.NoDisponible != null && x.NoDisponible.Value);
-            var algunaPosicionNoDisponible = cotizacion.CotizacionPosiciones.Any(x => x.NoDisponible != null && x.NoDisponible.Value);
-            var noRespetaMateriales = cotizacion.RespetaMateriales == false;
-            if (todasLasPosicionesNoDisponibles || algunaPosicionNoDisponible || noRespetaMateriales)
-            {
-                htmlBody += $"<strong>Nota:</strong><br/>";
-            }
-            if (todasLasPosicionesNoDisponibles)
-            {
-                htmlBody += $"El proveedor no cuenta con el material disponible.<br/>";
-
-            }
-            else if (algunaPosicionNoDisponible)
-            {
-                htmlBody += $"El proveedor no cuenta con algún material disponible.<br/>";
-
-            }
-            if (noRespetaMateriales)
-            {
-                htmlBody += $"La propuesta no cumple con las especificaciones técnicas solicitadas. Revisar con prioridad. <br/>";
-            }
-
-            htmlBody += " <br/>Puede visualizar la cotización en www.moaoperaciones.com.ar " +
-                 "<br/><br/>Saludos Cordiales<br/>" +
-                 "Molinos Agro S.A. <br/><br/> " +
-                  @"<img width:'5%' src='cid:" + res.ContentId + @"'/>";
-
-            AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-            alternateView.LinkedResources.Add(res);
-            return alternateView;
         }
 
         public GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto)
@@ -7370,7 +7456,7 @@ namespace SustitucionMOAUtils.Services
                             Garantias = adjudicacionDto.Garantias,
                             TextoDeCabecera = adjudicacionDto.TextoDeCabecera,
                             Posiciones = posiciones,
-                            Token = Guid.NewGuid().ToString(),
+                            //Token = Guid.NewGuid().ToString(),
                             RegionSap = regiones.FirstOrDefault(c => c.Id == adjudicacionDto.RegionSap),
                             RegionSap_Id = adjudicacionDto.RegionSap,
                             NumeroOrdenDeCompra = ""
@@ -7534,7 +7620,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (esServicios)
                     {
-                        if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Count() > 0)
+                        if (cotizacionPosicion.CotizacionSubPosiciones != null && cotizacionPosicion.CotizacionSubPosiciones.Any())
                         {
                             foreach (var subpos in cotizacionPosicion.CotizacionSubPosiciones)
                             {
@@ -7903,6 +7989,7 @@ namespace SustitucionMOAUtils.Services
                     result.Cabecera.CUITProveedor = proveedor.CUIT;
                     result.Cabecera.CodigoProveedor = proveedor.CodigoProveedor;
                     result.Cabecera.Usuario_Id = proveedor.Usuario_Id;
+                    result.Cabecera.MailProveedor = proveedor.Mail;
                 }
                 catch (Exception e)
                 {
@@ -7951,7 +8038,8 @@ namespace SustitucionMOAUtils.Services
                     RazonSocial = proveedorMoa.NAME,
                     CodigoProveedor = codigoProveedor,
                     CUIT = cuit,
-                    Usuario_Id = resultado.ProveedorDto.Id
+                    Usuario_Id = resultado.ProveedorDto.Id,
+                    Mail = resultado.ProveedorDto.Mail
                 };
             }
             else
@@ -7969,7 +8057,8 @@ namespace SustitucionMOAUtils.Services
                     CodigoProveedor = codigoProveedor,
                     CUIT = cuit,
                     Usuario_Id = usuarioDb.Id,
-                    Proveedor_Id = proveedor.Id
+                    Proveedor_Id = proveedor.Id,
+                    Mail = proveedor.Mail
                 };
             }
         }
@@ -8010,42 +8099,54 @@ namespace SustitucionMOAUtils.Services
             var registros = new List<RegistroInfoDto>();
             var solpPosiciones = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion).Where(x => x.MaterialSolp != null);
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
-            if (solpPosiciones.Count() > 0 && solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
+            if (solpPosiciones.Any() && solpPosiciones.First().TipoPosicion.Codigo == "MATERIALES")
             {
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(solpPosiciones.Select(x => x.MaterialSolp.Codigo).ToList());
             }
             foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null)) //excluye no catalogados
             {
-                var registro = new RegistroInfoDto
-                {
-                    Cantidad = cotizacionPosicion.Cantidad.Value,
-                    MaterialCodigo = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    Cuit = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor(),
-                    Unidad = cotizacionPosicion.UnidadDeMedida.Codigo,
-                    OrganizacionDeCompra = "2029",
-                    Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
-                    Moneda = cotizacionPosicion.Moneda.Codigo,
-                    Precio = cotizacionPosicion.Precio.Value,
-                    FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
-                    FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
-                    GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo,
-                    EsModificar = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor()).EsModificar
-                };
                 var solpPosicion = solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
-                if (solpPosicion != null && cotizacionPosicion.UnidadDeMedida.Id != solpPosicion.Unidad_Id)
-                {
-                    var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
-                    var unidadBase = unidadesDelMaterial.First(x => x.Numerador == 1 && x.Denominador == 1);
-                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadDeMedida.Codigo);
-                    registro.Unidad = unidadBase.UnidadDeMedida;
-                    registro.Cantidad = Math.Round(cotizacionPosicion.Cantidad.Value * (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
-                    registro.Precio = Math.Round(cotizacionPosicion.Precio.Value / (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
-                };
+                var registro = CrearRegistroInfoDto(cotizacionPosicion, solpPosicion, unidadesDeMedidaSAP, cotizacion);
                 registros.Add(registro);
             }
 
             return registros;
+        }
+        private RegistroInfoDto CrearRegistroInfoDto(
+            CotizacionPosicion cotizacionPosicion,
+            SolpPosicion solpPosicion,
+            IEnumerable<UnidadesDeMedida> unidadesDeMedidaSap,
+            Cotizacion cotizacion = null
+            )
+        {
+            var registro = new RegistroInfoDto
+            {
+                Cantidad = cotizacionPosicion.Cantidad.Value,
+                MaterialCodigo = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                Cuit = cotizacion != null ? cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor()
+                        : cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor(),
+                Unidad = cotizacionPosicion.UnidadDeMedida.Codigo,
+                OrganizacionDeCompra = "2029",
+                Centro = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo,
+                Moneda = cotizacionPosicion.Moneda.Codigo,
+                Precio = cotizacionPosicion.Precio.Value,
+                FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
+                FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
+                GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo,
+                EsModificar = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor()).EsModificar
+            };
+
+            if (solpPosicion != null && cotizacionPosicion.UnidadDeMedida.Id != solpPosicion.Unidad_Id)
+            {
+                var unidadesDelMaterial = unidadesDeMedidaSap.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
+                var unidadBase = unidadesDelMaterial.First(x => x.Numerador == 1 && x.Denominador == 1);
+                var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadDeMedida.Codigo);
+                registro.Unidad = unidadBase.UnidadDeMedida;
+                registro.Cantidad = Math.Round(cotizacionPosicion.Cantidad.Value * (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
+                registro.Precio = Math.Round(cotizacionPosicion.Precio.Value / (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
+            };
+            return registro;
         }
 
         public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId)
@@ -8205,7 +8306,7 @@ namespace SustitucionMOAUtils.Services
             return alternateView;
         }
 
-        public LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token)
+        public LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario)
         {
             LegajoExternoDto resultado = new LegajoExternoDto();
             var adjudicacion = repositorio.Obtener<Adjudicacion>(x => x.Id == adjudicacionId && x.Token == token);
@@ -8213,11 +8314,19 @@ namespace SustitucionMOAUtils.Services
             {
                 var cotizacion = adjudicacion.Cotizacion;
                 resultado.NroOrdenDeCompra = adjudicacion.NumeroOrdenDeCompra;
-                resultado.NroSolp = string.Join(", ", adjudicacion.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
+                List<string> nrosSolp = adjudicacion.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp).ToList();
                 resultado.Proveedor = new UsuarioDto(adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario);
                 resultado.FechaAdjudicacionFormateado = adjudicacion.FechaCreacion.ToString("dd/MM/yyyy");
 
-                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false);
+                resultado.ListaLegajos = ObtenerLegajo(cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario, true).LegajoFilas;
+
+                var adjudicacionesMismaOC = repositorio.Listar<Adjudicacion>(x => x.NumeroOrdenDeCompra == adjudicacion.NumeroOrdenDeCompra && x.Id != adjudicacion.Id);
+                foreach (var adjudicacionMismaOC in adjudicacionesMismaOC)
+                {
+                    resultado.ListaLegajos.AddRange(ObtenerLegajo(adjudicacionMismaOC.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta_Id, null, false, mailUsuario, true).LegajoFilas);
+                    nrosSolp.AddRange(adjudicacionMismaOC.Posiciones.Select(x => x.Posicion.Solp).Select(x => x.NroSolp));
+                }
+                resultado.NroSolp = string.Join(", ", nrosSolp.Distinct());
             }
             return resultado;
         }
@@ -8672,35 +8781,9 @@ namespace SustitucionMOAUtils.Services
 
         public bool ValidarSolpTratada(string nroSolp)
         {
-            DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-            DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-            var filtros = new ObtenerSolpRequest
-            {
-                FechaDesde = fechaDesde,
-                FechaHasta = fechaHasta,
-                NumeroSolp = nroSolp,
-            };
-            var tratada = false;
             try
             {
-                if (!string.IsNullOrEmpty(nroSolp))
-                {
-                    var solpEntidad = repositorio.Obtener<Solp>(a => a.NroSolp == nroSolp);
-                    var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
-                    var cantidadPendienteSap = (decimal)0;
-                    foreach (var item in solpEntidad.Posiciones)
-                    {
-                        cantidadPendienteSap += solp != null && solp.Posiciones.Count > 0 &&
-                          solp.Posiciones.Any(x => Int32.Parse(x.NumeroPosicion) == item.Indice) ?
-                          (solp.Posiciones.Where(x => Int32.Parse(x.NumeroPosicion) == item.Indice).FirstOrDefault().Ordered) : 0;
-                    }
-
-                    if (cantidadPendienteSap > 0)
-                    {
-                        tratada = (solpEntidad.Posiciones.Sum(x => x.Cantidad) - cantidadPendienteSap) <= 0;
-                    }
-                }
-                return tratada;
+                return !comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(nroSolp).Any();
             }
             catch (Exception e)
             {
@@ -9322,7 +9405,24 @@ namespace SustitucionMOAUtils.Services
 
         private void SetNombreDePedido(Solp solp)
         {
-            if (string.IsNullOrEmpty(solp.Pliego?.NombreObra) || solp.TipoSolpSap != (int)TipoSolpSap.Web || solp.TipoSolp == null || solp.TipoSolp.Codigo == "SIN_PLIEGO")
+            if (solp is null) { throw new ArgumentNullException(nameof(solp)); }
+
+#pragma warning disable S2589 // Boolean expressions should not be gratuitous <-- se usa esto para que el código sea más legible
+            bool mustSetNombreDePedido = false;
+            // no usar |= ya que ese operador no respeta el cortocircuito
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.Pliego is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || string.IsNullOrWhiteSpace(solp.Pliego.NombreObra);
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolpSap is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolpSap != (int?)TipoSolpSap.Web;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolp is null;
+            mustSetNombreDePedido = mustSetNombreDePedido || solp.TipoSolp.Codigo == "SIN_PLIEGO";
+
+            bool canSetNombreDePedido = true;
+            canSetNombreDePedido = canSetNombreDePedido && solp.Posiciones != null;
+            canSetNombreDePedido = canSetNombreDePedido && (solp.Posiciones.Count > 0);
+#pragma warning restore S2589 // Boolean expressions should not be gratuitous
+
+            if (mustSetNombreDePedido && canSetNombreDePedido)
             {
                 string nombre = solp.Posiciones.Count > 2 ? string.Join(" + ", solp.Posiciones.Take(2).Select(x => x.Tarea)) + " + Otros" :
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));
@@ -9608,7 +9708,7 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = x.Id,
                 Cotizacion_Id = x.Cotizacion_Id,
-                FechaFinalizacion = x.FechaFinalizacion.ToString("dd-MM-yyyy hh:mm:ss") + "hs",
+                FechaFinalizacion = x.FechaFinalizacion.ToString("dd-MM-yyyy HH:mm:ss") + "hs",
                 Log = x.Log,
                 Usuario_Id = x.Usuario_Id,
                 UsuarioRazonSocial = x.Usuario.ObtenerRazonSocial()
@@ -9669,7 +9769,7 @@ namespace SustitucionMOAUtils.Services
                     FechaEntregaServicio = pos.FechaEntregaServicio,
                     PlazoEntrega = pos.PlazoEntrega,
                     FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                    TieneCotizacion = pos.Peticiones.Any()
+                    TieneCotizacion = pos.Peticiones.Any(),
                 },
                     pos => pos.TipoPosicion.Codigo == "MATERIALES" &&
                     solps.Contains(
@@ -9720,7 +9820,15 @@ namespace SustitucionMOAUtils.Services
                       (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
                       pos.Solp.EstadoSolpSap.CodigoSap == "02")
                 );
-
+                foreach (var posicion in posicionMaterial)
+                {
+                    if (posicion.TieneCotizacion)
+                    {
+                        posicion.ListaPO = repositorio.Obtener<SolpPosicion, IEnumerable<string>>(
+                            po => po.Id == posicion.Id,
+                            po => po.Peticiones.Select(p => p.Id.ToString())).ToList();
+                    }
+                }
                 return posicionMaterial;
             }
             catch (Exception e)
@@ -9922,9 +10030,9 @@ namespace SustitucionMOAUtils.Services
             // Obtener todas las fechas únicas de circulares y cotizaciones
             var fechasUnicas = proveedores.SelectMany(p => p.FechasCirculares)
                                           .Union(proveedores.SelectMany(p => p.FechasCotizaciones))
-                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraCreacion.Count() > 0)
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraCreacion.Any())
                                            .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraCreacion))
-                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraLiberacion.Count() > 0)
+                                          .Union(proveedores.Where(p => p.FechaOrdenDeCompraLiberacion.Any())
                                            .SelectMany(p => (IEnumerable<DateTime>)p.FechaOrdenDeCompraLiberacion))
                                           .Union(cierres)
                                           .Select(f => f.Date)
@@ -9944,7 +10052,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var proveedor in proveedores)
                 {
                     var fechaCircular = proveedor.FechasCirculares.Where(x => x.Date == fecha.Date).ToList();
-                    if (fechaCircular != null && fechaCircular.Count() > 0)
+                    if (fechaCircular != null && fechaCircular.Any())
                     {
                         var rolUsuario = ObtenerRol(proveedor.UsuariosCirculares.FirstOrDefault());
                         string fechaHoraCirculares = string.Join(", ", fechaCircular.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
@@ -9961,7 +10069,7 @@ namespace SustitucionMOAUtils.Services
                 foreach (var proveedor in proveedores)
                 {
                     var fechaCotizacion = proveedor.FechasCotizaciones.Where(x => x.Date == fecha.Date).ToList();
-                    if (fechaCotizacion != null && fechaCotizacion.Count() > 0)
+                    if (fechaCotizacion != null && fechaCotizacion.Any())
                     {
                         string fechaHoraCotizacion = string.Join(", ", fechaCotizacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                         fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCotizacion} - Cotización");
@@ -9981,7 +10089,7 @@ namespace SustitucionMOAUtils.Services
                     if (proveedor.FechaOrdenDeCompraLiberacion.Any())
                     {
                         var fechaOrdenDeCompraLiberacion = proveedor.FechaOrdenDeCompraLiberacion.Where(x => x.Date == fecha.Date).ToList();
-                        if (fechaOrdenDeCompraLiberacion != null && fechaOrdenDeCompraLiberacion.Count() > 0)
+                        if (fechaOrdenDeCompraLiberacion != null && fechaOrdenDeCompraLiberacion.Any())
                         {
                             string fechaHoraOrdenLiberada = string.Join(", ", fechaOrdenDeCompraLiberacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenLiberada} - Orden de compra liberada");
@@ -10005,7 +10113,7 @@ namespace SustitucionMOAUtils.Services
                     if (proveedor.FechaOrdenDeCompraCreacion.Any())
                     {
                         var fechaOrdenDeCompraCreacion = proveedor.FechaOrdenDeCompraCreacion.Where(x => x.Date == fecha.Date).ToList();
-                        if (fechaOrdenDeCompraCreacion != null && fechaOrdenDeCompraCreacion.Count() > 0)
+                        if (fechaOrdenDeCompraCreacion != null && fechaOrdenDeCompraCreacion.Any())
                         {
                             string fechaHoraOrdenCreada = string.Join(", ", fechaOrdenDeCompraCreacion.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraOrdenCreada} - Orden de compra creada");
@@ -10030,7 +10138,7 @@ namespace SustitucionMOAUtils.Services
                     if (cierres.Any())
                     {
                         var cierre = cierres.Where(x => x.Date == fecha.Date).ToList();
-                        if (cierre != null && cierre.Count() > 0)
+                        if (cierre != null && cierre.Any())
                         {
                             string fechaHoraCierre = string.Join(", ", cierre.OrderBy(x => x).Select(x => x.ToString("HH:mm") + "hs"));
                             fila.Add($"{fecha.ToString("dd/MM/yyyy")} {fechaHoraCierre} - Cierre de cotización");
@@ -10281,8 +10389,9 @@ namespace SustitucionMOAUtils.Services
         {
             var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
             var posicionesId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.SolpPosicion_Id);
+            var cotizacionPosicionId = adjudicacionDto.AdjudicacionPosiciones.Select(x => x.CotizacionPosicion_Id);
             var posicionesSolp = repositorio.Listar<SolpPosicion>(x => posicionesId.Contains(x.Id));
-            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => posicionesId.Contains(x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id) && x.PeticionDeOfertaSolpPosicion.PeticionDeOferta_Id == adjudicacionDto.PeticionDeOferta_Id);
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => cotizacionPosicionId.Contains(x.Id));
             var esServicios = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo != "MATERIALES";
             var trabajoYaHecho = cotizacionPosiciones.FirstOrDefault().Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true;
 
@@ -10290,32 +10399,28 @@ namespace SustitucionMOAUtils.Services
             {
                 respuestaGuardarSOLP.Errores = new List<String>();
                 var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
-                var adjudicacionResultDto = new AdjudicacionResultDto { Cotizacion_Id = adjudicacionDto.Cotizacion_Id };
                 var monedaCodigo = "";
                 if (adjudicacionDto.EsMonedaProveedor)
                 {
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
                     if (!string.IsNullOrEmpty(monedaProv))
                     {
-                        monedaCodigo = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
+                        monedaCodigo = tablasap.Find(moneda => moneda.CodigoSap == monedaProv)?.CodigoSap;
                     }
                 }
 
                 foreach (var posicion in posicionesSolp)
                 {
-                    var cotizacionPosicion = cotizacionPosiciones.FirstOrDefault(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
+                    var cotizacionPosicion = cotizacionPosiciones.Find(x => x.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == posicion.Id);
                     decimal monto = 0;
-                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.FirstOrDefault(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
+                    var moneda = !string.IsNullOrEmpty(monedaCodigo) ? monedaCodigo : tablasap.Find(m => m.Id == posicion.Moneda_Id)?.CodigoSap;
 
-                    if (esServicios)
-                    {
-                        monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.CodigoSap, posicion.Subposiciones.ToList());
-                    }
+                    monto = DevolverMontoServicioSolicitado(moneda, cotizacionPosicion.CotizacionSubPosiciones.First().Moneda.CodigoSap, posicion.Subposiciones.ToList());
 
                     var totalSolicitado = monto;
                     var totalCotizado = cotizacionPosicion.CotizacionSubPosiciones.Sum(cp => cp.Precio.Value * cp.Cantidad) ?? 0;
                     var monedaAdjudicada = moneda;
-                    var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+                    var monedaCotizada = cotizacionPosicion.CotizacionSubPosiciones.First().Moneda.Codigo;
 
                     if (monedaAdjudicada != monedaCotizada)
                     {
@@ -10366,6 +10471,425 @@ namespace SustitucionMOAUtils.Services
                 ObservacionCondicionesEspeciales = "Justificación de condición especial: " + solp.Pliego.ObservacionesCotizacionCondEsp
             };
             return adjuntosSolpDto;
+        }
+        private bool ProveedorExisteEnSAP(string codigoProveedor)
+        {
+            return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
+        }
+
+        public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite)
+        {
+            Resultado resultado = new Resultado();
+            Solp solp = repositorio.Obtener<Solp>(x => x.Id == id);
+            solp.EnvioCircularA = envioCircularA;
+            if (fechaLimite != null)
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = new DateTime(fechaLimite.Value.Year, fechaLimite.Value.Month, fechaLimite.Value.Day, 23, 59, 59, DateTimeKind.Local);
+            }
+            else
+            {
+                solp.FechaLimiteReenvioDocumentacionPorCambioCondiciones = null;
+            }
+            repositorio.GuardarCambios();
+            resultado.IdEntidad = solp.Id;
+            resultado.Mensaje = "Se grabó con éxito";
+            return resultado;
+        }
+
+        public ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(
+            ValidarFechaVigenciaRegistroInfoReqDto request)
+        {
+            var cotizacionPosicion = repositorio.Obtener<CotizacionPosicion>(request.CotizacionPosicionId);
+            var ultimoRegistroInfo = ObtenerUltimoRegistroPorMaterialYProveedor(
+                request.MaterialCodigoSap, request.CentroCodigoSap, request.GrupoComprasCodigoSap,
+                cotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor()
+                );
+
+            return new ValidarFechaVigenciaRegistroInfoResDto
+            {
+                CotizacionPosicionId = request.CotizacionPosicionId,
+                EstaVigente = DateTime.Parse(ultimoRegistroInfo.FechaVigencia).Date >= DateTime.Now.Date,
+                FechaVigencia = ultimoRegistroInfo?.FechaVigencia
+            };
+        }
+
+        public void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos)
+        {
+            if (datos.NuevaFechaVigencia.Date < DateTime.Now.Date)
+            {
+                throw new ValidationCustomException("No puede seleccionarse una fecha anterior al día de hoy.");
+            }
+            var idCotizacionesPosiciones = datos.RegistrosInfo.Select(r => r.CotizacionPosicion_Id);
+            var idSolpPosiciones = datos.RegistrosInfo.Select(r => r.SolpPosicion_Id);
+            var cotizacionPosiciones = repositorio.Listar<CotizacionPosicion>(x => idCotizacionesPosiciones.Contains(x.Id));
+            var solpPosiciones = repositorio.Listar<SolpPosicion>(x => idSolpPosiciones.Contains(x.Id));
+            var unidadesDeMedidaSap = obtenerUnidadesDeMedidaConsumerMOA.Request(solpPosiciones.Select(x => x.MaterialSolp.Codigo).ToList());
+            var registros = new List<RegistroInfoDto>();
+
+            foreach (var registro in datos.RegistrosInfo)
+            {
+                var cotizacionPosicion = cotizacionPosiciones.FirstOrDefault(x => x.Id == registro.CotizacionPosicion_Id);
+                var solpPosicion = ObtenerSolpPosicion(solpPosiciones, cotizacionPosicion);
+                var registroInfo = CrearRegistroInfoDto(cotizacionPosicion, solpPosicion, unidadesDeMedidaSap);
+                registroInfo.FechaVigencia = datos.NuevaFechaVigencia.ToString("yyyy-MM-dd");
+                registros.Add(registroInfo);
+            }
+            if (registros.Any(x => !x.EsModificar))
+            {
+                CrearOActualizarRegistrosInfoEnSap(registros.Where(x => !x.EsModificar).ToList());
+            }
+            registros.ForEach(x => x.EsModificar = true);
+
+            var respuesta = CrearOActualizarRegistrosInfoEnSap(registros);
+            var errores = respuesta.Errores != null ? respuesta.Errores.Where(x => x.Tipo == "E") : null;
+
+            if (errores != null && errores.Any())
+            {
+                throw new WSCustomException(string.Join(" - ", errores.Select(x => x.Mensaje)));
+            }
+        }
+        private SolpPosicion ObtenerSolpPosicion(IEnumerable<SolpPosicion> solpPosiciones, CotizacionPosicion cotizacionPosicion)
+        {
+            return solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
+        }
+
+        private CrearSolpConsumerMOAResponse CrearOActualizarRegistrosInfoEnSap(List<RegistroInfoDto> registros)
+        {
+            return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
+        }
+
+        private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion, UsuarioDto usuarioDto)
+        {
+            foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
+            {
+                var fechaCotizacion = cotizacion.FechaCreacion;
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = cotizacion.Id,
+                    Fecha = fechaCotizacion,
+                    FechaFormateado = fechaCotizacion.ToString("dd/MM/yyyy"),
+                    Leido = false,
+                    Observacion = "Cotización proveedor " + cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerRazonSocial(),
+                    PeticionDeOfertaId = peticion.Id,
+                    SolpId = 0,
+                    Tipo = TipoLegajo.Cotizacion,
+                    Usuario = new UsuarioDto
+                    {
+                        CUIT = cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro,
+                        Mail = cotizacion.PeticionDeOfertaUsuario.Usuario.Mail,
+                        Id = cotizacion.PeticionDeOfertaUsuario.Usuario_Id
+                    },
+                    UsuarioId = 0
+                });
+            }
+        }
+
+        private void AgregarALegajoDescargaRevisionTecnica(List<LegajoDto> legajo, PeticionDeOferta peticion)
+        {
+            if (peticion?.RevisionTecnica != null)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = peticion.Id,
+                    Fecha = peticion.RevisionTecnica.Fecha,
+                    FechaFormateado = peticion.RevisionTecnica.Fecha.ToString("dd/MM/yyyy"),
+                    Leido = false,
+                    Observacion = "Revisión técnica",
+                    PeticionDeOfertaId = peticion.Id,
+                    SolpId = 0,
+                    Tipo = TipoLegajo.RevisionTecnica,
+                    Usuario = new UsuarioDto
+                    {
+                        Mail = peticion.RevisionTecnica.Usuario.Mail,
+                        CUIT = peticion.RevisionTecnica.Usuario.CUITRegistro,
+                        Id = peticion.RevisionTecnica.Usuario_Id,
+                    },
+                    UsuarioId = 0
+                });
+            }
+        }
+
+        private void AgregarALegajoPeticionVisualizarPrecio(List<LegajoDto> legajo, PeticionDeOferta peticionOferta)
+        {
+            var peticionVisualizarPrecio = repositorio.Obtener<PeticionDeOfertaVisualizacionPrecio>(x => x.PeticionDeOferta_Id == peticionOferta.Id);
+            if (peticionVisualizarPrecio != null)
+            {
+                legajo.Add(new LegajoDto
+                {
+                    ArchivoId = peticionVisualizarPrecio.Archivo?.Id,
+                    Observacion = "Justificación de visualización de precios: " + peticionVisualizarPrecio.Observaciones,
+                    PeticionDeOfertaId = peticionOferta.Id,
+                    SolpId = peticionOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                    Fecha = peticionVisualizarPrecio.FechaCreacion,
+                    FechaFormateado = peticionVisualizarPrecio.FechaCreacion.ToString("dd/MM/yyyy"),
+                    Usuario = new UsuarioDto { CUIT = peticionVisualizarPrecio.Usuario.CUITRegistro, Mail = peticionVisualizarPrecio.Usuario.Mail, Id = peticionVisualizarPrecio.UsuarioCreador_Id },
+                    Tipo = TipoLegajo.PeticionDeOfertaVisualizacionPrecio
+                });
+            }
+        }
+
+        private void AgregarALegajoHistorialDeMovimientos(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId)
+        {
+            legajo.Add(new LegajoDto
+            {
+                ArchivoId = 0,
+                Observacion = "Excel con historial de movimientos",
+                PeticionDeOfertaId = peticionDeOfertaId,
+                SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                Fecha = DateTime.Now,
+                FechaFormateado = DateTime.Now.ToString("dd/MM/yyyy"),
+                Usuario = new UsuarioDto { CUIT = "", Mail = "---" },
+                Tipo = TipoLegajo.HistorialMovimientos
+            });
+        }
+
+        private void AgregarALegajoDocumentosEnviadosPorProveedores(List<LegajoDto> legajo, PeticionDeOferta peticion, int peticionDeOfertaId, UsuarioDto usuarioDto)
+        {
+            // Buscar archivos de la cotizacion 
+            if (peticion.Usuarios == null)
+            {
+                return;
+            }
+            var proveedoresProcesados = new HashSet<int>();
+
+            foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0))
+            {
+                var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                if (cotizacionUsuario.Archivos.Count > 0 &&
+                    !proveedoresProcesados.Contains(cotizacionUsuario.UsuarioCreador_Id) &&
+                    PuedenVerseLosImportesDeCotizacion(cotizacionUsuario, usuarioDto))
+                {
+                    proveedoresProcesados.Add(cotizacionUsuario.UsuarioCreador_Id);
+
+                    legajo.Add(new LegajoDto
+                    {
+                        ArchivoId = cotizacionUsuario.Archivos.First().Id,
+                        Observacion = cotizacionUsuario.UsuarioCreador.ObtenerRazonSocial() + ": Descargar adjuntos",
+                        PeticionDeOfertaId = peticionDeOfertaId,
+                        SolpId = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id,
+                        Fecha = cotizacionUsuario.FechaCreacion,
+                        FechaFormateado = cotizacionUsuario.FechaCreacion.ToString("dd/MM/yyyy"),
+                        Usuario = new UsuarioDto { CUIT = cotizacionUsuario.UsuarioCreador.CUITRegistro, Mail = cotizacionUsuario.UsuarioCreador.Mail, Id = cotizacionUsuario.UsuarioCreador_Id },
+                        Tipo = TipoLegajo.CotizacionAdjunto,
+                        PeticionDeOfertaUsuarioId = cotizacionUsuario.PeticionDeOfertaUsuario_Id
+                    });
+
+                }
+            }
+        }
+
+        private IEnumerable<Cotizacion> GetCotizacionesDescargables(PeticionDeOferta peticion, UsuarioDto usuarioActual)
+        {
+            var estaLiberado = peticion.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
+
+            var esMateriales = peticion.Posiciones.First().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+
+            if (estaLiberado)
+            {
+                foreach (var peticionOfertaUsuario in peticion.Usuarios)
+                {
+                    var circulares = peticionOfertaUsuario.Circulares.Select(cp => cp.Circular).ToList();
+                    var fechaFinPlazo = CalcularFechaFinDePlazo(peticion, circulares);
+
+                    var esUrgencia = peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia ?? false;
+                    var plazoOfertaSinFinalizar = fechaFinPlazo >= DateTime.Now && !esUrgencia;
+
+                    var cotizacion = peticionOfertaUsuario.Cotizaciones
+                        .Where(c => c.CotizacionEstado_Id != (int)CotizacionEstadoEnum.Incompleta)
+                        .OrderBy(c => c.FechaCreacion)
+                        .FirstOrDefault();
+
+                    var revisionTecnicaFinalizada = true;
+                    if (cotizacion != null)
+                    {
+                        if (esMateriales && cotizacion.RespetaMateriales == false && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
+                        {
+                            revisionTecnicaFinalizada = false;
+                        }
+                        if (!esMateriales && (peticion.RevisionTecnica == null || !peticion.RevisionTecnica.Finalizada))
+                        {
+                            revisionTecnicaFinalizada = false;
+                        }
+
+                        if ((!plazoOfertaSinFinalizar && revisionTecnicaFinalizada) || PuedenVerseLosImportesDeCotizacion(cotizacion, usuarioActual))
+                        {
+                            yield return cotizacion;
+                        }
+                    }
+                }
+            }
+        }
+
+        private DateTime CalcularFechaFinDePlazo(PeticionDeOferta peticion, List<Circular> circulares)
+        {
+            var plazoDeOfertaCierre = peticion.Cierres.Any() ? peticion.Cierres.Max(p => p.Fecha) : (DateTime?)null;
+            var plazoDeOfertaOriginal = peticion.PlazoDeOferta;
+
+            var ultimaCircularConFecha = circulares
+                .Where(c => c.RequiereCambioDeFechas == true && c.PlazoDeOferta.HasValue)
+                .OrderByDescending(c => c.Id)
+                .FirstOrDefault();
+
+            var fechaCircular = ultimaCircularConFecha?.FechaCreacion;
+            var plazoDeOfertaCircular = ultimaCircularConFecha?.PlazoDeOferta;
+
+            DateTime fechaFinPlazo;
+            if (plazoDeOfertaCierre == null && fechaCircular == null)
+            {
+                fechaFinPlazo = plazoDeOfertaOriginal;
+            }
+            else
+            {
+                if (plazoDeOfertaCierre == null)
+                {
+                    fechaFinPlazo = plazoDeOfertaCircular.Value;
+                }
+                else
+                {
+                    if (fechaCircular == null)
+                    {
+                        fechaFinPlazo = plazoDeOfertaCierre.Value;
+                    }
+                    else
+                    {
+                        if (plazoDeOfertaCierre.Value > fechaCircular)
+                        {
+                            fechaFinPlazo = plazoDeOfertaCierre.Value;
+                        }
+                        else
+                        {
+                            fechaFinPlazo = plazoDeOfertaCircular.Value;
+                        }
+                    }
+                }
+            }
+            return fechaFinPlazo;
+        }
+
+        public byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId)
+        {
+            var historial = ListarHistorialDeFechas(peticionDeOfertaId);
+            return ExcelExport.ComprasHistorialMovimientosToExcel(historial);
+        }
+
+        public string DescargarAdjuntosProveedores(int idPeticion, string pathBase, int? peticiondeOfertaUsuarioId)
+        {
+            var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
+            var zipFilename = $"Adjuntos-{peticion.FechaCreacion.ToString("yyyyMMdd")}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    // Agregar archivos de cotizaciones al zip
+                    if (peticion.Usuarios != null)
+                    {
+                        foreach (var usuario in peticion.Usuarios.Where(x => x.Cotizaciones.Count > 0 && (peticiondeOfertaUsuarioId == null || x.Id == peticiondeOfertaUsuarioId)))
+                        {
+                            var cotizacionUsuario = usuario.Cotizaciones.First();
+
+                            if (cotizacionUsuario.Archivos.Count > 0)
+                            {
+                                foreach (var item in cotizacionUsuario.Archivos)
+                                {
+                                    if ((item.FileKey == FileKeys.AdjuntoCotizacionRevisionEconomica || item.FileKey == FileKeys.AdjuntoCotizacionRevisionTecnica))
+                                    {
+                                        string fileName = Path.GetFileName(item.Ruta);
+                                        archivo.CreateEntryFromFile(item.Ruta, fileName);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return filePath;
+        }
+
+        private bool PuedenVerseLosImportesDeCotizacion(Cotizacion cotizacion, UsuarioDto usuarioDto)
+        {
+            if (cotizacion == null || cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Incompleta)
+            {
+                return false;
+            }
+
+            var peticionOfertaUsuario = cotizacion.PeticionDeOfertaUsuario;
+            var peticionDeOferta = peticionOfertaUsuario.PeticionDeOferta;
+
+            var estaLiberado = peticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
+            var esPeticionDeMateriales = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+            var respetaMateriales = cotizacion.RespetaMateriales ?? true;
+            var revisionEstaFinalizada = peticionDeOferta.RevisionTecnica != null && peticionDeOferta.RevisionTecnica.Finalizada;
+
+            if (!estaLiberado)
+            {
+                return false;
+            }
+
+            var puedenVerseImportes = true;
+            var circulares = peticionOfertaUsuario.Circulares.Select(cp => cp.Circular).ToList();
+            var fechaFinPlazo = CalcularFechaFinDePlazo(peticionDeOferta, circulares);
+            var esUrgencia = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia ?? false;
+            var esAdmin = usuarioDto?.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS") ?? false;
+
+            if (fechaFinPlazo >= DateTime.Now && !esUrgencia)
+            {
+                puedenVerseImportes = false;
+            }
+            if (esPeticionDeMateriales && !respetaMateriales && !revisionEstaFinalizada)
+            {
+                puedenVerseImportes = false;
+            }
+            if (!esPeticionDeMateriales && !revisionEstaFinalizada)
+            {
+                puedenVerseImportes = false;
+            }
+
+            if (!puedenVerseImportes && esAdmin)
+            {
+                var haSolicitadoVerPrecios = !ValidarVisualizarPrecio(usuarioDto.Id, peticionDeOferta.Id);
+                puedenVerseImportes = haSolicitadoVerPrecios;
+            }
+
+            return puedenVerseImportes;
+        }
+
+        private bool PuedenVerseLosImportes(PeticionDeOferta peticionDeOferta, UsuarioDto usuarioDto, List<Circular> circulares)
+        {
+            var estaLiberado = peticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02");
+            var esPeticionDeMateriales = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
+            //var respetaMateriales = cotizacion.RespetaMateriales ?? true;
+            var revisionEstaFinalizada = peticionDeOferta.RevisionTecnica != null && peticionDeOferta.RevisionTecnica.Finalizada;
+
+            if (!estaLiberado)
+            {
+                return false;
+            }
+
+            var puedenVerseImportes = true;
+            var fechaFinPlazo = CalcularFechaFinDePlazo(peticionDeOferta, circulares);
+            var esUrgencia = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia ?? false;
+            var esAdmin = usuarioDto?.Permisos.Exists(p => p == "ADJUDICAR DENTRO DEL PLAZO DE OFERTAS") ?? false;
+
+            if (fechaFinPlazo >= DateTime.Now && !esUrgencia)
+            {
+                puedenVerseImportes = false;
+            }
+
+            if (!revisionEstaFinalizada)
+            {
+                puedenVerseImportes = false;
+            }
+
+            if (!puedenVerseImportes && esAdmin)
+            {
+                var haSolicitadoVerPrecios = !ValidarVisualizarPrecio(usuarioDto.Id, peticionDeOferta.Id);
+                puedenVerseImportes = haSolicitadoVerPrecios;
+            }
+
+            return puedenVerseImportes;
         }
     }
 

@@ -67,6 +67,7 @@
     <Folder Include="scripts\Comunicacion" />
     <Folder Include="scripts\Notificaciones\" />
     <Folder Include="DBO\Sequence" />
+    <Folder Include="LOGS" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="DBO\Tables\ProveedorHistorialAprobacion.sql" />
@@ -231,6 +232,8 @@
     <Build Include="DBO\Tables\Almacen.sql" />
     <Build Include="DBO\Tables\MonedaConversion.sql" />
     <Build Include="DBO\Tables\CotizacionHistorial.sql" />
+    <Build Include="DBO\Tables\ProgresoCurso.sql" />
+    <Build Include="DBO\Tables\Curso.sql" />
     <None Include="scripts\Notificaciones\Notificacion.sql" />
     <None Include="scripts\Notificaciones\NotificacionFechaCreacion.sql" />
     <None Include="scripts\Notificaciones\NotificacionPrioridad.sql" />
@@ -249,6 +252,10 @@
     <Build Include="DBO\Tables\AdjuntosEntradasDeServicio.sql" />
     <Build Include="DBO\Sequence\SecuenciaNumeroTemporal.sql" />
     <Build Include="DBO\Stored Procedures\ObtenerSiguienteValorSecuencia.sql" />
+    <None Include="scripts\PostDeployment\UsuariosParaExternalAPI.sql" />
+    <Build Include="DBO\Tables\ConfiguracionUsuario.sql" />
+    <Build Include="LOGS\LogTable.sql" />
+    <Build Include="LOGS\schema.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -292,5 +299,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\PostDeployment\UsuariosConRolFleteMOA.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\Curso.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="scripts\PostDeployment\ActualizarApellidoChoferOrdenDeCargaFason.sql" />
   </ItemGroup>
 </Project>

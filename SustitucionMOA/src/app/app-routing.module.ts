@@ -27,6 +27,7 @@ import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ListadoNovedadesComponent } from "./listado-novedades/listado-novedades.component"
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
+import { LogViewerComponent } from "./log-viewer/log-viewer.component";
 
 
 const appRoutes: Routes = [
@@ -161,6 +162,13 @@ const appRoutes: Routes = [
                 path: "reporte-contrato",
                 loadChildren: "./reporte-contrato/reporte-contrato.module#ReporteContratoModule",
             },
+            {
+                path: "cursos",
+                loadChildren: "./cursos/cursos.module#CursosModule",
+            },
+            { path: "notificaciones", component: ListadoNotificacionesComponent },
+            { path: "notificaciones/alta", component: AltaNotificacionesComponent },
+            { path: "notificaciones/alta/:id", component: AltaNotificacionesComponent },
 
             { path: "comunicaciones", component: ComunicacionesComponent },
 
@@ -197,6 +205,8 @@ const appRoutes: Routes = [
                 loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule"
             },
             { path: "mis-novedades", component: ListadoNovedadesComponent },
+            { path: "log-viewer", component: LogViewerComponent },
+
 
         ],
     },

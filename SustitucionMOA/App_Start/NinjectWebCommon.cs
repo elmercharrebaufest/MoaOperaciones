@@ -29,6 +29,7 @@ using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive;
+using SustitucionMOAUtils.Export.CampoSustentable;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -77,34 +78,6 @@ namespace SustitucionMOA.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
-           
-            //kernel.Bind<ICartaPorteService>().To(typeof(CartaPorteService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ILocalidadService>().To(typeof(LocalidadService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ICuentaCorrienteService>().To(typeof(CuentaCorrienteService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAltaEmpresaGranosService>().To(typeof(AltaEmpresaGranosService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ICrearContratoService>().To(typeof(CrearContratoService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAltaEmpresaService>().To(typeof(AltaEmpresaService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAzureB2CService>().To(typeof(AzureB2CService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IDataAgroService>().To(typeof(DataAgroService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IUsuarioService>().To(typeof(UsuarioService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IContactoMailService>().To(typeof(ContactoMailService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IConsultaService>().To(typeof(ConsultaService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IComprasService>().To(typeof(ComprasService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IVendedorService>().To(typeof(VendedorService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAltaEmpresaNoGranosService>().To(typeof(AltaEmpresaNoGranosService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ILiquidacionService>().To(typeof(LiquidacionService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<INotificacionService>().To(typeof(NotificacionService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IOrdenDeCargaService>().To(typeof(OrdenDeCargaService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IKgDisponiblesFasService>().To(typeof(KgDisponiblesFasService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IFacturaAnticipadaService>().To(typeof(FacturaAnticipadaService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IOrdenDeCargaEstadoService>().To(typeof(OrdenDeCargaEstadoService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAplicacionCartaPorteService>().To(typeof(AplicacionCartaPorteService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IFeriadoService>().To(typeof(FeriadoService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IAzureService>().To(typeof(AzureService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IReportesService>().To(typeof(ReportesService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IReporteContratoService>().To(typeof(ReporteContratoService)).InScope(ctx => OperationContext.Current);
-
-            //kernel.Bind<ITicketPesadaService>().To(typeof(TicketPesadaService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteLiquidacionesInformadasJob>().To(typeof(ReporteLiquidacionesInformadasJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaJob>().To(typeof(VerificarTransporteOrdenesDeCargaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarTransporteOrdenesDeCargaFasonJob>().To(typeof(VerificarTransporteOrdenesDeCargaFasonJob)).InScope(ctx => OperationContext.Current);
@@ -120,25 +93,14 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IObtenerSolpsDesdeSAPJob>().To(typeof(ObtenerSolpsDesdeSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IActualizarLocalidadesPartidosJob>().To(typeof(ActualizarLocalidadesPartidosJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IActualizarSISAJob>().To(typeof(ActualizarSISAJob)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ICampoSustentableService>().To(typeof(CampoSustentableService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IHomeService>().To(typeof(HomeService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<ILogPesificacionService>().To(typeof(LogPesificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IValidadorPesificacion>().To(typeof(ValidadorPesificacion)).InScope(ctx => OperationContext.Current);
             kernel.Bind<ITimeProvider>().To(typeof(CurrentTimeProvider)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IGestionImpuestosService>().To(typeof(GestionImpuestosService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IPesificacionService>().To(typeof(PesificacionService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IExcelExportWrapper>().To(typeof(ExcelExportWrapper)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IFileWrapper>().To(typeof(FileWrapper)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IOrdenDeCargaFasonService>().To(typeof(OrdenDeCargaFasonService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteLoginsJob>().To(typeof(ReporteLoginsJob)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IEcheqService>().To(typeof(EcheqService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IVerificarSituacionCrediticiaJob>().To(typeof(VerificarSituacionCrediticiaJob)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IEmailFasonService>().To(typeof(EmailFasonService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IEmailFasService>().To(typeof(EmailFasService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IHttpContextService>().To(typeof(HttpContextService)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IObtenerRegistroInfoConsumerMOA>().To(typeof(ObtenerRegistroInfoConsumerMOA)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IOrderService>().To(typeof(OrderService)).InScope(ctx => OperationContext.Current);
-            //kernel.Bind<IEmailService>().To(typeof(EmailService)).InScope(ctx => OperationContext.Current);
+
             kernel.Bind<IAltaClienteSAPJob>().To(typeof(AltaClienteSAPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IEnviarMailReporteSOLPJob>().To(typeof(EnviarMailReporteSOLPJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<IReporteOrdenDeCompraConsumerMOA>().To(typeof(ReporteOrdenDeCompraConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -147,6 +109,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IDerivacionAutomaticaJob>().To(typeof(DerivacionesAutomaticaJob)).InScope(ctx => OperationContext.Current);
             kernel.Bind<INotificarAprobacionesPendientesJob>().To(typeof(NotificarAprobacionesPendientesJob)).InScope(ctx => OperationContext.Current);
 
+            kernel.Bind<INotificacionErroresJob>().To(typeof(NotificacionErroresJob)).InScope(ctx => OperationContext.Current);
+            
 
             #region Registro
 
@@ -175,6 +139,8 @@ namespace SustitucionMOA.App_Start
                 }
             }
             #endregion
+
+            kernel.Bind<ICampoSustentablePdfGenerator>().To(typeof(CampoSustentablePdfGenerator)).InScope(ctx => OperationContext.Current);
 
             #region InterfacesSAP
             kernel.Bind<IVendedorHabilitadoConsumerMOA>().To(typeof(VendedorHabilitadoConsumerMOA)).InScope(ctx => OperationContext.Current);
@@ -232,7 +198,9 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
             //Consulta Strategies

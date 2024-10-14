@@ -55,7 +55,7 @@ namespace SustitucionMOAModel.Entities
         public bool? RealizarAnalisisNOSIS { get; set; }
 
         public int? IdRubro { get; set; }
-        
+
         public string CondicionDePago { get; set; }
         public string ServicioPrestado { get; set; }
         public string OrganizacionDeCompra { get; set; }
@@ -85,6 +85,7 @@ namespace SustitucionMOAModel.Entities
         public string EstadoSISA { get; set; }
 
         public bool EsRevendedor { get; set; }
+        public bool EsClienteDeCorredorFason { get; set; }
 
         public bool EsNoGranos()
         {
@@ -94,6 +95,46 @@ namespace SustitucionMOAModel.Entities
         {
             var ultimoHistorial = HistorialAprobaciones.LastOrDefault();
             return (AltaInterna ?? false) && EsNoGranos() && ultimoHistorial.EstadoAprobacion == EstadoAprobacion.DocumentacionPendiente;
+        }
+        public bool CorrespondeEstadoPrevio()
+        {
+            if (HistorialAprobaciones == null)
+            {
+                return false;
+            }
+            var cantidadHistoriales = HistorialAprobaciones.Count;
+            var ultimoHistorial = HistorialAprobaciones.LastOrDefault();
+            if (cantidadHistoriales < 2 || ultimoHistorial == null)
+            {
+                return false;
+            }
+            return ultimoHistorial.EstadoAprobacion == EstadoAprobacion.EdicionRequerida;
+        }
+        public EstadoAprobacion? EstadoPrevioAActual()
+        {
+            if (HistorialAprobaciones == null)
+            {
+                return null;
+            }
+            var cantidadHistoriales = HistorialAprobaciones.Count;
+            if (cantidadHistoriales < 2)
+            {
+                return null;
+            }
+            //Alta solicitada -Analisis NOsis - Analisis Interno - Etapa Final
+            var estadoPermitidos = new EstadoAprobacion[]
+            {
+                EstadoAprobacion.AprobacionPendiente,
+                EstadoAprobacion.AnalisisDeNosis,
+                EstadoAprobacion.AnalisisInterno,
+                EstadoAprobacion.EtapaFinal,
+            };
+            var estadoPrevio = HistorialAprobaciones.ElementAt(cantidadHistoriales - 2).EstadoAprobacion;
+            if (!estadoPermitidos.Contains(estadoPrevio))
+            {
+                return null;
+            }
+            return estadoPrevio;
         }
     }
 }

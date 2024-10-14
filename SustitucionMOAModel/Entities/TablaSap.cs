@@ -8,14 +8,22 @@ namespace SustitucionMOAModel.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Tabla { get; set; }
-        public string Codigo { get; set; }
-        public string CodigoSap { get; set; }
-        public string Descripcion { get; set; }
-        public int? Padre_id { get; set; }
-        public bool? FiltroComprador { get; set; }
-        public bool? Deshabilitado { get; set; }
 
+        [Column(TypeName = "NVARCHAR")]
+        [StringLength(400)]
+        public string Tabla { get; set; }
+
+        public string Codigo { get; set; }
+
+        public string CodigoSap { get; set; }
+
+        public string Descripcion { get; set; }
+
+        public int? Padre_id { get; set; }
+
+        public bool? FiltroComprador { get; set; }
+
+        public bool? Deshabilitado { get; set; }
 
         [ForeignKey("Padre_id")]
         public TablaSap Padre { get; set; }

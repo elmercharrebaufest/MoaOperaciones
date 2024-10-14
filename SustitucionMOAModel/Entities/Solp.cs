@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Ignore Spelling: Automatica
+
+using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -39,6 +42,10 @@ namespace SustitucionMOAModel.Entities
         public bool? THAjustePolinomica { get; set; }
         public bool? THServicioPermanente { get; set; }
         public bool? TieneModificaciones { get; set; }
+        public EnviarCircularEnum? EnvioCircularA { get; set; }
+
+        public DateTime? FechaLimiteReenvioDocumentacionPorCambioCondiciones { get; set; }
+
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
@@ -61,12 +68,13 @@ namespace SustitucionMOAModel.Entities
 
         [ForeignKey("UsuarioCompras_Id")]
         public virtual UsuarioCompras UsuarioCompras { get; set; }
-     
+
         [InverseProperty("Solp")]
         public virtual ICollection<LiberadorSapSolp> LiberadoresSapSolp { get; set; } = new List<LiberadorSapSolp>();
 
         [InverseProperty("Solp")]
         public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
 
+        public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
     }
 }

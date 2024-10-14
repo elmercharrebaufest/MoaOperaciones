@@ -730,6 +730,12 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
           col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
         });
       }
+
+      if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
+        this.defaultTablesConfig[0].columns.forEach((col: any) => {
+          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
+        });
+      }
     }
   }
 

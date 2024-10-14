@@ -172,10 +172,13 @@
     <Compile Include="Email\DBMethods\DBService.cs" />
     <Compile Include="Email\EmailConfig.cs" />
     <Compile Include="Email\EmailSender.cs" />
+    <Compile Include="Export\CampoSustentable\CampoSustentablePdfGenerator.cs" />
+    <Compile Include="Export\CampoSustentable\ICampoSustentablePdfGenerator.cs" />
     <Compile Include="Export\ExcelExport.cs" />
     <Compile Include="Export\ExcelImport.cs" />
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
+    <Compile Include="Export\PdfFromHtmlGenerator.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\ConsultaCommon.cs" />
@@ -191,8 +194,15 @@
     <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
+    <Compile Include="Interfaces\ILogTableService.cs" />
+    <Compile Include="Interfaces\ICursoService.cs" />
+    <Compile Include="Interfaces\IEmailAplicacionCPService.cs" />
+    <Compile Include="Interfaces\IComprasArchivosService.cs" />
+    <Compile Include="Interfaces\IComprasSapService.cs" />
     <Compile Include="Interfaces\IDBService.cs" />
     <Compile Include="Interfaces\IEmailCertificationService.cs" />
+    <Compile Include="Interfaces\IEmailAplicacionCPService.cs" />
+    <Compile Include="Interfaces\IEmailComprasService.cs" />
     <Compile Include="Interfaces\IEmailFasonService.cs" />
     <Compile Include="Interfaces\IEmailResiduosService.cs" />
     <Compile Include="Interfaces\IExternalApiOrdenesResiduosService.cs" />
@@ -259,15 +269,21 @@
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\ComprasArchivosService.cs" />
+    <Compile Include="Services\ComprasSapService.cs" />
+    <Compile Include="Services\LogTableService.cs" />
     <Compile Include="Services\AprobacionesService.cs" />
     <Compile Include="Services\DerivacionesAprobacionesService.cs" />
     <Compile Include="Services\LogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
+    <Compile Include="Services\Email\EmailComprasService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\ComunicacionService.cs" />
     <Compile Include="Interfaces\IEmailService.cs" />
     <Compile Include="Services\ArchivoBoletoService.cs" />
+    <Compile Include="Services\CursoService.cs" />
+    <Compile Include="Services\Email\EmailAplicacionCPService.cs" />
     <Compile Include="Services\Email\EmailFasonService.cs" />
     <Compile Include="Services\Email\EmailResiduosService.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosService.cs" />
@@ -381,6 +397,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Templates\DeclaracionJuradaCcSsListaCamposTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\DeclaracionJuradaCcSsTemplate.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\DeclaracionJuradaCcSsTemplatePag2.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\EncabezadoSolpPreview.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

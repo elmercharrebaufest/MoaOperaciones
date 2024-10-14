@@ -126,6 +126,10 @@
                     <img (click)="eliminarAplicacion(aplicacion)" src="../../../../Content/images/icons/trashRed.svg"
                       alt="trashRed" class="cursor-pointer" style="height:25px;" />
                   </i>
+                  <i *ngIf="aplicacion.Estado === estadosAplicacionCCPP.PendienteAprobacion && esAdmin">
+                    <img (click)="aprobarORechazarAplicacion(aplicacion)" src="../../../../Content/images/icons/file-checkmark-icon.svg"
+                      alt="aprobar o rechazar" class="cursor-pointer" style="height:25px;" />
+                  </i>
                 </td>
               </tr>
             </tbody>
@@ -151,3 +155,36 @@
   </section>
   <!--End CONTENT-->
 </div>
+
+<p-dialog
+    [header]="'Aplicación pendiente de aprobación'" [(visible)]="mostrarModalAprobarRechazar" [modal]="true" [responsive]="true"
+    [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
+    [closable]="false">
+
+    <div class="card flex justify-content-center">
+      <p-selectButton
+        [options]="opcionesAprobarRechazar"
+        [(ngModel)]="decisionAprobarRechazar"
+        optionLabel="label"
+        optionValue="value">
+      </p-selectButton>
+    </div>
+
+    <div class="row">
+      <div *ngIf="decisionAprobarRechazar.value == 'rechazar'" class="col-xs-12 col-md-12">
+        <div class="formulario-label">
+          Motivo:
+        </div>
+        <div class="styled-select">
+          <input type="text" [(ngModel)]="motivoRechazo" multiple>
+        </div>
+      </div>
+    </div>
+
+    <p-footer>
+      <button type="button" pButton icon="pi pi-check" (click)="grabarDecisionSobreAplicacionPendienteAprobacion()" label="Guardar"
+        [disabled]="decisionAprobarRechazar.value != 'aprobar' && !(decisionAprobarRechazar.value == 'rechazar' && motivoRechazo.length>2)"></button>
+      <button type="button" pButton icon="pi pi-close" (click)="cancelarDecisionSobreAplicacionPendienteAprobacion()" label="Cerrar"
+        class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>

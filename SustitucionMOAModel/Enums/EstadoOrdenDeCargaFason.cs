@@ -2,17 +2,17 @@
 {
     public enum EstadoOrdenDeCargaFason
     {
-        Generada,
-        Pendiente,
-        Vencida,
-        Entregada,
-        SinEstado,
-        PendienteCompensacion,
-        PendienteContabilizacion,
-        EdicionSolicitada,
-        EdicionRechazada,
-        AnulacionSolicitada,
-        Anulada,
+        Generada = 0,
+        Pendiente = 1,
+        Vencida = 2,
+        Entregada = 3,
+        SinEstado = 4,
+        PendienteCompensacion = 5,
+        PendienteContabilizacion = 6,
+        EdicionSolicitada = 7,
+        EdicionRechazada = 8,
+        AnulacionSolicitada = 9,
+        Anulada = 10,
     }
 
     public static class EstadoOrdenDeCargaFasonExtensions
@@ -88,7 +88,7 @@
                 case EstadoOrdenDeCargaFason.Generada:
                     return "green";
                 case EstadoOrdenDeCargaFason.Entregada:
-                    return "white";
+                    return "green_entregada";
                 case EstadoOrdenDeCargaFason.PendienteCompensacion:
                 case EstadoOrdenDeCargaFason.PendienteContabilizacion:
                 case EstadoOrdenDeCargaFason.EdicionRechazada:

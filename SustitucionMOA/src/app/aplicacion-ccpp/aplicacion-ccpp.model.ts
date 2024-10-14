@@ -1,8 +1,9 @@
 import { DropdownOption } from '../common/view-child/dropdown/dropdown.component';
 export enum EstadoAplicacionCCPP {
-    Pendiente,
-    Aplicado,
-    Error
+    Pendiente = 0,
+    Aplicado = 1,
+    Error = 2,
+    PendienteAprobacion = 6
 }
 export type ColorEstado = 'red' | 'green' | 'orange'
 

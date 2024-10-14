@@ -119,9 +119,11 @@
     <Compile Include="Controllers\TicketPesadaControllerTest.cs" />
     <Compile Include="Controllers\OrdenDeCargaControllerTest.cs" />
     <Compile Include="Controllers\UsuarioControllerTest.cs" />
+    <Compile Include="DeployParameters\EndpointTests.cs" />
     <Compile Include="Jobs\ActualizarBaseDeDatosSolpSapJobTests.cs" />
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJobTest.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJobTests.cs" />
+    <Compile Include="Jobs\NotificacionErroresJobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorio\RepositorioOrdenResiduosTest.cs" />
     <Compile Include="Services\AplicacionCartaPorteTest.cs" />
@@ -145,11 +147,13 @@
     <Compile Include="Services\OrdenDeCargaServiceTest.cs" />
     <Compile Include="Services\TicketPesadaServiceTest.cs" />
     <Compile Include="Services\FacturaAnticipadaServiceTest.cs" />
+    <Compile Include="Services\LogTableServiceTests.cs" />
     <Compile Include="Services\UsuarioServiceTest.cs" />
     <Compile Include="Services\VendedorServiceTest.cs" />
     <Compile Include="WS\AzureAD\AzureADConsumerTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="coverage.runsettings" />
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="TestFiles\Example.kmz">
@@ -168,6 +172,10 @@
     <ProjectReference Include="..\SustitucionMOAExternalAPI\SustitucionMOAExternalAPI.csproj">
       <Project>{2DB8712D-EC58-4C1F-9329-E376FE5D8A50}</Project>
       <Name>SustitucionMOAExternalAPI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SustitucionMOAFotmatter\SustitucionMOAFotmatter.csproj">
+      <Project>{e7212de2-8c26-4ced-ac5c-4b5bba3612fc}</Project>
+      <Name>SustitucionMOAFotmatter</Name>
     </ProjectReference>
     <ProjectReference Include="..\SustitucionMOAModel\SustitucionMOAModel.csproj">
       <Project>{da0a7852-ea57-4359-ba7c-b8babdedbd42}</Project>

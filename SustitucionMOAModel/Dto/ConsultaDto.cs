@@ -1,10 +1,7 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using Entities = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -52,15 +49,8 @@ namespace SustitucionMOAModel.Dto
         public UsuarioDto Usuario { get; set; }
         public IList<ComentarioDto> Comentarios { get; set; }
 
-        public int? DiasReclamo { 
-            get {
-                if (this.EstadoConsulta != null && this.EstadoConsulta.Code == EstadosConsulta.Finalizado.Code())
-                    return (FechaUltimaModificacion - FechaCreacion).Days;
-
-                return (DateTime.Now - FechaCreacion).Days;
-            } 
-        }
-
+        public int? DiasReclamo { get; set; }
+        
         public bool PuedeReabrir
         {
             get
@@ -79,7 +69,7 @@ namespace SustitucionMOAModel.Dto
 
         public ConsultaDto() { }
 
-        public ConsultaDto(Consulta consulta)
+        public ConsultaDto(Entities.Consulta consulta)
         {
             this.Id = consulta.Id;
             this.Asunto = consulta.Asunto;

@@ -110,6 +110,7 @@ namespace SustitucionMOAModel.Entities
         public bool? DestinatarioExisteScato { get; set; }
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
+        public bool? FleteMOA { get; set; }
 
         public bool TieneCodigoSap(ControlCargaResEnum controlCargaRes)
         {
@@ -203,12 +204,7 @@ namespace SustitucionMOAModel.Entities
                         }
                         else
                         {
-                            if(Estado == EstadoOrdenDeCarga.EdicionSolicitada)
-                            {
-                                Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-                                
-                            }
-                            else if (FechaEntregaGenerada != null)
+                            if (FechaEntregaGenerada != null)
                             {
                                 Estado = EstadoOrdenDeCarga.EntregaGenerada;
                             }

@@ -15,6 +15,8 @@ namespace SustitucionMOAModel.Entities
         public int IdScato { get; set; }
         public ICollection<CampoCosecha> Cosechas { get; set; }
         public string Nombre { get; set; }
+        
+        public string Renspa { get; set; }
 
         [ForeignKey("Localidad_Id")]
         public virtual Localidad Localidad { get; set; }

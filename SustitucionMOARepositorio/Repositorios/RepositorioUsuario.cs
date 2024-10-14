@@ -77,7 +77,7 @@ namespace SustitucionMOARepositorio.Repositorios
         {
             return ExecuteQuery<VerificarActividadUsuario>
                 ("exec VerificarActividadUsuarioID @IdUsuario", new SqlParameter("@IdUsuario", usuario.Id))
-                .Any(verificacion=>verificacion.SeEncontraronRegistros);
+                .Any(verificacion=>verificacion.SeEncontraronRegistros && verificacion.Tabla != "ProveedorHistorialAprobacion");
         }
     }
 }

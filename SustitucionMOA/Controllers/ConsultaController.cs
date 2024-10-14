@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using SustitucionMOA.Utils;
 using SustitucionMOAAssets;
+using SustitucionMOAFotmatter;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.ViewModel;
@@ -175,18 +176,30 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
-        public ActionResult Consultas()
+        public ActionResult Consultas(ReqListadoConsultaDto reqListadoConsultaDto)
         {
             try
             {
                 var usuarioActual = ObtenerUsuarioActual();
                 var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
-                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos);
-                var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
-                var estados = consultaService.ObtenerEstados();
+                var paginacion = new Paginacion(
+                    reqListadoConsultaDto.OrderBy,
+                    reqListadoConsultaDto.DirOrden,
+                    reqListadoConsultaDto.Page,
+                    reqListadoConsultaDto.PageSize);
+                FiltrosConsultaDto filtros = null;
+                if (!string.IsNullOrEmpty(reqListadoConsultaDto.FiltrosURIEncoded))
+                {
+                    var jsonDecode = DataFormatter.FormatEncodedURI(reqListadoConsultaDto.FiltrosURIEncoded);
+                    filtros = DataFormatter.GetDtoFromJsonString<FiltrosConsultaDto>(jsonDecode);
+                }
 
-                categorias.ForEach(x => x.Cantidad = consultas.Count(c => c.CategoriaId == x.Id));
-                estados.ForEach(x => x.Cantidad = consultas.Count(c => c.EstadoConsultaId == x.Id));
+
+                var consultas = consultaService.ListarConsultas(usuarioActual.Id, obtenerTodos, paginacion, filtros);
+                var categorias = consultaService.ObtenerCategorias(false, usuarioActual, true);
+                var categoriasParaFiltrar = obtenerTodos ? consultaService.ObtenerCategoriasInterno(false, usuarioActual)
+                    .Select(x => x.Id) : null;
+                var estados = consultaService.ObtenerEstados(categoriasParaFiltrar);
 
                 return JsonCustom(new
                 {
@@ -194,7 +207,10 @@ namespace SustitucionMOA.Controllers
                     {
                         consultas,
                         categorias,
-                        estados
+                        estados,
+                        totalConsultas = consultas.ItemsTotales,
+                        pageItem = consultas.ItemsPorPagina,
+                        page = consultas.Pagina
                     }
                 });
             }
@@ -213,8 +229,81 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                var error = e + "-" + (e.InnerException != null ? e.InnerException.Message : string.Empty);
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, error);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult ListaExportacionConsultas(ReqListadoConsultaDto reqListadoConsultaDto)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+
+                FiltrosConsultaDto filtros = null;
+                if (!string.IsNullOrEmpty(reqListadoConsultaDto.FiltrosURIEncoded))
+                {
+                    var jsonDecode = DataFormatter.FormatEncodedURI(reqListadoConsultaDto.FiltrosURIEncoded);
+                    filtros = DataFormatter.GetDtoFromJsonString<FiltrosConsultaDto>(jsonDecode);
+                }
+
+                var consultas = consultaService.ListarConsultasSinPaginar(usuarioActual.Id, obtenerTodos, filtros);
+
+                return JsonCustom(new
+                {
+                    data = consultas
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONTACTO_MAIL)]
+        public ActionResult ObtenerConsultaDisconformidad(string numeroCCPP)
+        {
+            try
+            {
+                var usuarioActual = ObtenerUsuarioActual();
+                var obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+                var consulta = consultaService.ObtenerConsultaDisconformidad(numeroCCPP, usuarioActual.Id, obtenerTodos);
+
+                return JsonCustom(new
+                {
+                    data = consulta
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }

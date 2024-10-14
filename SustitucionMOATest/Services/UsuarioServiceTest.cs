@@ -197,7 +197,21 @@ namespace SustitucionMOATest.Services
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
                   Proveedores = new List<Proveedor>()
               });
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<UsuarioReasignacion, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<UsuarioReasignacion, object>>>>()))
+               .Returns(new List<UsuarioReasignacion> { });
 
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<Aprobaciones, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<Aprobaciones, object>>>>()))
+               .Returns(new List<Aprobaciones> { });
 
             var rolesList = new List<Rol>
             {
@@ -274,6 +288,21 @@ namespace SustitucionMOATest.Services
             repositorioUsuarioMock
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                 .Returns<Expression<Func<Rol, bool>>>(expr => rolesList.Where(expr.Compile()).FirstOrDefault());
+
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<UsuarioReasignacion, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<UsuarioReasignacion, object>>>>()))
+               .Returns(new List<UsuarioReasignacion> { });
+            repositorioUsuarioMock
+              .Setup(x => x.Listar(It.IsAny<Expression<Func<Aprobaciones, bool>>>(),
+                               It.IsAny<int>(),
+                               It.IsAny<string>(),
+                               It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                               It.IsAny<IEnumerable<Expression<Func<Aprobaciones, object>>>>()))
+              .Returns(new List<Aprobaciones> { });
 
             var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, " ( CUIT: 23333333333)");
 

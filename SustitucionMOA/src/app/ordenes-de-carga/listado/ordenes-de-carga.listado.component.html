@@ -139,10 +139,15 @@
               <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td style="text-align: center;">{{ordenDeCarga.Id}}
-                <span (click)="navegarAConsultas()" *ngIf="ordenDeCarga.TieneConsultasRealizadas" class="fa fa-comments pointer" aria-hidden="true"
-                  pTooltip="Tiene Consultas Pendientes" tooltipPosition="bottom" ></span>
+                <span (click)="navegarAConsultas()" *ngIf="ordenDeCarga.TieneConsultasRealizadas"
+                  class="fa fa-comments pointer" aria-hidden="true" pTooltip="Tiene Consultas Pendientes"
+                  tooltipPosition="bottom"></span>
               </td>
-              <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}</td>
+              <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}
+                <i *ngIf="ordenDeCarga.FleteMOA" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">
+                  <img src="../../../../Content/images/icons/dolly-solid.svg" alt="fleteMoa" style="height:15px;" />
+                </i>
+              </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas || esCorredor">
                 {{ordenDeCarga.RazonSocialCliente}}</td>
               <td *ngIf="esMesaFas">{{ordenDeCarga.CUITCliente}}</td>
@@ -158,8 +163,11 @@
               <td>{{ordenDeCarga.Material}}</td>
               <td style="text-align: center;">{{ordenDeCarga.PatenteChasis}}
                 <span *ngIf="ordenDeCarga.Escalable" class="fa fa-truck" aria-hidden="true"></span>
-                <span pTooltip="Patentes repetidas" tooltipPosition="bottom" *ngIf="ordenDeCarga.TienePatentesRepetidas"
-                  class="fa fa-exclamation-triangle text-repetido" aria-hidden="true"></span>
+                <span pTooltip="Patente repetida" tooltipPosition="bottom"
+                  *ngIf="ordenDeCarga.TienePatentesRepetidas || ordenDeCarga.TienePatenteMultiplesAutorizaciones"
+                  class="fa fa-exclamation-triangle text-repetido" [ngClass]="{
+                  'text-multiples-autorizaciones':ordenDeCarga.TienePatenteMultiplesAutorizaciones
+                 }" aria-hidden="true"></span>
               </td>
               <td *ngIf="esInterno || esComercial || esPuerto || esMesaFas">
                 <div class="semaforo {{ordenDeCarga.ColorSemaforo}}">

@@ -15,6 +15,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { ComprasService } from '../../compras.service';
 import { SelectItem } from 'primeng/api';
 import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/chat-interno.interface';
+import { LegajoDto } from '../../../modelos/compras/legajoDto';
 
 @Component({
     selector: 'app-listado-dashboard-proveedor',
@@ -57,7 +58,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     subscripcionPO: Subscription
     peticion: PeticionDeOfertaDto;
     displayLegajo: boolean = false;
-    legajo: any;
+    legajo: LegajoDto[];
     usuarioProveedor: boolean = true;
     itemSelected: any;
     tablaPO: any[];
@@ -192,9 +193,11 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                         this.sessionDataService.logout();
                     }
                     else {
-                        this.legajo = result.data;
-                        this.displayLegajo = true;
-                        this.blockUI.stop();
+                        if (result.data) {
+                            this.legajo = result.data.LegajoFilas;
+                            this.displayLegajo = true;
+                            this.blockUI.stop();
+                        }
                     }
                 },
                 (error) => {
@@ -211,7 +214,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
     descargarLegajo() {
         let idPeticion = this.legajo[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...')
-        this.service.descargarLegajo(this.itemSelected.Id, this.itemSelected.Usuarios[0].Id)
+        this.service.descargarLegajo(this.itemSelected.Id, this.itemSelected.Usuarios[0].Id, this.esProveedor, null)
             .subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -477,7 +480,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
                                     );
                                     return x;
                                 });
-                                
+
                                 chat.FechaCreacionDate = new Date(
                                     this.getDateFromAspNetFormat(chat.FechaCreacionDate)
                                 );
@@ -485,7 +488,7 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
                             this.chat = result;
                             this.chatCompras = result.ChatCompras;
-                            this.chatProveedores = result.ChatProveedores;  
+                            this.chatProveedores = result.ChatProveedores;
                             this.displayChatInterno = true;
                         };
                     },
@@ -504,5 +507,21 @@ export class ListadoDashboardProveedorComponent extends ListBaseComponent {
 
     cerrarModalChat() {
         this.displayChatInterno = false;
+    }
+
+    mustShowCotizar(rowData): boolean {
+        let show: boolean = true;
+        show = show && rowData.VerCotizar;
+        show = show && rowData.Estado == 'Abierto';
+        show = show && rowData.CotizacionEstadoDescripcion != 'Cotizado';
+        return show;
+    }
+
+    mustShowRecotizar(rowData): boolean {
+        let show: boolean = true;
+        show = show && rowData.VerCotizar;
+        show = show && rowData.Estado == 'Abierto';
+        show = show && rowData.CotizacionEstadoDescripcion == 'Cotizado';
+        return show;
     }
 }

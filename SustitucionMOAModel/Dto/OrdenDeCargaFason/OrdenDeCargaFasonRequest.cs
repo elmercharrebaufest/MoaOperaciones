@@ -20,10 +20,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string CUITTransporte { get; set; }
 
-        public CrearOrdenDeCargaFasonRequestDestino Destino { get; set; }
-
-        public DateTime FechaRetiro { get; set; }
-
         public string NombreChofer { get; set; }
 
         public string Observacion { get; set; }
@@ -42,7 +38,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool FleteMOA { get; set; }
         public string CUITIntermediarioFlete { get; set; }
         public string RazonSocialIntermediarioFlete { get; set; }
-        public bool Reventa { get; set; }
         public string PlantaCodigo { get; set; }
         public string DomicilioTipo { get; set; }
         public short? DomicilioOrden { get; set; }
@@ -60,6 +55,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool? DestinatarioExisteScato { get; set; }
         public bool? DestinoExisteScato { get; set; }
         public string DestinoMercaderia { get; set; }
+        public string CodigoCorredor { get; set; }
     }
 
     public class CrearOrdenDeCargaFasonRequestProducto
@@ -75,18 +71,4 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public bool ValidaSisaRuca { get; set; }
     }
 
-    public class CrearOrdenDeCargaFasonRequestDestino
-    {
-        public object ExtensionData { get; set; }
-        public string CentroDescripcion { get; set; }
-        public int CentroId { get; set; }
-        public string ClienteDescripcion { get; set; }
-        public int ClienteId { get; set; }
-        public int Id { get; set; }
-        public string KmARecorrer { get; set; }
-        public string LocalidadDescripcion { get; set; }
-        public int LocalidadId { get; set; }
-        public string ProvinciaDescripcion { get; set; }
-        public int ProvinciaId { get; set; }
-    }
 }

@@ -130,9 +130,9 @@ namespace SustitucionMOATest.Services
                             It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()))
             .Returns(new List<OrdenDeCarga> { new OrdenDeCarga { ChasisAcoplado = "", Cliente_Id = 1, Cantidad = 1232, Producto = new Material { Nombre = "" }, Cliente = new Proveedor { RazonSocial = "" } } });
             var patente = "";
-            var result = target.ObtenerOrdenes(patente, true, true);
+            var result = target.ObtenerOrdenesFas(patente, true, true);
 
-            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result.Count);
         }
 
     }

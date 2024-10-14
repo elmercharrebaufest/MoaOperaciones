@@ -137,7 +137,7 @@ export class CrearConsultaInternaComponent extends ListBaseComponent implements 
   checkPermisos() { this.securityService.tienePermisoRedirect("CONTACTO MAIL"); }
 
   setTabs() {
-    this.setMenuSeccionTab("consulta", "crear-consulta-interna");
+    this.setMenuSeccionTab('crear-consulta-interna', 'Nueva Consulta Interna');
   }
 
   ngOnInit() {

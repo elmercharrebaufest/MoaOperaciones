@@ -301,11 +301,10 @@
                                                 </td>
                                                 <td class="columna" [style.color]="licitacion.EstadoColor">{{licitacion.Estado}}</td>
                                                 <td class="columna">
-                                                    <button class="publicar btn " style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
+                                                    <button class="publicar btn" style="margin-right: 10px;" (click)="verLegajo(licitacion.Id)">
                                                         Legajo
                                                     </button>
-                                                    <!--&& licitacion.RevisionFinalizada == true-->
-                                                    <button class="publicar btn "
+                                                    <button class="publicar btn"
                                                             *ngIf="(rowData.VerCircular == true) && !esAuditor"
                                                             style="margin-right: 10px;" (click)="obtenerPeticionDeOferta(licitacion.Id)">
                                                         Circular
@@ -386,7 +385,7 @@
     <app-legajo [(displayLegajo)]="displayLegajo" [(usuarioProveedor)]="usuarioProveedor"
                 (cerrarLegajoEmitter)="cerrarLegajo()" (descargarArchivoEmitter)="descargarArchivo($event)"
                 (descargarLegajoEmitter)="descargarLegajo()" (adjuntarArchivoLegajoEmitter)="adjuntarArchivoLegajo($event)"
-                [(legajo)]="legajo" [(esAuditor)]="esAuditor">
+                [(legajo)]="legajo" [(esAuditor)]="esAuditor" [idLegajo]="idLegajoEnModal">
     </app-legajo>
 
     <app-circular [(locale)]="es"

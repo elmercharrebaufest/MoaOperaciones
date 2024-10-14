@@ -33,6 +33,7 @@ namespace SustitucionMOAModel.Dto
         public int? UsuarioCompras_Id { get; set; }
         public string UsuarioComprasSAP { get; set; }
         public string OrganizacionDeComprasCodigo { get; set; }
+        public string MailProveedor { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento

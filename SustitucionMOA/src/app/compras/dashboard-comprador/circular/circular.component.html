@@ -11,7 +11,7 @@
     <div class="container-fluid" style="height: 273.75px;">
         <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
             <div class="inputCompras">
-                <p>
+                <p #errorMsgContainer>
                     <ngb-alert type="danger" [dismissible]="false" *ngIf="visualizarAlert">
                         <strong>Error! </strong>{{ error }}
                     </ngb-alert>

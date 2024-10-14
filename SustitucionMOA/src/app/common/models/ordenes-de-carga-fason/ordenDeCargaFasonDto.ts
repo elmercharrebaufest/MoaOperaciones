@@ -24,7 +24,10 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
 
     public FechaCreacion: string;
     public FechaRetiro: Date;
+    public FechaRetiroReal?: Date;
+    public FechaIngresoPlanta?: Date;
     public Cantidad: number;
+    public CantidadDescargada: number;
     public PatenteAcoplado: string;
     public PatenteChasis: string;
     public NombreChofer: string;
@@ -36,6 +39,9 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public Observacion: string;
     public LocalidadDescripcion: string;
 
+    public RemitenteComercial?: boolean;
+    public OrdenesConPatentesRepetidas?: number[];
+    public CodigoCorredor?: string;
     constructor() {
         super();
         this.FechaRetiro = new Date();
