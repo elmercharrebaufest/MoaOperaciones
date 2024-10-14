@@ -7,7 +7,7 @@ VALUES
 	(1,	'Orden generada',		'OK',					'green'),
 	(2,	'Pendiente',			'En proceso',			'yellow'),
 	(3, 'Orden vencida',		'Orden vencida',		'red'),
-	(4, 'Orden entregada',		'Orden entregada',		'white'),
+	(4, 'Orden entregada',		'Orden entregada',		'green_entregada'),
 	(5, 'Anulada',				'Anulada',				'red'),
 	(6, 'Edición solicitada',	'Edición solicitada',	'yellow'),
 	(7, 'Edición rechazada',	'Edición rechazada',	''),
