@@ -23,6 +23,9 @@ namespace SustitucionMOAModel.Dto.Compras
         public string GeneradoPor { get; set; } = null;
         public string NroOC { get; set; }
         public string Moneda { get; set; }
+        public string NumeroPosicion { get; set; } = null;
+        public string Aprobador { get; set; } = null;
+
         public List<ServiceDetailDto> DetalleServicio { get; set; }
     }
 

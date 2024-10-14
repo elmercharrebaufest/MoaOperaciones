@@ -272,7 +272,7 @@
 
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowItem[col.field] | date: 'dd/MM/yyyy' }}</td>
-                                                        <td *ngIf="col.type==='string' && col.visible">{{ formatImport(col.id, rowItem[col.field]) }}</td>
+                                                        <td *ngIf="col.type==='string' && col.visible">{{ formatImport(col.id, rowItem[col.field], rowData) }}</td>
                                                         <!-- Celdas de columas con contenido customizado -->
                                                         <td *ngIf="col.type==='custom' && col.visible">
                                                             <input *ngIf="col.id === 'iCantidadACertificar'"
