@@ -5463,57 +5463,58 @@ namespace SustitucionMOAUtils.Services
                 Logger.Log.Error(e);
             }
 
-            var posiciones = "";
-            try
+            StringBuilder posiciones = new StringBuilder();
+
+            var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado && x.SolpPosicion.EsConcluido == true);
+            var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.Select(x=> x.SolpPosicion.Solp.NroSolp));
+            foreach (var item in listaPosiciones.Select(a=>a.SolpPosicion))
             {
-                var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado == true && x.SolpPosicion.EsConcluido == true);
-                var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.First().SolpPosicion.Solp.NroSolp);
-                foreach (var peti in listaPosiciones)
-                {
-                    var item = peti.SolpPosicion;
-                    var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice);
-                    posiciones +=
-                    $"<tr class='border'> <td style='font-size: 8px;'>{item.Indice} </td> " +
-                    $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Codigo : "")} </td>" +
-                    $"<td style='font-size: 8px;'> {(item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea)} </td>" +
-                    $"<td style='font-size: 8px;'>{(valorEnSAP != null ? valorEnSAP.Cantidad - valorEnSAP.Ordered : 0)}</td>" +
-                    $"<td style='font-size: 8px;'>{item.Unidad.Descripcion}</td>" +
-                    $"<td style='font-size: 8px;'>{peticion.PlazoDeOferta.ToString("dd.MM.yyyy")}</td>" +
-                    $"<td style='font-size: 8px;'>{listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy")}</td> </tr>";
-                    posiciones += $"<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{(item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "")}</td></tr>";
-                }
+                var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice && x.NumeroSolicitud == item.Solp.NroSolp);
 
-                var posicion = listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
-                var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
-                var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                //var centroPlanta = repositorio.Obtener<TablaSap>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
 
-                xHtml = string.Format(xHtml, stylesHtml,
-                    peticion.Id,
-                    datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
-                    datosProveedor.cabeceras?.FirstOrDefault().descripcion,
-                    datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
-                    $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
-                    datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
-                    "Argentina",
-                    peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
-                    listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
-                    lugarEntrega,
-                    peticion.FechaCreacion.ToString("dd.MM.yyyy"),
-                    "San Lorenzo",
-                    centro.CodigoSap,
-                    peticion.Usuario.UsuarioSap,
-                    posiciones
-                    );
+                posiciones.Append("<tr class='border'>");
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.Indice);
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.MaterialSolp != null ? item.MaterialSolp.Codigo : "");
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea);
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", valorEnSAP != null ? valorEnSAP.Cantidad - valorEnSAP.Ordered : 0);
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.Unidad.Descripcion);
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", peticion.PlazoDeOferta.ToString("dd.MM.yyyy"));
+                posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", listaPosiciones.Select(x => x.SolpPosicion)
+                    .OrderByDescending(x => x.FechaEntregaServicio)
+                    .Select(x => x.FechaEntregaServicio)
+                    .First().Value.ToString("dd.MM.yyyy"));
+                posiciones.Append("</tr>");
 
-                return xHtml;
+                posiciones.AppendFormat("<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{0}</td></tr>",
+                    item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "");
 
             }
-            catch (Exception)
-            {
-                throw;
-            }
+
+            var posicion = listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
+            var localidad = repositorio.Obtener<Localidad>(x => x.ProvinciaId == posicion.ProvinciaId);
+            var centro = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
+            var lugarEntrega = $"{posicion.NombreEntrega}, {posicion.CalleEntrega} - ({posicion.CpEntrega}) {localidad?.Nombre ?? ""} - {posicion.Provincia?.Nombre ?? ""}";
+
+            xHtml = string.Format(xHtml, stylesHtml,
+                peticion.Id,
+                datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
+                datosProveedor.cabeceras?.FirstOrDefault().descripcion,
+                datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
+                $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
+                datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
+                "Argentina",
+                peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
+                listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
+                lugarEntrega,
+                peticion.FechaCreacion.ToString("dd.MM.yyyy"),
+                "San Lorenzo",
+                centro.CodigoSap,
+                peticion.Usuario.UsuarioSap,
+                posiciones.ToString()
+                );
+
+            return xHtml;
+
         }
 
         private void EnviarMailPeticionDeOferta(PeticionDeOferta peticion, List<PeticionDeOfertaUsuario> usuarios, List<PeticionDeOfertaUsuarioAdicional> usuariosAdicionales)
