@@ -675,9 +675,10 @@ namespace SustitucionMOAUtils.Services
 
                 if (pos.Subposiciones != null)
                 {
-                    int numeroPosicionConsecutivo = 1; /* para que las subposiciones tengan un numero consecutivo
-                                                        * mantener el orden de las subposiciones con OrderBy en el ciclo.
-                                                        */
+                    int numeroPosicionConsecutivo = (posEntity.Subposiciones.OrderByDescending(a => a.Numero).FirstOrDefault()?.Numero ?? 0) + 1;
+                    /* para que las subposiciones tengan un numero consecutivo
+                    * mantener el orden de las subposiciones con OrderBy en el ciclo.
+                    */
 
                     foreach (var subpos in pos.Subposiciones.OrderBy(sp => sp.Numero))
                     {
@@ -699,7 +700,7 @@ namespace SustitucionMOAUtils.Services
                             subposEntity.CuentaMayorSap = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap && x.Codigo == subpos.CuentaMayor.Codigo);
                         }
 
-                        subposEntity.Numero = numeroPosicionConsecutivo++;
+                        subposEntity.Numero = subposEntity.Numero == 0 ? numeroPosicionConsecutivo++ : subposEntity.Numero;
                         subposEntity.PrecioBruto = subpos.PrecioBruto;
                         subposEntity.Tarea = subpos.Tarea;
 
@@ -5466,8 +5467,8 @@ namespace SustitucionMOAUtils.Services
             StringBuilder posiciones = new StringBuilder();
 
             var listaPosiciones = peticion.Posiciones.Where(x => x.SolpPosicion.Estado && x.SolpPosicion.EsConcluido == true);
-            var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.Select(x=> x.SolpPosicion.Solp.NroSolp));
-            foreach (var item in listaPosiciones.Select(a=>a.SolpPosicion))
+            var posicionesValoresSAP = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(peticion.Posiciones.Select(x => x.SolpPosicion.Solp.NroSolp));
+            foreach (var item in listaPosiciones.Select(a => a.SolpPosicion))
             {
                 var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice && x.NumeroSolicitud == item.Solp.NroSolp);
 
