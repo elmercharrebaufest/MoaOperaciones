@@ -79,9 +79,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     EcheqLiquidacionDto liquidacion = resultFiltrado
                         .Where(a => a.Contrato == apertura.EcheqLiquidacion.EcheqNegocio.Contrato && a.Pedido == apertura.EcheqLiquidacion.EcheqNegocio.Pedido)
-                        .SelectMany(a => a.Documentos).Single(a => a.Documento == apertura.EcheqLiquidacion.Documento);
-
+                        .SelectMany(a => a.Documentos).SingleOrDefault(a => a.Documento == apertura.EcheqLiquidacion.Documento);
+                    if (liquidacion != null)
+                    {
                         liquidacion.Aperturas.Add(new EcheqAperturaDto { OrdenCheque = apertura.OrdenCheque, ImporteCheque = apertura.ImporteCheque });
+                    }
                 }
                 return resultFiltrado;
             }
