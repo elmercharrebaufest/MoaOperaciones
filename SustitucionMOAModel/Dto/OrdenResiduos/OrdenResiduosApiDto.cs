@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using iTextSharp.text.pdf;
 
 namespace SustitucionMOAModel.Dto.OrdenResiduos
 {
@@ -32,8 +31,9 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             FechaCreacion = ordenResiduos.FechaCreacion.ToString();
             LocalidadDescripcion = ordenResiduos.LocalidadScatoDescripcion;
             LocalidadId = ordenResiduos.LocalidadScatoId;
-            NombreChofer = ordenResiduos.ChoferNombre;
+            NombreChofer = ordenResiduos.ChoferApellido + " " + ordenResiduos.ChoferNombre;
             ChoferApellido = ordenResiduos.ChoferApellido;
+            ChoferNombre = ordenResiduos.ChoferNombre;
             Observacion = ordenResiduos.Observacion;
             PagadorFlete = ordenResiduos.Producto.ValidaSisaRuca ? ordenResiduos.Cliente.CUIT : null;
             PatenteAcoplado = ordenResiduos.PatenteAcoplado;
