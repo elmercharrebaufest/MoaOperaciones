@@ -140,8 +140,6 @@
                                         [(ngModel)]="ordenResiduos.PatenteAcoplado"
                                         (ngModelChange)="onPatenteAcopladoSeleccionado($event)"
                                         (blur)="onPatenteAcopladoBlur()" />
-                                    <!-- (valueChanged)="onPatenteAcopladoValueChanged($event)"
-                                        (ngModelChange)="onPatenteAcopladoSeleccionado()" -->
                                 </div>
                             </div>
 
@@ -167,9 +165,10 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input type="text" auto-complete [min-chars]="2"
-                                        [no-match-found-text]="'No se encontraron resultados'" mask="00-00000000-0"
-                                        [source]="cuilsChofer" [(ngModel)]="ordenResiduos.CUILChofer"
+                                    <input type="text" auto-complete mask="00-00000000-0"
+                                        [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'" 
+                                        [source]="cuilsChofer"
+                                        [(ngModel)]="ordenResiduos.CUILChofer"
                                         (change)="validarCuilChofer()">
                                     <div *ngIf="procesandoCampo.CUILChofer">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>

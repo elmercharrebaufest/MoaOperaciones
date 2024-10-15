@@ -520,38 +520,38 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     }
 
 
-    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
         this.mensajeComponent.setMsgsEmpty();
         if (response.logout) {
             this.sessionDataService.logout();
-            return null;
+            return undefined;
         }
         if (response.error) {
             this.mensajeComponent.setErrorMsg(response.error);
             this.scrollAMensaje();
-            return null;
+            return undefined;
         }
         if (response.info) {
             this.mensajeComponent.setInfoMsg(response.info);
             this.scrollAMensaje();
         }
-        return response.data || null;
+        return response.data;
     }
 
-    manejarErroresApiResponseFloat<T>(response: ApiResponse<T>): T | null {
+    manejarErroresApiResponseFloat<T>(response: ApiResponse<T>): T | undefined {
         this.floatMsgService.setMsgsEmpty();
         if (response.logout) {
             this.sessionDataService.logout();
-            return null;
+            return undefined;
         }
         if (response.error) {
             this.floatMsgService.setErrorMsg(response.error);
-            return null;
+            return undefined;
         }
         if (response.info) {
             this.floatMsgService.setInfoMsg(response.info);
         }
-        return response.data || null;
+        return response.data;
     }
 
     scrollAMensaje() {

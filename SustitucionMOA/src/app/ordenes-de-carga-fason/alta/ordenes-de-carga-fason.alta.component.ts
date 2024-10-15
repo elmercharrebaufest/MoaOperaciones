@@ -893,6 +893,7 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         });
     }
+
     validarCuilChofer() {
         const campo = "CUILChofer";
         const cuit = this.ordenDeCargaFason.CUILChofer ? this.ordenDeCargaFason.CUILChofer.toString() : "";
@@ -911,6 +912,7 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         });
     }
+    
     cargarClienteDirecto(idCliente: Number) {
         this.service.obtenerProveedor(idCliente).subscribe(resp => {
             let proveedor = this.manejarErroresApiResponse(resp);

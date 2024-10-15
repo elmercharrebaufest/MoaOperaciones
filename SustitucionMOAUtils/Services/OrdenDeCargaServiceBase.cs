@@ -186,6 +186,7 @@ namespace SustitucionMOAUtils.Services
             }
             return response;
         }
+
         public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
         {
             var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
@@ -198,6 +199,7 @@ namespace SustitucionMOAUtils.Services
             }
             return (cuitValido, chofer);
         }
+
         public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
         {
             var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
@@ -271,6 +273,7 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
+
         private void LogMensajesScato(ModelScatoRepo.MessageItem[] messages)
         {
             foreach (var err in messages)
@@ -278,6 +281,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
             }
         }
+
         public bool ValidarDigitoCuit(string cuit)
         {
             if (cuit.Length != 11)
@@ -301,6 +305,7 @@ namespace SustitucionMOAUtils.Services
             var ultimoDigito = Char.GetNumericValue(cuit.Last());
             return auxiliar == ultimoDigito;
         }
+
         public DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
         {
             var dayOfWeek = fechaOrigen.DayOfWeek;
