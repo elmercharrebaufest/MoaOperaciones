@@ -11,6 +11,21 @@
     overflow: hidden;
 }
 
+.reasignacionIcon {
+    position: fixed !important;
+    left: 0;
+    top: 0;
+    width: calc(100%);
+    height: calc(100%);
+    background-color: #f4f4f4;
+    z-index: 10;
+    /* hide scrollbar but allow scrolling */
+    overflow-y: auto;
+    box-sizing: border-box;
+    /* for Internet Explorer, Edge */
+    /* for Firefox */
+}
+
 .fullscreen {
     position: fixed !important;
     left: 0;
@@ -46,6 +61,13 @@
     font-family: "Roboto Condensed", Arial, sans-serif !important;
 }
 
+.filtro-usuario-input {
+    margin-left: 0.4em;
+    height: 1.8em;
+    position: relative;
+    font-family: "Roboto Condensed", Arial, sans-serif !important;
+}
+
 .boton-enviar-motivo {
     padding: 10px;
     justify-content: center;
@@ -58,7 +80,6 @@
     border-top: 0.5px solid #959595;
     border-left: 0.5px solid #959595;
     border-right: 0.5px solid #959595;
-    border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     width: max-content;
     background: white;
@@ -272,7 +293,8 @@ i#btn-fullscreen {
 }
 
 i#btn-fullscreen,
-i#btn-filtros {
+i#btn-filtros,
+i#btn-reasignacion {
     font-size: 1.7rem;
     float: right;
     margin-top: .6em;
@@ -280,6 +302,20 @@ i#btn-filtros {
     background-color: transparent;
     cursor: pointer;
 }
+
+i#btn-exportar {
+    font-size: 1.7rem;
+    float: right;
+    margin-top: .6em;
+    margin-left: 1em;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5; /* Esto le da un aspecto de deshabilitado */
+  }
 
 .filtro-nro-orden>input[type=text],
 :host ::ng-deep p-autocomplete.filtro-proveedor>span>input[type=text] {
@@ -501,4 +537,23 @@ td:has(> div.ingresante) {
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+  }
+
+  .table-options{
+    display: flex;
+  }
+
+  .refresh-row{
+    padding: 4px 8px;
+    border-top: 0.5px solid #959595;
+    border-left: 0.5px solid #959595;
+    border-top-left-radius: 5px;
+    width: max-content;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    i {
+        cursor: pointer;
+    }
   }

@@ -123,6 +123,16 @@ namespace SustitucionMOA
             "*/5 * * * *",
             tz);
 
+
+            RecurringJob.AddOrUpdate<Jobs.IDerivacionAutomaticaJob>(
+                "DerivacionesAutomaticaJob",
+                j => j.Execute(),
+                "0 1 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.INotificarAprobacionesPendientesJob>(
+                "NotificarAprobacionesPendientesJob",
+                j => j.Execute(),
+                "0 9 * * *", tz);
         }
     }
 

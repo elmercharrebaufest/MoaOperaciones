@@ -17,6 +17,11 @@
         </ng-container>
     </div>
 
+    <div>
+        <label>Número de Orden de Compra: {{itemsAgrupadosPorPosicion[0].Items[0].NroOrdenCompra}}</label>
+    </div>
+    <br>
+
     <form [formGroup]="formularioResumenCertificacion">
         <ng-container formArrayName="descriptions">
             <p-panel id="positions-panel" [toggleable]="true" *ngFor="let position of itemsAgrupadosPorPosicion; let i = index" [formGroupName]="i">
@@ -72,24 +77,44 @@
                                 <td style="word-break: break-all;">{{ rowData.Descripcion | defaultData }}</td>
                                 <td>{{ rowData.Cantidad | defaultData }}</td>
                                 <td>{{ rowData.UM | defaultData }}</td>
-                                <td>{{ rowData.Importe | number:'1.0-2':'es' | defaultData }}</td>
-                                <td class="text-right">{{ rowData.Cantidad * rowData.Importe | number:'1.0-2':'es' }}</td>
+                                <td>
+                                    {{
+                                        rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Importe | number:'1.0-2' | defaultData)) : rowData.Moneda +' '+(rowData.Importe | number:'1.0-2' | defaultData)
+                                    }}
+                                </td>
+                                <td class="text-right"> 
+                                    {{
+                                        (rowData.Moneda === 'ARP' ? ('$ ' + (rowData.Cantidad * rowData.Importe | number:'1.0-2')) : rowData.Moneda +' '+(rowData.Cantidad * rowData.Importe | number:'1.0-2'))
+                                    }}
+                                </td>
         
                                 <!-- Anteriores -->
                                 <!-- * 1  is just to turn it into a number -->
                                 <td class="anterior">{{ rowData.CantidadReal * 1 | number:'1.0-2':'es' }}</td>
                                 <td class="anterior">{{ rowData.Porcentaje | number:'1.0-2':'es' }}%</td>
-                                <td class="anterior text-right">{{ calcularMontoAnterior(rowData) | number:'1.0-2':'es' }}</td>
+                                <td class="anterior text-right">
+                                    {{
+                                        (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) | number:'1.0-2') : rowData.Moneda +' '+(calcularMontoAnterior(rowData) | number:'1.0-2'))
+                                    }}
+                                </td>
         
                                 <!-- A certificar -->
                                 <td>{{ rowData.CantidadACertificar | number:'1.0-2':'es' }}</td>
                                 <td>{{ rowData.PorcentajeACertificar | number:'1.0-2':'es' }}%</td>
-                                <td class="text-right">{{ rowData.CantidadACertificar * rowData.Importe  | number:'1.2-2':'es' }}</td>
+                                <td class="text-right">
+                                    {{
+                                        (rowData.Moneda === 'ARP' ? '$ ' + (rowData.CantidadACertificar * rowData.Importe | number:'1.0-2') : rowData.Moneda +' '+(rowData.CantidadACertificar * rowData.Importe | number:'1.0-2'))
+                                    }}
+                                </td>
         
                                 <!-- Acumulado -->
                                 <td class="acumulado">{{ rowData.CantidadReal + (rowData.CantidadACertificar * 1) | number:'1.0-2':'es'}}</td>
                                 <td class="acumulado">{{ (rowData.Porcentaje * 1) + (rowData.PorcentajeACertificar * 1) | number:'1.0-2':'es' }}%</td>
-                                <td class="acumulado text-right">{{ calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2':'es' }}</td>
+                                <td class="acumulado text-right">
+                                    {{
+                                        (rowData.Moneda === 'ARP' ? '$ ' + (calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2') : rowData.Moneda +' '+(calcularMontoAnterior(rowData) + (rowData.CantidadACertificar * rowData.Importe) | number:'1.0-2'))
+                                    }}
+                                </td>
                             </tr>
                         </ng-template>
                         <!-- TABLE BODY END -->
@@ -98,7 +123,11 @@
                             <tr class="footer">
                                 <td [attr.colspan]="colspanMonto"></td>
                                 <td colspan="2" class="text-right">MONTO TOTAL</td>
-                                <td class="text-right">{{ position.MontoTotalACertificar | number:'1.0-2':'es' }}</td>
+                                <td class="text-right">
+                                    {{
+                                        (position.Items[0].Moneda === 'ARP' ? '$ ' + (position.MontoTotalACertificar | number:'1.0-2') : position.Items[0].Moneda +' '+(position.MontoTotalACertificar | number:'1.0-2'))
+                                    }}
+                                </td>
                                 <td colspan="3" class="acumulado"></td>
                             </tr>
                         </ng-template>
@@ -116,7 +145,7 @@
     </form>
     
     <br>
-    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount() | number:'1.0-2':'es' }}</strong></div>
+    <div class="text-right"><strong>MONTO TOTAL GENERAL: {{ calculateGeneralTotalAmount()}}</strong></div>
 
     <section class="alta-form">
         <div class="row fields">

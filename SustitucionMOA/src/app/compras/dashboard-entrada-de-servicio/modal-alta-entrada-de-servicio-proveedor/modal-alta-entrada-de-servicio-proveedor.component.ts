@@ -163,14 +163,20 @@ export class ModalAltaEntradaDeServicioProveedorComponent implements OnInit {
     }
 
 
-    calculateGeneralTotalAmount(): number {
+    calculateGeneralTotalAmount(): string {
         let montoTotalGeneral = 0;
+        let moneda: string = ''
+        moneda = this.itemsAgrupadosPorPosicion[0].Items[0].Moneda;
 
         this.itemsAgrupadosPorPosicion.forEach(position => {
             montoTotalGeneral += position.MontoTotalACertificar;
         });
 
-        return montoTotalGeneral;
+        if (moneda === 'ARP') {
+            return `$ ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        } else {
+            return `${moneda} ${montoTotalGeneral.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        }
     }
 
     setRangoFechaDocumento() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { DropdownComponent } from '../../common/view-child/dropdown/dropdown.component';
 import { BaseComponent } from './../../common/base-components/base-component';
 import { Seccion } from './../../common/models/seccion';
@@ -39,6 +39,11 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
     @ViewChild('fechaReasignar') calendar: Calendar;
 
+    @ViewChild('externoCheckbox') externoCheckbox!: ElementRef;
+
+    
+    form: FormGroup;
+
     constructor(protected service: UsuarioService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, 
         protected floatMsgService: FloatMsgService, protected modalService: ModalService, private fb: FormBuilder) {
         super(navService, securityService, floatMsgService, modalService);
@@ -49,6 +54,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.service.getUsuarioRecargarLista().subscribe(recargar =>{
             if (recargar!=null && recargar == true) this.getUsuario();
         });
+
+        this.form = this.fb.group({
+            suplente: ['']
+          });
     }
 
     data: any;
@@ -69,6 +78,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     validationError: boolean = false;
     beInfo: boolean = true;
     userChangedValue: boolean = false;
+    esExterno: boolean = false; 
+    isCheckboxDisabled: boolean = true;
+
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
@@ -325,6 +337,10 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.usuarioSeleccionado = usuario;
         this.formularioUsuario.controls['usuarioSap'].patchValue(usuario.UsuarioSap);
         this.formularioUsuario.controls['suplente'].patchValue(usuario.Suplente);
+
+        if (usuario.Suplente) {
+            this.isCheckboxDisabled = false;
+        }
         this.cleanReasignarInput();
         this.rolesUsuarioSeleccionado = new Array<Rol>();
         this.rolOptions = [];
@@ -333,6 +349,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         for (var i = 0; i < this.rolesUsuarioSeleccionado.length; i++) {
             this.rolesUsuarioSeleccionado[i].checked = false;
         }
+
+        this.externoCheckbox.nativeElement.checked = usuario.Externo;
+
         usuario.Roles = this.obtenerRolesUsuario();
         this.obtenerReasignacionUsuario();
 /*
@@ -422,10 +441,15 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    onCheckboxChange(event: Event): void {
+        this.esExterno = (event.target as HTMLInputElement).checked;
+      }
+
     guardarRolesUsuario() {
         if (this.validateReasignacionValues() === true) {
             const suplente = this.formularioUsuario.controls['suplente'].value;
             const usuarioSap = this.formularioUsuario.controls['usuarioSap'].value;
+            
             this.usuarioSeleccionado.Suplente = suplente;
             this.usuarioSeleccionado.UsuarioSap = usuarioSap;
             this.spinnerComponent.showIt();
@@ -439,7 +463,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
                 fHasta = this.dateFormatter(this.rangoReasignacion[1]);
             }
 
-            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, fDesde, fHasta).subscribe(
+            this.service.guardarRolesUsuario(this.usuarioSeleccionado, idRoles, fDesde, fHasta, this.esExterno).subscribe(
                 (result: any) => {
                     this.spinnerComponent.hideIt();
                     if (result.logout == true) {
@@ -550,6 +574,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         }
     }
 
+    get suplenteControl(): FormControl {
+        return this.formularioUsuario.controls['suplente'].value as FormControl;
+    }
     
 
     onCustomAcceptClick() {
@@ -566,8 +593,16 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             this.filteredList = this.data.filter(item => item.Mail.toLowerCase().includes(inputValue));
             if (this.filteredList[0].Mail === inputValue) {
                 this.filteredList = [];
+                this.isCheckboxDisabled = false;
             }
+        } else {
+            this.filteredList = [];
+            this.esExterno = false;
+            this.externoCheckbox.nativeElement.checked = false;
         }
+
+        this.isCheckboxDisabled = inputValue.trim() === '';
+
     }    
 
     selectItem(item: any) {
@@ -575,6 +610,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         this.formularioUsuario.controls['suplente'].markAsTouched();
         this.formularioUsuario.controls['suplente'].markAsDirty();
         this.filteredList = [];
+
+        this.isCheckboxDisabled = false;
+
       }
 
     validateEmail() {
@@ -583,10 +621,13 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
         if (!valid && inputValue.length > 0) {
           this.formularioUsuario.controls['suplente'].setErrors({ invalidEmail: true });
           this.validacionOk = false;
+          this.isCheckboxDisabled = true;
+          this.esExterno = false;
+          this.externoCheckbox.nativeElement.checked = false;
         } else {
           this.formularioUsuario.controls['suplente'].setErrors(null);
           this.validacionOk = false;
-
+          this.isCheckboxDisabled = false;      
         }
       }
       

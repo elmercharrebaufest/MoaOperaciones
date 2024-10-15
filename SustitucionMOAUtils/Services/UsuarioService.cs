@@ -25,12 +25,14 @@ namespace SustitucionMOAUtils.Services
         protected readonly IRepositorioUsuario repositorio;
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
+        protected readonly IDerivacionesAprobacionesService derivacionesAprobacionesService;
 
-        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer)
+        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer, IDerivacionesAprobacionesService derivacionesAprobacionesService)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
             this.azureADConsumer = azureADConsumer;
+            this.derivacionesAprobacionesService = derivacionesAprobacionesService;
         }
 
         public void SeccionVisitada(string mailUsuario, string seccion)
@@ -181,15 +183,20 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
         {
+            Entidades.Usuario currentUsuario = repositorio.ObtenerNoTracking<Entidades.Usuario>(u => u.Id == idUsuario);
+
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+
 
             usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
 
             usuario.RemoverRolesEditables();
 
             usuario.UsuarioSap = usuarioSap == "" || usuarioSap == "null" ? null : usuarioSap.ToUpper().Trim();
+
+            usuario.Externo = esExterno;
 
             if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
@@ -207,8 +214,8 @@ namespace SustitucionMOAUtils.Services
                     fechaHastaDT = auxFHasta;
                 };
                 //Parsing failsafe
-                if (fechaDesdeDT != fechaHastaDT)
-                {
+                //if (fechaDesdeDT != fechaHastaDT)
+                //{
                     UsuarioReasignacion periodo = new UsuarioReasignacion
                     {
                         Usuario_Id = idUsuario,
@@ -228,13 +235,14 @@ namespace SustitucionMOAUtils.Services
                         repositorio.Agregar<UsuarioReasignacion>(periodo);
                     }
                 
-                }
+                //}
 
             }
-            else if(string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta))
+            else if((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
+
                 if(periodos.Count > 0)
                 {
                     int[] periodosIds = new int[periodos.Count];
@@ -249,9 +257,10 @@ namespace SustitucionMOAUtils.Services
                         UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
+
+                    derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, currentUsuario.Suplente);
                     
                 }
-
             }
 
             foreach (int idRol in idRoles)

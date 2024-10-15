@@ -189,6 +189,9 @@
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
+    <Compile Include="Interfaces\IAprobacionesService.cs" />
+    <Compile Include="Interfaces\IDerivacionesAprobacionesService.cs" />
+    <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\ILogTableService.cs" />
@@ -253,6 +256,7 @@
     <Compile Include="Interfaces\ILogPesificacionService.cs" />
     <Compile Include="Interfaces\IExternalApiService.cs" />
     <Compile Include="Interfaces\Helpers\ITimeProvider.cs" />
+    <Compile Include="Interfaces\ITimerNotificarAprobacionesService.cs" />
     <Compile Include="Interfaces\IUsuarioService.cs" />
     <Compile Include="Interfaces\IVendedorService.cs" />
     <Compile Include="Interfaces\Validadores\IValidadorPesificacion.cs" />
@@ -268,6 +272,9 @@
     <Compile Include="Services\ComprasArchivosService.cs" />
     <Compile Include="Services\ComprasSapService.cs" />
     <Compile Include="Services\LogTableService.cs" />
+    <Compile Include="Services\AprobacionesService.cs" />
+    <Compile Include="Services\DerivacionesAprobacionesService.cs" />
+    <Compile Include="Services\LogicaDerivacionAutomaticaService.cs" />
     <Compile Include="Services\Email\EmailCertificationService.cs" />
     <Compile Include="Services\Email\EmailComprasService.cs" />
     <Compile Include="Services\EntradaServicioService.cs" />

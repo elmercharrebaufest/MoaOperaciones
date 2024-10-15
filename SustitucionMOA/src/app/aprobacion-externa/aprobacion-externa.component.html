@@ -1,12 +1,12 @@
 <div class="logo-container" align="center">
-    <img src="https://www.molinosagro.com.ar/wp-content/uploads/2019/04/molinosagro-logo-header-e1717101642513.png" class="img-responsive logo-center">
+    <img src="/Content/images/header/logo.png" class="img-responsive logo-center">
 </div>
 
 <message-spinner class="center-content"></message-spinner>
 
 <ng-container *ngIf="!messageSpinnerComponent.spinnerStatus">
     <div class="message-container" *ngIf="isApprover === false">
-        <h3 class="headerTitle">La certificaci&oacute;n {{ nroESLocal.split('&')[0] }}, se encuentra Anulada o Eliminada.</h3>
+        <h3 class="headerTitle">La certificaci&oacute;n {{ nroESLocal.split('&')[0] }}, ha sido reasignada, por lo cual no puede ser aprobada o rechazada.</h3>
     </div>
     
     <div class="message-container" *ngIf="isApprover === true && oldES === true">
@@ -25,6 +25,9 @@
             </div>
             <div class="flex-container">
                 <p>Número Orden de Compra: {{ ordenCompra }}</p>
+            </div>
+            <div class="flex-container">
+                <p>Posición número {{nroPosicion }}</p>
             </div>
             <br />
 
@@ -57,12 +60,12 @@
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Cantidad_a_certificar ? ap.Cantidad_a_certificar : '0' }}</td>
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.UM }}</td>
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Porcentaje_a_certificar }}</td>
-                            <td style='padding: 10px; border: 1px solid #333;'>$ {{ ap.Monto_a_certificar }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{ moneda }} {{ ap.Monto_a_certificar }}</td>
                         </tr>
                     </ng-container>
                     <tr *ngIf="aprobacionesList && aprobacionesList.length > 0">
                         <td colspan='4' style='padding: 10px; border: 0px solid #333;'></td>
-                        <td style='padding: 10px; border: 1px solid #333;'><strong>$ {{ aprobacionesList[0]?.Monto_total }}</strong></td>
+                        <td style='padding: 10px; border: 1px solid #333;'><strong>{{moneda}} {{ aprobacionesList[0]?.Monto_total }}</strong></td>
                     </tr>
                 </tbody>
             </table>
@@ -114,6 +117,9 @@
             <div class="flex-container">
                 <p>Número Orden de Compra: {{ ordenCompra }}</p>
             </div>
+            <div class="flex-container">
+                <p>Posición número {{nroPosicion }}</p>
+            </div>
             <br />
 
             <p>Certificaci&oacute;n: {{ cert }} </p>
@@ -145,12 +151,12 @@
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Cantidad_a_certificar ? ap.Cantidad_a_certificar : '0' }}</td>
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.UM }}</td>
                             <td style='padding: 10px; border: 1px solid #333;'>{{ ap.Porcentaje_a_certificar }}</td>
-                            <td style='padding: 10px; border: 1px solid #333;'>$ {{ ap.Monto_a_certificar }}</td>
+                            <td style='padding: 10px; border: 1px solid #333;'>{{moneda}} {{ ap.Monto_a_certificar }}</td>
                         </tr>
                     </ng-container>
                     <tr *ngIf="aprobacionesList && aprobacionesList.length > 0">
                         <td colspan='4' style='padding: 10px; border: 0px solid #333;'></td>
-                        <td style='padding: 10px; border: 1px solid #333;'><strong>$ {{ aprobacionesList[0]?.Monto_total }}</strong></td>
+                        <td style='padding: 10px; border: 1px solid #333;'><strong>{{moneda}} {{ aprobacionesList[0]?.Monto_total }}</strong></td>
                     </tr>
                 </tbody>
             </table>

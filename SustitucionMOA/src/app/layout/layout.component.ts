@@ -14,6 +14,8 @@ import { Observable } from 'rxjs';
 import { sidebarAnimation } from '../common/animations/sidebar.animation';
 import { mainAnimation } from '../common/animations/main.animation';
 import { fadeInAnimation } from '../common/animations/fade-in.animation';
+import { BuscadorComponent } from './../common/shared-components/buscador/buscador.component'
+import { ConfirmationService, SelectItem } from 'primeng/api';
 declare var $: any;
 
 @Component({
@@ -123,8 +125,8 @@ export class LayoutComponent implements OnDestroy {
     constructor(private service: LayoutService, private sessionDataService: SessionDataService,
         private navService: NavService, private loginGuard: LoginGuard, private router: Router,
         protected renderer: Renderer, private modalService: ModalService, private securityService: SecurityService, private floatMsgService: FloatMsgService,
-        private cd: ChangeDetectorRef) {
-
+        private cd: ChangeDetectorRef, private confirmationService: ConfirmationService) {
+        
         this.renderer.setElementClass(document.body, 'wrapper', true);
 
         this.titulo = 'Moa Operaciones';

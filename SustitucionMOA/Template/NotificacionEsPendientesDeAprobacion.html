@@ -1,38 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body style="width: 100%; font-family: Helvetica; font-size: 14px; line-height: 1.4; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%;">
-    <p>Estimado,<br> Se ha aceptado la certificaci&oacute;n nro. {0}</p>
+    <p>Estimado,<br> Se encuntran las siguientes certificaciones pendientes de aprobación.</p>
     <div class="container-grey" style="width: 95%; margin: 50px auto; background-color: #f2f2f2; border: 2px solid #333; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
-        <p>Certificaci&oacute;n {1}</p>
-        <p>Orden de compra: {2}</p>
-        <p>Número de posici&oacute;n: {3}</p>
-        <p>Fecha certificaci&oacute;n: {4}</p>
-        <p>Proveedor: {5}</p>
-
-        <br>
-
-        <p>Descripci&oacute;n: {6}</p>
-        <p>Importe: {7}</p>
-        <p>Certificaci&oacute;n Aprobada por: {8}</p>
-
-        <br>
-        <p>Detalle de servicios</p>
         <!-- Table -->
         <table width="100%" style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <thead>
                 <tr>
-                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Descripción</th>
-                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Cantidad</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Certificaci&oacute;n</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Proveedor</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">OC</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Descripci&oacute;n</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Cantidad a certificar</th>
                     <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">UM</th>
-                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">%</th>
-                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Monto</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Porcentaje a certificar</th>
+                    <th style="padding: 10px; border: 1px solid #333; background-color: #1e8449; color: white;">Monto a certificar</th>
                 </tr>
             </thead>
             <tbody>
-                {9}
+                {0}
             </tbody>
         </table>
     </div>

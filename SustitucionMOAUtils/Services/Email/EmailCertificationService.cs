@@ -12,6 +12,11 @@ using System.Threading.Tasks;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using System.Globalization;
+using DocumentFormat.OpenXml.Bibliography;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Dto;
+using SustitucionMOARepositorio.Extensiones;
+using System.Text.RegularExpressions;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -20,6 +25,9 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string TEMPLATE_NOTIFICATION_CERTIFICATION_REJECTED = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacionRechazada.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_EXT = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion.html");
         private static readonly string TEMPLATE_NOTIFICACION_APROBACIONES_PROVEEDOR = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "CertificacionesPendientesDeAprobacion-Proveedor.html");
+        private static readonly string TEMPLATE_NOTIFICACION_DIARIA = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionEsPendientesDeAprobacion.html");
+
+
         private readonly IEmailService emailService;
         protected readonly IAzureService azureService;
 
@@ -45,9 +53,12 @@ namespace SustitucionMOAUtils.Services.Email
         private (List<string>, string, string) BuildRejectedEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate)
         {
             string subjectFormat = "Asunto: Rechazo de servicio - Certificación nro {0}";
+
+            var montoTotal = GetImporte(emailDetail.MontoTotal);
+
             object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.MotivoRechazo,
-                emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
+            emailDetail.Proveedor, emailDetail.GeneradoPor, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
+            emailDetail.Descripcion, montoTotal, emailDetail.NroOC};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
@@ -55,11 +66,43 @@ namespace SustitucionMOAUtils.Services.Email
         private (List<string>, string, string) BuildApprovedEmail(EmailDetailCertificateDto emailDetail, string bodyTemplate)
         {
             string subjectFormat = "Asunto: Aceptación de servicio - Certificación nro {0}";
-            object[] subjectArgs = { emailDetail.NumeroCertificacion, emailDetail.NumeroCertificacion, emailDetail.FechaCertificacion,
-                emailDetail.Descripcion, emailDetail.MontoTotal, emailDetail.NroOC};
+
+            var importe = GetImporte(emailDetail.MontoTotal);
+
+            object[] subjectArgs = { emailDetail.NumeroCertificacion , emailDetail.NumeroCertificacion , emailDetail.NroOC, emailDetail.NumeroPosicion
+                    , emailDetail.FechaCertificacion, emailDetail.Proveedor, emailDetail.Descripcion, importe, emailDetail.Aprobador};
 
             return BuildEmail(emailDetail, bodyTemplate, subjectFormat, subjectArgs);
         }
+
+
+        private string GetImporte(string importe)
+        {
+            string pattern = @"([^\d]+)\s*([\d,]+(?:\.\d+)?)";
+
+            Match match = Regex.Match(importe, pattern);
+            if (match.Success)
+            {
+                string currency = match.Groups[1].Value;
+                string numberString = match.Groups[2].Value;
+                string formattedNumberString = numberString.Replace(',', '.');
+                if (decimal.TryParse(formattedNumberString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal number))
+                {
+                    // Comprobar si ya está bien formado
+                    string formattedImporte = currency + " " + number.ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+
+                    if (importe.Trim() == formattedImporte.Trim())
+                    {
+                        return importe;
+                    }
+
+                    return formattedImporte;
+                }
+            }
+
+            return importe;
+        }
+
 
         public async Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto)
         {
@@ -76,6 +119,32 @@ namespace SustitucionMOAUtils.Services.Email
 
             Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
             await emailSendTask;
+        }
+
+        public void SendDailyNotification(string to, List<NotificacionEsPendientesDiariasDto> aprobaciones)
+        {
+            string bodyTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_DIARIA);
+
+            string body = BuildDailyNotification(aprobaciones, bodyTemplate);
+
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = new List<string> {to},
+                Asunto = "Certificaciones pendientes de aprobación",
+                Cuerpo = body,
+            };
+
+            var emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
+        }
+
+        private string BuildDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones, string bodyTemplate)
+        {
+            var bodyTable = BuildTableDailyNotification(aprobaciones);
+
+            var body = string.Format(bodyTemplate, bodyTable.ToString());
+
+            return body;
         }
 
         public async Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference)
@@ -99,21 +168,51 @@ namespace SustitucionMOAUtils.Services.Email
         {
             StringBuilder bodyTable = new StringBuilder();
 
+            var moneda = emailDetailCertificateDto.Moneda == "ARP" ? "$ " : emailDetailCertificateDto.Moneda + " ";
+
+            var montoTotal = GetImporte(emailDetailCertificateDto.MontoTotal);
+
+
             foreach (var servicio in emailDetailCertificateDto.DetalleServicio)
             {
+                var monto = GetImporte(servicio.Monto);
+
                 bodyTable.Append("<tr>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Descripcion}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Cantidad}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.UM}</td>");
                 bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Porcentaje}</td>");
-                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{servicio.Monto}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{monto}</td>");
                 bodyTable.Append("</tr>");
             }
 
             bodyTable.Append("<tr>");
             bodyTable.Append($"<td colspan='4' style='padding: 10px; border: 0px;'></td>");
-            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{emailDetailCertificateDto.MontoTotal}</strong></td>");
+            bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'><strong>{montoTotal}</strong></td>");
             bodyTable.Append("</tr>");
+
+            return bodyTable;
+        }
+
+        private StringBuilder BuildTableDailyNotification(List<NotificacionEsPendientesDiariasDto> aprobaciones)
+        {
+            StringBuilder bodyTable = new StringBuilder();
+
+            foreach (var item in aprobaciones)
+            {
+                var moneda = "$ ";
+
+                bodyTable.Append("<tr>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.NRO_ES_LOCAL}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Proveedor}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.NRO_OC}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Texto_breve_servicio}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Cantidad_a_certificar}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.UM}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{item.Porcentaje_a_certificar}</td>");
+                bodyTable.Append($"<td style='padding: 10px; border: 1px solid #333;'>{moneda}{" "}{((decimal)item.Monto_a_certificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
+                bodyTable.Append("</tr>");
+            }
 
             return bodyTable;
         }
@@ -128,7 +227,7 @@ namespace SustitucionMOAUtils.Services.Email
                 List<string> dest = new List<string>();
                 dest.Add(destinatario);
 
-                string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} ";
+                string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} - {prov.RazonSocial} - {apList[0].Texto_breve_servicio}";
 
                 try
                 {
@@ -163,7 +262,8 @@ namespace SustitucionMOAUtils.Services.Email
                     DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
                     FechaCert = fechaCarga.ToString(dateTimeFormat);
                     desc = apList[0].Texto_breve_servicio;
-                    importe = "$ " + apList[0].Monto_total.ToString();
+                    importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US")) 
+                        : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(reports);
                     NroPosicion = apList[0].NRO_POS;
@@ -202,6 +302,8 @@ namespace SustitucionMOAUtils.Services.Email
         {
             decimal montoTotal = 0;
             var aprStrBuilder = new StringBuilder();
+            var moneda = reports[0].Moneda == "ARP" ? "$" : reports[0].Moneda;
+
             foreach (ReporteDto report in reports)
             {
                 decimal porcentajeAnterior = (Convert.ToDecimal(report.Porcentaje, CultureInfo.InvariantCulture) / 100);
@@ -226,27 +328,27 @@ namespace SustitucionMOAUtils.Services.Email
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Descripcion ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Cantidad.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.UM ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Anteriores
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadReal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAnteriorFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // A certificar
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.CantidadACertificar.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeACertificarFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {(report.CantidadACertificar * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Acumulado
                     $"<td style='padding: 10px; border: 1px solid #333;'>{(report.CantidadReal + report.CantidadACertificar).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{porcentajeAcumuladoFormateado}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>$ {((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{moneda} {((report.CantidadReal * report.Importe) + (report.CantidadACertificar * report.Importe)).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                 $"</tr>");
                 montoTotal += (report.CantidadACertificar * report.Importe);
             }
             //Ultima fila - solo monto total
             aprStrBuilder.Append($"<tr>" +
                 $"<td colspan='12' style='padding: 10px; border: 0px solid #333;'></td>" +
-                $"<td style='padding: 10px; border: 1px solid #333;'><strong>$ {montoTotal.ToString("N2")}</strong></td>" +
+                $"<td style='padding: 10px; border: 1px solid #333;'><strong>{moneda} {montoTotal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</strong></td>" +
                 $"</tr>");
 
             return aprStrBuilder;

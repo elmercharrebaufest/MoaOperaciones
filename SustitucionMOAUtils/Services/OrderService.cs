@@ -244,7 +244,7 @@ namespace SustitucionMOAUtils.Services
                         long nroPosicion = long.Parse(ap.NRO_POS);
 
                         //Mapear aprobacion a ES
-                        EntradaServicioDto es = MapAprobacionesToESDTO(ap);
+                        EntradaServicioDto es = MapAprobacionesToESDTO(ap, ordenCompra.MonedaDescripcion);
 
                         //Buscar posición correspondiente a ES Temporal
                         var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
@@ -375,7 +375,7 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         /// <param name="ap"></param>
         /// <returns></returns>
-        private EntradaServicioDto MapAprobacionesToESDTO(Aprobaciones ap)
+        private EntradaServicioDto MapAprobacionesToESDTO(Aprobaciones ap, string moneda)
         {
             EntradaServicioDto es = new EntradaServicioDto();
 
@@ -389,7 +389,7 @@ namespace SustitucionMOAUtils.Services
             es.FechaContabilizacion = dtC.ToString("yyyy-MM-dd");
             DateTime dt = (DateTime)ap.Fecha_Documento;
             es.FechaDocumentoString = dt.ToString(dateTimeFormat);
-            es.ImporteARPUSD = "$ " + ap.Monto_a_certificar.ToString();
+            es.ImporteARPUSD = moneda + " "+ ap.Monto_a_certificar.ToString();
             es.SePuedeBorrar = true;
             es.TextoBreve = ap.Texto_breve_servicio;
             es.Referencia = ap.Referencia;
