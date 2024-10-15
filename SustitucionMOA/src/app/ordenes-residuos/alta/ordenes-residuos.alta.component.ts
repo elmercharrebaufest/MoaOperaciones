@@ -65,6 +65,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     patentesAcoplados: string[] = [];
     cuilsChofer: string[] = [];
     cuitsTransporte: string[] = [];
+    cuilChoferEsValido: boolean = false;
 
     validaCPEDG: boolean = false;
     procesandoCampo: Partial<Record<keyof OrdenCargaResiduosDto, boolean>> = {};
@@ -290,6 +291,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     }
 
     validarCuilChofer() {
+        this.cuilChoferEsValido = false;
         const cuil = this.ordenResiduos.CUILChofer ? this.ordenResiduos.CUILChofer : "";
         if (!this.esFormatoCuilCuitValido(cuil))
             return;
@@ -300,6 +302,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (esValido === false) {
                     this.floatMsgService.setInfoMsg("CUIL chofer inválido - Revisar valor ingresado");
                 }
+                this.cuilChoferEsValido = esValido || false;
             },
             (err) => {
                 this.mensajeComponent.setErrorMsg(err.message);
@@ -360,7 +363,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
             return false;
         }
-        if (this.ordenResiduos.CUILChofer == undefined || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
+        if (!this.cuilChoferEsValido || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
