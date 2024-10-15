@@ -47,6 +47,5 @@ namespace SustitucionMOAModel.Dto
     {
         internal static readonly string FAS = "FAS";
         internal static readonly string FASON = "FASON";
-        internal static readonly string RESIDUOS = "RESIDUOS";
     }
 }
