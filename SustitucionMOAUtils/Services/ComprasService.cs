@@ -683,7 +683,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var subpos in pos.Subposiciones.OrderBy(sp => sp.Numero))
                     {
                         SolpSubposicion subposEntity =
-                            posEntity.Subposiciones.FirstOrDefault(y => y.Numero == subpos.Numero)
+                            posEntity.Subposiciones.FirstOrDefault(y => y.Codigo == subpos.Codigo)
                             ?? new SolpSubposicion();
 
                         subposEntity.Codigo = subpos.Codigo;
