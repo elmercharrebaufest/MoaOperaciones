@@ -6,7 +6,7 @@
     [EstadoId] INT NOT NULL, 
     [FechaCreacion] DATETIME NOT NULL, 
     [PatenteChasis] VARCHAR(15) NOT NULL, 
-    [PatenteAcoplado] VARCHAR(15) NOT NULL, 
+    [PatenteAcoplado] VARCHAR(15) NULL, 
     [ChoferNombre] VARCHAR(120) NOT NULL, 
     [ChoferApellido] VARCHAR(120) NOT NULL, 
     [ChoferCuil] VARCHAR(15) NOT NULL, 
