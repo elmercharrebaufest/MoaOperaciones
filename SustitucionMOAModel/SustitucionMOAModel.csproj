@@ -68,6 +68,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\PosicionPendienteDto.cs" />
     <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />

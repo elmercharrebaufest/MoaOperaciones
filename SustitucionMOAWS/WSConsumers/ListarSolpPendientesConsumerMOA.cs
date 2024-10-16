@@ -1,5 +1,6 @@
 ﻿// Ignore Spelling: Sustitucion
 
+using SustitucionMOAModel.Dto;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.ListarSolpPendienteWebServiceMOA;
@@ -30,12 +31,12 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
 
-        public List<string> ListarSolpPendientes()
+        public List<PosicionPendienteDto> ListarSolpPendientes()
         {
             lock (_lockObject)
             {
                 // en caso de parametrizar el método ListarSolpPendientes(), agregar parámetros a la CACHE_KEY.
-                if (Cache.IntentarObtener(CACHE_KEY, out List<string> solps))
+                if (Cache.IntentarObtener(CACHE_KEY, out List<PosicionPendienteDto> solps))
                 {
                     return solps;
                 }
@@ -70,7 +71,15 @@ namespace SustitucionMOAWS.WSConsumers
                     REL_DATE, SHORT_TEXT, TRACKINGNO, ref REQUISITION_ITEMS, ref RETURN);
                 List<BAPIEBANC> solpsSAP = REQUISITION_ITEMS.ToList();
 
-                solps = solpsSAP.ConvertAll(x => x.PREQ_NO);
+
+                solps = solpsSAP.ConvertAll(x => new PosicionPendienteDto
+                {
+                    NroSolp = x.PREQ_NO,
+                    NumeroPosicion = int.Parse(x.PREQ_ITEM),
+                    CodigoMaterial = x.MATERIAL,
+                    Cantidad = x.QUANTITY,
+                    Pedido = x.ORDERED
+                });
 
                 Cache.Agregar(CACHE_KEY, solps, CACHE_EXPIRATION);
 
@@ -81,6 +90,6 @@ namespace SustitucionMOAWS.WSConsumers
 
     public interface IListarSolpPendientesConsumerMOA
     {
-        List<string> ListarSolpPendientes();
+        List<PosicionPendienteDto> ListarSolpPendientes();
     }
 }

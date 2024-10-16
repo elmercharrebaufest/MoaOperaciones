@@ -3547,7 +3547,7 @@ namespace SustitucionMOAUtils.Services
             List<string> solpPendientesSap = new List<string>();
             if (listarPendiente != EstadoListarTratamientoSolp.Todas)
             {
-                solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes().Select(a => a.NroSolp).ToList());
             }
 
             if (!string.IsNullOrEmpty(nroSolp))
@@ -8401,8 +8401,8 @@ namespace SustitucionMOAUtils.Services
             {
                 ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
                 return ultimoRegistro;
-            }         
-            
+            }
+
 
 
             if (materialSolp.UnidadMedidaBase.CodigoSap != ultimoRegistro.Unidad)
@@ -8412,7 +8412,7 @@ namespace SustitucionMOAUtils.Services
                 var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
 
                 var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
-                
+
                 ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
                 ultimoRegistro.Cantidad = Math.Round(ultimoRegistro.Cantidad * (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador) / (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
                 ultimoRegistro.Precio = Math.Round((ultimoRegistro.Precio / (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador)) * (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
@@ -9910,10 +9910,10 @@ namespace SustitucionMOAUtils.Services
                 var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
                 var hoy = DateTime.Now.Date;
 
-                var solps = new List<string>();
+                var posicionPendientesSap = new List<PosicionPendienteDto>();
 
-                solps.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
-
+                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                var solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
                 var sinSolps = !solps.Any();
 
                 if (sinSolps)
@@ -9990,6 +9990,10 @@ namespace SustitucionMOAUtils.Services
                       (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
                       pos.Solp.EstadoSolpSap.CodigoSap == "02")
                 );
+
+                posicionMaterial = posicionMaterial.Where(pm => posicionPendientesSap
+                        .Exists(pp => pp.NroSolp == pm.NroSolp && pp.NumeroPosicion == pm.Indice)).ToList();
+
                 foreach (var posicion in posicionMaterial)
                 {
                     if (posicion.TieneCotizacion)
