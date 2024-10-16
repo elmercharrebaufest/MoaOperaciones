@@ -177,8 +177,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.recuperarFiltros();
-        this.getListarSolp();
         this.getCombos();
+        this.getListarSolp();
     }
 
     ngAfterViewInit(): void {
@@ -722,9 +722,6 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                                 label: lpl.Value, value: lpl.Key
                             };
                             this.estadoSolpTratamiento.push(lplSelectItem);
-                            if (lpl.Key == this.DEFAULT_ListarPendiente) {
-                                this.listarPendiente = lplSelectItem;
-                            }
                         });
                     }
                 },
@@ -860,6 +857,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.rangeDates = [new Date(year, month - 1, day)];
                 }
             }
+        }
+        if (!this.listarPendiente) {
+            this.listarPendiente = { label: 'Ver Todas', value: 3 } as SelectItem;
         }
     }
 
