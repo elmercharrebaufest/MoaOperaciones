@@ -364,7 +364,7 @@ namespace SustitucionMOATest.Controllers
                 OrganizacionDeCompra = "Organización de Compra B",
             };
 
-            comprasServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras))
+            comprasServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras))
                             .Returns(expected);
 
 
