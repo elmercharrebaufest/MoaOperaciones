@@ -596,13 +596,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
-    }
-
-    listarUnidadesDeMedida(material: string) {
-        let params: HttpParams = new HttpParams().append('material', material);
-
-        return this.http.get<any[]>("/api/compras/ListarUnidadesDeMedida", { params: params })
-    }
+    }    
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();

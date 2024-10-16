@@ -219,8 +219,9 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             if (this.model.posiciones.length > 0) {
                 this.model.posiciones.forEach(posicion => {
                     posicion.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posicion.selectCentroEntrega.Id);
-                    posicion.unidadesAlternativas = posicion.unidadesAlternativas ? posicion.unidadesAlternativas :
-                        posicion.codigoServicio ? this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap) : this.combos.Unidades;
+                    console.log("2this.combos.Unidades", this.combos.Unidades);
+
+                    posicion.unidadesAlternativas =  this.combos.Unidades;
                 });
             }
         }
@@ -955,7 +956,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
-        this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap);
+        posicion.unidadesAlternativas = this.combos.Unidades;
+
         this.autocompletarCamposMaterial(posicion);
 
         this.endEditCell(dt);
@@ -965,7 +967,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         posicion.tareaSubcontratar = posicion.tareaSubcontratarObj.Descripcion;
         posicion.textoSuministro = posicion.tareaSubcontratarObj.Descripcion;
         posicion.codigoServicio = { ...posicion.tareaSubcontratarObj };
-        this.listarUnidadesDeMedida(posicion.codigoServicio.CodigoSap);
+        posicion.unidadesAlternativas = this.combos.Unidades;
         this.autocompletarCamposMaterial(posicion);
         this.endEditCell(dt);
 
@@ -987,7 +989,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 return of(null); // Por si no se devuelve nada desde el observable
             })
         ).subscribe(() => {
-            if (this.autocompletePosicionRFC != undefined) {
+            if (this.autocompletePosicionRFC != undefined) {                
                 if (this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad)) {
                     posicion.unidadSeleccionada = this.combos.Unidades.find(x => x.Codigo == this.autocompletePosicionRFC.Unidad);
                     posicion.unidadMedida = this.autocompletePosicionRFC.Unidad;
@@ -1184,8 +1186,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 }
 
                 this.model.agregarNuevaPosicionDesdeContratoMarco(newPos);
-                
-                newPos.unidadesAlternativas = newPos.codigoServicio ? this.listarUnidadesDeMedida(newPos.codigoServicio.CodigoSap) : this.combos.Unidades;
+                console.log("1this.combos.Unidades", this.combos.Unidades);
+                newPos.unidadesAlternativas = this.combos.Unidades;
                 
             });
             this.model.calcularValorTotalPorMoneda();
@@ -1353,31 +1355,5 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             element.setTabPosicion();
         });
     }
-
-    listarUnidadesDeMedida(materialCodigo: string) {
-        try {
-            this.subscription = this.service.listarUnidadesDeMedida(materialCodigo).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        if (result) {
-                            this.model.posiciones.find(x => x.codigoServicio != undefined && x.codigoServicio.CodigoSap == materialCodigo).unidadesAlternativas = result.data;
-                        }
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                });
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-            return false; //<-- Prevent Refresh
-        }
-
-        return false;
-    }
+   
 }

@@ -79,6 +79,7 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
+        RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario);
         List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
@@ -90,7 +91,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
-        List<TablaSapDto> ListarUnidadesDeMedida(string material);
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerImputaciones(string tabla);

@@ -1419,7 +1419,7 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(service.ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras));
+                return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
             }
             catch (InfoCustomException e)
             {
@@ -1728,21 +1728,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
-
-        [HttpGet]
-        public ActionResult ListarUnidadesDeMedida(string material)
-        {
-            try
-            {
-                return JsonCustom(new { data = service.ListarUnidadesDeMedida(material) });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        }       
 
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)

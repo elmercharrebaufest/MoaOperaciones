@@ -3000,27 +3000,7 @@ namespace SustitucionMOATest.Services
 
             Assert.That(resultado, Is.Not.Null);
             Assert.AreEqual(resultado.GetType(), regionesEsperadas.GetType());
-        }
-
-        [Test]
-        public void ListarUnidadesDeMedidaOk()
-        {
-            string material = "materialCodigo";
-            List<TablaSapDto> tablaSapDto = new List<TablaSapDto>();
-            var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
-            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
-            { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
-
-            var liberadorSapDto = new List<LiberadorSapDto> { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } };
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<LiberadorSap, LiberadorSapDto>>>(), It.IsAny<Expression<Func<LiberadorSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
-              .Returns(new List<LiberadorSapDto>() { new LiberadorSapDto { NombreCompleto = "Nombre", Cargo = "Cargo", Habilitado = true, LiberadorSapTipo_Id = 1 } });
-
-            var result = target.ListarUnidadesDeMedida(material);
-
-            Assert.That(result, Is.Not.Null);
-            Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
-        }
+        }        
 
         [Test]
         public void EnviarMailSolpCreadasReporteOk()

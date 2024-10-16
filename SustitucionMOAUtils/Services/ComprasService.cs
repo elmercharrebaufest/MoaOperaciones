@@ -8382,6 +8382,44 @@ namespace SustitucionMOAUtils.Services
             }
             return ultimoRegistro;
         }
+        public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)
+        {
+            RegistroInfoDto ultimoRegistro = ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras);
+            MaterialSolpDto materialSolp = repositorio.Obtener<MaterialSolp, MaterialSolpDto>(
+                a => a.CodigoSap == material && a.CentroLogistico.CodigoSap == centro && a.GrupoCompras.Codigo == grupoDeCompras,
+                a => new MaterialSolpDto
+                {
+                    Id = a.Id,
+                    UnidadMedidaBase = new TablaSapDto
+                    {
+                        CodigoSap = a.UnidadMedidaBase.CodigoSap,
+                        Descripcion = a.UnidadMedidaBase.Descripcion
+                    }
+                });
+
+            if (ultimoRegistro.Codigo == null)
+            {
+                ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
+                return ultimoRegistro;
+            }         
+            
+
+
+            if (materialSolp.UnidadMedidaBase.CodigoSap != ultimoRegistro.Unidad)
+            {
+                var unidadesDelMaterial = obtenerUnidadesDeMedidaConsumerMOA.Request(material);
+
+                var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
+
+                var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
+                
+                ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
+                ultimoRegistro.Cantidad = Math.Round(ultimoRegistro.Cantidad * (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador) / (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
+                ultimoRegistro.Precio = Math.Round((ultimoRegistro.Precio / (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador)) * (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
+
+            }
+            return ultimoRegistro;
+        }
 
         private RegistroInfoDto ObtenerUltimoRegistroPorMaterialYProveedor(string material, string centro, string grupoDeCompras, string proveedor)
         {
@@ -8940,17 +8978,6 @@ namespace SustitucionMOAUtils.Services
                 Obligatorio = x.Obligatorio
             }, x => x.Habilitado);
             return lista;
-        }
-
-        public List<TablaSapDto> ListarUnidadesDeMedida(string material)
-        {
-            List<TablaSapDto> resultado = new List<TablaSapDto>();
-            List<TablaSapDto> todasLasUM = ObtenerTablaSap(TablasSap.Unidad);
-            List<UnidadesDeMedida> unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(new List<string> { material });
-            var unidadesPorMaterialSAP = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == material).Select(x => x.UnidadDeMedida).ToList();
-            resultado = todasLasUM.Where(x => unidadesPorMaterialSAP.Contains(x.Codigo)).ToList();
-
-            return resultado;
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
