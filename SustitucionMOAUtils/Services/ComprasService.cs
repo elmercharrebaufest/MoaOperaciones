@@ -9996,7 +9996,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         posicion.ListaPO = repositorio.Obtener<SolpPosicion, IEnumerable<string>>(
                             po => po.Id == posicion.Id,
-                            po => po.Peticiones.Select(p => p.Id.ToString())).ToList();
+                            po => po.Peticiones.Select(p => p.PeticionDeOferta_Id.ToString())).ToList();
                     }
                 }
 
