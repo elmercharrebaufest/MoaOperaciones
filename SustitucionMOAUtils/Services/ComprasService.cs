@@ -2264,7 +2264,7 @@ namespace SustitucionMOAUtils.Services
 
         private static bool DeboMarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
         {
-            return solp.EnvioCircularA != EnviarCircularEnum.NoEnviar;
+            return solp.EnvioCircularA != EnviarCircularEnum.NoEnviar && solp.EnvioCircularA != null;
         }
 
         private static void MarcarRevisionesTecnicasComoNoFinalizadas(Solp solp)
