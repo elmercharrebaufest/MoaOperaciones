@@ -616,6 +616,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         if (mostrarPreview) {
                             if (result.Solp.Pdf) {
                                 this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
+
+                                const base64Pdf = result.Solp.Pdf;
+                                const blob = this.base64ToBlob(base64Pdf, 'application/pdf');
+                                const urlTemporal = URL.createObjectURL(blob);
+                                this.pdfPreview = urlTemporal;
+
                                 this.mostrarPreview = true;
                             } else {
                                 this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
@@ -670,6 +676,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
             return false; //<-- Prevent Refresh
         }
+    }
+
+    base64ToBlob(base64Data, contentType) {
+        const byteCharacters = atob(base64Data); // Decodifica el base64
+        const byteNumbers = new Array(byteCharacters.length);
+
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: contentType });
     }
 
     validarAuditor() {
