@@ -784,6 +784,7 @@ namespace SustitucionMOAUtils.Services
         private Pliego GuardarEspecificacionesTecnicasPliego(SolpDto solp, Solp solpEntity, Pliego pliegoEntity)
         {
             var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id, "Solp"), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
+            solp.EspecificacionesTecnicas = ImageResizer.AjustarImagenesEnHtml(solp.EspecificacionesTecnicas);
 
             Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id, "Solp"));
             File.WriteAllText(rutaArchivo, solp.EspecificacionesTecnicas);
@@ -1902,7 +1903,7 @@ namespace SustitucionMOAUtils.Services
                     document.Close();
                     byte[] bytes = stream.ToArray();
                     stream.Close();
-
+                    
                     return bytes;
                 }
             }

@@ -191,6 +191,7 @@
     <Compile Include="Helpers\CustomMediaTypeNames.cs" />
     <Compile Include="Helpers\ExtensionesSerializacion.cs" />
     <Compile Include="Helpers\GenericCopier.cs" />
+    <Compile Include="Helpers\ImageResizer.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
