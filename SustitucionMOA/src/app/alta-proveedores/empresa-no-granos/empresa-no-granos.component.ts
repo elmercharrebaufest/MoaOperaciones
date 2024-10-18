@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+﻿import { Component, ViewChild, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from "@angular/forms";
 import { ActivatedRoute, Params } from "@angular/router";
 import { ListBaseComponent } from "../../common/base-components/list-base-component";

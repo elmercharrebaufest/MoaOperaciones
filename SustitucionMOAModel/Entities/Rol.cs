@@ -44,6 +44,7 @@ namespace SustitucionMOAModel.Entities
 
         internal List<string> ObtenerPermisos()
         {
+            if (PermisosAsociados == null) return new List<string>();
             return PermisosAsociados.Select(p => p.Permiso).ToList();
         }
     }

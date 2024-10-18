@@ -14,6 +14,7 @@ using System.Security.Principal;
 using System.Threading;
 using System.Web.Mvc;
 
+
 namespace SustitucionMOATest.Controllers
 {
     public class UsuarioControllerTest
@@ -85,12 +86,13 @@ namespace SustitucionMOATest.Controllers
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
-                                It.IsAny<string>()
+                                It.IsAny<string>(),
+                                It.IsAny<bool>()
                                 )
                     )
                 .Returns(successMessage); ;
 
-            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "","","","");
+            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "","","","", false);
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 

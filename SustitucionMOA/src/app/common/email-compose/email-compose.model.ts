@@ -1,6 +1,10 @@
-export class EmailComposeModel {
+export interface EmailInfo {
+    Id: string;
+    CodigoDescripcion: string;
+}
+export class EmailComposeModel<T> {
     from: string;
-    to: Array<string> = new Array<string>();
+    to: Array<T> = new Array<T>();
     cc: Array<string> = new Array<string>();
     bcc: Array<string> = new Array<string>();
     subject: string;
@@ -9,7 +13,8 @@ export class EmailComposeModel {
     tieneAdjuntos: boolean;
 }
 
-export interface EmailCompose {
+
+export interface EmailCompose <T>{
     visible: boolean;
-    model: EmailComposeModel;
+    model: EmailComposeModel<T>;
 }

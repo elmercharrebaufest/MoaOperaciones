@@ -1,4 +1,4 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, LOCALE_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
@@ -56,7 +56,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { TooltipModule } from 'primeng/tooltip';
 import { ListadoDashboardCompradorComponent } from './dashboard-comprador/listado-dashboard-comprador/listado-dashboard-comprador.component';
 import { CircularComponent } from './dashboard-comprador/circular/circular.component';
-import { LegajoComponent } from './dashboard-comprador/legajo/legajo.component';
+import { LegajoComponent } from './legajo/legajo.component';
 import { NgxMaskModule } from "ngx-mask";
 import { NgbAlertModule } from '@ng-bootstrap/ng-bootstrap';
 
@@ -102,6 +102,7 @@ import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entr
 import { ModalAltaEntradaDeServicioProveedorComponent } from "./dashboard-entrada-de-servicio/modal-alta-entrada-de-servicio-proveedor/modal-alta-entrada-de-servicio-proveedor.component";
 import { ButtonModule } from 'primeng/button';
 import { CustomDecimalPipe } from '../../pipes/customDecimalPipe.pipe';
+import { ReplacePipe } from '../../pipes/replace.pipe';
 import { CeldaEditableComponent } from './dashboard-entrada-de-servicio/components/celda-editable/celda-editable.component';
 import { SpinnerCeldaComponent } from './dashboard-entrada-de-servicio/components/spinner-celda/spinner-casilla.component';
 import { AuxPannelComponent } from './dashboard-entrada-de-servicio/components/aux-pannel/aux-pannel.component';
@@ -200,6 +201,7 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
         FiltroDashboardCertificacionDeServiciosComponent,
         ListadoEstadoCertificacionesComponent,
         CustomDecimalPipe,
+        ReplacePipe,
         ListadoEstadoCertificacionesProveedorComponent,
         ModalAltaEntradaDeServicioComponent,
         VisualizarMovimientoComponent,
@@ -215,6 +217,7 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
         ActualizarFechaVigenciaComponent
     ],
     providers: [
+        { provide: LOCALE_ID, useValue: "es-419" },
         ComprasService,
         ValidadorPasoSolpService,
         ConfirmationService,

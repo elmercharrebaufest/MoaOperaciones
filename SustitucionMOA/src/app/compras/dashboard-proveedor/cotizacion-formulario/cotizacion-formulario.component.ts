@@ -31,7 +31,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
     @BlockUI() blockUI: NgBlockUI;
     @ViewChild('cotizacionMaterial') cotizacionMaterial: CotizacionMaterialComponent
     @ViewChild('cotizacionServicio') cotizacionServicio: CotizacionServicioComponent
-    peticion: PeticionDeOfertaDto = { Id: null, NroSolp: null, PeticionDeOfertaPosicion: null, Cotizacion: null };
+    peticion: PeticionDeOfertaDto = { Id: null, NroSolp: null, PeticionDeOfertaPosicion: null, Cotizacion: null } as unknown as PeticionDeOfertaDto;
     posicionesCompra: PeticionDeOfertaSolpPosicionDto[];
     @Input() esFinalizado: boolean;
     cotizaciones: GuardarCotizacion[];
@@ -62,7 +62,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.route.params.forEach((params: Params) => {
                 let id = parseInt(params["id"]);
                 this.obtenerCotizacion(id);
-              
+
             })
         };
     }
@@ -144,7 +144,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.floatMsgService.setErrorMsg(mensaje)
             return;
         }
-        this.RevalidarGrillaHoras();       
+        this.RevalidarGrillaHoras();
     }
 
     public finalizarCotizacion(esFinalizado) {
@@ -177,38 +177,38 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if (esFinalizado == undefined) this.esFinalizado = false;
         this.obtenerArchivosNuevos();
         this.ObtenerCotizacion();
-            this.blockUI.start("Grabando...");
-            try {
+        this.blockUI.start("Grabando...");
+        try {
 
-                this.subscription = this.service.GrabarCotizacion(this.cotizacion, esFinalizado).subscribe(
-                    (result: any) => {
-                        if (result.logout == true) {
-                            this.sessionDataService.logout();
-                        } else if (result.error != undefined && result.error != "") {
-                            this.floatMsgService.setErrorMsg(result.error);
-                        } else if (result.info != undefined) {
-                            this.floatMsgService.setInfoMsg(result.info);
+            this.subscription = this.service.GrabarCotizacion(this.cotizacion, esFinalizado).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        // this.nroPeticion = result.data.IdEntidad;
+                        if (result.data.Errores && result.data.Errores.length > 0) {
+                            this.floatMsgService.setErrorMsg(result.data.Errores[0]);
                         } else {
-                            // this.nroPeticion = result.data.IdEntidad;
-                            if (result.data.Errores && result.data.Errores.length > 0) {
-                                this.floatMsgService.setErrorMsg(result.data.Errores[0]);
-                            } else {
-                                this.displayCotizacionCreada = true;
-                            }
+                            this.displayCotizacionCreada = true;
                         }
-                        this.blockUI.stop();
-                    },
-                    error => {
-                        this.floatMsgService.setErrorMsg(error.message);
-                        this.blockUI.stop();
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
 
-                    });
-            } catch (e) {
-                this.floatMsgService.setErrorMsg(e);
-                this.blockUI.stop();
-                return false; //<-- Prevent Refresh
-            }
+                });
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
 
     public obtenerArchivosNuevos() {
@@ -233,43 +233,43 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
             this.cotizaciones.forEach(function (cotizacion, i) {
                 if (!breakFor && (cotizacion.NoDisponible == false || cotizacion.NoDisponible == undefined)) {
                     if ((cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) && cotizacion.UnidadDeMedidaId == 0 && cotizacion.MonedaId == 0 && cotizacion.Precio <= 0 && cotizacion.FechaDeEntrega == null && cotizacion.FechaDeVigencia == null) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " Por favor tildar NO DISPONIBLE en el caso de no contar con el material";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Cantidad <= 0 || cotizacion.Cantidad == undefined) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Ctd. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.UnidadDeMedidaId == 0) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Um. cotizada es obligatoria";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Um. cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.MonedaId == 0) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Moneda es obligatoria";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Moneda es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.Precio <= 0) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - El Precio cotizado es obligatorio";
                         breakFor = true;
                         return mensaje;
                     }
                     const decimalPart = (cotizacion.Precio % 1).toFixed(2);
                     if (decimalPart != '0.00' && cotizacion.monedaCompras == "CLP") {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Para la moneda seleccionada no es posible ingresar decimales en el precio";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.FechaDeEntrega == null) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de entrega cotizada es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
                     if (cotizacion.FechaDeVigencia == null) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + " - La Fecha de vigencia es obligatoria";
                         breakFor = true;
                         return mensaje;
                     }
@@ -295,7 +295,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                                 || self.cotizacion.ArchivosNuevos.length == 0 &&
                                 (self.cotizacion.ArchivosTipo == null || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica") == null
                                     || self.cotizacion.ArchivosTipo.filter(x => x.FileKey == "CotizacionRevisionEconomica").length == 0)))) {
-                            mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
+                            mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Debe explicar en las observaciones por qué modificó la cantidad y/o unidad de medida. Para estos casos también debe adjuntar un archivo.";
                             breakFor = true;
                             return mensaje;
                         }
@@ -311,7 +311,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     const sumaCorrecta = sumaCantidades === cotizacion.Cantidad;
 
                     if (!sumaCorrecta) {
-                        mensaje = "SOLP " +  cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
                         breakFor = true;
                         return mensaje;
                     }
@@ -326,7 +326,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                 mensaje = "El campo respeta servicios es obligatorio";
                 return mensaje;
             }
-            
+
             var count = 0;
             this.posicionesCompra.forEach(function (posicionServicio, i) {
                 count++;
@@ -466,62 +466,62 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         this.cambioDeGrillaOk = false;
         if (this.cotizacion.EsNuevaCotizacion) {
             if (!this.confirmoHoras && !this.hayCambiosEnGrillaDeHoras(this.cotizacion.CotizacionesHoras, this.cotizacion.CotizacionesHorasOriginal)) {
-                this.displayHoras = true;                          
+                this.displayHoras = true;
             }
-            else if(!this.confirmoPropuestaTecnica && this.hayCambiosEnPropuestaTecnica()){
-                this.confirmoHoras = true; 
+            else if (!this.confirmoPropuestaTecnica && this.hayCambiosEnPropuestaTecnica()) {
+                this.confirmoHoras = true;
                 this.displayPropuestaTecnica = true;
-            }else if(!this.confirmoPropuestaEconomica && this.hayCambiosEnPropuestaEconomica()){
+            } else if (!this.confirmoPropuestaEconomica && this.hayCambiosEnPropuestaEconomica()) {
                 this.confirmoPropuestaTecnica = true;
-                this.displayPropuestaEconomica = true;  
-            }else{
+                this.displayPropuestaEconomica = true;
+            } else {
                 this.mostrarDialogFinalizar();
-            }   
-        }else{
-            this.mostrarDialogFinalizar();
-        }       
-    }
-
-    aceptarHoras(){
-        this.displayHoras = false;   
-        this.confirmoHoras = true;     
-        if(this.hayCambiosEnPropuestaTecnica()){
-            this.displayPropuestaTecnica = true;
-        }else{
-            this.mostrarDialogFinalizar();
-        }     
-    }
-
-    salirHoras(){
-        this.displayHoras = false; 
-    }
-    
-    aceptarPropuestaTecnica(){
-        this.confirmoPropuestaTecnica = true;  
-        this.displayPropuestaTecnica = false; 
-        if(this.hayCambiosEnPropuestaEconomica()){
-            this.displayPropuestaEconomica = true;  
-        }else{
+            }
+        } else {
             this.mostrarDialogFinalizar();
         }
     }
 
-    salirPropuestaTecnica(){
-        this.displayPropuestaTecnica = false; 
+    aceptarHoras() {
+        this.displayHoras = false;
+        this.confirmoHoras = true;
+        if (this.hayCambiosEnPropuestaTecnica()) {
+            this.displayPropuestaTecnica = true;
+        } else {
+            this.mostrarDialogFinalizar();
+        }
     }
 
-    aceptarPropuestaEconomica(){
-        this.confirmoPropuestaEconomica = true;  
-        this.displayPropuestaEconomica = false; 
-        this.mostrarDialogFinalizar();     
-        
+    salirHoras() {
+        this.displayHoras = false;
     }
 
-    salirPropuestaEconomica(){
-        this.displayPropuestaEconomica = false; 
+    aceptarPropuestaTecnica() {
+        this.confirmoPropuestaTecnica = true;
+        this.displayPropuestaTecnica = false;
+        if (this.hayCambiosEnPropuestaEconomica()) {
+            this.displayPropuestaEconomica = true;
+        } else {
+            this.mostrarDialogFinalizar();
+        }
     }
 
-    public mostrarDialogFinalizar() {    
+    salirPropuestaTecnica() {
+        this.displayPropuestaTecnica = false;
+    }
+
+    aceptarPropuestaEconomica() {
+        this.confirmoPropuestaEconomica = true;
+        this.displayPropuestaEconomica = false;
+        this.mostrarDialogFinalizar();
+
+    }
+
+    salirPropuestaEconomica() {
+        this.displayPropuestaEconomica = false;
+    }
+
+    public mostrarDialogFinalizar() {
         this.confirmationService.confirm({
             header: "¡Último Paso!",
             acceptLabel: "SI, CONFIRMAR",
@@ -539,19 +539,19 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         if (original.length !== cambios.length) {
             return true;
         }
-    
+
         for (let i = 0; i < original.length; i++) {
             const originalItem = original[i];
             const cambioItem = cambios[i];
-    
+
             if (!this.sonIguales(originalItem, cambioItem)) {
                 return true;
             }
         }
-    
+
         return false;
     }
-    
+
     public sonIguales(objA: any, objB: any): boolean {
         for (const key in objA) {
             if (objA.hasOwnProperty(key)) {
@@ -563,16 +563,16 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
         return true;
     }
 
-    public hayCambiosEnPropuestaEconomica(){
+    public hayCambiosEnPropuestaEconomica() {
         this.ObtenerCotizacion();
         return this.cotizacion.ObservacionEconomica == this.cotizacion.ObservacionEconomicaOriginal
-         || this.cotizacion.ArchivosNuevos.length == 0;
+            || this.cotizacion.ArchivosNuevos.length == 0;
     }
 
-    public hayCambiosEnPropuestaTecnica(){
+    public hayCambiosEnPropuestaTecnica() {
         this.ObtenerCotizacion();
         return this.cotizacion.ObservacionTecnica == this.cotizacion.ObservacionTecnicaOriginal ||
-        this.cotizacion.ArchivosTecnico.length == 0;
+            this.cotizacion.ArchivosTecnico.length == 0;
     }
 
     formatearNumero(numero: number) {

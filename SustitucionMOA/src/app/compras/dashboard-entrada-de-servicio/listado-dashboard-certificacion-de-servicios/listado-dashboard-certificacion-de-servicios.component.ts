@@ -202,7 +202,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                 { id: 'esReferencia', header: 'Referencia (N° remito)', field: 'Referencia', type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esCantidad', header: 'Cant.', field: 'Cantidad', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esDescripcion', header: 'Desc. ES', field: 'TextoBreve', type: 'custom', sortable: false, required: true, visible: true },
-                { id: 'esImporte', header: 'Importe ARP/USD', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
+                { id: 'esImporte', header: 'Importe', field: 'ImporteARPUSD', type: 'string', sortable: false, required: true, visible: true },
                 { id: 'esAcciones', header: 'Eliminar ES', field: null, type: 'custom', sortable: false, required: true, visible: true },
                 { id: 'esAdjuntos', header: 'Adjuntos', field: null, type: 'custom', sortable: false, required: true, visible: true },
 
@@ -213,6 +213,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     formularioResumenCertificacion: FormGroup = this.formBuilder.group({
         descriptions: this.formBuilder.array([])
     });
+
+    periodo: string | undefined | null;
 
     ngOnInit() {
         this.obtenerConfiguracionDeTablasDelUsuario();
@@ -235,7 +237,14 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         );
         this.navService.setSeccionActive('Ingresar certificación');
         this.navService.navegarSeccion("compras/dashboardCertificacionDeServicios");
-        this.filtroFechaComponent.setPeriodoInitial('2');
+
+        if (sessionStorage.getItem('periodo-certificaciones') != undefined) {
+            this.periodo = sessionStorage.getItem('periodo-certificaciones');
+        }else{
+            this.periodo = '1';
+        }
+
+        this.filtroFechaComponent.setPeriodoInitial(this.periodo);
         this.saveConfigurationFilterDates();
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
@@ -1218,10 +1227,9 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     formatCurrency(columnField: string, rowData: any): string {
         let formattedValue = rowData[columnField];
 
-        if ((rowData.MonedaDescripcion === 'ARP' || rowData.MonedaDescripcion === '$ ')
-            && (columnField === "MontoTotalString" || columnField === "PrecioUnidadString")) {
-            formattedValue = "$ " + formattedValue;
-        }
+        if (columnField === "MontoTotalString" || columnField === "PrecioUnidadString") {
+                formattedValue = rowData.MonedaDescripcion === 'ARP' ?  '$ '+formattedValue : rowData.MonedaDescripcion+ ' ' +formattedValue;
+            }
 
         return formattedValue;
     }
@@ -1245,14 +1253,17 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             return `$ ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         } else {
             this.isARP = false;
-            return `${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            return `${moneda} ${monto.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         }
     }
 
-    formatImport(columna: string, valor: any): string {
+    formatImport(columna: string, valor: any, rowData: any): string {
 
-        if (columna === 'iImporte' && this.isARP) {
+        if (columna === 'iImporte' && rowData.MonedaDescripcion === 'ARP') {
             valor = "$ " + valor;
+        }
+        else if(columna === 'iImporte' && rowData.MonedaDescripcion !== 'ARP'){
+            valor =  rowData.MonedaDescripcion +" " + valor;
         }
 
         return valor;
@@ -1260,20 +1271,38 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     formatESImport(columna: string, rowData: any): string {
 
-        if (rowData.TemporalId !== null) {
-            let numero = rowData.ImporteARPUSD.replace(/\$|\s/g, '');
-            // Convierte a número
-            let valorNumerico = parseFloat(numero);
-            // Formatea como número con separadores de miles y dos decimales
-    
-            if (this.isARP) {
-                return '$ ' + valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        let parts = rowData.ImporteARPUSD.split(' ');
+
+        let currency: string;
+        let amount: string;
+
+        if (isNaN(parseFloat(parts[0]))) {
+            currency = parts[0];
+            amount = parts[1];
+        } else {
+            amount = parts[0];
+            currency = parts[1];
+        }
+
+        if (amount.includes(',') || amount.includes('.')) {
+            if (currency === 'ARP') {
+                return '$ ' + amount;
+            } else {
+                return currency + ' ' + amount;
             }
-            else{
-                return valorNumerico.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        } else {
+            let valorNumerico = parseFloat(amount);
+            let formattedAmount = valorNumerico.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+    
+            if (currency === 'ARP') {
+                return '$ ' + formattedAmount;
+            } else {
+                return currency + ' ' + formattedAmount;
             }
         }
-        return rowData.ImporteARPUSD;
     }
 
     /**

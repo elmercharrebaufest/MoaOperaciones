@@ -1,47 +1,47 @@
-<p-dialog [(visible)]="displayPlazo" modal="modal" 
-    [width]="850" [draggable]="false" [closable]="false"
-    appendTo="body" positionTop="30"
-    [height]="400"
-    [max] [contentStyle]="{ 
-        'max-height':'400px', 
+<p-dialog [(visible)]="displayPlazo" modal="modal"
+          [width]="850" [draggable]="false" [closable]="false"
+          appendTo="body" positionTop="30"
+          [height]="400"
+          [max] [contentStyle]="{
+        'max-height':'400px',
         'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
         <b>Configurar fecha de entrega</b>
     </p-header>
     <div class="container-fluid" style="height: 400px;">
-        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">        
-                    
+        <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
             <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="lista"
-            dataKey="Id">
-       <ng-template pTemplate="header" let-columns>
-           <tr>              
-               <th class="columna" style="background-color: #4760ac !important;">Indice</th>
-               <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
-               <th class="columna" style="background-color: #4a1884 !important;">Fecha de entrega</th>
-           </tr>
-       </ng-template>
-       <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
-           <tr>            
-               <td class="columna">{{posicionCompra?.Posicion}}</td>
-               <td class="columna">{{posicionCompra?.Descripcion}}</td>               
-               <td pEditableColumn class="columna" style="cursor:pointer">
-                <p-cellEditor>
-                    <ng-template pTemplate="input" style="width: 100% !important">
-                        <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
-                                    dateFormat="dd-M-yy"
-                                    [(ngModel)]="posicionCompra.PlazoDeEntrega">
-                        </p-calendar>
-                    </ng-template>
-                    <ng-template pTemplate="output">
-                        <div style="height: 20px;" >
-                            {{ posicionCompra?.PlazoDeEntrega | date:'dd/MM/yy' }}
-                        </div>
-                    </ng-template>
-                </p-cellEditor>
-            </td>
-           </tr>
-       </ng-template>
-    </p-table>
+                     dataKey="Id">
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th class="columna" style="background-color: #4760ac !important;">Indice</th>
+                        <th class="columna" style="background-color: #4760ac !important;">Descripción</th>
+                        <th class="columna" style="background-color: #4a1884 !important;">Fecha de entrega</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
+                    <tr>
+                        <td class="columna">{{posicionCompra?.Posicion}}</td>
+                        <td class="columna">{{posicionCompra?.Descripcion}}</td>
+                        <td pEditableColumn class="columna" style="cursor:pointer">
+                            <p-cellEditor>
+                                <ng-template pTemplate="input" style="width: 100% !important">
+                                    <p-calendar [minDate]="hoy" class="calendar" appendTo="body" [locale]="es"
+                                                dateFormat="dd-M-yy"
+                                                [(ngModel)]="posicionCompra.PlazoDeEntrega">
+                                    </p-calendar>
+                                </ng-template>
+                                <ng-template pTemplate="output">
+                                    <div style="height: 20px;">
+                                        {{ posicionCompra?.PlazoDeEntrega | date:'dd-MMM-yy' | lowercase | replace:'.':'' }}
+                                    </div>
+                                </ng-template>
+                            </p-cellEditor>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </section>
     </div>
     <p-footer>

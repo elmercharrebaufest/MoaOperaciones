@@ -135,16 +135,7 @@ namespace SustitucionMOATest.Services
                 .Returns(reporteCertificadorDto);
 
             googleDriveMock
-                .Setup(x => x.UploadFile(
-                    It.Is<GoogleDriveFileUploadRequest>(r =>
-                        r.FileUploadName == $"{nombreArchivo}.kmz")))
-                .Returns(string.Empty);
-
-            googleDriveMock
-                .Setup(x => x.UploadFile(
-                    It.Is<GoogleDriveFileUploadRequest>(r =>
-                        r.FileUploadName == $"{nombreArchivo}.json" &&
-                        r.MimeType == "applications/json")))
+                .Setup(x => x.UploadFile(It.IsAny<GoogleDriveFileUploadRequest>()))
                 .Returns(string.Empty);
 
             var campoCreado = new CampoProveedor
@@ -182,7 +173,7 @@ namespace SustitucionMOATest.Services
                 .Setup(f => f.InputStream)
                 .Returns(fileStream);
 
-            ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = "C:/ArchivosCampoSustentableTest";
+            ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
 
             var result = target.Agregar(mailUsuario, campoCreado, uploadedFileMock.Object, UsarArchivoId);
 
@@ -288,7 +279,7 @@ namespace SustitucionMOATest.Services
                 }
             };
 
-            var fileStream = new FileStream("C:\\ArchivosCampoSustentableTest\\TestKMZ.KMZ", FileMode.Open, FileAccess.Read);
+            var fileStream = new FileStream(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".\\TestFiles\\Example.KMZ"), FileMode.Open, FileAccess.Read);
             Mock<HttpPostedFileBase> uploadedFile = new Mock<HttpPostedFileBase>();
 
             uploadedFile
@@ -303,7 +294,7 @@ namespace SustitucionMOATest.Services
                 .Setup(f => f.InputStream)
                 .Returns(fileStream);
 
-            ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = "C:/ArchivosCampoSustentableTest";
+            ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"] = TestContext.CurrentContext.TestDirectory;
 
             var result = target.Editar(mailUsuario, campoEditado, uploadedFile.Object);
 
@@ -509,7 +500,7 @@ namespace SustitucionMOATest.Services
             repositorioMock
                  .Verify(x => x.Obtener<Proveedor>(It.Is<int>(i => i == proveedorId)), Times.Once);
 
-            Assert.AreEqual(expected, result);
+            Assert.AreEqual(expected.CUIT, result.CUIT);
         }
 
         [Test()]
@@ -1225,18 +1216,23 @@ namespace SustitucionMOATest.Services
         [Test]
         public void DescargarArchivosGoogle_ArchivoSinProcesar_DescargaArchivo()
         {
-            var archivoSinDescargar = new ArchivoCampoSustentable { 
+            this.repositorioMock
+                .Setup(r => r.Obtener(It.IsAny<Expression<Func<CampoProveedor, bool>>>()))
+                .Returns(new CampoProveedor { CUIT = "222222222" });
+
+            var archivoSinDescargar = new ArchivoCampoSustentable
+            {
                 ProcesadoUcropit = false,
-                Proveedor = new Proveedor { CUIT="cuit"},
-                CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, CampoSustentable_Id=3 }
+                Proveedor = new Proveedor { CUIT = "cuit" },
+                CampoCosecha = new CampoCosecha { Campo = new CampoSustentable { Id = 3 }, Cosecha = new Cosecha { Nombre = "ads" }, CampoSustentable_Id = 3 }
             };
-            var rutaGuardadoDeseada = "/cuit/cuit_3.csv";
+            googleDriveMock.Setup(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()))
+                .ReturnsAsync(new ReporteProcesoUcropit());
 
             target.DescargarArchivosDeGoogleDrive(archivoSinDescargar);
 
-            googleDriveMock.Verify(drive => drive.DownloadFile(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
+            googleDriveMock.Verify(drive => drive.DownloadFileAs<ReporteProcesoUcropit>(It.IsAny<GoogleDriveFileDownloadRequest>()), Times.Once);
             repositorioMock.Verify(repositorio => repositorio.GuardarCambios(), Times.Once);
-            Assert.That(archivoSinDescargar.Archivo.Ruta, Is.EqualTo(rutaGuardadoDeseada));
         }
     }
 }

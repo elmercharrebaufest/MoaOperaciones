@@ -23,30 +23,30 @@
 	[Moneda_Id] [int] NULL,
 	[NumeroPedido] [nvarchar](max) NULL,
 	[Estado] BIT NULL DEFAULT 1, 
-    [Indice] INT NULL, 
-    [TextoSuministro] NVARCHAR(MAX) NULL, 
-    [Motivo] NVARCHAR(MAX) NULL, 
-    [Modelo] NVARCHAR(MAX) NULL, 
-    [ServicioSolp_Id] INT NULL, 
-    [Tarea] NVARCHAR(MAX) NULL, 
-    [Cantidad] DECIMAL(18, 2) NULL, 
-    [Unidad_Id] INT NULL, 
-    [PrecioBruto] DECIMAL(18, 6) NULL, 
-    [CuentaMayor_Id] INT NULL, 
-    [ValorTipoImputacion_Id] INT NULL, 
-    [CantidadSubposicionesEnSAP] INT NULL , 
-    [MaterialSolp_Id] INT NULL, 
-    [EsConcluido] BIT NULL, 
-    [ProvinciaId] INT NULL, 
-    [NumeroContratoSuperior] NVARCHAR(50) NULL, 
-    [NumeroPosicionContratoSuperior] NVARCHAR(50) NULL, 
-    [NombreProveedor] NVARCHAR(MAX) NULL, 
-    [ProveedorFijo] NVARCHAR(50) NULL, 
+	[Indice] INT NULL, 
+	[TextoSuministro] NVARCHAR(MAX) NULL, 
+	[Motivo] NVARCHAR(MAX) NULL, 
+	[Modelo] NVARCHAR(MAX) NULL, 
+	[ServicioSolp_Id] INT NULL, 
+	[Tarea] NVARCHAR(MAX) NULL, 
+	[Cantidad] DECIMAL(18, 2) NULL, 
+	[Unidad_Id] INT NULL, 
+	[PrecioBruto] DECIMAL(18, 6) NULL, 
+	[CuentaMayor_Id] INT NULL, 
+	[ValorTipoImputacion_Id] INT NULL, 
+	[CantidadSubposicionesEnSAP] INT NULL , 
+	[MaterialSolp_Id] INT NULL, 
+	[EsConcluido] BIT NULL, 
+	[ProvinciaId] INT NULL, 
+	[NumeroContratoSuperior] NVARCHAR(50) NULL, 
+	[NumeroPosicionContratoSuperior] NVARCHAR(50) NULL, 
+	[NombreProveedor] NVARCHAR(MAX) NULL, 
+	[ProveedorFijo] NVARCHAR(50) NULL, 
 	[OrganizacionCompras] NVARCHAR(50) NULL, 
-    [ProveedorAdjudicado_Id] INT NULL, 
-    [RegistroInfoNro] NVARCHAR(50) NULL, 
-    [OrganizacionDeComprasCodigo] NVARCHAR(50) NULL, 
-    CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
+	[ProveedorAdjudicado_Id] INT NULL, 
+	[RegistroInfoNro] NVARCHAR(50) NULL, 
+	[OrganizacionDeComprasCodigo] NVARCHAR(50) NULL, 
+	CONSTRAINT [PK_dbo.SolpPosicion] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY],
@@ -63,3 +63,21 @@
 	CONSTRAINT [FK_SolpPosicion_Usuario_ProveedorAdjudicado] FOREIGN KEY ([ProveedorAdjudicado_Id]) REFERENCES [dbo].[Usuario] ([Id])
 
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_SOLP] ON [dbo].[SolpPosicion]([Solp_Id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_GrupoCompras] ON [dbo].[SolpPosicion]([GrupoCompras_Id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_Centro] ON [dbo].[SolpPosicion]([Centro_Id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_SOLPPOSICION_TipoImputacion] ON [dbo].[SolpPosicion]([TipoImputacion_Id])
+
+GO

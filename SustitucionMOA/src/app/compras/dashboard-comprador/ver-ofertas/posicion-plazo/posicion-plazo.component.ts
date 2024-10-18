@@ -45,7 +45,7 @@ export class PosicionPlazoComponent implements OnInit {
             today: 'Hoy',
             clear: 'Borrar'
         }
-        
+
     }   
 
 

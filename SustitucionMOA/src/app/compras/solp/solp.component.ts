@@ -1,4 +1,5 @@
-import { Component, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Subject, Observable } from 'rxjs';
 import { ActivatedRoute, Params } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
@@ -30,7 +31,7 @@ import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { ComponentMode, setupDaysAndMonths, setupJornadaLaboralDias, setupSolpPasos } from './solp.utils';
 import { Solp } from './solp';
 import { SolpPosicion } from './solp-posicion';
-import { EmailComposeModel } from '../../common/email-compose/email-compose.model';
+import { EmailComposeModel, EmailInfo } from '../../common/email-compose/email-compose.model';
 import { EmailComposeService } from '../../common/email-compose/email-compose.service';
 import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
@@ -64,7 +65,7 @@ import { EnumEnvioCircularA } from '../enum-envio-circular';
     providers: [ComprasService, MessageService]
 })
 
-export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
+export class SolpComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -81,6 +82,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     protected dashboard: DashboardComponent;
 
     @Input() ordenDeCompraSap: OrdenDeCompraSap;
+
+    @Output()
+    protected onResponsableTrabajoAutomaticallySelected: Subject<void> = new Subject();
+
 
     cambiosGuardados: boolean = false;
     mostrarPreview: boolean = false;
@@ -109,6 +114,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
     condEspOriginales: CondicionesEspecialesOriginales;
     displayEnvioCircular: boolean;
+    fechaLimiteDocumentacionRequerida: boolean;
+    usuarioSolicitanteListCache: any[];
 
 
     set pasoActual(value: Paso) {
@@ -131,6 +138,8 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     public solpMode: ComponentMode;
 
+    protected locale: any;
+
     constructor(protected service: ComprasService,
         protected navService: NavService,
         protected sessionDataService: SessionDataService,
@@ -144,20 +153,28 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         super(navService, securytiService, floatMsgService, modalService);
         this.pasos = setupSolpPasos();
         this.solpActual = new Solp();
-    }
-    ngOnChanges(changes: SimpleChanges): void {
-        this.obtenerUsuarioSolicitante(); 
+
+        this.locale = {
+            firstDayOfWeek: 0,
+            dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
+            dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],
+            dayNamesMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
+            monthNames: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+            monthNamesShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
+            today: 'Hoy',
+            clear: 'Borrar'
+        };
     }
 
     ngOnInit() {
         if (this.pasos && this.pasos.length > 0) {
             this.getCombos();
             this.es = setupDaysAndMonths();
-            
+
             this.pasos[0].Activo = true;
             this.pasos[0].Iniciado = true;
             this.pasoActual = this.pasos[0];
-          
+
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
@@ -172,19 +189,28 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     if (numeroSolp != "") this.flagSolpFinalizada = true;
                     this.tituloSolp();
                 });
-                this.obtenerUsuarioSolicitante();
-                if (this.solpId > 0) {
-                    this.setComponentMode(ComponentMode.Edition);
-                    this.traerSolpId(this.solpId);
-                } else {
-                    this.setComponentMode(ComponentMode.Creation);
-                    this.setearPasos();
-                    this.obtenerUltimaSolp();
-                }
+
+                let s = this.obtenerUsuarioSolicitante().subscribe(() => {
+                    // lo hago así porque lo de adentro necesita que exista la lista de usuarios
+                    if (this.solpId > 0) {
+                        this.setComponentMode(ComponentMode.Edition);
+                        this.traerSolpId(this.solpId);
+                    } else {
+                        this.setComponentMode(ComponentMode.Creation);
+                        this.setearPasos();
+                        this.obtenerUltimaSolp();
+                    }
+                });
+                this.subscriptionArray.push(s);
             }
 
             this.validarAuditor();
         }
+    }
+
+    ngOnDestroy() {
+        super.ngOnDestroy();
+        this.onResponsableTrabajoAutomaticallySelected.unsubscribe();
     }
 
     public setComponentMode(value: ComponentMode) {
@@ -290,7 +316,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return fecha;
     }
 
-    traerSolpId(idSolp) {
+    traerSolpId(idSolp: number) {
         try {
             this.blockUI.start('Cargando...');
             this.spinnerComponent.showIt();
@@ -305,6 +331,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.solpActual = new Solp(result.data);
+                        this.solpActual.usuarioSolicitanteList = this.usuarioSolicitanteListCache;
                         this.condEspOriginales = {
                             trabajoHecho: this.solpActual.trabajoHecho,
                             adicional: this.solpActual.adicional,
@@ -330,6 +357,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.blockUI.stop();
                         this.spinnerComponent.hideIt();
                         this.tituloSolpEditar(this.solpActual.nroSolp);
+                        this.completarUsuarioSolicitante();
                     }
                 },
                 error => {
@@ -431,7 +459,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
-        
+
         if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
             this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
             return;
@@ -603,13 +631,13 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                                 if (this.solpActual.vincularAPliego) {
                                     this.displaySAPVincularPliego = true;
                                 }
-                                
-                                // Esto sirve para la mejora de no enviarCirculares automaticas
-                                // if (this.solpActual.tieneModificaciones) {
-                                //     this.enviarCircularProveedores();
-                                // } else {
+
+                                // Esto sirve para la mejora de no enviarCirculares automáticas
+                                if (this.solpActual.tieneModificaciones) {
+                                    this.enviarCircularProveedores();
+                                } else {
                                     this.displaySAP = true;
-                                // }
+                                }
                             }
                             else {
                                 if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
@@ -945,7 +973,6 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.setupMonedaPorDefecto();
                         this.setupGrupoDeComprasServiciosPorDefecto();
                         this.setupGrupoDeArticuloServiciosPorDefecto();
-                        this.obtenerUsuarioSolicitante();
                     }
                 },
                 error => {
@@ -976,6 +1003,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                         this.datosUltimaSolp = result.data;
                         if (this.datosUltimaSolp != null) {
                             this.completarDatosUltimaSolp();
+                            this.completarUsuarioSolicitante();
                         }
                         this.blockUI.stop();
                     }
@@ -1001,11 +1029,11 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != undefined) {
             this.solpActual.selectUsuarioFiscal = this.solpActual.usuarioSolicitanteList.
                 find(x => x.CodigoDescripcion == this.solpActual.mail);
-              if (this.solpActual.tipoSolp == "CON_PLIEGO") {
+            if (this.solpActual.tipoSolp == "CON_PLIEGO") {
                 this.solpActual.supervisorTrabajo = this.solpActual.mail;
                 this.solpActual.selectResponsableTrabajo = this.solpActual.usuarioSolicitanteList.
                     find(x => x.CodigoDescripcion == this.solpActual.mail);
-              }
+            }
         }
     }
 
@@ -1028,10 +1056,10 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                             });
                         });
                         this.solpActual.usuarioComprasList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioComprasList];
-                        if(this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null){
-                        this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
-                            ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
-                            : this.solpActual.usuarioComprasList[0];
+                        if (this.solpActual.selectUsuarioCompras == undefined || this.solpActual.selectUsuarioCompras == null) {
+                            this.solpActual.selectUsuarioCompras = this.solpActual.usuarioComprasId > 0
+                                ? this.solpActual.usuarioComprasList.find(x => x.Id === this.solpActual.usuarioComprasId)
+                                : this.solpActual.usuarioComprasList[0];
                         }
                         this.spinnerComponent.hideIt();
                     }
@@ -1099,7 +1127,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
-        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;   
+        this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
         this.cabecera.validarTabCompleto();
         this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
         this.displayFinalizar = false;
@@ -1110,7 +1138,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
 
     // Abre el modal del boton finalizar
     showFinalizarDialog() {
-        this.obtenerUsuarioCompras();      
+        this.obtenerUsuarioCompras();
         this.displayFinalizar = true;
     }
 
@@ -1164,7 +1192,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
     showEmailPopup(esPrimeraFinalizacion: boolean, esPosteriorFinalizacion: boolean) {
         this.displaySAP = false;
         this.displaySAPEditar = false;
-        const emailModel = new EmailComposeModel();
+        const emailModel = new EmailComposeModel<EmailInfo>();
         emailModel.from = this.fromEmail;
         emailModel.to = this.getToEmails();
         emailModel.cc = this.getCCEmails();
@@ -1175,9 +1203,13 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         this.emailComposeService.show(emailModel);
     }
 
-    sendEmail(emailModel: EmailComposeModel) {
+    sendEmail(emailModel: EmailComposeModel<EmailInfo>) {
         this.blockUI.start('Enviando email...');
-        this.service.enviarEmail(emailModel).subscribe(result => {
+
+        this.service.enviarEmail({
+            ...emailModel,
+            to: emailModel.to.map(x => x.CodigoDescripcion)
+        }).subscribe(result => {
             this.blockUI.stop();
             this.emailComposeService.close();
             if (result.logout == true) {
@@ -1215,7 +1247,7 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return ccEmails;
     }
 
-    private getToEmails(): string[] {
+    private getToEmails(): EmailInfo[] {
         const toEmails: string[] = [];
 
         if (this.solpActual.urgencia == true) {
@@ -1230,16 +1262,14 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                 }
             });
         } else {
-            if (this.solpActual.mail != undefined && this.solpActual.mail != null) {
-                toEmails.push(this.solpActual.mail);
-            } else {
-                const username = sessionStorage.getItem("username");
-                if (username) {
-                    toEmails.push(username);
-                }
+            if (this.solpActual.tipoSolp === "SIN_PLIEGO") {
+                toEmails.push(this.solpActual.selectResponsableTrabajo.CodigoDescripcion);
+            }
+            if (this.solpActual.tipoSolp === "CON_PLIEGO") {
+                toEmails.push(this.solpActual.selectUsuarioFiscal.CodigoDescripcion);
             }
         }
-        return toEmails;
+        return toEmails.map(email => ({ Id: email, CodigoDescripcion: email }));
     }
 
     private get fromEmail(): string {
@@ -1295,105 +1325,9 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
         return `${window.location.origin}/api/compras/DescargarPliegoDesdeLink?solpId=${solpId}&token=${token}`;
     }
 
-    obtenerUsuarioSolicitante() {
+    obtenerUsuarioSolicitante(): Observable<any> {
         try {
-            this.subscription = this.service.listarUsuarioSolicitante().subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {                       
-                        this.solpActual.usuarioSolicitanteList = [];
-                        result.forEach(element => {
-                            this.solpActual.usuarioSolicitanteList.push({
-                                Id: element.Mail,
-                                CodigoDescripcion: element.Mail,
-                                UsuarioSap: element.UsuarioSap
-                            });
-                        });
-                        this.completarUsuarioSolicitante();
-                        this.spinnerComponent.hideIt();
-                    }
-                },
-                error => {
-                    this.floatMsgService.setErrorMsg(error.message);
-                }
-
-            );
-        } catch (e) {
-            this.floatMsgService.setErrorMsg(e);
-        }
-    }
-
-    public completarUsuarioSolicitante() {       
-        if (this.solpActual != undefined) {
-             this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
-          
-             if (this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null) {
-                this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
-                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail)
-                    : this.solpActual.usuarioSolicitanteList[0];
-            }
-
-            if (this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null) {
-                this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
-                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
-                    : this.solpActual.usuarioSolicitanteList[0];
-            }
-        }
-    }
-
-    public validarSolicitante(): boolean{
-        var puedoGuardar = true;
-        this.solpActual.posiciones.forEach(posi => {
-            if((this.solpActual.fiscalContrato == undefined || this.solpActual.fiscalContrato == "") &&
-            (this.solpActual.supervisorTrabajo == undefined || this.solpActual.supervisorTrabajo == "") &&
-            posi.selectSolicitanteCompras != undefined &&  posi.selectSolicitanteCompras != ""){
-                if(!this.solpActual.usuarioSolicitanteList.some(x => x.UsuarioSap === posi.selectSolicitanteCompras)){
-                    puedoGuardar = false;
-                }
-            }
-        });
-
-        return puedoGuardar;
-    }
-
-    condicionCircular(){
-        var tieneVisita = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
-        return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
-    }
-
-    enviarCircularProveedores(){
-        if(this.condicionCircular()){
-            this.displayEnvioCircular = true;
-        } else {
-            this.displaySAPEditar = true;
-        }
-    }
-
-    salirModalCircular(){
-        this.solpActual.envioCircularA = EnumEnvioCircularA.NoEnviar;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
-    }
-
-    enviarCircularTodos(){
-        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarATodos;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
-    }
-
-    enviarCircularVisitaRealizada(){
-        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarRealizaronVisita;
-        this.guardarEnvioCircularProveedor(this.solpActual.id , this.solpActual.envioCircularA);
-    }
-
-    guardarEnvioCircularProveedor(id: number, enviarCircularA: number) {
-        try {
-            this.blockUI.start('Cargando...');
-            this.spinnerComponent.showIt();
-            this.subscription = this.service.guardarEnvioCircularProveedor(id, enviarCircularA).subscribe(
+            let o = this.service.listarUsuarioSolicitante().map(
                 (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -1402,7 +1336,163 @@ export class SolpComponent extends BaseComponent implements OnInit, OnChanges {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        if(result.data.error != undefined && result.error != ""){
+                        this.solpActual.usuarioSolicitanteList = [];
+                        result.forEach(element => {
+                            this.solpActual.usuarioSolicitanteList.push({
+                                Id: element.Mail,
+                                CodigoDescripcion: element.Mail,
+                                UsuarioSap: element.UsuarioSap
+                            });
+                        });
+
+                        this.solpActual.usuarioSolicitanteList = [{ Id: null, CodigoDescripcion: "Seleccione un usuario" }, ...this.solpActual.usuarioSolicitanteList];
+                        this.usuarioSolicitanteListCache = this.solpActual.usuarioSolicitanteList;
+                        this.spinnerComponent.hideIt();
+                    }
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+            );
+
+            return o;
+
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        }
+    }
+
+    public completarUsuarioSolicitante() {
+        if (!this.solpActual) { return; }
+
+        if (this.esCreacionSolp) {
+            let selectUsuarioFiscalVacio: boolean = this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null;
+            let selectResponsableTrabajoVacio: boolean = this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null;
+
+            if (selectUsuarioFiscalVacio) {
+                this.solpActual.selectUsuarioFiscal = this.solpActual.mail != ""
+                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail)
+                    : this.solpActual.usuarioSolicitanteList[0];
+            }
+
+            if (selectResponsableTrabajoVacio) {
+                this.solpActual.selectResponsableTrabajo = this.solpActual.supervisorTrabajo != ""
+                    ? this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo)
+                    : this.solpActual.usuarioSolicitanteList[0];
+            }
+
+            this.setCurrentUseAsResponsableTrabajoIfNeeded();
+        }
+
+        if (this.esEdicionSolp) {
+            const elementoEncontradoSolicitante = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
+            if (elementoEncontradoSolicitante) {
+                this.solpActual.selectResponsableTrabajo = elementoEncontradoSolicitante;
+            }
+
+            const elementoEncontradoFiscal = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.mail);
+            if (elementoEncontradoFiscal) {
+                this.solpActual.selectUsuarioFiscal = elementoEncontradoFiscal;
+            }
+
+            if (elementoEncontradoSolicitante
+                || elementoEncontradoFiscal) {
+                this.onResponsableTrabajoAutomaticallySelected.next();
+            }
+        }
+    }
+
+    private setCurrentUseAsResponsableTrabajoIfNeeded(): void {
+        if (this.solpActual == null || this.solpActual == undefined) { return; }
+        if (!this.esCreacionSolp) { return; }
+        if (this.solpActual.tipoSolp !== 'SIN_PLIEGO') { return; }
+
+        const username: string = sessionStorage.getItem("username");
+
+        const elementoEncontrado = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === username);
+        if (elementoEncontrado) {
+            this.solpActual.selectResponsableTrabajo = elementoEncontrado;
+            this.onResponsableTrabajoAutomaticallySelected.next();
+        }
+    }
+
+    public validarSolicitante(): boolean {
+        var puedoGuardar = true;
+        this.solpActual.posiciones.forEach(posi => {
+            if ((this.solpActual.fiscalContrato == undefined || this.solpActual.fiscalContrato == "") &&
+                (this.solpActual.supervisorTrabajo == undefined || this.solpActual.supervisorTrabajo == "") &&
+                posi.selectSolicitanteCompras != undefined && posi.selectSolicitanteCompras != "") {
+                if (!this.solpActual.usuarioSolicitanteList.some(x => x.UsuarioSap === posi.selectSolicitanteCompras)) {
+                    puedoGuardar = false;
+                }
+            }
+        });
+
+        return puedoGuardar;
+    }
+
+    condicionCircular(): boolean {
+        let tieneVisita: boolean = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
+        return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
+    }
+
+    enviarCircularProveedores(): void {
+        if (this.condicionCircular()) {
+            this.displayEnvioCircular = true;
+        } else {
+            this.displaySAPEditar = true;
+        }
+    }
+
+    salirModalCircular(): void {
+        this.solpActual.envioCircularA = EnumEnvioCircularA.NoEnviar;
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
+    }
+
+    enviarCircularTodos(): void {
+        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarATodos;
+        if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
+            this.fechaLimiteDocumentacionRequerida = true;
+            return;
+        }
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
+    }
+
+    enviarCircularVisitaRealizada(): void {
+        this.solpActual.envioCircularA = EnumEnvioCircularA.EnviarRealizaronVisita;
+        if (this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            this.messageService.add({ severity: 'error', summary: 'Debe ingresar una fecha límite', detail: 'La fecha límite es obligatoria cuando se enviará una circular.' });
+            this.fechaLimiteDocumentacionRequerida = true;
+            return;
+        }
+        this.guardarEnvioCircularProveedor(this.solpActual.id, this.solpActual.envioCircularA, this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones);
+    }
+
+    get classGeneratorFor_fechaLimiteReenvioDocumentacionPorCambioCondiciones(): string {
+        let classes: string = "";
+        if (this.fechaLimiteDocumentacionRequerida
+            && this.solpActual.fechaLimiteReenvioDocumentacionPorCambioCondiciones == null) {
+            classes += " ng-invalid ng-dirty";
+        }
+
+        return classes;
+    }
+
+    guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date): boolean {
+        try {
+            this.blockUI.start('Cargando...');
+            this.spinnerComponent.showIt();
+            this.subscription = this.service.guardarEnvioCircularProveedor(id, enviarCircularA, fechaLimite).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        if (result.data.error != undefined && result.error != "") {
                             this.floatMsgService.setErrorMsg(result.data.error);
                         } else {
                             this.displayEnvioCircular = false;

@@ -63,7 +63,7 @@ export class AltaUsuarioComponent extends BaseComponent implements OnInit {
     }
 
     alta() {
-        let usuario: Usuario = { numeroProveedor: this.numeroProveedor, email: this.email, perfil: this.perfilDropdownComponent.selectedOption, tipo: this.tipoDropdownComponent.selectedOption };
+        let usuario: Usuario = { numeroProveedor: this.numeroProveedor, email: this.email, perfil: this.perfilDropdownComponent.selectedOption, tipo: this.tipoDropdownComponent.selectedOption, Mail: "" };
         this.mensajeComponent.setMsgsEmpty();
         this.visibleButton = false;
         //this.usuarios.push(usuario); -> Soporta un solo usuario

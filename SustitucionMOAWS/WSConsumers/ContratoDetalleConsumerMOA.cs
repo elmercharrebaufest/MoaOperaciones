@@ -232,7 +232,7 @@ namespace SustitucionMOAWS.WSConsumers
                     nroFija = fijacion.NRO_FIJA,
                     precioString = SAPFormatter.FormatearMonto(fijacion.PRECIO, fijacion.MON_PRECIO),
                     precio = fijacion.PRECIO,
-                    verProforma = fijacion.CIERRE_CONTRATO_UNILATERAL.ToUpper() != "X"
+
                 });
             }
 
@@ -251,21 +251,20 @@ namespace SustitucionMOAWS.WSConsumers
                 });
             }
 
-            foreach (ZMPES6210 liquidacion in liquidaciones)
+            foreach (ZMPES6210 hijo in liquidaciones)
             {
                 result.liquidaciones.Add(new LiquidacionView()
                 {
-                    cantidadString = SAPFormatter.FormatearCantidad(liquidacion.CANTIDAD, liquidacion.UN_CANTIDAD),
-                    cantidad = liquidacion.CANTIDAD,
-                    fecha = SAPFormatter.FormatearFecha(liquidacion.FECHA),
-                    pedido = liquidacion.PEDIDO,
-                    precioString = SAPFormatter.FormatearMonto(liquidacion.PRECIO, liquidacion.MON_PRECIO),
-                    precio = liquidacion.PRECIO,
-                    tipo = liquidacion.TIPO,
-                    totalString = SAPFormatter.FormatearMonto(liquidacion.TOTAL, liquidacion.MON_TOTAL),
-                    total = liquidacion.TOTAL,
-                    comprobante = liquidacion.COMPROBANTE,
-                    verProforma = result.fijaciones.FirstOrDefault(f => f.nroFija == liquidacion.PEDIDO)?.verProforma ?? false
+                    cantidadString = SAPFormatter.FormatearCantidad(hijo.CANTIDAD, hijo.UN_CANTIDAD),
+                    cantidad = hijo.CANTIDAD,
+                    fecha = SAPFormatter.FormatearFecha(hijo.FECHA),
+                    pedido = hijo.PEDIDO,
+                    precioString = SAPFormatter.FormatearMonto(hijo.PRECIO, hijo.MON_PRECIO),
+                    precio = hijo.PRECIO,
+                    tipo = hijo.TIPO,
+                    totalString = SAPFormatter.FormatearMonto(hijo.TOTAL, hijo.MON_TOTAL),
+                    total = hijo.TOTAL,
+                    comprobante = hijo.COMPROBANTE,
                 });
             }
 

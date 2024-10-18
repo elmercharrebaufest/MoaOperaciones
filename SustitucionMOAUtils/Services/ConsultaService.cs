@@ -972,7 +972,7 @@ namespace SustitucionMOAUtils.Services
                 x => x.TablaSeccionMaterial == tablaSeccionMaterial && !string.IsNullOrEmpty(x.Nombre))
                     .OrderBy(c => c.Descripcion)
                     .ToList();
-            
+
                 return materiales;
             }
             catch (ValidationCustomException e)
@@ -1527,5 +1527,5 @@ namespace SustitucionMOAUtils.Services
 
             return ret;
         }
-    }   
+    }
 }

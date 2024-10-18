@@ -9,7 +9,7 @@ import { LegajoDto, LegajoTipo } from '../../modelos/compras/legajoDto';
 @Component({
     selector: 'app-legajo-externo',
     templateUrl: './legajo-externo.component.html',
-    styleUrls: ['./../dashboard-comprador/legajo/legajo.component.css', '../compras.component.css']
+    styleUrls: ['./../legajo/legajo.component.css', '../compras.component.css']
 })
 export class LegajoExternoComponent implements OnInit {
     @BlockUI() blockUI: NgBlockUI;
@@ -21,6 +21,8 @@ export class LegajoExternoComponent implements OnInit {
     adjudicacionId: string;
     token: string;
     cargarPantalla = false;
+    previousId: number | null = null;
+    toggleColor: boolean = false;
 
     constructor(private route: ActivatedRoute, protected service: ComprasService) {
     }
@@ -102,6 +104,40 @@ export class LegajoExternoComponent implements OnInit {
                         this.blockUI.stop();
                         this.mensajeComponent.setErrorMsg(error.message);
                     })
+        } else if (legajoDto.Tipo == "Cotización adjunto") {
+            this.blockUI.start('Generando...');
+            this.service.descargarAdjuntosProveedores(legajoDto.PeticionDeOfertaId, legajoDto.PeticionDeOfertaUsuarioId)
+                .subscribe(
+                    (result) => {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    },
+                    (error) => {
+                        this.mensajeComponent.setErrorMsg(error.message);
+                        this.blockUI.stop();
+                    })
         } else if (legajoDto.Tipo == LegajoTipo.CotizacionAdjunto) {
             this.descargarAdjuntosProveedores(legajoDto)
         } else if (legajoDto.Tipo == LegajoTipo.Cotizacion && legajoDto.ArchivoId) {
@@ -167,7 +203,7 @@ export class LegajoExternoComponent implements OnInit {
                     this.mensajeComponent.setErrorMsg(error.message);
                     this.blockUI.stop();
                 })
-    }
+    }    
 
     private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void {
         if (window.navigator.msSaveOrOpenBlob) {
@@ -192,7 +228,7 @@ export class LegajoExternoComponent implements OnInit {
     descargarLegajo() {
         let idPeticion = this.legajo.ListaLegajos[0].PeticionDeOfertaId;
         this.blockUI.start('Generando...');
-        this.service.descargarLegajo(idPeticion, null, false)
+        this.service.descargarLegajo(idPeticion, null, false,Number(this.adjudicacionId))
             .subscribe(
                 (result) => {
                     var byteArray = new Uint8Array(result.FileContents);
@@ -280,4 +316,17 @@ export class LegajoExternoComponent implements OnInit {
                 }
             )
     }
+
+    getBackgroundColor(currentId: number): any {
+        if (this.previousId !== currentId) {
+            this.toggleColor = !this.toggleColor;
+            this.previousId = currentId;
+        }
+        return {
+            'background-color': this.toggleColor ? '#c9c9c9' : '#afafaf', 
+            'color': 'back',
+            //'font-weight': 'bold', 
+        };
+    }
+
 }

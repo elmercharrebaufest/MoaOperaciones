@@ -23,5 +23,6 @@ namespace SustitucionMOAModel.Dto
         public int? PlazoEntrega { get; set; }
         public DateTime? FechaOferta { get; set; }
         public bool TieneCotizacion { get; set; }
+        public IEnumerable<string> ListaPO { get; set; }
     }
 }

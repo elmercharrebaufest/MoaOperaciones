@@ -23,7 +23,8 @@ namespace SustitucionMOATest.Services
         private UsuarioService target;
         private Mock<IRepositorioUsuario> repositorioUsuarioMock;
         private Mock<IVendedorService> vendedorServiceMock;
-        private Mock<IAzureADConsumer> azureADConsumerMock; 
+        private Mock<IAzureADConsumer> azureADConsumerMock;
+        private Mock<IDerivacionesAprobacionesService> derivacionesAprobacionesServiceMock;
 
 
         [SetUp]
@@ -32,7 +33,7 @@ namespace SustitucionMOATest.Services
             repositorioUsuarioMock = new Mock<IRepositorioUsuario>();
             vendedorServiceMock = new Mock<IVendedorService>();
             azureADConsumerMock = new Mock<IAzureADConsumer>();
-            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object);
+            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object, derivacionesAprobacionesServiceMock.Object);
         }
 
         [Test]
@@ -196,7 +197,21 @@ namespace SustitucionMOATest.Services
                   TipoUsuario = new TipoUsuario { Id = 2, Nombre = "Granos", NombreCorto = "GRAN" },
                   Proveedores = new List<Proveedor>()
               });
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<UsuarioReasignacion, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<UsuarioReasignacion, object>>>>()))
+               .Returns(new List<UsuarioReasignacion> { });
 
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<Aprobaciones, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<Aprobaciones, object>>>>()))
+               .Returns(new List<Aprobaciones> { });
 
             var rolesList = new List<Rol>
             {
@@ -214,7 +229,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","");
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -274,13 +289,28 @@ namespace SustitucionMOATest.Services
                 .Setup(x => x.Obtener(It.IsAny<Expression<Func<Rol, bool>>>()))
                 .Returns<Expression<Func<Rol, bool>>>(expr => rolesList.Where(expr.Compile()).FirstOrDefault());
 
+            repositorioUsuarioMock
+               .Setup(x => x.Listar(It.IsAny<Expression<Func<UsuarioReasignacion, bool>>>(),
+                                It.IsAny<int>(),
+                                It.IsAny<string>(),
+                                It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                                It.IsAny<IEnumerable<Expression<Func<UsuarioReasignacion, object>>>>()))
+               .Returns(new List<UsuarioReasignacion> { });
+            repositorioUsuarioMock
+              .Setup(x => x.Listar(It.IsAny<Expression<Func<Aprobaciones, bool>>>(),
+                               It.IsAny<int>(),
+                               It.IsAny<string>(),
+                               It.IsAny<SustitucionMOAModel.Consultas.DirOrden>(),
+                               It.IsAny<IEnumerable<Expression<Func<Aprobaciones, object>>>>()))
+              .Returns(new List<Aprobaciones> { });
+
             var expected = string.Format(SuccessMsg.RolesActualizadosOk, mailUsuario, " ( CUIT: 23333333333)");
 
             List<int> idRoles = new List<int> { 1, 2 };
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","");
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
