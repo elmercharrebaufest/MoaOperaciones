@@ -83,7 +83,7 @@ namespace SustitucionMOAWS.WSConsumers
                     Id = long.Parse(item.PO_NUMBER),
                     Fecha = fechaFormateada,
                     ProveedorNombre = item.VEND_NAME,
-                    MonedaDescripcion = item.CURRENCY_ISO,
+                    MonedaDescripcion = item.CURRENCY,
                     SUBJ_TO_R = item.SUBJ_TO_R,
                     ProveedorNumero = item.VENDOR
                 });

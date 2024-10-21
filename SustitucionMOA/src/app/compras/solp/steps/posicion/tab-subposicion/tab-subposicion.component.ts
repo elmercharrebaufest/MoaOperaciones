@@ -13,6 +13,7 @@ import { EnumTipoImputacion } from '../../../../enum-tipo-imputacion';
 import { SubPosicionViewModel } from './sub-posicion-view-model';
 import { Solp } from '../../../solp';
 import { SolpPosicion } from '../../../solp-posicion';
+import * as uuid from 'uuid';
 import _ from 'lodash'
 
 @Component({
@@ -616,7 +617,7 @@ export class TabSubposicionComponent extends ListBaseComponent {
         let nuevaSubPosicion = _.cloneDeep(subPosicion);
         let maxSubPosicion = this.listadoSubposiciones.reduce((max, sp) => Math.max(max, Number(sp.subPosicion)), 0);        
         nuevaSubPosicion.subPosicion = maxSubPosicion + 1;
-
+        nuevaSubPosicion.id = uuid.v4();
         this.listadoSubposiciones.push(nuevaSubPosicion);
         this.calcularTotalSubPosicion();
     } 

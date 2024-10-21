@@ -1,124 +1,98 @@
 <div *ngIf="visible">
-<p-dialog 
-  [(visible)]="visible" 
-  [responsive]="true"
-  [draggable]="false" 
-  [modal]="true" 
-  appendTo="body" 
-  [width]="750"
-  [height]="600"
-  [max]
-  positionTop="30"
-  [contentStyle]="{ 
+  <p-dialog [(visible)]="visible" [responsive]="true" [draggable]="false" [modal]="true" appendTo="body" [width]="750"
+    [height]="600" [max] positionTop="30" [contentStyle]="{ 
     'max-height':'750px', 
     'min-height':'400px'}">
-  <p-header class="headerModal">
-    <span class="fa fa-envelope-o blue" aria-hidden="true"></span>
-    &nbsp; Enviar Email
-  </p-header>
-  <p-body>
-    <form [formGroup]="formGroupEmail">
-      <!-- <div class="content-wraper"> -->
+    <p-header class="headerModal">
+      <span class="fa fa-envelope-o blue" aria-hidden="true"></span>
+      &nbsp; Enviar Email
+    </p-header>
+    <p-body>
+      <form [formGroup]="formGroupEmail">
+        <!-- <div class="content-wraper"> -->
         <section class="container-fluid">
-            <div class="row" style="margin-bottom: 0.4em;">
-              <div class="col-xs-2 col-md-2">
-                <label class="e-label"><b>De:</b></label>
+          <div class="row" style="margin-bottom: 0.4em;">
+            <div class="col-xs-2 col-md-2">
+              <label class="e-label"><b>De:</b></label>
+            </div>
+            <div class="col-xs-10 col-md-10 ui-fluid">
+              <input type="text" pInputText formControlName="from" [(ngModel)]="model.from">
+              <div *ngIf="showInputError('from')">
+                <p class="text-danger">Campo obligatorio</p>
               </div>
-              <div class="col-xs-10 col-md-10 ui-fluid">
-                <input type="text" pInputText 
-                  formControlName="from" 
-                  [(ngModel)]="model.from"
-                  (onBlur)="validateFromEmailAddress($event)">
-                <div *ngIf="showInputError('from')">
-                    <p class="text-danger">Campo obligatorio</p>
-                </div>
-                <div *ngIf="!showInputError('from') && !isValidFromEmailDomain">
-                  <p class="text-danger">dominio de email no permitido</p>
-                </div>
+              <div *ngIf="!showInputError('from') && !isValidFromEmailDomain">
+                <p class="text-danger">dominio de email no permitido</p>
               </div>
             </div>
-            <div class="row" style="margin-bottom: 0.4em;">
-              <div class="col-xs-2 col-md-2">
-                <label class="e-label"><b>Para:</b></label>
-              </div>
-              <div class="col-xs-10 col-md-10 ui-fluid">
-                <!-- <input type="text" pInputText 
+          </div>
+          <div class="row" style="margin-bottom: 0.4em;">
+            <div class="col-xs-2 col-md-2">
+              <label class="e-label"><b>Para:</b></label>
+            </div>
+            <div class="col-xs-10 col-md-10 ui-fluid">
+              <!-- <input type="text" pInputText 
                   formControlName="to" 
                   [(ngModel)]="model.to"
                   (onBlur)="validateCcEmailAddress($event)"> -->
-
-                  <p-chips formControlName="to" 
-                  [(ngModel)]="model.to"
-                  [allowDuplicate]="false"
-                  [addOnTab]="true"
-                  (onAdd)="validateCcEmailAddress($event)"
-                  (onBlur)="validateCcEmailAddress($event)">
-                </p-chips>
-                <div *ngIf="showInputError('to')">
-                    <p class="text-danger">Campo obligatorio</p>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-2 col-md-2">
-                <label class="e-label"><b>CC:</b></label>
-              </div>
-              <div class="col-xs-10 col-md-10 ui-fluid">
-                <p-chips formControlName="cc" 
-                  [(ngModel)]="model.cc"
-                  [allowDuplicate]="false"
-                  [addOnTab]="true"
-                  (onAdd)="validateCcEmailAddress($event)"
-                  (onBlur)="validateCcEmailAddress($event)">
-                </p-chips>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-2 col-md-2">
-                <label class="e-label"><b>CCO:</b></label>
-              </div>
-              <div class="col-xs-10 col-md-10 ui-fluid">
-                <p-chips formControlName="bcc" 
-                  [(ngModel)]="model.bcc"
-                  [allowDuplicate]="false"
-                  [addOnTab]="true"
-                  (onAdd)="validateBccEmailAddress($event)"
-                  (onBlur)="validateBccEmailAddress($event)">
-                </p-chips>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-2 col-md-2">
-                <label class="e-label"><b>Asunto:</b></label>
-              </div>
-              <div class="col-xs-10 col-md-10 ui-fluid">
-                <input type="text" pInputText
-                  formControlName="subject" 
-                  [(ngModel)]="model.subject">
-                <div *ngIf="showInputError('subject')">
-                    <p class="text-danger">Campo obligatorio</p>
-                </div>
-              </div>
-            </div>           
-        </section>
-        <hr class="prototipo">
-        <section class="container-fluid">
-          <div class="row">
-            <div class="col-md-12 ui-fluid">
-              <textarea [rows]="5" [cols]="20" pInputTextarea 
-                formControlName="body" 
-                [(ngModel)]="model.body">
-              </textarea>
-              <div *ngIf="showInputError('body')">
+              <p-autoComplete formControlName="to" [(ngModel)]="model.to" dataKey="Id"
+                [suggestions]="resultadosMailsFiltrados" [field]="'CodigoDescripcion'" [dropdown]="true"
+                [multiple]="true" (completeMethod)="search($event)" [dropdown]="true"
+                (onKeyUp)="addWithEnterOrTab($event)" [showTransitionOptions]="'0ms'" [hideTransitionOptions]="'0ms'"
+                [style]="{'width': '100%','display': 'inline-flex','height':'fit-content', 'min-height':'34px'}"></p-autoComplete>
+              <div *ngIf="showInputError('to')">
                 <p class="text-danger">Campo obligatorio</p>
-              </div>              
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2 col-md-2">
+              <label class="e-label"><b>CC:</b></label>
+            </div>
+            <div class="col-xs-10 col-md-10 ui-fluid">
+              <p-chips formControlName="cc" [(ngModel)]="model.cc" [allowDuplicate]="false" [addOnTab]="true"
+                (onAdd)="validateCcEmailAddress($event)" (onBlur)="validateCcEmailAddress($event)">
+              </p-chips>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2 col-md-2">
+              <label class="e-label"><b>CCO:</b></label>
+            </div>
+            <div class="col-xs-10 col-md-10 ui-fluid">
+              <p-chips formControlName="bcc" [(ngModel)]="model.bcc" [allowDuplicate]="false" [addOnTab]="true"
+                (onAdd)="validateBccEmailAddress($event)" (onBlur)="validateBccEmailAddress($event)">
+              </p-chips>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-2 col-md-2">
+              <label class="e-label"><b>Asunto:</b></label>
+            </div>
+            <div class="col-xs-10 col-md-10 ui-fluid">
+              <input type="text" pInputText formControlName="subject" [(ngModel)]="model.subject">
+              <div *ngIf="showInputError('subject')">
+                <p class="text-danger">Campo obligatorio</p>
+              </div>
             </div>
           </div>
         </section>
         <hr class="prototipo">
         <section class="container-fluid">
           <div class="row">
-            <div class="col-md-12 ui-fluid" *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0)">
+            <div class="col-md-12 ui-fluid">
+              <textarea [rows]="5" [cols]="20" pInputTextarea formControlName="body" [(ngModel)]="model.body">
+              </textarea>
+              <div *ngIf="showInputError('body')">
+                <p class="text-danger">Campo obligatorio</p>
+              </div>
+            </div>
+          </div>
+        </section>
+        <hr class="prototipo">
+        <section class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 ui-fluid"
+              *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || (this.solpActual.especificacionesViewModel.archivosEspecificaciones.length > 0 || this.solpActual.archivosCotizaciones.length > 0)">
               <a href="{{ model.downloadLinkUrl }}" target="_blank" rel="nofollow	noopener noreferrer" class="e-link">
                 <i class="fa fa-download fa-lg"></i>&nbsp;
                 <b>Descargar Legajo</b>
@@ -126,12 +100,13 @@
             </div>
           </div>
         </section>
-      <!-- </div> -->
-    </form>
-  </p-body>
-  <p-footer class="e-footer">
-    <button class="btn btn-secondary btn-custom-secondary" (click)="onClose()">CANCELAR</button>
-    <button class="btn btn-primary btn-custom-primary" (click)="onSendEmail()" [disabled]="!canSendEmail">ENVIAR</button>
-  </p-footer>
-</p-dialog>
+        <!-- </div> -->
+      </form>
+    </p-body>
+    <p-footer class="e-footer">
+      <button class="btn btn-secondary btn-custom-secondary" (click)="onClose()">CANCELAR</button>
+      <button class="btn btn-primary btn-custom-primary" (click)="onSendEmail()"
+        [disabled]="!canSendEmail">ENVIAR</button>
+    </p-footer>
+  </p-dialog>
 </div>

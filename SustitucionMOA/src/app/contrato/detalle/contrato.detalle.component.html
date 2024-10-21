@@ -468,7 +468,7 @@
                                         <td *ngIf="liquidacion.precioString != '0,00'">{{liquidacion.precioString}}</td>
                                         <td *ngIf="liquidacion.precioString == '0,00'"></td>
                                         <td *ngIf="liquidacion.totalString != '0,00'">{{liquidacion.totalString}}</td>
-                                        <td *ngIf="liquidacion.totalString == '0,00' && liquidacion.verProforma"><a
+                                        <td *ngIf="liquidacion.totalString == '0,00'"><a
                                                 (click)="goToSeccionParam('liquidacion/proforma', liquidacion.pedido)"
                                                 href="#">Ver Proforma</a></td>
                                     </ng-container>

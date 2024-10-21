@@ -26,6 +26,5 @@ namespace SustitucionMOAModel.Models.WSMapMOA.Contrato.Detalle
         public string cantidadString { get; set; }
         public string precioString { get; set; }
         public string totalString { get; set; }
-        public bool verProforma { get; set; }
     }
 }

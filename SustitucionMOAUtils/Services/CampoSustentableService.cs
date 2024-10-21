@@ -600,7 +600,7 @@ namespace SustitucionMOAUtils.Services
             };
             var content = JsonConvert.SerializeObject(datos);
 
-            Log.Error("", "", "CampoSustentableService", "GenerarPDFDeclaracion", content);
+            Log.Info( $"CampoSustentableService, GenerarPDFDeclaracion, {content}");
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);

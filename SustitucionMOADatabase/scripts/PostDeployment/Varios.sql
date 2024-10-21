@@ -1,6 +1,6 @@
 ﻿IF NOT EXISTS (SELECT TOP 1 1 FROM Usuario WHERE Mail = 'moaoperaciones@molinosagro.com.ar') 
 BEGIN
-	insert into Usuario values ('moaoperaciones@molinosagro.com.ar','30715118773',1,2,null,'',0,null,null,'',null,null)
+	insert into Usuario values ('moaoperaciones@molinosagro.com.ar','30715118773',1,2,null,'',0,null,null,'',null,null,0)
 END
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'Soja200Desde') 
@@ -226,4 +226,19 @@ END
  IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'EnvioMailLiberacionOC')
 BEGIN
 	insert into Configuracion values ('EnvioMailLiberacionOC','1')
+END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresMinutos')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresMinutos','5')
+END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresCantidad')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresCantidad','5')
+END
+
+ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'NotificacionErroresEnviarA')
+BEGIN
+	insert into Configuracion values ('NotificacionErroresEnviarA','moaoperaciones@baufest.com;plataformacompras@baufest.com')
 END

@@ -1,50 +1,55 @@
+import { Archivo } from "../common/models/archivo"
 import { PosicionCompra } from "../compras/solp-compra"
 import { SolpPosicion } from "../compras/solp/solp-posicion"
 import { CotizacionDto } from "./cotizacionDto"
 
 export interface PeticionDeOfertaDto {
-    RequisitoCiberseguridad?: boolean
-    ObservacionTecnicaOriginal?: any
-    ObservacionEconomicaOriginal?: any
-    EsNuevaCotizacion?: any
-    Solp?: any
-    PorcentajeDeHoras?: any
-    PersonalHoras?: boolean,
-    RespetaMateriales?: boolean,
-    RespetaServicios?: boolean,
-    Id?: number,
-    FechaEntregaFormateado?: string,
-    PlazoDeOferta?: Date,
-    PlazoDeOfertaHora?: Date
-    CUIT?: string,
-    Mail?: string,
-    Usuarios?: PeticionDeOfertaUsarioDto[],
-    UsuariosAdicionales?: PeticionDeOfertaUsarioAdicionalDto[],
-    Solp_Id?: number,
-    NroSolp?: string,
-    FechaCreacion?: Date,
-    UsuarioCreador_Id?: number,
-    Observaciones?: string,
-    TipoPosicionCodigo?: string,
-    CotizacionId?: number,
-    PeticionDeOfertaPosicion?: PeticionDeOfertaSolpPosicionDto[],
-    Cotizacion?: CotizacionDto,
-    ObservacionTecnica?: string,
-    ObservacionEconomica?: string,
-    SolpDto?: any,
-    Selected?: boolean,
-    Cantidad?: number,
-    PlazoDeOfertaEstado?: string,
     Adicional?: boolean,
-    NroOrdenDeCompraAdicional?: string,
-    TieneVisitaObraMasiva?: boolean,
-    TieneVisitaObraBool?: boolean,
+    ArchivosPaso4Cotizacion?: Archivo[],
+    Cantidad?: number,
+    Cotizacion?: CotizacionDto,
+    CotizacionId?: number,
+    CUIT?: string,
+    EsNuevaCotizacion?: any,
     Estado?: string,
-    RevisionFinalizada?: boolean,
-    RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto
+    FechaCreacion?: Date,
+    FechaEntregaFormateado?: string,
+    Id?: number,
+    Mail?: string,
+    NroOrdenDeCompraAdicional?: string,
+    NroSolp?: string,
+    NrosSolp?: string[],
+    ObservacionCotizacion?: string,
+    ObservacionEconomica?: string,
+    ObservacionEconomicaOriginal?: any,
+    ObservacionTecnica?: string,
+    ObservacionTecnicaOriginal?: any,
+    Observaciones?: string,
+    PersonalHoras?: boolean,
+    PeticionDeOfertaPosicion?: PeticionDeOfertaSolpPosicionDto[],
     PideDescripcionTecnica?: boolean,
     PideDocumentacionTecnica?: boolean,
-    NrosSolp?: any[],
+    PlazoDeOferta?: Date,
+    PlazoDeOfertaEstado?: string,
+    PlazoDeOfertaHora?: Date,
+    PorcentajeDeHoras?: any,
+    RequisitoCiberseguridad?: boolean,
+    RespetaMateriales?: boolean,
+    RespetaServicios?: boolean,
+    RevisionFinalizada?: boolean,
+    RevisionTecnica?: PeticionDeOfertaRevisionTecnicaDto,
+    Selected?: boolean,
+    Solp?: any,
+    SolpDto?: any,
+    Solp_Id?: number,
+    SolpModificada?: boolean,
+    TieneVisitaObraBool?: boolean,
+    TieneVisitaObraMasiva?: boolean,
+    TipoPosicionCodigo?: string,
+    UsuarioCreador_Id?: number,
+    Usuarios?: PeticionDeOfertaUsarioDto[],
+    UsuariosAdicionales?: PeticionDeOfertaUsarioAdicionalDto[],
+    VerBotonVerPrecio: boolean
 }
 
 export interface PeticionDeOfertaUsarioDto {
@@ -69,7 +74,7 @@ export interface PeticionDeOfertaUsarioAdicionalDto {
     RazonSocial: string,
     UsuarioId: number,
     Mail?: string,
-    CUIT?: string   
+    CUIT?: string
 }
 
 export interface PeticionDeOfertaSolpPosicionDto {
@@ -98,7 +103,7 @@ export interface PeticionDeOfertaCierreDto {
     Observaciones: string
 }
 
-export interface PeticionDeOfertaRevisionTecnicaDto{
+export interface PeticionDeOfertaRevisionTecnicaDto {
     Id: number,
     Usuario_Id?: number,
     RecotizacionEconomica?: boolean,

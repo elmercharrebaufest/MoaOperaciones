@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.ViewModel.Notificacion;
+using SustitucionMOARepositorio;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,7 +35,10 @@ namespace SustitucionMOAUtils.Interfaces
         Task<EntradaServicioCreateRespuestaDto> AprobarEntradaDeServicio(string nro_es_local, string Moneda);
 
         List<Aprobaciones> GetESTemporaria(string nroESLocal);
+        string GetCurrencyType(string NroOC);
         EntradaServicioReasignacionRespuestaDto ReasignarSuplente(string nro_es_local, string mail);
         string ActualizarInformacionIngresante(IngresanteInfoEditableDto info);
+
+        Task NotificarReasignaciones(List<string> ListaAp, RepositorioEF repositorio);
     }
 }

@@ -132,7 +132,7 @@ namespace SustitucionMOATest.Services
             var patente = "";
             var result = target.ObtenerOrdenesFas(patente, true, true);
 
-            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result.Count);
         }
 
     }

@@ -76,6 +76,7 @@
     <Compile Include="Dto\Compras\InfoVisitasDeObraDto.cs" />
     <Compile Include="Dto\Compras\IngresanteInfoEditableDto.cs" />
     <Compile Include="Dto\Compras\LogCotizacionDto.cs" />
+    <Compile Include="Dto\Compras\ObtenerLegajoResponse.cs" />
     <Compile Include="Dto\Compras\POPosicionDto.cs" />
     <Compile Include="Dto\Compras\TablaGeneralDto.cs" />
     <Compile Include="Dto\Compras\TablaSapDto.cs" />
@@ -89,7 +90,9 @@
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
+    <Compile Include="Dto\LogTableDto.cs" />
     <Compile Include="Dto\MonedaConversionDto.cs" />
+    <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
     <Compile Include="Dto\OrdenDeCarga\GestionAltasFAS.cs" />
@@ -121,6 +124,8 @@
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
+    <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
+    <Compile Include="Dto\sap\NumeroPosicion.cs" />
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
@@ -130,6 +135,8 @@
     <Compile Include="Entities\AplicacionCartaPorteCargaMasivaFila.cs" />
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
+    <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\LogTable.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />

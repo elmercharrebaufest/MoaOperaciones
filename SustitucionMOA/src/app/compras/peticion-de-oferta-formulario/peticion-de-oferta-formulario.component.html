@@ -28,7 +28,14 @@
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solpCompraDto.PosicionCompras" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th *ngIf="esTipoMaterial" class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"></p-checkbox></th>
+                                    <th *ngIf="esTipoMaterial" class="columna">
+                                        <p-checkbox name="posiciones"
+                                                    [binary]="true"
+                                                    [(ngModel)]="TodasPosicionesSeleccionadas"
+                                                    (click)="seleccionarTodo(solpCompraDto.PosicionCompras)"
+                                                    [disabled]="!hayPosicionesPendientes()" >
+                                        </p-checkbox>
+                                    </th>
                                     <th *ngIf="esTipoServicio" style="width: 3em"></th>
                                     <th class="columna">Pos.</th>
                                     <th *ngIf="esTipoPOMultiple" class="columna">Nro Solp</th>
@@ -51,7 +58,13 @@
                             <ng-template pTemplate="body" let-posicionCompra let-expanded="expanded" let-columns="columns">
                                 <tr>
                                     <td *ngIf="esTipoMaterial">
-                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="posicionCompra.Selected"></p-checkbox>
+                                        <p-checkbox
+                                            name="selectedCotizacion"
+                                            binary="false"
+                                            [(ngModel)]="posicionCompra.Selected"
+                                            [disabled]="posicionCompra.Cantidad<=0"
+                                            (ngModelChange)="checkSelectAllIfNeeded()">
+                                        </p-checkbox>
                                     </td>
                                     <td *ngIf="esTipoServicio">
                                         <a href="#" [pRowToggler]="posicionCompra">
@@ -228,6 +241,34 @@
                     </div>
                 </div>
 
+                <div *ngIf="this.solpCompraDto.MostrarSelectorPlazoDeOferta" class="inputCompras" style="margin-bottom: 1px;">
+                    <div class="row myRow" style="padding-top: 2px;">
+                        <div class="row">
+                            <hr style="border-top: 1px solid #d7d7d7 !important" />
+                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-left: 15px;">
+                                <div class="col-xs-12 col-sm-10" style="font-size: 20px;">
+                                    <strong>Plazo de entrega</strong>
+                                </div>
+                                <div class="col-xs-12 col-sm-10 col-md-4" style="font-size: 24px; margin-bottom: 20px;">
+                                    <p-calendar [(ngModel)]="this.plazoDeEntrega"
+                                                [minDate]="plazoDeEntregaFechaMin"
+                                                [locale]="locale"
+                                                [showIcon]="true"
+                                                dateFormat="dd-M-yy"
+                                                appendTo="body"
+                                                [readonlyInput]="true">
+                                    </p-calendar>
+                                    <div *ngIf="mostrarAlertaFechaInferior10Dias" class="alert alert-warning" role="alert">
+                                        <p>
+                                            La fecha de plazo de entrega es menor a 10 días.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="inputCompras" style="margin-bottom: 40px;">
                     <div class="row myRow" style="padding-top: 2px;">
                      
@@ -336,9 +377,9 @@
 
 <p-dialog [(visible)]="displayPeticionCreada" [width]="400" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
-        ¡Peticion de oferta creada!
+        ¡Petición de oferta creada!
     </p-header>
-    <br> La peticion #{{nroPeticion}} se creo correctamente.
+    <br> La petición #{{nroPeticion}} se creó correctamente.
     <br>
     <p-footer>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="salir()">Aceptar</button>

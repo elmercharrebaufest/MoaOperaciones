@@ -33,7 +33,7 @@ export class CarouselNotificacionesComponent extends BaseComponent implements On
 
     ngOnInit(): void {
         this.navService.setSeccionList([]);
-        this.getNotificaciones();
+        //this.getNotificaciones();
     }
 
     getNotificaciones() {

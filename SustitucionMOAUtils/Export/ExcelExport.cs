@@ -119,7 +119,7 @@ namespace SustitucionMOAUtils.Export
             gridData.HeaderRow.Cells[0].Text = " ";
             gridData.RenderControl(htw);
 
-            var datosCalidad = (List<CalidadExcel>)datosCalidadList;
+            List<SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle.Calidad> datosCalidad = (List<SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Detalle.Calidad>)datosCalidadList;
 
             var subtituloCalidadRow = new System.Data.DataTable("Titulo");
             subtituloCalidadRow.Columns.Add("Titulo");

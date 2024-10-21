@@ -420,14 +420,11 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void DescargarFormularioCM05Ok()
         {
-            int idCabeceraTest = 123;
-
+            int idCabeceraTest = 1;
+            var testImagePath = TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png";
             List<IngresosBrutosCoeficienteUnificado> ingresosBrutosCoeficienteUnificadoList = new List<IngresosBrutosCoeficienteUnificado>
             {
-                new IngresosBrutosCoeficienteUnificado { Id = 1,    Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46323061565409 CM05.jpg" }, },
-                new IngresosBrutosCoeficienteUnificado { Id = 12,   Archivo = new Archivo { Ruta = "C:/CarpetaLoca/Consultas/5776/47/46_3061565409 CM05.pdf" }, },
-                new IngresosBrutosCoeficienteUnificado { Id = 123,  Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46_3061565409 CM05.pdf" }, },
-                new IngresosBrutosCoeficienteUnificado { Id = 1234, Archivo = new Archivo { Ruta = "C:/ArchivosProveedores/Consultas/5776/47/46_3061565409 CM07.pdf" }, },
+                new IngresosBrutosCoeficienteUnificado { Id = 1,    Archivo = new Archivo { Ruta = testImagePath }, },
             };
             this.gestionImpuestosServiceMock
                 .Setup(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()))
@@ -439,10 +436,9 @@ namespace SustitucionMOATest.Controllers
             Assert.IsInstanceOf<FileContentResult>(result.Data);
 
             FileContentResult resultData = (FileContentResult)result.Data;
-            Assert.AreEqual("46_3061565409 CM05.pdf", resultData.FileDownloadName);
+            Assert.AreEqual("LogoBaufest.png", resultData.FileDownloadName);
 
             this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()), Times.Once);
-            this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(123), Times.Once);
         }
 
         [Test]

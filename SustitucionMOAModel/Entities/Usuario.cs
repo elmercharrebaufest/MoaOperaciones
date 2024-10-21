@@ -33,6 +33,7 @@ namespace SustitucionMOAModel.Entities
         public string UsuarioSap { get; set; }
         public string OrganizacionDeCompra { get; set; }
         public string Suplente { get; set; }
+        public bool? Externo { get; set; }
 
         [InverseProperty("Usuario")]
         public virtual ICollection<PeticionDeOferta> Peticiones { get; set; }
@@ -236,7 +237,7 @@ namespace SustitucionMOAModel.Entities
 
         public bool TieneRol(RolEnum rol)
         {
-            if (rolesDelUsuario == null)
+            if (rolesDelUsuario == null || rolesDelUsuario.Count == 0)
             {
                 CargarRolesUsuario();
             }

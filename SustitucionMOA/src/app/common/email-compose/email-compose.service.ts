@@ -1,28 +1,28 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
-import { EmailCompose, EmailComposeModel } from './email-compose.model';
+import { EmailCompose, EmailComposeModel, EmailInfo } from './email-compose.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmailComposeService implements OnDestroy {
-  public toogleOn = new Subject<EmailCompose>();
+  public toogleOn = new Subject<EmailCompose<EmailInfo>>();
 
   private visible = false;
 
   ngOnDestroy() {
-    if (this.visible) { 
+    if (this.visible) {
       this.toogleOn.unsubscribe();
     }
   }
 
-  show(emailModel: EmailComposeModel) {
+  show(emailModel: EmailComposeModel<EmailInfo>) {
     this.visible = true;
     this.toogleOn.next(
       {
-        visible: this.visible, 
+        visible: this.visible,
         model: emailModel
-      } as EmailCompose
+      } as EmailCompose<EmailInfo>
     );
   }
 
@@ -30,9 +30,9 @@ export class EmailComposeService implements OnDestroy {
     this.visible = false;
     this.toogleOn.next(
       {
-        visible: this.visible, 
+        visible: this.visible,
         model: new EmailComposeModel()
-      } as EmailCompose
+      } as EmailCompose<EmailInfo>
     );
   }
 }

@@ -58,9 +58,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
-        List<LegajoDto> ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor);
+        ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, string mailUsuario, bool esSolicitante);
         Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto);
-        string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario, bool esProveedor);
+        string DescargarLegajo(int idPeticion, string path, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, string mailUsuario, bool esSolicitante);
         RespuestaGuardarSOLP GrabarCircular(CircularDto circularDto, HttpFileCollectionBase adjuntos, bool esAutomatico = false, List<PeticionDeOfertaUsuario> usuarios = null);
         PeticionDeOfertaDto ObtenerPeticionDeOfertaParaCircular(int peticionId);
         RespuestaGuardarSOLP GrabarProveedoresEnPeticionDeOferta(List<int> usuariosId, int peticionId);
@@ -81,7 +81,7 @@ namespace SustitucionMOAUtils.Interfaces
         DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
-        LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token);
+        LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario);
         List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
         Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
         ChatsDto ObtenerChat(int solpId, int usuarioActualId);
@@ -115,7 +115,7 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaCrearOrdenDeCompra ValidarPrecioCotizado(AdjudicacionDto adjudicacionDto);
         AdjuntosSolpDto ObtenerAdjuntosSolpAgrupar(string nroSolp);
         Resultado DesagruparPO(string nroSolp, string po);
-        Resultado GuardarEnvioCircularProveedor(int id, int envioCircularA);
+        Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite);
         ValidarFechaVigenciaRegistroInfoResDto ValidarFechaVigenciaRegistroInfo(ValidarFechaVigenciaRegistroInfoReqDto request);
         void ActualizarFechaVigenciaRegistroInfo(ActualizarFechaVigenciaRegistroInfoDto datos);
         byte[] GenerarExcelHistorialMovimientos(int peticionDeOfertaId);

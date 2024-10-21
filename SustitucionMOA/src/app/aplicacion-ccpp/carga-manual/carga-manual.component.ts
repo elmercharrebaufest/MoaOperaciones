@@ -13,7 +13,7 @@ import { MessageService } from "primeng/api";
 import { registerLocaleData } from '@angular/common';
 import es from '@angular/common/locales/es'
 import { BlockUI, NgBlockUI } from "ng-block-ui";
-import { debounceTime, filter, finalize } from "rxjs/operators";
+import { debounceTime, filter } from "rxjs/operators";
 
 
 export const MSG_ALERTA_CREADO = { severity: 'success', summary: 'Aplicación CCPP', detail: 'La aplicación fue guardada exitosamente.', life: 5000 };
@@ -175,21 +175,18 @@ export class CargaManual extends AplicacionCcppBaseComponent implements OnInit {
     guardarAplicacion() {
         if (!this.aplicacionCCPPForm.valid)
             return;
-        this.blockUI.start("Guardando aplicación...");
-        this.service.guardarAplicacion(this.aplicacionCCPPForm.value)
-            .pipe(finalize(() => this.blockUI.stop()))
-            .subscribe({
-                next: ({ data, info, error, logout }) => {
-                    if (logout)
-                        this.sessionDataService.logout()
-                    else if (info || error)
-                        this.msgService.add(MSG_ALERTA_ERROR_INFO_API(info || error))
-                    else if (data) {
-                        this.msgService.add(MSG_ALERTA_CREADO)
-                        this.reset()
-                    }
+        this.service.guardarAplicacion(this.aplicacionCCPPForm.value).subscribe({
+            next: ({ data, info, error, logout }) => {
+                if (logout)
+                    this.sessionDataService.logout()
+                else if (info || error)
+                    this.msgService.add(MSG_ALERTA_ERROR_INFO_API(info || error))
+                else if (data) {
+                    this.msgService.add(MSG_ALERTA_CREADO)
+                    this.reset()
                 }
-            })
+            }
+        })
     }
     filtrarCartasPorte(material?: string) {
         if (!material) {
