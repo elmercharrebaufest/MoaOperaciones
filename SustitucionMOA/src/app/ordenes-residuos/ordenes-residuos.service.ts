@@ -14,6 +14,7 @@ import { Domicilio } from "../common/models/ordenes-residuos/domicilio";
 import { TransportesIds } from "../common/models/ordenes-residuos/transportesIds";
 import { OrdenCargaResiduosDto } from "../common/models/ordenes-residuos/ordenCargaResiduosDto";
 import { GrabarOrdenResponse } from "../common/models/ordenes-residuos/grabarOrdenResponse";
+import { DestinoScato } from "../common/models/scato/destinoScato";
 
 @Injectable({
     providedIn: 'root'
@@ -269,6 +270,21 @@ export class OrdenesResiduosService extends BaseService {
         return this.http
             .get<ApiResponse<OrdenCargaResiduosDto>>(
                 '/api/OrdenResiduos/ActualizarSolicitudEdicion',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000,
+                observableThrowError(
+                    new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde")
+                ))
+            );
+    }
+
+    public obtenerDestinosMercaderia(cuit: string): Observable<ApiResponse<DestinoScato[]>> {
+        let params : HttpParams = new HttpParams()
+            .append("cuit", cuit);
+        
+        return this.http
+            .get<ApiResponse<DestinoScato[]>>(
+                '/api/OrdenResiduos/ObtenerDestinosMercaderia',
                 { params: params, headers: this.headers })
             .pipe(timeoutWith(360000,
                 observableThrowError(

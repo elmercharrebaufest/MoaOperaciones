@@ -10,6 +10,7 @@ using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAUtils.Services.Email;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace SustitucionMOATest.Services
         private Mock<IScatoRepositorioClient> mIScatoRepositorioClient;
         private Mock<IOrdenCargaConsumerMOA> mIOrdenCargaConsumerMOA;
         private Mock<IEmailResiduosService> mIEmailResiduosService;
+        private Mock<ICNRTClient> mICNRTClient;
         private Mock<IFeriadoService> mIFeriadoService;
         private Mock<IScatoConsumer> mIScatoConsumer;
         private IOrdenResiduosService target;
@@ -35,16 +37,18 @@ namespace SustitucionMOATest.Services
             mIRepositorioOrdenResiduos = new Mock<IRepositorioOrdenResiduos>();
             mIScatoRepositorioClient = new Mock<IScatoRepositorioClient>();
             mIOrdenCargaConsumerMOA = new Mock<IOrdenCargaConsumerMOA>();
+            mICNRTClient = new Mock<ICNRTClient>();
             mIFeriadoService = new Mock<IFeriadoService>();
             mIEmailResiduosService = new Mock<IEmailResiduosService>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
             target = new OrdenResiduosService(
-                mIRepositorioOrdenResiduos.Object,
-                mIScatoRepositorioClient.Object,
                 mIOrdenCargaConsumerMOA.Object,
+                mIScatoConsumer.Object,
+                mIScatoRepositorioClient.Object,
+                mIRepositorioOrdenResiduos.Object,
+                mICNRTClient.Object,
                 mIFeriadoService.Object,
-                mIEmailResiduosService.Object,
-                mIScatoConsumer.Object);
+                mIEmailResiduosService.Object);
         }
 
         [Test]

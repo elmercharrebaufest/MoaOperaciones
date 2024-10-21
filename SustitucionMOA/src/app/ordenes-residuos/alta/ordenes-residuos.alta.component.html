@@ -38,10 +38,13 @@
                                 </div>
                                 <div class="styled-select" style="overflow: initial;">
                                     <p-dropdown name="cmbProductos" placeholder="Seleccione un producto"
-                                        [disabled]="ordenResiduos.Id > 0" [options]="listaProductos"
-                                        optionLabel="Descripcion" [(ngModel)]="ordenResiduos.Producto"
-                                        (ngModelChange)="onProductoSeleccionado()" [filter]="true"
-                                        filterBy="value.Descripcion">
+                                        [disabled]="ordenResiduos.Id > 0"
+                                        [options]="listaProductos"
+                                        optionLabel="Descripcion"
+                                        [(ngModel)]="ordenResiduos.Producto"
+                                        [filter]="true"
+                                        filterBy="value.Descripcion"
+                                        (ngModelChange)="onProductoSeleccionado()">
                                     </p-dropdown>
                                 </div>
                             </div>
@@ -51,13 +54,16 @@
                                     Destino mercadería (localidad - provincia):
                                 </div>
                                 <div *ngIf="!ordenResiduos.Id" class="styled-select" style="overflow: initial;">
-                                    <app-autocomplete-localidad
-                                        (onLocalidadSeleccionada)="onLocalidadSeleccionada($event)"
-                                        [localidad_Id]="ordenResiduos.Localidad.Id">
-                                    </app-autocomplete-localidad>
+                                    <p-dropdown name="cmbDestinoMercaderia" placeholder="Seleccione un destino"
+                                        [disabled]="ordenResiduos.Id > 0"
+                                        [options]="listaDestinosMercaderia"
+                                        optionLabel="DescripcionCompleta"
+                                        [(ngModel)]="ordenResiduos.DestinoMercaderia">
+                                    </p-dropdown>
+                                    <p-progressSpinner *ngIf="procesandoCampo.DestinoMercaderia" [style]="{width: '5%', height: '5%'}"></p-progressSpinner>
                                 </div>
                                 <div *ngIf="ordenResiduos.Id > 0" class="styled-select">
-                                    <input type="text" [(ngModel)]="localidadDescripcion" disabled="true">
+                                    <input type="text" [(ngModel)]="ordenResiduos.DestinoMercaderia.DescripcionCompleta" disabled="true">
                                 </div>
                             </div>
 

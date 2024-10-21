@@ -33,11 +33,13 @@ namespace SustitucionMOAModel.Entities
         public string Observacion { get; set; }
 
         public int? LocalidadId { get; set; }
-        [ForeignKey(nameof(LocalidadId))]
-        public virtual Localidad Localidad { get; set; }
+        
+        public string LocalidadDescripcion { get; set; }
+        
+        public int? ProvinciaId { get; set; }
+        
+        public string ProvinciaDescripcion { get; set; }
 
-        public int LocalidadScatoId { get; set; }
-        public string LocalidadScatoDescripcion { get; set; }
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaEgreso { get; set; }
         public string PlantaCodigo { get; set; }

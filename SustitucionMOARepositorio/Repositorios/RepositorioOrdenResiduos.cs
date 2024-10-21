@@ -48,7 +48,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     o.Estado.Semaforo,
                     DescripcionEstado = o.Estado.Nombre,
                     o.FechaCreacion,
-                    LocalidadDescripcion = o.Localidad.Nombre,
+                    o.LocalidadDescripcion,
                     Material = o.Producto.Nombre,
                     o.PatenteChasis,
                     RazonSocialCliente = o.Cliente.RazonSocial

@@ -29,8 +29,8 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             DomicilioOrden = ordenResiduos.DomicilioOrden;
             DomicilioTipo = ordenResiduos.DomicilioTipo;
             FechaCreacion = ordenResiduos.FechaCreacion.ToString();
-            LocalidadDescripcion = ordenResiduos.LocalidadScatoDescripcion;
-            LocalidadId = ordenResiduos.LocalidadScatoId;
+            LocalidadDescripcion = ordenResiduos.LocalidadDescripcion;
+            LocalidadId = ordenResiduos.LocalidadId ?? 0;
             NombreChofer = ordenResiduos.ChoferApellido + " " + ordenResiduos.ChoferNombre;
             ChoferApellido = ordenResiduos.ChoferApellido;
             ChoferNombre = ordenResiduos.ChoferNombre;

@@ -19,7 +19,7 @@ import { Proveedor } from "../../common/models/proveedor";
 import { Planta } from "../../common/models/ordenes-residuos/planta";
 import { Domicilio } from "../../common/models/ordenes-residuos/domicilio";
 import { EstadoOrdenResiduosEnum } from "../../common/models/ordenes-residuos/estadoOrdenResiduos";
-import { AutocompleteLocalidadComponent } from "../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
+import { DestinoScato } from "../../common/models/scato/destinoScato";
 
 
 @Component({
@@ -37,8 +37,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
-    @ViewChild(AutocompleteLocalidadComponent)
-    private autocompleteLocalidadComponent: AutocompleteLocalidadComponent;
 
     constructor(
         protected service: OrdenesResiduosService,
@@ -57,6 +55,8 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     listaPlantas: Planta[] = [];
     listaDomicilios: Domicilio[] = [];
 
+    listaDestinosMercaderia: DestinoScato[] = [];
+
     ordenResiduos: OrdenCargaResiduosDto = new OrdenCargaResiduosDto();
     esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
     codigoProveedorUsuario: string = sessionStorage.getItem("proveedor") || "SINCODIGO";
@@ -70,7 +70,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     validaCPEDG: boolean = false;
     procesandoCampo: Partial<Record<keyof OrdenCargaResiduosDto, boolean>> = {};
     mensajeSuccess: string = "";
-    localidadDescripcion: string = "";
 
     get NoPuedeEditarCuitsTerceros(): boolean {
         return (this.ordenResiduos.Id &&
@@ -117,16 +116,17 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
 
         this.validaCPEDG = this.ordenResiduos.Producto.ValidaSisaRuca;
 
-        if (!this.validaCPEDG) {
+        if (this.validaCPEDG) { // Tiene carta de porte
+            this.obtenerPlantas();
+            this.obtenerDomicilios();
+        }
+        else {
             this.ordenResiduos.Planta = undefined;
             this.ordenResiduos.Domicilio = undefined;
             this.listaPlantas = [];
             this.listaDomicilios = [];
         }
-        else {
-            this.obtenerPlantas();
-            this.obtenerDomicilios();
-        }
+        this.obtenerDestinosMercaderia();
     }
 
     cargarClientes() {
@@ -185,6 +185,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.obtenerPlantas();
         this.obtenerDomicilios();
         this.obtenerIdsTransportes();
+        this.obtenerDestinosMercaderia();
     }
 
     ordenarYFiltrarProveedores(proveedores: Proveedor[]): Proveedor[] {
@@ -198,12 +199,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         });
         filtrados.forEach(c => { c.RazonSocial = c.RazonSocial + " (" + c.CUIT + ")" });
         return filtrados;
-    }
-
-    onLocalidadSeleccionada(idLocalidad: string) {
-        if (idLocalidad) {
-            this.ordenResiduos.Localidad.Id = Number(idLocalidad);
-        }
     }
 
     obtenerPatentes() {
@@ -274,6 +269,41 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         );
     }
 
+    obtenerDestinosMercaderia() {
+        if (!(this.ordenResiduos && this.ordenResiduos.Cliente.Id && this.ordenResiduos.Producto.MaterialId)) {
+            this.resetearDestinoMercaderia();
+            return;
+        }
+        if (this.ordenResiduos.Id > 0 && this.ordenResiduos.DestinoMercaderia) {
+            this.ordenResiduos.DestinoMercaderia.DescripcionCompleta = `${this.ordenResiduos.DestinoMercaderia.LocalidadDescripcion} (${this.ordenResiduos.DestinoMercaderia.ProvinciaDescripcion})`;
+            return;
+        }
+        
+        let materialTieneCartaDePorte = this.ordenResiduos.Producto.ValidaSisaRuca;
+        if (materialTieneCartaDePorte) {
+            this.resetearDestinoMercaderia();
+        }
+        else {
+            this.procesandoCampo.DestinoMercaderia = true;
+            this.unsubscribe();
+            let cuit = this.ordenResiduos.Cliente.CUIT;
+            this.service.obtenerDestinosMercaderia(cuit).subscribe(
+                (resp) => {
+                    let destinosMercaderia = this.manejarErroresApiResponse(resp);
+                    if (destinosMercaderia) {
+                        this.listaDestinosMercaderia = this.ordenarDestinosMercaderia(destinosMercaderia);
+                        this.ordenResiduos.DestinoMercaderia = this.listaDestinosMercaderia.length == 1 ? this.listaDestinosMercaderia[0] : undefined;
+                    }
+                },
+                (err) => {
+                    console.error(JSON.stringify(err, null, 4));
+                    this.mensajeComponent.setErrorMsg(err.message);
+                },
+                () => { this.procesandoCampo.DestinoMercaderia = false; }
+            )
+        }
+    }
+
     onPatenteChasisSeleccionado(event: any) {
         this.ordenResiduos.PatenteChasis = event.toUpperCase();
     }
@@ -286,7 +316,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     }
 
     onPatenteAcopladoSeleccionado(event: any) {
-        // this.obtenerIdsTransportes();
         this.ordenResiduos.PatenteAcoplado = event.toUpperCase();
     }
 
@@ -397,7 +426,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenResiduos.Localidad && !this.validaCPEDG) {
+        if (!this.validaCPEDG && !(this.ordenResiduos.DestinoMercaderia && this.ordenResiduos.DestinoMercaderia.LocalidadId > 0)) {
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
             return false;
         }
@@ -498,12 +527,8 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                     this.cargarClientes();
                     this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => v.MaterialId == this.ordenResiduos.Producto.MaterialId) || this.ordenResiduos.Producto;
                     this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => v.Id == this.ordenResiduos.Almacen.Id) || this.ordenResiduos.Almacen;
-                    if (this.ordenResiduos.Localidad) {
-                        this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
-                        this.autocompleteLocalidadComponent.getLocalidadById();
-                        this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
-                    }
-                    this.onProductoSeleccionado()
+                    this.onProductoSeleccionado();
+                    this.cuilChoferEsValido = true;
                 }
             },
             (err) => {
@@ -520,6 +545,19 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     cerrarNotificacionYVolver() {
         document.getElementById("botonCerrarModal").click();
         this.redirigirAListadoOrdenesResiduos();
+    }
+
+    ordenarDestinosMercaderia(destinosMercaderia: DestinoScato[]): DestinoScato[] {
+        destinosMercaderia.sort((a, b) => {
+            return a.LocalidadDescripcion.toLowerCase().localeCompare(b.LocalidadDescripcion.toLowerCase());
+        });
+        destinosMercaderia.forEach(dm => { dm.DescripcionCompleta = `${dm.LocalidadDescripcion} (${dm.ProvinciaDescripcion})` });
+        return destinosMercaderia;
+    }
+
+    resetearDestinoMercaderia() {
+        this.listaDestinosMercaderia = [];
+        this.ordenResiduos.DestinoMercaderia = undefined;
     }
 
 

@@ -597,17 +597,6 @@ namespace SustitucionMOAUtils.Services
             return EstadoOrdenDeCargaFason.Pendiente;
         }
 
-        /// <summary>
-        /// Modifica los datos de la request según validaciones respecto al usuario que realiza la petición
-        /// </summary>
-        /// <param name="request"></param>
-        /// <param name="mailUsuario"></param>
-        private void ValidarRequest(OrdenDeCargaFasonRequest request, string mailUsuario)
-        {
-            var usuario = repositorio.Obtener<Usuario>(us => us.Mail == mailUsuario);
-            ValidarRequest(request, usuario);
-        }
-
         private void ValidarRequest(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
             if (request.CantidadDeViajes > 3)
@@ -679,15 +668,6 @@ namespace SustitucionMOAUtils.Services
             {
                 emailFasonService.EnviarMailTransporteNoExiste(detallesOrden.orden);
             }
-        }
-
-        private List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(string cuit)
-        {
-            if (cuit.Length != 11)
-            {
-                throw new ValidationCustomException("El cuit no tiene el formato correcto.");
-            }
-            return scatoConsumer.BuscarDestinos(cuit);
         }
 
         private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)

@@ -87,7 +87,7 @@ namespace SustitucionMOATest.Repositorio
                     FechaCreacion = new DateTime(2024, 2, 23),
                     Id = 1,
                     Estado = new EstadoOrdenResiduos { Nombre = "Pendiente", Semaforo = "yellow" },
-                    Localidad = new Localidad { Nombre = "Palomar" },
+                    LocalidadDescripcion = "Palomar",
                     Producto = new Material { Nombre = "Prod1" },
                     Cliente = new Proveedor { RazonSocial = "Clientelkj" }
                 },
@@ -96,7 +96,7 @@ namespace SustitucionMOATest.Repositorio
                     FechaCreacion = new DateTime(2024, 3, 8),
                     Id = 3,
                     Estado = new EstadoOrdenResiduos { Nombre = "Pendiente", Semaforo = "yellow" },
-                    Localidad = new Localidad { Nombre = "Palomar" },
+                    LocalidadDescripcion = "Palomar",
                     Producto = new Material { Nombre = "Prod5" },
                     Cliente = new Proveedor { RazonSocial = "Clientegfdsg" }
                 },
@@ -105,7 +105,7 @@ namespace SustitucionMOATest.Repositorio
                     FechaCreacion = new DateTime(2024, 3, 25),
                     Id = 5,
                     Estado = new EstadoOrdenResiduos { Nombre = "Pendiente", Semaforo = "yellow" },
-                    Localidad = new Localidad { Nombre = "Palomar" },
+                    LocalidadDescripcion = "Palomar",
                     Producto = new Material { Nombre = "Prod8" },
                     Cliente = new Proveedor { RazonSocial = "Clienteyutre" }
                 }

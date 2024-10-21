@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Models.DataAgro;
+﻿using SustitucionMOAModel.Dto.Scato;
+using SustitucionMOAModel.Models.DataAgro;
 
 namespace SustitucionMOAModel.Dto.OrdenResiduos
 {
@@ -12,7 +13,7 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
 
         public MaterialDto Producto { get; set; }
 
-        public LocalidadDto Localidad { get; set; }
+        public DestinoScato DestinoMercaderia { get; set; }
 
         public OrdenDeCarga.PlantaDto Planta { get; set; }
 
@@ -60,7 +61,11 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             entity.DomicilioOrden = Domicilio?.Orden;
             entity.DomicilioTipo = Domicilio?.Tipo.ToString();
             entity.EstadoId = Estado?.Id ?? 0;
-            entity.LocalidadId = Localidad?.Id;
+            entity.KmsARecorrer = DestinoMercaderia?.KmsARecorrer;
+            entity.LocalidadId = DestinoMercaderia?.LocalidadId;
+            entity.LocalidadDescripcion = DestinoMercaderia?.LocalidadDescripcion;
+            entity.ProvinciaId = DestinoMercaderia?.ProvinciaId;
+            entity.ProvinciaDescripcion = DestinoMercaderia?.ProvinciaDescripcion;
             entity.MaterialId = Producto.MaterialId;
             entity.Observacion = Observaciones;
             entity.PatenteAcoplado = PatenteAcoplado;
@@ -95,11 +100,13 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
             FechaEgreso = entity.FechaEgreso?.ToString("dd/MM/yyyy HH:mm");
             FechaIngreso = entity.FechaIngreso?.ToString("dd/MM/yyyy HH:mm");
             Id = (int)entity.Id;
-            Localidad = entity.Localidad == null ? null : new LocalidadDto
+            DestinoMercaderia = entity.LocalidadId == null ? null : new DestinoScato
             {
-                Id = entity.Localidad.LocalidadId,
-                Nombre = entity.Localidad.Nombre,
-                ProvinciaNombre = entity.Localidad.Provincia.Nombre
+                LocalidadId = entity.LocalidadId.Value,
+                LocalidadDescripcion = entity.LocalidadDescripcion,
+                ProvinciaId = entity.ProvinciaId ?? 0,
+                ProvinciaDescripcion = entity.ProvinciaDescripcion,
+                KmsARecorrer = entity.KmsARecorrer
             };
             NombreChofer = entity.ChoferNombre;
             ApellidoChofer = entity.ChoferApellido;
