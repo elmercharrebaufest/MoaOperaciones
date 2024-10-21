@@ -543,19 +543,22 @@ namespace SustitucionMOAUtils.Services
             Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
             usuario.Roles.Add(nuevoNoGranos);
 
-            // obtener proveedor registrado con el CUIT ingresado o, si no existe, crear uno nuevo
-            Proveedor proveedor = repositorio.Obtener<Proveedor>(x => x.CUIT == usuario.CUITRegistro)
-                ?? new Proveedor
-                {
-                    CUIT = usuario.CUITRegistro,
-                    EstadoAprobacion = estadoAprobacion,
-                    Observaciones = "Proveedor agregado por compras",
-                    Mail = usuario.Mail,
-                    TipoProveedor = tipoUsuario,
-                    FechaSolicitud = DateTime.Now,
-                    RazonSocial = proveedorDto.RazonSocial,
-                    CodigoProveedor = setCodigoProveedor,
-                };
+            Proveedor proveedorExistente = repositorio.Obtener<Proveedor>(x => x.CUIT == usuario.CUITRegistro);
+            if (proveedorExistente != null)
+            {
+                estadoAprobacion = proveedorExistente.EstadoAprobacion;
+            }
+            Proveedor proveedor = new Proveedor
+            {
+                CUIT = usuario.CUITRegistro,
+                EstadoAprobacion = estadoAprobacion,
+                Observaciones = "Proveedor agregado por compras",
+                Mail = usuario.Mail,
+                TipoProveedor = tipoUsuario,
+                FechaSolicitud = DateTime.Now,
+                RazonSocial = proveedorDto.RazonSocial,
+                CodigoProveedor = setCodigoProveedor,
+            };
 
             if (!mantenerEstadoAprobacionExistente)
             {
