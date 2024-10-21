@@ -396,7 +396,7 @@ namespace SustitucionMOAUtils.Services
                     foreach (var posicion in solpEntity.Posiciones)
                     {
 
-                        string textoOriginal = posicion.Tarea;
+                        string textoOriginal = posicion.Tarea ?? "";
                         int indiceSeparador = textoOriginal.IndexOf('-');
                         string textoModificado = textoOriginal;
                         if (indiceSeparador != -1)
@@ -1903,7 +1903,7 @@ namespace SustitucionMOAUtils.Services
                     document.Close();
                     byte[] bytes = stream.ToArray();
                     stream.Close();
-                    
+
                     return bytes;
                 }
             }
