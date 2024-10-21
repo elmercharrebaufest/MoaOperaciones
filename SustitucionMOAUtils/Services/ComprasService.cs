@@ -10,6 +10,7 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
@@ -6940,7 +6941,7 @@ namespace SustitucionMOAUtils.Services
                 bool tieneUnidadDeMedidaNula = false;
                 if (peticionUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES")
                 {
-                    tieneUnidadDeMedidaNula = tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones.Where(x => !(x.NoDisponible == true))?.Any(pos =>
+                    tieneUnidadDeMedidaNula = cotizacionDto.CotizacionPosiciones.Where(x => !(x.NoDisponible == true))?.Any(pos =>
                     pos.UnidadDeMedidaId == null || !info.Any(unidad => unidad.Id == pos.UnidadDeMedidaId)) ?? false;
                 }
                 else
@@ -8251,6 +8252,9 @@ namespace SustitucionMOAUtils.Services
             Cotizacion cotizacion = null
             )
         {
+            RegistroInfoDto ultimoRegistroInfoSap = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor());
+
             var registro = new RegistroInfoDto
             {
                 Cantidad = cotizacionPosicion.Cantidad.Value,
@@ -8265,20 +8269,45 @@ namespace SustitucionMOAUtils.Services
                 FechaVigencia = cotizacionPosicion.FechaDeVigencia.HasValue ? cotizacionPosicion.FechaDeVigencia.Value.ToString("yyyy-MM-dd") : DateTime.Now.AddDays(15).Date.ToString("yyyy-MM-dd"),
                 FechaVigenciaFormateada = cotizacionPosicion.FechaDeVigencia ?? DateTime.Now.AddDays(15).Date,
                 GrupoDeCompras = cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.GrupoCompras.Codigo,
-                EsModificar = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
-                    cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor()).EsModificar
+                EsModificar = ultimoRegistroInfoSap.EsModificar
             };
 
-            if (solpPosicion != null && cotizacionPosicion.UnidadDeMedida.Id != solpPosicion.Unidad_Id)
+            TablaSap unidadDeMedidaRegInfo = repositorio.Obtener<TablaSap>(a => a.Tabla == "Unidad" && a.CodigoSap == ultimoRegistroInfoSap.Unidad);
+
+            var unidadesDelMaterial = unidadesDeMedidaSap.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
+            var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadDeMedida.Codigo);
+            if (ultimoRegistroInfoSap.EsModificar)
             {
-                var unidadesDelMaterial = unidadesDeMedidaSap.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
+                if (unidadDeMedidaRegInfo.Id != cotizacionPosicion.UnidadDeMedida.Id)
+                {
+                    var unidadDelRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == unidadDeMedidaRegInfo.Codigo);
+                    AdjustUnitPriceAndQuantity(registro, cotizacionPosicion.Cantidad.Value, cotizacionPosicion.Precio.Value, unidadCotizada, unidadDelRegistroInfo);
+                }
+            }
+            else
+            {
                 var unidadBase = unidadesDelMaterial.First(x => x.Numerador == 1 && x.Denominador == 1);
-                var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == cotizacionPosicion.UnidadDeMedida.Codigo);
-                registro.Unidad = unidadBase.UnidadDeMedida;
-                registro.Cantidad = Math.Round(cotizacionPosicion.Cantidad.Value * (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
-                registro.Precio = Math.Round(cotizacionPosicion.Precio.Value / (unidadCotizada.Numerador / unidadCotizada.Denominador), 2);
-            };
+                AdjustUnitPriceAndQuantity(registro, cotizacionPosicion.Cantidad.Value, cotizacionPosicion.Precio.Value, unidadCotizada, unidadBase);
+            }
             return registro;
+        }
+
+        private static void AdjustUnitPriceAndQuantity(RegistroInfoDto registro, decimal cantidad, decimal precio, UnidadesDeMedida unidadActual, UnidadesDeMedida unidadObjetivo)
+        {
+
+            // Convertir la cantidad a la unidad base (UNI)
+            decimal cantidadEnUnidadBase = cantidad * unidadActual.Numerador / unidadActual.Denominador;
+
+            // Convertir la cantidad de la unidad base a la nueva unidad
+            decimal nuevaCantidad = cantidadEnUnidadBase * unidadObjetivo.Denominador / unidadObjetivo.Numerador;
+
+            // Como queremos que la nueva cantidad sea 1, ajustamos el precio proporcionalmente
+            decimal nuevoPrecio = precio * (cantidad / nuevaCantidad);
+
+            // Asignar los valores ajustados al registro
+            registro.Unidad = unidadObjetivo.UnidadDeMedida;
+            registro.Cantidad = 1; // Queremos que la cantidad sea siempre 1 en la unidad objetivo
+            registro.Precio = Math.Round(nuevoPrecio, 2);
         }
 
         public DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId)
@@ -8398,7 +8427,7 @@ namespace SustitucionMOAUtils.Services
                     }
                 });
 
-            if (ultimoRegistro.Codigo == null)
+            if (ultimoRegistro.Unidad == null)
             {
                 ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
                 return ultimoRegistro;
@@ -8409,15 +8438,9 @@ namespace SustitucionMOAUtils.Services
             if (materialSolp.UnidadMedidaBase.CodigoSap != ultimoRegistro.Unidad)
             {
                 var unidadesDelMaterial = obtenerUnidadesDeMedidaConsumerMOA.Request(material);
-
                 var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
-
                 var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
-
-                ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
-                ultimoRegistro.Cantidad = Math.Round(ultimoRegistro.Cantidad * (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador) / (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
-                ultimoRegistro.Precio = Math.Round((ultimoRegistro.Precio / (unidadRegistroInfo.Numerador / unidadRegistroInfo.Denominador)) * (unidadBaseMaterial.Numerador / unidadBaseMaterial.Denominador), 2);
-
+                AdjustUnitPriceAndQuantity(ultimoRegistro, ultimoRegistro.Cantidad, ultimoRegistro.Precio, unidadRegistroInfo, unidadBaseMaterial);
             }
             return ultimoRegistro;
         }

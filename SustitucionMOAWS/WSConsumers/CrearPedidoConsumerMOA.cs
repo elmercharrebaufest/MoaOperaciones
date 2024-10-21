@@ -133,7 +133,12 @@ namespace SustitucionMOAWS.WSConsumers
                 unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(posicionesSolp.Select(x => x.MaterialSolp?.Codigo).ToList());
             }
 
-            var unidadesCodigoSap = adjudicacion.Posiciones.SelectMany(p => new[] { p.CotizacionPosicion.UnidadDeMedida?.CodigoSap }.Concat(p.CotizacionPosicion.CotizacionSubPosiciones.Select(sp => sp.UnidadDeMedida.CodigoSap))).Distinct();
+            var unidadesCodigoSap = adjudicacion.Posiciones
+                .SelectMany(p => new[] { p.CotizacionPosicion.UnidadDeMedida?.CodigoSap }
+                    .Concat(p.CotizacionPosicion.CotizacionSubPosiciones?.Select(sp => sp.UnidadDeMedida?.CodigoSap) ?? Enumerable.Empty<string>()))
+                .Where(codigo => codigo != null)
+                .Distinct();
+
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
                 x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
@@ -144,7 +149,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (var solpPosicion in posicionesSolp.OrderBy(x => x.Id))
             {
-                var adjudicacionPosicion = adjudicacion.Posiciones.Where(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id).Single();
+                var adjudicacionPosicion = adjudicacion.Posiciones.Single(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id);
                 decimal precioConvertido = adjudicacionPosicion.Monto ?? 0;
                 string unidadDeMedida = esPosicionDeMateriales ? unidadesMedidaSap?.Find(u => u.Item1 == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap).Item2 : "001";
 
@@ -154,9 +159,11 @@ namespace SustitucionMOAWS.WSConsumers
                     var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.CodigoSap);
                     var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
                     unidadDeMedida = unidadSolicitada.UnidadDeMedida;
-                    precioConvertido = Math.Round(adjudicacionPosicion.Monto ?? 0 / (unidadCotizada.Numerador / unidadCotizada.Denominador) *
-                        (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
-                };
+                    decimal cantidadEnUnidadBase = unidadCotizada.Numerador / unidadCotizada.Denominador;
+                    decimal nuevaCantidad = cantidadEnUnidadBase * unidadSolicitada.Denominador / unidadSolicitada.Numerador;
+                    precioConvertido = (adjudicacionPosicion.Monto ?? 0) * (1 / nuevaCantidad);
+
+                }
 
                 poItem++;
                 numeroDePaquete++;
