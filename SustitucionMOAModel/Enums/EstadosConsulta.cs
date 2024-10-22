@@ -9,8 +9,8 @@ namespace SustitucionMOAModel.Enums
     public enum EstadosConsulta
     {
         Iniciado = 1,
-        Reasignado = 2,
-        EnGestion = 3,
+        EnGestion = 2,
+        EnGestionRta = 3,
         SolicitudInformacion = 4,
         Rechazado = 5,
         Finalizado = 6
@@ -23,9 +23,9 @@ namespace SustitucionMOAModel.Enums
             switch (me)
             {
                 case EstadosConsulta.Iniciado: return "INI";
-                case EstadosConsulta.Reasignado: return "REA";
-                case EstadosConsulta.EnGestion: return "ENG";
-                case EstadosConsulta.SolicitudInformacion: return "SOL";
+                case EstadosConsulta.EnGestion: return "GES";
+                case EstadosConsulta.EnGestionRta: return "GESRTA";
+                case EstadosConsulta.SolicitudInformacion: return "DOC";
                 case EstadosConsulta.Rechazado: return "REC";
                 case EstadosConsulta.Finalizado: return "CER";
                 default:
