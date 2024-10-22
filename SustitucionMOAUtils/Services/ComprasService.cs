@@ -3093,6 +3093,7 @@ namespace SustitucionMOAUtils.Services
             solp.THServicioPermanente = false;
             solp.THAjustePolinomica = false;
             solp.THProveedorDirecto = false;
+            solp.Urgencia = false;
         }
 
         private void ProcesarCondicionEspecial(PosicionSolpSAP posicion, Solp solp, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion)
