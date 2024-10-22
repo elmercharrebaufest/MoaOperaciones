@@ -1509,9 +1509,8 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Agregar(It.IsAny<Cotizacion>())).Returns(new Cotizacion { Id = 1, CotizacionEstado_Id = 1 });
 
-            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, 1, false);
+            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, false);
 
-            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
@@ -1544,9 +1543,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, 1, false);
+            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, false);
 
-            repositorioMock.Verify(y => y.Obtener<Usuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
 
