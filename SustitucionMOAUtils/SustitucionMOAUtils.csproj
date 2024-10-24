@@ -172,7 +172,7 @@
     <Compile Include="DesignPattern\Classes\ConsultaParcialStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaContext.cs" />
-    <Compile Include="Email\DBMethods\DBService.cs" />
+    <Compile Include="DBMethods\DBService.cs" />
     <Compile Include="Email\EmailConfig.cs" />
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\CampoSustentable\CampoSustentablePdfGenerator.cs" />
@@ -195,6 +195,7 @@
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
+    <Compile Include="Interfaces\IAnalisisFacturaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\ILogTableService.cs" />
@@ -268,7 +269,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdjuntosCertificacionesService.cs" />
     <Compile Include="Services\AduanaService.cs" />
+    <Compile Include="Services\AnalisisFacturaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\AnalisisFacturaServiceValidationHandler.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\CodigoFacturaValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\NumeroFacturaValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\CuitValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\OrdenCompraValidationCommand.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Services\ComprasArchivosService.cs" />

@@ -462,6 +462,7 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\Raw\ProveedorRaw.cs" />
+    <Compile Include="Models\ValidationResult.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
