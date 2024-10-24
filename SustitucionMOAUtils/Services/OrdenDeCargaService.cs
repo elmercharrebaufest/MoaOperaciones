@@ -84,8 +84,6 @@ namespace SustitucionMOAUtils.Services
                 LlenarOrdenDeCargaFleteMOA(ordenDeCarga, contratoSAP);
                 var ordenPuedeEnviarseDirectoSap = contratoTieneKgsDisponibles;
 
-                //var usuarioPuedeEnviarASAP = usuario.TienePermiso(PermisoEnum.EnviarASap);
-
                 var crearPedido = VerificarOrden(ordenDeCarga, ordenDeCarga.Cliente, false);
                 Log.Debug(this.GetType().Name, "Agregar", $" crearPedido: {crearPedido}");
                 repositorio.Agregar(ordenDeCarga);
@@ -295,34 +293,6 @@ namespace SustitucionMOAUtils.Services
                 return new Resultado { error = ex.Message };
             }
         }
-
-        //public string SolicitarEdicionOrden(int ordenId, string mailUsuario)
-        //{
-        //    try
-        //    {
-        //        var orden = repositorio.Obtener<OrdenDeCarga>(ordenId);
-        //        var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
-        //        var ordenHistorial = new OrdenDeCargaCambiosHistorial()
-        //        {
-        //            Id = 0,
-        //            Antes = orden.Estado.ToFriendlyString(),
-        //            Despues = EstadoOrdenDeCarga.EdicionSolicitada.ToFriendlyString(),
-        //            NombreColumnaCambio = "estado",
-        //            FechaCambio = DateTime.Now,
-        //            Usuario_Id = usuario.Id,
-        //            OrdenDeCarga_Id = orden.Id
-        //        };
-
-        //        repositorio.Agregar(ordenHistorial);
-        //        orden.Estado = EstadoOrdenDeCarga.EdicionSolicitada;
-
-        //        return SuccessMsg.OrdenDeCargaActualizada;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return ex.Message;
-        //    }
-        //}
 
         public CrearOrdenEnSAPResponse CrearOrdenEnSAP(CrearOrdenEnSAPRequest request, bool puedeEnviarASAP = false)
         {

@@ -162,6 +162,7 @@
 	<setParameter name="EmailConsultaInternaCC Config" value="mesafassanlorenzo@molinosagro.com.ar; comerciolocal@molinosagro.com.ar"/>
 	<setParameter name="EmailAltaTransporteResiduosTo Config" value="Mesaentsl@molinosagro.com.ar" />
 	<setParameter name="EmailAltaTransporteResiduosCC Config" value="mesafassanlorenzo@molinosagro.com.ar;comerciolocal@molinosagro.com.ar" />
+	<setParameter name="EmailAltaDistanciaFasonTo Config" value="mesaentsl@molinosagro.com.ar;mesafassanlorenzo@molinosagro.com.ar" />
 
 
   <setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />

@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
@@ -20,7 +21,7 @@ namespace SustitucionMOATest.Services
     public class OrdenDeCargaFasonServiceTest
     {
         private IOrdenDeCargaFasonService service;
-        private Mock<IRepositorio> repositorio;
+        private Mock<IRepositorioOrdenDeCargaFason> repositorioOrdenDeCargaFason;
         private Mock<IOrdenCargaConsumerMOA> ordenCargaConsumer;
         private Mock<IScatoConsumer> scatoConsumer;
         private Mock<IScatoRepositorioClient> scatoRepositorioClient;
@@ -30,7 +31,7 @@ namespace SustitucionMOATest.Services
         [SetUp]
         public void Setup()
         {
-            repositorio = new Mock<IRepositorio>();
+            repositorioOrdenDeCargaFason = new Mock<IRepositorioOrdenDeCargaFason>();
             ordenCargaConsumer = new Mock<IOrdenCargaConsumerMOA>();
             scatoConsumer = new Mock<IScatoConsumer>();
             scatoRepositorioClient = new Mock<IScatoRepositorioClient>();
@@ -38,7 +39,7 @@ namespace SustitucionMOATest.Services
             emailFasonService = new Mock<IEmailFasonService>();
             feriadoService = new Mock<IFeriadoService>();
             service = new OrdenDeCargaFasonService(
-                repositorio.Object,
+                repositorioOrdenDeCargaFason.Object,
                 ordenCargaConsumer.Object,
                 scatoConsumer.Object,
                 scatoRepositorioClient.Object,
@@ -72,9 +73,9 @@ namespace SustitucionMOATest.Services
                 .Setup(occ => occ.GetOrdenCargaControlEstadoTransportista(cuitTransporte))
                 .Returns(ControlEstadoResEnum.TransportistaOK);
             scatoConsumer.Setup(sc => sc.ObtenerClientesPorCuit(It.IsAny<string>())).Returns(clientes);
-            repositorio.Setup(r=>r.Obtener<Usuario>(us=>us.Mail== mailUsuario)).Returns(usuario);
-            repositorio.Setup(r => r.Obtener<Material>(It.IsAny<int>())).Returns(producto);
-            repositorio.Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>())).Returns(new Proveedor
+            repositorioOrdenDeCargaFason.Setup(r=>r.Obtener<Usuario>(us=>us.Mail== mailUsuario)).Returns(usuario);
+            repositorioOrdenDeCargaFason.Setup(r => r.Obtener<Material>(It.IsAny<int>())).Returns(producto);
+            repositorioOrdenDeCargaFason.Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>())).Returns(new Proveedor
              {
                  Id = 1,
                  CUIT ="12345678909"

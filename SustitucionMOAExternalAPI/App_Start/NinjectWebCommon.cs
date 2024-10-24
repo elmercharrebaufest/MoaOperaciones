@@ -239,6 +239,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             // GoogleDrive

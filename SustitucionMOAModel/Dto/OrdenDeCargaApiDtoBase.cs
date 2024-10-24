@@ -16,7 +16,7 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioTipo { get; set; }
         public string FechaCreacion { get; set; }
         public string LocalidadDescripcion { get; set; }
-        public int LocalidadId { get; set; }
+        public int? LocalidadId { get; set; }
         public string NombreChofer { get; set; }
         public string ChoferApellido { get; set; }
         public string ChoferNombre { get; set; }

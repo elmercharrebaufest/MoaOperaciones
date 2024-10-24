@@ -7,6 +7,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEmailFasonService
     {
+        void EnviarMailAltaDistancia(string cuit, string razonSocial);
         void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId);
         void EnviarMailAltaTempranaCuit(OrdenDeCargaFason orden, string ordenId, bool gestionaDestino, bool gestionaDestinatario);
         void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes);

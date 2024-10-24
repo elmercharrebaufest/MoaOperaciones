@@ -12,11 +12,10 @@ namespace SustitucionMOAUtils.Services.Email
 {
     public class EmailFasonService : IEmailFasonService
     {
-        private static readonly string DireccionToAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonTo"];
-        private static readonly string DireccionCCAltaTempranaCuitFason = ConfigurationManager.AppSettings["EmailAltaTempranaCuitFasonCC"];
-
         private static readonly string DireccionToAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonTo"];
         private static readonly string DireccionCCAltaTransporteCuitFason = ConfigurationManager.AppSettings["EmailAltaTransporteFasonCC"];
+        
+        private static readonly string DireccionEmailAltaDistanciaFasonTo = ConfigurationManager.AppSettings["EmailAltaDistanciaFasonTo"];
 
         private static readonly string DireccionComerciales = ConfigurationManager.AppSettings["EmailToComerciales"];
         private static readonly string DireccionMesaVentaFas = ConfigurationManager.AppSettings["EmailToMesaVentaFas"];
@@ -28,6 +27,18 @@ namespace SustitucionMOAUtils.Services.Email
         {
             this.emailService = emailService;
         }
+        
+        public void EnviarMailAltaDistancia(string cuit, string razonSocial)
+        {
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionEmailAltaDistanciaFasonTo }),
+                Asunto = $"Alta distancia cliente {razonSocial}",
+                Cuerpo = $"Se solicita el alta de distancia del cliente {razonSocial} ({cuit})."
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
         public void EnviarMailAltaTempranaCuit(OrdenDeCargaFason orden, string ordenId, bool gestionaDestino, bool gestionaDestinatario)
         {
             string cuerpoDestinatario = gestionaDestinatario ? $"CUIT DESTINATARIO: {orden.CUITDestinatario}, Razón social: {orden.RazonSocialDestinatario}\n" : "";
@@ -41,6 +52,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailAltaIntermediarioFlete(string cuit, string razonSocial, string ordenId)
         {
             var emailSenderData = new EmailSenderData
@@ -64,6 +76,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailIntentoEdicionActiva(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
         {
             var tablaInformacionOrden = CrearTablaDetalleOrden(
@@ -79,6 +92,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailIntentoAnulacionActiva(OrdenDeCargaFason orden)
         {
             var tablaInformacionOrden = CrearTablaDetalleOrden(orden);
@@ -91,6 +105,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailCamionAutorizadoEnVariasOrdenes(string patenteChasis, List<string> cuitsClientesOrdenes)
         {
             var cuerpo = $"El camión {patenteChasis} se encuentra autorizado en órdenes fason pendientes de las siguientes CUITs: {String.Join(", ", cuitsClientesOrdenes)}.";
@@ -104,6 +119,7 @@ namespace SustitucionMOAUtils.Services.Email
 
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailVencieronOrdenesDeCarga(List<OrdenDeCargaFason> ordenes)
         {
             var tablaOrdenes = "";
@@ -127,6 +143,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
             emailService.EnviarMail(emailSenderData);
         }
+        
         public void EnviarMailNotificacionEdicion(OrdenDeCargaFason orden, List<Variance> listaValoresDiferentes)
         {
             var descripcion = $"Se informa que el día {DateTime.Now} "+
@@ -175,6 +192,7 @@ namespace SustitucionMOAUtils.Services.Email
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
                 ) + FinalTabla();
         }
+        
         private string CrearTablaDetalleOrden(List<OrdenDeCargaFason> ordenes)
         {
             var tablaBuilder = new StringBuilder();
@@ -196,6 +214,7 @@ namespace SustitucionMOAUtils.Services.Email
             tablaBuilder.Append(FinalTabla());
             return tablaBuilder.ToString();
         }
+        
         private string CrearTablaDetalleOrden(OrdenDeCargaFason orden, OrdenDeCargaFasonRequest request)
         {
             var detalleCorredor = orden.Corredor != null ? orden.Corredor.CUIT + " - " + orden.Corredor.RazonSocial : "---";
@@ -210,6 +229,7 @@ namespace SustitucionMOAUtils.Services.Email
                 fecha: orden.FechaCreacion.ToString("dd/MM/yyyy")
                 ) + FinalTabla();
         }
+        
         private string CrearFilaTablaDetalleOrden(
             long ordenId, string cliente, string corredor,
             string chofer, string transporte, string patenteChasis,
@@ -226,6 +246,7 @@ namespace SustitucionMOAUtils.Services.Email
                 $"<td>{fecha}</td>" +
                 "</tr>";
         }
+        
         private string InicioTablaDetalle()
         {
             return "<table cellspacing = \"5\" cellpadding = \"5\" border = \"3\">" +
@@ -244,12 +265,14 @@ namespace SustitucionMOAUtils.Services.Email
               "</thead>" +
               "<tbody>";
         }
+        
         private string FinalTabla()
         {
 
             return "</tbody>" +
             "</table>";
         }
+        
         private string CrearTablaCambios(List<Variance> listaValoresDiferentes)
         {
             var tablaBuilder = new StringBuilder();

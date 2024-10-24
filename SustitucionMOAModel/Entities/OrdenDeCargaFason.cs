@@ -30,7 +30,7 @@ namespace SustitucionMOAModel.Entities
         public virtual Material Producto { get; set; }
         public bool TransporteExiste { get; set; }
 
-        public int LocalidadId { get; set; }
+        public int? LocalidadId { get; set; }
 
         public string LocalidadDescripcion { get; set; }
 
