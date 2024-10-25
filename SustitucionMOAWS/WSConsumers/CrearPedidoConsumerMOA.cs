@@ -111,7 +111,7 @@ namespace SustitucionMOAWS.WSConsumers
 
         private SolpPedidoSAPDto ConvertirOC(Adjudicacion adjudicacion, bool creadoAutomatico = false)
         {
-            //TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
+            // TODO: Crear OC ConvertirSOLP - fields hardcodeados o para revisar
             ///DOC_TYPE  ok por ahora. Clase de documento de compras / Estrategia de liberacion hardcore ZPE1 
 
             ///STREET y STREET_NO ok. no tenemos el campo separado mandamos todo en street            
@@ -120,13 +120,13 @@ namespace SustitucionMOAWS.WSConsumers
             var proveedorCodigoDeLaAdjudicacion = adjudicacion.Posiciones.First().CotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor();
             var usuarioCreadorAdjudicacion = adjudicacion.Usuario.UsuarioSap;
             var usuarioOrganizacionDeCompra = adjudicacion.Usuario.OrganizacionDeCompra;
-            //var solp = adjudicacion.Solp;
+
             SolpPedidoSAPDto solpPedidoSAP = new SolpPedidoSAPDto();
 
             var poItem = 0;
             var PCKG_NO = 1000;
             var numeroDePaquete = 1;
-            bool esPosicionDeMateriales = adjudicacion.Posiciones.FirstOrDefault().Posicion.TipoPosicion.Codigo == "MATERIALES";
+            bool esPosicionDeMateriales = adjudicacion.Posiciones.First().Posicion.TipoPosicion.Codigo == "MATERIALES";
             var unidadesDeMedidaSAP = new List<UnidadesDeMedida>();
             var fecha = DateTime.Now;
             var posicionAdjudicacion = adjudicacion.Posiciones.Select(x => x.SolpPosicion_Id);
@@ -146,11 +146,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
                 x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
-
-
-            //aca el metodo solo usa las posiciones seleccionadas por el comprador
-            var posIds = adjudicacion.Posiciones.Select(x => x.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id).ToList();
-
+                       
             foreach (var solpPosicion in posicionesSolp.OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Single(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id);
@@ -192,7 +188,7 @@ namespace SustitucionMOAWS.WSConsumers
                 cabeceraDelPedido.VENDOR = proveedorCodigoDeLaAdjudicacion;//VENDOR ELIFN   Número de cuenta del proveedor
                 cabeceraDelPedido.PURCH_ORG = usuarioOrganizacionDeCompra;//PURCH_ORG EKORG   Organización de compras
                 cabeceraDelPedido.PUR_GROUP = solpPosicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP   BKGRP Grupo de compras
-                cabeceraDelPedido.CURRENCY = adjudicacion.Moneda.Codigo; /*adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo;*/ //CURRENCY WAERS   Clave de moneda
+                cabeceraDelPedido.CURRENCY = adjudicacion.Moneda.Codigo; //CURRENCY WAERS   Clave de moneda
                 cabeceraDelPedido.CREATED_BY = usuarioCreadorAdjudicacion;//CREATED_BY ERNAM   Nombre del responsable que ha añadido el objeto
                 cabeceraDelPedido.DOC_DATE = SAPFormatter.PrepararFecha(DateTime.Now); //DOC_DATE    EBDAT Fecha del documento de compras
                 cabeceraDelPedido.PO_NUMBER = ""; //PO_NUMBER   EBELN Número del documento de compras
@@ -230,7 +226,6 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.SHORT_TEXT = solpPosicion.Tarea;
                 IM_POITEM.PLANT = solpPosicion.Centro.CodigoSap.ToString();
                 IM_POITEM.MATL_GROUP = solpPosicion.GrupoArticulo?.CodigoSap?.ToString() ?? "";
-                //IM_POITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString();
                 IM_POITEM.MATERIAL = esPosicionDeMateriales ? solpPosicion.MaterialSolp?.CodigoSap.ToString() : "";
                 IM_POITEM.STGE_LOC = solpPosicion.Almacen != null ? solpPosicion.Almacen.CodigoSap.ToString() : "";
                 IM_POITEM.ITEM_CAT = solpPosicion.TipoPosicion.Codigo.ToLower() == "servicio" ? "9" : "0";//ITEM_CAT PSTYP   Tipo de posición del documento de compras
@@ -239,12 +234,11 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
-                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(solpPosicion, adjudicacionPosicion, adjudicacion);
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(adjudicacionPosicion, adjudicacion);
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 IM_POITEM.PRICE_UNITSpecified = true;
                 IM_POITEM.GR_PR_TIME = 0;
-                //IM_POITEM.GR_PR_TIMESpecified = true; 
                 IM_POITEM.DELETE_IND = "";
                 IM_POITEM.TAX_CODE = "";
                 IM_POITEM.VAL_TYPE = "";
@@ -297,7 +291,7 @@ namespace SustitucionMOAWS.WSConsumers
                     TRACKINGNO = string.IsNullOrEmpty(solpPosicion.NroNecesidad) ? "" : "X",
                     MATL_GROUP = "X",
                     INFO_REC = "",
-                    QUANTITY = ((decimal)IM_POITEM.QUANTITY == 0) ? "" : "X",
+                    QUANTITY = (IM_POITEM.QUANTITY == 0) ? "" : "X",
                     PO_UNIT = "X",
                     NET_PRICE = "X",
                     PRICE_UNIT = "X",
@@ -381,7 +375,7 @@ namespace SustitucionMOAWS.WSConsumers
                         COSTOBJECT = "",
                         COSTCENTER = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                         ORDERID = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                        PROFIT_CTR = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : "X"
+                        PROFIT_CTR = "X"
                     });
                 }
 
@@ -417,7 +411,7 @@ namespace SustitucionMOAWS.WSConsumers
                     int numeroDeImputacion = 0;
                     foreach (var subposicion in solpPosicion.Subposiciones)
                     {
-                        CotizacionSubPosicion cotizacionSubPosicion = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.Where(a => a.SolpSubPosicion_Id == subposicion.Id).Single();
+                        CotizacionSubPosicion cotizacionSubPosicion = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.Single(a => a.SolpSubPosicion_Id == subposicion.Id);
 
                         var subposicionSap = new BAPIESLLC();
                         subposicionSap.PCKG_NO = $"{PCKG_NO:0000000000}";
@@ -437,7 +431,7 @@ namespace SustitucionMOAWS.WSConsumers
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
 
 
-                        if (!solpPedidoSAP.IM_POACCOUNTList.Any(x =>
+                        if (!solpPedidoSAP.IM_POACCOUNTList.Exists(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
                                 x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
@@ -480,7 +474,7 @@ namespace SustitucionMOAWS.WSConsumers
                                 COSTOBJECT = "",
                                 COSTCENTER = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "centrodecosto") ? "X" : "",
                                 ORDERID = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeot" || solpPosicion.TipoImputacion?.Codigo.ToLower() == "ordendeinversion") ? "X" : "",
-                                PROFIT_CTR = (solpPosicion.TipoImputacion?.Codigo.ToLower() == "siniestrobeneficio") ? "X" : "X"
+                                PROFIT_CTR = "X"
                             });
 
                             var imputacionSubPos = new BAPIESKLC()
@@ -496,7 +490,7 @@ namespace SustitucionMOAWS.WSConsumers
                         }
                         else
                         {
-                            var imputacionUsada = solpPedidoSAP.IM_POACCOUNTList.FirstOrDefault(x =>
+                            var imputacionUsada = solpPedidoSAP.IM_POACCOUNTList.Find(x =>
                                 x.PO_ITEM == $"{poItem:00000}" &&
                                 x.GL_ACCOUNT == getCodigoTablaSap(subposicion.CuentaMayorSap) &&
                                 x.COSTCENTER == getCodigoTablaSap(subposicion.TipoImputacionSap) &&
@@ -567,7 +561,7 @@ namespace SustitucionMOAWS.WSConsumers
                 }
             }
 
-            if (adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Urgencia == true)
+            if (adjudicacion.Posiciones.First().Posicion.Solp.Urgencia == true)
             {
                 solpPedidoSAP.IM_POTEXTITEMList.Add(new BAPIMEPOTEXT
                 {
@@ -584,7 +578,7 @@ namespace SustitucionMOAWS.WSConsumers
             return solpPedidoSAP;
         }
 
-        private string getCodigoTablaGeneral(TablaGeneral imputacion)
+        private static string getCodigoTablaGeneral(TablaGeneral imputacion)
         {
             var result = "";
 
@@ -595,7 +589,7 @@ namespace SustitucionMOAWS.WSConsumers
             return result;
         }
 
-        private string getCodigoTablaSap(TablaSap imputacion)
+        private static string getCodigoTablaSap(TablaSap imputacion)
         {
             var result = "";
 
@@ -630,12 +624,12 @@ namespace SustitucionMOAWS.WSConsumers
             return esPosicionDeMateriales ? (posicion.CuentaMayorSap?.Codigo ?? "") : posicion.Subposiciones.FirstOrDefault()?.CuentaMayorSap?.Codigo ?? "";
         }
 
-        private decimal CalcularPrecioBrutoServicio(SolpPosicion posicion, AdjudicacionPosicion adjudicacionPosicion, Adjudicacion adjudicacion)
+        private decimal CalcularPrecioBrutoServicio(AdjudicacionPosicion adjudicacionPosicion, Adjudicacion adjudicacion)
         {
             decimal total = 0;
             var fecha = DateTime.Now;
             decimal tipoDeCambio = 1;
-            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.FirstOrDefault().Moneda.Codigo;
+            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.First().Moneda.Codigo;
 
             if (moneda != adjudicacion.Moneda.Codigo)
             {
@@ -648,18 +642,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return total;
-        }
-        private decimal CalcularPrecioBrutoServicioTipoDeCambio(SolpPosicion posicion, AdjudicacionPosicion adjudicacionPosicion)
-        {
-            decimal total = 0;
-
-            foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
-            {
-                total += item.Cantidad.Value * item.Precio.Value;
-            }
-
-            return total;
-        }
+        }        
 
     }
 
