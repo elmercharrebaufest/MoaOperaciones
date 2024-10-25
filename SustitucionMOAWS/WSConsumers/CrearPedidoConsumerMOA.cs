@@ -12,6 +12,8 @@ using SustitucionMOARepositorio.Extensiones;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using SustitucionMOAWS.ScatoComandosWebService;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -22,8 +24,9 @@ namespace SustitucionMOAWS.WSConsumers
         private readonly IObtenerUnidadesDeMedidaAlternativasConsumerMOA obtenerUnidadesDeMedidaConsumerMOA;
         private readonly IObtenerTipoCambioConsumerMOA obtenerTipoCambioConsumerMOA;
         private readonly IRepositorio repositorio;
+        private readonly IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA;
 
-        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio _repositorio)
+        public CrearPedidoConsumerMOA(IObtenerUnidadesDeMedidaAlternativasConsumerMOA _obtenerUnidadesDeMedidaConsumerMOA, IObtenerTipoCambioConsumerMOA _obtenerTipoCambioConsumerMOA, IRepositorio _repositorio, IObtenerRegistroInfoConsumerMOA _obtenerRegistroInfoConsumerMOA)
         {
             var url = "http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES";
             service = new SI_MMRFC_CREAR_PEDIDOClient(SAPCredential.CrearSapBasicBinding(), SAPCredential.DevolverEndpoint(url));
@@ -32,6 +35,7 @@ namespace SustitucionMOAWS.WSConsumers
             obtenerUnidadesDeMedidaConsumerMOA = _obtenerUnidadesDeMedidaConsumerMOA;
             obtenerTipoCambioConsumerMOA = _obtenerTipoCambioConsumerMOA;
             repositorio = _repositorio;
+            obtenerRegistroInfoConsumerMOA = _obtenerRegistroInfoConsumerMOA;
         }
 
         public CrearPedidoConsumerMOAResponse Request(Adjudicacion adjudicacion, bool creadoAutomatico = false)
@@ -151,19 +155,32 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Single(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id);
                 decimal precioConvertido = adjudicacionPosicion.Monto ?? 0;
+                decimal nuevaCantidad = adjudicacionPosicion.Cantidad;
                 string unidadDeMedida = esPosicionDeMateriales ? unidadesMedidaSap?.Find(u => u.Item1 == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap).Item2 : "001";
-
-                if (esPosicionDeMateriales && solpPosicion.Unidad_Id != adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida_Id)
+                if (esPosicionDeMateriales && solpPosicion.MaterialSolp != null && !string.IsNullOrWhiteSpace(solpPosicion.MaterialSolp.Codigo))
                 {
-                    var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
-                    var unidadSolicitada = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.Unidad.CodigoSap);
-                    var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
-                    unidadDeMedida = unidadSolicitada.UnidadDeMedida;
-                    decimal cantidadEnUnidadBase = unidadCotizada.Numerador / unidadCotizada.Denominador;
-                    decimal nuevaCantidad = cantidadEnUnidadBase * unidadSolicitada.Denominador / unidadSolicitada.Numerador;
-                    precioConvertido = (adjudicacionPosicion.Monto ?? 0) * (1 / nuevaCantidad);
+                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(solpPosicion.MaterialSolp.Codigo, solpPosicion.Centro.Codigo, solpPosicion.GrupoCompras.Codigo, proveedorCodigoDeLaAdjudicacion)
+                                                   .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+
+                    if (registros.Any())
+                    {
+                        var ultimoRegistroInfo = registros.First();
+                        if (adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap != ultimoRegistroInfo.Unidad)
+                        {
+                            var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
+                            var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistroInfo.Unidad);
+                            var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
+                            unidadDeMedida = unidadRegistroInfo.UnidadDeMedida;
+                            
+                            decimal cantidadEnUnidadBase = unidadCotizada.Numerador / unidadCotizada.Denominador;
+                            nuevaCantidad = cantidadEnUnidadBase * unidadRegistroInfo.Denominador / unidadRegistroInfo.Numerador;
+                            precioConvertido = (adjudicacionPosicion.Monto ?? 0) * (1 / nuevaCantidad);
+
+                        }
+                    }
 
                 }
+
 
                 poItem++;
                 numeroDePaquete++;
@@ -219,7 +236,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.ITEM_CAT = solpPosicion.TipoPosicion.Codigo.ToLower() == "servicio" ? "9" : "0";//ITEM_CAT PSTYP   Tipo de posición del documento de compras
                 IM_POITEM.TRACKINGNO = solpPosicion.NroNecesidad;
                 IM_POITEM.INFO_REC = "";
-                IM_POITEM.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
+                IM_POITEM.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
                 IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(solpPosicion, adjudicacionPosicion, adjudicacion);
@@ -337,7 +354,7 @@ namespace SustitucionMOAWS.WSConsumers
                     imputacion.PO_ITEM = $"{poItem:00000}";
                     imputacion.SERIAL_NO = "01";
                     imputacion.GL_ACCOUNT = ObtenerCuentaMayor(esPosicionDeMateriales, solpPosicion);
-                    imputacion.QUANTITY = esPosicionDeMateriales ? adjudicacionPosicion.Cantidad : 0;
+                    imputacion.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                     imputacion.QUANTITYSpecified = imputacion.QUANTITY > 0;
                     imputacion.BUS_AREA = "GENE";
                     imputacion.CO_AREA = "MOA";
