@@ -367,7 +367,7 @@ namespace SustitucionMOAUtils.Services
                 var codigos = solpEntity.Posiciones.Select(x => x.Codigo).ToList();
 
                 // eliminar posiciones que no se grabaron (Eliminadas en el front). se fija que el estado este en false (osea borrado) y que esas posiciones no existan en la db
-                solp.Posiciones = solp.Posiciones.Where(a => a.Estado == true || codigos.Contains(a.Codigo)).ToList();
+                solp.Posiciones = solp.Posiciones.Where(a => a.Estado || codigos.Contains(a.Codigo)).ToList();
 
                 if (solp.Posiciones != null)
                 {
@@ -390,7 +390,7 @@ namespace SustitucionMOAUtils.Services
             string prefijo = ConfigurarPrefijos(solpEntity);
             var condEsp = TieneCondicionEspecial(solpEntity);
             var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion != null && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
-            if (condEsp == true)
+            if (condEsp)
             {
                 if (esServicio)
                 {
@@ -493,7 +493,7 @@ namespace SustitucionMOAUtils.Services
                 .SolpPosicion.Solp.NroSolp == solpEntity.NroSolp) && coti.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado);
 
             var peticiones = repositorio.Listar<PeticionDeOferta>(po => po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroSolp == solpEntity.NroSolp);
-            var revisionFinalizada = peticiones.Any(po => po.RevisionTecnica != null && po.RevisionTecnica.Finalizada == true);
+            var revisionFinalizada = peticiones.Any(po => po.RevisionTecnica != null && po.RevisionTecnica.Finalizada);
             var solpLiberada = solpEntity.NroSolp != null && solpEntity.EstadoSolpSap != null && solpEntity.EstadoSolpSap.CodigoSap == "05";
 
             // Comparar las posiciones
@@ -1261,25 +1261,25 @@ namespace SustitucionMOAUtils.Services
                     NombreDeObra = x.Pliego == null ? "" : x.Pliego.NombreObra,
                     FechaCreacion = x.FechaCreacion,
                     EstadoDocumento = new TablaEstadoDto { Descripcion = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Descripcion, Color = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Color, Codigo = x.EstadoDocumento == null ? "" : x.EstadoDocumento.Codigo },
-                    EstadoSolpSap_Id = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
+                    EstadoSolpSap_Id = x.NroSolp != null && x.Posiciones.All(p => !p.Estado) ? -1 : (x.EstadoSolpSap != null ? x.EstadoSolpSap_Id : 0),
                     EstadoSolpSap = new TablaSapDto { Descripcion = x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : "", Id = x.EstadoSolpSap != null ? x.EstadoSolpSap.Id : 0 },
-                    EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => p.Estado == false) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
+                    EstadoSolpDescripcion = x.NroSolp != null && x.Posiciones.All(p => !p.Estado) ? "Borrado en SAP" : (x.EstadoSolpSap != null ? x.EstadoSolpSap.Descripcion : ""),
                     TipoSolp = new TablaGeneralDto { Descripcion = x.TipoSolp != null ? x.TipoSolp.Descripcion : "", Codigo = x.TipoSolp != null ? x.TipoSolp.Codigo : "" },
                     VincularPliego = !x.Pliego_Id.HasValue,
                     TieneCondicionesGenerales = x.Pliego == null ? null : x.Pliego.TieneCondicionesGenerales,
                     RevisadoPor = x.Pliego == null ? "" : x.Pliego.RevisadoPor,
                     TipoSolpSap = x.TipoSolpSap,
                     EstadoPasos = x.EstadoPasos,
-                    PosicionesEstado = x.Posiciones.All(p => p.Estado == false),
+                    PosicionesEstado = x.Posiciones.All(p => !p.Estado),
                     ItemPorPagina = paginacion.ItemsPorPagina,
                     Pagina = paginacion.Pagina,
                     TipoPosicionCodigo = x.Posiciones.Select(posiciones => posiciones.TipoPosicion.Codigo).FirstOrDefault(),
                     SolpConAdjuntos = x.Pliego.Archivos.Where(r => r.FileKey == FileKeys.AdjuntoCotizacionesSolp || r.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any(),
-                    ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo != rol))
+                    ChatSinLeer = x.ChatInternoCompras.Any(a => !a.Leido && a.Usuario.Roles.Any(r => r.Codigo != rol))
                                  || x.Posiciones.Any(po => po.Peticiones
                                 .SelectMany(se => se.PeticionDeOferta.Usuarios
                                 .SelectMany(re => re.ChatExterno))
-                                .Any(al => al.Leido == false && al.Usuario.Roles.Any(r => r.Codigo != rol)))
+                                .Any(al => !al.Leido && al.Usuario.Roles.Any(r => r.Codigo != rol)))
                                 ,
                     TieneMensajesChatInterno = x.ChatInternoCompras.Count > 0,
                     TienePeticionDeOferta = x.Posiciones.Any(posi => posi.Peticiones.Any()),
@@ -1294,10 +1294,10 @@ namespace SustitucionMOAUtils.Services
                 },
                 paginacion,
                 x => x.FechaBorrado == null && (string.IsNullOrEmpty(nroSolp) || x.NroSolp.ToUpper().StartsWith(nroSolp.ToUpper())) &&
-                (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => p.Estado == false))) &&
+                (!estados.Any() || (x.EstadoSolpSap_Id != null && estados.Contains((int)x.EstadoSolpSap_Id)) || (estados.Any(y => y == -1) && x.NroSolp != null && x.Posiciones.All(p => !p.Estado))) &&
                 (!usuarios.Any() || (x.UsuarioCreacion_Id != null && usuarios.Contains((int)x.UsuarioCreacion_Id))) &&
-                (sap == true && x.TipoSolpSap == 3 || mantenimiento == true && x.TipoSolpSap == 2 || repoAutomatica == true && x.TipoSolpSap == 4 ||
-                (web == true && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (sap == false && mantenimiento == false && web == false && repoAutomatica == false)) &&
+                (sap && x.TipoSolpSap == 3 || mantenimiento && x.TipoSolpSap == 2 || repoAutomatica && x.TipoSolpSap == 4 ||
+                (web && (x.TipoSolpSap == null || x.TipoSolpSap == 1)) || (!sap && !mantenimiento && !web && !repoAutomatica)) &&
                 (desde == null || x.FechaCreacion >= desde.Value) && (fechaHasta == null || x.FechaCreacion <= fechaHasta.Value)
                 && (!pedidos.Any() || pedidos.All(p => x.Pliego.NombreObra.ToUpper().Contains(p.ToUpper()))) &&
                 (!contratoMarco || x.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))) &&
@@ -2317,7 +2317,7 @@ namespace SustitucionMOAUtils.Services
 
                 var asunto = $"Nueva SOLP de urgencia Finalizada - {solp.NroSolp} - {usuarioCreacion.ObtenerRazonSocial()}";
 
-                var usuariosComprasHabilitados = repositorio.Listar<UsuarioCompras>(x => x.Habilitado == true);
+                var usuariosComprasHabilitados = repositorio.Listar<UsuarioCompras>(x => x.Habilitado);
 
                 var liberadoresSapId = solp.LiberadoresSapSolp.Select(x => x.LiberadorSap_Id);
                 var liberadoresSap = repositorio.Listar<LiberadorSap>(x => liberadoresSapId.Contains(x.Id)).Select(x => x.Mail).ToList();
@@ -3830,7 +3830,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
 
-                todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => a.VerImportes == false);
+                todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => !a.VerImportes);
 
                 StringBuilder ObservacionesCotizacionCondEspBuilder = new StringBuilder();
                 foreach (var ObservacionesCotizacionSolp in todasLasOfertas.SolpDto.ObservacionesCotizacionLista)
@@ -3893,7 +3893,7 @@ namespace SustitucionMOAUtils.Services
                                 Cantidad = 1,
                                 Completado = false,
                                 Adjudicado = posicion.SolpPosicion.ProveedorAdjudicado_Id != null,
-                                EstaEliminado = posicion.SolpPosicion.Estado != true,
+                                EstaEliminado = !posicion.SolpPosicion.Estado,
                                 NoDisponible = false,
                                 PeticionDeOfertaSolpPosicion_Id = posicion.Id,
                                 CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones
@@ -4548,7 +4548,7 @@ namespace SustitucionMOAUtils.Services
                                             Unidad = registroInfo.Unidad,
                                             ProveedorId = usuario.Id,
                                             Cuit = proveedor?.CUIT,
-                                            Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
+                                            Deshabilitado = registroInfo.FechaFormateada != null && registroInfo.FechaFormateada < hoy,
                                             CantidadAdjudicacion = 0,
                                             MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
                                             UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
@@ -6095,8 +6095,7 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
-                    Deshabilitado = ((esServicio && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true)) || !esServicio ? false : true
-
+                    Deshabilitado = !((esServicio && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true) || !esServicio)
                 };
                 usuarios.Add(usuario);
             }
@@ -7062,7 +7061,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (solp.TrabajoYaHecho == true)
                 {
-                    var posiciones = solp.Posiciones.Where(x => x.Estado == true);
+                    var posiciones = solp.Posiciones.Where(x => x.Estado);
                     var posicionesId = posiciones.Select(x => x.Id);
                     var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
 
@@ -9291,7 +9290,7 @@ namespace SustitucionMOAUtils.Services
                         }
 
                         //Importe 2/2                        
-                        var totalPosicion = posAdj.SubPosiciones.Where(a => a.Eliminado != true).Sum(a => a.Cantidad * a.PrecioUnitario);
+                        var totalPosicion = posAdj.SubPosiciones.Where(a => !a.Eliminado).Sum(a => a.Cantidad * a.PrecioUnitario);
                         condicionSap.COND_VALUE = totalPosicion;
                         condicionSap.COND_VALUESpecified = true;
                         condicionSap.CURRENCY = adjudicacion.MonedaCodigo;
@@ -9807,7 +9806,7 @@ namespace SustitucionMOAUtils.Services
                             SegundaCantidad = cotPos.SegundaCantidad != null ? cotPos.SegundaCantidad : 0,
                             TercerPlazoDeOferta = cotPos.TercerPlazoDeOferta != null ? cotPos.TercerPlazoDeOferta : 0,
                             TerceraCantidad = cotPos.TerceraCantidad != null ? cotPos.TerceraCantidad : 0,
-                            EstaEliminado = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado == true ? "" : "Esta eliminado",
+                            EstaEliminado = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Estado ? "" : "Esta eliminado",
                             Indice = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Indice,
                             IdPosicion = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Id,
                             Descripcion = cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Tarea != null ? cotPos.PeticionDeOfertaSolpPosicion.SolpPosicion.Tarea : "",
@@ -9940,21 +9939,19 @@ namespace SustitucionMOAUtils.Services
                         pos.Solp.NroSolp
                     ) &&
                     (
-                        sap == true
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento == true
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica == true
+                        sap && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica
                         && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||
                             (
-                                web == true &&
+                                web &&
                                 (
                                     pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web
                                 )
                             ) ||
                             (
-                                sap == false
-                                && mantenimiento == false
-                                && web == false
-                                && repoAutomatica == false
+                                !sap 
+                                && !mantenimiento 
+                                && !web 
+                                && !repoAutomatica
                              )
                     ) &&
                     (
@@ -10123,7 +10120,7 @@ namespace SustitucionMOAUtils.Services
                                             Unidad = registroInfo.Unidad,
                                             ProveedorId = usuario.Id,
                                             Cuit = proveedor?.CUIT,
-                                            Deshabilitado = registroInfo.FechaFormateada != null ? registroInfo.FechaFormateada < hoy : false,
+                                            Deshabilitado = registroInfo.FechaFormateada != null && registroInfo.FechaFormateada < hoy,
                                             CantidadAdjudicacion = 0,
                                             MonedaId = tablaSap.Where(x => x.CodigoSap == registroInfo.Moneda).FirstOrDefault().Id,
                                             UnidadId = tablaSap.Where(x => x.CodigoSap == registroInfo.Unidad).FirstOrDefault().Id,
