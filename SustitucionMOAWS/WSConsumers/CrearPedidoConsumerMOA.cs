@@ -146,7 +146,7 @@ namespace SustitucionMOAWS.WSConsumers
 
             var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
                 x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
-                       
+
             foreach (var solpPosicion in posicionesSolp.OrderBy(x => x.Id))
             {
                 var adjudicacionPosicion = adjudicacion.Posiciones.Single(a => a.CotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id == solpPosicion.Id);
@@ -156,21 +156,19 @@ namespace SustitucionMOAWS.WSConsumers
                 if (esPosicionDeMateriales && solpPosicion.MaterialSolp != null && !string.IsNullOrWhiteSpace(solpPosicion.MaterialSolp.Codigo))
                 {
                     var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(solpPosicion.MaterialSolp.Codigo, solpPosicion.Centro.Codigo, solpPosicion.GrupoCompras.Codigo, proveedorCodigoDeLaAdjudicacion)
-                                                   .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+                                                   /*.Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra)*/;
 
                     if (registros.Any())
                     {
-                        var ultimoRegistroInfo = registros.First();
-                        if (adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap != ultimoRegistroInfo.Unidad)
+                        var ultimoRegistroInfo = registros[0];
+                        if (solpPosicion.Unidad.CodigoSap != ultimoRegistroInfo.Unidad)
                         {
                             var unidadesDelMaterial = unidadesDeMedidaSAP.Where(x => x.CodigoMaterial == solpPosicion.MaterialSolp.Codigo).ToList();
                             var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistroInfo.Unidad);
-                            var unidadCotizada = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
                             unidadDeMedida = unidadRegistroInfo.UnidadDeMedida;
-                            
-                            decimal cantidadEnUnidadBase = unidadCotizada.Numerador / unidadCotizada.Denominador;
-                            nuevaCantidad = cantidadEnUnidadBase * unidadRegistroInfo.Denominador / unidadRegistroInfo.Numerador;
-                            precioConvertido = (adjudicacionPosicion.Monto ?? 0) * (1 / nuevaCantidad);
+
+                            nuevaCantidad = adjudicacionPosicion.Cantidad * unidadRegistroInfo.Denominador / unidadRegistroInfo.Numerador;
+                            precioConvertido = ultimoRegistroInfo.Precio;
 
                         }
                     }
@@ -642,7 +640,7 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             return total;
-        }        
+        }
 
     }
 

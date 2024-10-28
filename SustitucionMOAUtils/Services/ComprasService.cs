@@ -8312,7 +8312,7 @@ namespace SustitucionMOAUtils.Services
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
             ultimoRegistro.EsModificar = false;
             var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, "")
-                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+                               /*.Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra)*/;
             if (registros.Any())
             {
                 ultimoRegistro = registros.First();
@@ -8358,7 +8358,7 @@ namespace SustitucionMOAUtils.Services
             RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
             ultimoRegistro.EsModificar = false;
             var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, proveedor)
-                               .Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra);
+                               /*.Where(x => x.NumeroOrdenDeCompra != null)*/.OrderByDescending(x => x.FechaUltimaCompra);
             if (registros.Any())
             {
                 ultimoRegistro = registros.First();
