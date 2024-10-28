@@ -1,25 +1,12 @@
-﻿using Microsoft.SqlServer.Server;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+﻿using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
-using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
-using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.TextFormatting;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -89,25 +76,29 @@ namespace SustitucionMOAWS.WSConsumers
             /// Recorre el detalle de la entrada de servicio
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
-
-                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2");
+                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2", CultureInfo.InvariantCulture);
                 string currency = cabecera.CURRENCY;
 
                 var item = new ItemEntradaServicioDto();
 
-
                 item.Id = cabecera.SHEET_NO;
                 item.Descripcion = cabecera.SHORT_TEXT;
-                
+
                 item.ItemNumero = elementoEntrySheetService.PLN_PCKG;
                 item.Cantidad = elementoEntrySheetService.QUANTITY;
                 item.PLN_PCKG = elementoEntrySheetService.PLN_PCKG;
                 item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
                 item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
                 item.LINE_NO = elementoEntrySheetService.LINE_NO;
-                item.ImporteARPUSD = currency == "ARP"
-                ? $"$ {formattedValue}"
-                : $"{formattedValue} {currency}";
+
+                if (string.Compare(currency, "ARP", true) == 0)
+                {
+                    item.ImporteARPUSD = $"$ {formattedValue}";
+                }
+                else
+                {
+                    item.ImporteARPUSD = $"{formattedValue} {currency.ToUpper()}";
+                }
 
                 items.Add(item);
             }
