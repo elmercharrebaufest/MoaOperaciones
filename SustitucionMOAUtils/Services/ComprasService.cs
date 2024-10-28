@@ -50,6 +50,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 
@@ -471,7 +472,7 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
-                    respuestaGuardarSOLP = FinalizarSolp(solpEntity, postEntitySubPosicionesEliminadas, respuestaGuardarSOLP, enviarMailUrgencia);
+                    respuestaGuardarSOLP = FinalizarSolp(solpEntity, respuestaGuardarSOLP, enviarMailUrgencia);
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
 
@@ -869,14 +870,8 @@ namespace SustitucionMOAUtils.Services
             return nuevaRuta;
         }
 
-        private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, SolpPosicion postEntitySubPosicionesEliminadas, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
+        private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
-            //variables para ver a que request accedemos
-            //var crearPedidoConsumer = crearPedido(solpEntity);
-            //var crearSolpComsumer = crearSolp(solpEntity);
-            //var modificarSolpConsumer = modificarSolp(solpEntity);
-            //var respuestaGuardarSOLP = new RespuestaGuardarSOLP();
-
             var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
             resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
             respuestaGuardarSOLP.Errores = new List<string>();
@@ -901,6 +896,7 @@ namespace SustitucionMOAUtils.Services
                     var mensaje = error.Mensaje.Trim();
                     respuestaGuardarSOLP.Errores.Add(mensaje);
                 }
+
                 if (respuestaGuardarSOLP.Errores.Count == 0)
                 {
                     respuestaGuardarSOLP.Mensaje = "OK";
@@ -925,6 +921,10 @@ namespace SustitucionMOAUtils.Services
                             Log.Info($"EnviarMailSolpFinalizadaConUrgencia Nro de SOLP: {solpEntity.NroSolp} - Error: " + e);
                         }
                     }
+                }
+                else
+                {
+                    Log.Error("Error sap al guardar la solp id: " + solpEntity.Id, new Exception(respuestaGuardarSOLP.Errores.ToJson()));
                 }
                 repositorio.GuardarCambios();
             }
@@ -989,35 +989,14 @@ namespace SustitucionMOAUtils.Services
                 }
                 else
                 {
+                    Log.Error("Error sap al guardar la solp nro: " + solpEntity.NroSolp, new Exception(respuestaGuardarSOLP.Errores.ToJson()));
                     //revertir los cambios si da error
                     ObtenerSolpesDesdeSAPJob(new ObtenerSolpRequest { NumeroSolp = solpEntity.NroSolp, FechaDesde = new DateTime(2010, 01, 01), FechaHasta = DateTime.Now.Date.AddDays(1) });
                     respuestaGuardarSOLP.Solp = TraerSolpId(solpEntity.Id);
                 }
                 repositorio.GuardarCambios();
             }
-
-            //if (respuestaGuardarSOLP.Errores.Count == 0)
-            //{
-            //    DateTime fechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioConsultaSolp"].ToString());
-            //    DateTime fechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinConsultaSolp"].ToString());
-            //    var filtros = new ObtenerSolpRequest
-            //    {
-            //        FechaDesde = fechaDesde,
-            //        FechaHasta = fechaHasta,
-            //        NumeroSolp = solpEntity.NroSolp,
-            //    };
-            //    var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
-            //    if (solp.Posiciones.Any())
-            //    {
-            //        var estado = solp.Posiciones[0].EstadoSolpSap;
-            //        var codigoSap = repositorio.Obtener<TablaSap>(x => x.CodigoSap == estado && x.Tabla == "EstadoSolpSap");
-            //        if (codigoSap != null)
-            //        {
-            //            solpEntity.EstadoSolpSap_Id = codigoSap.Id;
-            //            repositorio.GuardarCambios();
-            //        }
-            //    }
-            //}
+            
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
@@ -3314,6 +3293,7 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
+                    Thread.Sleep(10000);
                     ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 }
                 catch (Exception e)
@@ -9448,7 +9428,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        FinalizarSolp(solp, null, respuestaGuardarSOLP, false);
+                        FinalizarSolp(solp, respuestaGuardarSOLP, false);
                     }
                 }
             }
