@@ -79,17 +79,18 @@ namespace SustitucionMOAWS.WSConsumers
                 string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2", CultureInfo.InvariantCulture);
                 string currency = cabecera.CURRENCY;
 
-                var item = new ItemEntradaServicioDto();
+                var item = new ItemEntradaServicioDto
+                {
+                    Id = cabecera.SHEET_NO,
+                    Descripcion = cabecera.SHORT_TEXT,
 
-                item.Id = cabecera.SHEET_NO;
-                item.Descripcion = cabecera.SHORT_TEXT;
-
-                item.ItemNumero = elementoEntrySheetService.PLN_PCKG;
-                item.Cantidad = elementoEntrySheetService.QUANTITY;
-                item.PLN_PCKG = elementoEntrySheetService.PLN_PCKG;
-                item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
-                item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
-                item.LINE_NO = elementoEntrySheetService.LINE_NO;
+                    ItemNumero = elementoEntrySheetService.PLN_PCKG,
+                    Cantidad = elementoEntrySheetService.QUANTITY,
+                    PLN_PCKG = elementoEntrySheetService.PLN_PCKG,
+                    PLN_LINE = elementoEntrySheetService.PLN_LINE,
+                    PCKG_NO = elementoEntrySheetService.PCKG_NO,
+                    LINE_NO = elementoEntrySheetService.LINE_NO
+                };
 
                 if (string.Compare(currency, "ARP", true) == 0)
                 {
@@ -104,15 +105,15 @@ namespace SustitucionMOAWS.WSConsumers
             }
 
             //MMSN-460 + MMSN-491
-            if (!String.IsNullOrEmpty(cabecera.CREATED_ON))
+            if (!string.IsNullOrEmpty(cabecera.CREATED_ON))
             {
-                DateTime toFormat = DateTime.ParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime toFormat = DateTime.ParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 result.Fecha = toFormat.ToString(dateTimeFormat);
             }
 
-            if (!String.IsNullOrEmpty(cabecera.DOC_DATE))
+            if (!string.IsNullOrEmpty(cabecera.DOC_DATE))
             {
-                DateTime toFormat = DateTime.ParseExact(cabecera.DOC_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime toFormat = DateTime.ParseExact(cabecera.DOC_DATE, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 result.FechaDocumentoString = toFormat.ToString(dateTimeFormat);
             }
 
