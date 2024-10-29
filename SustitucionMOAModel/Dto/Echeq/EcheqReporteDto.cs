@@ -22,6 +22,8 @@ namespace SustitucionMOAModel.Dto
         public List<decimal> MontosEcheqs { get; set; } = new List<decimal>();
         public decimal ImporteTotal { get { return this.MontosEcheqs.Sum(); } }
         public string NumeroCOE { get; set; }
+        public int EcheqLiquidacionId { get; set; }
+
         public EcheqReporteDto() { }
     }
 
