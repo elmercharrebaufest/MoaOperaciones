@@ -23,6 +23,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAModel.Models.WSMapMOA.Vendedor.Detalle;
+using SustitucionMOAModel.Util;
 using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.ConsultasEF;
 using SustitucionMOARepositorio.Extensiones;
@@ -387,34 +388,14 @@ namespace SustitucionMOAUtils.Services
                 }).ToList();
             }
 
-
-            string prefijo = ConfigurarPrefijos(solpEntity);
-            var condEsp = TieneCondicionEspecial(solpEntity);
-            var esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault().TipoPosicion != null && solpEntity.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO";
+            bool condEsp = TieneCondicionEspecial(solpEntity);
             if (condEsp)
             {
+                bool esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault()?.TipoPosicion != null && solpEntity.Posiciones.FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
                 if (esServicio)
                 {
-                    foreach (var posicion in solpEntity.Posiciones)
-                    {
-
-                        string textoOriginal = posicion.Tarea ?? "";
-                        int indiceSeparador = textoOriginal.IndexOf('-');
-                        string textoModificado = textoOriginal;
-                        if (indiceSeparador != -1)
-                        {
-                            textoModificado = textoOriginal.Substring(indiceSeparador + 1).Trim();
+                    CompletarPrefijoCondicionEspecial(solpEntity);
                         }
-
-                        posicion.Tarea = (prefijo + textoModificado);
-
-                        if (posicion.Tarea.Length > 40)
-                        {
-                            posicion.Tarea.Substring(0, 40);
-                        }
-
-                    }
-                }
 
                 string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
 
@@ -3056,6 +3037,28 @@ namespace SustitucionMOAUtils.Services
             solp.Urgencia = false;
         }
 
+        private static void CompletarPrefijoCondicionEspecial(Solp solp)
+        {
+            string prefijo = solp.ConfigurarPrefijos();
+
+            foreach (var posicion in solp.Posiciones)
+            {
+                string textoOriginal = posicion.Tarea;
+                string textoModificado = textoOriginal;
+                if (PrefijoCondicionEspecial.TienePrefijo(textoModificado, out string prefijoAnterior))
+                {
+                    textoModificado = textoOriginal.Substring(prefijoAnterior.Length).Trim(); // no se usa replace ya que reemplaza todas las ocurrencias y no sólo la primera
+                }
+
+                posicion.Tarea = (prefijo + textoModificado);
+
+                if (posicion.Tarea.Length > 40)
+                {
+                    posicion.Tarea = posicion.Tarea.Substring(0, 40);
+                }
+            }
+        }
+
         private void ProcesarCondicionEspecial(PosicionSolpSAP posicion, Solp solp, SustitucionMOAWS.WSConsumers.TipoImputacionSAP tipoImputacion)
         {
             CompletarCondicionEspecial(posicion.NumeroRequerimientoInterno, solp);
@@ -3063,6 +3066,9 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 if (!ValidarCondicionEspecial(solp)) { return; }
+            CompletarPrefijoCondicionEspecial(solp);
+
+            if (!ValidarCondicionEspecial(solp)) return;
 
                 if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
                 {
@@ -9515,59 +9521,6 @@ namespace SustitucionMOAUtils.Services
                                 string.Join(" + ", solp.Posiciones.Select(x => x.Tarea));
                 solp.Pliego.NombreObra = nombre;
             }
-        }
-
-        private string ConfigurarPrefijos(Solp solp)
-        {
-            var prefijo = "";
-
-            if (solp.TrabajoYaHecho == true)
-            {
-                prefijo = "TR-";
-            }
-
-            if (solp.CondEspProveedorAsignado == true)
-            {
-                prefijo = "PA-";
-            }
-
-            if (solp.Urgencia == true)
-            {
-                prefijo = "UR-";
-            }
-
-            if (solp.Adicional == true || (solp.Adicional == true && solp.Urgencia == true))
-            {
-                prefijo = "AD-";
-            }
-
-            if (solp.TrabajoYaHecho == true && solp.Adicional == true)
-            {
-                prefijo = "AOR-";
-            }
-
-            if ((solp.TrabajoYaHecho == true && solp.Urgencia == true) || (solp.TrabajoYaHecho == true && solp.Urgencia == true && solp.Adicional == true))
-            {
-                prefijo = "TUR-";
-            }
-
-            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = "SP-";
-            }
-
-            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = "AJ-";
-            }
-
-            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = "PD-";
-            }
-
-            return prefijo;
-
         }
 
         private bool TieneCondicionEspecial(Solp solp)
