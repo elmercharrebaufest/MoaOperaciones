@@ -136,6 +136,8 @@
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\DistanciaDomicilio.cs" />
+    <Compile Include="Entities\DistanciaDomicilioReemplazos.cs" />
     <Compile Include="Entities\LogTable.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
@@ -450,6 +452,7 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\GeoCoordenada.cs" />
     <Compile Include="Models\Raw\ProveedorRaw.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />

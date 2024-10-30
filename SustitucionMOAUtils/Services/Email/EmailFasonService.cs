@@ -28,17 +28,6 @@ namespace SustitucionMOAUtils.Services.Email
             this.emailService = emailService;
         }
         
-        public void EnviarMailAltaDistancia(string cuit, string razonSocial)
-        {
-            var emailSenderData = new EmailSenderData
-            {
-                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionEmailAltaDistanciaFasonTo }),
-                Asunto = $"Alta distancia cliente {razonSocial}",
-                Cuerpo = $"Se solicita el alta de distancia del cliente {razonSocial} ({cuit})."
-            };
-            emailService.EnviarMail(emailSenderData);
-        }
-
         public void EnviarMailAltaTempranaCuit(OrdenDeCargaFason orden, string ordenId, bool gestionaDestino, bool gestionaDestinatario)
         {
             string cuerpoDestinatario = gestionaDestinatario ? $"CUIT DESTINATARIO: {orden.CUITDestinatario}, Razón social: {orden.RazonSocialDestinatario}\n" : "";
