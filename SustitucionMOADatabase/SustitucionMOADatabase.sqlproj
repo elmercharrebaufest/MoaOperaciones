@@ -256,6 +256,8 @@
     <Build Include="DBO\Tables\ConfiguracionUsuario.sql" />
     <Build Include="LOGS\LogTable.sql" />
     <Build Include="LOGS\schema.sql" />
+    <Build Include="DBO\Tables\DistanciaDomicilio.sql" />
+    <Build Include="DBO\Tables\DistanciaDomicilioReemplazos.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />
@@ -282,6 +284,7 @@
     <None Include="DatabaseNewPublishQaHuenei.xml" />
     <None Include="DatabaseNewPublishQaCompras.xml" />
     <None Include="scripts\Insert Rol EstadoES.sql" />
+    <None Include="scripts\PostDeployment\ReemplazosEnDomicilios.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="scripts\UpdateRolesEditables.sql" />

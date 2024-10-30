@@ -38,6 +38,8 @@ namespace SustitucionMOAExternalAPI.App_Start
     using SustitucionMOAWS.GoogleDrive.Interfaces;
     using Hangfire;
     using SustitucionMOAUtils.Export.CampoSustentable;
+    using SustitucionMOAWS.WebApi.OSRM;
+    using SustitucionMOAWS.WebApi.OpenStreetMap;
 
     public static class NinjectWebCommon
     {
@@ -234,6 +236,12 @@ namespace SustitucionMOAExternalAPI.App_Start
             // CNRT WebApi
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
+            // OSRM WebApi
+            kernel.Bind<IOsrmApiClient>().To(typeof(OsrmApiClient)).InTransientScope();
+
+            // OpenStreetMap WebApi
+            kernel.Bind<IOpenStreetMapClient>().To(typeof(OpenStreetMapClient)).InTransientScope();
+
             // Azure AD Consumer
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InSingletonScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InSingletonScope();
@@ -241,6 +249,7 @@ namespace SustitucionMOAExternalAPI.App_Start
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioUbicacionGeografica>().To<RepositorioUbicacionGeografica>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             // GoogleDrive
             kernel.Bind<IGoogleDriveHelper>().To<GoogleDriveHelper>().InScope(ctx => HttpContext.Current);

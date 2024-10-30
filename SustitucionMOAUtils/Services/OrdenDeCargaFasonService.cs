@@ -29,6 +29,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IEnumerable<string> codigosRetiroEnPatagonia = new string[] { "98855", "99098" };
         private readonly IEmailFasonService emailFasonService;
         private readonly IRepositorioOrdenDeCargaFason repositorioFason;
+        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         protected readonly List<EstadoOrdenDeCargaFason> estadosParaNoNotificarChasisRepetido = new List<EstadoOrdenDeCargaFason>
         {
@@ -44,11 +45,13 @@ namespace SustitucionMOAUtils.Services
             IScatoRepositorioClient scatoRepositorioClient,
             ICNRTClient cNRTClient,
             IEmailFasonService emailFasonService,
-            IFeriadoService feriadoService
+            IFeriadoService feriadoService,
+            IUbicacionGeograficaService ubicacionGeograficaService
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioFason, cNRTClient, feriadoService)
         {
             this.emailFasonService = emailFasonService;
             this.repositorioFason = repositorioFason;
+            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public ListarOrdenDeCargaFasonResponse Listar(ListarOrdenDeCargaFasonRequest request)
@@ -224,10 +227,11 @@ namespace SustitucionMOAUtils.Services
 
             var cliente = repositorioFason.Obtener<Proveedor>(request.Cliente);
             var producto = repositorioFason.Obtener<Material>(request.Producto_Id);
-            var localidad = ObtenerLocalidadDeLaOrden(request, producto);
 
             request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
             request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
+
+            var distanciaARecorrer = ObtenerDistanciaARecorrer(request.DomicilioDescr);
 
             long ultimoId = 0;
             for (int i = 0; i < request.CantidadDeViajes; i++)
@@ -235,9 +239,9 @@ namespace SustitucionMOAUtils.Services
                 var ordenEntity = new OrdenDeCargaFason(request)
                 {
                     Producto = producto,
-                    LocalidadId = localidad?.LocalidadId,
-                    LocalidadDescripcion = localidad?.LocalidadDescripcion,
-                    KmARecorrer = localidad?.KmARecorrer
+                    //LocalidadId = localidad?.LocalidadId,
+                    //LocalidadDescripcion = localidad?.LocalidadDescripcion,
+                    KmARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : null //localidad?.KmARecorrer
                 };
                 var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
                 var enviaNotificacion = i == 0;
@@ -251,11 +255,6 @@ namespace SustitucionMOAUtils.Services
 
                 repositorioFason.GuardarCambios();
                 ultimoId = ordenEntity.Id;
-            }
-
-            if (localidad == null)
-            {
-                NotificarSolicitudAltaDistanciaCliente(request, producto, cliente);
             }
 
             var resultado = new Resultado { Mensaje = SuccessMsg.OrdenDeCargaAgregada, IdEntidad = (int)ultimoId };
@@ -698,15 +697,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)
-        {
-            var localidades = producto.EsDerivadoGranario ?
-                ObtenerDestinos(request.CUITDestino) :
-                ObtenerDestinos(request.Cliente);
-
-            return localidades.Count > 0 ? localidades.First() : null;
-        }
-
         private void SetearCorredor(OrdenDeCargaFasonRequest request, Usuario usuario)
         {
             var esAdmin = usuario.TieneRol(RolEnum.FasonAdmin);
@@ -781,20 +771,14 @@ namespace SustitucionMOAUtils.Services
             return orden.Compare(ordenEditada);
         }
 
-        private void NotificarSolicitudAltaDistanciaCliente(CrearOrdenDeCargaFasonRequest request, Material producto, Proveedor cliente)
+        private int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
         {
-            string cuit, razonSocial;
-            if (producto.EsDerivadoGranario)
+            if (string.IsNullOrEmpty(domicilioDescripcion))
             {
-                cuit = request.CUITDestino;
-                razonSocial = request.RazonSocialDestino;
+                return null;
             }
-            else
-            {
-                cuit = cliente.CUIT;
-                razonSocial = cliente.RazonSocial;
-            }
-            emailFasonService.EnviarMailAltaDistancia(cuit, razonSocial);
+            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
+            return distanciaDomicilio?.DistanciaKm;
         }
     }
 }

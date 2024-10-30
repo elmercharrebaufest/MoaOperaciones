@@ -28,6 +28,7 @@ namespace SustitucionMOATest.Services
         private Mock<ICNRTClient> cnrtClient;
         private Mock<IEmailFasonService> emailFasonService;
         private Mock<IFeriadoService> feriadoService;
+        private Mock<IUbicacionGeograficaService> mIUbicacionGeograficaService;
         [SetUp]
         public void Setup()
         {
@@ -38,6 +39,7 @@ namespace SustitucionMOATest.Services
             cnrtClient = new Mock<ICNRTClient>();
             emailFasonService = new Mock<IEmailFasonService>();
             feriadoService = new Mock<IFeriadoService>();
+            mIUbicacionGeograficaService = new Mock<IUbicacionGeograficaService>();
             service = new OrdenDeCargaFasonService(
                 repositorioOrdenDeCargaFason.Object,
                 ordenCargaConsumer.Object,
@@ -45,7 +47,8 @@ namespace SustitucionMOATest.Services
                 scatoRepositorioClient.Object,
                 cnrtClient.Object,
                 emailFasonService.Object,
-                feriadoService.Object
+                feriadoService.Object,
+                mIUbicacionGeograficaService.Object
             );
         }
 

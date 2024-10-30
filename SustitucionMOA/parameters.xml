@@ -266,6 +266,12 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="EmailDistanciaNoEncontrada Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+							match="/configuration/appSettings/add[@key='EmailDistanciaNoEncontrada']
+                           /@value" />
+	</parameter>
+
   <parameter name="EmailRerporteSolpTo Config">
     <parameterEntry kind="XmlFile" scope="Web.config"
 							match="/configuration/appSettings/add[@key='EmailRerporteSolpTo']

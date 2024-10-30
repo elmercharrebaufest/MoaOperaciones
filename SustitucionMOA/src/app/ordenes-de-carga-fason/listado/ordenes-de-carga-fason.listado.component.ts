@@ -90,7 +90,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     this.setTabs();
     this.checkPermisos();
     this.navService.setSeccionList([]);
-    this.getListado();
+    // this.getListado();
     this.getProductos();
   }
 

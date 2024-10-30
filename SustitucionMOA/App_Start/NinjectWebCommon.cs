@@ -30,6 +30,8 @@ using SustitucionMOARepositorio.Repositorios;
 using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.GoogleDrive;
 using SustitucionMOAUtils.Export.CampoSustentable;
+using SustitucionMOAWS.WebApi.OSRM;
+using SustitucionMOAWS.WebApi.OpenStreetMap;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -190,6 +192,12 @@ namespace SustitucionMOA.App_Start
             // CNRT WebApi
             kernel.Bind<ICNRTClient>().To(typeof(CNRTClient)).InSingletonScope();
 
+            // OSRM WebApi
+            kernel.Bind<IOsrmApiClient>().To(typeof(OsrmApiClient)).InTransientScope();
+
+            // OpenStreetMap WebApi
+            kernel.Bind<IOpenStreetMapClient>().To(typeof(OpenStreetMapClient)).InTransientScope();
+
             // Azure
             kernel.Bind<IAzureADConsumer>().To(typeof(AzureADConsumer)).InTransientScope();
             kernel.Bind<IUsersGraphAPIClient>().To(typeof(UsersGraphAPIClient)).InScope(ctx => HttpContext.Current);
@@ -201,6 +209,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioUbicacionGeografica>().To<RepositorioUbicacionGeografica>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioConsultas>().To<RepositorioConsultas>().InScope(ctx => HttpContext.Current);
             kernel.Bind<ICache, Cache>().To<Cache>().InSingletonScope();
 
