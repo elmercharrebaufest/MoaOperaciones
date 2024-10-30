@@ -606,8 +606,7 @@ namespace SustitucionMOAUtils.Services
         private EstadoOrdenDeCargaFason ObtenerEstadoOrden(OrdenDeCargaFason orden)
         {
             if (!orden.TransporteExiste ||
-                !orden.CuitsTerceroExisten ||
-                orden.LocalidadId == null)
+                !orden.CuitsTerceroExisten)
             {
                 Log.Debug($"Orden fason id={orden.Id} queda pendiente. TransporteExiste={orden.TransporteExiste}, CuitsTerceroExisten={orden.CuitsTerceroExisten}, LocalidadId={orden.LocalidadId}.");
                 return EstadoOrdenDeCargaFason.Pendiente;
