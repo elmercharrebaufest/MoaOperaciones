@@ -10,7 +10,6 @@ using iTextSharp.tool.xml.parser;
 using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
@@ -395,7 +394,7 @@ namespace SustitucionMOAUtils.Services
                 if (esServicio)
                 {
                     CompletarPrefijoCondicionEspecial(solpEntity);
-                        }
+                }
 
                 string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
 
@@ -977,7 +976,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 repositorio.GuardarCambios();
             }
-            
+
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
@@ -3066,9 +3065,8 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 if (!ValidarCondicionEspecial(solp)) { return; }
-            CompletarPrefijoCondicionEspecial(solp);
 
-            if (!ValidarCondicionEspecial(solp)) return;
+                CompletarPrefijoCondicionEspecial(solp);
 
                 if (string.IsNullOrEmpty(posicion.ProveedorDeseado) && solp.Adicional != true)
                 {
