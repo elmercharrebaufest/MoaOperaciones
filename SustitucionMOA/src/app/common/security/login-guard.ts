@@ -1,10 +1,9 @@
-﻿import { CanActivate, CanActivateChild } from "@angular/router";
+﻿import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Router } from "@angular/router";
-import { SessionDataService } from "../services/SessionDataService";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { catchError, timeout } from 'rxjs/operators';
+import { CanActivate, CanActivateChild, Router } from "@angular/router";
 import { throwError } from 'rxjs';
+import { catchError, timeout } from 'rxjs/operators';
+import { SessionDataService } from "../services/SessionDataService";
 
 @Injectable()
 export class LoginGuard implements CanActivate, CanActivateChild {
