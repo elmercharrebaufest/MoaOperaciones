@@ -10,7 +10,7 @@ export class LoginGuard implements CanActivate, CanActivateChild {
 
     private readonly checkSessionIntervalMs: number = 15000;
     private readonly checkSessionRequestTimeoutMs: number = this.checkSessionIntervalMs - 300;
-    private readonly defaultCheckSessionTimeoutMs: number = 1000 * 60 * 1; // 1 minuto, 60 segundos en cada minuto, 1000ms en cada segundo.
+    private readonly defaultCheckSessionTimeoutMs: number = 1000 * 60 * 5; // 5 minutos, 60 segundos en cada minuto, 1000ms en cada segundo.
     private checkSessionRemainingTime: number = this.defaultCheckSessionTimeoutMs;
 
     constructor(private router: Router, private http: HttpClient, private sessionDataService: SessionDataService) { }
