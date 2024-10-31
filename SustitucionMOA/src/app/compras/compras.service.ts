@@ -1510,6 +1510,13 @@ export class ComprasService extends BaseService {
                 headers: this.headers
             });
     }
+    public runReasignacion() {
+        return this.http
+            .get('/api/Derivacion/CorrerReasignacionManual', {
+                headers: this.headers,
+            });
+    }
+   
 
     public guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         var payload = new FormData();

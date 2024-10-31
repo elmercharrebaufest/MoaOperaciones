@@ -729,6 +729,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<EcheqReporteDto> result = repositorio.Listar<EcheqLiquidacion, EcheqReporteDto>(x => new EcheqReporteDto
                 {
+                    EcheqLiquidacionId = x.Id,
                     RazonSocial = x.EcheqNegocio.Proveedor.RazonSocial,
                     Mail = x.UsuarioModificacionId != null ? x.UsuarioModificacion.Mail : x.UsuarioCreacion.Mail,
                     CodigoProveedor = x.EcheqNegocio.Proveedor.CodigoProveedor,
@@ -740,14 +741,12 @@ namespace SustitucionMOAUtils.Services
                 }, x => x.MarcaCheque && (x.EcheqNegocio.Proveedor.CodigoProveedor == codigoProveedor || esAdmin) && fechaIncioDateTime <= DbFunctions.TruncateTime(x.FechaCreacion) && fechaFinDateTime >= DbFunctions.TruncateTime(x.FechaCreacion)); // falta filtrar por fechas
 
 
-                List<string> documentos = result.Select(b => b.Liquidacion).ToList();
-                var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado && documentos.Contains(x.EcheqLiquidacion.Documento));
+                List<int> documentos = result.Select(b => b.EcheqLiquidacionId).ToList();
+                var aperturas = repositorio.Listar<EcheqApertura>(x => x.Estado && documentos.Contains(x.EcheqLiquidacionId));
 
                 foreach (var apertura in aperturas)
                 {
-                    EcheqReporteDto liquidacion = result
-                        .Where(a => a.Liquidacion == apertura.EcheqLiquidacion.Documento)
-                        .SingleOrDefault();
+                    EcheqReporteDto liquidacion = result.Single(a => a.EcheqLiquidacionId == apertura.EcheqLiquidacionId);
                     liquidacion.MontosEcheqs.Add(apertura.ImporteCheque);
                 }
                 return result;
