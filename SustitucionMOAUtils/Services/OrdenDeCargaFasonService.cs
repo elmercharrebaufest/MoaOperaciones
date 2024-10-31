@@ -227,6 +227,7 @@ namespace SustitucionMOAUtils.Services
 
             var cliente = repositorioFason.Obtener<Proveedor>(request.Cliente);
             var producto = repositorioFason.Obtener<Material>(request.Producto_Id);
+            var localidad = ObtenerLocalidadDeLaOrden(request, producto);
 
             request.DestinatarioExisteScato = CuitExisteScato(request.CUITDestinatario);
             request.DestinoExisteScato = CuitExisteScato(request.CUITDestino);
@@ -239,9 +240,9 @@ namespace SustitucionMOAUtils.Services
                 var ordenEntity = new OrdenDeCargaFason(request)
                 {
                     Producto = producto,
-                    //LocalidadId = localidad?.LocalidadId,
-                    //LocalidadDescripcion = localidad?.LocalidadDescripcion,
-                    KmARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : null //localidad?.KmARecorrer
+                    LocalidadId = localidad?.LocalidadId,
+                    LocalidadDescripcion = localidad?.LocalidadDescripcion,
+                    KmARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : localidad?.KmARecorrer
                 };
                 var detalleActualizar = ObtenerDetallesActualizar(ordenEntity, existeTransporte, existeIntermediarioFlete);
                 var enviaNotificacion = i == 0;
@@ -778,6 +779,16 @@ namespace SustitucionMOAUtils.Services
             }
             var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
             return distanciaDomicilio?.DistanciaKm;
+        }
+
+        private ScatoWS.KmPorProveedorDto ObtenerLocalidadDeLaOrden(CrearOrdenDeCargaFasonRequest request, Material producto)
+        {
+            if (producto.EsDerivadoGranario)
+            {
+                return null;
+            }
+            var localidades = ObtenerDestinos(request.Cliente);
+            return localidades.Count > 0 ? localidades.First() : null;
         }
     }
 }
