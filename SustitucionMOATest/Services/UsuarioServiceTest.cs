@@ -33,6 +33,7 @@ namespace SustitucionMOATest.Services
             repositorioUsuarioMock = new Mock<IRepositorioUsuario>();
             vendedorServiceMock = new Mock<IVendedorService>();
             azureADConsumerMock = new Mock<IAzureADConsumer>();
+            derivacionesAprobacionesServiceMock = new Mock<IDerivacionesAprobacionesService>();
             target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object, derivacionesAprobacionesServiceMock.Object);
         }
 
