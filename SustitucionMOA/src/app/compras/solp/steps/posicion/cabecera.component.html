@@ -309,6 +309,7 @@
                                             appendTo="body"
                                             (completeMethod)="buscarCombo($event, 'UNIDAD MEDIDA')"
                                             (onFocus)=" $event.target.select()"
+                                            [disabled]="posicion.codigoServicio"
                                             placeholder="Unidad">
                                 </p-dropdown>
                             </td>

@@ -311,7 +311,7 @@ export class CotizacionFormularioComponent extends ListBaseComponent implements 
                     const sumaCorrecta = sumaCantidades === cotizacion.Cantidad;
 
                     if (!sumaCorrecta) {
-                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": La suma de las cantidades debe ser igual a la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
+                        mensaje = "SOLP " + cotizacion.SOLP + " - Pos. " + cotizacion.Posicion + ": Ajuste la cantidad en el plazo de entrega según la cantidad cotizada: " + self.formatearNumero(cotizacion.Cantidad);
                         breakFor = true;
                         return mensaje;
                     }

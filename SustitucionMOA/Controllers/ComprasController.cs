@@ -6,6 +6,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.WSConsumers;
@@ -54,11 +55,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -117,19 +118,21 @@ namespace SustitucionMOA.Controllers
                     CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                     {
                         ClaseDocumentoCodigo = x.Padre.Codigo,
-                        Codigo = x.Codigo
+                        x.Codigo
                     }),
 
                     Provincia = service.ListarProvincia(),
+
+                    ListarPendienteList = service.ListarPendienteListComboOptions(),
                 });
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -166,11 +169,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -185,14 +188,32 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarSolpComprador(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nombrePedido = null, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool listarPendiente = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+        public ActionResult ListarSolpComprador(int? pagina = null,
+                                                int? itemsPorPagina = null,
+                                                string orden = null,
+                                                string columna = null,
+                                                string nroSolp = null,
+                                                string nombrePedido = null,
+                                                string estados = null,
+                                                string usuarios = null,
+                                                string centros = null,
+                                                string grupoDeCompras = null,
+                                                DateTime? fechaDesde = null,
+                                                DateTime? fechaHasta = null,
+                                                bool sap = false,
+                                                bool mantenimiento = false,
+                                                bool web = false,
+                                                bool repoAutomatica = false,
+                                                EstadoListarTratamientoSolp listarPendiente = EstadoListarTratamientoSolp.Todas,
+                                                bool contratoMarco = false,
+                                                string claseDocumento = null,
+                                                string tipoImputacion = null,
+                                                string valorTipoImputacion = null)
         {
             try
             {
-                //service.EditarOrdenDeCompra(new AdjudicacionEditarDto());
                 var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : (listarPendiente == false && itemsPorPagina.Value == 1) ? 20 : itemsPorPagina.Value);
+                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
                 var usuario_Id = ObtenerUsuarioActual().Id;
 
                 return JsonCustom(new
@@ -204,11 +225,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -226,14 +247,6 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                //ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                //{
-                //    FechaDesde = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaInicioObtenerSolpsDesdeSAPJob"].ToString()),
-                //    FechaHasta = Convert.ToDateTime(ConfigurationManager.AppSettings["FechaFinObtenerSolpsDesdeSAPJob"].ToString()),
-                //    CreadoPorUsuarios = new List<string>(),
-                //    NumeroSolp = "0212201893"
-                //};
-                //service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
                 var desde = new DateTime(2021, 01, 01);
                 var hasta = new DateTime(2022, 12, 01);
                 while (desde < hasta)
@@ -261,11 +274,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -288,11 +301,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -324,11 +337,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -347,19 +360,17 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                string userMail = SessionPersister.getUsername();
-
                 if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
                 return JsonCustom(new { data = service.BorrarSolp(idSolp) });
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -382,11 +393,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -404,11 +415,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -426,11 +437,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -509,11 +520,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -531,11 +542,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -553,11 +564,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -576,11 +587,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -600,11 +611,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -622,11 +633,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -644,11 +655,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -737,11 +748,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -836,11 +847,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -907,11 +918,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -959,11 +970,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -984,11 +995,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1034,11 +1045,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1063,11 +1074,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1118,11 +1129,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1162,17 +1173,16 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
-                var usuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, usuarioActual.Id, true);
+                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, true);
                 return JsonCustom(new { data = result });
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1197,11 +1207,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1342,11 +1352,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1374,11 +1384,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1397,15 +1407,15 @@ namespace SustitucionMOA.Controllers
         {
             try
             {
-                return JsonCustom(service.ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras));
+                return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1448,11 +1458,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1475,11 +1485,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1521,11 +1531,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1546,11 +1556,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1576,11 +1586,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1646,11 +1656,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1667,11 +1677,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
@@ -1706,21 +1716,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }
-
-        [HttpGet]
-        public ActionResult ListarUnidadesDeMedida(string material)
-        {
-            try
-            {
-                return JsonCustom(new { data = service.ListarUnidadesDeMedida(material) });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-        }
+        }       
 
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
@@ -1768,11 +1764,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1811,11 +1807,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1859,25 +1855,111 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public ActionResult ListarPosicionesPOMultiple(bool? tratada, string centros = null, string grupoDeCompras = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null,
-            bool sap = false, bool mantenimiento = false, bool web = false, bool repoAutomatica = false, bool contratoMarco = false, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
+        public ActionResult ListarPosicionesPOMultiple(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null)
         {
             try
             {
                 return JsonCustom(new
                 {
-                    data = service.ListarPosicionesPOMultiple(fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, contratoMarco,
-                     !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                     !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+                    data = service.ListarPosicionesPOMultiple(fechaDesde,
+                                                              fechaHasta,
+                                                              sap,
+                                                              mantenimiento,
+                                                              web,
+                                                              repoAutomatica,
+                                                              tratada,
+                                                              contratoMarco,
+                                                              !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                              !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              numeroPo)
                 });
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DescargarPosicionesPOMultiple(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null)
+        {
+            try
+            {
+                MemoryStream data = service.DescargarPosicionesPOMultiple(fechaDesde,
+                                                          fechaHasta,
+                                                          sap,
+                                                          mantenimiento,
+                                                          web,
+                                                          repoAutomatica,
+                                                          tratada,
+                                                          contratoMarco,
+                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          numeroPo);
+
+                string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+                const string contentType = CustomMediaTypeNames.Application.xlsx;
+
+                return JsonCustom(new
+                {
+                    file = data.ToArray(),
+                    contentType,
+                    fileName,
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1960,18 +2042,16 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
-                var ordenar = filtro.Orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(filtro.Columna) ? filtro.Columna : null), ordenar, (filtro.Pagina == null) ? 0 : filtro.Pagina.Value, (filtro.ItemsPorPagina == 0 || !filtro.ItemsPorPagina.HasValue) ? 10 : filtro.ItemsPorPagina.Value);
                 var resultado = service.ListarSolpCondicionEspecial(filtro);
                 return JsonCustom(new { data = resultado });
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -1996,11 +2076,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -2059,11 +2139,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -2112,11 +2192,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -2141,11 +2221,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -2172,11 +2252,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -2220,11 +2300,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {

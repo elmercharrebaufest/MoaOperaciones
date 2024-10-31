@@ -646,14 +646,22 @@ namespace SustitucionMOATest.Services
 
             var result = target.VerificarVencimientoOrdenDeCarga();
 
+            var dayOfWeek = DateTime.Now.DayOfWeek;
+            int cantidad = 1;
+            if (dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday)
+            {
+                cantidad = 0;
+            }
             repositorioMock.Verify(x => x.Listar(It.IsAny<Expression<Func<OrdenDeCarga, bool>>>(),
                                 It.IsAny<int>(),
                                 It.IsAny<string>(),
                                 It.IsAny<DirOrden>(),
-                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
-
-            Assert.AreEqual(result[0].Estado, EstadoOrdenDeCarga.Vencida);
+                                It.IsAny<IEnumerable<Expression<Func<OrdenDeCarga, object>>>>()), Times.Exactly(cantidad));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(cantidad));
+            if (cantidad == 1)
+            {
+                Assert.AreEqual(EstadoOrdenDeCarga.Vencida, result[0].Estado);
+            }
         }
 
         [Test()]

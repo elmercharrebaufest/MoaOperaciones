@@ -3,24 +3,23 @@
     public enum EstadoAprobacion
     {
         Aprobado = 0,
-        DocumentacionPendiente,
-        AprobacionPendiente,
-        DeshabilitadoEnDataAgro,
-        EdicionRequerida,
-        Rechazado,
-        AunNoImplementado,
-        AnalisisDeNosis,
-        EtapaFinal,
-        Deshabilitado,
-        AnularRechazo,
-        SinAlta,
-        AnularObservacion,
-        PendienteAprobacionCompras,
-        RechazadoPorCompras,
-        AltaIncompleta,
-        AnularAprobacion,
-        AnalisisInterno
-
+        DocumentacionPendiente = 1,
+        AprobacionPendiente = 2,
+        DeshabilitadoEnDataAgro = 3,
+        EdicionRequerida = 4,
+        Rechazado = 5,
+        AunNoImplementado = 6,
+        AnalisisDeNosis = 7,
+        EtapaFinal = 8,
+        Deshabilitado = 9,
+        AnularRechazo = 10,
+        SinAlta = 11,
+        AnularObservacion = 12,
+        PendienteAprobacionCompras = 13,
+        RechazadoPorCompras = 14,
+        AltaIncompleta = 15,
+        AnularAprobacion = 16,
+        AnalisisInterno = 17,
     }
 
     public static class EstadoDeAprobacionExtensions

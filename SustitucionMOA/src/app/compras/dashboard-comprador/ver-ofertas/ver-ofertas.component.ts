@@ -755,10 +755,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                 this.adjudicacion.TextoDeCabecera != "" &&
                 this.modalTexto.adjudicacion.TextoDeCabecera !=
                 this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp) {
-                this.adjudicacion.TextoDeCabecera += `\n\nJustificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
-            } else {
-                this.adjudicacion.TextoDeCabecera += `Justificación de condición especial: ${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
+                this.adjudicacion.TextoDeCabecera += '\n\n';
             }
+            this.adjudicacion.TextoDeCabecera += `Justificación de condición especial:\n${this.tablaOfertas.SolpDto.ObservacionesCotizacionCondEsp}`;
         }
     }
 

@@ -3,8 +3,8 @@ using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
 using System.Data.SqlClient;
+using System.Linq;
 
 namespace SustitucionMOARepositorio.Repositorios
 {
@@ -32,7 +32,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     },
                     u.OrganizacionDeCompra,
                     u.Externo,
-                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, TipoId = x.TipoProveedor.Id, x.RazonSocial }
+                    Proveedores = u.Proveedores.Select(x => new { x.CUIT, x.TipoProveedor.NombreCorto, TipoId = x.TipoProveedor.Id, x.RazonSocial, x.CodigoProveedor }
                     ),
                 }).ToList();
 
@@ -53,21 +53,9 @@ namespace SustitucionMOARepositorio.Repositorios
                         u.TipoUsuario.NombreCorto == "CORR" ? "Corredor" :
                         u.TipoUsuario.NombreCorto == "CLI" ? "Cliente" : ""
                     ),
-                    CodigoProveedor = (
-                        string.IsNullOrEmpty(u.CUITRegistro) ? "" :
-                        (u.TipoUsuario.NombreCorto == "CORR" && u.CUITRegistro.Length >= 10) ? string.Concat("C", u.CUITRegistro.Substring(2, 8)) :
-                        (u.TipoUsuario.NombreCorto != "CORR" && u.CUITRegistro.Length >= 10) ? string.Concat("00", u.CUITRegistro.Substring(2, 8)) :
-                        "CUIT INVALIDO"
-                    ),
+                    CodigoProveedor = u.Proveedores.FirstOrDefault(a => a.CUIT == u.CUITRegistro && a.NombreCorto == u.TipoUsuario.NombreCorto)?.CodigoProveedor ?? "",
                     OrganizacionDeCompra = u.OrganizacionDeCompra,
-                    RazonSocial =
-                        u.Proveedores.Any() ?
-                        (
-                            u.Proveedores.FirstOrDefault(x => x.CUIT == u.CUITRegistro && x.TipoId == u.TipoUsuario.Id) ??
-                            u.Proveedores.FirstOrDefault(x => x.CUIT == u.CUITRegistro) ??
-                            u.Proveedores.FirstOrDefault()
-                        ).RazonSocial
-                        : "",
+                    RazonSocial = u.Proveedores.FirstOrDefault(a => a.CUIT == u.CUITRegistro && a.NombreCorto == u.TipoUsuario.NombreCorto)?.RazonSocial ?? "",
                 }).ToList();
 
             return usuariosDto;
@@ -77,7 +65,7 @@ namespace SustitucionMOARepositorio.Repositorios
         {
             return ExecuteQuery<VerificarActividadUsuario>
                 ("exec VerificarActividadUsuarioID @IdUsuario", new SqlParameter("@IdUsuario", usuario.Id))
-                .Any(verificacion=>verificacion.SeEncontraronRegistros && verificacion.Tabla != "ProveedorHistorialAprobacion");
+                .Any(verificacion => verificacion.SeEncontraronRegistros && verificacion.Tabla != "ProveedorHistorialAprobacion");
         }
     }
 }

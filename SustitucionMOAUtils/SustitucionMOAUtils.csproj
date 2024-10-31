@@ -34,14 +34,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BigExcelCreator, Version=2.3.2023.24606, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BigExcelCreator.2.3.2023.24606\lib\net40\BigExcelCreator.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=30.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <HintPath>..\packages\CsvHelper.30.0.1\lib\net45\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml, Version=2.18.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
-      <HintPath>..\packages\DocumentFormat.OpenXml.2.18.0\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.20.0.0, Culture=neutral, PublicKeyToken=8fb06cb64d019a17, processorArchitecture=MSIL">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.20.0\lib\net40\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
@@ -169,7 +172,7 @@
     <Compile Include="DesignPattern\Classes\ConsultaParcialStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaStrategy.cs" />
     <Compile Include="DesignPattern\Interfaces\IConsultaContext.cs" />
-    <Compile Include="Email\DBMethods\DBService.cs" />
+    <Compile Include="DBMethods\DBService.cs" />
     <Compile Include="Email\EmailConfig.cs" />
     <Compile Include="Email\EmailSender.cs" />
     <Compile Include="Export\CampoSustentable\CampoSustentablePdfGenerator.cs" />
@@ -179,19 +182,23 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Export\PdfFromHtmlGenerator.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\ConsultaCommon.cs" />
     <Compile Include="Helpers\CSV\AplicacionCCPPRecord.cs" />
     <Compile Include="Helpers\CustomImageTagProcessor.cs" />
+    <Compile Include="Helpers\CustomMediaTypeNames.cs" />
     <Compile Include="Helpers\ExtensionesSerializacion.cs" />
     <Compile Include="Helpers\GenericCopier.cs" />
+    <Compile Include="Helpers\ImageResizer.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAprobacionesService.cs" />
     <Compile Include="Interfaces\IDerivacionesAprobacionesService.cs" />
     <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
+    <Compile Include="Interfaces\IAnalisisFacturaService.cs" />
     <Compile Include="Interfaces\IAplicacionCartaPorteApiService.cs" />
     <Compile Include="Interfaces\IArchivoBoletoService.cs" />
     <Compile Include="Interfaces\ILogTableService.cs" />
@@ -266,7 +273,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AdjuntosCertificacionesService.cs" />
     <Compile Include="Services\AduanaService.cs" />
+    <Compile Include="Services\AnalisisFacturaService.cs" />
     <Compile Include="Services\AltaEmpresaNoGranosService.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\AnalisisFacturaServiceValidationHandler.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\CodigoFacturaValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\NumeroFacturaValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\CuitValidationCommand.cs" />
+    <Compile Include="Services\AnalisisFacturaServiceValidation\OrdenCompraValidationCommand.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
     <Compile Include="Services\ComprasArchivosService.cs" />

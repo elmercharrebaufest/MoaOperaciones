@@ -37,8 +37,14 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                         TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
                                         Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                         CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado,
-                                        ObservacionesCotizacionLista = 
-                                        po.Posiciones.Select(p => p.SolpPosicion.Solp.Pliego.ObservacionesCotizacionCondEsp).Distinct()
+                                        ObservacionesCotizacionLista =
+                                            po.Posiciones
+                                                .Select(p => new NroSolpObservacionCondEspDto
+                                                {
+                                                    NroSolp = p.SolpPosicion.Solp.NroSolp,
+                                                    ObservacionesCotizacionCondEsp = p.SolpPosicion.Solp.Pliego.ObservacionesCotizacionCondEsp
+                                                })
+                                                .Distinct(),
                                     },
                                     FechaCreacion = po.FechaCreacion,
                                     FechaCreacionFormateada = SqlFunctions.DateName("day", po.FechaCreacion) + "/" + SqlFunctions.DatePart("month", po.FechaCreacion) + "/" + SqlFunctions.DateName("year", po.FechaCreacion),
@@ -130,17 +136,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 select new PeticionDeOfertaUsarioDto()
                                                 {
                                                     Id = u.Id,
-                                                    VisibleSolicitante = u.VisibleSolicitante == true ? true : false,
+                                                    VisibleSolicitante = u.VisibleSolicitante == true,
                                                     EstaHabilitado = u.Usuario.Habilitado,
-                                                    CodigoProveedor = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
-                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().CodigoProveedor : "",
+                                                    DatosProveedor = u.Usuario.Proveedores.FirstOrDefault(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id),
+                                                    CuitRegistroUsuario = u.Usuario.CUITRegistro,
+                                                    // RazonSocial, CUIT, Mail, ProveedorEstadoAprobacion, CodigoProveedor se resuelven internamente en el DTO PeticionDeOfertaUsarioDto en base a DatosProveedor y CuitRegistroUsuario 
                                                     UsuarioId = u.Usuario_Id,
-                                                    RazonSocial = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
-                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().RazonSocial : u.Usuario.CUITRegistro,
-                                                    CUIT = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
-                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().CUIT : u.Usuario.CUITRegistro,
-                                                    Mail = u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault() != null ?
-                                                        u.Usuario.Proveedores.Where(p => p.CUIT == u.Usuario.CUITRegistro && u.Usuario.TipoUsuario.Id == p.TipoProveedor.Id).FirstOrDefault().Mail : u.Usuario.CUITRegistro,
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
                                                     THCategoria = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),

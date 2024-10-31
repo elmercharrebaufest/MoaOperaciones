@@ -23,7 +23,10 @@ namespace SustitucionMOAWS.WSConsumers
             service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
             service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
         }
-
+        public List<UnidadesDeMedida> Request(string codigoMaterial)
+        {
+            return Request(new List<string> { codigoMaterial });
+        }
         public List<UnidadesDeMedida> Request(List<string> codigosMaterial)
         {
             try

@@ -68,6 +68,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\PosicionPendienteDto.cs" />
     <Compile Include="Dto\Compras\AreaDto.cs" />
     <Compile Include="Dto\Compras\CertificacionES\SolpESDto.cs" />
     <Compile Include="Dto\Compras\ActualizarFechaVigenciaRegistroInfoDto.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoReqDto.cs" />
     <Compile Include="Dto\Compras\ValidarFechaVigenciaRegistroInfoResDto.cs" />
     <Compile Include="Dto\EntradaServicioParamsDto.cs" />
+    <Compile Include="Dto\FileDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
     <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\LocalidadDto.cs" />
@@ -361,6 +363,7 @@
     <Compile Include="Enums\CondicionRetiro.cs" />
     <Compile Include="Enums\EstadoCursoEnum.cs" />
     <Compile Include="Enums\EnviarCircularEnum.cs" />
+    <Compile Include="Enums\EstadoListarTratamientoSolp.cs" />
     <Compile Include="Enums\EstadoOrdenResiduosEnum.cs" />
     <Compile Include="Enums\FlujoActualizacionOrdenResiduos.cs" />
     <Compile Include="Enums\TipoConfiguracionUsuario.cs" />
@@ -376,6 +379,12 @@
     <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
     <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
     <Compile Include="Enums\PermisoEnum.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnHiddenAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnWidthAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnTypeAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnOrderAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelColumnNameAttribute.cs" />
+    <Compile Include="ModelAttributes\ExcelIgnoreAttribute.cs" />
     <Compile Include="Models\EcheqRequestModel.cs" />
     <Compile Include="Entities\Configuracion.cs" />
     <Compile Include="Entities\HabilitacionJob.cs" />
@@ -454,6 +463,7 @@
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
     <Compile Include="Models\Raw\ProveedorRaw.cs" />
+    <Compile Include="Models\ValidationResult.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionViewModel.cs" />
     <Compile Include="Models\ViewModel\ReclamoImpositivo.cs" />
@@ -690,6 +700,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util\Constante.cs" />
     <Compile Include="Util\Permisos.cs" />
+    <Compile Include="Util\PrefijoCondicionEspecial.cs" />
     <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>

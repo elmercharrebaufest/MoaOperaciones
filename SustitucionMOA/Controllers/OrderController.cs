@@ -58,11 +58,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
@@ -90,11 +90,11 @@ namespace SustitucionMOA.Controllers
             }
             catch (InfoCustomException e)
             {
-                return Json(new { info = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (ValidationCustomException e)
             {
-                return Json(new { error = e }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (WSCustomException e)
             {
