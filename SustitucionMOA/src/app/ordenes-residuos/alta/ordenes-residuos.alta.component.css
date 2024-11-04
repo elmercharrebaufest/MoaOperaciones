@@ -33,3 +33,8 @@
     font-size: 15px;
     font-weight: 400 !important;
   }
+
+  .info-block{
+    padding: 10px;
+    color: #075088;
+  }

@@ -249,11 +249,21 @@
 
                             <div class="col-xs-12 col-md-12">
                                 <div class="formulario-label">
-                                    Nombre y apellido del chofer:
+                                    Nombre del chofer:
                                 </div>
                                 <div class="styled-select">
                                     <input [(ngModel)]="ordenDeCargaFason.NombreChofer"
                                         (ngModelChange)="ordenDeCargaFason.NombreChofer = $event.toUpperCase()"
+                                        type="text" maxlength="25">
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-12">
+                                <div class="formulario-label">
+                                    Apellido del chofer:
+                                </div>
+                                <div class="styled-select">
+                                    <input [(ngModel)]="ordenDeCargaFason.ApellidoChofer"
+                                        (ngModelChange)="ordenDeCargaFason.ApellidoChofer = $event.toUpperCase()"
                                         type="text" maxlength="25">
                                 </div>
                             </div>
@@ -263,11 +273,12 @@
                                     CUIL chofer:
                                 </div>
                                 <div class="styled-select autocomplete">
-                                    <input auto-complete type="text" [(ngModel)]="ordenDeCargaFason.CUILChofer"
-                                        mask="00-00000000-0" (change)="validarCuilChofer()" [source]="cuilsChofer"
+                                    <input type="text" auto-complete mask="00-00000000-0"
+                                        [value-formatter]="generalFormatter" [list-formatter]="generalFormatter"
                                         [min-chars]="2" [no-match-found-text]="'No se encontraron resultados'"
-                                        mask="00-00000000-0" [value-formatter]="generalFormatter"
-                                        [list-formatter]="generalFormatter">
+                                        [source]="cuilsChofer"
+                                        [(ngModel)]="ordenDeCargaFason.CUILChofer"
+                                        (change)="validarCuilChofer()">
                                     <div *ngIf="validando.CUILChofer">
                                         <p-progressSpinner [style]="{width: '10%', height: '10%'}"></p-progressSpinner>
                                     </div>

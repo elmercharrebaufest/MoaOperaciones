@@ -2,6 +2,7 @@ import { Almacen } from "../almacen";
 import { LocalidadDto } from "../common/localidadDto";
 import { Material } from "../material";
 import { Proveedor } from "../proveedor";
+import { DestinoScato } from "../scato/destinoScato";
 import { Domicilio } from "./domicilio";
 import { EstadoOrdenResiduos } from "./estadoOrdenResiduos";
 import { Planta } from "./planta";
@@ -14,7 +15,7 @@ export class OrdenCargaResiduosDto {
 
     public Producto: Material;
 
-    public Localidad: LocalidadDto;
+    public DestinoMercaderia?: DestinoScato;
     public Planta?: Planta;
     public Domicilio?: Domicilio;
     public Almacen: Almacen;
@@ -22,6 +23,7 @@ export class OrdenCargaResiduosDto {
     public PatenteChasis: string;
     public PatenteAcoplado: string;
     public NombreChofer: string;
+    public ApellidoChofer: string;
     public CUILChofer: string;
     public RazonSocialTransporte: string;
     public CUITTransporte: string;
@@ -30,10 +32,11 @@ export class OrdenCargaResiduosDto {
     public FechaIngreso: string;
     public FechaEgreso: string;
 
+    public CantidadDeViajes?: number;
+
     constructor() {
         this.Cliente = new Proveedor();
         this.Producto = new Material();
-        this.Localidad = new LocalidadDto();
         this.Estado = new EstadoOrdenResiduos();
         this.Almacen = new Almacen();
     }

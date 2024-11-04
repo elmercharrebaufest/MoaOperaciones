@@ -22,7 +22,7 @@
         </div>
 
         <div id="searchVer" class="col-xs-12 col-sm-12 col-md-12">
-          <app-filtro-fecha-fas (ClickEvent)="getListado()"></app-filtro-fecha-fas>
+          <app-filtro-fecha-fas (ClickEvent)="getListado()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></app-filtro-fecha-fas>
         </div>
         <div id="searchTexto" class="col-xs-12 col-sm-6 col-md-15">
           <p>Contrato:</p>
@@ -139,9 +139,9 @@
               <td *ngIf="puedeEnviarASAP"><input type="checkbox" [checked]="estaListadoParaSAP(ordenDeCarga)"
                   [disabled]="!ordenDeCarga.NoEstaEnSAP" (click)="seleccionarItem(ordenDeCarga)" /></td>
               <td style="text-align: center;">{{ordenDeCarga.Id}}
-                <span (click)="navegarAConsultas()" *ngIf="ordenDeCarga.TieneConsultasRealizadas"
-                  class="fa fa-comments pointer" aria-hidden="true" pTooltip="Tiene Consultas Pendientes"
-                  tooltipPosition="bottom"></span>
+                <span (click)="navegarAConsultas(ordenDeCarga.IdsConsultasRealizadas[0])"
+                  *ngIf="ordenDeCarga.TieneConsultasRealizadas" class="fa fa-comments pointer" aria-hidden="true"
+                  pTooltip="Tiene Consultas Pendientes" tooltipPosition="bottom"></span>
               </td>
               <td *ngIf="esMesaFas || esInterno">{{ordenDeCarga.Entrega}}
                 <i *ngIf="ordenDeCarga.FleteMOA" pTooltip="Flete a cargo MOA" tooltipPosition="bottom">

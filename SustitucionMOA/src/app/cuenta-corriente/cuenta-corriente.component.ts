@@ -11,6 +11,7 @@ import { NavService } from './../common/services/NavService';
 import { FloatMsgService } from './../common/services/FloatMsgService';
 import { Seccion } from './../common/models/seccion';
 import { ModalService } from './../common/services/ModalService';
+import { TipoPeriodo } from '../common/enums/TipoPeriodo';
 
 
 
@@ -24,22 +25,16 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
 
     constructor(protected service: CuentaCorrienteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
 
-    tituloArchivo = "ReporteCuentasCorrientes.xls";
-    tituloArchivoPDF = "Documento"
+        this.granosSelected = sessionStorage.getItem("granosSelected") || "";
 
-    filtroNroCteContrato: string = "";
-    filtroNroLegal: string = "";
+        sessionDataService.granosSelected$.subscribe(
+            granosSelected => {
+                this.granosSelected = granosSelected;
+            });
 
-    checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CUENTA CORRIENTE"); }
-
-    contrato: string = "";
-    pago: string = "";
-    retencion: string = "";
-
-    setTabs() {
-        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
+        this.filtroFechaPeriodoDefault = this.isGranos() ? TipoPeriodo.UltimosDosDias : TipoPeriodo.UltimaSemana;
+        this.filtroFechaKey = this.isGranos() ? 'GCCList_Periodo' : (this.isNoGranos() ? "NGCCList_Periodo" : "");
     }
 
     ngOnInit() {
@@ -66,6 +61,34 @@ export class CuentaCorrienteBaseComponent extends ListBaseComponent {
         this.orderedByColumn = "orden";
         this.orderDirection = 1;
         this.getData();
+    }
+
+    granosSelected: string;
+    tituloArchivo = "ReporteCuentasCorrientes.xls";
+    tituloArchivoPDF = "Documento"
+
+    filtroNroCteContrato: string = "";
+    filtroNroLegal: string = "";
+
+    contrato: string = "";
+    pago: string = "";
+    retencion: string = "";
+
+    filtroFechaPeriodoDefault: TipoPeriodo;
+    filtroFechaKey: string;
+
+    checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CUENTA CORRIENTE"); }
+
+    isGranos() {
+        return this.granosSelected == "G";
+    }
+
+    isNoGranos() {
+        return this.granosSelected == "N";
+    }
+
+    setTabs() {
+        this.setMenuSeccionTab("cuenta-corriente", "Cuenta Corriente");
     }
 
     getData() {

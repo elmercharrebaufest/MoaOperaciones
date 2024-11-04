@@ -15,6 +15,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Newtonsoft.Json;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
+using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -55,7 +56,6 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
-            mail.Subject = GenerarAsunto(mail.Subject);
             SendMail(mail, client);
         }
 
@@ -83,7 +83,6 @@ namespace SustitucionMOAUtils.Email
                 catch { }
             }
 
-            mail.Subject = GenerarAsunto(mail.Subject);
             SendMail(mail, client);
 
         }
@@ -128,7 +127,6 @@ namespace SustitucionMOAUtils.Email
             {
                 mail.To.Add(reporte.Destinatario);
             }
-            mail.Subject = GenerarAsunto(mail.Subject);
             SendMail(mail, client);
 
         }
@@ -267,7 +265,6 @@ namespace SustitucionMOAUtils.Email
                 //    }
                 //}
                 SmtpClient client = GetSmtpClient();
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 SendMail(oMensaje, client);
             }
             catch (Exception ex)
@@ -325,7 +322,6 @@ namespace SustitucionMOAUtils.Email
                     
                 }
                 SmtpClient oCliente = GetSmtpClient();
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 SendMail(oMensaje, oCliente);
             }
             catch (Exception ex)
@@ -424,7 +420,6 @@ namespace SustitucionMOAUtils.Email
                 //    }
                 //}
                 SmtpClient oCliente = GetSmtpClient();
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
                 await SendMailAsync(oMensaje, oCliente);
             }
             catch (Exception ex)
@@ -457,7 +452,6 @@ namespace SustitucionMOAUtils.Email
                 {
                     From = new MailAddress(EmailConfig.getEmailAddFrom()),
                     Body = emailSenderData.Cuerpo,
-                    Subject = emailSenderData.Asunto,
                     IsBodyHtml = true,
                 };
 
@@ -504,8 +498,6 @@ namespace SustitucionMOAUtils.Email
 
                 SmtpClient oCliente = GetSmtpClient();
 
-                oMensaje.Subject = GenerarAsunto(oMensaje.Subject);         
-
                 // Enviar el correo de forma asíncrona
                 await SendMailAsync(oMensaje, oCliente);
             }
@@ -525,12 +517,14 @@ namespace SustitucionMOAUtils.Email
 
         private static async Task SendMailAsync(MailMessage oMensaje, SmtpClient oCliente)
         {
+            oMensaje.Subject = GenerarAsunto(oMensaje.Subject);
             LogMail(oMensaje);
             await oCliente.SendMailAsync(oMensaje);
         }
 
         private static void SendMail(MailMessage mail, SmtpClient client)
         {
+            mail.Subject = GenerarAsunto(mail.Subject);
             LogMail(mail);
             client.Send(mail);
         }

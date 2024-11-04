@@ -10,6 +10,7 @@ Post-Deployment Script Template
 --------------------------------------------------------------------------------------
 */
 
+:r .\ActualizarApellidoChoferOrdenDeCargaFason.sql
 :r .\EstadoIngresosBrutosCoeficienteUnificado.sql
 :r .\OrigenMovimientoIngresosBrutosCoeficienteUnificado.sql
 :r .\TipoMovimientoIngresosBrutosCoeficienteUnificado.sql
@@ -34,6 +35,7 @@ Post-Deployment Script Template
 :r .\RegionSap.sql
 :r .\EstadoOrdenResiduos.sql
 :r .\AlmacenMaterial.sql
+:r .\ReemplazosEnDomicilios.sql
 :r .\Curso.sql
 :r .\UsuariosParaExternalAPI.sql
 :r ..\Notificaciones\Notificacion.sql

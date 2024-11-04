@@ -9,6 +9,7 @@ import { ModalService } from './../../common/services/ModalService';
 import baseParse from 'base64-arraybuffer';
 import { ActivatedRoute } from '@angular/router';
 import { SendDataService } from '../../consulta/send-data.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 declare var Tiff: any;
 
@@ -31,6 +32,8 @@ export class CartaPorteDescargaComponent extends CartaPorteBaseComponent {
     cartaPorteDescarga = "";
     showModalBox = false;
     data: any;
+    filtroFechaKey: string = 'GCPDesc_Periodo'
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
 
     checkPermisos() { this.securityService.tienePermisoRedirect("CONSULTAR CARTAS PORTE"); }
 

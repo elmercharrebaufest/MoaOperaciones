@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Dto.Scato;
 using SustitucionMOAModel.Models.DataAgro;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
 {
-    public interface IOrdenResiduosService
+    public interface IOrdenResiduosService : IOrdenDeCargaServiceBase
     {
         List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes();
         MaterialDto[] ObtenerMateriales();
@@ -27,7 +28,7 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud);
         GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto VerificarTransporte(int ordenId);
-        SustitucionMOAModel.Dto.ProveedorDto ObtenerProveedor(int idProveedor);
         void VerificarVencimientoOrdenesResiduos();
+        IList<DestinoScato> ObtenerDestinosMercaderia(string cuit);
     }
 }

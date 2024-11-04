@@ -11,11 +11,11 @@ export class CustomFilter implements PipeTransform {
         //Filtro compuesto
         if (filter.indexOf('|') > 0) {
             let filtros = filter.split('|');
-            return values.filter(v => filtros.some(f => v[field].toUpperCase().indexOf(f.toUpperCase()) >= 0));
+            return values.filter(v => filtros.some(f => v[field].toString().toUpperCase().indexOf(f.toUpperCase()) >= 0));
         }
 
 
         //Filtro simple
-        return values.filter(v => v[field].toUpperCase().indexOf(filter.toUpperCase()) >= 0);
+        return values.filter(v => v[field].toString().toUpperCase().indexOf(filter.toUpperCase()) >= 0);
     }
 }

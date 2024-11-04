@@ -1,18 +1,17 @@
 import { Component } from "@angular/core";
 import { BaseComponent } from "./base-component";
-import { OrdenDeCarga } from '../models/ordenes-de-carga/ordenDeCarga';
-import { OrdenDeCargaFasonDto } from "../models/ordenes-de-carga-fason/ordenDeCargaFasonDto";
 import { Planta } from "../models/ordenes-de-carga/planta";
 import { NavService } from "../services/NavService";
 import { SecurityService } from "../services/SecurityService";
 import { FloatMsgService } from "../services/FloatMsgService";
 import { ModalService } from "../services/ModalService";
 import { BaseService } from "../services/BaseService";
-import { Observable } from "rxjs";
+import { Observable, Subject, Subscription } from "rxjs";
 import { ApiResponse } from "../models/response";
 import { Domicilio } from "../models/ordenes-de-carga/domicilio";
 import { ValidarIntermediarioFleteResponse } from "../models/ordenes-de-carga/ValidarIntermediarioFleteResponse";
 import { ValidarCuitExisteScatoResponse } from "../models/ordenes-de-carga-common/ValidarCuitExisteScatoResponse";
+import { debounceTime, filter } from "rxjs/operators";
 
 
 export abstract class OrdenesBaseService extends BaseService {
@@ -79,6 +78,14 @@ export class OrdenesBaseComponent extends BaseComponent {
     focusRazonSocialParaGestion = true;
     razonSocialParaGestion = "";
 
+    localSubscriptions = new Subscription();
+
+    validarCNRTSubject = new Subject();
+    validarCNRTSubscription?: Subscription;
+
+    validacionExistenciaPatente$ = new Subject<void>();
+    validacionExistenciaPatenteSub?: Subscription;
+
     constructor(
         protected service: OrdenesBaseService,
         protected navService: NavService,
@@ -87,6 +94,19 @@ export class OrdenesBaseComponent extends BaseComponent {
         protected modalService: ModalService) {
 
         super(navService, securityService, floatMsgService, modalService);
+        this.localSubscriptions.add(
+            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
+                this.validarCNRTRequest()
+            ))
+        this.localSubscriptions.add(
+            this.validacionExistenciaPatente$
+                .pipe(
+                    debounceTime(500),
+                    filter(_ => this.puedeValidarExistenciaPatentes()))
+                .subscribe(() => {
+                    this.validarExistenciaPatentes()
+                })
+        )
     }
 
     listaPlantas: Planta[];
@@ -95,4 +115,21 @@ export class OrdenesBaseComponent extends BaseComponent {
     listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
 
+    esPatenteValida(patente: string) {
+        const exprReg = /[A-Z]{3}[0-9]{3}|[A-Z]{2}[0-9]{3}[A-Z]{2}/;
+        const esValida = exprReg.test(patente);
+        // console.log("Patente " + patente + " es válida? -> " + esValida);
+        return esValida;
+    }
+
+    validarCNRTRequest(): void {
+        throw new Error("Method not implemented.");
+    }
+    validarExistenciaPatentes(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    puedeValidarExistenciaPatentes(): boolean {
+        throw new Error("Method not implemented.");
+    }
 }

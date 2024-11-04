@@ -38,6 +38,7 @@ export class ProveedorPeticionComponent implements OnInit {
     proveedorSeleccionado: any;
     proveedor: PeticionDeOfertaUsarioDto;
     proveedorAdicional: PeticionDeOfertaUsarioAdicionalDto;
+    displayAltaProveedor: boolean = false;
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -117,12 +118,12 @@ export class ProveedorPeticionComponent implements OnInit {
         //     this.error = "Debe seleccionar un proveedor que no este asociado.";
         //     return this.visualizarAlert = true;
         // }
-        if(event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)){
+        if (event != null && this.proveedoresSeleccionados.some(e => e.Id === event.Id)) {
             this.error = "Debe seleccionar un proveedor que no este asociado.";
             this.visualizarAlert = true;
         }
 
-        if(!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)){
+        if (!this.visualizarAlert && event != null && this.peticion != null && this.peticion.Usuarios.some(e => e.UsuarioId === event.Id)) {
             this.error = "Debe seleccionar un proveedor que no este asociado.";
             this.visualizarAlert = true;
         }
@@ -180,12 +181,12 @@ export class ProveedorPeticionComponent implements OnInit {
     }
 
     selectProveedor(event) {
-        try {          
-                this.validarProveedor(event);
-                if (!this.visualizarAlert) {
-                    this.proveedoresSeleccionados.push(event);
-                }
-          
+        try {
+            this.validarProveedor(event);
+            if (!this.visualizarAlert) {
+                this.proveedoresSeleccionados.push(event);
+            }
+
             this.proveedorSeleccionado = null;
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
@@ -197,4 +198,13 @@ export class ProveedorPeticionComponent implements OnInit {
         this.validarProveedor(null);
     }
 
+    abrirPopupProveedor() {
+        this.displayAltaProveedor = true;
+    }
+    salirPopupProveedor() {
+        this.displayAltaProveedor = false;
+    }
+    agregarProveedor(event) {
+        this.selectProveedor(event.proveedorDto);
+    }
 }

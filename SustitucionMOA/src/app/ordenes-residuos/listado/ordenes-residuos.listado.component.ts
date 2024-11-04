@@ -13,6 +13,7 @@ import { MensajeComponent } from "../../common/view-child/mensaje/mensaje.compon
 import { OrdenesResiduosService } from "../ordenes-residuos.service";
 import { ApiResponse } from "../../common/models/response";
 import { OrdenResiduosFila } from "../../common/models/ordenes-residuos/listarOrdenesResiduosResponse";
+import { TipoPeriodo } from "../../common/enums/TipoPeriodo";
 
 
 @Component({
@@ -41,6 +42,9 @@ export class OrdenesResiduosListadoComponent extends ListBaseComponent implement
     filtroCliente: any = null;
     filtroPatente: any = null;
     datosSinFiltrar: OrdenResiduosFila[];
+
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
+    filtroFechaKey: string = 'NGOCResid_Periodo';
     
     esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
     esTercero: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCarga);

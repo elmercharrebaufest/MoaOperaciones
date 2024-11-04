@@ -8,6 +8,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
@@ -180,13 +181,13 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-        [HttpGet]
-        public ContentResult AprobarAplicacionPendiente(int idAplicacion)
+        [HttpPost]
+        public ContentResult AprobarAplicacionesPendientes(List<int> idsAplicaciones)
         {
             var response = new SustitucionMOAApiResponse<bool> { Data = true };
             try
             {
-                aplicacionCCPPService.AprobarAplicacionPendiente(idAplicacion);
+                aplicacionCCPPService.AprobarAplicacionesPendientes(idsAplicaciones);
             }
             catch (InfoCustomException ice)
             {
@@ -206,13 +207,13 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
 
-        [HttpGet]
-        public ContentResult RechazarAplicacionPendiente(int idAplicacion, string motivo)
+        [HttpPost]
+        public ContentResult RechazarAplicacionesPendientes(List<int> idsAplicaciones, string motivo)
         {
             var response = new SustitucionMOAApiResponse<bool> { Data = true };
             try
             {
-                aplicacionCCPPService.RechazarAplicacionPendiente(idAplicacion, motivo);
+                aplicacionCCPPService.RechazarAplicacionesPendientes(idsAplicaciones, motivo);
             }
             catch (InfoCustomException ice)
             {

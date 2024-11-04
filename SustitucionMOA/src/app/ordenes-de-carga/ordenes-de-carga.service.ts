@@ -16,6 +16,7 @@ import { OrdenesBaseService } from '../common/base-components/ordenes-base-compo
 import { Proveedor } from '../common/models/proveedor';
 import { ValidarCamionResponse } from '../common/models/ordenes-de-carga/ValidarCamionResponse';
 import { ValidarChoferResponse } from '../common/models/ordenes-de-carga/ValidarChoferResponse';
+import { GestionAltasFAS } from '../common/models/ordenes-de-carga/gestionAltasFAS';
 
 @Injectable({
     providedIn: 'root'
@@ -109,28 +110,32 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
     //         .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     // }
 
-    public agregar(ordenDeCarga: OrdenDeCarga): Observable<any> {
+    public agregar(ordenDeCarga: OrdenDeCarga, gestionAltas: GestionAltasFAS): Observable<any> {
         let payload = new FormData();
-        console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaJson",
             JSON.stringify(ordenDeCarga)
         );
-        console.log("payload:", payload)
+        payload.append(
+            "gestionAltaFASJson",
+            JSON.stringify(gestionAltas)
+        );
 
         return this.http
             .post('/api/OrdenDeCarga/Agregar', payload)
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    public editar(ordenDeCarga: OrdenDeCarga): Observable<any> {
+    public editar(ordenDeCarga: OrdenDeCarga, gestionAltas: GestionAltasFAS): Observable<any> {
         let payload = new FormData();
-        console.log(ordenDeCarga)
         payload.append(
             "ordenDeCargaJson",
             JSON.stringify(ordenDeCarga)
         );
-        console.log("payload:", payload)
+        payload.append(
+            "gestionAltaFASJson",
+            JSON.stringify(gestionAltas)
+        );
 
         return this.http
             .post('/api/OrdenDeCarga/Editar', payload)
@@ -382,19 +387,6 @@ export class OrdenesDeCargaService extends OrdenesBaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    public EnviarMailAltaCuitTerceros(gestionaFlete: boolean, gestionaDestino: boolean, gestionaDestinatario: boolean,
-        ordenId: string): Observable<ApiResponse<boolean>> {
-        const payload = {
-            gestionaFlete,
-            gestionaDestino,
-            gestionaDestinatario,
-            ordenId
-        }
-        return this.http
-            .post<ApiResponse<boolean>>(
-                '/api/OrdenDeCarga/EnviarMailAltaCuitTerceros',
-                payload)
-    }
 
     public obtenerPlantasDestino(destinoCuit: string): Observable<ApiResponse<Planta[]>> {
         let params: HttpParams = new HttpParams()

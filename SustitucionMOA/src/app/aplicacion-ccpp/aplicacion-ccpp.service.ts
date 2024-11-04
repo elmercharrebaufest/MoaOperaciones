@@ -54,22 +54,16 @@ export class AplicacionCcppService extends BaseService {
       .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));
   }
 
-  aprobarAplicacionPendiente(idAplicacion: number): Observable<ApiResponse<boolean>> {
-    const params = new HttpParams()
-      .append('idAplicacion', idAplicacion.toString());
-
+  aprobarAplicacionesPendientes(idsAplicaciones: Array<number>): Observable<ApiResponse<boolean>> {
       return this.http
-        .get<ApiResponse<boolean>>(`${this.baseUrl}/AprobarAplicacionPendiente`, { params })
+        .post<ApiResponse<boolean>>(`${this.baseUrl}/AprobarAplicacionesPendientes`, idsAplicaciones)
         .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));;
   }
 
-  rechazarAplicacionPendiente(idAplicacion: number, motivo: string): Observable<ApiResponse<boolean>> {
-    const params = new HttpParams()
-      .append('idAplicacion', idAplicacion.toString())
-      .append('motivo', motivo);
-
+  rechazarAplicacionesPendientes(idsAplicaciones: Array<number>, motivo: string): Observable<ApiResponse<boolean>> {
       return this.http
-        .get<ApiResponse<boolean>>(`${this.baseUrl}/RechazarAplicacionPendiente`, { params })
+        .post<ApiResponse<boolean>>
+          (`${this.baseUrl}/RechazarAplicacionesPendientes`, { idsAplicaciones, motivo })
         .pipe(timeoutWith(360000, observableThrowError(new Error("Se escedió el tiempo de espera, por favor inténtelo más tarde"))));;
   }
 }

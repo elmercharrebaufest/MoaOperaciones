@@ -1,25 +1,12 @@
-﻿using Microsoft.SqlServer.Server;
-using SustitucionMOAFotmatter;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Models.WSMapMOA.Pesificacion;
+﻿using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOARepositorio;
 using SustitucionMOAWS.CredentialService;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ObtenerEntradaDeServicioPorNumeroWebServiceMOA;
-using SustitucionMOAWS.ObtenerOrdenDeCompraWebServiceMOA;
-using SustitucionMOAWS.ObtenerOrdenesDeCompraWebServiceMOA;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
-using System.Net;
-using System.Runtime.Remoting.Messaging;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.TextFormatting;
 
 namespace SustitucionMOAWS.WSConsumers
 {
@@ -89,39 +76,44 @@ namespace SustitucionMOAWS.WSConsumers
             /// Recorre el detalle de la entrada de servicio
             foreach (var elementoEntrySheetService in itemsEntrySheetService)
             {
-
-                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2");
+                string formattedValue = elementoEntrySheetService.NET_VALUE.ToString("N2", CultureInfo.InvariantCulture);
                 string currency = cabecera.CURRENCY;
 
-                var item = new ItemEntradaServicioDto();
+                var item = new ItemEntradaServicioDto
+                {
+                    Id = cabecera.SHEET_NO,
+                    Descripcion = cabecera.SHORT_TEXT,
 
+                    ItemNumero = elementoEntrySheetService.PLN_PCKG,
+                    Cantidad = elementoEntrySheetService.QUANTITY,
+                    PLN_PCKG = elementoEntrySheetService.PLN_PCKG,
+                    PLN_LINE = elementoEntrySheetService.PLN_LINE,
+                    PCKG_NO = elementoEntrySheetService.PCKG_NO,
+                    LINE_NO = elementoEntrySheetService.LINE_NO
+                };
 
-                item.Id = cabecera.SHEET_NO;
-                item.Descripcion = cabecera.SHORT_TEXT;
-                
-                item.ItemNumero = elementoEntrySheetService.PLN_PCKG;
-                item.Cantidad = elementoEntrySheetService.QUANTITY;
-                item.PLN_PCKG = elementoEntrySheetService.PLN_PCKG;
-                item.PLN_LINE = elementoEntrySheetService.PLN_LINE;
-                item.PCKG_NO = elementoEntrySheetService.PCKG_NO;
-                item.LINE_NO = elementoEntrySheetService.LINE_NO;
-                item.ImporteARPUSD = currency == "ARP"
-                ? $"$ {formattedValue}"
-                : $"{formattedValue} {currency}";
+                if (string.Compare(currency, "ARP", true) == 0)
+                {
+                    item.ImporteARPUSD = $"$ {formattedValue}";
+                }
+                else
+                {
+                    item.ImporteARPUSD = $"{formattedValue} {currency.ToUpper()}";
+                }
 
                 items.Add(item);
             }
 
             //MMSN-460 + MMSN-491
-            if (!String.IsNullOrEmpty(cabecera.CREATED_ON))
+            if (!string.IsNullOrEmpty(cabecera.CREATED_ON))
             {
-                DateTime toFormat = DateTime.ParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime toFormat = DateTime.ParseExact(cabecera.CREATED_ON, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 result.Fecha = toFormat.ToString(dateTimeFormat);
             }
 
-            if (!String.IsNullOrEmpty(cabecera.DOC_DATE))
+            if (!string.IsNullOrEmpty(cabecera.DOC_DATE))
             {
-                DateTime toFormat = DateTime.ParseExact(cabecera.DOC_DATE, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                DateTime toFormat = DateTime.ParseExact(cabecera.DOC_DATE, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 result.FechaDocumentoString = toFormat.ToString(dateTimeFormat);
             }
 

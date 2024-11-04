@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using SustitucionMOAWS.Util;
 using System;
 using System.Web.Http;
 
@@ -37,12 +39,39 @@ namespace SustitucionMOAExternalAPI.Controllers
         }
 
         [Authorize(Roles = "API ORDENES RESIDUOS")]
+        [Route("external/api/ActualizarOrdenesResiduos")]
         [HttpPatch]
         public IHttpActionResult Actualizar([FromBody] ActualizarOrdenResiduosExternalDto datos)
         {
             try
             {
+                Log.ExternalAPIInfo("OrdenesResiduos Actualizar: " + datos.ToJson());
+
                 ordenResiduoService.ActualizarOrden(datos);
+                return Json(new { data = true });
+            }
+            catch (InfoCustomException ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(ex);
+            }
+            catch (Exception ex)
+            {
+                Log.ExternalAPIError(ex);
+                return InternalServerError(new Exception("Hubo un error al procesar la solicitud"));
+            }
+        }
+
+        [Authorize(Roles = "API ORDENES RESIDUOS")]
+        [Route("external/api/InformarViajeOrdenesResiduos")]
+        [HttpPatch]
+        public IHttpActionResult InformarViaje([FromBody] IngresosEgresosResiduos ingresosEgresosFasones)
+        {
+            try
+            {
+                Log.ExternalAPIInfo("OrdenesResiduos InformarViaje: " + ingresosEgresosFasones.ToJson());
+
+                ordenResiduoService.InformarViaje(ingresosEgresosFasones);
                 return Json(new { data = true });
             }
             catch (InfoCustomException ex)

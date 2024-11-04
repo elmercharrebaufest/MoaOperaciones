@@ -11,6 +11,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
 using System.Collections.Generic;
+using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Controllers
 {
@@ -134,18 +135,28 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Agregar(string ordenDeCargaFasonJson)
         {
+            var response = new SustitucionMOAApiResponse<Resultado>();
             try
             {
                 var crearOrdenReq = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
                 var mailUsuario = SessionPersister.getUsername();
-                var resultado = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
-                return JsonCustom(new { data = resultado });
+                
+                response.Data = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
             }
             catch (Exception ex)
             {
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return JsonCustom(new { error = ErrorMsg.Error });
+                response.Error = ErrorMsg.Error;
             }
+            return ContentCustom(response);
         }
 
         [HttpPost]
@@ -217,29 +228,6 @@ namespace SustitucionMOA.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult GestionarAltaCuit(string cuit, string razonSocial, bool esIntermediarioFlete)
-        //{
-        //    var response = new SustitucionMOAApiResponse();
-        //    try
-        //    {
-        //        ordenDeCargaFasonService.EmailGestionarAlta(cuit, razonSocial, esIntermediarioFlete);
-        //    }
-        //    catch (InfoCustomException ice)
-        //    {
-        //        response.Info = ice.Message;
-        //    }
-        //    catch (ValidationCustomException vce)
-        //    {
-        //        response.Error = vce.Message;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-        //        response.Error = ErrorMsg.Error;
-        //    }
-        //    return ContentCustom(response);
-        //}
         [HttpGet]
         public ContentResult ValidarIntermediarioFlete(string cuit)
         {
@@ -263,6 +251,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
         {
@@ -382,78 +371,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        [HttpPost]
-        public ActionResult ActualizarSolicitudEdicion(int ordenId, bool aprobado)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var estadoSolicitud = new EstadoSolicitudEdicionFason(ordenId, SessionPersister.getUsername(), aprobado);
-                response.Data = ordenDeCargaFasonService.ActualizarSolicitudEdicion(estadoSolicitud);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-        [HttpPost]
-        public ActionResult ActualizarSolicitudAnulacion(int ordenId, bool aprobado)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var estadoSolicitud = new EstadoSolicitudAnulacionFason(ordenId, SessionPersister.getUsername(), aprobado);
-                response.Data = ordenDeCargaFasonService.ActualizarSolicitudAnulacion(estadoSolicitud);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-        [HttpPost]
-        public ActionResult SolicitarAnulacion(int ordenId)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenDeCargaFasonDto>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenDeCargaFasonService.SolicitarAnulacion(ordenId, mailUsuario);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
+        
         [HttpPost]
         public ActionResult AnularOrden(int ordenId)
         {
@@ -478,6 +396,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -501,6 +420,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
@@ -548,6 +468,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult ObtenerCuilsChofer(string ordenDeCargaFasonJson)
         {
@@ -572,6 +493,7 @@ namespace SustitucionMOA.Controllers
             }
 
         }
+        
         [HttpPost]
         public ActionResult ObtenerCuitsTransporte(string ordenDeCargaFasonJson)
         {
@@ -596,6 +518,7 @@ namespace SustitucionMOA.Controllers
             }
 
         }
+        
         public ActionResult ObtenerPatentes(string ordenDeCargaFasonJson)
         {
             try
@@ -642,6 +565,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpPost]
         public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario,
             string ordenId)
@@ -666,6 +590,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
@@ -688,6 +613,7 @@ namespace SustitucionMOA.Controllers
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
+        
         [HttpGet]
         public ActionResult ValidarOrdenActivaScato(long ordenId)
         {
@@ -711,6 +637,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
+        
         [HttpGet]
         public ActionResult ValidarSisaCliente(string codigoCliente, string codigoMaterial)
         {
@@ -718,6 +645,29 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenDeCargaFasonService.ValidarSisaCliente(codigoCliente,codigoMaterial);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+        [HttpGet]
+        public ContentResult ValidarExistenciaPatentes(string patenteChasis, string cuitCliente)
+        {
+            var response = new SustitucionMOAApiResponse<bool>();
+            try
+            {
+                response.Data = ordenDeCargaFasonService.ValidarExistenciaPatente(patenteChasis, cuitCliente);
             }
             catch (InfoCustomException ice)
             {

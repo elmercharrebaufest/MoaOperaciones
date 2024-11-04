@@ -47,7 +47,7 @@ namespace SustitucionMOAUtils.Services
                     Logger = logGroup.Key.Logger,
                     Level = logGroup.Key.Level,
                     Count = logGroup.Count(),
-                    Errors = logGroup.ToList()
+                    //Errors = logGroup.ToList()
                 })
                 .ToList();
             return agrupado;
