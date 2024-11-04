@@ -86,6 +86,15 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
     selectTratada: boolean | null = null;
 
+    tiposSolp: SelectItem[] = [];
+    selectTipoSolp: number;
+    showNombrePliegoConditionList: number[] = [];
+    get showNombrePliego() {
+        return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
+    }
+
+    nombrePliego: string;
+
     filtrosPOMultiple: iFiltrosPoMultiple;
 
     private readonly filtrosPOMultipleDefault: iFiltrosPoMultiple = {
@@ -132,6 +141,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         this.grupoComprasFiltro = [];
                         this.claseDocumentoFiltro = [];
                         this.tipoImputacionFiltro = [];
+                        this.tiposSolp = [];
 
                         result.Centro.forEach(c => this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
@@ -145,6 +155,13 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
                             label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
                         }));
+                        result.TipoPosicionSolp.forEach(tp => {
+                            this.tiposSolp.push({
+                                label: tp.Codigo, value: tp.Id
+                            })
+                        });
+                        this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple;
+                        this.showNombrePliegoConditionList = result.showNombrePliegoConditionList;
                     }
                 },
                 error => {

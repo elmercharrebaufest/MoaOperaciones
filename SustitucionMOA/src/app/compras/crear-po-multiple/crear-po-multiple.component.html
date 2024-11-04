@@ -5,13 +5,26 @@
 
 <div class="row">
     <div class="row myRow">
+        <div class="col-md-3">
+            <p-dropdown [options]="tiposSolp" [(ngModel)]="selectTipoSolp" ></p-dropdown>
+        </div>
+        <div class="col-md-3" *ngIf="showNombrePliego">
+            <input class="inputAltura"
+                   pInputText type="text"
+                   [(ngModel)]="nombrePliego"
+                   placeholder="Nombre del Pliego"
+                   style="-webkit-appearance: textfield; -moz-appearance: textfield; width:100%" />
+        </div>
+    </div>
+
+    <div class="row myRow">
         <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="grupoComprasFiltro" [(ngModel)]="selectGrupoCompras"
                            defaultLabel="Grupo de Compras" [maxSelectedLabels]="1"
                            selectedItemsLabel="{0} grupos de compras"></p-multiSelect>
         </div>
 
-        <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+        <div class="col-md-3 col-lg-3">
             <p-multiSelect [options]="centroFiltro" [(ngModel)]="selectCentro" defaultLabel="Centro"
                            [maxSelectedLabels]="2" selectedItemsLabel="{0} centros elegidos"></p-multiSelect>
         </div>
@@ -36,7 +49,7 @@
             <p-multiSelect [options]="tipoImputacionFiltro" [(ngModel)]="selectTipoImputacion" defaultLabel="Tipo de Imputación"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos" (ngModelChange)="subtipoImputacionCombo()"></p-multiSelect>
         </div>
-        <div class="col-md-3" style="padding-right: 30px;">
+        <div class="col-md-3">
             <p-multiSelect [options]="valorTipoImputacionFiltro" [(ngModel)]="selectValorTipoImputacion" defaultLabel="Subtipo de Imputación"
                            [maxSelectedLabels]="1" selectedItemsLabel="{0} tipos elegidos"></p-multiSelect>
         </div>

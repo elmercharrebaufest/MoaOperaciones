@@ -124,6 +124,17 @@ namespace SustitucionMOA.Controllers
                     Provincia = service.ListarProvincia(),
 
                     ListarPendienteList = service.ListarPendienteListComboOptions(),
+
+                    // ----- crear PO Múltiple -----
+                    DefaultTipoPosicionSolpCrearPoMultiple = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                        .Find(x => x.Codigo.StartsWith("material", StringComparison.InvariantCultureIgnoreCase))
+                        .Id,
+
+                    showNombrePliegoConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                        // por ahora, sólo servicio. Se retorna como lista
+                        .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
+                        .Select(x => x.Id),
+                    // ----- FIN crear PO Múltiple -----
                 });
             }
             catch (InfoCustomException e)
@@ -1716,7 +1727,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }       
+        }
 
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
