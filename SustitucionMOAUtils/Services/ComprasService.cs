@@ -9894,19 +9894,19 @@ namespace SustitucionMOAUtils.Services
         }
 
         public MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null)
+                                                          DateTime? hasta,
+                                                          bool sap,
+                                                          bool mantenimiento,
+                                                          bool web,
+                                                          bool repoAutomatica,
+                                                          bool? tratada,
+                                                          bool contratoMarco,
+                                                          List<int> centros = null,
+                                                          List<int> grupoDeCompras = null,
+                                                          List<int> claseDocumento = null,
+                                                          List<string> tipoImputacion = null,
+                                                          List<int> valorTipoImputacion = null,
+                                                          int? numeroPo = null)
         {
             List<POPosicionDto> data = this.ListarPosicionesPOMultiple(desde,
                                                        hasta,

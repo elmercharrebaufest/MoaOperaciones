@@ -128,12 +128,12 @@ namespace SustitucionMOA.Controllers
                     // ----- crear PO Múltiple -----
                     DefaultTipoPosicionSolpCrearPoMultiple = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
                         .Find(x => x.Codigo.StartsWith("material", StringComparison.InvariantCultureIgnoreCase))
-                        .Id,
+                        .Codigo,
 
                     showNombrePliegoConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
                         // por ahora, sólo servicio. Se retorna como lista
                         .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
-                        .Select(x => x.Id),
+                        .Select(x => x.Codigo),
                     // ----- FIN crear PO Múltiple -----
                 });
             }

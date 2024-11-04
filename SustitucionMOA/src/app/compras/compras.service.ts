@@ -596,7 +596,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
-    }    
+    }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
@@ -730,7 +730,7 @@ export class ComprasService extends BaseService {
     public getListarOfertasComprador(peticionOferta_Id): Observable<ApiResponse<PeticionDeOfertaDto>> {
         let params: HttpParams = new HttpParams()
         params = params.set('peticionOferta_Id', peticionOferta_Id);
-        
+
         return this.http
             .get<ApiResponse<PeticionDeOfertaDto>>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
     }
@@ -807,7 +807,7 @@ export class ComprasService extends BaseService {
             .append("peticionDeOfertaId", idPeticionDeOferta.toString())
             .append("esProveedor", esProveedor.toString())
             .append("esSolicitante", esSolicitante.toString());
-        
+
         if (idPeticionDeOfertaUsuario != null) {
             params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
@@ -858,7 +858,7 @@ export class ComprasService extends BaseService {
             .append("idPeticion", idPeticion.toString())
             .append("esProveedor", esProveedor.toString())
             .append("esSolicitante", esSolicitante.toString());
-        
+
         if (idPeticionDeOfertaUsuario != null) {
             params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
@@ -1322,7 +1322,7 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
         numeroPo?: number,
-
+        tipoSolp?: string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1340,7 +1340,11 @@ export class ComprasService extends BaseService {
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
-        return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+        if (tipoSolp === "SERVICIO") {
+            return this.http.get('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
+        } else {
+            return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+        }
     }
 
     public descargarPosicionesPOMultiple(
@@ -1358,6 +1362,7 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
         numeroPo?: number,
+        tipoSolp?: string,
 
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
@@ -1375,8 +1380,14 @@ export class ComprasService extends BaseService {
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
+        params = params.set('tipoSolp', tipoSolp != null ? tipoSolp : null);
 
-        return this.http.get('/api/compras/DescargarPosicionesPOMultiple', { params: params, headers: this.headers });
+        if (tipoSolp === "SERVICIO") {
+            return this.http.get('/api/compras/DescargarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
+        }
+        else {
+            return this.http.get('/api/compras/DescargarPosicionesPOMultiple', { params: params, headers: this.headers });
+        }
     }
 
 
@@ -1516,7 +1527,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
-   
+
 
     public guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         var payload = new FormData();

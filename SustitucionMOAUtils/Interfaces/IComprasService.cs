@@ -102,33 +102,35 @@ namespace SustitucionMOAUtils.Interfaces
         List<UsuarioDto> ListarUsuarioSolicitante();
         List<CotizacionHistorialDto> ObtenerHistorial(int id);
         List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null);
+                                                       DateTime? hasta,
+                                                       bool sap,
+                                                       bool mantenimiento,
+                                                       bool web,
+                                                       bool repoAutomatica,
+                                                       bool? tratada,
+                                                       bool contratoMarco,
+                                                       List<int> centros = null,
+                                                       List<int> grupoDeCompras = null,
+                                                       List<int> claseDocumento = null,
+                                                       List<string> tipoImputacion = null,
+                                                       List<int> valorTipoImputacion = null,
+                                                       int? numeroPo = null);
+
         MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null);
+                                                   DateTime? hasta,
+                                                   bool sap,
+                                                   bool mantenimiento,
+                                                   bool web,
+                                                   bool repoAutomatica,
+                                                   bool? tratada,
+                                                   bool contratoMarco,
+                                                   List<int> centros = null,
+                                                   List<int> grupoDeCompras = null,
+                                                   List<int> claseDocumento = null,
+                                                   List<string> tipoImputacion = null,
+                                                   List<int> valorTipoImputacion = null,
+                                                   int? numeroPo = null);
+
         SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
 
         HistorialDeFechaDto ListarHistorialDeFechas(int peticionDeOfertaId);

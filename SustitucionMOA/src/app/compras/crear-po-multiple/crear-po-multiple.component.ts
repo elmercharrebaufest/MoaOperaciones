@@ -87,8 +87,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     selectTratada: boolean | null = null;
 
     tiposSolp: SelectItem[] = [];
-    selectTipoSolp?: number;
-    showNombrePliegoConditionList: number[] = [];
+    selectTipoSolp?: string;
+    showNombrePliegoConditionList: string[] = [];
     get showNombrePliego() {
         return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
     }
@@ -159,7 +159,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         }));
                         result.TipoPosicionSolp.forEach(tp => {
                             this.tiposSolp.push({
-                                label: tp.Codigo, value: tp.Id
+                                label: tp.Codigo, value: tp.Codigo
                             })
                         });
                         if (!this.selectTipoSolp) { this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple; }
@@ -235,7 +235,6 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     listarPosicionesPOMultiple() {
         try {
             this.blockUI.start('Cargando...');
-
             this.subscription = this.service.listarPosicionesPOMultiple(
                 this.fechaInicio,
                 this.fechaFin,
@@ -250,7 +249,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTipoImputacion.join(","),
                 this.selectValorTipoImputacion.join(","),
                 this.selectTratada,
-                this.numeroPo
+                this.numeroPo,
+                this.selectTipoSolp
             ).subscribe(
                 (result: any) => {
 
@@ -301,7 +301,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTipoImputacion.join(","),
                 this.selectValorTipoImputacion.join(","),
                 this.selectTratada,
-                this.numeroPo
+                this.numeroPo,
+                this.selectTipoSolp
             ).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -499,6 +500,6 @@ interface iFiltrosPoMultiple {
     fechaHasta: string;
     tratada: boolean | null;
     numeroPo?: number;
-    selectTipoSolp?: number;
+    selectTipoSolp?: string;
     nombrePliego?: string;
 }
