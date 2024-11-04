@@ -101,12 +101,16 @@
     <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioConsultas.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCarga.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCargaFason.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenResiduos.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioUbicacionGeografica.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
     <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\RepositorioConsultas.cs" />
     <Compile Include="Repositorios\RepositorioOrdenDeCarga.cs" />
+    <Compile Include="Repositorios\RepositorioOrdenDeCargaFason.cs" />
     <Compile Include="Repositorios\RepositorioOrdenResiduos.cs" />
+    <Compile Include="Repositorios\RepositorioUbicacionGeografica.cs" />
     <Compile Include="Repositorios\RepositorioUsuario.cs" />
   </ItemGroup>
   <ItemGroup>

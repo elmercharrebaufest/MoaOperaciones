@@ -3,6 +3,7 @@ using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Dto.Scato;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
@@ -449,6 +450,30 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenResiduosService.VerificarTransporte(ordenId);
+            }
+            catch (InfoCustomException ice)
+            {
+                response.Info = ice.Message;
+            }
+            catch (ValidationCustomException vce)
+            {
+                response.Error = vce.Message;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                response.Error = ErrorMsg.Error;
+            }
+            return ContentCustom(response);
+        }
+
+        [HttpGet]
+        public ActionResult ObtenerDestinosMercaderia(string cuit)
+        {
+            var response = new SustitucionMOAApiResponse<IList<DestinoScato>>();
+            try
+            {
+                response.Data = ordenResiduosService.ObtenerDestinosMercaderia(cuit);
             }
             catch (InfoCustomException ice)
             {

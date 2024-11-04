@@ -8,7 +8,6 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
@@ -20,7 +19,7 @@ namespace SustitucionMOA.Controllers
         readonly IOrdenDeCargaService ordenDeCargaService;
         private readonly IFacturaAnticipadaService _facturaAnticipadaService;
         private readonly IConsultaService consultaService;
-
+        private readonly object _lockCreacionOrdenes = new Object();
         public OrdenDeCargaController(IConsultaService consultaService, IOrdenDeCargaService ordenDeCargaService, IFacturaAnticipadaService facturaAnticipadaService)
         {
             this.consultaService = consultaService;
@@ -29,13 +28,19 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult Agregar(string ordenDeCargaJson)
+        public ActionResult Agregar(string ordenDeCargaJson, string gestionAltaFASJson)
         {
             try
             {
-                var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
-                var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario) });
+                lock (_lockCreacionOrdenes)
+                {
+
+                    var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
+                    var gestionAltas = JsonConvert.DeserializeObject<GestionAltasFAS>(gestionAltaFASJson);
+                    var mailUsuario = SessionPersister.getUsername();
+                    return JsonCustom(new { data = ordenDeCargaService.Agregar(ordenDeCarga, mailUsuario, gestionAltas) });
+                }
+
             }
             catch (InfoCustomException e)
             {
@@ -53,15 +58,16 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpPost]
-        public ActionResult Editar(string ordenDeCargaJson)
+        public ActionResult Editar(string ordenDeCargaJson, string gestionAltaFASJson)
         {
             try
             {
                 var ordenDeCarga = JsonConvert.DeserializeObject<OrdenDeCarga>(ordenDeCargaJson);
+                var gestionAltas = JsonConvert.DeserializeObject<GestionAltasFAS>(gestionAltaFASJson);
 
                 var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.Editar(ordenDeCarga, mailUsuario) });
+                return JsonCustom(new { data = ordenDeCargaService.Editar(ordenDeCarga, mailUsuario, gestionAltas) });
             }
             catch (InfoCustomException e)
             {
@@ -662,30 +668,6 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenDeCargaService.ValidarSisaCuit(cuit, campo);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-        [HttpPost]
-        public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario,
-            string ordenId)
-        {
-            var response = new SustitucionMOAApiResponse<bool>();
-            try
-            {
-                response.Data = ordenDeCargaService.EnviarMailAltaCuitTerceros(gestionaFlete, gestionaDestino, gestionaDestinatario, ordenId);
             }
             catch (InfoCustomException ice)
             {

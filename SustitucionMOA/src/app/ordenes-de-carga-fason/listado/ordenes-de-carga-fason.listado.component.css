@@ -20,6 +20,7 @@
     background-color: palegreen;
     border: 1px solid greenyellow;
 }
+
 .green_entregada {
     background-color: lightseagreen;
     border: 1px solid darkturquoise;
@@ -31,4 +32,17 @@
     color: #3f4845 !important;
     overflow: hidden !important;
     min-width: 100%;
+}
+
+.icon-truck {
+    width: 23px;
+    padding-top: 5px;
+}
+
+.text-repetido {
+    color: rgb(198, 198, 92) !important;
+}
+
+.text-multiples-autorizaciones {
+    color: rgb(222, 71, 71) !important;
 }

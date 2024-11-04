@@ -274,7 +274,7 @@
 
                                     <app-impresion-declaracion [proveedorId]="campo.Proveedor.Id"
                                         [CUIT]="campo.CUITProveedor" [cosechaId]="campo.CosechaId"
-                                        [pendienteProcesarUcropit]="campo.ToneladasAprobadas == -1">
+                                        [habilitado]="campo.ToneladasAprobadas != -1 || esInterno">
                                     </app-impresion-declaracion>
 
                                 </div>
@@ -297,8 +297,7 @@
 
                                         <span>
 
-                                            <a *ngIf="editarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                                class="animate"
+                                            <a class="animate"
                                                 [routerLink]="['/sustentable/edicion', { idCampo:campo.CampoCosechaId, idProveedor:campo.Proveedor.Id } ]"
                                                 href="#">
 

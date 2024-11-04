@@ -12,13 +12,13 @@ import { SessionDataService } from '../../common/services/SessionDataService';
 import { SeleccionarProveedorService } from '../../common/shared-components/seleccionar-proveedor/seleccionar-proveedor.service';
 import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.component';
 import { SpinnerComponent } from '../../common/view-child/spinner/spinner.component';
-import { DestinoFason, setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
+import { setupDaysAndMonths, sumarDias } from '../orden-carga-fason-utils';
 import { OrdenesDeCargaFasonService } from '../ordenes-de-carga-fason.service';
 import { ApiResponse } from '../../common/models/response';
 import { IOrdenesBaseComponent, OrdenesBaseComponent } from '../../common/base-components/ordenes-base-component';
 import { Permiso } from '../../common/enums/Permisos';
-import { debounceTime, finalize } from 'rxjs/operators';
-import { Subject, Subscription, forkJoin } from 'rxjs';
+import { finalize } from 'rxjs/operators';
+import { Subscription, forkJoin } from 'rxjs';
 import { Domicilio } from '../../common/models/ordenes-de-carga/domicilio';
 import { Planta } from '../../common/models/ordenes-de-carga/planta';
 import { MSG_ALERTA_CAMION_NO_EXISTE, MSG_ALERTA_NO_ESCALABLE } from '../../common/models/ordenes-de-carga/ValidarCamionResponse';
@@ -45,7 +45,6 @@ export class OrdenesDeCargaFasonAltaComponent
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
 
-    localSubscriptions = new Subscription();
     constructor(protected service: OrdenesDeCargaFasonService, protected navService: NavService,
         protected sessionDataService: SessionDataService, protected securityService: SecurityService,
         protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -54,12 +53,6 @@ export class OrdenesDeCargaFasonAltaComponent
         protected msgService: MessageService
     ) {
         super(service, navService, securityService, floatMsgService, modalService);
-
-        this.localSubscriptions.add(
-            this.validarCNRTSubject.pipe(debounceTime(500)).subscribe(_ =>
-                this.validarCNRTRequest()
-            ))
-
     }
 
     listaProductos: Material[];
@@ -115,8 +108,6 @@ export class OrdenesDeCargaFasonAltaComponent
     cuitsTransporte: any = [];
     cuilsChofer: any = [];
 
-    validarCNRTSubject = new Subject();
-    validarCNRTSubscription?: Subscription;
     subscriptions = new Subscription();
     escalableCNRT?: boolean;
     errorAlValidarEscalable = false;
@@ -181,42 +172,7 @@ export class OrdenesDeCargaFasonAltaComponent
         );
     }
 
-    //Validaciones
     validar() {
-        if (this.ordenDeCargaFason.NombreChofer == undefined || this.ordenDeCargaFason.NombreChofer.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
-            return false;
-        }
-        /*VER ESTA VALIDACION, ACA VALIDA COMO SI FUERA UN CUIT PERO EN EL FRONT DICE QUE PONGA EL DNI/CUIL*/
-        if (
-            this.ordenDeCargaFason.CUILChofer == undefined || this.ordenDeCargaFason.CUILChofer.toString().trim().length != 11
-            || this.mensajesOrdenDeCargaFason.CUILChofer
-        ) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == undefined || this.ordenDeCargaFason.PatenteAcoplado.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese una patente válida.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
-            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
-            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
-            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
-            return false;
-        }
-        if (this.ordenDeCargaFason.CUITTransporte == undefined || this.ordenDeCargaFason.CUITTransporte.toString().trim().length != 11
-            || this.mensajesOrdenDeCargaFason.CUITTransporte
-        ) {
-            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
-            return false;
-        }
         if (this.esAdmin && !this.clienteSeleccionado) {
             this.mensajeComponent.setInfoMsg("Seleccione un cliente.");
             return false;
@@ -226,12 +182,48 @@ export class OrdenesDeCargaFasonAltaComponent
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
+        if (this.ordenDeCargaFason.PatenteChasis == undefined || this.ordenDeCargaFason.PatenteChasis.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese un número de chasis válido.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.PatenteAcoplado == undefined || this.ordenDeCargaFason.PatenteAcoplado.trim().length < 6) {
+            this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.PatenteAcoplado == this.ordenDeCargaFason.PatenteChasis) {
+            this.mensajeComponent.setInfoMsg("Los números de patente no pueden ser iguales.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.NombreChofer == undefined || this.ordenDeCargaFason.NombreChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.ApellidoChofer == undefined || this.ordenDeCargaFason.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUILChofer) || this.mensajesOrdenDeCargaFason.CUILChofer) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
+            return false;
+        }
+        if (this.ordenDeCargaFason.RazonSocialTransporte == undefined || this.ordenDeCargaFason.RazonSocialTransporte.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese la razón social del transporte.");
+            return false;
+        }
+        if (!this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITTransporte) || this.mensajesOrdenDeCargaFason.CUITTransporte) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT de transporte válido.");
+            return false;
+        }
         if (!this.ordenDeCargaFason.CantidadDeViajes && !this.ordenDeCargaFasonId) {
             this.mensajeComponent.setInfoMsg("Ingrese una cantidad de viajes.");
             return false;
         }
         if (this.ordenDeCargaFason.CUITIntermediarioFlete && this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete) {
             this.mensajeComponent.setInfoMsg(this.mensajesOrdenDeCargaFason.CUITIntermediarioFlete);
+            return false;
+        }
+        if (this.ordenDeCargaFason.CUITIntermediarioFlete && !this.esFormatoCuilCuitValido(this.ordenDeCargaFason.CUITIntermediarioFlete)) {
+            this.mensajeComponent.setInfoMsg("Ingrese un CUIT Intermediario flete válido.");
             return false;
         }
         if (this.validaCPEDG) {
@@ -261,7 +253,6 @@ export class OrdenesDeCargaFasonAltaComponent
                 return false;
             }
         }
-
         return true;
     }
 
@@ -284,6 +275,9 @@ export class OrdenesDeCargaFasonAltaComponent
         this.getCuitsTransporte();
         if (this.ordenDeCargaFason.ProductoSeleccionado && this.ordenDeCargaFason.ProductoSeleccionado.ValidaSisaRuca) {
             this.validarSisaCliente();
+        }
+        if (!this.editando) {
+            this.validacionExistenciaPatente$.next()
         }
     }
 
@@ -601,7 +595,7 @@ export class OrdenesDeCargaFasonAltaComponent
             } else if (result.info != undefined) {
                 this.mensajeComponent.setInfoMsg(`${result.info}. Al intentar gestionar alta CUIT ${campo.replace("CUIT", "")}`);
             } else {
-                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la cuit: ${cuit}`;
+                this.mensajesGestionCuit[campo] = `Se solicitó la gestión del alta para la CUIT: ${cuit}`;
             }
 
         })
@@ -899,6 +893,7 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         });
     }
+
     validarCuilChofer() {
         const campo = "CUILChofer";
         const cuit = this.ordenDeCargaFason.CUILChofer ? this.ordenDeCargaFason.CUILChofer.toString() : "";
@@ -917,6 +912,7 @@ export class OrdenesDeCargaFasonAltaComponent
             }
         });
     }
+    
     cargarClienteDirecto(idCliente: Number) {
         this.service.obtenerProveedor(idCliente).subscribe(resp => {
             let proveedor = this.manejarErroresApiResponse(resp);
@@ -939,13 +935,18 @@ export class OrdenesDeCargaFasonAltaComponent
             this.ordenDeCargaFason.PatenteChasis = event.toUpperCase();
         else if (event.value)
             this.ordenDeCargaFason.PatenteChasis = event.value.toUpperCase();
+        this.validacionExistenciaPatente$.next()
     }
     get patenteAcopladoValida() {
         return this.ordenDeCargaFason.PatenteAcoplado && this.ordenDeCargaFason.PatenteAcoplado.trim().length >= 6
     }
     get patenteChasisValido() {
-        return this.ordenDeCargaFason.PatenteChasis && this.ordenDeCargaFason.PatenteChasis.trim().length >= 6
+        return (
+            this.ordenDeCargaFason.PatenteChasis &&
+            this.ordenDeCargaFason.PatenteChasis.trim().length >= 6 &&
+            this.esPatenteValida(this.ordenDeCargaFason.PatenteChasis));
     }
+
     displayModalEscalable = false;
     decidioEscalable = false;
 
@@ -1149,9 +1150,7 @@ export class OrdenesDeCargaFasonAltaComponent
 
     asignarRemitenteComercial() {
         this.ordenDeCargaFason.RemitenteComercial = this.usaRemitenteComercial;
-        if (!this.ordenDeCargaFason.RemitenteComercial) {
-            this.floatMsgService.setInfoMsg("Su CUIT no será considerado como remitente comercial.")
-        } else {
+        if (this.ordenDeCargaFason.RemitenteComercial) {
             this.floatMsgService.setInfoMsg("Su CUIT será considerado como remitente comercial.")
         }
     }
@@ -1199,5 +1198,25 @@ export class OrdenesDeCargaFasonAltaComponent
                 }
             }
         );
+    }
+
+    validarExistenciaPatentes() {
+        this.validacionExistenciaPatenteSub = this.service
+            .validarExistenciaPatentes(
+                this.ordenDeCargaFason.PatenteChasis, this.ordenDeCargaFason.CUITCliente)
+            .subscribe(res => {
+                const notificarExistencia = this.manejarApiResponse(res, this.sessionDataService, this.mensajeComponent)
+                if (notificarExistencia) {
+                    this.floatMsgService.setInfoMsg("El camión ya fue autorizado por otro cliente.");
+                }
+            });
+    }
+
+    puedeValidarExistenciaPatentes(): boolean {
+        return this.patenteChasisValido && !!this.ordenDeCargaFason.CUITCliente
+    }
+
+    esFormatoCuilCuitValido(cuit: string): boolean {
+        return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
     }
 }

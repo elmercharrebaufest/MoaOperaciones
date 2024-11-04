@@ -15,14 +15,11 @@ import { OrdenCargaResiduosDto } from "../../common/models/ordenes-residuos/orde
 import { Permiso } from "../../common/enums/Permisos";
 import { ApiResponse } from "../../common/models/response";
 import { SessionDataService } from "../../common/services/SessionDataService";
-import { LocalidadDto } from "../../common/models/common/localidadDto";
 import { Proveedor } from "../../common/models/proveedor";
-import { debounceTime, finalize } from 'rxjs/operators';
-import { Subject, Subscription, forkJoin } from 'rxjs';
 import { Planta } from "../../common/models/ordenes-residuos/planta";
 import { Domicilio } from "../../common/models/ordenes-residuos/domicilio";
 import { EstadoOrdenResiduosEnum } from "../../common/models/ordenes-residuos/estadoOrdenResiduos";
-import { AutocompleteLocalidadComponent } from "../../common/shared-components/autocomplete-localidad/autocomplete-localidad.component";
+import { DestinoScato } from "../../common/models/scato/destinoScato";
 
 
 @Component({
@@ -40,9 +37,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     protected spinnerComponent: SpinnerComponent;
     @ViewChild('messages')
     private messagesContainer?: ElementRef<HTMLDivElement>;
-    @ViewChild(AutocompleteLocalidadComponent)
-    private autocompleteLocalidadComponent: AutocompleteLocalidadComponent;
-    
+
     constructor(
         protected service: OrdenesResiduosService,
         protected navService: NavService,
@@ -52,13 +47,15 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         protected sessionDataService: SessionDataService,
         protected modalService: ModalService,
         private route: ActivatedRoute) {
-            super(navService, securityService, floatMsgService, modalService)
-        }
-    
+        super(navService, securityService, floatMsgService, modalService)
+    }
+
     listaClientes: Proveedor[] = [];
     listaProductos: Material[];
     listaPlantas: Planta[] = [];
     listaDomicilios: Domicilio[] = [];
+
+    listaDestinosMercaderia: DestinoScato[] = [];
 
     ordenResiduos: OrdenCargaResiduosDto = new OrdenCargaResiduosDto();
     esAdmin: boolean = this.isAuthorized(Permiso.ResiduosVerOrdenesDeCargaAdmin);
@@ -68,11 +65,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     patentesAcoplados: string[] = [];
     cuilsChofer: string[] = [];
     cuitsTransporte: string[] = [];
+    cuilChoferEsValido: boolean = false;
 
     validaCPEDG: boolean = false;
     procesandoCampo: Partial<Record<keyof OrdenCargaResiduosDto, boolean>> = {};
     mensajeSuccess: string = "";
-    localidadDescripcion: string = "";
 
     get NoPuedeEditarCuitsTerceros(): boolean {
         return (this.ordenResiduos.Id &&
@@ -97,7 +94,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.cargarClientes();
         }
     }
-    
+
 
     obtenerProductos = () => {
         this.service.getMateriales().subscribe(
@@ -112,23 +109,24 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             }
         );
     }
-    
+
     onProductoSeleccionado() {
         if (!this.ordenResiduos.Producto)
             return;
 
         this.validaCPEDG = this.ordenResiduos.Producto.ValidaSisaRuca;
-        
-        if (!this.validaCPEDG) {
+
+        if (this.validaCPEDG) { // Tiene carta de porte
+            this.obtenerPlantas();
+            this.obtenerDomicilios();
+        }
+        else {
             this.ordenResiduos.Planta = undefined;
             this.ordenResiduos.Domicilio = undefined;
             this.listaPlantas = [];
             this.listaDomicilios = [];
         }
-        else {
-            this.obtenerPlantas();
-            this.obtenerDomicilios();
-        }
+        this.obtenerDestinosMercaderia();
     }
 
     cargarClientes() {
@@ -162,7 +160,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             }
         )
     }
-    
+
     cargarClienteDirecto(clienteId: number) {
         if (this.ordenResiduos.Cliente && this.ordenResiduos.Cliente.Id == clienteId) {
             this.listaClientes = [this.ordenResiduos.Cliente];
@@ -187,8 +185,9 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.obtenerPlantas();
         this.obtenerDomicilios();
         this.obtenerIdsTransportes();
+        this.obtenerDestinosMercaderia();
     }
-    
+
     ordenarYFiltrarProveedores(proveedores: Proveedor[]): Proveedor[] {
         let filtrados = proveedores.filter(
             (thing, i, arr) => arr.findIndex(t => t.CUIT === thing.CUIT) === i
@@ -200,12 +199,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         });
         filtrados.forEach(c => { c.RazonSocial = c.RazonSocial + " (" + c.CUIT + ")" });
         return filtrados;
-    }
-
-    onLocalidadSeleccionada(idLocalidad: string) {
-        if (idLocalidad) {
-            this.ordenResiduos.Localidad.Id = Number(idLocalidad);
-        }
     }
 
     obtenerPatentes() {
@@ -276,6 +269,41 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         );
     }
 
+    obtenerDestinosMercaderia() {
+        if (!(this.ordenResiduos && this.ordenResiduos.Cliente.Id && this.ordenResiduos.Producto.MaterialId)) {
+            this.resetearDestinoMercaderia();
+            return;
+        }
+        if (this.ordenResiduos.Id > 0 && this.ordenResiduos.DestinoMercaderia) {
+            this.ordenResiduos.DestinoMercaderia.DescripcionCompleta = `${this.ordenResiduos.DestinoMercaderia.LocalidadDescripcion} (${this.ordenResiduos.DestinoMercaderia.ProvinciaDescripcion})`;
+            return;
+        }
+        
+        let materialTieneCartaDePorte = this.ordenResiduos.Producto.ValidaSisaRuca;
+        if (materialTieneCartaDePorte) {
+            this.resetearDestinoMercaderia();
+        }
+        else {
+            this.procesandoCampo.DestinoMercaderia = true;
+            this.unsubscribe();
+            let cuit = this.ordenResiduos.Cliente.CUIT;
+            this.service.obtenerDestinosMercaderia(cuit).subscribe(
+                (resp) => {
+                    let destinosMercaderia = this.manejarErroresApiResponse(resp);
+                    if (destinosMercaderia) {
+                        this.listaDestinosMercaderia = this.ordenarDestinosMercaderia(destinosMercaderia);
+                        this.ordenResiduos.DestinoMercaderia = this.listaDestinosMercaderia.length == 1 ? this.listaDestinosMercaderia[0] : undefined;
+                    }
+                },
+                (err) => {
+                    console.error(JSON.stringify(err, null, 4));
+                    this.mensajeComponent.setErrorMsg(err.message);
+                },
+                () => { this.procesandoCampo.DestinoMercaderia = false; }
+            )
+        }
+    }
+
     onPatenteChasisSeleccionado(event: any) {
         this.ordenResiduos.PatenteChasis = event.toUpperCase();
     }
@@ -288,11 +316,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     }
 
     onPatenteAcopladoSeleccionado(event: any) {
-        // this.obtenerIdsTransportes();
         this.ordenResiduos.PatenteAcoplado = event.toUpperCase();
     }
 
     validarCuilChofer() {
+        this.cuilChoferEsValido = false;
         const cuil = this.ordenResiduos.CUILChofer ? this.ordenResiduos.CUILChofer : "";
         if (!this.esFormatoCuilCuitValido(cuil))
             return;
@@ -303,6 +331,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (esValido === false) {
                     this.floatMsgService.setInfoMsg("CUIL chofer inválido - Revisar valor ingresado");
                 }
+                this.cuilChoferEsValido = esValido || false;
             },
             (err) => {
                 this.mensajeComponent.setErrorMsg(err.message);
@@ -329,7 +358,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             () => { this.procesandoCampo.CUITTransporte = false; }
         );
     }
-    
+
     esFormatoCuilCuitValido(cuit: string): boolean {
         return !!(cuit && cuit.length == 11 && !Number.isNaN(cuit as unknown as number))
     }
@@ -359,7 +388,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese el nombre del chofer.");
             return false;
         }
-        if (this.ordenResiduos.CUILChofer == undefined || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
+        if (this.ordenResiduos.ApellidoChofer == undefined || this.ordenResiduos.ApellidoChofer.trim().length < 2) {
+            this.mensajeComponent.setInfoMsg("Ingrese el apellido del chofer.");
+            return false;
+        }
+        if (!this.cuilChoferEsValido || this.ordenResiduos.CUILChofer.toString().trim().length != 11) {
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
@@ -393,7 +426,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Seleccione un producto.");
             return false;
         }
-        if (!this.ordenResiduos.Localidad) {
+        if (!this.validaCPEDG && !(this.ordenResiduos.DestinoMercaderia && this.ordenResiduos.DestinoMercaderia.LocalidadId > 0)) {
             this.mensajeComponent.setInfoMsg("Seleccione un destino.");
             return false;
         }
@@ -406,6 +439,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 this.mensajeComponent.setInfoMsg("Debe seleccionar un domicilio para este tipo de material.")
                 return false;
             }
+        }
+        if (!this.ordenResiduos.Id && !this.ordenResiduos.CantidadDeViajes) {
+            this.mensajeComponent.setInfoMsg("Ingrese la cantidad de viajes.");
+            return false;
         }
         return true;
     }
@@ -433,7 +470,6 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                     let resData = this.manejarErroresApiResponse(resp);
                     if (resData) {
                         this.mensajeSuccess = resData.Mensaje;
-                        this.ordenResiduos.Id = resData.IdOrden;
                         document.getElementById("openModalNotificacion").click();
                     }
                 },
@@ -489,11 +525,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
                 if (orden) {
                     this.ordenResiduos = orden;
                     this.cargarClientes();
-                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => { return v.Id == this.ordenResiduos.Producto.Id}) || this.ordenResiduos.Producto;
-                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => { return v.Id == this.ordenResiduos.Almacen.Id }) || this.ordenResiduos.Almacen;
-                    this.autocompleteLocalidadComponent.localidad_Id = this.ordenResiduos.Localidad.Id;
-                    this.autocompleteLocalidadComponent.getLocalidadById();
-                    this.localidadDescripcion = `${this.ordenResiduos.Localidad.Nombre} (${this.ordenResiduos.Localidad.ProvinciaNombre})`;
+                    this.ordenResiduos.Producto = this.listaProductos.find((v, i, a) => v.MaterialId == this.ordenResiduos.Producto.MaterialId) || this.ordenResiduos.Producto;
+                    this.ordenResiduos.Almacen = this.ordenResiduos.Producto.Almacenes.find((v, i, a) => v.Id == this.ordenResiduos.Almacen.Id) || this.ordenResiduos.Almacen;
+                    this.onProductoSeleccionado();
+                    this.cuilChoferEsValido = true;
                 }
             },
             (err) => {
@@ -511,42 +546,55 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         document.getElementById("botonCerrarModal").click();
         this.redirigirAListadoOrdenesResiduos();
     }
-    
 
-    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
+    ordenarDestinosMercaderia(destinosMercaderia: DestinoScato[]): DestinoScato[] {
+        destinosMercaderia.sort((a, b) => {
+            return a.LocalidadDescripcion.toLowerCase().localeCompare(b.LocalidadDescripcion.toLowerCase());
+        });
+        destinosMercaderia.forEach(dm => { dm.DescripcionCompleta = `${dm.LocalidadDescripcion} (${dm.ProvinciaDescripcion})` });
+        return destinosMercaderia;
+    }
+
+    resetearDestinoMercaderia() {
+        this.listaDestinosMercaderia = [];
+        this.ordenResiduos.DestinoMercaderia = undefined;
+    }
+
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
         this.mensajeComponent.setMsgsEmpty();
         if (response.logout) {
             this.sessionDataService.logout();
-            return null;
+            return undefined;
         }
         if (response.error) {
             this.mensajeComponent.setErrorMsg(response.error);
             this.scrollAMensaje();
-            return null;
+            return undefined;
         }
         if (response.info) {
             this.mensajeComponent.setInfoMsg(response.info);
             this.scrollAMensaje();
         }
-        return response.data || null;
+        return response.data;
     }
 
-    manejarErroresApiResponseFloat<T>(response: ApiResponse<T>): T | null {
+    manejarErroresApiResponseFloat<T>(response: ApiResponse<T>): T | undefined {
         this.floatMsgService.setMsgsEmpty();
         if (response.logout) {
             this.sessionDataService.logout();
-            return null;
+            return undefined;
         }
         if (response.error) {
             this.floatMsgService.setErrorMsg(response.error);
-            return null;
+            return undefined;
         }
         if (response.info) {
             this.floatMsgService.setInfoMsg(response.info);
         }
-        return response.data || null;
+        return response.data;
     }
-    
+
     scrollAMensaje() {
         if (this.messagesContainer)
             this.messagesContainer.nativeElement.scrollIntoView({ behavior: 'smooth' });

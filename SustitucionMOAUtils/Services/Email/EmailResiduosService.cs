@@ -75,7 +75,7 @@ namespace SustitucionMOAUtils.Services.Email
                 ordenesStrBuilder.Append($"<tr>" +
                     $"<td>{orden.Id}</td>" +
                     $"<td>{orden.Cliente.RazonSocial}</td>" +
-                    $"<td>{orden.ChoferNombre}</td>" +
+                    $"<td>{orden.ChoferApellido}, {orden.ChoferNombre}</td>" +
                     $"<td>{orden.PatenteChasis}</td>" +
                     $"<td>{orden.PatenteAcoplado}</td>" +
                     $"<td>{orden.FechaCreacion}</td>" +

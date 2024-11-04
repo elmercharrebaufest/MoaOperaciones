@@ -6,6 +6,7 @@ import { ModalService } from './../../common/services/ModalService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { NavService } from './../../common/services/NavService';
 import { SecurityService } from './../../common/services/SecurityService';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 
 
@@ -21,6 +22,8 @@ export class PagoEmitidoComponent extends PagoComponent {
     }
 
     tituloArchivo = "ReportePagosEmitidos.xls";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+    filtroFechaKey: string = 'GPagList_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("pago", "Emitidos");

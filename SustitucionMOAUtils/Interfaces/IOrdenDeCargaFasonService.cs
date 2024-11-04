@@ -18,9 +18,6 @@ namespace SustitucionMOAUtils.Interfaces
         Resultado Editar(EditarOrdenDeCargaFasonRequest request, string mailUsuario);
         List<ProveedorDto> GetCorredores();
         List<ProveedorDto> GetClientesDeCorredor(string codigoCorredor);
-        OrdenDeCargaFasonDto ActualizarSolicitudAnulacion(EstadoSolicitudAnulacionFason estadoSolicitud);
-        OrdenDeCargaFasonDto SolicitarAnulacion(int ordenId, string mailUsuario);
-        OrdenDeCargaFasonDto ActualizarSolicitudEdicion(EstadoSolicitudEdicionFason estadoSolicitud);
         OrdenDeCargaFasonDto AnularOrden(int ordenId, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuilsChofer(OrdenDeCargaFasonRequest ordenDeCarga, string mailUsuario);
         List<AutoCompleteDropdownElement> ObtenerCuitsTransporte(OrdenDeCargaFasonRequest orden, string mailUsuario);
@@ -29,5 +26,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCargaFasonDto VerificarCuitsTerceros(int ordenId, string mailUsuario);
         bool ValidarOrdenActivaScato(long ordenId);
         bool ValidarSisaCliente(string codigoCliente, string codigoMaterial);
+        bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente);
     }
 }

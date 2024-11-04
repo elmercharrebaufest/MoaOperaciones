@@ -56,7 +56,7 @@
 
                 <div id="searchVer" class="col-xs-12 col-sm-6 col-md-15">
                     <p>Ver:</p>
-                    <filtro-fecha (ClickEvent)="obtenerListadoOrdenes()"></filtro-fecha>
+                    <filtro-fecha (ClickEvent)="obtenerListadoOrdenes()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
                 </div>
 
                 <div style="float: right; height: 70px;">

@@ -26,6 +26,7 @@ export class SendDataService extends BaseService {
     private datosLiquidacionObservada?: DatosLiquidacionObservada;
     private datosDisconformidadCalidades?: DatosDisconformidadCalidades;
     private datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
+    private idConsultaOrdenDeCarga: number | null = null;
 
     setData(data: any) {
         this.data = data;
@@ -67,5 +68,14 @@ export class SendDataService extends BaseService {
     }
     limpiarDatosCartaPorteConDisconformidadCalidades() {
         this.datosCartaPorteConDisconformidadCalidades = null;
+    }
+    setDatoIdConsultaOrdenDeCarga(idConsulta: number) {
+        this.idConsultaOrdenDeCarga = idConsulta;
+    }
+    getDatoIdConsultaOrdenDeCarga(): number | null {
+        return this.idConsultaOrdenDeCarga;
+    }
+    limpiarDatoIdConsultaOrdenDeCarga() {
+        this.idConsultaOrdenDeCarga = null;
     }
 }

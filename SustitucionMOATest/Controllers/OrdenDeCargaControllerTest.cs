@@ -65,8 +65,9 @@ namespace SustitucionMOATest.Controllers
             };
 
             var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
-            ordenDeCargaServiceMock.Setup(s => s.Agregar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario))).Returns(expected.data);
-            var result = (JsonResult)target.Agregar(ordenDeCargaJson);
+            var gestionAltaFASJson = JsonConvert.SerializeObject(NoSeGestionaNingunAlta());
+            ordenDeCargaServiceMock.Setup(s => s.Agregar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario), It.IsAny<GestionAltasFAS>())).Returns(expected.data);
+            var result = (JsonResult)target.Agregar(ordenDeCargaJson, gestionAltaFASJson);
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data);
 
@@ -112,7 +113,7 @@ namespace SustitucionMOATest.Controllers
             };
 
             ordenDeCargaServiceMock.Setup(x => x.Obtener(It.IsAny<string>(), It.IsAny<int>())).Returns(orden.data);
-            
+
             var result = (JsonResult)target.Get(ordenId);
             expectedJson = JsonConvert.SerializeObject(orden);
             resultJson = JsonConvert.SerializeObject(result.Data);
@@ -147,8 +148,9 @@ namespace SustitucionMOATest.Controllers
                 }
             };
             var ordenDeCargaJson = JsonConvert.SerializeObject(ordenDeCarga);
-            ordenDeCargaServiceMock.Setup(s => s.Editar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario))).Returns(expected.data);
-            var result = (JsonResult)target.Editar(ordenDeCargaJson);
+            var gestionAltaFASJson = JsonConvert.SerializeObject(NoSeGestionaNingunAlta());
+            ordenDeCargaServiceMock.Setup(s => s.Editar(It.IsAny<OrdenDeCarga>(), It.Is<string>(i => i == mailUsuario), It.IsAny<GestionAltasFAS>())).Returns(expected.data);
+            var result = (JsonResult)target.Editar(ordenDeCargaJson, gestionAltaFASJson);
             expectedJson = JsonConvert.SerializeObject(expected);
             resultJson = JsonConvert.SerializeObject(result.Data);
             Assert.NotNull(result);
@@ -212,6 +214,16 @@ namespace SustitucionMOATest.Controllers
             var expectedJson = JsonConvert.SerializeObject(expected);
 
             Assert.AreEqual(expectedJson, result.Content);
+        }
+
+        private GestionAltasFAS NoSeGestionaNingunAlta()
+        {
+            return new GestionAltasFAS
+            {
+                GestionaDestinatario = false,
+                GestionaDestino = false,
+                GestionaFlete = false
+            };
         }
     }
 }

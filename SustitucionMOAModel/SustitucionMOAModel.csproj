@@ -62,7 +62,6 @@
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
-    <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
@@ -98,7 +97,7 @@
     <Compile Include="Dto\NotificacionEsPendientesDiariasDto.cs" />
     <Compile Include="Dto\OrdenCompraEntradaServicioDto.cs" />
     <Compile Include="Dto\OrdenDeCargaFason\DetallesActualizarOrdenDeCargaFason.cs" />
-    <Compile Include="Dto\OrdenDeCargaFason\EstadoSolicitudAnulacionFason.cs" />
+    <Compile Include="Dto\OrdenDeCarga\GestionAltasFAS.cs" />
     <Compile Include="Dto\OrdendesDeCargaApiDto.cs" />
     <Compile Include="Dto\OrdenesCompra\AprobacionesDto.cs" />
     <Compile Include="Dto\OrdenDeCargaApiDtoBase.cs" />
@@ -119,6 +118,7 @@
     <Compile Include="Dto\OrdenCompraDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ItemDto.cs" />
     <Compile Include="Dto\OrdenesCompra\ReporteDto.cs" />
+    <Compile Include="Dto\OrdenResiduos\IngresosEgresosResiduos.cs" />
     <Compile Include="Dto\OrdenResiduos\OrdenResiduosApiDto.cs" />
     <Compile Include="Dto\OrderParamsDto.cs" />
     <Compile Include="Dto\OrdenesCompra\EntradaServicioDto.cs" />
@@ -128,6 +128,7 @@
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
     <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
     <Compile Include="Dto\sap\NumeroPosicion.cs" />
+    <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
@@ -137,6 +138,8 @@
     <Compile Include="Entities\Aprobaciones.cs" />
     <Compile Include="Entities\Area.cs" />
     <Compile Include="Entities\ChatInternoCompras.cs" />
+    <Compile Include="Entities\DistanciaDomicilio.cs" />
+    <Compile Include="Entities\DistanciaDomicilioReemplazos.cs" />
     <Compile Include="Entities\LogTable.cs" />
     <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
@@ -182,7 +185,6 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
     <Compile Include="Dto\FrontLoggerRequestDto.cs" />
-    <Compile Include="Dto\LiberadorSapDto.cs" />
     <Compile Include="Dto\AsignarNuevaCuitDto.cs" />
     <Compile Include="Dto\DestinatarioDto.cs" />
     <Compile Include="Dto\AplicacionCartaPorte\AplicacionCartaPorteApiDto.cs" />
@@ -320,14 +322,12 @@
     <Compile Include="Dto\UsuarioMailDto.cs" />
     <Compile Include="Dto\UsuarioModificacionDto.cs" />
     <Compile Include="Entities\ChatExternoCompras.cs" />
-    <Compile Include="Entities\CotizacionHistorial.cs" />
     <Compile Include="Entities\Curso.cs" />
     <Compile Include="Entities\MonedaConversion.cs" />
     <Compile Include="Entities\ArchivoBoleto.cs" />
     <Compile Include="Entities\Almacen.cs" />
     <Compile Include="Entities\ArchivoCampoSustentable.cs" />
     <Compile Include="Entities\EstadoOrdenResiduos.cs" />
-    <Compile Include="Entities\OrdenResiduos.cs" />
     <Compile Include="Entities\EstadoArchivoBoleto.cs" />
     <Compile Include="Entities\PaisesSap.cs" />
     <Compile Include="Entities\ProgresoCurso.cs" />
@@ -356,7 +356,6 @@
     <Compile Include="Entities\PeticionDeOferta.cs" />
     <Compile Include="Entities\OrdenDeCargaFason.cs" />
     <Compile Include="Entities\ProveedorAuditoria.cs" />
-    <Compile Include="Entities\LiberadorSap.cs" />
     <Compile Include="Entities\TipoRetencion.cs" />
     <Compile Include="Entities\UnidadMedidaSap.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
@@ -462,6 +461,7 @@
     <Compile Include="Models\DataAgro\ContratoFijacion.cs" />
     <Compile Include="Models\DataAgro\ContratoAPrecio.cs" />
     <Compile Include="Models\DataAgro\RptCartaDePresentacionInfo.cs" />
+    <Compile Include="Models\GeoCoordenada.cs" />
     <Compile Include="Models\Raw\ProveedorRaw.cs" />
     <Compile Include="Models\ValidationResult.cs" />
     <Compile Include="Models\ViewModel\Notificacion\NotificacionAdjuntoViewModel.cs" />

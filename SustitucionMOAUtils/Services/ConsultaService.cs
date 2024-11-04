@@ -27,7 +27,6 @@ using SustitucionMOAUtils.DesignPattern.Interfaces;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto.Consulta;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
-using DocumentFormat.OpenXml.Spreadsheet;
 using System.Data.Entity;
 
 namespace SustitucionMOAUtils.Services
@@ -81,7 +80,7 @@ namespace SustitucionMOAUtils.Services
         {
             var consulta = GetConsulta(consultaId);
 
-            Comentario comentario = new Comentario
+            var comentario = new Comentario
             {
                 Consulta_Id = consultaId,
                 Detalle = comentarioDto.Detalle,
@@ -94,16 +93,19 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(u => u.Id == comentario.Usuario_Id);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
-            if (esInterno && consulta.EstadoConsulta.Code == "GES")
+            var codigoEstadoSolicitudInformacion = EstadosConsulta.SolicitudInformacion.Code();
+
+            if (esInterno && consulta.EstadoConsulta.Code == EstadosConsulta.EnGestion.Code())
             {
-                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "DOC");
+                var estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == codigoEstadoSolicitudInformacion);
                 ActualizarEstadoConsulta(consultaId, estado.Id);
                 var copia = new List<String>();
                 EnviarMailRespuesta(consulta, copia, comentario.Detalle);
             }
-            if (!esInterno && consulta.EstadoConsulta.Code == "DOC")
+            if (!esInterno && consulta.EstadoConsulta.Code == codigoEstadoSolicitudInformacion)
             {
-                EstadoConsulta estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == "GESRTA");
+                var codigoEstadoEnGestionRta = EstadosConsulta.EnGestionRta.Code();
+                var estado = repositorio.Obtener<EstadoConsulta>(e => e.Code == codigoEstadoEnGestionRta);
                 ActualizarEstadoConsulta(consultaId, estado.Id);
             }
 
@@ -244,25 +246,18 @@ namespace SustitucionMOAUtils.Services
             };
         }
 
-        private Consulta GetConsulta(int consultaId)
-        {
-            var consulta = repositorio.Obtener<Consulta>(consultaId);
-
-            if (consulta == null) throw new InfoCustomException("No existe la consulta");
-
-            return consulta;
-        }
-
         public ConsultaDto ObtenerConsulta(int consultaId)
         {
-            var includes = new List<Expression<Func<Consulta, object>>>();
-            includes.Add(x => x.Comentarios);
-            includes.Add(x => x.Comentarios.Select(y => y.Archivos));
-            includes.Add(x => x.Categoria);
-            includes.Add(x => x.SubCategoria);
-            includes.Add(x => x.EstadoConsulta);
-            includes.Add(x => x.Detalle.CausaConsulta);
-            includes.Add(x => x.Usuario);
+            var includes = new List<Expression<Func<Consulta, object>>>
+            {
+                x => x.Comentarios,
+                x => x.Comentarios.Select(y => y.Archivos),
+                x => x.Categoria,
+                x => x.SubCategoria,
+                x => x.EstadoConsulta,
+                x => x.Detalle.CausaConsulta,
+                x => x.Usuario
+            };
 
             var c = repositorio.Obtener<Consulta>(includes, y => y.Id == consultaId);
 
@@ -366,90 +361,6 @@ namespace SustitucionMOAUtils.Services
             return ret;
         }
 
-        private string FormatearStringNewLine(string dato)
-        {
-            if (dato == null)
-            {
-                return dato;
-            }
-
-            if (dato.Contains("/") || dato.Contains(",") || dato.Contains(" ") || dato.Contains(";"))
-            {
-                dato = dato.Replace(",", "<br>");
-                dato = dato.Replace("/", "<br>");
-                dato = dato.Replace(";", "<br>");
-                dato = dato.Replace(" ", "<br>");
-
-                dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
-            }
-
-            return dato;
-        }
-
-        private int? getIdSubcategoria(string code, int? id)
-        {
-            List<string> exclude = new List<string> { "NRORPD","NRORPC","NRORFD","PROFFD","SERVFD","BONFD","CDGFD",
-                "NRORFC","PROFFC","SERVFC","BONFC","CDGFC" };
-
-            if (exclude.Contains(code))
-            {
-                if (code.Contains("FD") || code.Contains("FC"))
-                {
-                    var categoria = repositorio.Obtener<Categoria>(c => c.Code == "FIN");
-                    code = code.Replace("FD", "").Replace("FC", "");
-                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code && sc.Categoria_Id == categoria.Id).Id;
-                }
-                else
-                {
-                    code = code.Replace("PD", "").Replace("PC", "");
-                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code).Id;
-                }
-            }
-
-            return id;
-        }
-
-        private int getIdCategoria(string code, int id = 0)
-        {
-            if (code.Contains("DIR"))
-            {
-                code = code.Replace("DIR", "");
-                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
-            }
-
-            if (code.Contains("COR"))
-            {
-                code = code.Replace("COR", "");
-                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
-            }
-
-            return id;
-        }
-
-        private string NotificarInternamenteConsultaDiscrepancia(Consulta consulta)
-        {
-            try
-            {
-                var copia = new List<string>();
-                var destinos = DESTINOS_EMAILS_DISCONFORMIDAD.Split(';').ToList();
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_NOTIFICACION_INTERNA);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
-                string asunto = "Nueva Discrepancia - " + consulta.RazonSocialProveedor + " consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
-
-                EmailSender.EnviarMail(destinos, asunto, cuerpo, copia, null, null, null);
-
-                consulta.FechaUltimaModificacion = DateTime.Now;
-
-                repositorio.GuardarCambios();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
-
-            return "Enviado Correctamente";
-        }
-
         public string RecordarComentario(int consultaId)
         {
             try
@@ -476,22 +387,6 @@ namespace SustitucionMOAUtils.Services
             }
 
             return "Enviado Correctamente";
-        }
-
-        private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
-        {
-            try
-            {
-                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
-                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-", rutaMisConsultas);
-                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
-
-                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-            }
         }
 
         public string EnviarMailRecordatorio(int consultaId)
@@ -527,163 +422,34 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
-            Expression<Func<Consulta, bool>> filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
+            var filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
 
-            var hoy = DateTime.Now;
+            var crearConsultaDtoExpr = GetExpressionCrearConsultaDto(esInterno, usuarioId);
+
             var ret = repositorio.Listar(
-                x => new ConsultaDto
-                {
-                    Id = x.Id,
-                    Asunto = x.Asunto,
-                    CodigoCorredor = x.CodigoCorredor,
-                    RazonSocialCorredor = x.RazonSocialCorredor,
-                    CodigoProveedor = x.CodigoProveedor,
-                    RazonSocialProveedor = x.RazonSocialProveedor,
-                    CategoriaId = x.Categoria_Id,
-                    Categoria = new CategoriaDto
-                    {
-                        Id = x.Categoria.Id,
-                        Code = x.Categoria.Code,
-                        Nombre = x.Categoria.Nombre
-                    },
-                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
-                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
-                    {
-                        Id = x.SubCategoria.Id,
-                        Code = x.SubCategoria.Code,
-                        Nombre = x.SubCategoria.Nombre,
-                        CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto
-                    {
-                        Id = 0,
-                        Code = "",
-                        Nombre = "",
-                        CategoriaId = 0
-                    },
-                    EstadoConsultaId = x.EstadoConsulta_Id,
-                    Material_Id = x.Detalle.Material_Id,
-                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
-                    EstadoConsulta = new EstadoConsultaDto
-                    {
-                        Id = x.EstadoConsulta.Id,
-                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
-                        Color = x.EstadoConsulta.Color,
-                        Code = x.EstadoConsulta.Code
-                    },
-                    FechaCreacion = x.FechaCreacion,
-                    FechaUltimaModificacion = x.FechaUltimaModificacion,
-                    UsuarioId = x.Usuario_Id,
-                    UsuarioInternoId = x.UsuarioInterno_Id,
-                    FechaVtoReapertura = x.FechaVtoReapertura,
-                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
-                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
-                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
-                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
-                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
-                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
-                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
-                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
-                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
-                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
-                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
-                    {
-                        Id = x.Detalle.CausaConsulta.Id,
-                        Nombre = x.Detalle.CausaConsulta.Nombre
-                    } : null,
-                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
-                    GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
-                    GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
-                    GeneradaExternamente = x.UsuarioInterno_Id == null,
-                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
-                    Rubro = x.Detalle.Rubro,
-                    DiasReclamo = x.EstadoConsulta.Descripcion == "CER" ?
-                        DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion) :
-                        DbFunctions.DiffDays(x.FechaCreacion, hoy)
-                },
+                crearConsultaDtoExpr,
                 paginacion,
                 filtroBusqueda);
 
             return ret;
         }
+
         public List<ConsultaDto> ListarConsultasSinPaginar(int usuarioId, bool obtenerTodos, FiltrosConsultaDto filtros = null)
         {
-
             var usuario = repositorio.Obtener<Usuario>(usuarioId);
             var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
 
-            Expression<Func<Consulta, bool>> filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
+            var filtroBusqueda = ObtenerExpresionListaConsultas(usuario, obtenerTodos, filtros);
+
+            var crearConsultaDtoExpr = GetExpressionCrearConsultaDto(esInterno, usuarioId);
 
             var ret = repositorio.Listar(
-                x => new ConsultaDto
-                {
-                    Id = x.Id,
-                    Asunto = x.Asunto,
-                    CodigoCorredor = x.CodigoCorredor,
-                    RazonSocialCorredor = x.RazonSocialCorredor,
-                    CodigoProveedor = x.CodigoProveedor,
-                    RazonSocialProveedor = x.RazonSocialProveedor,
-                    CategoriaId = x.Categoria_Id,
-                    Categoria = new CategoriaDto
-                    {
-                        Id = x.Categoria.Id,
-                        Code = x.Categoria.Code,
-                        Nombre = x.Categoria.Nombre
-                    },
-                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
-                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
-                    {
-                        Id = x.SubCategoria.Id,
-                        Code = x.SubCategoria.Code,
-                        Nombre = x.SubCategoria.Nombre,
-                        CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto
-                    {
-                        Id = 0,
-                        Code = "",
-                        Nombre = "",
-                        CategoriaId = 0
-                    },
-                    EstadoConsultaId = x.EstadoConsulta_Id,
-                    Material_Id = x.Detalle.Material_Id,
-                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
-                    EstadoConsulta = new EstadoConsultaDto
-                    {
-                        Id = x.EstadoConsulta.Id,
-                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
-                        Color = x.EstadoConsulta.Color,
-                        Code = x.EstadoConsulta.Code
-                    },
-                    FechaCreacion = x.FechaCreacion,
-                    FechaUltimaModificacion = x.FechaUltimaModificacion,
-                    UsuarioId = x.Usuario_Id,
-                    UsuarioInternoId = x.UsuarioInterno_Id,
-                    FechaVtoReapertura = x.FechaVtoReapertura,
-                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
-                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
-                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
-                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
-                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
-                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
-                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
-                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
-                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
-                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
-                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
-                    {
-                        Id = x.Detalle.CausaConsulta.Id,
-                        Nombre = x.Detalle.CausaConsulta.Nombre
-                    } : null,
-                    RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
-                    GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
-                    GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
-                    GeneradaExternamente = x.UsuarioInterno_Id == null,
-                    MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
-                    Rubro = x.Detalle.Rubro
-                },
+                crearConsultaDtoExpr,
                 filtroBusqueda);
 
             return ret;
         }
+
         public ConsultaDto ObtenerConsultaDisconformidad(string numeroCCPP, int usuarioId, bool obtenerTodos)
         {
             return ListarConsultasSinPaginar(usuarioId, obtenerTodos)
@@ -1100,11 +866,6 @@ namespace SustitucionMOAUtils.Services
             return ruta;
         }
 
-        private string ArmarRutaCarpeta(Comentario comentario)
-        {
-            return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
-        }
-
         public string AnularConsulta(int consultaId, int usuarioId, string motivoRechazo)
         {
             this.ActualizarEstadoConsulta(consultaId, (int)EstadosConsulta.Rechazado);
@@ -1208,6 +969,228 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public virtual string ArmarRutaCarpetaCM05(string username)
+        {
+            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == username);
+            return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
+        }
+
+        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
+        {
+            string mensajeResultado = string.Empty;
+
+            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
+
+            var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
+
+            consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
+
+            return new AgregarConsultaResponseDto
+            {
+                ConsultaDto = ObtenerConsulta(consulta.Id),
+                Mensaje = mensajeResultado,
+            };
+        }
+
+        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
+        {
+            var consulta = GetConsulta(consultaId);
+
+            if (usuarioActual.Id != consulta.Usuario_Id && usuarioActual.CUIT != consulta.Usuario.CUITRegistro)
+                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
+
+            var estadoIniciado = GetEstadoConsulta("INI");
+            var estadoCerrado = GetEstadoConsulta("CER");
+
+            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
+                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
+
+            if (consulta.UsuarioInterno_Id != null)
+                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
+
+            consulta.EstadoConsulta_Id = estadoIniciado.Id;
+            this.repositorio.GuardarCambios();
+        }
+
+        public List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos)
+        {
+            var ret = new List<ConsultaDto>();
+
+            var includes = new List<Expression<Func<Consulta, object>>>
+            {
+                x => x.Detalle,
+                x => x.Detalle.CausaConsulta,
+                x => x.Categoria,
+                x => x.SubCategoria,
+                x => x.EstadoConsulta
+            };
+
+            var usuario = repositorio.Obtener<Usuario>(usuarioId);
+            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
+            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
+            var codigoEnGestionRta = EstadosConsulta.EnGestionRta.Code();
+
+            ret = repositorio.Listar<Consulta>(x => (vendedor.StartsWith("C") ? x.CodigoCorredor == vendedor : x.CodigoProveedor == vendedor) && x.EstadoConsulta_Id == (int)EstadosConsulta.SolicitudInformacion, includes: includes)
+                .Select(x => new ConsultaDto
+                {
+                    Id = x.Id,
+                    Asunto = x.Asunto,
+                    CodigoCorredor = x.CodigoCorredor,
+                    RazonSocialCorredor = x.RazonSocialCorredor,
+                    CodigoProveedor = x.CodigoProveedor,
+                    RazonSocialProveedor = x.RazonSocialProveedor,
+                    CategoriaId = x.Categoria_Id,
+                    Categoria = new CategoriaDto
+                    {
+                        Id = x.Categoria.Id,
+                        Code = x.Categoria.Code,
+                        Nombre = x.Categoria.Nombre
+                    },
+                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
+                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
+                    {
+                        Id = x.SubCategoria.Id,
+                        Code = x.SubCategoria.Code,
+                        Nombre = x.SubCategoria.Nombre,
+                        CategoriaId = x.SubCategoria.Categoria_Id
+                    } : new SubCategoriaDto { Nombre = "" },
+                    EstadoConsultaId = x.EstadoConsulta_Id,
+                    Material_Id = x.Detalle.Material_Id,
+                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
+                    EstadoConsulta = new EstadoConsultaDto
+                    {
+                        Id = x.EstadoConsulta.Id,
+                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == codigoEnGestionRta ? "En gestión" : x.EstadoConsulta.Descripcion,
+                        Color = x.EstadoConsulta.Color,
+                        Code = x.EstadoConsulta.Code
+                    },
+                    FechaCreacion = x.FechaCreacion,
+                    FechaUltimaModificacion = x.FechaUltimaModificacion,
+                    UsuarioId = x.Usuario_Id,
+                    UsuarioInternoId = x.UsuarioInterno_Id,
+                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
+                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
+                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
+                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
+                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
+                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
+                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
+                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
+                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                    {
+                        Id = x.Detalle.CausaConsulta.Id,
+                        Nombre = x.Detalle.CausaConsulta.Nombre
+                    } : null
+                }).ToList();
+
+            return ret;
+        }
+
+        private Consulta GetConsulta(int consultaId)
+        {
+            var consulta = repositorio.Obtener<Consulta>(consultaId) ?? throw new InfoCustomException("No existe la consulta");
+            return consulta;
+        }
+
+        private string FormatearStringNewLine(string dato)
+        {
+            if (dato != null && (dato.Contains("/") || dato.Contains(",") || dato.Contains(" ") || dato.Contains(";")))
+            {
+                dato = dato.Replace(",", "<br>");
+                dato = dato.Replace("/", "<br>");
+                dato = dato.Replace(";", "<br>");
+                dato = dato.Replace(" ", "<br>");
+
+                dato = Regex.Replace(dato, @"(<br ?/?>)+", "<br>");
+            }
+            return dato;
+        }
+
+        private int? getIdSubcategoria(string code, int? id)
+        {
+            List<string> exclude = new List<string> { "NRORPD","NRORPC","NRORFD","PROFFD","SERVFD","BONFD","CDGFD",
+                "NRORFC","PROFFC","SERVFC","BONFC","CDGFC" };
+
+            if (exclude.Contains(code))
+            {
+                if (code.Contains("FD") || code.Contains("FC"))
+                {
+                    var categoria = repositorio.Obtener<Categoria>(c => c.Code == "FIN");
+                    code = code.Replace("FD", "").Replace("FC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code && sc.Categoria_Id == categoria.Id).Id;
+                }
+                else
+                {
+                    code = code.Replace("PD", "").Replace("PC", "");
+                    id = repositorio.Obtener<SubCategoria>(sc => sc.Code == code).Id;
+                }
+            }
+
+            return id;
+        }
+
+        private int getIdCategoria(string code, int id = 0)
+        {
+            if (code.Contains("DIR"))
+            {
+                code = code.Replace("DIR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+
+            if (code.Contains("COR"))
+            {
+                code = code.Replace("COR", "");
+                id = repositorio.Obtener<Categoria>(x => x.Code == code).Id;
+            }
+
+            return id;
+        }
+
+        private void NotificarInternamenteConsultaDiscrepancia(Consulta consulta)
+        {
+            try
+            {
+                var copia = new List<string>();
+                var destinos = DESTINOS_EMAILS_DISCONFORMIDAD.Split(';').ToList();
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE_NOTIFICACION_INTERNA);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(consulta.Comentarios.Last().Detalle) ? consulta.Comentarios.Last().Detalle : "-", rutaMisConsultas);
+                string asunto = "Nueva Discrepancia - " + consulta.RazonSocialProveedor + " consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(destinos, asunto, cuerpo, copia, null, null, null);
+
+                consulta.FechaUltimaModificacion = DateTime.Now;
+
+                repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private void EnviarMailRespuesta(Consulta consulta, List<string> copia, string comentario)
+        {
+            try
+            {
+                var cuerpoTemplate = File.ReadAllText(EMAIL_TEMPLATE);
+                var cuerpo = string.Format(cuerpoTemplate, consulta.Asunto, !string.IsNullOrWhiteSpace(comentario) ? comentario : "-", rutaMisConsultas);
+                string asunto = "Molinos Agro - Respuesta a su consulta N°: " + consulta.Id + " con asunto: " + consulta.Asunto;
+
+                EmailSender.EnviarMail(new List<string> { consulta.Usuario.Mail }, asunto, cuerpo, copia, null, null, null);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+            }
+        }
+
+        private string ArmarRutaCarpeta(Comentario comentario)
+        {
+            return string.Format("{0}/{1}/{2}", rutaArchivosConsulta, comentario.Consulta.Usuario_Id, comentario.Consulta_Id);
+        }
+
         private string ProcesarArchivoCoeficientesImpuestosIngresosBrutos(List<string> elementosLeidos, int archivo_Id, string cuitProveedor, int? consulta_Id, bool esCargaInterna)
         {
             //Descarto palabras que ya se que son "basura"
@@ -1215,26 +1198,24 @@ namespace SustitucionMOAUtils.Services
                 .RemoveAll(elemento => elemento.StartsWith("..") && elemento.EndsWith("..") ||
                                        elemento.All(caracter => caracter == '.'));
 
-            int indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
-            string encabezadoFormulario = "OSIRIS";
-            int indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
-            List<string> info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
+            var indiceDeterminacionDelCoeficienteUnificado = elementosLeidos.IndexOf("Determinación del Coeficiente Unificado");
+            var encabezadoFormulario = "OSIRIS";
+            var indiceComienzoPaginaCoeficientesBrutos = elementosLeidos.Take(indiceDeterminacionDelCoeficienteUnificado).ToList().LastIndexOf(encabezadoFormulario);
+            var info_DeterminacionCoeficienteUnificado = elementosLeidos.Skip(indiceComienzoPaginaCoeficientesBrutos).ToList();
 
-            string cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0].Replace("-", "");
+            var cuit = SacarHasta(info_DeterminacionCoeficienteUnificado, "CUIT:")[0].Replace("-", "");
 
-            int anticipoAux;
-            int anticipo = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0], out anticipoAux) ? anticipoAux : 0;
+            var anticipo = int.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Anticipo:")[0], out int anticipoAux) ? anticipoAux : 0;
 
-            int sedeAux;
-            int sede = Int32.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0], out sedeAux) ? sedeAux : 0;
+            var sede = int.TryParse(SacarHasta(info_DeterminacionCoeficienteUnificado, "Sede:")[0], out int sedeAux) ? sedeAux : 0;
 
-            string secuencia = SacarHasta(info_DeterminacionCoeficienteUnificado, "Secuencia:")[0];
+            var secuencia = SacarHasta(info_DeterminacionCoeficienteUnificado, "Secuencia:")[0];
             int? idSecuencia =
                 secuencia == "Original" ? (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Original :
                 secuencia.Contains("Rectificativa") ? (int)EnumSecuenciaIngresosBrutosCoeficienteUnificado.Rectificativa :
                 (int?)null;
 
-            string razonSocial = SacarHasta(info_DeterminacionCoeficienteUnificado, "Contribuyente:")[0];
+            var razonSocial = SacarHasta(info_DeterminacionCoeficienteUnificado, "Contribuyente:")[0];
 
             var ingresosBrutosCoeficienteUnificado = new IngresosBrutosCoeficienteUnificado
             {
@@ -1250,37 +1231,31 @@ namespace SustitucionMOAUtils.Services
                 RazonSocial = razonSocial,
             };
 
-            List<IngresosBrutosCoeficienteUnificadoDetalle> ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
+            var ingresosBrutosCoeficienteUnificadoDetalles = new List<IngresosBrutosCoeficienteUnificadoDetalle>();
 
-            List<string> listadoCoeficientes = SacarHasta(elementosLeidos, "Coeficiente Unificado");
+            var listadoCoeficientes = SacarHasta(elementosLeidos, "Coeficiente Unificado");
 
             for (int i = 0; i < listadoCoeficientes.Count; i++)
             {
                 try
                 {
-                    int numeroJurisdiccionAux;
-                    int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
+                    int? numeroJurisdiccion = int.TryParse(listadoCoeficientes[i], out int numeroJurisdiccionAux) ? numeroJurisdiccionAux : (int?)null;
 
                     string jurisdiccion = listadoCoeficientes[i + 1];
 
-                    DateTime fechaInicioAux;
-                    DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
+                    DateTime? fechaInicio = DateTime.TryParseExact(listadoCoeficientes[i + 2], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaInicioAux) ? fechaInicioAux : (DateTime?)null;
 
-                    DateTime fechaCeseAux;
-                    DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
+                    DateTime? fechaCese = DateTime.TryParseExact(listadoCoeficientes[i + 3], "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaCeseAux) ? fechaCeseAux : (DateTime?)null;
 
                     i += (fechaInicio.HasValue ? fechaCese.HasValue ? 4 : 3 : 2);
 
-                    decimal coeficienteIngresosAux;
-                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
+                    decimal? coeficienteIngresos = decimal.TryParse(listadoCoeficientes[i++], out decimal coeficienteIngresosAux) ? coeficienteIngresosAux : (decimal?)null;
 
-                    decimal coeficienteGastosAux;
-                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
+                    decimal? coeficienteGastos = decimal.TryParse(listadoCoeficientes[i++], out decimal coeficienteGastosAux) ? coeficienteGastosAux : (decimal?)null;
 
-                    decimal coeficienteUnificadoAux;
-                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
+                    decimal? coeficienteUnificado = decimal.TryParse(listadoCoeficientes[i], out decimal coeficienteUnificadoAux) ? coeficienteUnificadoAux : (decimal?)null;
 
-                    IngresosBrutosCoeficienteUnificadoDetalle detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
+                    var detalleGenerado = new IngresosBrutosCoeficienteUnificadoDetalle
                     {
                         NumeroJurisdiccion = numeroJurisdiccion,
                         Jurisdiccion = jurisdiccion,
@@ -1311,9 +1286,7 @@ namespace SustitucionMOAUtils.Services
 
             repositorio.Agregar(ingresosBrutosCoeficienteUnificado);
 
-
-
-            MovimientoIngresosBrutosCoeficienteUnificado movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
+            var movimientoIngresosBrutosCoeficienteUnificado = new MovimientoIngresosBrutosCoeficienteUnificado
             {
                 IngresosBrutosCoeficienteUnificado_Id = ingresosBrutosCoeficienteUnificado.Id,
                 Observaciones = $"Creado por: {cuitProveedor}",
@@ -1348,55 +1321,9 @@ namespace SustitucionMOAUtils.Services
             return new List<string>();
         }
 
-        public virtual string ArmarRutaCarpetaCM05(string username)
-        {
-            var usuario = repositorio.Obtener<Usuario>(x => x.Mail == username);
-            return string.Format("{0}/{1}", rutaArchivosCM05, usuario.Id);
-        }
-
-        public AgregarConsultaResponseDto AgregarConsultaInterna(Consulta consulta, Comentario comentario, HttpFileCollectionBase files, List<DestinatarioDto> destinatarios)
-        {
-            string mensajeResultado = string.Empty;
-
-            Categoria categoria = repositorio.Obtener<Categoria>(c => c.Id == consulta.Categoria_Id);
-
-            var estrategia = this.consultaContext.GetStrategy(categoria.Nombre);
-
-            consulta = estrategia.AgregarConsulta(consulta, comentario, destinatarios, files);
-
-            return new AgregarConsultaResponseDto
-            {
-                ConsultaDto = ObtenerConsulta(consulta.Id),
-                Mensaje = mensajeResultado,
-            };
-        }
-        public void ReabrirConsulta(int consultaId, UsuarioDto usuarioActual)
-        {
-            var consulta = GetConsulta(consultaId);
-
-            if (usuarioActual.Id != consulta.Usuario_Id && usuarioActual.CUIT != consulta.Usuario.CUITRegistro)
-                throw new ValidationCustomException("No se puede reabrir la consulta ya que ud no inició esta consulta.");
-
-            var estadoIniciado = GetEstadoConsulta("INI");
-            var estadoCerrado = GetEstadoConsulta("CER");
-
-            if (consulta.EstadoConsulta_Id != estadoCerrado.Id)
-                throw new ValidationCustomException("La consulta ya se encuentra en gestión.");
-
-            if (consulta.UsuarioInterno_Id != null)
-                throw new ValidationCustomException("Ud no tiene permiso para reabrir esta consulta.");
-
-            consulta.EstadoConsulta_Id = estadoIniciado.Id;
-            this.repositorio.GuardarCambios();
-        }
-
         private EstadoConsulta GetEstadoConsulta(string codigo)
         {
-            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo);
-
-            if (estadoConsulta == null)
-                throw new InfoCustomException("No existe el estado de la consulta.");
-
+            var estadoConsulta = repositorio.Obtener<EstadoConsulta>(c => c.Code == codigo) ?? throw new InfoCustomException("No existe el estado de la consulta.");
             return estadoConsulta;
         }
 
@@ -1411,7 +1338,7 @@ namespace SustitucionMOAUtils.Services
             var proveedorAsignado = usuario.ObtenerProveedor();
             var usuarioAprobado = proveedorAsignado.EstadoAprobacion == EstadoAprobacion.Aprobado;
 
-            filtros = filtros == null ? new FiltrosConsultaDto() : filtros;
+            filtros = filtros ?? new FiltrosConsultaDto();
 
             var noTieneFiltroRazonSocialCorredor = string.IsNullOrWhiteSpace(filtros.RazonSocialCorredor);
             var noTieneFiltroRazonSocialProveedor = string.IsNullOrWhiteSpace(filtros.RazonSocialProveedor);
@@ -1456,77 +1383,87 @@ namespace SustitucionMOAUtils.Services
                     ;
             return filtroBusqueda;
         }
-        public List<ConsultaDto> ObtenerConsultasPorProveedor(int usuarioId, string vendedor, bool obtenerTodos)
+
+        private Expression<Func<Consulta, ConsultaDto>> GetExpressionCrearConsultaDto(bool esInterno, int usuarioId)
         {
-            var ret = new List<ConsultaDto>();
+            var codigoEstadoFinalizado = EstadosConsulta.Finalizado.Code();
+            var codigoEstadoEnGestionRta = EstadosConsulta.EnGestionRta.Code();
 
-            var includes = new List<Expression<Func<Consulta, object>>>();
-            includes.Add(x => x.Detalle);
-            includes.Add(x => x.Detalle.CausaConsulta);
-            includes.Add(x => x.Categoria);
-            includes.Add(x => x.SubCategoria);
-            includes.Add(x => x.EstadoConsulta);
-
-            var usuario = repositorio.Obtener<Usuario>(usuarioId);
-            var esInterno = usuario.TienePermiso(PermisoEnum.ConsultaAbm);
-            var categorias = usuario.Roles.Where(x => x.Categorias.Any()).SelectMany(x => x.Categorias).Select(x => x.Id).ToList();
-
-            ret = repositorio.Listar<Consulta>(x => (vendedor.StartsWith("C") ? x.CodigoCorredor == vendedor : x.CodigoProveedor == vendedor) && x.EstadoConsulta_Id == (int)EstadosConsulta.SolicitudInformacion, includes: includes)
-                .Select(x => new ConsultaDto
+            Expression<Func<Consulta, ConsultaDto>> expresionCrearConsulta = x => new ConsultaDto
+            {
+                Id = x.Id,
+                Asunto = x.Asunto,
+                CodigoCorredor = x.CodigoCorredor,
+                RazonSocialCorredor = x.RazonSocialCorredor,
+                CodigoProveedor = x.CodigoProveedor,
+                RazonSocialProveedor = x.RazonSocialProveedor,
+                CategoriaId = x.Categoria_Id,
+                Categoria = new CategoriaDto
                 {
-                    Id = x.Id,
-                    Asunto = x.Asunto,
-                    CodigoCorredor = x.CodigoCorredor,
-                    RazonSocialCorredor = x.RazonSocialCorredor,
-                    CodigoProveedor = x.CodigoProveedor,
-                    RazonSocialProveedor = x.RazonSocialProveedor,
-                    CategoriaId = x.Categoria_Id,
-                    Categoria = new CategoriaDto
-                    {
-                        Id = x.Categoria.Id,
-                        Code = x.Categoria.Code,
-                        Nombre = x.Categoria.Nombre
-                    },
-                    SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
-                    SubCategoria = x.SubCategoria != null ? new SubCategoriaDto
+                    Id = x.Categoria.Id,
+                    Code = x.Categoria.Code,
+                    Nombre = x.Categoria.Nombre
+                },
+                SubCategoriaId = x.SubCategoria_Id != null ? x.SubCategoria_Id : 0,
+                SubCategoria = x.SubCategoria != null ?
+                    new SubCategoriaDto
                     {
                         Id = x.SubCategoria.Id,
                         Code = x.SubCategoria.Code,
                         Nombre = x.SubCategoria.Nombre,
                         CategoriaId = x.SubCategoria.Categoria_Id
-                    } : new SubCategoriaDto { Nombre = "" },
-                    EstadoConsultaId = x.EstadoConsulta_Id,
-                    Material_Id = x.Detalle.Material_Id,
-                    Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
-                    EstadoConsulta = new EstadoConsultaDto
+                    } :
+                    new SubCategoriaDto
                     {
-                        Id = x.EstadoConsulta.Id,
-                        Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == "GESRTA" ? "En gestión" : x.EstadoConsulta.Descripcion,
-                        Color = x.EstadoConsulta.Color,
-                        Code = x.EstadoConsulta.Code
+                        Id = 0,
+                        Code = "",
+                        Nombre = "",
+                        CategoriaId = 0
                     },
-                    FechaCreacion = x.FechaCreacion,
-                    FechaUltimaModificacion = x.FechaUltimaModificacion,
-                    UsuarioId = x.Usuario_Id,
-                    UsuarioInternoId = x.UsuarioInterno_Id,
-                    Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
-                    ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
-                    OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
-                    ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
-                    Importe = x.Detalle != null ? x.Detalle.Importe : null,
-                    Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
-                    OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
-                    PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
-                    BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
-                    CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
-                    CausaConsulta = x.Detalle.CausaConsulta != null ? new CausaConsultaDto
+                EstadoConsultaId = x.EstadoConsulta_Id,
+                Material_Id = x.Detalle.Material_Id,
+                Material = x.Categoria.Code == "APP" ? x.Detalle.OtroComprobanteNo : "",
+                EstadoConsulta = new EstadoConsultaDto
+                {
+                    Id = x.EstadoConsulta.Id,
+                    Descripcion = esInterno ? x.EstadoConsulta.Descripcion : x.EstadoConsulta.Code == codigoEstadoEnGestionRta ? "En gestión" : x.EstadoConsulta.Descripcion,
+                    Color = x.EstadoConsulta.Color,
+                    Code = x.EstadoConsulta.Code
+                },
+                FechaCreacion = x.FechaCreacion,
+                FechaUltimaModificacion = x.FechaUltimaModificacion,
+                UsuarioId = x.Usuario_Id,
+                UsuarioInternoId = x.UsuarioInterno_Id,
+                FechaVtoReapertura = x.FechaVtoReapertura,
+                Fecha = x.Detalle != null ? x.Detalle.Fecha : null,
+                ComprobanteNo = x.Detalle != null ? x.Detalle.ComprobanteNo : "",
+                OtroComprobanteNo = x.Detalle != null ? x.Detalle.OtroComprobanteNo : "",
+                ContratoNo = x.Detalle != null ? x.Detalle.ContratoNo : "",
+                Importe = x.Detalle != null ? x.Detalle.Importe : null,
+                Impuesto = x.Detalle != null ? x.Detalle.Impuesto : null,
+                OrdenId = x.Detalle != null ? x.Detalle.Orden_Id : null,
+                PatenteChasis = x.Detalle != null ? x.Detalle.PatenteChasis : null,
+                BolsaEmisoraOblea = x.Detalle != null ? x.Detalle.BolsaEmisoraOblea : "",
+                CausaConsultaId = x.Detalle.CausaConsulta != null ? x.Detalle.CausaConsulta_Id : null,
+                CausaConsulta = x.Detalle.CausaConsulta != null ?
+                    new CausaConsultaDto
                     {
                         Id = x.Detalle.CausaConsulta.Id,
                         Nombre = x.Detalle.CausaConsulta.Nombre
-                    } : null
-                }).ToList();
+                    } :
+                    null,
+                RelacionadaPorCodigo = x.Usuario_Id != usuarioId,
+                GeneradaInternamente = x.UsuarioInterno_Id != null && x.UsuarioInterno_Id != usuarioId,
+                GeneradaPorUsuarioSesion = x.UsuarioInterno_Id == usuarioId,
+                GeneradaExternamente = x.UsuarioInterno_Id == null,
+                MailUsuarioIniciaConsulta = x.UsuarioInterno_Id == null ? x.Usuario.Mail : x.UsuarioInterno.Mail,
+                Rubro = x.Detalle.Rubro,
+                DiasReclamo = x.EstadoConsulta.Code == codigoEstadoFinalizado ?
+                    DbFunctions.DiffDays(x.FechaCreacion, x.FechaUltimaModificacion) :
+                    DbFunctions.DiffDays(x.FechaCreacion, DateTime.Now)
+            };
 
-            return ret;
+            return expresionCrearConsulta;
         }
     }
 }

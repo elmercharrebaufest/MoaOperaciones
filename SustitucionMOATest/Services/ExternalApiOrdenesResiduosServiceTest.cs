@@ -112,7 +112,7 @@ namespace SustitucionMOATest.Services
                 Cliente = new Proveedor { RazonSocial = "default" },
                 FechaCreacion = DateTime.Now,
                 Producto = new Material { Nombre = "producto" },
-                Localidad = new Localidad { Nombre = "localidad" }
+                LocalidadDescripcion = "localidad"
             };
         }
         private void SetupObtencionOrden(int id,OrdenResiduos ordenRecibida)

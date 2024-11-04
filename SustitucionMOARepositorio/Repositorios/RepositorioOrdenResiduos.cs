@@ -40,14 +40,15 @@ namespace SustitucionMOARepositorio.Repositorios
                 from o in Set<OrdenResiduos>()
                 where
                     o.FechaCreacion >= fechaInicio &&
-                    o.FechaCreacion <= fechaFin
+                    o.FechaCreacion < DbFunctions.AddDays(fechaFin, 1)
+                orderby o.FechaCreacion descending
                 select new
                 {
                     o.Id,
                     o.Estado.Semaforo,
                     DescripcionEstado = o.Estado.Nombre,
                     o.FechaCreacion,
-                    LocalidadDescripcion = o.Localidad.Nombre,
+                    o.LocalidadDescripcion,
                     Material = o.Producto.Nombre,
                     o.PatenteChasis,
                     RazonSocialCliente = o.Cliente.RazonSocial

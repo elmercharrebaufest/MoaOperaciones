@@ -11,6 +11,7 @@ import { BaseComponent } from './../common/base-components/base-component';
 import { ModalService } from './../common/services/ModalService';
 import { CarouselNotificacionesComponent } from '../notificaciones/carousel-notificaciones/carousel-notificaciones.component';
 import { Router } from '@angular/router';
+import { TipoPeriodo } from '../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-home',
@@ -27,7 +28,7 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
         this.checkPermisos();
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
-        this.filtroFechaComponent = new FiltroFechaComponent();
+        // this.filtroFechaComponent = new FiltroFechaComponent();
     }
 
     @ViewChild(FiltroFechaComponent)
@@ -67,6 +68,8 @@ export class HomeComponent extends BaseComponent implements OnInit, OnDestroy {
     itemsPerPage = "10";
     subscription: any;
     tituloArchivoPDF = "Documento"
+    filtroFechaKey: string = "Home_Periodo";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimosDosDias;
 
     checkPermisos() {
         if (this.securityService.esGranosRedirect()) { 

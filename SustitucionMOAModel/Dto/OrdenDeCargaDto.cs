@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.Serialization.Json;
 using System.Text;
 using Ent = SustitucionMOAModel.Entities;
+using System.Linq;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -48,7 +49,18 @@ namespace SustitucionMOAModel.Dto
         public TipoContratoFAS TipoContrato { get; set; }
         public string DestinoMercaderia { get; set; }
         public bool TienePatentesRepetidas { get; set; }
-        public bool TieneConsultasRealizadas { get; set; }
+        public bool TieneConsultasRealizadas
+        {
+            get
+            {
+                if (IdsConsultasRealizadas == null)
+                {
+                    return false;
+                }
+                return IdsConsultasRealizadas.Count() > 0;
+            }
+        }
+        public IEnumerable<int> IdsConsultasRealizadas { get; set; }
         public bool FleteMOA { get; set; }
         public bool TienePatenteMultiplesAutorizaciones { get; set; }
         public OrdenDeCargaDto()

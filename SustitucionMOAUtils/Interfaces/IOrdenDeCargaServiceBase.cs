@@ -15,11 +15,15 @@ namespace SustitucionMOAUtils.Interfaces
         List<DomicilioDto> ObtenerDomiciliosDestino(string destinoCuit);
 
         bool ValidarCuitRuca(string cuit);
+        
         ValidarIntermediarioFleteResponse ValidarIntermediarioFlete(string cuit);
+        
         bool ValidarCuilChoferDigito(string cuilChofer);
+        
         bool ValidarCuitTransporteDigito(string cuitTransporte);
+        
         ProveedorDto ObtenerProveedor(int idProveedor);
+        
         ValidarCamionResponse ValidarCamion(string patenteChasis, string patenteAcoplado);
-        bool ValidarDigitoCuit(string cuit);
     }
 }

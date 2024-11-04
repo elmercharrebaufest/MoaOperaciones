@@ -31,6 +31,7 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public PatenteAcoplado: string;
     public PatenteChasis: string;
     public NombreChofer: string;
+    public ApellidoChofer: string;
     public CUILChofer: string;
     public RazonSocialTransporte: string;
     public CantidadDeViajes: number;
@@ -38,10 +39,13 @@ export class OrdenDeCargaFasonDto extends OrdenesBase {
     public TransporteExiste: boolean;
     public Observacion: string;
     public LocalidadDescripcion: string;
-
+    public TienePatentesRepetidas?: boolean;
+    public TienePatenteMultiplesAutorizaciones?: boolean;
     public RemitenteComercial?: boolean;
+
     public OrdenesConPatentesRepetidas?: number[];
     public CodigoCorredor?: string;
+    
     constructor() {
         super();
         this.FechaRetiro = new Date();

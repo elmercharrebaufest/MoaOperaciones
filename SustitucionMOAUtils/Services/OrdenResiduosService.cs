@@ -2,6 +2,8 @@
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
+using SustitucionMOAModel.Dto.Scato;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
 using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
@@ -13,46 +15,37 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 
 namespace SustitucionMOAUtils.Services
 {
-    public class OrdenResiduosService : IOrdenResiduosService
+    public class OrdenResiduosService : OrdenDeCargaServiceBase, IOrdenResiduosService
     {
-        private readonly IRepositorioOrdenResiduos repositorio;
-        private readonly IScatoRepositorioClient scatoRepositorioClient;
-        private readonly IOrdenCargaConsumerMOA ordenCargaConsumer;
-        private readonly IFeriadoService feriadoService;
+        private readonly IRepositorioOrdenResiduos repositorioResiduos;
         private readonly IEmailResiduosService emailResiduosService;
 
         public OrdenResiduosService(
-            IRepositorioOrdenResiduos repositorio,
-            IScatoRepositorioClient scatoRepositorioClient,
             IOrdenCargaConsumerMOA ordenCargaConsumer,
+            IScatoConsumer scatoConsumer,
+            IScatoRepositorioClient scatoRepositorioClient,
+            IRepositorioOrdenResiduos repositorioResiduos,
+            ICNRTClient cNRTClient,
             IFeriadoService feriadoService,
-            IEmailResiduosService emailResiduosService)
+            IEmailResiduosService emailResiduosService
+            ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioResiduos, cNRTClient, feriadoService)
         {
-            this.repositorio = repositorio;
-            this.scatoRepositorioClient = scatoRepositorioClient;
-            this.ordenCargaConsumer = ordenCargaConsumer;
-            this.feriadoService = feriadoService;
+            this.repositorioResiduos = repositorioResiduos;
             this.emailResiduosService = emailResiduosService;
         }
 
         public List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes()
         {
-            return repositorio.ObtenerClientesResiduos();
-        }
-
-        public SustitucionMOAModel.Dto.ProveedorDto ObtenerProveedor(int idProveedor)
-        {
-            var proveedor = repositorio.ObtenerProveedor(idProveedor) ??
-                throw new Exception("No se encontró el proveedor con ID " + idProveedor);
-            return new SustitucionMOAModel.Dto.ProveedorDto(proveedor);
+            return repositorioResiduos.ObtenerClientesResiduos();
         }
 
         public MaterialDto[] ObtenerMateriales()
         {
-            return repositorio.ObtenerMateriales();
+            return repositorioResiduos.ObtenerMateriales();
         }
 
         public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr)
@@ -60,7 +53,7 @@ namespace SustitucionMOAUtils.Services
             var fechaInicio = DataFormatter.StringToDateTime(fechaInicioStr, "");
             var fechaFin = DataFormatter.StringToDateTime(fechaFinStr, "");
 
-            var listado = repositorio.ObtenerListadoOrdenes(fechaInicio, fechaFin);
+            var listado = repositorioResiduos.ObtenerListadoOrdenes(fechaInicio, fechaFin);
 
             if (listado == null || listado.Count == 0)
             {
@@ -75,12 +68,12 @@ namespace SustitucionMOAUtils.Services
 
         public LocalidadDto[] ObtenerLocalidades()
         {
-            return repositorio.ObtenerLocalidades();
+            return repositorioResiduos.ObtenerLocalidades();
         }
 
         public PatentesClienteDto ObtenerPatentes(int clienteId)
         {
-            return repositorio.ObtenerPatentesDeOrdenes(clienteId);
+            return repositorioResiduos.ObtenerPatentesDeOrdenes(clienteId);
         }
 
         public List<SustitucionMOAModel.Dto.OrdenDeCarga.PlantaDto> ObtenerPlantas(string cuit)
@@ -139,7 +132,7 @@ namespace SustitucionMOAUtils.Services
 
         public TransportesIds ObtenerIdsTransportes(int clienteId, string patenteAcoplado)
         {
-            return repositorio.ObtenerIdsTransportes(clienteId, patenteAcoplado);
+            return repositorioResiduos.ObtenerIdsTransportes(clienteId, patenteAcoplado);
         }
 
         public GrabarOrdenResponse CrearNuevaOrden(OrdenResiduosDto ordenDto, string mailUsuario)
@@ -152,18 +145,22 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente
             };
+            for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
+            {
+                var ordenEntity = ordenDto.ToEntity();
+                ordenEntity.DomicilioDescr = ordenEntity.DomicilioDescr?.Substring(ordenEntity.DomicilioDescr.IndexOf(" ") + 1);
+                ordenEntity.FechaCreacion = DateTime.Now;
+                repositorioResiduos.Agregar(ordenEntity);
+            }
 
-            var ordenEntity = ordenDto.ToEntity();
-            ordenEntity.FechaCreacion = DateTime.Today;
-            repositorio.Agregar(ordenEntity);
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
 
             if (!existeTransporte)
             {
                 emailResiduosService.EnviarMailTransporteNoExiste(ordenDto.RazonSocialTransporte, ordenDto.CUITTransporte);
             }
 
-            return new GrabarOrdenResponse { IdOrden = ordenEntity.Id, Mensaje = SuccessMsg.OrdenDeCargaAgregada };
+            return new GrabarOrdenResponse { Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
         public GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario)
@@ -171,7 +168,7 @@ namespace SustitucionMOAUtils.Services
             Log.Info($"Editar orden residuos: [{ordenDto.ToJson()}], usuario: [{mailUsuario}]");
             ValidarOrden(ordenDto);
 
-            var ordenEntity = repositorio.ObtenerOrdenResiduos(ordenDto.Id);
+            var ordenEntity = repositorioResiduos.ObtenerOrdenResiduos(ordenDto.Id);
 
             var estadosPermitenEdicion = new EstadoOrdenResiduosEnum[]
             {
@@ -186,7 +183,7 @@ namespace SustitucionMOAUtils.Services
 
             ordenEntity = ordenDto.ToEntity(ordenEntity);
 
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 ordenEntity.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionSolicitada;
@@ -200,41 +197,41 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
 
             return new GrabarOrdenResponse { IdOrden = ordenEntity.Id, Mensaje = SuccessMsg.OrdenDeCargaActualizada };
         }
 
         public OrdenResiduosDto ObtenerOrden(int idOrden)
         {
-            var ordenDto = new OrdenResiduosDto().FromEntity(repositorio.ObtenerOrdenResiduos(idOrden));
+            var ordenDto = new OrdenResiduosDto().FromEntity(repositorioResiduos.ObtenerOrdenResiduos(idOrden));
 
             return ordenDto;
         }
 
         public OrdenResiduosDto AnularOrden(int ordenId, string mailUsuario)
         {
-            var orden = repositorio.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenEntregada)
             {
                 throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada");
             }
 
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
             }
 
             orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
 
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
         public OrdenResiduosDto SolicitarAnulacion(int ordenId, string mailUsuario)
         {
-            var orden = repositorio.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             var estadosPermitenAnulacion = new EstadoOrdenResiduosEnum[]
             {
                 EstadoOrdenResiduosEnum.OrdenGenerada,
@@ -245,27 +242,27 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new InfoCustomException("Esta orden no puede anularse en el estado actual");
             }
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
             if (usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
             }
 
             orden.EstadoId = (int)EstadoOrdenResiduosEnum.AnulacionSolicitada;
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
 
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
         public OrdenResiduosDto ActualizarSolicitudAnulacion(int ordenId, string mailUsuario, bool aprobarSolicitud)
         {
-            var orden = repositorio.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.AnulacionSolicitada)
             {
                 throw new InfoCustomException("Esta orden no está en estado de anulación solicitada");
             }
 
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
@@ -280,19 +277,19 @@ namespace SustitucionMOAUtils.Services
                 var existeTransporte = ExisteTransporte(orden.TransporteCuit);
                 orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
             }
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
         public OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud)
         {
-            var orden = repositorio.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.EdicionSolicitada)
             {
                 throw new InfoCustomException("Esta orden no está en estado de edición solicitada");
             }
 
-            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
@@ -307,16 +304,16 @@ namespace SustitucionMOAUtils.Services
             {
                 orden.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionRechazada;
             }
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
         public OrdenResiduosDto VerificarTransporte(int ordenId)
         {
-            var orden = repositorio.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             var existeTransporte = ExisteTransporte(orden.TransporteCuit);
             orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
@@ -334,27 +331,48 @@ namespace SustitucionMOAUtils.Services
                 return;
             }
 
-            var habilitacion = repositorio.Obtener<SustitucionMOAModel.Entities.HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesResiduosJob");
+            var habilitacion = repositorioResiduos.Obtener<SustitucionMOAModel.Entities.HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesResiduosJob");
             if (!habilitacion.Habilitado)
             {
                 return;
             }
 
             var ordenes =
-                repositorio.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada)
+                repositorioResiduos.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada)
                 .Where(orden => orden.FechaVencimiento(feriados) < fechaActual);
 
             foreach (var orden in ordenes)
             {
                 orden.EstadoId = (int)EstadoOrdenResiduosEnum.OrdenVencida;
             }
-            repositorio.GuardarCambios();
+            repositorioResiduos.GuardarCambios();
 
             emailResiduosService.EnviarMailOrdenesVencidas(ordenes);
         }
 
+        public IList<DestinoScato> ObtenerDestinosMercaderia(string cuit)
+        {
+            var destinosScato = ObtenerDestinos(cuit);
+            var destinosMercaderia = destinosScato
+                .Select(x =>
+                    new DestinoScato
+                    {
+                        LocalidadDescripcion = x.LocalidadDescripcion,
+                        LocalidadId = x.LocalidadId,
+                        ProvinciaDescripcion = x.ProvinciaDescripcion,
+                        ProvinciaId = x.ProvinciaId,
+                        KmsARecorrer = x.KmARecorrer
+                    })
+                .ToList();
+            return destinosMercaderia;
+        }
+
         private void ValidarOrden(OrdenResiduosDto ordenDto)
         {
+            if (ordenDto.Id == 0 && (ordenDto.CantidadDeViajes is null || ordenDto.CantidadDeViajes < 1 || ordenDto.CantidadDeViajes > 3))
+            {
+                throw new InfoCustomException("Revisar campo cantidad de viajes.");
+            }
             if (!ordenDto.Producto.ValidaSisaRuca)
             {
                 ordenDto.Domicilio = null;
@@ -379,7 +397,9 @@ namespace SustitucionMOAUtils.Services
 
             var auxiliar = basesValidacionCuit
                 .WithIndex()
-                .Sum(x => x.item * char.GetNumericValue(cuit[x.index]));
+                .Sum(x =>
+                    x.item * char.GetNumericValue(cuit[x.index])
+                );
 
             auxiliar = 11 - (auxiliar % 11);
 
@@ -393,14 +413,6 @@ namespace SustitucionMOAUtils.Services
             }
             var ultimoDigito = char.GetNumericValue(cuit.Last());
             return auxiliar == ultimoDigito;
-        }
-
-        private void LogMensajesScato(RespuestaScatoBase respuestaScato)
-        {
-            foreach (var err in respuestaScato.Messages)
-            {
-                Log.Info($"Error Scato código {err.MessageCode}, descripción: {err.Message}");
-            }
         }
     }
 }

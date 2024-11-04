@@ -12,6 +12,7 @@ import { Material } from '../../common/models/material';
 import { ConfirmationService } from 'primeng/api';
 import { Permiso } from '../../common/enums/Permisos';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
   selector: 'app-listado',
@@ -44,12 +45,11 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
   listaDestino: string[] = [];
   listaClientes: string[] = [];
   datosAux: any[];
-  //primerListado: any[];
   filtroCliente: any = null;
   filtroPatente: any = null;
-  //entregada: string = "Orden entregada";
 
-
+  filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
+  filtroFechaKey: string = 'NGOCFason_Periodo';
 
   esTercero: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCarga);
   esAdmin: boolean = this.isAuthorized(Permiso.FasonVerOrdenesDeCargaAdmin);
@@ -90,7 +90,7 @@ export class OrdenesDeCargaFasonListadoComponent extends ListBaseComponent imple
     this.setTabs();
     this.checkPermisos();
     this.navService.setSeccionList([]);
-    this.getListado();
+    // this.getListado();
     this.getProductos();
   }
 

@@ -70,3 +70,14 @@ IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCateg
 IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCategoria.Categoria_Id = Categoria.Id where SubCategoria.Nombre = 'CTG' and Categoria.Nombre = 'Orden de Carga') BEGIN insert into SubCategoria select 'CTG','CTG',id from Categoria where Nombre = 'Orden de Carga' END
 IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCategoria.Categoria_Id = Categoria.Id where SubCategoria.Nombre = 'Datos incorrectos en orden' and Categoria.Nombre = 'Orden de Carga') BEGIN insert into SubCategoria select 'ERROROC','Datos incorrectos en orden',id from Categoria where Nombre = 'Orden de Carga' END
 IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCategoria.Categoria_Id = Categoria.Id where SubCategoria.Nombre = 'Otros' and Categoria.Nombre = 'Orden de Carga') BEGIN insert into SubCategoria select 'OTROSOC','Otros',id from Categoria where Nombre = 'Orden de Carga' END
+
+
+UPDATE SubCategoria
+SET Nombre = 'CBU'
+FROM Categoria
+WHERE
+	SubCategoria.Categoria_Id = Categoria.Id and
+	SubCategoria.Nombre = 'Impositiva / CBU' and
+	Categoria.Nombre = 'Actualización'
+
+IF NOT EXISTS (select top 1 1 from SubCategoria inner join Categoria on SubCategoria.Categoria_Id = Categoria.Id where SubCategoria.Nombre = 'CBU' and Categoria.Nombre = 'Actualización') BEGIN insert into SubCategoria select 'IMP','CBU',id from Categoria where Nombre = 'Actualización' END

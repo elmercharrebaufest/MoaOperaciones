@@ -16,8 +16,10 @@ namespace SustitucionMOAModel.Dto
         public string DomicilioTipo { get; set; }
         public string FechaCreacion { get; set; }
         public string LocalidadDescripcion { get; set; }
-        public int LocalidadId { get; set; }
+        public int? LocalidadId { get; set; }
         public string NombreChofer { get; set; }
+        public string ChoferApellido { get; set; }
+        public string ChoferNombre { get; set; }
         public string Observacion { get; set; }
         public string PatenteAcoplado { get; set; }
         public string PatenteChasis { get; set; }
@@ -45,6 +47,5 @@ namespace SustitucionMOAModel.Dto
     {
         internal static readonly string FAS = "FAS";
         internal static readonly string FASON = "FASON";
-        internal static readonly string RESIDUOS = "RESIDUOS";
     }
 }

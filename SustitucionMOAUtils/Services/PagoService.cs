@@ -85,6 +85,7 @@ namespace SustitucionMOAUtils.Services
 
                 }
                 catch { }
+                dataView.data.pagos = dataView.data.pagos.OrderByDescending(p => p.fechaPagoDate).ToList();
                 return dataView;
             }
             catch (InfoCustomException e)

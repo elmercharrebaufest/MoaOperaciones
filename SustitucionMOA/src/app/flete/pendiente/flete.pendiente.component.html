@@ -19,7 +19,7 @@
                 </div>
                 <div id="searchFecha" class="col-xs-12 col-sm-6 col-md-15">
                     Ver:
-                    <filtro-fecha (ClickEvent)="getData()"></filtro-fecha>
+                    <filtro-fecha (ClickEvent)="getData()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
                 </div>
                 <div id="searchContrato" class="col-xs-12 col-sm-6 col-md-15">
                     Por N&ordm; CCPP:

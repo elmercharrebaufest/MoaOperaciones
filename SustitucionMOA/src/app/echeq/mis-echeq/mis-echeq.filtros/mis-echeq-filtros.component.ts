@@ -12,6 +12,7 @@ import { DropdownComponent } from '../../../common/view-child/dropdown/dropdown.
 import { FiltroFechaComponent } from '../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { OrdenesDeCargaFasonService } from '../../../ordenes-de-carga-fason/ordenes-de-carga-fason.service';
 import { MisEcheqFilter } from './mis-echeq-filter.model';
+import { TipoPeriodo } from '../../../common/enums/TipoPeriodo';
 
 @Component({
   selector: 'app-mis-echeq-filtros',
@@ -44,8 +45,10 @@ export class MisEcheqFiltrosComponent extends ListBaseComponent implements OnIni
     super(service, navService, sessionDataService, securytiService, floatMsgService, modalService);
 
     this.echeqFilterModel = new MisEcheqFilter();
-}
+  }
 
+  filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
+  filtroFechaKey: string = 'GEchqMisEch_Periodo';
 
   ngOnInit() {
     this.onChangeFecha();

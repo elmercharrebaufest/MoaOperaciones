@@ -10,6 +10,7 @@ import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { SecurityService } from './../../common/services/SecurityService';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 
 
@@ -28,6 +29,8 @@ export class LiquidacionAprobadaComponent extends LiquidacionBaseComponent {
     tituloArchivo = "ReporteLiquidacionesAprobadas.xls";
     tituloArchivoModal = "ReporteVinculacion";
     cerosFijacion: string = "00";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimosDosDias;
+    filtroFechaKey: string = 'GLiqAprob_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("liquidacion", "Aprobadas");
