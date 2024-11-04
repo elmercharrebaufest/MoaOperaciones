@@ -87,7 +87,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     selectTratada: boolean | null = null;
 
     tiposSolp: SelectItem[] = [];
-    selectTipoSolp: number;
+    selectTipoSolp?: number;
     showNombrePliegoConditionList: number[] = [];
     get showNombrePliego() {
         return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
@@ -113,6 +113,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         fechaHasta: null,
         tratada: null,
         numeroPo: null,
+        selectTipoSolp: null,
+        nombrePliego: null,
     };
 
     ngOnInit() {
@@ -160,7 +162,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                                 label: tp.Codigo, value: tp.Id
                             })
                         });
-                        this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple;
+                        if (!this.selectTipoSolp) { this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple; }
                         this.showNombrePliegoConditionList = result.showNombrePliegoConditionList;
                     }
                 },
@@ -372,6 +374,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.filtrosPOMultiple.fechaHasta = this.fechaFin;
         this.filtrosPOMultiple.tratada = this.selectTratada;
         this.filtrosPOMultiple.numeroPo = this.numeroPo;
+        this.filtrosPOMultiple.selectTipoSolp = this.selectTipoSolp;
+        this.filtrosPOMultiple.nombrePliego = this.nombrePliego;
         sessionStorage.setItem('filtrosPOMultiple', JSON.stringify(this.filtrosPOMultiple));
     }
 
@@ -414,6 +418,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             } else {
                 this.rangeDates = undefined;
             }
+            this.selectTipoSolp = this.filtrosPOMultiple.selectTipoSolp;
+            this.nombrePliego = this.filtrosPOMultiple.nombrePliego;
         }
     }
 
@@ -493,4 +499,6 @@ interface iFiltrosPoMultiple {
     fechaHasta: string;
     tratada: boolean | null;
     numeroPo?: number;
+    selectTipoSolp?: number;
+    nombrePliego?: string;
 }
