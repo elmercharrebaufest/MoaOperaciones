@@ -9765,81 +9765,47 @@ namespace SustitucionMOAUtils.Services
             return usuarios;
         }
 
-        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null)
+        private static Expression<Func<SolpPosicion, bool>> ListarPosicionesPOMultipleCommonFilter
+            (List<string> solps,
+             DateTime? desde,
+             DateTime? hasta,
+             bool sap,
+             bool mantenimiento,
+             bool web,
+             bool repoAutomatica,
+             bool? tratada,
+             List<int> centros = null,
+             List<int> grupoDeCompras = null,
+             List<int> claseDocumento = null,
+             List<string> tipoImputacion = null,
+             List<int> valorTipoImputacion = null)
         {
-            try
-            {
-                var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
-
-                var posicionPendientesSap = new List<PosicionPendienteDto>();
-
-                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
-                var solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
-                var sinSolps = !solps.Any();
-
-                if (sinSolps)
-                {
-                    return new List<POPosicionDto>();
-                }
-
-                var posicionMaterial = repositorio.Listar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
-                {
-                    Id = pos.Id,
-                    NroSolp = pos.Solp.NroSolp,
-                    Indice = pos.Indice,
-                    Codigo = pos.MaterialSolp.Codigo,
-                    Tarea = pos.Tarea,
-                    CentroComprasDescripcion = pos.Centro.Descripcion,
-                    AlmacenComprasDescripcion = pos.Almacen.Descripcion,
-                    TextoSuministro = pos.TextoSuministro,
-                    Modelo = pos.Modelo,
-                    GrupoComprasDescripcion = pos.GrupoCompras.Descripcion,
-                    Cantidad = pos.Cantidad,
-                    UnidadComprasDescripcion = pos.Unidad.Descripcion,
-                    MonedaSolpDescripcion = pos.Moneda.Descripcion,
-                    FechaEntregaServicio = pos.FechaEntregaServicio,
-                    PlazoEntrega = pos.PlazoEntrega,
-                    FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                    TieneCotizacion = pos.Peticiones.Any(),
-                },
-                    pos => pos.TipoPosicion.Codigo == "MATERIALES" &&
+            Expression<Func<SolpPosicion, bool>> ListarPosicionesPOMultipleCommonFilter =
+                pos =>
                     solps.Contains(
-                        pos.Solp.NroSolp
-                    ) &&
-                    (
+                pos.Solp.NroSolp
+                ) &&
+                (
                         sap && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica
                         && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||
                             (
                                 web &&
                                 (
                                     pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web
-                                )
+                )
                             ) ||
                             (
                                 !sap
                                 && !mantenimiento
                                 && !web
                                 && !repoAutomatica
-                             )
+                )
+                ) &&
+                (
+                desde == null || pos.Solp.FechaCreacion >= desde.Value
                     ) &&
                     (
-                        desde == null || pos.Solp.FechaCreacion >= desde.Value
-                    ) &&
-                    (
-                        fechaHasta == null || pos.Solp.FechaCreacion <= fechaHasta.Value
+                        hasta == null || pos.Solp.FechaCreacion <= hasta.Value
                     ) &&
                     (
                         !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
@@ -9860,7 +9826,71 @@ namespace SustitucionMOAUtils.Services
                       pos.Solp.Adicional != true &&
                       pos.Solp.CondEspProveedorAsignado != true &&
                       (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
-                      pos.Solp.EstadoSolpSap.CodigoSap == "02")
+                      pos.Solp.EstadoSolpSap.CodigoSap == "02");
+
+            return ListarPosicionesPOMultipleCommonFilter;
+        }
+
+
+        public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
+                                                              DateTime? hasta,
+                                                              bool sap,
+                                                              bool mantenimiento,
+                                                              bool web,
+                                                              bool repoAutomatica,
+                                                              bool? tratada,
+                                                              bool contratoMarco,
+                                                              List<int> centros = null,
+                                                              List<int> grupoDeCompras = null,
+                                                              List<int> claseDocumento = null,
+                                                              List<string> tipoImputacion = null,
+                                                              List<int> valorTipoImputacion = null,
+                                                              int? numeroPo = null)
+        {
+            try
+            {
+                DateTime? fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
+
+                var posicionPendientesSap = new List<PosicionPendienteDto>();
+
+                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                List<string> solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
+                var sinSolps = !solps.Any();
+
+                if (sinSolps)
+                {
+                    return new List<POPosicionDto>();
+                }
+
+                Expression<Func<SolpPosicion, bool>> commonFilter = ListarPosicionesPOMultipleCommonFilter(solps, desde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, centros, grupoDeCompras, claseDocumento, tipoImputacion, valorTipoImputacion);
+                Expression<Func<SolpPosicion, bool>> filtroMaterial = pos => pos.TipoPosicion.Codigo == "MATERIALES";
+                List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()
+                {
+                    filtroMaterial,
+                    commonFilter,
+                };
+
+                var posicionMaterial = repositorio.ListarIntersecar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
+                {
+                    Id = pos.Id,
+                    NroSolp = pos.Solp.NroSolp,
+                    Indice = pos.Indice,
+                    Codigo = pos.MaterialSolp.Codigo,
+                    Tarea = pos.Tarea,
+                    CentroComprasDescripcion = pos.Centro.Descripcion,
+                    AlmacenComprasDescripcion = pos.Almacen.Descripcion,
+                    TextoSuministro = pos.TextoSuministro,
+                    Modelo = pos.Modelo,
+                    GrupoComprasDescripcion = pos.GrupoCompras.Descripcion,
+                    Cantidad = pos.Cantidad,
+                    UnidadComprasDescripcion = pos.Unidad.Descripcion,
+                    MonedaSolpDescripcion = pos.Moneda.Descripcion,
+                    FechaEntregaServicio = pos.FechaEntregaServicio,
+                    PlazoEntrega = pos.PlazoEntrega,
+                    FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
+                    TieneCotizacion = pos.Peticiones.Any(),
+                },
+                    filtros
                 );
 
                 posicionMaterial = posicionMaterial.Where(pm => posicionPendientesSap

@@ -29,7 +29,7 @@ namespace SustitucionMOARepositorio
         public TEntidad Agregar<TEntidad>(TEntidad entidad) where TEntidad : class
         {
             return Set<TEntidad>().Add(entidad);
-        }       
+        }
 
         public int Contar<TEntidad>() where TEntidad : class
         {
@@ -98,6 +98,20 @@ namespace SustitucionMOARepositorio
         {
             IQueryable<TEntidad> resultado = Set<TEntidad>();
             if (filtro != null)
+            {
+                resultado = resultado.Where(filtro);
+            }
+
+            var resultadoFinal = resultado.GroupBy(proyeccion).Select(g => g.Key);
+            resultadoFinal = ListarProyeccionQueryable(resultadoFinal, orden, direccionOrden, maxResultados);
+            return resultadoFinal.ToList();
+        }
+
+        //Si, se escribe así: https://dle.rae.es/intersecar
+        public List<TProyeccion> ListarIntersecar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, IEnumerable<Expression<Func<TEntidad, bool>>> filtros, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc) where TEntidad : class
+        {
+            IQueryable<TEntidad> resultado = Set<TEntidad>();
+            foreach (Expression<Func<TEntidad, bool>> filtro in filtros)
             {
                 resultado = resultado.Where(filtro);
             }
