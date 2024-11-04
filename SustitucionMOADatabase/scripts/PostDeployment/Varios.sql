@@ -66,10 +66,65 @@ IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'DolarMaizCotizaci
 BEGIN
 	insert into Configuracion values ('DolarMaizCotizacion','340')
 END
-IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'PliegoDeGeneralidades') 
+
+IF EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'PliegoDeGeneralidades') 
 BEGIN
-	insert into Configuracion values ('PliegoDeGeneralidades','https://b2cmoagro.blob.core.windows.net/moaopublic/PliegoGeneralidades.pdf')
+	DELETE FROM Configuracion WHERE [Code] = 'PliegoDeGeneralidades'
 END
+
+declare @configuracionListaArchivosMailPeticionDeOferta varchar(max) = '[
+	{
+		"Filename": "F-2285-4 PLIEGO GENERALIDADES",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/F-2285_PLIEGO_GENERALIDADES.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "Chequeo de orden y limpieza aplicable a obras desarrolladas por terceros",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/Chequeo_de_orden_y_limpieza_aplicable_a_obras_desarrolladas_por_terceros.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "Cia. Aseguradores Autorizadas (Seguros de Caucion y Limites)",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/Cia.AseguradoresAutorizadas(Seguros_de_CaucionyLimites).pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "CONDICIONES COMERCIALES",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/CONDICIONES_COMERCIALES.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "Habilitación permanencia Obrador",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/Habilitación_permanencia_Obrador.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "Ingreso y control de obradores a planta",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/Ingreso_y_controldeobradoresaplanta.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "MA 19 Manual de Contratistas MOA",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/MA_19-Manual_de_Contratistas_MOA.pdf",
+		"MimeType": "application/pdf"
+	},
+	{
+		"Filename": "MOA-Politica integrada",
+		"Url": "https://b2cmoagro.blob.core.windows.net/moaopublic/MOA-Politica_integrada.pdf",
+		"MimeType": "application/pdf"
+	}
+]'
+
+IF NOT EXISTS (SELECT TOP 1 1 FROM Configuracion WHERE Code = 'ListaArchivosMailPeticionDeOferta')
+BEGIN
+	insert into Configuracion ([Code], [Value]) 
+	values ('ListaArchivosMailPeticionDeOferta', @configuracionListaArchivosMailPeticionDeOferta)
+END
+ELSE
+BEGIN
+	UPDATE Configuracion SET [Value] = @configuracionListaArchivosMailPeticionDeOferta WHERE [Code] = 'ListaArchivosMailPeticionDeOferta'
+END
+
 
 update CentroDireccion set RegionSap_Id = '9' where CodigoSap = '1001';
 update CentroDireccion set RegionSap_Id = '20' where CodigoSap = '1029';
@@ -119,55 +174,55 @@ WHERE
 
 -- Continuación del script
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ROL') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ROL', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ROL', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'RWF') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('RWF', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('RWF', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TJR') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TJR', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TJR', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TMM') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TMM', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TMM', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TND') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TND', 3)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TND', 3)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TPE') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TPE', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TPE', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'TRL') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TRL', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('TRL', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'UGX') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('UGX', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('UGX', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDM') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDM', 3)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDM', 3)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDN') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDN', 5)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDN', 5)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'USDP') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDP', 5)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('USDP', 5)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VND') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VND', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VND', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'VUV') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VUV', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('VUV', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XAF') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XAF', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XAF', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XOF') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XOF', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XOF', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'XPF') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XPF', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('XPF', 0)
 
 IF NOT EXISTS (SELECT TOP 1 1 FROM dbo.MonedaConversion WHERE MonedaCodigo = 'ZRN') 
-    INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ZRN', 0)
+	INSERT INTO MonedaConversion(MonedaCodigo, CantidadDecimal) VALUES ('ZRN', 0)
 
 
 --Incoterms

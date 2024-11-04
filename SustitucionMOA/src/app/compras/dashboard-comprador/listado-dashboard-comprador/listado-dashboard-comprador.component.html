@@ -44,43 +44,52 @@
             </div>
         </div>
         <div class="row myRow">
-            <div class="col-md-2 col-lg-2">
-                <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
-                            dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
-                            [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
-                            (onClearClick)="returnToTodaysDate()">
-                </p-calendar>
-            </div>
-            <div class="col-md-7" style="margin-top: 6px;">
-                <div class="col-md-4 col-lg-4">
-                    <input class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="margin-top: -6px" pInputText type="text"
-                           [(ngModel)]="nombrePedido" placeholder="Buscar por nombre del pedido">
+            <div class="col-md-9 col-lg-9" style="padding:0 !important">
+                <div class="col-md-3 col-lg-3">
+                    <p-calendar showButtonBar="true" [showIcon]="true" placeholder="Buscar por fechas"
+                                dateFormat="dd/mm/yy" (onSelect)="onSelect($event)" appendTo="body"
+                                [(ngModel)]="rangeDates" selectionMode="range" [readonlyInput]="true" [locale]="locale"
+                                (onClearClick)="returnToTodaysDate()">
+                    </p-calendar>
                 </div>
-                <span style="margin-right: 10px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="SOLPs pendientes de tratar"
-                                [(ngModel)]="listarPendiente"></p-checkbox>
-                </span>
-                <span style="margin-right: 10px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
-                </span>
-                <span style="margin-right: 10px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                [(ngModel)]="mantenimiento"></p-checkbox>
-                </span>
-                <span style="margin-right: 10px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                </span>
-                <span style="margin-right: 10px;">
-                    <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
-                                [(ngModel)]="repoAutomatica"></p-checkbox>
-                </span>
-                <span>
-                    <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
-                                [(ngModel)]="contratoMarco"></p-checkbox>
-                </span>
+                <div class="col-md-6 col-lg-6" style="padding:0 !important">
+                    <input class="col-md-6 col-lg-6" pInputText type="text"
+                           [(ngModel)]="nombrePedido" placeholder="Buscar por nombre del pedido">
+
+                    <div class="col-md-6 col-lg-6">
+                        <p-dropdown [(ngModel)]="listarPendiente"
+                                    [options]="estadoSolpTratamiento"
+                                    optionLabel="label"
+                                    optionValue="value"
+                                    placeholder="...cargando..."></p-dropdown>
+                    </div>
+                </div>
+                    <div class="col-md-3 col-lg-3">
+                        <div class="col-md-6" style="padding:0 !important;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
+                        </div>
+                        <div class="col-md-6" style="padding:0 !important;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                        [(ngModel)]="mantenimiento"></p-checkbox>
+                        </div>
+                        <div class="col-md-6" style="padding:0 !important;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                        </div>
+                        <div class="col-md-6" style="padding:0 !important;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
+                                        [(ngModel)]="repoAutomatica"></p-checkbox>
+                        </div>
+                        <div class="col-md-6" style="padding:0 !important;">
+                            <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
+                                        [(ngModel)]="contratoMarco"></p-checkbox>
+                        </div>
+                    </div>
+
             </div>
-            <div class="col-md-3" style="text-align: center; padding-right: 30px;">
-                <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+            <div class="col-md-3 col-lg-3" style="padding:0 !important">
+                <div class="col-md-12" style="text-align: center; padding-right: 30px;">
+                    <button class="btn buscar" (click)="onBuscar()">Buscar</button>
+                </div>
             </div>
         </div>
     </div>
@@ -278,14 +287,14 @@
                                             </tr>
                                         </ng-template>
                                         <ng-template pTemplate="body" let-licitacion>
-                                            <tr>                                              
-                                                <td id="agregarProveedor">                                                   
-                                                    <div>                                              
+                                            <tr>
+                                                <td id="agregarProveedor">
+                                                    <div>
                                                         <span *ngIf="!rowData.Adicional && !rowData.TrabajoYaHecho && !rowData.CondEspProveedorAsignado">
-                                                            <img class="pointer" 
-                                                                 src="./Content/images/icons/add-user.svg" 
+                                                            <img class="pointer"
+                                                                 src="./Content/images/icons/add-user.svg"
                                                                  title="Agregar proveedor"
-                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)" 
+                                                                 (click)="obtenerPeticionDeOfertaParaProveedor(licitacion.Id)"
                                                                  [style.pointer-events]="esAuditor ? 'none' : 'auto'"
                                                                  [style.opacity]="esAuditor ? '0.6' : '1'"
                                                                  style="height: 30px;" />
@@ -404,7 +413,7 @@
     </app-orden-de-compra-detalle>
 
     <app-cerrar-cotizacion [(displayCerrarCotizacion)]="displayCerrarCotizacion"
-                           (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()" 
+                           (cerrarModalCotizacionEmitter)="cerrarModalCotizacion()"
                            (onCloseModalEmitter)="cancelarModal()"
                            [(peticion)]="peticion"
                            [(visualizarAlertCotizacion)]="visualizarAlertCotizacion">

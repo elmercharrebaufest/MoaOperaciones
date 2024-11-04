@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ComprasService } from '../compras.service';
-import { UsuarioService } from '../../usuario/usuario.service';
 import { ListBaseComponent } from '../../common/base-components/list-base-component';
-import { FormBuilder } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { ConfirmationService, SelectItem } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SelectItem } from 'primeng/api';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
@@ -12,11 +10,9 @@ import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { Table } from 'primeng/table';
-import { SolpCompraDto, PosicionCompra, SolpSubposicionDto, SolpProveedorDto, EnvioSolpCompra, AltaNuevoProveedor } from '../solp-compra';
-import { EnumTipoSolpSap } from '../enum-tipo-solp-sap';
 import { POPosicionDto } from '../../modelos/po-posicionDto';
-import { Subscription } from 'rxjs';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
+import _ from 'lodash';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -29,7 +25,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
-        protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
+        protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.usuario = sessionStorage.getItem("username");
@@ -85,60 +81,34 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     repoAutomatica: boolean = false;
     contratoMarco: boolean = false;
     posiciones: POPosicionDto[] = [];
+    numeroPo?: number = null;
 
-    tratada: SelectItem[] = [{ label: "Si", value: true }, { label: "No", value: false }, { label: "Todas", value: null }];
+    tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
     selectTratada: boolean | null = null;
 
-    filtrosPOMultiple: {
-        sap: boolean;
-        mantenimiento: boolean;
-        web: boolean;
-        repoAutomatica: boolean;
-        contratoMarco: boolean;
-        gruposCompras: string[];
-        centros: string[];
-        claseDocumento: string[];
-        tipoImputacion: string[];
-        valorTipoImputacion: string[];
-        subtipoImputacionCombo: SelectItem[];
-        fechaDesde: string;
-        fechaHasta: string;
-        tratada: boolean | null;
-    } = {
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            contratoMarco: false,
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            tratada: null
-        };
+    filtrosPOMultiple: iFiltrosPoMultiple;
+
+    private readonly filtrosPOMultipleDefault: iFiltrosPoMultiple = {
+        sap: false,
+        mantenimiento: false,
+        web: false,
+        repoAutomatica: false,
+        contratoMarco: false,
+        gruposCompras: [],
+        centros: [],
+        claseDocumento: [],
+        tipoImputacion: [],
+        valorTipoImputacion: [],
+        subtipoImputacionCombo: [],
+        fechaDesde: null,
+        fechaHasta: null,
+        tratada: null,
+        numeroPo: null,
+    };
 
     ngOnInit() {
 
-        this.filtrosPOMultiple = {
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            contratoMarco: false,
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            tratada: null
-        };
+        this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
         this.recuperarFiltros();
         this.listarPosicionesPOMultiple();
     }
@@ -247,8 +217,21 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         try {
             this.blockUI.start('Cargando...');
 
-            this.subscription = this.service.listarPosicionesPOMultiple(this.fechaInicio, this.fechaFin, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco,
-                this.selectCentro.join(","), this.selectGrupoCompras.join(","), this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","), this.selectTratada
+            this.subscription = this.service.listarPosicionesPOMultiple(
+                this.fechaInicio,
+                this.fechaFin,
+                this.sap,
+                this.mantenimiento,
+                this.web,
+                this.repoAutomatica,
+                this.contratoMarco,
+                this.selectCentro.join(","),
+                this.selectGrupoCompras.join(","),
+                this.selectClaseDocumento.join(","),
+                this.selectTipoImputacion.join(","),
+                this.selectValorTipoImputacion.join(","),
+                this.selectTratada,
+                this.numeroPo
             ).subscribe(
                 (result: any) => {
 
@@ -277,6 +260,86 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     onBuscar() {
+        this.listarPosicionesPOMultiple();
+        this.guardarFiltros();
+    }
+
+    download() {
+        try {
+            this.blockUI.start('Cargando...');
+
+            this.subscription = this.service.descargarPosicionesPOMultiple(
+                this.fechaInicio,
+                this.fechaFin,
+                this.sap,
+                this.mantenimiento,
+                this.web,
+                this.repoAutomatica,
+                this.contratoMarco,
+                this.selectCentro.join(","),
+                this.selectGrupoCompras.join(","),
+                this.selectClaseDocumento.join(","),
+                this.selectTipoImputacion.join(","),
+                this.selectValorTipoImputacion.join(","),
+                this.selectTratada,
+                this.numeroPo
+            ).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        var byteArray = new Uint8Array(result.file);
+                        var blob = new Blob([byteArray], {
+                            type: result.contentType,
+                        });
+
+                        this.downloadArchivoLocal(blob, result.fileName);
+
+                        this.blockUI.stop();
+                    }
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    private downloadArchivoLocal(blob: Blob, nombreArchivo: string): void { // esto habría que moverlo a otro lado, hay demasiadas copias del mismo código.
+        if ((window.navigator as any).msSaveOrOpenBlob) {
+            // IE11
+            (window.navigator as any).msSaveOrOpenBlob(blob, nombreArchivo);
+        }
+        else {
+            var url = window.URL.createObjectURL(blob);
+            var link = document.createElement("a");
+            document.body.appendChild(link);
+            link.href = url;
+            link.download = nombreArchivo;
+            link.click();
+            setTimeout(function () {
+                window.URL.revokeObjectURL(url);
+            }, 0);
+            return;
+        }
+    }
+
+    clearFilters(): void {
+        this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
+        this.aplicarFiltrosDesdeGuardados();
+    }
+
+    private guardarFiltros(): void {
         this.filtrosPOMultiple.sap = this.sap;
         this.filtrosPOMultiple.mantenimiento = this.mantenimiento;
         this.filtrosPOMultiple.web = this.web;
@@ -291,27 +354,38 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.filtrosPOMultiple.fechaDesde = this.fechaInicio;
         this.filtrosPOMultiple.fechaHasta = this.fechaFin;
         this.filtrosPOMultiple.tratada = this.selectTratada;
-        this.listarPosicionesPOMultiple();
+        this.filtrosPOMultiple.numeroPo = this.numeroPo;
         sessionStorage.setItem('filtrosPOMultiple', JSON.stringify(this.filtrosPOMultiple));
     }
 
-    recuperarFiltros() {
-        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
-        if (filtrosGuardados) {
-            this.sap = filtrosGuardados.sap;
-            this.mantenimiento = filtrosGuardados.mantenimiento;
-            this.web = filtrosGuardados.web;
-            this.repoAutomatica = filtrosGuardados.repoAutomatica;
-            this.contratoMarco = filtrosGuardados.contratoMarco;
-            this.selectGrupoCompras = filtrosGuardados.gruposCompras;
-            this.selectCentro = filtrosGuardados.centros;
-            this.selectClaseDocumento = filtrosGuardados.claseDocumento;
-            this.selectTipoImputacion = filtrosGuardados.tipoImputacion;
-            this.selectValorTipoImputacion = filtrosGuardados.valorTipoImputacion;
-            this.valorTipoImputacionFiltro = filtrosGuardados.subtipoImputacionCombo;
-            this.fechaInicio = filtrosGuardados.fechaDesde;
-            this.fechaFin = filtrosGuardados.fechaHasta;
-            this.selectTratada = filtrosGuardados.tratada;
+    private recuperarFiltros() {
+        let filtrosPOMultipleParsed: iFiltrosPoMultiple = JSON.parse(sessionStorage.getItem('filtrosPOMultiple'));
+        if (filtrosPOMultipleParsed) {
+            this.filtrosPOMultiple = _.cloneDeep(filtrosPOMultipleParsed);
+        }
+        else {
+            this.filtrosPOMultiple = _.cloneDeep(this.filtrosPOMultipleDefault);
+        }
+        this.aplicarFiltrosDesdeGuardados();
+    }
+
+    private aplicarFiltrosDesdeGuardados(): void {
+        if (this.filtrosPOMultiple) {
+            this.sap = this.filtrosPOMultiple.sap;
+            this.mantenimiento = this.filtrosPOMultiple.mantenimiento;
+            this.web = this.filtrosPOMultiple.web;
+            this.repoAutomatica = this.filtrosPOMultiple.repoAutomatica;
+            this.contratoMarco = this.filtrosPOMultiple.contratoMarco;
+            this.selectGrupoCompras = this.filtrosPOMultiple.gruposCompras;
+            this.selectCentro = this.filtrosPOMultiple.centros;
+            this.selectClaseDocumento = this.filtrosPOMultiple.claseDocumento;
+            this.selectTipoImputacion = this.filtrosPOMultiple.tipoImputacion;
+            this.selectValorTipoImputacion = this.filtrosPOMultiple.valorTipoImputacion;
+            this.valorTipoImputacionFiltro = this.filtrosPOMultiple.subtipoImputacionCombo;
+            this.fechaInicio = this.filtrosPOMultiple.fechaDesde;
+            this.fechaFin = this.filtrosPOMultiple.fechaHasta;
+            this.selectTratada = this.filtrosPOMultiple.tratada;
+            this.numeroPo = this.filtrosPOMultiple.numeroPo;
             if (this.fechaInicio != undefined && this.fechaInicio.length > 0) {
                 const [year, month, day] = this.fechaInicio.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaFin != undefined && this.fechaFin.length > 0) {
@@ -320,6 +394,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 } else {
                     this.rangeDates = [new Date(year, month - 1, day)];
                 }
+            } else {
+                this.rangeDates = undefined;
             }
         }
     }
@@ -382,10 +458,22 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
         }
     }
-
-
-
 }
 
-
-
+interface iFiltrosPoMultiple {
+    sap: boolean;
+    mantenimiento: boolean;
+    web: boolean;
+    repoAutomatica: boolean;
+    contratoMarco: boolean;
+    gruposCompras: string[];
+    centros: string[];
+    claseDocumento: string[];
+    tipoImputacion: string[];
+    valorTipoImputacion: string[];
+    subtipoImputacionCombo: SelectItem[];
+    fechaDesde: string;
+    fechaHasta: string;
+    tratada: boolean | null;
+    numeroPo?: number;
+}

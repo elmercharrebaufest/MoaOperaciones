@@ -64,6 +64,7 @@ namespace SustitucionMOAWS.Interfaces
     public interface IObtenerUnidadesDeMedidaAlternativasConsumerMOA
     {
         List<UnidadesDeMedida> Request(List<string> codigosMaterial);
+        List<UnidadesDeMedida> Request(string codigoMaterial);
     }
     public interface IObtenerPDFOrdenCompraConsumerMOA
     {

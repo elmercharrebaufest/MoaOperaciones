@@ -43,7 +43,7 @@ namespace SustitucionMOAUtils.Services.Email
 
             var asunto = $"NUEVA cotización creada por {cotizadorRazonSocial} - SOLPs " +
                 string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct());
-            
+
             emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", null, ObtenerCuerpoCotizacionCreada(cotizacion), null, null, null, null);
         }
 
@@ -51,23 +51,23 @@ namespace SustitucionMOAUtils.Services.Email
         {
             try
             {
-                Log.Info($"EnviarMailSolpLiberada. Nro de SOLP {solp.NroSolp}. Copia mail comprador: {solp.UsuarioCompras.Mail}. Copia mail creador: {solp.UsuarioCreacion.Mail}");
+                Log.Info($"EnviarMailSolpLiberada. Nro de SOLP {solp.NroSolp}. Copia mail comprador: {solp.UsuarioCompras?.Mail}. Copia mail creador: {solp.UsuarioCreacion?.Mail}");
 
                 var copia = new List<string> { };
-                if (!string.IsNullOrEmpty(solp?.UsuarioCreacion?.Mail))
+                if (!string.IsNullOrEmpty(solp.UsuarioCreacion?.Mail))
                 {
                     copia.Add(solp.UsuarioCreacion.Mail);
                     Log.Info($"Copia mail solicitante {solp.UsuarioCreacion.Mail}");
                 }
 
-                if (!string.IsNullOrEmpty(solp?.Pliego.Email))
+                if (!string.IsNullOrEmpty(solp.Pliego.Email))
                 {
                     //Mail del solicitante
                     copia.Add(solp.Pliego.Email);
                     Log.Info($"Copia mail solicitante paso 1 {solp.Pliego.Email}");
                 }
 
-                if (!string.IsNullOrEmpty(solp?.Pliego.SupervisorTrabajo))
+                if (!string.IsNullOrEmpty(solp.Pliego.SupervisorTrabajo))
                 {
                     //Supervisor
                     copia.Add(solp.Pliego.SupervisorTrabajo);
@@ -83,7 +83,7 @@ namespace SustitucionMOAUtils.Services.Email
             }
             catch (Exception ex)
             {
-                Log.Error($"Error al enviar mail SOLP liberada {solp.UsuarioCompras.Mail} - Nro de SOLP {solp.NroSolp}", ex);
+                Log.Error($"Error al enviar mail SOLP liberada Nro de SOLP {solp.NroSolp}", ex);
             }
         }
 
@@ -96,7 +96,7 @@ namespace SustitucionMOAUtils.Services.Email
             };
 
             var proveedor = cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerProveedor();
-            
+
             var htmlBody = "En el presente mail se informa la cotización realizada para la SOLP " +
                 $"{string.Join(", ", cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct())} " +
                 $"y la PO {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id}, generada por el proveedor {proveedor.RazonSocial} ({proveedor.CUIT}). <br /> <br/>";

@@ -47,7 +47,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     mantenimiento: boolean = false;
     web: boolean = false;
     repoAutomatica: boolean = false;
-    listarPendiente: boolean = false;
+    listarPendiente?: SelectItem;
     contratoMarco: boolean = false;
     orden: string;
     columnaOrden: string;
@@ -98,7 +98,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         mantenimiento: boolean;
         web: boolean;
         repoAutomatica: boolean;
-        listarPendiente: boolean;
+        listarPendiente: SelectItem;
         contratoMarco: boolean;
         usuarios: string[];
         estadoSolp: string[];
@@ -118,7 +118,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             mantenimiento: false,
             web: false,
             repoAutomatica: false,
-            listarPendiente: false,
+            listarPendiente: undefined,
             contratoMarco: false,
             usuarios: [],
             estadoSolp: [],
@@ -153,6 +153,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     public chatProveedores: ChatProveedorDto[] = [];
     dasboardComprador: boolean = true;
     esAuditor: boolean = this.isAuthorized('VER COMO AUDITOR');
+    public estadoSolpTratamiento: SelectItem[];
+    private readonly DEFAULT_ListarPendiente: number = 3; //Todas
 
 
     constructor(protected service: ComprasService, protected navService: NavService, protected sessionDataService: SessionDataService,
@@ -175,8 +177,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     ngOnInit() {
         this.navService.setSeccionList([]);
         this.recuperarFiltros();
-        this.getListarSolp();
         this.getCombos();
+        this.getListarSolp();
     }
 
     ngAfterViewInit(): void {
@@ -231,7 +233,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
-            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendiente, this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
+            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
+    }
+
+    private listarPendienteOrDefault(): number {
+        if (this.listarPendiente) { return this.listarPendiente.value }
+        return this.DEFAULT_ListarPendiente;
     }
 
     onOrder(columna: string) {
@@ -691,6 +698,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         this.grupoComprasFiltro = [];
                         this.claseDocumentoFiltro = [];
                         this.tipoImputacionFiltro = [];
+                        this.estadoSolpTratamiento = [];
                         result.EstadosSolpSap.forEach(e => this.estadoSolpItem.push({
                             label: e.Descripcion, value: e.Id
                         }));
@@ -709,6 +717,12 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
                             label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
                         }));
+                        result.ListarPendienteList.forEach(lpl => {
+                            let lplSelectItem: SelectItem = {
+                                label: lpl.Value, value: lpl.Key
+                            };
+                            this.estadoSolpTratamiento.push(lplSelectItem);
+                        });
                     }
                 },
                 error => {
@@ -843,6 +857,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.rangeDates = [new Date(year, month - 1, day)];
                 }
             }
+        }
+        if (!this.listarPendiente) {
+            this.listarPendiente = { label: 'Ver Todas', value: 3 } as SelectItem;
         }
     }
 
