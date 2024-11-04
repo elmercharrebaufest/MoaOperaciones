@@ -14,6 +14,7 @@ import { PesificacionService } from '../pesificacion.service';
 import { DatePipe, formatDate } from '@angular/common';
 import { FiltroFechaComponent } from '../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { overrideProvider } from '@angular/core/src/view';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
   selector: 'app-pesificaciones-guardadas',
@@ -38,7 +39,9 @@ export class PesificacionesGuardadasComponent extends PesificacionBaseComponent 
   filtroContrato: string = "";
   tipoFiltroFecha: number = 1;
   pesificaciones: Pesificacion[] = new Array<Pesificacion>();
-  filteredPesificaciones: Pesificacion[]
+  filteredPesificaciones: Pesificacion[];
+  filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+  filtroFechaKey: string = 'GPesList_Periodo';
 
   ngOnInit() {
     super.ngOnInit();

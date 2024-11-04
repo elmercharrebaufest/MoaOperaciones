@@ -121,6 +121,7 @@ export class MisConsultasComponent extends ListBaseComponent {
     filtrosPorCreacionSeleccionados: { key: OpcionFiltroAsociadaCreacion, label: OpcionFiltroAsociadaCreacion }[] = [];
 
     datosCartaPorteConDisconformidadCalidades?: DatosCartaPorteConDisconformidadCalidades;
+    idConsultaOrdenDeCargaAVerDetalle?: number;
 
     iconoModalDetalle = 'pi-window-maximize';
     modalMaximizado = false;
@@ -147,6 +148,7 @@ export class MisConsultasComponent extends ListBaseComponent {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
 
         this.datosCartaPorteConDisconformidadCalidades = sendDataService.getDatosCartaPorteConDisconformidadCalidades();
+        this.idConsultaOrdenDeCargaAVerDetalle = sendDataService.getDatoIdConsultaOrdenDeCarga();
         this.$buscarConsultas.pipe(debounceTime(350)).subscribe(() => {
             this.toggleSpinner(true)
             this.listarConsultas()
@@ -483,6 +485,8 @@ export class MisConsultasComponent extends ListBaseComponent {
 
                             if (this.datosCartaPorteConDisconformidadCalidades)
                                 this.abrirDetalleConsultaCartaPorteConDiscrepanciaCalidad();
+                            if (this.idConsultaOrdenDeCargaAVerDetalle)
+                                this.abrirDetalleConsultaOrdenDeCarga();
                             this.setfilter();
                         }
                         this.toggleSpinner(false);
@@ -669,6 +673,22 @@ export class MisConsultasComponent extends ListBaseComponent {
                     return;
                 }
                 this.sendDataService.limpiarDatosCartaPorteConDisconformidadCalidades()
+                this.openModal(consulta.Id, consulta.Asunto)
+            })
+    }
+    abrirDetalleConsultaOrdenDeCarga() {
+        if (!this.idConsultaOrdenDeCargaAVerDetalle) {
+            return;
+        }
+        this.blockUI.start('Buscando Consulta orden de Carga ...')
+        this.service.getConsultaDetalle(this.idConsultaOrdenDeCargaAVerDetalle.toString())
+            .pipe(finalize(() => this.blockUI.stop()))
+            .subscribe(consulta => {
+                this.sendDataService.limpiarDatoIdConsultaOrdenDeCarga()
+                if (!consulta) {
+                    return;
+                }
+                this.sendDataService.limpiarDatoIdConsultaOrdenDeCarga()
                 this.openModal(consulta.Id, consulta.Asunto)
             })
     }

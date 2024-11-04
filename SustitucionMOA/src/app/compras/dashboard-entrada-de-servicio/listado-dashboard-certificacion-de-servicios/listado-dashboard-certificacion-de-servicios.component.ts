@@ -1271,38 +1271,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     formatESImport(columna: string, rowData: any): string {
 
-        let parts = rowData.ImporteARPUSD.split(' ');
-
-        let currency: string;
-        let amount: string;
-
-        if (isNaN(parseFloat(parts[0]))) {
-            currency = parts[0];
-            amount = parts[1];
-        } else {
-            amount = parts[0];
-            currency = parts[1];
-        }
-
-        if (amount.includes(',') || amount.includes('.')) {
-            if (currency === 'ARP') {
-                return '$ ' + amount;
-            } else {
-                return currency + ' ' + amount;
-            }
-        } else {
-            let valorNumerico = parseFloat(amount);
-            let formattedAmount = valorNumerico.toLocaleString('en-US', {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            });
-    
-            if (currency === 'ARP') {
-                return '$ ' + formattedAmount;
-            } else {
-                return currency + ' ' + formattedAmount;
-            }
-        }
+        return rowData.ImporteARPUSD;
     }
 
     /**

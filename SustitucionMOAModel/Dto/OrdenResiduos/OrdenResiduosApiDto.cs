@@ -9,34 +9,39 @@ namespace SustitucionMOAModel.Dto.OrdenResiduos
 {
     public class OrdenResiduosApiDto : OrdenDeCargaApiDtoBase
     {
-        public int AlmacenId { get; set; }
+        private readonly string c_TipoOrden = "RESIDUOS";
 
-        public static OrdenResiduosApiDto From(Entities.OrdenResiduos ordenResiduos)
+        public int AlmacenId { get; set; }
+        public string KmARecorrer { get; set; }
+        public string PagadorFlete { get; set; }
+
+        public OrdenResiduosApiDto(Entities.OrdenResiduos ordenResiduos)
         {
-            return new OrdenResiduosApiDto
-            {
-                Id = ordenResiduos.Id,
-                AlmacenId = ordenResiduos.AlmacenId,
-                Cliente = ordenResiduos.Cliente.RazonSocial,
-                CodigoProducto = ordenResiduos.Producto.CodigoSap,
-                CUILChofer = ordenResiduos.ChoferCuil,
-                CUITCliente = ordenResiduos.Cliente.CUIT,
-                CUITTransporte = ordenResiduos.TransporteCuit,
-                DescripcionProducto = ParseNombreProducto(ordenResiduos.Producto.Nombre),
-                DomicilioDescr = ordenResiduos.DomicilioDescr,
-                DomicilioOrden = ordenResiduos.DomicilioOrden,
-                DomicilioTipo = ordenResiduos.DomicilioTipo,
-                FechaCreacion = ordenResiduos.FechaCreacion.ToString(),
-                LocalidadDescripcion = ordenResiduos.Localidad.Nombre,
-                LocalidadId = ordenResiduos.LocalidadId,
-                NombreChofer = ordenResiduos.ChoferNombre,
-                Observacion = ordenResiduos.Observacion,
-                PatenteAcoplado = ordenResiduos.PatenteAcoplado,
-                PatenteChasis = ordenResiduos.PatenteChasis,
-                PlantaCodigo = ordenResiduos.PlantaCodigo,
-                RazonSocialTransporte = ordenResiduos.TransporteRazonSocial,
-                TipoOrden = TipoOrdenes.RESIDUOS
-            };
+            Id = ordenResiduos.Id;
+            AlmacenId = ordenResiduos.AlmacenId;
+            Cliente = ordenResiduos.Cliente.RazonSocial;
+            CodigoProducto = ordenResiduos.Producto.CodigoSap;
+            CUILChofer = ordenResiduos.ChoferCuil;
+            CUITCliente = ordenResiduos.Cliente.CUIT;
+            CUITTransporte = ordenResiduos.TransporteCuit;
+            DescripcionProducto = ParseNombreProducto(ordenResiduos.Producto.Nombre);
+            DomicilioDescr = ordenResiduos.DomicilioDescr;
+            DomicilioOrden = ordenResiduos.DomicilioOrden;
+            DomicilioTipo = ordenResiduos.DomicilioTipo;
+            FechaCreacion = ordenResiduos.FechaCreacion.ToString();
+            LocalidadDescripcion = ordenResiduos.LocalidadDescripcion;
+            LocalidadId = ordenResiduos.LocalidadId ?? 0;
+            NombreChofer = ordenResiduos.ChoferApellido + " " + ordenResiduos.ChoferNombre;
+            ChoferApellido = ordenResiduos.ChoferApellido;
+            ChoferNombre = ordenResiduos.ChoferNombre;
+            Observacion = ordenResiduos.Observacion;
+            PagadorFlete = ordenResiduos.Producto.ValidaSisaRuca ? ordenResiduos.Cliente.CUIT : null;
+            PatenteAcoplado = ordenResiduos.PatenteAcoplado;
+            PatenteChasis = ordenResiduos.PatenteChasis;
+            PlantaCodigo = ordenResiduos.PlantaCodigo;
+            RazonSocialTransporte = ordenResiduos.TransporteRazonSocial;
+            KmARecorrer = ordenResiduos.KmsARecorrer;
+            TipoOrden = c_TipoOrden;
         }
     }
 }

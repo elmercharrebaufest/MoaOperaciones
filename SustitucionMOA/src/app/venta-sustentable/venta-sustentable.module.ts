@@ -19,6 +19,7 @@ import { ImpresionDeclaracionComponent } from './impresion-declaracion/impresion
 import { NgxMaskModule } from 'ngx-mask';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   imports: [
@@ -32,8 +33,8 @@ import { ButtonModule } from 'primeng/button';
     AutoCompleteModule, DropdownModule, MultiSelectModule, SpinnerModule,
     NgxMaskModule.forRoot(),
     DialogModule,
-    ButtonModule
-
+    ButtonModule,
+    ToastModule
   ],
   declarations: [
     ListadoCamposComponent,

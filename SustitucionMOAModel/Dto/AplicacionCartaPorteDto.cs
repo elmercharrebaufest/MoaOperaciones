@@ -56,7 +56,7 @@ namespace SustitucionMOAModel.Dto
                 .GroupBy(apl => apl.Estado)
                 .Select(x => new DropdownOption
                     {
-                        value = x.Key.ToString(), label = $"{x.Key.ToFriendlyString()} ({x.Count()})" 
+                        value = ((int)x.Key).ToString(), label = $"{x.Key.ToFriendlyString()} ({x.Count()})" 
                     })
                 .ToList();
             this.FiltroClientes = aplicaciones.GroupBy(apl => apl.RazonSocialCuit).Select(x => new DropdownOption { value = x.Key, label = $"{x.Key} ({x.Count()})" }).ToList();

@@ -14,6 +14,7 @@ import { DeclaracionConformidadComponent } from '../declaracion-conformidad/decl
 import { isUndefined } from 'util';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
+import { Message, MessageService } from 'primeng/api';
 export interface DatosCopiar {
     NombreCampo: string;
     NombreCosecha: string;
@@ -39,7 +40,7 @@ export interface DatosCopiar {
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
-    providers: [VentaSustentableService]
+    providers: [VentaSustentableService, MessageService]
 })
 export class AltaComponent extends BaseComponent implements OnInit {
 
@@ -54,7 +55,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @BlockUI() blockUI: NgBlockUI;
 
-    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+    constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private messageService: MessageService) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
         this.spinnerComponent = new SpinnerComponent();
@@ -92,7 +93,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     ingresarProveedorPorCUIT: boolean;
     esCorredor: boolean = sessionStorage.getItem("tipoUsuario") === "CORR";
-    codigoProveedor: string = sessionStorage.getItem("proveedor");
+    codigoProveedor: string = sessionStorage.getItem("proveedor") || "";
     campoCosechaId: any;
     CodigoProveedorEdit: string = "";
     campoProveedorE: any;
@@ -205,8 +206,10 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     onselectProveedor(proveedor?: VendedorProveedor) {
-        console.log("Run select")
         if (proveedor) {
+            if (this.codigoProveedor == proveedor.idVendedor) {
+                this.mostrarWarningCuitsIguales();
+            }
             this.proveedorSeleccionado = proveedor;
             this.getProveedorId(this.proveedorSeleccionado.idVendedor);
         }
@@ -291,9 +294,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
                     //Si cambió el CUIT le saco la razón social
                     if (this.CUITInicial != this.CUIT) {
-                        console.log("Lo limpio")
-                        console.log("this.CUITInicial:", this.CUITInicial)
-                        console.log("this.CUIT:", this.CUIT)
                         this.declaracionComformidad.razonSocialDeclaracion = "";
                     }
                     this.declaracionComformidad.proveedorId = this.proveedorId;
@@ -467,19 +467,19 @@ export class AltaComponent extends BaseComponent implements OnInit {
         }
 
         if (!this.hectareasTotales) {
-            this.mensajeComponent.setErrorMsg("Falta completar hectareas totales.");
+            this.mensajeComponent.setErrorMsg("Falta completar hectáreas totales.");
             return true;
         }
         if (this.hectareasTotales <= 0) {
-            this.mensajeComponent.setErrorMsg("Hectareas totales no puede ser 0 o un numero negativo.");
+            this.mensajeComponent.setErrorMsg("Hectáreas totales no puede ser 0 o un número negativo.");
             return true;
         }
         if (!this.hectareasSoja) {
-            this.mensajeComponent.setErrorMsg("Falta completar hectareas de soja.");
+            this.mensajeComponent.setErrorMsg("Falta completar hectáreas de soja.");
             return true;
         }
         if (this.hectareasSoja <= 0) {
-            this.mensajeComponent.setErrorMsg("Hectareas de soja no puede ser 0 o un numero negativo.");
+            this.mensajeComponent.setErrorMsg("Hectáreas de soja no puede ser 0 o un número negativo.");
             return true;
         }
         if (this.hectareasSoja > this.hectareasTotales) {
@@ -533,7 +533,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.revisarDeclaracionJurada();
         }
     }
-
+    
     revisarDeclaracionJurada() {
         if ((this.CUIT == "" || this.CUIT.length == 11) && this.cosechaId > 0) {
             if (this.esCorredor && this.operarComo == 1
@@ -542,13 +542,28 @@ export class AltaComponent extends BaseComponent implements OnInit {
             }
             this.declaracionComformidad.verificarDeclaracion();
         }
+        if (this.CUIT == sessionStorage.getItem('cuit')) {
+            this.mostrarWarningCuitsIguales();
+        }
     }
+
     onSePreseleccionaProveedor() {
         this.sePreseleccionoProveedor = true;
-        this.corredorDebeCargarCuit = false
+        this.corredorDebeCargarCuit = false;
     }
+
     onQuery(value: string) {
         this.proveedorTexto = value;
-        this.proveedorSeleccionado = null
+        this.proveedorSeleccionado = null;
+    }
+
+    mostrarWarningCuitsIguales() {
+        const mensajeCuitsIguales: Message = {
+            severity: 'warn',
+            summary: 'Atención',
+            detail: 'Recuerde que en el campo Proveedor y CUIT tiene que poner los datos del titular de la Carta de Porte',
+            life: 10000
+        }
+        this.messageService.add(mensajeCuitsIguales);
     }
 }

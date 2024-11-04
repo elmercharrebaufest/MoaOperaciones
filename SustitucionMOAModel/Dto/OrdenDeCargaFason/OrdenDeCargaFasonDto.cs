@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Ent = SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 {
@@ -13,7 +14,6 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
 
         public string CUITCliente { get; set; }
 
-        [JsonProperty("estado")]
         public EstadoOrdenDeCargaFason Estado { get; set; }
         public string DescripcionEstado { get; set; }
         public string DescripcionEstadoListado { get; set; }
@@ -30,6 +30,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public int Cantidad { get; set; }
         public string PatenteAcoplado { get; set; }
         public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
         public string CUILChofer { get; set; }
         public string RazonSocialTransporte { get; set; }
         public string CUITTransporte { get; set; }
@@ -61,7 +62,9 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
         public string FechaRetiroReal { get; set; }
         public string FechaIngresoPlanta { get; set; }
         public double? CantidadDescargada { get; set; }
-
+        public bool TienePatentesRepetidas { get; set; }
+        public bool TienePatenteMultiplesAutorizaciones { get; set; }
+        public List<long> OrdenesConPatentesRepetidas { get; set; }
         public OrdenDeCargaFasonDto(Ent.OrdenDeCargaFason orden, bool esInterno)
         {
             Cantidad = orden.Cantidad;
@@ -78,6 +81,7 @@ namespace SustitucionMOAModel.Dto.OrdenDeCargaFason
             Id = orden.Id;
             Material = orden.Producto.Nombre;
             NombreChofer = orden.NombreChofer;
+            ApellidoChofer = orden.ApellidoChofer;
             Producto_Id = orden.Producto.Id;
             ProductoSeleccionado = new SustitucionMOAModel.Models.DataAgro.MaterialDto
             {

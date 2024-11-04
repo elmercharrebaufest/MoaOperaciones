@@ -41,7 +41,7 @@
 
         <div id="searchVerPesificacion" class="col-xs-12 col-sm-6 col-md-15">
           <p>Fecha</p>
-          <filtro-fecha #filtroFechaPesificacion (ClickEvent)="actualizarFiltroFecha()"></filtro-fecha>
+          <filtro-fecha #filtroFechaPesificacion (ClickEvent)="actualizarFiltroFecha()" [key]="filtroFechaKey" [periodoDefault]="filtroFechaPeriodoDefault"></filtro-fecha>
         </div>
       </div>
     </div>

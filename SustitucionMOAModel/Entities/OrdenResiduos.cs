@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -29,14 +26,19 @@ namespace SustitucionMOAModel.Entities
         public string PatenteChasis { get; set; }
         public string PatenteAcoplado { get; set; }
         public string ChoferNombre { get; set; }
+        public string ChoferApellido { get; set; }
         public string ChoferCuil { get; set; }
         public string TransporteRazonSocial { get; set; }
         public string TransporteCuit { get; set; }
         public string Observacion { get; set; }
 
-        public int LocalidadId { get; set; }
-        [ForeignKey(nameof(LocalidadId))]
-        public virtual Localidad Localidad { get; set; }
+        public int? LocalidadId { get; set; }
+        
+        public string LocalidadDescripcion { get; set; }
+        
+        public int? ProvinciaId { get; set; }
+        
+        public string ProvinciaDescripcion { get; set; }
 
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaEgreso { get; set; }
@@ -45,7 +47,14 @@ namespace SustitucionMOAModel.Entities
         public short? DomicilioOrden { get; set; }
         public string DomicilioDescr { get; set; }
         public string MotivoRechazo { get; set; }
-
+        public string Balanza { get; set; }
+        public string NroCertificacion { get; set; }
+        public double? PesadaTara { get; set; }
+        public double? PesadaNeto { get; set; }
+        public double? PesadaBruto { get; set; }
+        public string KmsARecorrer { get; set; }
+        public long? IdScato { get; set; }
+        public string UniMedCant { get; set; }
         public int AlmacenId { get; set; }
         [ForeignKey(nameof(AlmacenId))]
         public virtual Almacen Almacen { get; set; }

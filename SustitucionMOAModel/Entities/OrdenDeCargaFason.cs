@@ -17,6 +17,7 @@ namespace SustitucionMOAModel.Entities
         public string PatenteChasis { get; set; }
         public string PatenteAcoplado { get; set; }
         public string NombreChofer { get; set; }
+        public string ApellidoChofer { get; set; }
         public string CUILChofer { get; set; }
         public string RazonSocialTransporte { get; set; }
         public string CUITTransporte { get; set; }
@@ -29,7 +30,7 @@ namespace SustitucionMOAModel.Entities
         public virtual Material Producto { get; set; }
         public bool TransporteExiste { get; set; }
 
-        public int LocalidadId { get; set; }
+        public int? LocalidadId { get; set; }
 
         public string LocalidadDescripcion { get; set; }
 
@@ -92,6 +93,7 @@ namespace SustitucionMOAModel.Entities
             CUITTransporte = request.CUITTransporte;
             FechaCreacion = DateTime.Now;
             NombreChofer = request.NombreChofer;
+            ApellidoChofer = request.ApellidoChofer;
             Observacion = request.Observacion;
             PatenteAcoplado = request.PatenteAcoplado;
             PatenteChasis = request.PatenteChasis;
@@ -125,6 +127,7 @@ namespace SustitucionMOAModel.Entities
                 PatenteChasis == carga.PatenteChasis &&
                 PatenteAcoplado == carga.PatenteAcoplado &&
                 NombreChofer == carga.NombreChofer &&
+                ApellidoChofer == carga.ApellidoChofer &&
                 CUILChofer == carga.CUILChofer &&
                 RazonSocialTransporte == carga.RazonSocialTransporte &&
                 CUITTransporte == carga.CUITTransporte &&
@@ -161,6 +164,7 @@ namespace SustitucionMOAModel.Entities
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteChasis);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(PatenteAcoplado);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(NombreChofer);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ApellidoChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUILChofer);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(RazonSocialTransporte);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(CUITTransporte);

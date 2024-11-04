@@ -7,6 +7,7 @@ using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Linq;
 using ScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio;
 using CNRTModel = SustitucionMOAModel.Models.WebApiMap.CNRT;
-using ModelScatoRepo =  SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using ModelScatoRepo = SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -43,10 +44,6 @@ namespace SustitucionMOAUtils.Services
             this.cNRTClient = cNRTClient;
             this.feriadoService = feriadoService;
         }
-
-        protected readonly int[] BASES_VALIDACION_CUIT = new int[] {
-            5, 4, 3, 2, 7, 6, 5, 4, 3, 2
-        };
 
         public ValidarCuitExisteScatoResponse ValidarCuitExisteScato(string cuit)
         {
@@ -94,7 +91,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageType, err.Message));
                 }
-                throw new ValidationCustomException("Error al obtener Plantas");
+                if (plantasRes.Messages.Any(mensaje => mensaje.MessageType == 1 &&
+                    mensaje.Message == "800 - No existen solicitudes para los parámetros indicados."))
+                {
+                    throw new InfoCustomException("Sin plantas habilitadas.");
+                }
+                throw new ValidationCustomException("Error al obtener Plantas.");
             }
             else
             {
@@ -181,6 +183,7 @@ namespace SustitucionMOAUtils.Services
             }
             return response;
         }
+
         public (bool, ScatoRepo.Chofer) ValidarCuilChofer(string cuilChofer)
         {
             var choferRes = scatoRepositorioClient.ObtenerChoferPorCuil(DataFormatter.CuitConGuion(cuilChofer));
@@ -189,21 +192,9 @@ namespace SustitucionMOAUtils.Services
             if (!choferRes.IsValid)
             {
                 Log.Info("Error al obtener chofer de Scato " + cuilChofer);
-                LogMensajesScato(choferRes.Messages);
+                LogMensajesScato(choferRes);
             }
             return (cuitValido, chofer);
-        }
-        public (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
-        {
-            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
-            var transporte = transporteRes.Data;
-            var cuitValido = ValidarDigitoCuit(cuitTransporte);
-            if (!transporteRes.IsValid)
-            {
-                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
-                LogMensajesScato(transporteRes.Messages);
-            }
-            return (cuitValido, transporte);
         }
 
         public bool ValidarCuilChoferDigito(string cuilChofer)
@@ -218,11 +209,8 @@ namespace SustitucionMOAUtils.Services
 
         public ProveedorDto ObtenerProveedor(int idProveedor)
         {
-            var proveedor = repositorio.Obtener<Proveedor>(idProveedor);
-            if (proveedor == null)
-            {
+            var proveedor = repositorio.Obtener<Proveedor>(idProveedor) ??
                 throw new Exception("No se encontró el proveedor con ID " + idProveedor);
-            }
             return new ProveedorDto(proveedor);
         }
 
@@ -266,36 +254,8 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        private void LogMensajesScato(ModelScatoRepo.MessageItem[] messages)
-        {
-            foreach (var err in messages)
-            {
-                Log.Info(string.Format("Error Scato código {0}, descripción: {1}", err.MessageCode, err.Message));
-            }
-        }
-        public bool ValidarDigitoCuit(string cuit)
-        {
-            if(cuit.Length != 11)
-            {
-                throw new ValidationCustomException($"El cuit que se ha intentado validar no es correcto ({cuit})");
-            }
-            var auxiliar = BASES_VALIDACION_CUIT.WithIndex().Sum(
-                b => b.item * Char.GetNumericValue(cuit[b.index]
-                ));
 
-            auxiliar = 11 - (auxiliar % 11);
-
-            if (auxiliar == 11)
-            {
-                auxiliar = 0;
-            }else if (auxiliar == 10)
-            {
-                auxiliar = 9;
-            }
-            var ultimoDigito = Char.GetNumericValue(cuit.Last());
-            return auxiliar == ultimoDigito;
-        }
-        public DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
+        protected DateTime CalcularFechaVencimiento(DateTime fechaOrigen)
         {
             var dayOfWeek = fechaOrigen.DayOfWeek;
             var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 4 : 2;
@@ -318,7 +278,67 @@ namespace SustitucionMOAUtils.Services
             var fechaVencimiento = fechaOrigen.AddDays(cantidadDiasDeMargen);
             return fechaVencimiento;
         }
+
+        protected void LogMensajesScato(ModelScatoRepo.RespuestaScatoBase respuestaScato)
+        {
+            foreach (var err in respuestaScato.Messages)
+            {
+                Log.Info($"Error Scato código {err.MessageCode}, descripción: {err.Message}");
+            }
+        }
+
+        protected bool ValidarDigitoCuit(string cuit)
+        {
+            if (cuit.Length != 11)
+            {
+                throw new ValidationCustomException($"La CUIT/CUIL {cuit} no tiene un formato válido");
+            }
+
+            var BASES_VALIDACION_CUIT = new int[] { 5, 4, 3, 2, 7, 6, 5, 4, 3, 2 };
+
+            var auxiliar = BASES_VALIDACION_CUIT
+                .WithIndex()
+                .Sum(b =>
+                    b.item * Char.GetNumericValue(cuit[b.index])
+                );
+
+            auxiliar = 11 - (auxiliar % 11);
+
+            if (auxiliar == 11)
+            {
+                auxiliar = 0;
+            }
+            if (auxiliar == 10)
+            {
+                auxiliar = 9;
+            }
+            var ultimoDigito = Char.GetNumericValue(cuit.Last());
+            return auxiliar == ultimoDigito;
+        }
+
+        protected List<ScatoWS.KmPorProveedorDto> ObtenerDestinos(string cuit)
+        {
+            if (cuit.Length != 11)
+            {
+                throw new ValidationCustomException($"CUIT {cuit} no tiene el formato correcto.");
+            }
+            return scatoConsumer.BuscarDestinos(cuit);
+        }
+
+        private (bool, ScatoRepo.Chofer) ValidarCuitTransporte(string cuitTransporte)
+        {
+            var transporteRes = scatoRepositorioClient.ObtenerTransportePorCuit(DataFormatter.CuitConGuion(cuitTransporte));
+            var transporte = transporteRes.Data;
+            var cuitValido = ValidarDigitoCuit(cuitTransporte);
+            if (!transporteRes.IsValid)
+            {
+                Log.Info("Error al obtener transporte de Scato " + cuitTransporte);
+                LogMensajesScato(transporteRes);
+            }
+            return (cuitValido, transporte);
+        }
     }
+
     public static class IEnumerableExtensions
     {
         public static IEnumerable<(T item, int index)> WithIndex<T>(this IEnumerable<T> self)

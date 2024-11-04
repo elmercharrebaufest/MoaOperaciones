@@ -27,7 +27,7 @@ namespace SustitucionMOAWS.WSConsumers
                 };
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
-                
+
                 var error = service.SI_MPMF_MOAOP_CUENTA_CORRIENTE(compensa, contrato, fechaSAP, pago, proveedor, retencion, sociedad, out ZMPES6120[] salidas);
                 return Map(salidas, error, fecha.fechaFin);
             }
@@ -57,39 +57,36 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (ZMPES6120 cuentaCorrienteInfo in salidas)
             {
-                if (string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP) || string.IsNullOrEmpty(cuentaCorrienteInfo.DOC_PAGO_DIF_ARP))
-                {
-                    var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
-                        ? cuentaCorrienteInfo.FEC_VTO
-                        : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
+                var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
+                    ? cuentaCorrienteInfo.FEC_VTO
+                    : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
 
-                    result.cuentasCorrientes.Add(new MovimientoView()
-                    {
-                        agrupador = cuentaCorrienteInfo.AGRUPADOR,
-                        augbl = cuentaCorrienteInfo.AUGBL,
-                        contrato = cuentaCorrienteInfo.CONTRATO,
-                        debe = cuentaCorrienteInfo.DEBE,
-                        debeString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.DEBE, "$"),
-                        descripcion = cuentaCorrienteInfo.DESCRIP,
-                        docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
-                        docDateDate = SAPFormatter.GetDateTime(cuentaCorrienteInfo.DOC_DATE),
-                        docNo = cuentaCorrienteInfo.DOC_NO,
-                        fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
-                        fecVtoDate = SAPFormatter.GetDateTime(fechaVencimientoStr),
-                        fiscYear = cuentaCorrienteInfo.FISC_YEAR,
-                        haber = cuentaCorrienteInfo.HABER,
-                        haberString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.HABER, "$"),
-                        importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
-                        importeArgString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.IMPORTE_ARP, "$"),
-                        saldo = cuentaCorrienteInfo.SALDO,
-                        saldoString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.SALDO, "$"),
-                        moneda = cuentaCorrienteInfo.MONEDA,
-                        orden = orden++,
-                        ukurs = cuentaCorrienteInfo.UKURS,
-                        ukursString = SAPFormatter.FormatearTipoCambio(cuentaCorrienteInfo.UKURS),
-                        xblnr = cuentaCorrienteInfo.XBLNR
-                    });
-                }
+                result.cuentasCorrientes.Add(new MovimientoView()
+                {
+                    agrupador = cuentaCorrienteInfo.AGRUPADOR,
+                    augbl = cuentaCorrienteInfo.AUGBL,
+                    contrato = cuentaCorrienteInfo.CONTRATO,
+                    debe = cuentaCorrienteInfo.DEBE,
+                    debeString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.DEBE, "$"),
+                    descripcion = cuentaCorrienteInfo.DESCRIP,
+                    docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
+                    docDateDate = SAPFormatter.GetDateTime(cuentaCorrienteInfo.DOC_DATE),
+                    docNo = cuentaCorrienteInfo.DOC_NO,
+                    fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
+                    fecVtoDate = SAPFormatter.GetDateTime(fechaVencimientoStr),
+                    fiscYear = cuentaCorrienteInfo.FISC_YEAR,
+                    haber = cuentaCorrienteInfo.HABER,
+                    haberString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.HABER, "$"),
+                    importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
+                    importeArgString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.IMPORTE_ARP, "$"),
+                    saldo = cuentaCorrienteInfo.SALDO,
+                    saldoString = SAPFormatter.FormatearMonto(cuentaCorrienteInfo.SALDO, "$"),
+                    moneda = cuentaCorrienteInfo.MONEDA,
+                    orden = orden++,
+                    ukurs = cuentaCorrienteInfo.UKURS,
+                    ukursString = SAPFormatter.FormatearTipoCambio(cuentaCorrienteInfo.UKURS),
+                    xblnr = cuentaCorrienteInfo.XBLNR
+                });
             }
 
             return result;
@@ -111,31 +108,28 @@ namespace SustitucionMOAWS.WSConsumers
 
             foreach (ZMPES6120 cuentaCorrienteInfo in salidas)
             {
-                if (string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP) || string.IsNullOrEmpty(cuentaCorrienteInfo.DOC_PAGO_DIF_ARP))
-                {
-                    var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
-                        ? cuentaCorrienteInfo.FEC_VTO
-                        : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
+                var fechaVencimientoStr = string.IsNullOrEmpty(cuentaCorrienteInfo.PAGO_DIF_ARP)
+                    ? cuentaCorrienteInfo.FEC_VTO
+                    : cuentaCorrienteInfo.FECHA_PAGO_DIF_ARP;
 
-                    result.cuentasCorrientes.Add(new Movimiento()
-                    {
-                        agrupador = cuentaCorrienteInfo.AGRUPADOR,
-                        augbl = cuentaCorrienteInfo.AUGBL,
-                        contrato = cuentaCorrienteInfo.CONTRATO,
-                        moneda = cuentaCorrienteInfo.MONEDA,
-                        debe = cuentaCorrienteInfo.DEBE,
-                        descripcion = cuentaCorrienteInfo.DESCRIP,
-                        docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
-                        docNo = cuentaCorrienteInfo.DOC_NO,
-                        fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
-                        fiscYear = cuentaCorrienteInfo.FISC_YEAR,
-                        saldo = cuentaCorrienteInfo.SALDO,
-                        haber = cuentaCorrienteInfo.HABER,
-                        importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
-                        ukurs = cuentaCorrienteInfo.UKURS,
-                        xblnr = cuentaCorrienteInfo.XBLNR
-                    });
-                }
+                result.cuentasCorrientes.Add(new Movimiento()
+                {
+                    agrupador = cuentaCorrienteInfo.AGRUPADOR,
+                    augbl = cuentaCorrienteInfo.AUGBL,
+                    contrato = cuentaCorrienteInfo.CONTRATO,
+                    moneda = cuentaCorrienteInfo.MONEDA,
+                    debe = cuentaCorrienteInfo.DEBE,
+                    descripcion = cuentaCorrienteInfo.DESCRIP,
+                    docDate = SAPFormatter.FormatearFecha(cuentaCorrienteInfo.DOC_DATE),
+                    docNo = cuentaCorrienteInfo.DOC_NO,
+                    fecVto = SAPFormatter.FormatearFecha(fechaVencimientoStr),
+                    fiscYear = cuentaCorrienteInfo.FISC_YEAR,
+                    saldo = cuentaCorrienteInfo.SALDO,
+                    haber = cuentaCorrienteInfo.HABER,
+                    importeArg = cuentaCorrienteInfo.IMPORTE_ARP,
+                    ukurs = cuentaCorrienteInfo.UKURS,
+                    xblnr = cuentaCorrienteInfo.XBLNR
+                });
             }
 
             return result;
@@ -159,14 +153,13 @@ namespace SustitucionMOAWS.WSConsumers
 
             result.cuentasCorrientesSinAgrupar = salidas
                 .Where(x =>
-                    x.AGRUPADOR == "" &&
-                    (string.IsNullOrEmpty(x.PAGO_DIF_ARP) || string.IsNullOrEmpty(x.DOC_PAGO_DIF_ARP))
+                    x.AGRUPADOR == ""
                 )
                 .GroupBy(x => x.AGRUPADOR)
                 .Select(x => new CuentaCorrienteAgrupadaView
                 {
                     agrupador = x.Key,
-                    cuentasCorrientes = x.Select( z => new CuentaCorrienteView
+                    cuentasCorrientes = x.Select(z => new CuentaCorrienteView
                     {
                         agrupador = z.AGRUPADOR,
                         augbl = z.AUGBL,
@@ -296,7 +289,7 @@ namespace SustitucionMOAWS.WSConsumers
                         agrupador = z.AGRUPADOR,
                         augbl = z.AUGBL,
                         contrato = z.CONTRATO,
-                        debe =z.DEBE,
+                        debe = z.DEBE,
                         descripcion = z.DESCRIP,
                         docDate = SAPFormatter.FormatearFecha(z.DOC_DATE),
                         docNo = z.DOC_NO,
@@ -305,7 +298,7 @@ namespace SustitucionMOAWS.WSConsumers
                         haber = z.HABER,
                         importeArg = z.IMPORTE_ARP,
                         moneda = z.MONEDA,
-                        saldo = z.SALDO, 
+                        saldo = z.SALDO,
                         ukurs = z.UKURS,
                         xblnr = z.XBLNR,
 

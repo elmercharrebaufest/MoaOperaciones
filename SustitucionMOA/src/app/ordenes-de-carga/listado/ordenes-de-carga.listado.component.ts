@@ -13,6 +13,8 @@ import { MensajeComponent } from '../../common/view-child/mensaje/mensaje.compon
 import { NgBlockUI, BlockUI } from 'ng-block-ui';
 import { FiltroFechaFasComponent } from '../../common/view-child/filtro-fecha-fas/filtro-fecha-fas.component';
 import { TipoContrato } from '../../common/models/ordenes-de-carga/obtenerContratosDisponiblesResponse';
+import { SendDataService } from '../../consulta/send-data.service';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 
 @Component({
     selector: 'app-ordenes-de-carga.listado',
@@ -47,7 +49,7 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
     datosAux: any[];
     //primerListado: any[];
     listaEnviarASAP: number[] = [];
-    
+
     productoSelected: string = "Todos";
     listaProductos: any = null;
     private selectUndefinedOptionValue: any;
@@ -69,12 +71,23 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
 
     tipoConrato = TipoContrato;
 
-    constructor(protected service: OrdenesDeCargaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private confirmationService: ConfirmationService) {
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimaSemana;
+    filtroFechaKey: string = 'NGOCFas_Periodo';
+
+    constructor(
+        protected service: OrdenesDeCargaService,
+        protected navService: NavService,
+        protected sessionDataService: SessionDataService,
+        protected securityService: SecurityService,
+        protected floatMsgService: FloatMsgService,
+        protected modalService: ModalService,
+        private confirmationService: ConfirmationService,
+        private sendDataService: SendDataService
+    ) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
     ngOnInit() {
-        // console.debug(' puedeEnviarASAP: ', this.puedeEnviarASAP);
         this.corredorCodigo = sessionStorage.getItem("proveedor");
         this.mailUsuarioSAP = sessionStorage.getItem("username");
         if (this.esInterno || this.esComercial || this.esMesaFas || this.esPuerto) {
@@ -230,7 +243,8 @@ export class OrdenesDeCargaListado extends ListBaseComponent implements OnInit {
             },
         );
     }
-    navegarAConsultas() {
+    navegarAConsultas(idConsulta: number) {
+        this.sendDataService.setDatoIdConsultaOrdenDeCarga(idConsulta);
         this.navService.navegarSeccionParam('consulta', 'mis-consultas')
     }
 }

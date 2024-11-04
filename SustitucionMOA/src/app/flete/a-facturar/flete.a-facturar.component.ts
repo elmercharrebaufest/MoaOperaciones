@@ -6,6 +6,7 @@ import { SecurityService } from './../../common/services/SecurityService';
 import { NavService } from './../../common/services/NavService';
 import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
+import { TipoPeriodo } from '../../common/enums/TipoPeriodo';
 declare var $: any;
 
 @Component({
@@ -17,6 +18,8 @@ export class FleteAFacturarComponent extends FleteBaseComponent {
 
     tituloArchivo = "FletesAFacturar.xls";
     viajeGuardar: any;
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+    filtroFechaKey: string = 'NGFletAFact_Periodo';
 
     constructor(protected service: FleteService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);

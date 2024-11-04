@@ -73,6 +73,9 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
             (resp) => {
                 let orden = this.manejarErroresApiResponse(resp);
                 if (orden) {
+                    if (orden.DestinoMercaderia) {
+                        orden.DestinoMercaderia.DescripcionCompleta = `${orden.DestinoMercaderia.LocalidadDescripcion} (${orden.DestinoMercaderia.ProvinciaDescripcion})`;
+                    }
                     this.ordenResiduos = orden;
                     this.validaCPEDG = orden.Producto.ValidaSisaRuca;
                     this.verificarBotones();

@@ -7,6 +7,7 @@ import { FloatMsgService } from './../../../common/services/FloatMsgService';
 import { NavService } from './../../../common/services/NavService';
 import { SecurityService } from './../../../common/services/SecurityService';
 import { Seccion } from './../../../common/models/seccion';
+import { TipoPeriodo } from '../../../common/enums/TipoPeriodo';
 
 
 
@@ -30,6 +31,8 @@ export class PagoEmitidoNGSComponent extends PagoComponent {
     }
 
     tituloArchivo = "ReportePagosEmitidos.xls";
+    filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimoMes;
+    filtroFechaKey: string = 'NGPagList_Periodo';
 
     setTabs() {
         this.setMenuSeccionTab("pago-ngs", "Emitidos");

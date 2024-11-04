@@ -8,5 +8,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<OrdenResiduosApiDto> ObtenerOrdenes(string patenteChasis = null);
         void ActualizarOrden(ActualizarOrdenResiduosExternalDto datos);
+        void InformarViaje(IngresosEgresosResiduos ingresosEgresos);
     }
 }

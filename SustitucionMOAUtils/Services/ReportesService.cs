@@ -22,10 +22,11 @@ namespace SustitucionMOAUtils.Services
     public class ReportesService : IReportesService
     {
         private readonly IRepositorio repositorio;
-
-        public ReportesService(IRepositorio repositorio)
+        private readonly IEmailService emailService;
+        public ReportesService(IRepositorio repositorio, IEmailService emailService)
         {
             this.repositorio = repositorio;
+            this.emailService = emailService;
         }
 
         public void EnviarReporteCamposSustentablesTSA()
@@ -174,7 +175,14 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                throw new InfoCustomException("No se encontraron liquidaciones a reportar");
+                var mensajeSinLiquidaciones = "No se encontraron liquidaciones a reportar";
+                emailService.EnviarMail(new EmailSenderData
+                {
+                    Asunto = "Reporte de Liquidaciones Informadas - Resumen Diario",
+                    Mails = ConfigurationManager.AppSettings["EmailToReporteLiquidacion"].Split(';').ToList(),
+                    Cuerpo = mensajeSinLiquidaciones
+                });
+                throw new InfoCustomException(mensajeSinLiquidaciones);
             }
         }
 

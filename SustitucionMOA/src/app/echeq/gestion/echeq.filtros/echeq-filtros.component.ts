@@ -2,6 +2,7 @@ import { Component, Output, ViewChild, EventEmitter, OnInit} from '@angular/core
 import { DropdownComponent } from '../../../common/view-child/dropdown/dropdown.component';
 import { FiltroFechaComponent } from '../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { EcheqFilter } from './echeq-filter.model';
+import { TipoPeriodo } from '../../../common/enums/TipoPeriodo';
 
 
 @Component({
@@ -27,6 +28,9 @@ export class FiltrosComponent implements OnInit {
   constructor(){
     this.echeqFilterModel = new EcheqFilter();
   }
+
+  filtroFechaPeriodoDefault: TipoPeriodo = TipoPeriodo.UltimosDosMeses;
+  filtroFechaKey: string = 'GEchqGest_Periodo';
 
   ngOnInit(): void {
     this.onChangeFecha();
