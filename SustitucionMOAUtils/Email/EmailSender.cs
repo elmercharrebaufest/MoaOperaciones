@@ -319,7 +319,7 @@ namespace SustitucionMOAUtils.Email
                     stream.Position = 0;
                     Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
                     oMensaje.Attachments.Add(attachment);
-                    
+
                 }
                 SmtpClient oCliente = GetSmtpClient();
                 SendMail(oMensaje, oCliente);
@@ -496,6 +496,8 @@ namespace SustitucionMOAUtils.Email
                     }
                 }
 
+                oMensaje.Subject = emailSenderData.Asunto ?? "";
+
                 SmtpClient oCliente = GetSmtpClient();
 
                 // Enviar el correo de forma asíncrona
@@ -528,7 +530,8 @@ namespace SustitucionMOAUtils.Email
             LogMail(mail);
             client.Send(mail);
         }
-        private static void LogMail(MailMessage mail) {
+        private static void LogMail(MailMessage mail)
+        {
             try
             {
                 Log.Info($"SendMail Subject: {mail.Subject}");
