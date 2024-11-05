@@ -1323,7 +1323,7 @@ export class ComprasService extends BaseService {
         tratada: boolean | null,
         numeroPo?: number,
         tipoSolp?: string,
-        nombrePliego?:string,
+        nombrePliego?: string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1365,7 +1365,7 @@ export class ComprasService extends BaseService {
         tratada: boolean | null,
         numeroPo?: number,
         tipoSolp?: string,
-        nombrePliego?:string,
+        nombrePliego?: string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1384,7 +1384,7 @@ export class ComprasService extends BaseService {
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
         if (tipoSolp === "SERVICIO") {
-            params = params.set('nombrePliego', nombrePliego);
+            params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
             return this.http.get('/api/compras/DescargarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         }
         else {
