@@ -6,6 +6,7 @@ using SustitucionMOAWS.Util;
 using SustitucionMOAWS.WebApi.OSRM.Common;
 using SustitucionMOAWS.WebApi.OSRM.Response;
 using System;
+using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -21,11 +22,14 @@ namespace SustitucionMOAWS.WebApi.OSRM
         //private static readonly string Formato = "json";
         //private static readonly string Options = null;
 
+        private static readonly string RuteoOSRMHabilitado = ConfigurationManager.AppSettings["RuteoOSRMHabilitado"];
+        private static readonly string OsrmApiBaseAddress = ConfigurationManager.AppSettings["OsrmApiBaseAddress"];
+
         private readonly HttpClient _clienteHttp;
 
         public OsrmApiClient()
         {
-            _clienteHttp = new HttpClient { BaseAddress = new Uri("http://router.project-osrm.org/") };
+            _clienteHttp = new HttpClient { BaseAddress = new Uri(OsrmApiBaseAddress) };
         }
 
         public OsrmApiClient(HttpClient httpClient)
@@ -38,6 +42,10 @@ namespace SustitucionMOAWS.WebApi.OSRM
         {
             try
             {
+                if (!bool.TryParse(RuteoOSRMHabilitado, out bool habilitado) || !habilitado)
+                {
+                    return null;
+                }
                 var rutaApi = $"route/v1/driving/{coordOrigen.Valor};{coordDestino.Valor}.json?overview=false";
 
                 var responseMessage = _clienteHttp.GetAsync(rutaApi).ConfigureAwait(false).GetAwaiter().GetResult(); //var responseMessage = await _clienteHttp.GetAsync(rutaApi).ConfigureAwait(false);
