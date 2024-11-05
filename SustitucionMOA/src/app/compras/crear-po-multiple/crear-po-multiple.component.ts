@@ -250,7 +250,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectValorTipoImputacion.join(","),
                 this.selectTratada,
                 this.numeroPo,
-                this.selectTipoSolp
+                this.selectTipoSolp,
+                this.nombrePliego
             ).subscribe(
                 (result: any) => {
 
@@ -273,6 +274,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh

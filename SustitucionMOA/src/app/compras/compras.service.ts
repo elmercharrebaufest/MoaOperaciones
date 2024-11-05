@@ -1323,6 +1323,7 @@ export class ComprasService extends BaseService {
         tratada: boolean | null,
         numeroPo?: number,
         tipoSolp?: string,
+        nombrePliego?:string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1341,6 +1342,7 @@ export class ComprasService extends BaseService {
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
         if (tipoSolp === "SERVICIO") {
+            params = params.set('nombrePliego', nombrePliego);
             return this.http.get('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         } else {
             return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
@@ -1363,7 +1365,7 @@ export class ComprasService extends BaseService {
         tratada: boolean | null,
         numeroPo?: number,
         tipoSolp?: string,
-
+        nombrePliego?:string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1380,9 +1382,9 @@ export class ComprasService extends BaseService {
         params = params.set('valorTipoImputacion', valorTipoImputacion);
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
-        params = params.set('tipoSolp', tipoSolp != null ? tipoSolp : null);
 
         if (tipoSolp === "SERVICIO") {
+            params = params.set('nombrePliego', nombrePliego);
             return this.http.get('/api/compras/DescargarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         }
         else {

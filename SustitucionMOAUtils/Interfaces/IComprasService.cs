@@ -115,6 +115,21 @@ namespace SustitucionMOAUtils.Interfaces
                                                        List<string> tipoImputacion = null,
                                                        List<int> valorTipoImputacion = null,
                                                        int? numeroPo = null);
+        List<POPosicionDto> ListarPosicionesPOMultipleServicio(DateTime? desde,
+                                                       DateTime? hasta,
+                                                       bool sap,
+                                                       bool mantenimiento,
+                                                       bool web,
+                                                       bool repoAutomatica,
+                                                       bool? tratada,
+                                                       bool contratoMarco,
+                                                       List<int> centros = null,
+                                                       List<int> grupoDeCompras = null,
+                                                       List<int> claseDocumento = null,
+                                                       List<string> tipoImputacion = null,
+                                                       List<int> valorTipoImputacion = null,
+                                                       int? numeroPo = null,
+                                                       string nombrePliego = null);
 
         MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
                                                    DateTime? hasta,
@@ -130,6 +145,22 @@ namespace SustitucionMOAUtils.Interfaces
                                                    List<string> tipoImputacion = null,
                                                    List<int> valorTipoImputacion = null,
                                                    int? numeroPo = null);
+
+        MemoryStream DescargarPosicionesPOMultipleServicio(DateTime? desde,
+                                                   DateTime? hasta,
+                                                   bool sap,
+                                                   bool mantenimiento,
+                                                   bool web,
+                                                   bool repoAutomatica,
+                                                   bool? tratada,
+                                                   bool contratoMarco,
+                                                   List<int> centros = null,
+                                                   List<int> grupoDeCompras = null,
+                                                   List<int> claseDocumento = null,
+                                                   List<string> tipoImputacion = null,
+                                                   List<int> valorTipoImputacion = null,
+                                                   int? numeroPo = null,
+                                                   string nombrePliego = null);
 
         SolpCompraDto ObtenerPosicionesMultipleCompras(List<int> listaId);
 
