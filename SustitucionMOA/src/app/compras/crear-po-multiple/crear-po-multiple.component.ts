@@ -254,7 +254,6 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.nombrePliego
             ).subscribe(
                 (result: any) => {
-
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -263,8 +262,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.posiciones = result.data;
-                        this.blockUI.stop();
                     }
+                    this.blockUI.stop();
                 },
                 error => {
                     this.blockUI.stop();
@@ -320,9 +319,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         });
 
                         this.downloadArchivoLocal(blob, result.fileName);
-
-                        this.blockUI.stop();
                     }
+
+                    this.blockUI.stop();
                 },
                 error => {
                     this.blockUI.stop();
@@ -332,6 +331,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
