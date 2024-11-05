@@ -9,5 +9,8 @@
     Centro: string;
     Tipo: string;
 
+    Posiciones: string[][];
+
     Selected: boolean;
+    Expanded: boolean;
 }
