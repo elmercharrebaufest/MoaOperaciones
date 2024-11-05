@@ -1342,7 +1342,7 @@ export class ComprasService extends BaseService {
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
         if (tipoSolp === "SERVICIO") {
-            params = params.set('nombrePliego', nombrePliego);
+            params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
             return this.http.get('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         } else {
             return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });

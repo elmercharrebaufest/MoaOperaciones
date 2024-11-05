@@ -117,7 +117,9 @@
         <section class="container-fluid clearfix">
             <div>
                 <div>
-                    <div class="row1">
+                    <div class="row1" *ngIf="lastSearch == 'SERVICIO'; then tablaServicio else tablaMateriales ">
+                    </div>
+                    <ng-template #tablaMateriales>
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posiciones" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
@@ -174,7 +176,39 @@
                                 </tr>
                             </ng-template>
                         </p-table>
-                    </div>
+                    </ng-template>
+                    <ng-template #tablaServicio>
+                        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solps" dataKey="Id">
+                            <ng-template pTemplate="header" let-columns>
+                                <tr>
+                                    <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(posiciones.posicionCompra)"></p-checkbox></th>
+                                    <th class="columna">Nro Solp</th>
+                                    <th class="columna">Nombre SOLP / Pliego</th>
+                                    <th class="columna">Fecha Creación</th>
+                                    <th class="columna">Fecha Liberación</th>
+                                    <th class="columna">Solicitante</th>
+                                    <th class="columna">Grupo de Compras</th>
+                                    <th class="columna">Centro</th>
+                                    <th class="columna">Tipo (Sin Doc. / C/Doc. Pliego)</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-solp let-expanded="expanded" let-columns="columns">
+                                <tr>
+                                    <td>
+                                        <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="solp.Selected"></p-checkbox>
+                                    </td>
+                                    <td class="columna">{{solp.NroSolp}}</td>
+                                    <td class="columna">{{solp.Nombre}}</td>
+                                    <td class="columna">{{solp.FechaCreacion}}</td>
+                                    <td class="columna">{{solp.FechaLiberacion}}</td>
+                                    <td class="columna">{{solp.Solicitante}}</td>
+                                    <td class="columna">{{solp.GrupoDeCompras}}</td>
+                                    <td class="columna">{{solp.Centro}}</td>
+                                    <td class="columna">{{solp.Tipo}}</td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </ng-template>
                 </div>
             </div>
         </section>

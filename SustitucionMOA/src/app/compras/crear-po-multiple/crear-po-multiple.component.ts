@@ -1,18 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ComprasService } from '../compras.service';
-import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { ActivatedRoute, Router } from '@angular/router';
+import _ from 'lodash';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectItem } from 'primeng/api';
+import { Table } from 'primeng/table';
+import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Table } from 'primeng/table';
 import { POPosicionDto } from '../../modelos/po-posicionDto';
+import { SolpCrearPoMultipleDto } from '../../modelos/Solp-CrearPoMultipleDto.model';
+import { ComprasService } from '../compras.service';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
-import _ from 'lodash';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -80,7 +81,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     web: boolean = false;
     repoAutomatica: boolean = false;
     contratoMarco: boolean = false;
-    posiciones: POPosicionDto[] = [];
+    posiciones: POPosicionDto[] = []; // para búsqueda "MATERIAL"
+    solps: SolpCrearPoMultipleDto[] = []; // para búsqueda "SERVICIO"
     numeroPo?: number = null;
 
     tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
@@ -93,7 +95,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
     }
 
-    nombrePliego: string;
+    nombrePliego?: string;
+
+    lastSearch?: string;
 
     filtrosPOMultiple: iFiltrosPoMultiple;
 
@@ -234,6 +238,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
 
     listarPosicionesPOMultiple() {
         try {
+            this.lastSearch = null;
             this.blockUI.start('Cargando...');
             this.subscription = this.service.listarPosicionesPOMultiple(
                 this.fechaInicio,
@@ -261,7 +266,14 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.posiciones = result.data;
+                        if (this.selectTipoSolp === "SERVICIO") {
+                            this.posiciones = [];
+                            this.solps = result.data;
+                        } else {
+                            this.posiciones = result.data;
+                            this.solps = [];
+                        }
+                        this.lastSearch = this.selectTipoSolp;
                     }
                     this.blockUI.stop();
                 },

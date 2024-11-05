@@ -9916,22 +9916,22 @@ namespace SustitucionMOAUtils.Services
                 throw;
             }
         }
-        
-        public List<POPosicionDto> ListarPosicionesPOMultipleServicio(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null,
-                                                              string nombrePliego = null)
+
+        public List<SolpCrearPoMultipleDto> ListarPosicionesPOMultipleServicio(DateTime? desde,
+                                                                               DateTime? hasta,
+                                                                               bool sap,
+                                                                               bool mantenimiento,
+                                                                               bool web,
+                                                                               bool repoAutomatica,
+                                                                               bool? tratada,
+                                                                               bool contratoMarco,
+                                                                               List<int> centros = null,
+                                                                               List<int> grupoDeCompras = null,
+                                                                               List<int> claseDocumento = null,
+                                                                               List<string> tipoImputacion = null,
+                                                                               List<int> valorTipoImputacion = null,
+                                                                               int? numeroPo = null,
+                                                                               string nombrePliego = null)
         {
             try
             {
@@ -9945,15 +9945,16 @@ namespace SustitucionMOAUtils.Services
 
                 if (sinSolps)
                 {
-                    return new List<POPosicionDto>();
+                    return new List<SolpCrearPoMultipleDto>();
                 }
 
                 Expression<Func<SolpPosicion, bool>> commonFilter = ListarPosicionesPOMultipleCommonFilter(solps, desde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, centros, grupoDeCompras, claseDocumento, tipoImputacion, valorTipoImputacion);
 #pragma warning disable RCS1155 // Use StringComparison when comparing strings -> No se puede usar StringComparison porque linq to entity no lo soporta. Lo mismo con IsNullOrWhitespace.
                 Expression<Func<SolpPosicion, bool>> filtroServicio =
                     pos => pos.TipoPosicion.Codigo == "SERVICIO"
-                            && (string.IsNullOrEmpty(nombrePliego.Trim())
-                                || pos.Solp.Pliego.NombreObra.ToLower() == nombrePliego.ToLower()
+                            && (string.IsNullOrEmpty(nombrePliego)
+                                || string.IsNullOrEmpty(nombrePliego.Trim())
+                                || pos.Solp.Pliego.NombreObra.Trim().ToLower() == nombrePliego.Trim().ToLower()
                                 );
 #pragma warning restore RCS1155 // Use StringComparison when comparing strings
                 List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()
@@ -9962,48 +9963,24 @@ namespace SustitucionMOAUtils.Services
                     commonFilter,
                 };
 
-                var posicionMaterial = repositorio.ListarIntersecar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
-                {
-                    Id = pos.Id,
-                    NroSolp = pos.Solp.NroSolp,
-                    Indice = pos.Indice,
-                    Codigo = pos.MaterialSolp.Codigo,
-                    Tarea = pos.Tarea,
-                    CentroComprasDescripcion = pos.Centro.Descripcion,
-                    AlmacenComprasDescripcion = pos.Almacen.Descripcion,
-                    TextoSuministro = pos.TextoSuministro,
-                    Modelo = pos.Modelo,
-                    GrupoComprasDescripcion = pos.GrupoCompras.Descripcion,
-                    Cantidad = pos.Cantidad,
-                    UnidadComprasDescripcion = pos.Unidad.Descripcion,
-                    MonedaSolpDescripcion = pos.Moneda.Descripcion,
-                    FechaEntregaServicio = pos.FechaEntregaServicio,
-                    PlazoEntrega = pos.PlazoEntrega,
-                    FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                    TieneCotizacion = pos.Peticiones.Any(),
-                },
+                var posicionMaterial
+                    = repositorio
+                        .ListarIntersecar<SolpPosicion, SolpCrearPoMultipleDto>(pos => new SolpCrearPoMultipleDto
+                        {
+                            Id = pos.Id,
+                            NroSolp = pos.Solp.NroSolp,
+                            Nombre = pos.Solp.Pliego.NombreObra,
+                            FechaCreacion = pos.Solp.FechaCreacion,
+                            FechaLiberacion = pos.Solp.FechaLiberacionSap,
+                            Solicitante = pos.Solicitante,
+                            GrupoDeCompras = pos.GrupoCompras.Descripcion,
+                            Centro = pos.Centro.Descripcion,
+                            Tipo = pos.Solp.TipoSolp.Descripcion, //????
+                        },
                     filtros
                 );
 
-                posicionMaterial = posicionMaterial.Where(pm => posicionPendientesSap
-                        .Exists(pp => pp.NroSolp == pm.NroSolp && pp.NumeroPosicion == pm.Indice)).ToList();
 
-                foreach (var posicion in posicionMaterial)
-                {
-                    if (posicion.TieneCotizacion)
-                    {
-                        posicion.ListaPO = repositorio.Obtener<SolpPosicion, IEnumerable<string>>(
-                            po => po.Id == posicion.Id,
-                            po => po.Peticiones.Select(p => p.PeticionDeOferta_Id.ToString())).ToList();
-                    }
-                }
-
-                if (numeroPo != null)
-                {
-                    return posicionMaterial
-                        .Where(posicion => posicion.ListaPO?.Any(x => x == numeroPo.ToString()) == true)
-                        .ToList();
-                }
 
                 return posicionMaterial;
             }
@@ -10074,7 +10051,7 @@ namespace SustitucionMOAUtils.Services
                                                           int? numeroPo = null,
                                                           string nombrePliego = null)
         {
-            List<POPosicionDto> data = this.ListarPosicionesPOMultipleServicio(desde,
+            List<SolpCrearPoMultipleDto> data = this.ListarPosicionesPOMultipleServicio(desde,
                                                        hasta,
                                                        sap,
                                                        mantenimiento,

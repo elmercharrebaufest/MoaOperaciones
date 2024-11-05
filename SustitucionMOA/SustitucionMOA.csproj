@@ -1423,6 +1423,7 @@
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.spec.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.service.ts" />
+    <TypeScriptCompile Include="src\app\modelos\Solp-CrearPoMultipleDto.model.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
