@@ -10020,6 +10020,33 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public IEnumerable<SubPosicionCrearPoMultipleDto> ListarSubPosicionesPOMultipleSolpId(int idPosicion)
+        {
+            try
+            {
+                return repositorio.Listar<SolpSubposicion, SubPosicionCrearPoMultipleDto>(
+                    subpos => new SubPosicionCrearPoMultipleDto
+                    {
+                        NroSubPosicion = subpos.Numero,
+                        CodigoServicio = subpos.CodigoServicioSap.Descripcion,
+                        Tarea = subpos.Tarea,
+                        Cantidad = subpos.Cantidad,
+                        UnidadMedida = subpos.Unidad.Descripcion,
+                        PrecioBruto = subpos.PrecioBruto,
+                        ValorNeto = subpos.PrecioBruto * subpos.Cantidad,
+                        CuentaMayor = subpos.CuentaMayorSap.Descripcion,
+                        Imputacion = subpos.TipoImputacionSap.Descripcion,
+                    }
+                    , subpos =>subpos.SolpPosicion_Id == idPosicion);
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultipleSolpId");
+                Log.Error(e);
+                throw;
+            }
+        }
+
         public MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
                                                           DateTime? hasta,
                                                           bool sap,

@@ -132,6 +132,7 @@ namespace SustitucionMOAUtils.Interfaces
                                                                         string nombrePliego = null);
 
         IEnumerable<PosicionCrearPoMultipleDto> ListarPosicionesPOMultipleSolpId(int idSolp);
+        IEnumerable<SubPosicionCrearPoMultipleDto> ListarSubPosicionesPOMultipleSolpId(int idPosicion);
 
         MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
                                                    DateTime? hasta,

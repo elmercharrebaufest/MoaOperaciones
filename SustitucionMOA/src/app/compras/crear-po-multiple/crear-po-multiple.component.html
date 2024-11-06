@@ -226,7 +226,11 @@
                                             </ng-template>
                                             <ng-template pTemplate="body" let-posicion let-columns="columns">
                                                 <tr>
-                                                    <td></td>
+                                                    <td>
+                                                        <a href="#" [pRowToggler]="rowData" (click)="posicionExpandToggle(posicion)">
+                                                            <i [ngClass]="posicion.Expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                                                        </a>
+                                                    </td>
                                                     <td>{{ posicion.NroPosicion }}</td>
                                                     <td>{{ posicion.Descripcion }}</td>
                                                     <td>{{ posicion.TipoImputacion }}</td>
@@ -234,6 +238,38 @@
                                                     <td>{{ posicion.Almacen }}</td>
                                                     <td>{{ posicion.Moneda }}</td>
                                                     <td>{{ posicion.ValorTotal }}</td>
+                                                </tr>
+                                                <tr *ngIf="posicion.Expanded">
+                                                    <td [attr.colspan]="9">
+                                                        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posicion.SubPosiciones" dataKey="Id" [autoLayout]="true">
+                                                            <ng-template pTemplate="header" let-columns>
+                                                                <tr>
+                                                                    <th class="columna">Nro SubPosicion</th>
+                                                                    <th class="columna">Código Servicio</th>
+                                                                    <th class="columna">Tarea</th>
+                                                                    <th class="columna">Cantidad</th>
+                                                                    <th class="columna">Unidad de Medida</th>
+                                                                    <th class="columna">Precio Bruto</th>
+                                                                    <th class="columna">Valor Neto</th>
+                                                                    <th class="columna">CTA de Mayor</th>
+                                                                    <th class="columna">Imputación</th>
+                                                                </tr>
+                                                            </ng-template>
+                                                            <ng-template pTemplate="body" let-subPosicion let-columns="columns">
+                                                                <tr>
+                                                                    <td>{{ subPosicion.NroSubPosicion }}</td>
+                                                                    <td>{{ subPosicion.CodigoServicio }}</td>
+                                                                    <td>{{ subPosicion.Tarea }}</td>
+                                                                    <td>{{ subPosicion.Cantidad }}</td>
+                                                                    <td>{{ subPosicion.UnidadMedida }}</td>
+                                                                    <td>{{ subPosicion.PrecioBruto }}</td>
+                                                                    <td>{{ subPosicion.ValorNeto }}</td>
+                                                                    <td>{{ subPosicion.CuentaMayor }}</td>
+                                                                    <td>{{ subPosicion.Imputacion }}</td>
+                                                                </tr>
+                                                            </ng-template>
+                                                        </p-table>
+                                                    </td>
                                                 </tr>
                                             </ng-template>
                                         </p-table>

@@ -67,6 +67,7 @@
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionSubPosicionEditarDto.cs" />
+    <Compile Include="Dto\Compras\SubPosicionCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\PosicionCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\SolpCrearPoMultipleDto.cs" />
     <Compile Include="Dto\Compras\PosicionPendienteDto.cs" />

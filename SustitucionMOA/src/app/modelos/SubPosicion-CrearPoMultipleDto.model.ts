@@ -8,5 +8,5 @@
     PrecioBruto: number;
     ValorNeto: number;
     CuentaMayor: string;
-    Imputación: string;
+    Imputacion: string;
 }

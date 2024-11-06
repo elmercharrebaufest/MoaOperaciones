@@ -1417,6 +1417,7 @@
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\SubPosicion-CrearPoMultipleDto.model.ts" />
     <TypeScriptCompile Include="src\app\modelos\proveedor-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
     <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />

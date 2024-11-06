@@ -332,7 +332,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     listarSubPosicionesPOMultiplePorId(posicion: PosicionCrearPoMultipleDto) {
         try {
             this.blockUI.start('Cargando...');
-            this.subscription = this.service.listarPosicionesPOMultipleIdSolp(posicion.Id
+            this.subscription = this.service.listarSubPosicionesPOMultipleIdSolp(posicion.Id
             ).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
