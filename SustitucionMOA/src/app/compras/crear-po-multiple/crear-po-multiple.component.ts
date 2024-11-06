@@ -587,28 +587,49 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         }
     }
 
-    publicarCotizacion(): void {
+    public async publicarCotizacion(): Promise<void> {
 
-        let ids: number[];
+        let ids: number[] = [];
+        let error: boolean = false;
+        let errorMessaje: string = "";
 
-        if (this.lastSearch == 'SERVICIO') {
-            const selectedSolp: SolpCrearPoMultipleDto[] = this.solps;
-            let solpSeleccionadas: SolpCrearPoMultipleDto[] = selectedSolp.filter(solp => solp.Selected === true);
-            // para cada solp marcada, busco los id de posición y los concateno en un sólo array
-            ids = solpSeleccionadas.reduce((acc: number[], val: SolpCrearPoMultipleDto) => {
-                let posiciones: number[] = val.Posiciones.reduce((accPos, pos) => accPos.concat(pos.Id), []);
-                return acc.concat(posiciones);
-            }, []);
-        } else {
-            const selectedPosiciones: POPosicionDto[] = this.posiciones;
-            const posicionesSeleccionadas: POPosicionDto[] = selectedPosiciones.filter(posicion => posicion.Selected === true);
-            ids = posicionesSeleccionadas.map(pos => pos.Id);
-        }
+        this.blockUI.start('Cargando...');
 
-        if (ids.length > 0) {
-            this.goToSeccionParam('/compras/peticion-de-oferta-formulario', JSON.stringify(ids));
-        } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
+        try {
+
+            if (this.lastSearch == 'SERVICIO') {
+                const selectedSolp: SolpCrearPoMultipleDto[] = this.solps;
+                let solpSeleccionadas: SolpCrearPoMultipleDto[] = selectedSolp.filter(solp => solp.Selected === true);
+                // para cada solp marcada, busco los id de posición y los concateno en un sólo array
+                for (let solp of solpSeleccionadas) {
+                    if (!solp.Posiciones || !solp.Posiciones.length) {
+                        await (this.service.listarPosicionesPOMultipleIdSolp(solp.Id).toPromise())
+                            .then(x => solp.Posiciones = x.data)
+                            .catch(reason => {
+                                error = true;
+                                errorMessaje = reason.message;
+                            });
+                        if (error) { throw errorMessaje; }
+                    }
+
+                    let posiciones: number[] = solp.Posiciones.reduce((accPos, pos) => accPos.concat(pos.Id), []);
+                    ids = ids.concat(posiciones);
+                }
+            } else {
+                const selectedPosiciones: POPosicionDto[] = this.posiciones;
+                const posicionesSeleccionadas: POPosicionDto[] = selectedPosiciones.filter(posicion => posicion.Selected === true);
+                ids = posicionesSeleccionadas.map(pos => pos.Id);
+            }
+
+            if (ids.length > 0) {
+                this.goToSeccionParam('/compras/peticion-de-oferta-formulario', JSON.stringify(ids));
+            } else {
+                this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
+            }
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        } finally {
+            this.blockUI.stop();
         }
     }
 }
