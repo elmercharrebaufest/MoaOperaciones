@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -9982,8 +9982,6 @@ namespace SustitucionMOAUtils.Services
                     solp => solpIds.Contains(solp.Id)
                 );
 
-
-
                 return posicionMaterial;
             }
             catch (Exception e)
@@ -9999,18 +9997,18 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 return repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
-                    pos => new PosicionCrearPoMultipleDto
+                    posicion => new PosicionCrearPoMultipleDto
                     {
-                        Id = pos.Id,
-                        NroPosicion = pos.Indice,
-                        Descripcion = pos.Tarea,
-                        TipoImputacion = pos.TipoImputacion.Descripcion,
-                        Centro = pos.Centro.Descripcion,
-                        Almacen = pos.Almacen.Descripcion,
-                        Moneda = pos.Moneda.Descripcion,
-                        ValorTotal = pos.Subposiciones.Sum(sub => sub.PrecioBruto * sub.Cantidad),
+                        Id = posicion.Id,
+                        NroPosicion = posicion.Indice,
+                        Descripcion = posicion.Tarea,
+                        TipoImputacion = posicion.TipoImputacion.Descripcion,
+                        Centro = posicion.Centro.Descripcion,
+                        Almacen = posicion.Almacen.Descripcion,
+                        Moneda = posicion.Moneda.Descripcion,
+                        ValorTotal = posicion.Subposiciones.Sum(sub => sub.PrecioBruto * sub.Cantidad),
                     }
-                    , pos => pos.Solp_Id == idSolp);
+                    , posicion => posicion.Solp_Id == idSolp);
             }
             catch (Exception e)
             {
@@ -10025,19 +10023,19 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 return repositorio.Listar<SolpSubposicion, SubPosicionCrearPoMultipleDto>(
-                    subpos => new SubPosicionCrearPoMultipleDto
+                    subPosicion => new SubPosicionCrearPoMultipleDto
                     {
-                        NroSubPosicion = subpos.Numero,
-                        CodigoServicio = subpos.CodigoServicioSap.Descripcion,
-                        Tarea = subpos.Tarea,
-                        Cantidad = subpos.Cantidad,
-                        UnidadMedida = subpos.Unidad.Descripcion,
-                        PrecioBruto = subpos.PrecioBruto,
-                        ValorNeto = subpos.PrecioBruto * subpos.Cantidad,
-                        CuentaMayor = subpos.CuentaMayorSap.Descripcion,
-                        Imputacion = subpos.TipoImputacionSap.Descripcion,
+                        NroSubPosicion = subPosicion.Numero,
+                        CodigoServicio = subPosicion.CodigoServicioSap.Descripcion,
+                        Tarea = subPosicion.Tarea,
+                        Cantidad = subPosicion.Cantidad,
+                        UnidadMedida = subPosicion.Unidad.Descripcion,
+                        PrecioBruto = subPosicion.PrecioBruto,
+                        ValorNeto = subPosicion.PrecioBruto * subPosicion.Cantidad,
+                        CuentaMayor = subPosicion.CuentaMayorSap.Descripcion,
+                        Imputacion = subPosicion.TipoImputacionSap.Descripcion,
                     }
-                    , subpos =>subpos.SolpPosicion_Id == idPosicion);
+                    , subPosicion => subPosicion.SolpPosicion_Id == idPosicion);
             }
             catch (Exception e)
             {
