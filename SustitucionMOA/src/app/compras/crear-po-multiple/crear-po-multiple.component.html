@@ -123,7 +123,7 @@
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="posiciones" dataKey="Id">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(posiciones.posicionCompra)"></p-checkbox></th>
+                                    <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox></th>
                                     <th class="columna">Nro Solp</th>
                                     <th class="columna">Pos.</th>
                                     <th class="columna">Código</th>
@@ -181,7 +181,7 @@
                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solps" dataKey="Id" [autoLayout]="true">
                             <ng-template pTemplate="header" let-columns>
                                 <tr>
-                                    <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(posiciones.posicionCompra)"></p-checkbox></th>
+                                    <th class="columna"><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo()"></p-checkbox></th>
                                     <th class="columna">Nro Solp</th>
                                     <th class="columna">Nombre SOLP / Pliego</th>
                                     <th class="columna">Fecha Creación</th>

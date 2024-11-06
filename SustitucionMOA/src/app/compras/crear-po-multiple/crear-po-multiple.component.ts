@@ -232,10 +232,18 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     seleccionarTodo() {
-        if (this.TodasPosicionesSeleccionadas) {
-            this.posiciones.map(pos => pos.Selected = true);
+        if (this.lastSearch == 'SERVICIO') {
+            if (this.TodasPosicionesSeleccionadas) {
+                this.solps.map(solp => solp.Selected = true);
+            } else {
+                this.solps.map(solp => solp.Selected = false);
+            }
         } else {
-            this.posiciones.map(pos => pos.Selected = false);
+            if (this.TodasPosicionesSeleccionadas) {
+                this.posiciones.map(pos => pos.Selected = true);
+            } else {
+                this.posiciones.map(pos => pos.Selected = false);
+            }
         }
     }
 
@@ -587,7 +595,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             const selectedSolp: SolpCrearPoMultipleDto[] = this.solps;
             let solpSeleccionadas: SolpCrearPoMultipleDto[] = selectedSolp.filter(solp => solp.Selected === true);
             // para cada solp marcada, busco los id de posición y los concateno en un sólo array
-            ids = solpSeleccionadas.reduce((acc:number[], val: SolpCrearPoMultipleDto) => {
+            ids = solpSeleccionadas.reduce((acc: number[], val: SolpCrearPoMultipleDto) => {
                 let posiciones: number[] = val.Posiciones.reduce((accPos, pos) => accPos.concat(pos.Id), []);
                 return acc.concat(posiciones);
             }, []);
