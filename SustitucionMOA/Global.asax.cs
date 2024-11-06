@@ -66,5 +66,47 @@ namespace SustitucionMOA
                 }
             }
         }
+
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+        protected void Application_PostAuthenticateRequest(Object sender, EventArgs e)
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
+        {
+            if (Request.IsAuthenticated)
+            {
+                HttpCookie authCookie = Response.Cookies[System.Web.Security.FormsAuthentication.FormsCookieName];
+                if (authCookie != null)
+                {
+                    authCookie.HttpOnly = true;
+                    authCookie.Secure = true; // Esto requiere HTTPS habilitado
+                }
+            }
+        }
+
+        protected void Application_EndRequest(object sender, EventArgs e)
+        {
+            foreach (string key in Response.Cookies.AllKeys)
+            {
+                HttpCookie cookie = Response.Cookies[key];
+                if (cookie != null)
+                {
+                    string cookieText = $"{cookie.Name}={cookie.Value}; Path={cookie.Path};";
+
+                    if (cookie.HttpOnly)
+                    {
+                        cookieText += " HttpOnly;";
+                    }
+                    if (cookie.Secure)
+                    {
+                        cookieText += " Secure;";
+                    }
+
+                    // Agrega SameSite de forma manual
+                    cookieText += " SameSite=Strict;";
+
+                    // Usa AppendHeader para evitar sobrescribir el encabezado Set-Cookie
+                    Response.Headers.Add("Set-Cookie", cookieText);
+                }
+            }
+        }
     }
 }
