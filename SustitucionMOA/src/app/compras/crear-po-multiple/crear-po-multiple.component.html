@@ -6,7 +6,7 @@
 <div class="row">
     <div class="row myRow">
         <div class="col-md-3">
-            <p-dropdown [options]="tiposSolp" [(ngModel)]="selectTipoSolp" ></p-dropdown>
+            <p-dropdown [options]="tiposSolp" [(ngModel)]="selectTipoSolp"></p-dropdown>
         </div>
         <div class="col-md-3" *ngIf="showNombrePliego">
             <input class="inputAltura"
@@ -196,7 +196,7 @@
                                 <tr>
                                     <td>
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="solp.Selected"></p-checkbox>
-                                        <a href="#" [pRowToggler]="rowData" (click)="solp.Expanded = !solp.Expanded">
+                                        <a href="#" [pRowToggler]="rowData" (click)="solpExpandToggle(solp)">
                                             <i [ngClass]="solp.Expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                         </a>
                                     </td>
@@ -215,24 +215,40 @@
                                             <ng-template pTemplate="header" let-columns>
                                                 <tr>
                                                     <th class="columna"></th>
-                                                    <th class="columna">Nro Solp</th>
-                                                    <th class="columna">Nombre SOLP / Pliego</th>
-                                                    <th class="columna">Fecha Creación</th>
-                                                    <th class="columna">Fecha Liberación</th>
-                                                    <th class="columna">Solicitante</th>
-                                                    <th class="columna">Grupo de Compras</th>
+                                                    <th class="columna">Nro Posicion</th>
+                                                    <th class="columna">Descripción</th>
+                                                    <th class="columna">Tipo Imputación</th>
                                                     <th class="columna">Centro</th>
-                                                    <th class="columna">Tipo (Sin Doc. / C/Doc. Pliego)</th>
+                                                    <th class="columna">Almacén</th>
+                                                    <th class="columna">Noneda</th>
+                                                    <th class="columna">Valor Total</th>
                                                 </tr>
                                             </ng-template>
                                             <ng-template pTemplate="body" let-posicion let-columns="columns">
                                                 <tr>
                                                     <td>
-                                                        {{posicion[0]}}
-                                                     </td>
-                                                     <td>
-                                                       {{ posicion[1]}}
-                                                     </td>
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.NroPosicion }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.Descripcion }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.TipoImputacion }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.Centro }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.Almacen }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.Moneda }}
+                                                    </td>
+                                                    <td>
+                                                        {{ posicion.ValorTotal }}
+                                                    </td>
                                                 </tr>
                                             </ng-template>
                                         </p-table>

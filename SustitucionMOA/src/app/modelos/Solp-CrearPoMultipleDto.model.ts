@@ -1,4 +1,6 @@
-﻿export interface SolpCrearPoMultipleDto {
+﻿import { PosicionCrearPoMultipleDto } from "./Posicion-CrearPoMultipleDto.model";
+
+export interface SolpCrearPoMultipleDto {
     Id: number;
     NroSolp: string;
     Nombre: string;
@@ -9,7 +11,7 @@
     Centro: string;
     Tipo: string;
 
-    Posiciones: string[][];
+    Posiciones: PosicionCrearPoMultipleDto[];
 
     Selected: boolean;
     Expanded: boolean;

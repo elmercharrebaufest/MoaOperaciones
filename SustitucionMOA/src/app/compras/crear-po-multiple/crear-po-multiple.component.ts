@@ -296,6 +296,52 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.guardarFiltros();
     }
 
+    listarPosicionesPOMultiplePorId(solp: SolpCrearPoMultipleDto) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.listarPosicionesPOMultipleIdSolp(solp.Id
+            ).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        solp.Posiciones = result.data;
+                        solp.Expanded = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    solpExpandToggle(solp: SolpCrearPoMultipleDto): void {
+        if (solp.Expanded) {
+            solp.Expanded = false;
+            return;
+        }
+
+        if (solp.Posiciones && solp.Posiciones.length) {
+            solp.Expanded = true;
+        } else {
+            // no olvidar de marcar solp.Expanded en el resultado de la subscription.
+            this.listarPosicionesPOMultiplePorId(solp)
+        }
+    }
+
     download() {
         try {
             this.blockUI.start('Cargando...');

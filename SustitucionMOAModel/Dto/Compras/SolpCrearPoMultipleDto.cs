@@ -1,8 +1,6 @@
 ﻿// Ignore Spelling: Solp Nro
-using iTextSharp.text;
 using SustitucionMOAModel.Attributes;
 using System;
-using System.Collections.Generic;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -58,12 +56,5 @@ namespace SustitucionMOAModel.Dto
         [ExcelColumnOrder(7)]
         [ExcelColumnWidth(28)]
         public string Tipo { get; set; }
-
-        [ExcelIgnore]
-        public List<List<string>> Posiciones { get; set; } = new List<List<string>>()
-        {
-            new List<string>() {"f1c1","f1c2"},
-            new List<string>() {"f2c1","f2c2"},
-        };
     }
 }

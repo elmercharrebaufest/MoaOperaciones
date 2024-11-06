@@ -9963,21 +9963,23 @@ namespace SustitucionMOAUtils.Services
                     commonFilter,
                 };
 
+                var solpIds = repositorio.ListarIntersecar<SolpPosicion, int>(pos => pos.Solp_Id, filtros).Distinct();
+
                 var posicionMaterial
                     = repositorio
-                        .ListarIntersecar<SolpPosicion, SolpCrearPoMultipleDto>(pos => new SolpCrearPoMultipleDto
+                        .Listar<Solp, SolpCrearPoMultipleDto>(solp => new SolpCrearPoMultipleDto
                         {
-                            Id = pos.Id,
-                            NroSolp = pos.Solp.NroSolp,
-                            Nombre = pos.Solp.Pliego.NombreObra,
-                            FechaCreacion = pos.Solp.FechaCreacion,
-                            FechaLiberacion = pos.Solp.FechaLiberacionSap,
-                            Solicitante = pos.Solicitante,
-                            GrupoDeCompras = pos.GrupoCompras.Descripcion,
-                            Centro = pos.Centro.Descripcion,
-                            Tipo = pos.Solp.TipoSolp.Descripcion, //????
+                            Id = solp.Id,
+                            NroSolp = solp.NroSolp,
+                            Nombre = solp.Pliego.NombreObra,
+                            FechaCreacion = solp.FechaCreacion,
+                            FechaLiberacion = solp.FechaLiberacionSap,
+                            Solicitante = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Solicitante : null,
+                            GrupoDeCompras = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion : null,
+                            Centro = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Centro.Descripcion : null,
+                            Tipo = solp.TipoSolp.Descripcion, //????                            
                         },
-                    filtros
+                    solp => solpIds.Contains(solp.Id)
                 );
 
 
@@ -9987,6 +9989,32 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 Log.Info($"Error al ListarPosicionesPOMultiple");
+                Log.Error(e);
+                throw;
+            }
+        }
+
+        public IEnumerable<PosicionCrearPoMultipleDto> ListarPosicionesPOMultipleSolpId(int idSolp)
+        {
+            try
+            {
+                return repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
+                    pos => new PosicionCrearPoMultipleDto
+                    {
+                        Id = pos.Id,
+                        NroPosicion = pos.Indice,
+                        Descripcion = pos.Tarea,
+                        TipoImputacion = pos.TipoImputacion.Descripcion,
+                        Centro = pos.Centro.Descripcion,
+                        Almacen = pos.Almacen.Descripcion,
+                        Moneda = pos.Moneda.Descripcion,
+                        ValorTotal = pos.Subposiciones.Sum(sub => sub.PrecioBruto * sub.Cantidad),
+                    }
+                    , pos => pos.Solp_Id == idSolp);
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultipleSolpId");
                 Log.Error(e);
                 throw;
             }

@@ -1349,6 +1349,14 @@ export class ComprasService extends BaseService {
         }
     }
 
+    public listarPosicionesPOMultipleIdSolp(
+        idSolp: number
+    ): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idSolp', idSolp.toString());
+        return this.http.get('/api/compras/ListarPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
+    }
+
     public descargarPosicionesPOMultiple(
         fechaDesde: any,
         fechaHasta: any,
