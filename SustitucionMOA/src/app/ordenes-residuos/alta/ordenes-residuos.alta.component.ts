@@ -310,7 +310,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.ordenResiduos.PatenteChasis = event.toUpperCase();
     }
 
-    onPatenteAcopladoValueChanged(valor: string) {
+    onPatenteChasisBlur(valor: string) {
+        if (!this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
+            this.mostrarWarningFlotante('Patente chasis', 'Patente inválida: ' + this.ordenResiduos.PatenteChasis);
+        }
     }
 
     onPatenteAcopladoBlur(valor: string) {
@@ -407,7 +410,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
             return false;
         }
-        if (this.ordenResiduos.PatenteChasis == undefined || this.ordenResiduos.PatenteChasis.trim().length < 6) {
+        if (this.ordenResiduos.PatenteChasis == undefined || !this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente chasis válida.");
             return false;
         }
@@ -566,13 +569,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
     }
 
     esPatenteValida(patente: string): boolean {
-        // const exprReg = /([A-Z]{2}[0-9]{3})|([A-Z]{2}[0-9]{3}[A-Z]{2})/;
-        const exprRegPatenteVieja = /[A-Z]{3}[\d]{3}/; // ESTE ES EL QUE NO FUNCIONA BIEN
-        const exprRegPatenteNueva = /[A-Z]{2}[\d]{3}[A-Z]{2}/;
-        const esPatenteViejaValida = exprRegPatenteVieja.test(patente);
-        const esPatenteNuevaValida = exprRegPatenteNueva.test(patente);
-        console.log(`${patente}. Vieja: ${esPatenteViejaValida ? 'SI' : 'NO'}. Nueva: ${esPatenteNuevaValida ? 'SI' : 'NO'}.`);
-        return esPatenteViejaValida || esPatenteNuevaValida;
+        if (!patente) {
+            return true;
+        }
+        const exprRegPatente = /^[A-Z]{3}[\d]{3}$|^[A-Z]{2}[\d]{3}[A-Z]{2}$/;
+        return exprRegPatente.test(patente);
     }
 
 

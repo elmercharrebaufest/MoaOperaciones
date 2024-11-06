@@ -131,7 +131,8 @@
                                         [no-match-found-text]="'No se encontraron resultados'" maxlength="7"
                                         mask="AAAAAAA" [source]="patentesChasis"
                                         [(ngModel)]="ordenResiduos.PatenteChasis"
-                                        (ngModelChange)="onPatenteChasisSeleccionado($event)" />
+                                        (ngModelChange)="onPatenteChasisSeleccionado($event)"
+                                        (blur)="onPatenteChasisBlur()" />
                                 </div>
                             </div>
 
