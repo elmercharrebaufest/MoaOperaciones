@@ -179,7 +179,14 @@
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
-  	<setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
+	<setParameter name="ConsultaOpenStreetMapHabilitada Config" value="true" />
+	<setParameter name="RuteoOSRMHabilitado Config" value="true" />
+	<setParameter name="OsrmApiBaseAddress Config" value="http://router.project-osrm.org/" />
+	<setParameter name="OpenStreetMapApiBaseAddress Config" value="https://nominatim.openstreetmap.org/" />
+	<setParameter name="CoordenadasPlantaMoaLatitud Config" value="-32,773465" />
+	<setParameter name="CoordenadasPlantaMoaLongitud Config" value="-60,728782" />
+
+	<setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
 
 	<setParameter name="SI_MPMF_MOAOP_PENDIENTE_APLICAR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PENDIENTE_APLICAR&amp;interfaceNamespace=urn%3AOPERACIONES" />
 

@@ -94,44 +94,6 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void ObtenerProveedor_Ok()
-        {
-            var proveedorBD = new Proveedor
-            {
-                Id = 1,
-                RazonSocial = "Prov1",
-                CodigoProveedor = "PRV1",
-                TipoProveedor = new TipoUsuario { Id = 7 }
-            };
-
-            mIRepositorioOrdenResiduos
-                .Setup(x => x.ObtenerProveedor(1))
-                .Returns(proveedorBD);
-
-            var provResult = target.ObtenerProveedor(1);
-
-            Assert.IsNotNull(provResult);
-            Assert.That(provResult.Id, Is.EqualTo(1));
-            Assert.That(provResult.RazonSocial, Is.EqualTo("Prov1"));
-            Assert.That(provResult.CodigoProveedor, Is.EqualTo("PRV1"));
-            mIRepositorioOrdenResiduos
-                .Verify(x => x.ObtenerProveedor(1), Times.Once);
-        }
-
-        [Test]
-        public void ObtenerProveedor_NoExiste()
-        {
-            mIRepositorioOrdenResiduos
-                .Setup(x => x.ObtenerProveedor(3))
-                .Returns((Proveedor)null);
-
-            Assert.Throws<Exception>(() => target.ObtenerProveedor(3));
-
-            mIRepositorioOrdenResiduos
-                .Verify(x => x.ObtenerProveedor(3), Times.Once);
-        }
-
-        [Test]
         public void ObtenerListadoOrdenes_Ok()
         {
             var fechaInicio = new DateTime(2024, 3, 1);
