@@ -579,12 +579,24 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         }
     }
 
-    publicarCotizacion(selectedPosiciones: any[]): void {
-        const posicionesSeleccionadas = selectedPosiciones.filter(posicion => posicion.Selected === true);
-        // Aquí puedes hacer lo que necesites con las posiciones seleccionadas
-        const ids = posicionesSeleccionadas.map(pos => pos.Id);
-        // Por ejemplo, puedes enviarlas a una función que maneje la lógica de publicación
-        // this.enviarPosicionesSeleccionadas(posicionesSeleccionadas);
+    publicarCotizacion(): void {
+
+        let ids: number[];
+
+        if (this.lastSearch == 'SERVICIO') {
+            const selectedSolp: SolpCrearPoMultipleDto[] = this.solps;
+            let solpSeleccionadas: SolpCrearPoMultipleDto[] = selectedSolp.filter(solp => solp.Selected === true);
+            // para cada solp marcada, busco los id de posición y los concateno en un sólo array
+            ids = solpSeleccionadas.reduce((acc:number[], val: SolpCrearPoMultipleDto) => {
+                let posiciones: number[] = val.Posiciones.reduce((accPos, pos) => accPos.concat(pos.Id), []);
+                return acc.concat(posiciones);
+            }, []);
+        } else {
+            const selectedPosiciones: POPosicionDto[] = this.posiciones;
+            const posicionesSeleccionadas: POPosicionDto[] = selectedPosiciones.filter(posicion => posicion.Selected === true);
+            ids = posicionesSeleccionadas.map(pos => pos.Id);
+        }
+
         if (ids.length > 0) {
             this.goToSeccionParam('/compras/peticion-de-oferta-formulario', JSON.stringify(ids));
         } else {
