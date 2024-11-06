@@ -9974,10 +9974,10 @@ namespace SustitucionMOAUtils.Services
                             Nombre = solp.Pliego.NombreObra,
                             FechaCreacion = solp.FechaCreacion,
                             FechaLiberacion = solp.FechaLiberacionSap,
-                            Solicitante = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Solicitante : null,
+                            Solicitante =solp.UsuarioCreacion.Mail,
                             GrupoDeCompras = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion : null,
                             Centro = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Centro.Descripcion : null,
-                            Tipo = solp.TipoSolp.Descripcion, //????                            
+                            Tipo = solp.TipoSolp.Descripcion,                          
                         },
                     solp => solpIds.Contains(solp.Id)
                 );
