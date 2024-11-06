@@ -9996,10 +9996,14 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                return repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
+                var posicionPendientesSap = new List<PosicionPendienteDto>();
+                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+
+                List<PosicionCrearPoMultipleDto> posiciones = repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
                     posicion => new PosicionCrearPoMultipleDto
                     {
                         Id = posicion.Id,
+                        nroSolp = posicion.Solp.NroSolp,
                         NroPosicion = posicion.Indice,
                         Descripcion = posicion.Tarea,
                         TipoImputacion = posicion.TipoImputacion.Descripcion,
@@ -10009,6 +10013,11 @@ namespace SustitucionMOAUtils.Services
                         ValorTotal = posicion.Subposiciones.Sum(sub => sub.PrecioBruto * sub.Cantidad),
                     }
                     , posicion => posicion.Solp_Id == idSolp);
+
+                return posiciones
+                    .Where(posicion =>
+                        posicionPendientesSap
+                            .Exists(pendiente => pendiente.NroSolp == posicion.nroSolp && pendiente.NumeroPosicion == posicion.NroPosicion));
             }
             catch (Exception e)
             {

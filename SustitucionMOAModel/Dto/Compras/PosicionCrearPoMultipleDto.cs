@@ -18,5 +18,7 @@ namespace SustitucionMOAModel.Dto
         public string Moneda { get; set; }
 
         public decimal? ValorTotal { get; set; }
+
+        public string nroSolp { get; set; }
     }
 }
