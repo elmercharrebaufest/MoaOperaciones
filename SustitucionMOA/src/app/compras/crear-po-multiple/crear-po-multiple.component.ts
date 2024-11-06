@@ -15,6 +15,8 @@ import { SolpCrearPoMultipleDto } from '../../modelos/Solp-CrearPoMultipleDto.mo
 import { ComprasService } from '../compras.service';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
 import { PosicionCrearPoMultipleDto } from '../../modelos/Posicion-CrearPoMultipleDto.model';
+import { ActionResult } from '../../../serviceHelpers/actionResult.Interface';
+import { SubPosicionCrearPoMultipleDto } from '../../modelos/SubPosicion-CrearPoMultipleDto.model';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -259,7 +261,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTipoSolp,
                 this.nombrePliego
             ).subscribe(
-                (result: any) => {
+                (result: ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -269,9 +271,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                     } else {
                         if (this.selectTipoSolp === "SERVICIO") {
                             this.posiciones = [];
-                            this.solps = result.data;
+                            this.solps = result.data as SolpCrearPoMultipleDto[];
                         } else {
-                            this.posiciones = result.data;
+                            this.posiciones = result.data as POPosicionDto[];
                             this.solps = [];
                         }
                         this.lastSearch = this.selectTipoSolp;
@@ -302,7 +304,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             this.blockUI.start('Cargando...');
             this.subscription = this.service.listarPosicionesPOMultipleIdSolp(solp.Id
             ).subscribe(
-                (result: any) => {
+                (result: ActionResult<PosicionCrearPoMultipleDto[]>) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -334,7 +336,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             this.blockUI.start('Cargando...');
             this.subscription = this.service.listarSubPosicionesPOMultipleIdSolp(posicion.Id
             ).subscribe(
-                (result: any) => {
+                (result: ActionResult<SubPosicionCrearPoMultipleDto[]>) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {

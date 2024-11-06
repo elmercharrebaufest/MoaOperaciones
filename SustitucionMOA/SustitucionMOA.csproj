@@ -1670,6 +1670,7 @@
     <TypeScriptCompile Include="src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="src\environments\environment.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\serviceHelpers\actionResult.Interface.ts" />
     <TypeScriptCompile Include="src\test.ts" />
   </ItemGroup>
   <ItemGroup>

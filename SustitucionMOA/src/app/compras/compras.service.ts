@@ -23,6 +23,11 @@ import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
 import { LegajoDto } from '../modelos/compras/legajoDto';
 import { ObtenerLegajoResponse } from '../modelos/compras/obtenerLegajoResponse';
+import { PosicionCrearPoMultipleDto } from '../modelos/Posicion-CrearPoMultipleDto.model';
+import { ActionResult } from '../../serviceHelpers/actionResult.Interface';
+import { SolpCrearPoMultipleDto } from '../modelos/Solp-CrearPoMultipleDto.model';
+import { POPosicionDto } from '../modelos/po-posicionDto';
+import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
 
 @Injectable({
     providedIn: 'root'
@@ -1324,7 +1329,7 @@ export class ComprasService extends BaseService {
         numeroPo?: number,
         tipoSolp?: string,
         nombrePliego?: string,
-    ): Observable<any> {
+    ): Observable<ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
@@ -1343,26 +1348,26 @@ export class ComprasService extends BaseService {
 
         if (tipoSolp === "SERVICIO") {
             params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
-            return this.http.get('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
+            return this.http.get<ActionResult<SolpCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         } else {
-            return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+            return this.http.get<ActionResult<POPosicionDto[]>>('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
         }
     }
 
     public listarPosicionesPOMultipleIdSolp(
         idSolp: number
-    ): Observable<any> {
+    ): Observable<ActionResult<PosicionCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('idSolp', idSolp.toString());
-        return this.http.get('/api/compras/ListarPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
+        return this.http.get<ActionResult<PosicionCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
     }
 
     public listarSubPosicionesPOMultipleIdSolp(
         idPosicion: number
-    ): Observable<any> {
+    ): Observable<ActionResult<SubPosicionCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('idPosicion', idPosicion.toString());
-        return this.http.get('/api/compras/ListarSubPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
+        return this.http.get<ActionResult<SubPosicionCrearPoMultipleDto[]>>('/api/compras/ListarSubPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
     }
 
     public descargarPosicionesPOMultiple(
