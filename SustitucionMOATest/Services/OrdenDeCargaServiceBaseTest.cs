@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -139,6 +140,44 @@ namespace SustitucionMOATest.Services
         public void ValidarDigitoCuit_NoCumpleFormato_Exception()
         {
             Assert.Throws<ValidationCustomException>(() => target.Object.ValidarCuilChofer(""));
+        }
+
+        [Test]
+        public void ObtenerProveedor_Ok()
+        {
+            var proveedorBD = new Proveedor
+            {
+                Id = 1,
+                RazonSocial = "Prov1",
+                CodigoProveedor = "PRV1",
+                TipoProveedor = new TipoUsuario { Id = 7 }
+            };
+
+            mIRepositorio
+                .Setup(x => x.Obtener<Proveedor>(1))
+                .Returns(proveedorBD);
+
+            var provResult = target.Object.ObtenerProveedor(1);
+
+            Assert.IsNotNull(provResult);
+            Assert.That(provResult.Id, Is.EqualTo(1));
+            Assert.That(provResult.RazonSocial, Is.EqualTo("Prov1"));
+            Assert.That(provResult.CodigoProveedor, Is.EqualTo("PRV1"));
+            mIRepositorio
+                .Verify(x => x.Obtener<Proveedor>(1), Times.Once);
+        }
+
+        [Test]
+        public void ObtenerProveedor_NoExiste()
+        {
+            mIRepositorio
+                .Setup(x => x.Obtener<Proveedor>(3))
+                .Returns((Proveedor)null);
+
+            Assert.Throws<Exception>(() => target.Object.ObtenerProveedor(3));
+
+            mIRepositorio
+                .Verify(x => x.Obtener<Proveedor>(3), Times.Once);
         }
     }
 }

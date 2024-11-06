@@ -36,11 +36,13 @@ namespace SustitucionMOARepositorio.Repositorios
 
         public List<OrdenResiduosFila> ObtenerListadoOrdenes(DateTime fechaInicio, DateTime fechaFin)
         {
+            var fechaHasta = fechaFin.AddDays(1);
+
             var ordenes = (
                 from o in Set<OrdenResiduos>()
                 where
                     o.FechaCreacion >= fechaInicio &&
-                    o.FechaCreacion < DbFunctions.AddDays(fechaFin, 1)
+                    o.FechaCreacion < fechaHasta
                 orderby o.FechaCreacion descending
                 select new
                 {
