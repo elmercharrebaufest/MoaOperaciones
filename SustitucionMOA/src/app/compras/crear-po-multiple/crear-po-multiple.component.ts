@@ -14,6 +14,7 @@ import { POPosicionDto } from '../../modelos/po-posicionDto';
 import { SolpCrearPoMultipleDto } from '../../modelos/Solp-CrearPoMultipleDto.model';
 import { ComprasService } from '../compras.service';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
+import { PosicionCrearPoMultipleDto } from '../../modelos/Posicion-CrearPoMultipleDto.model';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -328,6 +329,38 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         return false; //<-- Prevent Refresh
     }
 
+    listarSubPosicionesPOMultiplePorId(posicion: PosicionCrearPoMultipleDto) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.listarPosicionesPOMultipleIdSolp(posicion.Id
+            ).subscribe(
+                (result: any) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        posicion.SubPosiciones = result.data;
+                        posicion.Expanded = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
     solpExpandToggle(solp: SolpCrearPoMultipleDto): void {
         if (solp.Expanded) {
             solp.Expanded = false;
@@ -339,6 +372,20 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         } else {
             // no olvidar de marcar solp.Expanded en el resultado de la subscription.
             this.listarPosicionesPOMultiplePorId(solp)
+        }
+    }
+
+    posicionExpandToggle(posicion: PosicionCrearPoMultipleDto): void {
+        if (posicion.Expanded) {
+            posicion.Expanded = false;
+            return;
+        }
+
+        if (posicion.SubPosiciones && posicion.SubPosiciones.length) {
+            posicion.Expanded = true;
+        } else {
+            // no olvidar de marcar solp.Expanded en el resultado de la subscription.
+            this.listarSubPosicionesPOMultiplePorId(posicion)
         }
     }
 
