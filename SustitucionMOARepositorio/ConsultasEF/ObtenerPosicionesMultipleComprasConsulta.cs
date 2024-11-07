@@ -62,7 +62,18 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                                                  SolpPosicionId = posicion.Id,
                                                                                  TipoFiltroProveedorSolpCodigo = solpProveedor.TipoFiltroProveedorSolp.Codigo,
                                                                                  RazonSocial = solpProveedor.RazonSocial
-                                                                             })
+                                                                             }),
+                                                       SubposicionesCompras = (from subPosicion in contexto.Set<SolpSubposicion>()
+                                                                               where subPosicion.SolpPosicion_Id == posicion.Id
+                                                                               orderby subPosicion.Numero
+                                                                               select new SolpSubposicionDto()
+                                                                               {
+                                                                                   Numero = subPosicion.Numero,
+                                                                                   Tarea = subPosicion.Tarea,
+                                                                                   Codigo = subPosicion.ServicioSolp.Codigo,
+                                                                                   Cantidad = subPosicion.Cantidad,
+                                                                                   UnidadComprasDescripcion = subPosicion.Unidad.Descripcion
+                                                                               }),
                                                    })
                                  .ToList();
 
