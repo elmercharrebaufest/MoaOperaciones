@@ -5594,25 +5594,59 @@ namespace SustitucionMOAUtils.Services
 
             if (esProveedor)
             {
-                var posicion = peticion.Posiciones.First().SolpPosicion;
+                var primeraPposicion = peticion.Posiciones.First().SolpPosicion;
                 var esServicio = peticion.Posiciones.First().SolpPosicion.Solp.Posiciones.Select(x => x.TipoPosicion.Codigo).FirstOrDefault() == "SERVICIO";
 
-                bool casoConPliego = ValidarSolpSiTienePliego(posicion);
-
-                if (esServicio && casoConPliego)
+                if (esServicio)
                 {
-                    var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
-                        peticion.Posiciones.First().SolpPosicion.Solp.Id + "&token=" + peticion.Posiciones.First().SolpPosicion.Solp.EmailLinkToken;
+                    var solpConPliegoSinRepetir
+                        = peticion
+                            .Posiciones
+                            .GroupBy(x => x.SolpPosicion.Solp.Id)
+                            .Select(x => x.First()) // groupBy + select => distinctBy
+                            .Where(x => ValidarSolpSiTienePliego(x.SolpPosicion));
 
-                    htmlBody.Append("<p")
-                              .Append("style = 'line-height: 24px; font-size: 16px; margin: 0;'")
-                              .Append("align = 'center' >")
-                              .Append(" Para descargar el legajo, haga  ")
-                              .Append("<a href = '").Append(downloadLinkUrl).Append("' download rel='noopener noreferrer'>")
-                              .Append("click aquí")
-                              .Append("</a>")
-                              .Append("</p>")
-                              .AppendLine("<br />");
+                    int cuentaSolpConPliego = solpConPliegoSinRepetir.Count();
+
+                    if (cuentaSolpConPliego == 1)
+                    {
+                        var posicion = peticion.Posiciones.Single().SolpPosicion;
+                        var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
+                            posicion.Solp.Id + "&token=" + posicion.Solp.EmailLinkToken;
+
+                        htmlBody.Append("<p")
+                                  .Append("style = 'line-height: 24px; font-size: 16px; margin: 0;'")
+                                  .Append("align = 'center' >")
+                                  .Append(" Para descargar el legajo, haga  ")
+                                  .Append("<a href = '").Append(downloadLinkUrl).Append("' download rel='noopener noreferrer'>")
+                                  .Append("click aquí")
+                                  .Append("</a>")
+                                  .Append("</p>")
+                                  .AppendLine("<br />");
+                    }
+                    if (cuentaSolpConPliego > 1)
+                    {
+                        htmlBody.Append("<p")
+                                  .Append("style = 'line-height: 24px; font-size: 16px; margin: 0;'")
+                                  .Append("align = 'center' >")
+                                  .Append("Algunas SOLP tienen legajo disponible para descarga. Haga click en los elementos para descargarlos")
+                                  .Append("</p>")
+                                  .Append("<ul>");
+
+                        foreach (Solp solp in solpConPliegoSinRepetir.Select(x => x.SolpPosicion.Solp))
+                        {
+                            var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
+                            solp.Id + "&token=" + solp.EmailLinkToken;
+                            htmlBody.Append("<li>")
+                                .Append("<a href = '").Append(downloadLinkUrl).Append("' download rel='noopener noreferrer'>")
+                                .Append(solp.NroSolp)
+                                .Append("</a>")
+                                .Append("</li>");
+                        }
+
+                        htmlBody.Append("</ul>")
+                                  .AppendLine("<br />");
+                    }
                 }
 
                 if (peticion.AdjuntoPliego == true)
@@ -5636,7 +5670,7 @@ namespace SustitucionMOAUtils.Services
                     htmlBody.AppendLine("</ul>");
                 }
 
-                if (posicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
+                if (primeraPposicion.Solp.Pliego.RequisitoCiberseguridad == true && esServicio)
                 {
                     htmlBody.AppendLine("<p>Le enviamos los requisitos de ciberseguridad obligatorios para todos los proveedores, contratistas y consultores que se conecten a la red LAN y/o VPN, o a las aplicaciones internas de Molinos Agro durante la prestación de sus servicios. Por favor, asegúrese de cumplir con estos requisitos para garantizar la seguridad de nuestras operaciones:</p>");
                     htmlBody.AppendLine("<p>Solicitamos puedan firmar el documento adjunto considerando las siguientes condiciones:</p>");
