@@ -1,18 +1,22 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ComprasService } from '../compras.service';
-import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { ActivatedRoute, Router } from '@angular/router';
+import _ from 'lodash';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SelectItem } from 'primeng/api';
+import { Table } from 'primeng/table';
+import { ListBaseComponent } from '../../common/base-components/list-base-component';
 import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { NavService } from '../../common/services/NavService';
 import { SecurityService } from '../../common/services/SecurityService';
 import { SessionDataService } from '../../common/services/SessionDataService';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { Table } from 'primeng/table';
 import { POPosicionDto } from '../../modelos/po-posicionDto';
+import { SolpCrearPoMultipleDto } from '../../modelos/Solp-CrearPoMultipleDto.model';
+import { ComprasService } from '../compras.service';
 import { EnumTipoImputacion } from '../enum-tipo-imputacion';
-import _ from 'lodash';
+import { PosicionCrearPoMultipleDto } from '../../modelos/Posicion-CrearPoMultipleDto.model';
+import { ActionResult } from '../../../serviceHelpers/actionResult.Interface';
+import { SubPosicionCrearPoMultipleDto } from '../../modelos/SubPosicion-CrearPoMultipleDto.model';
 
 @Component({
     selector: 'app-crear-po-multiple',
@@ -80,11 +84,23 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     web: boolean = false;
     repoAutomatica: boolean = false;
     contratoMarco: boolean = false;
-    posiciones: POPosicionDto[] = [];
+    posiciones: POPosicionDto[] = []; // para búsqueda "MATERIAL"
+    solps: SolpCrearPoMultipleDto[] = []; // para búsqueda "SERVICIO"
     numeroPo?: number = null;
 
     tratada: SelectItem[] = [{ label: "Tiene PO", value: true }, { label: "No tiene PO", value: false }, { label: "Ver Todas", value: null }];
     selectTratada: boolean | null = null;
+
+    tiposSolp: SelectItem[] = [];
+    selectTipoSolp?: string;
+    showNombrePliegoConditionList: string[] = [];
+    get showNombrePliego() {
+        return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
+    }
+
+    nombrePliego?: string;
+
+    lastSearch?: string;
 
     filtrosPOMultiple: iFiltrosPoMultiple;
 
@@ -104,6 +120,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         fechaHasta: null,
         tratada: null,
         numeroPo: null,
+        selectTipoSolp: null,
+        nombrePliego: null,
     };
 
     ngOnInit() {
@@ -132,6 +150,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         this.grupoComprasFiltro = [];
                         this.claseDocumentoFiltro = [];
                         this.tipoImputacionFiltro = [];
+                        this.tiposSolp = [];
 
                         result.Centro.forEach(c => this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
@@ -145,6 +164,13 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         result.TipoImputacion.forEach(ti => this.tipoImputacionFiltro.push({
                             label: ti.Descripcion + " - " + ti.Codigo, value: ti.Codigo
                         }));
+                        result.TipoPosicionSolp.forEach(tp => {
+                            this.tiposSolp.push({
+                                label: tp.Codigo, value: tp.Codigo
+                            })
+                        });
+                        if (!this.selectTipoSolp) { this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple; }
+                        this.showNombrePliegoConditionList = result.showNombrePliegoConditionList;
                     }
                 },
                 error => {
@@ -206,17 +232,25 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     }
 
     seleccionarTodo() {
-        if (this.TodasPosicionesSeleccionadas) {
-            this.posiciones.map(pos => pos.Selected = true);
+        if (this.lastSearch == 'SERVICIO') {
+            if (this.TodasPosicionesSeleccionadas) {
+                this.solps.map(solp => solp.Selected = true);
+            } else {
+                this.solps.map(solp => solp.Selected = false);
+            }
         } else {
-            this.posiciones.map(pos => pos.Selected = false);
+            if (this.TodasPosicionesSeleccionadas) {
+                this.posiciones.map(pos => pos.Selected = true);
+            } else {
+                this.posiciones.map(pos => pos.Selected = false);
+            }
         }
     }
 
     listarPosicionesPOMultiple() {
         try {
+            this.lastSearch = null;
             this.blockUI.start('Cargando...');
-
             this.subscription = this.service.listarPosicionesPOMultiple(
                 this.fechaInicio,
                 this.fechaFin,
@@ -231,10 +265,11 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTipoImputacion.join(","),
                 this.selectValorTipoImputacion.join(","),
                 this.selectTratada,
-                this.numeroPo
+                this.numeroPo,
+                this.selectTipoSolp,
+                this.nombrePliego
             ).subscribe(
-                (result: any) => {
-
+                (result: ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -242,9 +277,16 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.posiciones = result.data;
-                        this.blockUI.stop();
+                        if (this.selectTipoSolp === "SERVICIO") {
+                            this.posiciones = [];
+                            this.solps = result.data as SolpCrearPoMultipleDto[];
+                        } else {
+                            this.posiciones = result.data as POPosicionDto[];
+                            this.solps = [];
+                        }
+                        this.lastSearch = this.selectTipoSolp;
                     }
+                    this.blockUI.stop();
                 },
                 error => {
                     this.blockUI.stop();
@@ -254,6 +296,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
@@ -262,6 +305,98 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
     onBuscar() {
         this.listarPosicionesPOMultiple();
         this.guardarFiltros();
+    }
+
+    listarPosicionesPOMultiplePorId(solp: SolpCrearPoMultipleDto) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.listarPosicionesPOMultipleIdSolp(solp.Id
+            ).subscribe(
+                (result: ActionResult<PosicionCrearPoMultipleDto[]>) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        solp.Posiciones = result.data;
+                        solp.Expanded = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    listarSubPosicionesPOMultiplePorId(posicion: PosicionCrearPoMultipleDto) {
+        try {
+            this.blockUI.start('Cargando...');
+            this.subscription = this.service.listarSubPosicionesPOMultipleIdSolp(posicion.Id
+            ).subscribe(
+                (result: ActionResult<SubPosicionCrearPoMultipleDto[]>) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        posicion.SubPosiciones = result.data;
+                        posicion.Expanded = true;
+                    }
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.blockUI.stop();
+                    this.floatMsgService.setErrorMsg(error.message);
+                }
+
+            );
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
+    }
+
+    solpExpandToggle(solp: SolpCrearPoMultipleDto): void {
+        if (solp.Expanded) {
+            solp.Expanded = false;
+            return;
+        }
+
+        if (solp.Posiciones && solp.Posiciones.length) {
+            solp.Expanded = true;
+        } else {
+            // no olvidar de marcar solp.Expanded en el resultado de la subscription.
+            this.listarPosicionesPOMultiplePorId(solp)
+        }
+    }
+
+    posicionExpandToggle(posicion: PosicionCrearPoMultipleDto): void {
+        if (posicion.Expanded) {
+            posicion.Expanded = false;
+            return;
+        }
+
+        if (posicion.SubPosiciones && posicion.SubPosiciones.length) {
+            posicion.Expanded = true;
+        } else {
+            // no olvidar de marcar solp.Expanded en el resultado de la subscription.
+            this.listarSubPosicionesPOMultiplePorId(posicion)
+        }
     }
 
     download() {
@@ -282,7 +417,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTipoImputacion.join(","),
                 this.selectValorTipoImputacion.join(","),
                 this.selectTratada,
-                this.numeroPo
+                this.numeroPo,
+                this.selectTipoSolp
             ).subscribe(
                 (result: any) => {
                     if (result.logout == true) {
@@ -298,9 +434,9 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         });
 
                         this.downloadArchivoLocal(blob, result.fileName);
-
-                        this.blockUI.stop();
                     }
+
+                    this.blockUI.stop();
                 },
                 error => {
                     this.blockUI.stop();
@@ -310,6 +446,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             );
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
@@ -355,6 +492,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.filtrosPOMultiple.fechaHasta = this.fechaFin;
         this.filtrosPOMultiple.tratada = this.selectTratada;
         this.filtrosPOMultiple.numeroPo = this.numeroPo;
+        this.filtrosPOMultiple.selectTipoSolp = this.selectTipoSolp;
+        this.filtrosPOMultiple.nombrePliego = this.nombrePliego;
         sessionStorage.setItem('filtrosPOMultiple', JSON.stringify(this.filtrosPOMultiple));
     }
 
@@ -397,6 +536,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             } else {
                 this.rangeDates = undefined;
             }
+            this.selectTipoSolp = this.filtrosPOMultiple.selectTipoSolp;
+            this.nombrePliego = this.filtrosPOMultiple.nombrePliego;
         }
     }
 
@@ -446,16 +587,49 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         }
     }
 
-    publicarCotizacion(selectedPosiciones: any[]): void {
-        const posicionesSeleccionadas = selectedPosiciones.filter(posicion => posicion.Selected === true);
-        // Aquí puedes hacer lo que necesites con las posiciones seleccionadas
-        const ids = posicionesSeleccionadas.map(pos => pos.Id);
-        // Por ejemplo, puedes enviarlas a una función que maneje la lógica de publicación
-        // this.enviarPosicionesSeleccionadas(posicionesSeleccionadas);
-        if (ids.length > 0) {
-            this.goToSeccionParam('/compras/peticion-de-oferta-formulario', JSON.stringify(ids));
-        } else {
-            this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
+    public async publicarCotizacion(): Promise<void> {
+
+        let ids: number[] = [];
+        let error: boolean = false;
+        let errorMessaje: string = "";
+
+        this.blockUI.start('Cargando...');
+
+        try {
+
+            if (this.lastSearch == 'SERVICIO') {
+                const selectedSolp: SolpCrearPoMultipleDto[] = this.solps;
+                let solpSeleccionadas: SolpCrearPoMultipleDto[] = selectedSolp.filter(solp => solp.Selected === true);
+                // para cada solp marcada, busco los id de posición y los concateno en un sólo array
+                for (let solp of solpSeleccionadas) {
+                    if (!solp.Posiciones || !solp.Posiciones.length) {
+                        await (this.service.listarPosicionesPOMultipleIdSolp(solp.Id).toPromise())
+                            .then(x => solp.Posiciones = x.data)
+                            .catch(reason => {
+                                error = true;
+                                errorMessaje = reason.message;
+                            });
+                        if (error) { throw errorMessaje; }
+                    }
+
+                    let posiciones: number[] = solp.Posiciones.reduce((accPos, pos) => accPos.concat(pos.Id), []);
+                    ids = ids.concat(posiciones);
+                }
+            } else {
+                const selectedPosiciones: POPosicionDto[] = this.posiciones;
+                const posicionesSeleccionadas: POPosicionDto[] = selectedPosiciones.filter(posicion => posicion.Selected === true);
+                ids = posicionesSeleccionadas.map(pos => pos.Id);
+            }
+
+            if (ids.length > 0) {
+                this.goToSeccionParam('/compras/peticion-de-oferta-formulario', JSON.stringify(ids));
+            } else {
+                this.floatMsgService.setInfoMsg("Debe seleccionar al menos una posicion.");
+            }
+        } catch (e) {
+            this.floatMsgService.setErrorMsg(e);
+        } finally {
+            this.blockUI.stop();
         }
     }
 }
@@ -476,4 +650,6 @@ interface iFiltrosPoMultiple {
     fechaHasta: string;
     tratada: boolean | null;
     numeroPo?: number;
+    selectTipoSolp?: string;
+    nombrePliego?: string;
 }

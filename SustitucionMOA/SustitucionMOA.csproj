@@ -1417,12 +1417,15 @@
     <TypeScriptCompile Include="src\app\modelos\ordenDeCompraSap.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-de-oferta-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\peticion-visualizar-precio-dto.ts" />
+    <TypeScriptCompile Include="src\app\modelos\SubPosicion-CrearPoMultipleDto.model.ts" />
     <TypeScriptCompile Include="src\app\modelos\proveedor-model.ts" />
     <TypeScriptCompile Include="src\app\modelos\registro-info.ts" />
     <TypeScriptCompile Include="src\app\modelos\resultadoDto.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.spec.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.component.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.service.ts" />
+    <TypeScriptCompile Include="src\app\modelos\Posicion-CrearPoMultipleDto.model.ts" />
+    <TypeScriptCompile Include="src\app\modelos\Solp-CrearPoMultipleDto.model.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.spec.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\alta-notificaciones\alta-notificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\notificaciones\carousel-notificaciones\carousel-notificaciones.component.spec.ts" />
@@ -1667,6 +1670,7 @@
     <TypeScriptCompile Include="src\environments\environment.prod.ts" />
     <TypeScriptCompile Include="src\environments\environment.ts" />
     <TypeScriptCompile Include="src\main.ts" />
+    <TypeScriptCompile Include="src\serviceHelpers\actionResult.Interface.ts" />
     <TypeScriptCompile Include="src\test.ts" />
   </ItemGroup>
   <ItemGroup>

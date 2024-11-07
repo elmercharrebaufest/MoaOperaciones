@@ -124,6 +124,17 @@ namespace SustitucionMOA.Controllers
                     Provincia = service.ListarProvincia(),
 
                     ListarPendienteList = service.ListarPendienteListComboOptions(),
+
+                    // ----- crear PO Múltiple -----
+                    DefaultTipoPosicionSolpCrearPoMultiple = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                        .Find(x => x.Codigo.StartsWith("material", StringComparison.InvariantCultureIgnoreCase))
+                        .Codigo,
+
+                    showNombrePliegoConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                        // por ahora, sólo servicio. Se retorna como lista
+                        .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
+                        .Select(x => x.Codigo),
+                    // ----- FIN crear PO Múltiple -----
                 });
             }
             catch (InfoCustomException e)
@@ -1716,7 +1727,7 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
-        }       
+        }
 
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
@@ -1911,6 +1922,64 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
+        public ActionResult ListarPosicionesPOMultipleServicio(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null,
+                                                       string nombrePliego = null)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    data = service.ListarPosicionesPOMultipleServicio(fechaDesde,
+                                                              fechaHasta,
+                                                              sap,
+                                                              mantenimiento,
+                                                              web,
+                                                              repoAutomatica,
+                                                              tratada,
+                                                              contratoMarco,
+                                                              !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                              !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                              numeroPo,
+                                                              nombrePliego)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
         public ActionResult DescargarPosicionesPOMultiple(bool? tratada,
                                                        string centros = null,
                                                        string grupoDeCompras = null,
@@ -1951,6 +2020,131 @@ namespace SustitucionMOA.Controllers
                     file = data.ToArray(),
                     contentType,
                     fileName,
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DescargarPosicionesPOMultipleServicio(bool? tratada,
+                                                       string centros = null,
+                                                       string grupoDeCompras = null,
+                                                       DateTime? fechaDesde = null,
+                                                       DateTime? fechaHasta = null,
+                                                       bool sap = false,
+                                                       bool mantenimiento = false,
+                                                       bool web = false,
+                                                       bool repoAutomatica = false,
+                                                       bool contratoMarco = false,
+                                                       string claseDocumento = null,
+                                                       string tipoImputacion = null,
+                                                       string valorTipoImputacion = null,
+                                                       int? numeroPo = null,
+                                                       string nombrePliego = null)
+        {
+            try
+            {
+                MemoryStream data = service.DescargarPosicionesPOMultipleServicio(fechaDesde,
+                                                          fechaHasta,
+                                                          sap,
+                                                          mantenimiento,
+                                                          web,
+                                                          repoAutomatica,
+                                                          tratada,
+                                                          contratoMarco,
+                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          numeroPo,
+                                                          nombrePliego);
+
+                string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+                const string contentType = CustomMediaTypeNames.Application.xlsx;
+
+                return JsonCustom(new
+                {
+                    file = data.ToArray(),
+                    contentType,
+                    fileName,
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarPosicionesPOMultipleSolpId(int idSolp)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    data = service.ListarPosicionesPOMultipleSolpId(idSolp)
+                });
+            }
+            catch (InfoCustomException e)
+            {
+                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (ValidationCustomException e)
+            {
+                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
+            }
+            catch (WSCustomException e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception e)
+            {
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult ListarSubPosicionesPOMultipleSolpId(int idPosicion)
+        {
+            try
+            {
+                return JsonCustom(new
+                {
+                    data = service.ListarSubPosicionesPOMultipleSolpId(idPosicion)
                 });
             }
             catch (InfoCustomException e)

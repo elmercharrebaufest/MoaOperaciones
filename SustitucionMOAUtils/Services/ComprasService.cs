@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -9765,6 +9765,67 @@ namespace SustitucionMOAUtils.Services
             return usuarios;
         }
 
+        private static Expression<Func<SolpPosicion, bool>> ListarPosicionesPOMultipleCommonFilter
+            (List<string> solps,
+             DateTime? desde,
+             DateTime? hasta,
+             bool sap,
+             bool mantenimiento,
+             bool web,
+             bool repoAutomatica,
+             bool? tratada,
+             List<int> centros = null,
+             List<int> grupoDeCompras = null,
+             List<int> claseDocumento = null,
+             List<string> tipoImputacion = null,
+             List<int> valorTipoImputacion = null)
+        {
+            Expression<Func<SolpPosicion, bool>> ListarPosicionesPOMultipleCommonFilter =
+                pos =>
+                    solps.Contains(pos.Solp.NroSolp)
+                    &&
+                        (
+                            (!(sap || mantenimiento || web || repoAutomatica))
+                            || (sap && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                            || (mantenimiento && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                            || (repoAutomatica && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica)
+                            || (web && (pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web))
+                        )
+                    &&
+                        (
+                            desde == null || pos.Solp.FechaCreacion >= desde.Value
+                        )
+                    &&
+                        (
+                            hasta == null || pos.Solp.FechaCreacion <= hasta.Value
+                        )
+                    &&
+                        (
+                            !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
+                        )
+                    &&
+                        (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
+                        (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
+                        (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
+                        (pos.NumeroContratoSuperior == null || pos.NumeroContratoSuperior == "")
+                    &&
+                        (
+                            !valorTipoImputacion.Any()
+                            || pos.Solp.Posiciones.Any(p => valorTipoImputacion.Contains((int)pos.ValorTipoImputacion_Id))
+                            || pos.Solp.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))
+                        )
+                    &&
+                        (tratada == null || pos.Peticiones.Any() == tratada) &&
+                            pos.Solp.TrabajoYaHecho != true &&
+                            pos.Solp.Adicional != true &&
+                            pos.Solp.CondEspProveedorAsignado != true &&
+                            (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
+                            pos.Solp.EstadoSolpSap.CodigoSap == "02");
+
+            return ListarPosicionesPOMultipleCommonFilter;
+        }
+
+
         public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
                                                               DateTime? hasta,
                                                               bool sap,
@@ -9782,12 +9843,12 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
+                DateTime? fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
 
                 var posicionPendientesSap = new List<PosicionPendienteDto>();
 
                 posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
-                var solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
+                List<string> solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
                 var sinSolps = !solps.Any();
 
                 if (sinSolps)
@@ -9795,7 +9856,15 @@ namespace SustitucionMOAUtils.Services
                     return new List<POPosicionDto>();
                 }
 
-                var posicionMaterial = repositorio.Listar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
+                Expression<Func<SolpPosicion, bool>> commonFilter = ListarPosicionesPOMultipleCommonFilter(solps, desde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, centros, grupoDeCompras, claseDocumento, tipoImputacion, valorTipoImputacion);
+                Expression<Func<SolpPosicion, bool>> filtroMaterial = pos => pos.TipoPosicion.Codigo == "MATERIALES";
+                List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()
+                {
+                    filtroMaterial,
+                    commonFilter,
+                };
+
+                var posicionMaterial = repositorio.ListarIntersecar<SolpPosicion, POPosicionDto>(pos => new POPosicionDto
                 {
                     Id = pos.Id,
                     NroSolp = pos.Solp.NroSolp,
@@ -9815,52 +9884,7 @@ namespace SustitucionMOAUtils.Services
                     FechaOferta = pos.Solp.Pliego_Id != null ? pos.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
                     TieneCotizacion = pos.Peticiones.Any(),
                 },
-                    pos => pos.TipoPosicion.Codigo == "MATERIALES" &&
-                    solps.Contains(
-                        pos.Solp.NroSolp
-                    ) &&
-                    (
-                        sap && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Sap || mantenimiento && pos.Solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || repoAutomatica
-                        && pos.Solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica ||
-                            (
-                                web &&
-                                (
-                                    pos.Solp.TipoSolpSap == null || pos.Solp.TipoSolpSap == (int)TipoSolpSap.Web
-                                )
-                            ) ||
-                            (
-                                !sap
-                                && !mantenimiento
-                                && !web
-                                && !repoAutomatica
-                             )
-                    ) &&
-                    (
-                        desde == null || pos.Solp.FechaCreacion >= desde.Value
-                    ) &&
-                    (
-                        fechaHasta == null || pos.Solp.FechaCreacion <= fechaHasta.Value
-                    ) &&
-                    (
-                        !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
-                    ) &&
-                    (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
-                    (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
-                    (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                    (pos.NumeroContratoSuperior == null || pos.NumeroContratoSuperior == "")
-                    &&
-                    (
-                        !valorTipoImputacion.Any()
-                        || pos.Solp.Posiciones.Any(p => valorTipoImputacion.Contains((int)pos.ValorTipoImputacion_Id))
-                        || pos.Solp.Posiciones.Any(p => p.Subposiciones.Any(sp => valorTipoImputacion.Contains((int)sp.TipoImputacion_Id)))
-                    )
-                    &&
-                    (tratada == null || pos.Peticiones.Any() == tratada) &&
-                      pos.Solp.TrabajoYaHecho != true &&
-                      pos.Solp.Adicional != true &&
-                      pos.Solp.CondEspProveedorAsignado != true &&
-                      (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
-                      pos.Solp.EstadoSolpSap.CodigoSap == "02")
+                    filtros
                 );
 
                 posicionMaterial = posicionMaterial.Where(pm => posicionPendientesSap
@@ -9893,20 +9917,157 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
+        public List<SolpCrearPoMultipleDto> ListarPosicionesPOMultipleServicio(DateTime? desde,
+                                                                               DateTime? hasta,
+                                                                               bool sap,
+                                                                               bool mantenimiento,
+                                                                               bool web,
+                                                                               bool repoAutomatica,
+                                                                               bool? tratada,
+                                                                               bool contratoMarco,
+                                                                               List<int> centros = null,
+                                                                               List<int> grupoDeCompras = null,
+                                                                               List<int> claseDocumento = null,
+                                                                               List<string> tipoImputacion = null,
+                                                                               List<int> valorTipoImputacion = null,
+                                                                               int? numeroPo = null,
+                                                                               string nombrePliego = null)
+        {
+            try
+            {
+                DateTime? fechaHasta = hasta != null ? hasta.Value.AddDays(1) : (DateTime?)null;
+
+                var posicionPendientesSap = new List<PosicionPendienteDto>();
+
+                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                List<string> solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
+                var sinSolps = !solps.Any();
+
+                if (sinSolps)
+                {
+                    return new List<SolpCrearPoMultipleDto>();
+                }
+
+                Expression<Func<SolpPosicion, bool>> commonFilter = ListarPosicionesPOMultipleCommonFilter(solps, desde, fechaHasta, sap, mantenimiento, web, repoAutomatica, tratada, centros, grupoDeCompras, claseDocumento, tipoImputacion, valorTipoImputacion);
+#pragma warning disable RCS1155 // Use StringComparison when comparing strings -> No se puede usar StringComparison porque linq to entity no lo soporta. Lo mismo con IsNullOrWhitespace.
+                Expression<Func<SolpPosicion, bool>> filtroServicio =
+                    pos => pos.TipoPosicion.Codigo == "SERVICIO"
+                            && (string.IsNullOrEmpty(nombrePliego)
+                                || string.IsNullOrEmpty(nombrePliego.Trim())
+                                || pos.Solp.Pliego.NombreObra.Trim().ToLower() == nombrePliego.Trim().ToLower()
+                                );
+#pragma warning restore RCS1155 // Use StringComparison when comparing strings
+                List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()
+                {
+                    filtroServicio,
+                    commonFilter,
+                };
+
+                var solpIds = repositorio.ListarIntersecar<SolpPosicion, int>(pos => pos.Solp_Id, filtros).Distinct();
+
+                var posicionMaterial
+                    = repositorio
+                        .Listar<Solp, SolpCrearPoMultipleDto>(solp => new SolpCrearPoMultipleDto
+                        {
+                            Id = solp.Id,
+                            NroSolp = solp.NroSolp,
+                            Nombre = solp.Pliego.NombreObra,
+                            FechaCreacion = solp.FechaCreacion,
+                            FechaLiberacion = solp.FechaLiberacionSap,
+                            Solicitante = solp.UsuarioCreacion.Mail,
+                            GrupoDeCompras = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion : null,
+                            Centro = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Centro.Descripcion : null,
+                            Tipo = solp.TipoSolp.Descripcion,
+                        },
+                    solp => solpIds.Contains(solp.Id)
+                );
+
+                return posicionMaterial;
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultiple");
+                Log.Error(e);
+                throw;
+            }
+        }
+
+        public IEnumerable<PosicionCrearPoMultipleDto> ListarPosicionesPOMultipleSolpId(int idSolp)
+        {
+            try
+            {
+                var posicionPendientesSap = new List<PosicionPendienteDto>();
+                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+
+                List<PosicionCrearPoMultipleDto> posiciones = repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
+                    posicion => new PosicionCrearPoMultipleDto
+                    {
+                        Id = posicion.Id,
+                        nroSolp = posicion.Solp.NroSolp,
+                        NroPosicion = posicion.Indice,
+                        Descripcion = posicion.Tarea,
+                        TipoImputacion = posicion.TipoImputacion.Descripcion,
+                        Centro = posicion.Centro.Descripcion,
+                        Almacen = posicion.Almacen.Descripcion,
+                        Moneda = posicion.Moneda.Descripcion,
+                        ValorTotal = posicion.Subposiciones.Sum(sub => sub.PrecioBruto * sub.Cantidad),
+                    }
+                    , posicion => posicion.Solp_Id == idSolp);
+
+                return posiciones
+                    .Where(posicion =>
+                        posicionPendientesSap
+                            .Exists(pendiente => pendiente.NroSolp == posicion.nroSolp && pendiente.NumeroPosicion == posicion.NroPosicion));
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultipleSolpId");
+                Log.Error(e);
+                throw;
+            }
+        }
+
+        public IEnumerable<SubPosicionCrearPoMultipleDto> ListarSubPosicionesPOMultipleSolpId(int idPosicion)
+        {
+            try
+            {
+                return repositorio.Listar<SolpSubposicion, SubPosicionCrearPoMultipleDto>(
+                    subPosicion => new SubPosicionCrearPoMultipleDto
+                    {
+                        NroSubPosicion = subPosicion.Numero,
+                        CodigoServicio = subPosicion.CodigoServicioSap.Descripcion,
+                        Tarea = subPosicion.Tarea,
+                        Cantidad = subPosicion.Cantidad,
+                        UnidadMedida = subPosicion.Unidad.Descripcion,
+                        PrecioBruto = subPosicion.PrecioBruto,
+                        ValorNeto = subPosicion.PrecioBruto * subPosicion.Cantidad,
+                        CuentaMayor = subPosicion.CuentaMayorSap.Descripcion,
+                        Imputacion = subPosicion.TipoImputacionSap.Descripcion,
+                    }
+                    , subPosicion => subPosicion.SolpPosicion_Id == idPosicion);
+            }
+            catch (Exception e)
+            {
+                Log.Info($"Error al ListarPosicionesPOMultipleSolpId");
+                Log.Error(e);
+                throw;
+            }
+        }
+
         public MemoryStream DescargarPosicionesPOMultiple(DateTime? desde,
-                                                              DateTime? hasta,
-                                                              bool sap,
-                                                              bool mantenimiento,
-                                                              bool web,
-                                                              bool repoAutomatica,
-                                                              bool? tratada,
-                                                              bool contratoMarco,
-                                                              List<int> centros = null,
-                                                              List<int> grupoDeCompras = null,
-                                                              List<int> claseDocumento = null,
-                                                              List<string> tipoImputacion = null,
-                                                              List<int> valorTipoImputacion = null,
-                                                              int? numeroPo = null)
+                                                          DateTime? hasta,
+                                                          bool sap,
+                                                          bool mantenimiento,
+                                                          bool web,
+                                                          bool repoAutomatica,
+                                                          bool? tratada,
+                                                          bool contratoMarco,
+                                                          List<int> centros = null,
+                                                          List<int> grupoDeCompras = null,
+                                                          List<int> claseDocumento = null,
+                                                          List<string> tipoImputacion = null,
+                                                          List<int> valorTipoImputacion = null,
+                                                          int? numeroPo = null)
         {
             List<POPosicionDto> data = this.ListarPosicionesPOMultiple(desde,
                                                        hasta,
@@ -9922,6 +10083,51 @@ namespace SustitucionMOAUtils.Services
                                                        tipoImputacion,
                                                        valorTipoImputacion,
                                                        numeroPo);
+
+            /* las siguientes 2 líneas no son necesarias si se usa la configuración predeterminada
+             * ya que estas mismas llamadas se hacen dentro del método CreateColumnsFromObject
+             * cuando no se especifican los parámetros.
+             * Sin embargo, como esta invocación seguro va a ser usada como ejemplo,
+             * especifico acá las configuraciones
+             */
+            var columnas = ExcelExport.CreateColumnsFromObject(data.GetType().GetGenericArguments()[0]);
+            var styleSheet = ExcelExport.DefaultMoaStyleSheet();
+
+            MemoryStream stream = ExcelExport.ExportDtoToSingleStandardExcelSheet(data, true, styleSheet, columnas);
+            return stream;
+        }
+
+        public MemoryStream DescargarPosicionesPOMultipleServicio(DateTime? desde,
+                                                          DateTime? hasta,
+                                                          bool sap,
+                                                          bool mantenimiento,
+                                                          bool web,
+                                                          bool repoAutomatica,
+                                                          bool? tratada,
+                                                          bool contratoMarco,
+                                                          List<int> centros = null,
+                                                          List<int> grupoDeCompras = null,
+                                                          List<int> claseDocumento = null,
+                                                          List<string> tipoImputacion = null,
+                                                          List<int> valorTipoImputacion = null,
+                                                          int? numeroPo = null,
+                                                          string nombrePliego = null)
+        {
+            List<SolpCrearPoMultipleDto> data = this.ListarPosicionesPOMultipleServicio(desde,
+                                                       hasta,
+                                                       sap,
+                                                       mantenimiento,
+                                                       web,
+                                                       repoAutomatica,
+                                                       tratada,
+                                                       contratoMarco,
+                                                       centros,
+                                                       grupoDeCompras,
+                                                       claseDocumento,
+                                                       tipoImputacion,
+                                                       valorTipoImputacion,
+                                                       numeroPo,
+                                                       nombrePliego);
 
             /* las siguientes 2 líneas no son necesarias si se usa la configuración predeterminada
              * ya que estas mismas llamadas se hacen dentro del método CreateColumnsFromObject

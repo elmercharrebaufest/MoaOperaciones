@@ -23,6 +23,11 @@ import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
 import { LegajoDto } from '../modelos/compras/legajoDto';
 import { ObtenerLegajoResponse } from '../modelos/compras/obtenerLegajoResponse';
+import { PosicionCrearPoMultipleDto } from '../modelos/Posicion-CrearPoMultipleDto.model';
+import { ActionResult } from '../../serviceHelpers/actionResult.Interface';
+import { SolpCrearPoMultipleDto } from '../modelos/Solp-CrearPoMultipleDto.model';
+import { POPosicionDto } from '../modelos/po-posicionDto';
+import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
 
 @Injectable({
     providedIn: 'root'
@@ -596,7 +601,7 @@ export class ComprasService extends BaseService {
 
         return this.http
             .get<any[]>("/api/compras/AutocompleteMaterialRFC", { params: params })
-    }    
+    }
 
     obtenerDatosPorCodigosSap(codigos: any[]) {
         var payload = new FormData();
@@ -730,7 +735,7 @@ export class ComprasService extends BaseService {
     public getListarOfertasComprador(peticionOferta_Id): Observable<ApiResponse<PeticionDeOfertaDto>> {
         let params: HttpParams = new HttpParams()
         params = params.set('peticionOferta_Id', peticionOferta_Id);
-        
+
         return this.http
             .get<ApiResponse<PeticionDeOfertaDto>>('/api/compras/ListarOfertasComprador', { params: params, headers: this.headers });
     }
@@ -807,7 +812,7 @@ export class ComprasService extends BaseService {
             .append("peticionDeOfertaId", idPeticionDeOferta.toString())
             .append("esProveedor", esProveedor.toString())
             .append("esSolicitante", esSolicitante.toString());
-        
+
         if (idPeticionDeOfertaUsuario != null) {
             params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
@@ -858,7 +863,7 @@ export class ComprasService extends BaseService {
             .append("idPeticion", idPeticion.toString())
             .append("esProveedor", esProveedor.toString())
             .append("esSolicitante", esSolicitante.toString());
-        
+
         if (idPeticionDeOfertaUsuario != null) {
             params.append("idPeticionDeOfertaUsuario", idPeticionDeOfertaUsuario.toString());
         }
@@ -1322,8 +1327,9 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
         numeroPo?: number,
-
-    ): Observable<any> {
+        tipoSolp?: string,
+        nombrePliego?: string,
+    ): Observable<ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
         params = params.set('fechaHasta', (fechaHasta != null ? fechaHasta : ""));
@@ -1340,7 +1346,28 @@ export class ComprasService extends BaseService {
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
-        return this.http.get('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+        if (tipoSolp === "SERVICIO") {
+            params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
+            return this.http.get<ActionResult<SolpCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
+        } else {
+            return this.http.get<ActionResult<POPosicionDto[]>>('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });
+        }
+    }
+
+    public listarPosicionesPOMultipleIdSolp(
+        idSolp: number
+    ): Observable<ActionResult<PosicionCrearPoMultipleDto[]>> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idSolp', idSolp.toString());
+        return this.http.get<ActionResult<PosicionCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
+    }
+
+    public listarSubPosicionesPOMultipleIdSolp(
+        idPosicion: number
+    ): Observable<ActionResult<SubPosicionCrearPoMultipleDto[]>> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idPosicion', idPosicion.toString());
+        return this.http.get<ActionResult<SubPosicionCrearPoMultipleDto[]>>('/api/compras/ListarSubPosicionesPOMultipleSolpId', { params: params, headers: this.headers });
     }
 
     public descargarPosicionesPOMultiple(
@@ -1358,7 +1385,8 @@ export class ComprasService extends BaseService {
         valorTipoImputacion: any,
         tratada: boolean | null,
         numeroPo?: number,
-
+        tipoSolp?: string,
+        nombrePliego?: string,
     ): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1376,7 +1404,13 @@ export class ComprasService extends BaseService {
         params = params.set('tratada', tratada != null ? tratada.toString() : null);
         params = params.set('numeroPo', numeroPo != null ? numeroPo.toString() : null);
 
-        return this.http.get('/api/compras/DescargarPosicionesPOMultiple', { params: params, headers: this.headers });
+        if (tipoSolp === "SERVICIO") {
+            params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
+            return this.http.get('/api/compras/DescargarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
+        }
+        else {
+            return this.http.get('/api/compras/DescargarPosicionesPOMultiple', { params: params, headers: this.headers });
+        }
     }
 
 
@@ -1516,7 +1550,7 @@ export class ComprasService extends BaseService {
                 headers: this.headers,
             });
     }
-   
+
 
     public guardarEnvioCircularProveedor(id: number, enviarCircularA: number, fechaLimite?: Date) {
         var payload = new FormData();
