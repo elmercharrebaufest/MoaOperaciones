@@ -205,11 +205,19 @@ export class PeticionDeOfertaFormularioComponent extends ListBaseComponent imple
 
 
     public get esTipoMaterial(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo == "MATERIALES" || (this.solpCompraDto.PosicionCompras != null && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == "MATERIALES");
+        const tipoDeseado: string = "MATERIALES";
+        // idem esTipoServicio
+        return this.solpCompraDto.TipoPosicionCodigo == tipoDeseado
+            || (this.solpCompraDto.PosicionCompras != null
+                && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == tipoDeseado);
     }
 
     public get esTipoServicio(): boolean {
-        return this.solpCompraDto.TipoPosicionCodigo == "SERVICIO";
+        const tipoDeseado: string = "SERVICIO";
+        // idem esTipoMaterial
+        return this.solpCompraDto.TipoPosicionCodigo == tipoDeseado
+            || (this.solpCompraDto.PosicionCompras != null
+                && this.solpCompraDto.PosicionCompras[0].TipoPosicionCodigo == tipoDeseado);
     }
 
     public get esMaterialCatalogado(): boolean {
