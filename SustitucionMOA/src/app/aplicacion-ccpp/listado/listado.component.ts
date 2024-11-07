@@ -58,7 +58,7 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
         this.setMenuSeccionTab(SeccionAplicacionCCPP, 'Estado de cargas');
     }
     extraOnInit() {
-        this.getListado()
+        //this.getListado()
     }
     get isVisible(): boolean {
         return this.aplicaciones && !!this.aplicaciones.length && this.show
@@ -77,11 +77,11 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
         this.setMenuSeccionTab(SeccionAplicacionCCPP, "Estado de cargas");
     }
     getListado() {
+        this.unsubscribe();
         this.blockUI.start('');
         this.mensajeComponent.setMsgsEmpty();
         this.limpiarListado();
         this.disabled = true;
-        this.unsubscribe();
         this.seleccionaTodos = false;
         this.subscription = this.service.getListado(this.getRequest()).subscribe(
             res => {
