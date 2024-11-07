@@ -21,53 +21,55 @@ namespace SustitucionMOARepositorio.ConsultasEF
             try
             {
                 ((System.Data.Entity.Infrastructure.IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
-                var resultado = (from posicion in contexto.Set<SolpPosicion>()
-                                 where ids.Contains(posicion.Id) && posicion.EsConcluido == true && posicion.Estado
-                                 orderby posicion.Solp_Id // posicion.Indice
-                                 select new SolpPosicionDto()
-                                 {
-                                     Id = posicion.Id,
-                                     NroSolp = posicion.Solp.NroSolp,
-                                     TipoPosicionCodigo = posicion.TipoPosicion.Codigo,
-                                     TieneCotizacion = posicion.Peticiones.Any(),
-                                     Codigo = posicion.MaterialSolp.Codigo,
-                                     Indice = posicion.Indice,
-                                     Tarea = posicion.Tarea,
-                                     CentroComprasDescripcion = posicion.Centro.Descripcion,
-                                     Centro = new TablaSapDto
-                                     {
-                                         CodigoSap = posicion.Centro.CodigoSap,
-                                         Descripcion = posicion.Centro.Descripcion,
-                                     },
-                                     AlmacenComprasDescripcion = posicion.Almacen.Descripcion,
-                                     TextoSuministro = posicion.TextoSuministro,
-                                     Modelo = posicion.Modelo,
-                                     GrupoComprasDescripcion = posicion.GrupoCompras.Codigo + " " + posicion.GrupoCompras.Descripcion,
-                                     GrupoCompras = new TablaSapDto
-                                     {
-                                         CodigoSap = posicion.GrupoCompras.CodigoSap,
-                                         Descripcion = posicion.GrupoCompras.Descripcion,
-                                     },
-                                     MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
-                                     Cantidad = posicion.Cantidad,
-                                     UnidadComprasDescripcion = posicion.Unidad.Descripcion,
-                                     MonedaSolpDescripcion = posicion.Moneda.Descripcion,
-                                     FechaEntregaServicio = posicion.FechaEntregaServicio,
-                                     FechaOferta = posicion.Solp.Pliego_Id != null ? posicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
-                                     PlazoEntrega = posicion.PlazoEntrega,
-                                     ProveedoresCompras = (from solpProveedor in contexto.Set<SolpProveedor>()
-                                                           where solpProveedor.SolpPosicion_Id == posicion.Id
-                                                           select new SolpProveedorDto()
-                                                           {
-                                                               SolpPosicionId = posicion.Id,
-                                                               TipoFiltroProveedorSolpCodigo = solpProveedor.TipoFiltroProveedorSolp.Codigo,
-                                                               RazonSocial = solpProveedor.RazonSocial
-                                                           })
-                                 });
+                List<SolpPosicionDto> resultado = (from posicion in contexto.Set<SolpPosicion>()
+                                                   where ids.Contains(posicion.Id) && posicion.EsConcluido == true && posicion.Estado
+                                                   orderby posicion.Solp_Id // posicion.Indice
+                                                   select new SolpPosicionDto()
+                                                   {
+                                                       Id = posicion.Id,
+                                                       NroSolp = posicion.Solp.NroSolp,
+                                                       TipoPosicionCodigo = posicion.TipoPosicion.Codigo,
+                                                       TieneCotizacion = posicion.Peticiones.Any(),
+                                                       Codigo = posicion.MaterialSolp.Codigo,
+                                                       Indice = posicion.Indice,
+                                                       Tarea = posicion.Tarea,
+                                                       CentroComprasDescripcion = posicion.Centro.Descripcion,
+                                                       Centro = new TablaSapDto
+                                                       {
+                                                           CodigoSap = posicion.Centro.CodigoSap,
+                                                           Descripcion = posicion.Centro.Descripcion,
+                                                       },
+                                                       AlmacenComprasDescripcion = posicion.Almacen.Descripcion,
+                                                       TextoSuministro = posicion.TextoSuministro,
+                                                       Modelo = posicion.Modelo,
+                                                       GrupoComprasDescripcion = posicion.GrupoCompras.Codigo + " " + posicion.GrupoCompras.Descripcion,
+                                                       GrupoCompras = new TablaSapDto
+                                                       {
+                                                           CodigoSap = posicion.GrupoCompras.CodigoSap,
+                                                           Descripcion = posicion.GrupoCompras.Descripcion,
+                                                       },
+                                                       MaterialComprasCodigo = posicion.MaterialSolp.CodigoSap,
+                                                       Cantidad = posicion.Cantidad,
+                                                       UnidadComprasDescripcion = posicion.Unidad.Descripcion,
+                                                       MonedaSolpDescripcion = posicion.Moneda.Descripcion,
+                                                       FechaEntregaServicio = posicion.FechaEntregaServicio,
+                                                       FechaOferta = posicion.Solp.Pliego_Id != null ? posicion.Solp.Pliego.FechaHoraEntrega : (DateTime?)null,
+                                                       PlazoEntrega = posicion.PlazoEntrega,
+                                                       ProveedoresCompras = (from solpProveedor in contexto.Set<SolpProveedor>()
+                                                                             where solpProveedor.SolpPosicion_Id == posicion.Id
+                                                                             select new SolpProveedorDto()
+                                                                             {
+                                                                                 SolpPosicionId = posicion.Id,
+                                                                                 TipoFiltroProveedorSolpCodigo = solpProveedor.TipoFiltroProveedorSolp.Codigo,
+                                                                                 RazonSocial = solpProveedor.RazonSocial
+                                                                             })
+                                                   })
+                                 .ToList();
 
                 SolpCompraDto solpCompra = new SolpCompraDto
                 {
-                    PosicionCompras = resultado.ToList()
+                    PosicionCompras = resultado,
+                    TipoPosicionCodigo = resultado.Find(x => !string.IsNullOrWhiteSpace(x.TipoPosicionCodigo))?.TipoPosicionCodigo,
                 };
 
                 IEnumerable<string> nroSolp = solpCompra.PosicionCompras.Select(pos => pos.NroSolp);
