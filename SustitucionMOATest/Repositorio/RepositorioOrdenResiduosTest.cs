@@ -75,10 +75,11 @@ namespace SustitucionMOATest.Repositorio
         }
 
         [Test]
-        public void ObtenerListadoOrdenes_Ok()
+        public void ObtenerListadoOrdenes_Interno_Ok()
         {
             var fechaInicio = new DateTime(2024, 3, 1);
             var fechaFin = new DateTime(2024, 3, 15);
+            var esInterno = true;
 
             var ordenesDB = new List<OrdenResiduos>
             {
@@ -115,7 +116,7 @@ namespace SustitucionMOATest.Repositorio
 
             mContext.Setup(x => x.Set<OrdenResiduos>()).Returns(mSetOrdenes.Object);
 
-            var resOrdenes = target.ObtenerListadoOrdenes(fechaInicio, fechaFin);
+            var resOrdenes = target.ObtenerListadoOrdenes(fechaInicio, fechaFin, esInterno);
 
             Assert.IsNotNull(resOrdenes);
             Assert.That(resOrdenes.Count() == 1);

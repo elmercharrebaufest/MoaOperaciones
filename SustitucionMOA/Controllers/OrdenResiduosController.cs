@@ -103,7 +103,8 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ListarOrdenesResiduosResponse>();
             try
             {
-                response.Data = ordenResiduosService.ObtenerListadoOrdenes(fechaInicio, fechaFin);
+                var mailUsuario = SessionPersister.getUsername();
+                response.Data = ordenResiduosService.ObtenerListadoOrdenes(fechaInicio, fechaFin, mailUsuario);
             }
             catch (InfoCustomException ice)
             {
@@ -349,58 +350,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<OrdenResiduosDto>();
             try
             {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenResiduosService.AnularOrden(ordenId, mailUsuario);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-
-        [HttpGet]
-        public ActionResult SolicitarAnulacion(int ordenId)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenResiduosDto>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenResiduosService.SolicitarAnulacion(ordenId, mailUsuario);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-
-        [HttpGet]
-        public ActionResult ActualizarSolicitudAnulacion(int ordenId, bool aprobarSolicitud)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenResiduosDto>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenResiduosService.ActualizarSolicitudAnulacion(ordenId, mailUsuario, aprobarSolicitud);
+                response.Data = ordenResiduosService.AnularOrden(ordenId);
             }
             catch (InfoCustomException ice)
             {

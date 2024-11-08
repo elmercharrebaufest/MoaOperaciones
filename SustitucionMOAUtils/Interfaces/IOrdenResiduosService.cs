@@ -13,7 +13,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes();
         MaterialDto[] ObtenerMateriales();
-        ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicio, string fechaFin);
+        ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicio, string fechaFin, string mailUsuario);
         LocalidadDto[] ObtenerLocalidades();
         PatentesClienteDto ObtenerPatentes(int clienteId);
         List<SustitucionMOAModel.Dto.OrdenDeCarga.PlantaDto> ObtenerPlantas(string cuit);
@@ -22,9 +22,7 @@ namespace SustitucionMOAUtils.Interfaces
         bool EsCuilCuitValido(string cuilCuit);
         GrabarOrdenResponse CrearNuevaOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto ObtenerOrden(int idOrden);
-        OrdenResiduosDto AnularOrden(int ordenId, string mailUsuario);
-        OrdenResiduosDto ActualizarSolicitudAnulacion(int ordenId, string mailUsuario, bool aprobarSolicitud);
-        OrdenResiduosDto SolicitarAnulacion(int ordenId, string mailUsuario);
+        OrdenResiduosDto AnularOrden(int ordenId);
         OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud);
         GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto VerificarTransporte(int ordenId);

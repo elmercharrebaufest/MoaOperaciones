@@ -51,9 +51,7 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
     estadoOrdenEntregada: EstadoOrdenResiduosEnum.OrdenEntregada;
 
     puedeAnular: boolean;
-    puedeSolicitarAnulacion: boolean;
     puedeEditar: boolean;
-    puedeResolverSolicitudAnulacion: boolean;
     puedeResolverSolicitudEdicion: boolean;
     puedeVerificarTransporte: boolean;
     
@@ -140,58 +138,6 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
         );
     }
 
-    confirmarSolicitudAnulacion() {
-        this.confirmationService.confirm({
-            key: 'confirmarSA',
-            message: '¿Desea solicitar anulación?',
-            accept: () => { this.solicitarAnulacion() },
-            reject: () => {}
-        });
-    }
-
-    solicitarAnulacion() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start("Procesando...");
-        this.service.solicitarAnulacion(this.ordenResiduos.Id).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
-                }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
-    
-    confirmarRechazarSolicitudAnulacion(aprobarSolicitud: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarRSA',
-            message: `¿Desea ${aprobarSolicitud ? "aprobar" : "rechazar"} la solicitud de anulación?`,
-            accept: () => { this.resolverSolicitudAnulacion(aprobarSolicitud) },
-            reject: () => {}
-        });
-    }
-
-    resolverSolicitudAnulacion(aprobarSolicitud: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        this.service.resolverSolicitudAnulacion(this.ordenResiduos.Id, aprobarSolicitud).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
-                }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
-
     confirmarRechazarSolicitudEdicion(aprobarSolicitud: boolean) {
         this.confirmationService.confirm({
             key: 'confirmarSolicitudEdicion',
@@ -231,12 +177,8 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
 
         this.puedeEditar = estadosPermitenEdicion.includes(this.ordenResiduos.Estado.Id);
 
-        this.puedeAnular = this.esAdmin && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
+        this.puedeAnular = estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
         
-        this.puedeSolicitarAnulacion = this.esClienteResiduos && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
-
-        this.puedeResolverSolicitudAnulacion = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.AnulacionSolicitada;
-
         this.puedeResolverSolicitudEdicion = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.EdicionSolicitada;
 
         this.puedeVerificarTransporte = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.Pendiente;

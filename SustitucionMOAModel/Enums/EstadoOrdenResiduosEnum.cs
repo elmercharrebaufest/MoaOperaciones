@@ -9,7 +9,7 @@
         Anulada = 5,
         EdicionSolicitada = 6,
         EdicionRechazada = 7,
-        AnulacionSolicitada = 8,
+        //AnulacionSolicitada = 8,
         Ingresada = 9,
         Retirada = 10,
         Rechazada = 11

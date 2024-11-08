@@ -48,12 +48,15 @@ namespace SustitucionMOAUtils.Services
             return repositorioResiduos.ObtenerMateriales();
         }
 
-        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr)
+        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr, string mailUsuario)
         {
             var fechaInicio = DataFormatter.StringToDateTime(fechaInicioStr, "");
             var fechaFin = DataFormatter.StringToDateTime(fechaFinStr, "");
 
-            var listado = repositorioResiduos.ObtenerListadoOrdenes(fechaInicio, fechaFin);
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaResiduosAdmin);
+
+            var listado = repositorioResiduos.ObtenerListadoOrdenes(fechaInicio, fechaFin, esInterno);
 
             if (listado == null || listado.Count == 0)
             {
@@ -183,7 +186,7 @@ namespace SustitucionMOAUtils.Services
 
             ordenEntity = ordenDto.ToEntity(ordenEntity);
 
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 ordenEntity.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionSolicitada;
@@ -209,7 +212,7 @@ namespace SustitucionMOAUtils.Services
             return ordenDto;
         }
 
-        public OrdenResiduosDto AnularOrden(int ordenId, string mailUsuario)
+        public OrdenResiduosDto AnularOrden(int ordenId)
         {
             var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
             if (orden.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenEntregada)
@@ -217,67 +220,9 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada");
             }
 
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
             orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
             repositorioResiduos.GuardarCambios();
 
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto SolicitarAnulacion(int ordenId, string mailUsuario)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            var estadosPermitenAnulacion = new EstadoOrdenResiduosEnum[]
-            {
-                EstadoOrdenResiduosEnum.OrdenGenerada,
-                EstadoOrdenResiduosEnum.Pendiente,
-                EstadoOrdenResiduosEnum.OrdenVencida
-            };
-            if (!estadosPermitenAnulacion.Contains((EstadoOrdenResiduosEnum)orden.EstadoId))
-            {
-                throw new InfoCustomException("Esta orden no puede anularse en el estado actual");
-            }
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            orden.EstadoId = (int)EstadoOrdenResiduosEnum.AnulacionSolicitada;
-            repositorioResiduos.GuardarCambios();
-
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto ActualizarSolicitudAnulacion(int ordenId, string mailUsuario, bool aprobarSolicitud)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.AnulacionSolicitada)
-            {
-                throw new InfoCustomException("Esta orden no está en estado de anulación solicitada");
-            }
-
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            if (aprobarSolicitud)
-            {
-                orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
-            }
-            else
-            {
-                var existeTransporte = ExisteTransporte(orden.TransporteCuit);
-                orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
-            }
-            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
@@ -289,7 +234,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("Esta orden no está en estado de edición solicitada");
             }
 
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
             if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
             {
                 throw new InfoCustomException("Usuario sin permiso para realizar esta acción");

@@ -34,7 +34,7 @@ namespace SustitucionMOARepositorio.Repositorios
             return materiales.ToArray();
         }
 
-        public List<OrdenResiduosFila> ObtenerListadoOrdenes(DateTime fechaInicio, DateTime fechaFin)
+        public List<OrdenResiduosFila> ObtenerListadoOrdenes(DateTime fechaInicio, DateTime fechaFin, bool esInterno)
         {
             var fechaHasta = fechaFin.AddDays(1);
 
@@ -48,7 +48,7 @@ namespace SustitucionMOARepositorio.Repositorios
                 {
                     o.Id,
                     o.Estado.Semaforo,
-                    DescripcionEstado = o.Estado.Nombre,
+                    DescripcionEstado = esInterno ? o.Estado.Nombre : o.Estado.NombreExterno,
                     o.FechaCreacion,
                     o.LocalidadDescripcion,
                     Material = o.Producto.Nombre,
@@ -155,7 +155,7 @@ namespace SustitucionMOARepositorio.Repositorios
             return Obtener<OrdenResiduos>(idOrden);
         }
 
-        public Usuario ObtenerUsuarioPorMail(string mailUsuario)
+        public Usuario ObtenerUsuarioSegunMail(string mailUsuario)
         {
             var usuario = Obtener<Usuario>(u => u.Mail == mailUsuario);
             return usuario;

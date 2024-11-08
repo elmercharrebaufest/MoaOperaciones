@@ -98,6 +98,13 @@ namespace SustitucionMOATest.Services
         {
             var fechaInicio = new DateTime(2024, 3, 1);
             var fechaFin = new DateTime(2024, 3, 7);
+            var mailUsuario = "carlos@baufest.com";
+
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Roles = new List<Rol> { new Rol { PermisosAsociados =  new List<PermisoPorRol> { new PermisoPorRol { Permiso = "VER ORDENES DE CARGA RESIDUOS ADMIN" } } } }
+            };
 
             var filas = new List<OrdenResiduosFila>
             {
@@ -106,19 +113,25 @@ namespace SustitucionMOATest.Services
             };
 
             mIRepositorioOrdenResiduos
+                .Setup(x => x.ObtenerUsuarioSegunMail(It.Is<string>(m => m == mailUsuario)))
+                .Returns(usuario);
+
+            mIRepositorioOrdenResiduos
                 .Setup(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)))
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true))
                 .Returns(filas);
 
-            var listadoRes = target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString());
+            var listadoRes = target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString(), mailUsuario);
 
             Assert.IsNotNull(listadoRes);
             Assert.That(listadoRes.ListaOrdenes.Count, Is.EqualTo(2));
             mIRepositorioOrdenResiduos
                 .Verify(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)), Times.Once);
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true), Times.Once);
         }
 
         [Test]
@@ -126,20 +139,32 @@ namespace SustitucionMOATest.Services
         {
             var fechaInicio = new DateTime(2024, 3, 1);
             var fechaFin = new DateTime(2024, 3, 7);
+            var mailUsuario = "carlos@baufest.com";
+
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Roles = new List<Rol> { new Rol { PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "VER ORDENES DE CARGA RESIDUOS ADMIN" } } } }
+            };
+            mIRepositorioOrdenResiduos
+               .Setup(x => x.ObtenerUsuarioSegunMail(It.Is<string>(m => m == mailUsuario)))
+               .Returns(usuario);
 
             var filas = new List<OrdenResiduosFila>();
 
             mIRepositorioOrdenResiduos
                 .Setup(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)))
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true))
                 .Returns(filas);
 
-            Assert.Throws<InfoCustomException>(() => target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString()));
+            Assert.Throws<InfoCustomException>(() => target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString(), mailUsuario));
             mIRepositorioOrdenResiduos
                 .Verify(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)), Times.Once);
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true), Times.Once);
         }
     }
 }
