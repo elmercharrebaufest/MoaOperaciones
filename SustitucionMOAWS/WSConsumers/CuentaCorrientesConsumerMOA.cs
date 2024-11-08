@@ -28,6 +28,8 @@ namespace SustitucionMOAWS.WSConsumers
                 service.ClientCredentials.UserName.UserName = SAPCredential.getUserName();
                 service.ClientCredentials.UserName.Password = SAPCredential.getPassword();
 
+                compensa = string.IsNullOrWhiteSpace(pago) ? compensa : "X";
+                
                 var error = service.SI_MPMF_MOAOP_CUENTA_CORRIENTE(compensa, contrato, fechaSAP, pago, proveedor, retencion, sociedad, out ZMPES6120[] salidas);
                 return Map(salidas, error, fecha.fechaFin);
             }
