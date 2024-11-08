@@ -40,7 +40,7 @@ export class CeldaEditableComponent implements OnInit {
             '',
             [
               Validators.required,
-              Validators.pattern('^[0-9]{4}R[0-9]{8}$'),
+              Validators.pattern(/^[0-9]{4}R[0-9]{8}$/),
               Validators.maxLength(13)
             ]
           ]
@@ -66,7 +66,7 @@ export class CeldaEditableComponent implements OnInit {
                * () los paréntesis
                *    el espacio (no borrar el espacio)
                */
-              Validators.pattern('^[\wá-ú\¿\?\¡\!\-() ]*$')
+              Validators.pattern(/^[\wá-ú\¿\?\¡\!\-() ]*$/)
             ]
           ]
         });
