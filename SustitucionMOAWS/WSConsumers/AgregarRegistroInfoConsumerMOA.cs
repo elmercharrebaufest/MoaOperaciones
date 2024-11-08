@@ -6,6 +6,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
@@ -92,16 +93,16 @@ namespace SustitucionMOAWS.WSConsumers
             var unidades = registros.Select(x => x.Unidad).Distinct();
             var unidadesDeMedia = repositorio.Listar<UnidadMedidaSap, UnidadMedidaSapDto>(x => new UnidadMedidaSapDto
             { Comercial = x.Comercial, UM = x.UM }, x => unidades.Contains(x.Comercial));
-
             foreach (var registro in registros)
             {
+                string unidadMedidaCodigo = unidadesDeMedia.First(x => x.Comercial == registro.Unidad).Comercial;
                 var registroInfoSAP = new RegistroInfoSAP
                 {
                     MEWIEINA = new MEWIEINA
                     {
                         MATERIAL = registro.MaterialCodigo,
                         VENDOR = registro.Cuit,
-                        PO_UNIT = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM
+                        PO_UNIT = unidadMedidaCodigo
                     },
                     MEWIEINAX = new MEWIEINAX
                     {
@@ -124,7 +125,7 @@ namespace SustitucionMOAWS.WSConsumers
                         NET_PRICE = registro.Precio,
                         EFF_PRICE = registro.Precio,
                         PRICE_UNIT = 1,
-                        ORDERPR_UN = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM,
+                        ORDERPR_UN = unidadMedidaCodigo,
                         PRICE_DATE = CalcularFechaString(registro.FechaVigenciaFormateada, hoy),//es la fecha de vigencia
                         PERIOD_IND_EXPIRATION_DATE = "D",
                         PRICE_UNITSpecified = true,
@@ -167,7 +168,7 @@ namespace SustitucionMOAWS.WSConsumers
                         CURRENCY = registro.Moneda,
                         NUMERATOR = 1,
                         DENOMINATOR = 1,
-                        BASE_UOM = unidadesDeMedia.Where(x => x.Comercial == registro.Unidad).FirstOrDefault().UM,
+                        BASE_UOM = unidadMedidaCodigo,
                         LOWERLIMIT = 0,
                         UPPERLIMIT = 0,
                         DENOMINATORSpecified = true,
