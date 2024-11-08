@@ -17,7 +17,6 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaHoraEntrega { get; set; }
         public string SupervisorSector { get; set; }
         public string SupervisorTrabajo { get; set; }
-        public bool? TieneVisitaObra { get; set; }
         public bool? TieneVisitaObraMasiva { get; set; }
         public bool? TieneObradores { get; set; }
         public bool? TieneMedioElevacion { get; set; }
