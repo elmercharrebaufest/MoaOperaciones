@@ -53,7 +53,20 @@ export class CeldaEditableComponent implements OnInit {
             [
               Validators.required,
               Validators.maxLength(40),
-              Validators.pattern('^[a-zA-Z0-9 ]*$')
+              /* []* lo que está adentro, cualquier cantidad de veces
+               * ^ comienzo del string
+               * $ fin del string
+               * \w cualquier caracter alfanumérico y guión bajo. Equivalente a [a-zA-Z0-9_]
+               * á-ú los caracteres acentuados
+               * \¿ el símbolo ¿
+               * \? el símbolo ?
+               * \¡ el símbolo ¡
+               * \! el símbolo !
+               * \- el símbolo -
+               * () los paréntesis
+               *    el espacio (no borrar el espacio)
+               */
+              Validators.pattern('^[\wá-ú\¿\?\¡\!\-() ]*$')
             ]
           ]
         });
