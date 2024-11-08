@@ -8184,7 +8184,7 @@ namespace SustitucionMOAUtils.Services
             }
             foreach (var cotizacionPosicion in cotizacion.CotizacionPosiciones.Where(x => x.NoDisponible != true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null)) //excluye no catalogados
             {
-                var solpPosicion = solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
+                var solpPosicion = solpPosiciones.First(p => p.Id == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion_Id);
                 var registro = CrearRegistroInfoDto(cotizacionPosicion, solpPosicion, unidadesDeMedidaSAP, cotizacion);
                 registros.Add(registro);
             }
