@@ -1,7 +1,7 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SustitucionMOAModel.Entities;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -108,8 +108,7 @@ namespace SustitucionMOAModel.Dto
             this.SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
             this.SupervisorTrabajo = entity.Pliego.SupervisorTrabajo.Split(',').ToList();
             this.VisitasObraMasiva = new List<VisitaObraESDto>();
-            this.TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
-            this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
+            this.TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva;
             this.TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
             this.TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
             this.TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;

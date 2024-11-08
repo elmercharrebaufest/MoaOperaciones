@@ -31,7 +31,6 @@ export class Solp extends CommonResponse {
     public fechaEntrega: Date;
 
     //paso 2
-    public visitaDeObra: boolean;
     public supervisorSector: string [] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
@@ -216,7 +215,6 @@ export class Solp extends CommonResponse {
                 } || '';
             });
             this.visitaDeObraMasiva = solp.TieneVisitaObraMasiva;
-            this.visitaDeObra = solp.TieneVisitaObra;
             this.obradores = solp.TieneObradores;
             this.modoElevacion = solp.TieneMedioElevacion;
             this.andamio = solp.TieneAndamio;
