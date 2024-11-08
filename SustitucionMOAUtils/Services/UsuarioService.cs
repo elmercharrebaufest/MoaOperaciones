@@ -171,7 +171,7 @@ namespace SustitucionMOAUtils.Services
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
                 "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
+                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
             };
 
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
