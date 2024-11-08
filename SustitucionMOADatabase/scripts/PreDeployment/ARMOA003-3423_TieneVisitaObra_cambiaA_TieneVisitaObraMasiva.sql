@@ -5,3 +5,7 @@
 UPDATE Pliego
 SET TieneVisitaObraMasiva = 1
 WHERE TieneVisitaObra = 1;
+
+UPDATE Pliego
+SET TieneVisitaObraMasiva = 0
+WHERE TieneVisitaObraMasiva IS NULL;

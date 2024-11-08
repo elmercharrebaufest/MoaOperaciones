@@ -9,7 +9,7 @@
 	[FechaHoraEntrega] [datetime2] NULL,
 	[SupervisorSector] [nvarchar](max) NULL,
 	[SupervisorTrabajo] [nvarchar](max) NULL,
-	[TieneVisitaObraMasiva] [bit] NULL,
+	[TieneVisitaObraMasiva] [bit] NOT NULL CONSTRAINT DF_Pliego_TieneVisitaObraMasiva DEFAULT 0,
 	[TieneObradores] [bit] NULL,
 	[TieneMedioElevacion] [bit] NULL,
 	[TieneTecnicoSeguridad] [bit] NULL,
