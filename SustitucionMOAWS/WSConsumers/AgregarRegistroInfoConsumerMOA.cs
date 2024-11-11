@@ -95,7 +95,7 @@ namespace SustitucionMOAWS.WSConsumers
             { Comercial = x.Comercial, UM = x.UM }, x => unidades.Contains(x.Comercial));
             foreach (var registro in registros)
             {
-                string unidadMedidaCodigo = unidadesDeMedia.First(x => x.Comercial == registro.Unidad).Comercial;
+                string unidadMedidaCodigo = unidadesDeMedia.First(x => x.Comercial == registro.Unidad).UM;
                 var registroInfoSAP = new RegistroInfoSAP
                 {
                     MEWIEINA = new MEWIEINA
