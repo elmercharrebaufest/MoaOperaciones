@@ -414,7 +414,7 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
             return false;
         }
-        if (this.ordenResiduos.PatenteChasis == undefined || !this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
+        if (!this.ordenResiduos.PatenteChasis || !this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente chasis válida.");
             return false;
         }
