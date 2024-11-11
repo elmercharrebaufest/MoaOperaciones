@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -3577,7 +3577,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
+                string cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
                 string[] palabras = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
@@ -3585,19 +3585,19 @@ namespace SustitucionMOAUtils.Services
                     nroSolp = "0" + nroSolp;
                 }
 
-                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
-                var listId = todasLasPO.ToList().Select(y => y.Id);
+                ListaPaginada<PeticionDeOfertaDto> todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
+                IEnumerable<int> listId = todasLasPO.Select(y => y.Id);
 
-                if (todasLasPO != null && todasLasPO.Any())
+                if (todasLasPO.Any())
                 {
-                    var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
+                    List<PeticionDeOferta> peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
                     todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
                     foreach (var item in todasLasPO)
                     {
                         item.NroSolp = item.NrosSolp != null ? string.Join(", ", item.NrosSolp.Distinct()) : "";
-                        if (peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null)
+                        if (peticionesDeOferta.Find(x => x.Id == item.Id)?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego != null)
                         {
-                            item.VisitasMasivas = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault()?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
+                            item.VisitasMasivas = peticionesDeOferta.Find(x => x.Id == item.Id)?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
                         }
                     }
                 }

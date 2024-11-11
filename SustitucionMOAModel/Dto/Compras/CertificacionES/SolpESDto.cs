@@ -17,7 +17,6 @@ namespace SustitucionMOAModel.Dto
         public List<string> SupervisorSector { get; set; }
         public List<string> SupervisorTrabajo { get; set; }
         public List<VisitaObraESDto> VisitasObraMasiva { get; set; }
-        public bool TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
         public bool TieneObradores { get; set; }
         public bool TieneMedioElevacion { get; set; }
