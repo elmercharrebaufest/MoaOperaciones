@@ -166,9 +166,9 @@ namespace SustitucionMOAUtils.Services
             return new GrabarOrdenResponse { Mensaje = SuccessMsg.OrdenDeCargaAgregada };
         }
 
-        public GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario)
+        public GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto)
         {
-            Log.Info($"Editar orden residuos: [{ordenDto.ToJson()}], usuario: [{mailUsuario}]");
+            Log.Info($"Editar orden residuos: [{ordenDto.ToJson()}]");
             ValidarOrden(ordenDto);
 
             var ordenEntity = repositorioResiduos.ObtenerOrdenResiduos(ordenDto.Id);
@@ -186,18 +186,10 @@ namespace SustitucionMOAUtils.Services
 
             ordenEntity = ordenDto.ToEntity(ordenEntity);
 
-            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
+            if (ordenEntity.EstadoId != (int)EstadoOrdenResiduosEnum.OrdenVencida)
             {
-                ordenEntity.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionSolicitada;
-            }
-            else
-            {
-                if (ordenEntity.EstadoId != (int)EstadoOrdenResiduosEnum.OrdenVencida)
-                {
-                    var existeTransporte = ExisteTransporte(ordenEntity.TransporteCuit);
-                    ordenEntity.EstadoId = (int)(existeTransporte ? EstadoOrdenResiduosEnum.OrdenGenerada : EstadoOrdenResiduosEnum.Pendiente);
-                }
+                var existeTransporte = ExisteTransporte(ordenEntity.TransporteCuit);
+                ordenEntity.EstadoId = (int)(existeTransporte ? EstadoOrdenResiduosEnum.OrdenGenerada : EstadoOrdenResiduosEnum.Pendiente);
             }
 
             repositorioResiduos.GuardarCambios();
@@ -223,33 +215,6 @@ namespace SustitucionMOAUtils.Services
             orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
             repositorioResiduos.GuardarCambios();
 
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.EdicionSolicitada)
-            {
-                throw new InfoCustomException("Esta orden no está en estado de edición solicitada");
-            }
-
-            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            if (aprobarSolicitud)
-            {
-                var existeTransporte = ExisteTransporte(orden.TransporteCuit);
-                orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
-            }
-            else
-            {
-                orden.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionRechazada;
-            }
-            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 

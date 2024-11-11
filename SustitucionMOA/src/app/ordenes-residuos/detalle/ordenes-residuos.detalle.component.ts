@@ -52,7 +52,6 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
 
     puedeAnular: boolean;
     puedeEditar: boolean;
-    puedeResolverSolicitudEdicion: boolean;
     puedeVerificarTransporte: boolean;
     
     ngOnInit() {
@@ -137,32 +136,6 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
             () => { this.blockUI.stop(); }
         );
     }
-
-    confirmarRechazarSolicitudEdicion(aprobarSolicitud: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarSolicitudEdicion',
-            message: `¿Desea ${aprobarSolicitud ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
-            accept: () => { this.resolverSolicitudEdicion(aprobarSolicitud) },
-            reject: () => {}
-        });
-    }
-
-    resolverSolicitudEdicion(aprobarSolicitud: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        this.service.resolverSolicitudEdicion(this.ordenResiduos.Id, aprobarSolicitud).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
-                }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
     
     verificarBotones() {
         let estadosPermitenEdicion = [
@@ -179,8 +152,6 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
 
         this.puedeAnular = estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
         
-        this.puedeResolverSolicitudEdicion = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.EdicionSolicitada;
-
         this.puedeVerificarTransporte = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.Pendiente;
     }
 

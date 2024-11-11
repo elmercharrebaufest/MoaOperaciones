@@ -300,9 +300,7 @@ namespace SustitucionMOA.Controllers
             try
             {
                 var ordenDto = JsonConvert.DeserializeObject<OrdenResiduosDto>(ordenResiduosJson);
-                var mailUsuario = SessionPersister.getUsername();
-
-                response.Data = ordenResiduosService.EditarOrden(ordenDto, mailUsuario);
+                response.Data = ordenResiduosService.EditarOrden(ordenDto);
             }
             catch (InfoCustomException ice)
             {
@@ -351,31 +349,6 @@ namespace SustitucionMOA.Controllers
             try
             {
                 response.Data = ordenResiduosService.AnularOrden(ordenId);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
-            return ContentCustom(response);
-        }
-
-        [HttpGet]
-        public ActionResult ActualizarSolicitudEdicion(int ordenId, bool aprobarSolicitud)
-        {
-            var response = new SustitucionMOAApiResponse<OrdenResiduosDto>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = ordenResiduosService.ActualizarSolicitudEdicion(ordenId, mailUsuario, aprobarSolicitud);
             }
             catch (InfoCustomException ice)
             {

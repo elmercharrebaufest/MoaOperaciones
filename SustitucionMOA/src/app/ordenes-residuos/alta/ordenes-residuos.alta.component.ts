@@ -325,6 +325,10 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         }
     }
 
+    pasarAMayusculas(event: any): string {
+        return event.toUpperCase();
+    }
+
     onPatenteAcopladoSeleccionado(event: any) {
         this.ordenResiduos.PatenteAcoplado = event.toUpperCase();
     }

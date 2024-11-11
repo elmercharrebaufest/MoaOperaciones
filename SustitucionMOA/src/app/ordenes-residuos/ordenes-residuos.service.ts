@@ -231,22 +231,6 @@ export class OrdenesResiduosService extends BaseService {
             );
     }
 
-    public resolverSolicitudEdicion(ordenId: number, aprobarSolicitud: boolean): Observable<ApiResponse<OrdenCargaResiduosDto>> {
-        let params : HttpParams = new HttpParams()
-            .append("ordenId", ordenId.toString())
-            .append("aprobarSolicitud", aprobarSolicitud.toString());
-    
-        return this.http
-            .get<ApiResponse<OrdenCargaResiduosDto>>(
-                '/api/OrdenResiduos/ActualizarSolicitudEdicion',
-                { params: params, headers: this.headers })
-            .pipe(timeoutWith(360000,
-                observableThrowError(
-                    new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde")
-                ))
-            );
-    }
-
     public obtenerDestinosMercaderia(cuit: string): Observable<ApiResponse<DestinoScato[]>> {
         let params : HttpParams = new HttpParams()
             .append("cuit", cuit);

@@ -23,8 +23,7 @@ namespace SustitucionMOAUtils.Interfaces
         GrabarOrdenResponse CrearNuevaOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto ObtenerOrden(int idOrden);
         OrdenResiduosDto AnularOrden(int ordenId);
-        OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud);
-        GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario);
+        GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto);
         OrdenResiduosDto VerificarTransporte(int ordenId);
         void VerificarVencimientoOrdenesResiduos();
         IList<DestinoScato> ObtenerDestinosMercaderia(string cuit);
