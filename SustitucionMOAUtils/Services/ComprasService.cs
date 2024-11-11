@@ -6072,7 +6072,7 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
-                    Deshabilitado = !((esServicio && existeRevisionTecnicaFinalizada && u.PropuestaTecnicaAprobada == true) || !esServicio)
+                    Deshabilitado = (esServicio && u.RealizoVisita == true) || (!esServicio)
                 };
                 usuarios.Add(usuario);
             }
