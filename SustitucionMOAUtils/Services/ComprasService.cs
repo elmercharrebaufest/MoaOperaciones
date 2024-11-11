@@ -8198,7 +8198,8 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var unidadBase = unidadesDelMaterial.First(x => x.Numerador == 1 && x.Denominador == 1);
+                
+                var unidadBase = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.MaterialSolp.UnidadMedidaBase.Codigo);
                 AdjustUnitPriceAndQuantity(registro, cotizacionPosicion.Cantidad.Value, cotizacionPosicion.Precio.Value, unidadCotizada, unidadBase);
             }
             return registro;
