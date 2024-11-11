@@ -10,6 +10,7 @@ import { SolpPosicion } from "./solp-posicion";
 import { SubPosicionViewModel } from './steps/posicion/tab-subposicion/sub-posicion-view-model';
 import { setupJornadaLaboralDias } from "./solp.utils";
 import { EnumEnvioCircularA } from "../enum-envio-circular";
+import { VisitaObraDto } from "../../modelos/infoVisitasDeObraDto";
 
 export class Solp extends CommonResponse {
     public id: number;
@@ -31,7 +32,7 @@ export class Solp extends CommonResponse {
     public fechaEntrega: Date;
 
     //paso 2
-    public supervisorSector: string [] = [];
+    public supervisorSector: string[] = [];
     public visitaDeObraFecha: Date;
     public visitaDeObraHora: Date;
     public supervisorTrabajo: string;
@@ -45,7 +46,7 @@ export class Solp extends CommonResponse {
     public fabricacionTallerExterno: boolean;
     public fechaLimiteFecha: Date;
     public fechaLimiteHora: Date;
-    public visitaDeObraMasiva: boolean;
+    public visitaDeObraMasiva: boolean = false;
     public observacionesGeneracion: string = "";
     public listaVisitas: any;
     public usuarioComprasId: number;
@@ -159,12 +160,7 @@ export class Solp extends CommonResponse {
         this.fechaLimiteHora = new Date(1, 1, 1, 10, 0, 0, 0);
         this.visitaDeObraFecha = new Date();
         this.visitaDeObraHora = new Date(1, 1, 1, 10, 0, 0, 0);
-        this.listaVisitas = [
-            {
-                id: uuid.v4(),
-                visitaDeObraFecha: new Date(),
-                visitaDeObraHora: new Date(1, 1, 1, 10, 0, 0, 0)
-            }];
+        this.listaVisitas = [];
 
         this.comienzoJornadaLaboral = new Date(1, 1, 1, 7, 0, 0, 0);
         this.terminoJornadaLaboral = new Date(1, 1, 1, 16, 0, 0, 0);
@@ -257,13 +253,13 @@ export class Solp extends CommonResponse {
                 });
 
             this.archivosCotizacionesCondEsp = solp.Adjuntos
-            .filter(x => x.FileKey == "adjuntoCotizacionesSolpCondEsp")
-            .map(x => {
-                return {
-                    id: x.Id,
-                    nombreArchivo: x.Nombre,
-                }
-            });    
+                .filter(x => x.FileKey == "adjuntoCotizacionesSolpCondEsp")
+                .map(x => {
+                    return {
+                        id: x.Id,
+                        nombreArchivo: x.Nombre,
+                    }
+                });
 
             this.jornadaLaboralDias.forEach(k => {
                 k.selected = solp.JornadaLaboral.includes(k.weekDay);

@@ -3597,8 +3597,7 @@ namespace SustitucionMOAUtils.Services
                         item.NroSolp = item.NrosSolp != null ? string.Join(", ", item.NrosSolp.Distinct()) : "";
                         if (peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null)
                         {
-                            item.VisitasMasivas = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
-                            item.TieneVisitaObra = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar";
+                            item.VisitasMasivas = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault()?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
                         }
                     }
                 }
