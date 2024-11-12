@@ -36,125 +36,77 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
         public ActionResult GuardarSolp(string solpJson)
         {
+
+            var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
+            solp.UsuarioActual = ObtenerUsuarioActual();
+            var result = service.GuardarSolp(solp, Request.Files);
+
             try
             {
-                var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
-                solp.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GuardarSolp(solp, Request.Files);
-
-                try
-                {
-                    result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
-                }
-                catch (Exception e)
-                {
-                    result.Solp.Pdf = string.Empty;
-                }
-
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
+                result.Solp.Pdf = Convert.ToBase64String(service.GenerarSolpPdf(result.Solp.Id.Value));
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                result.Solp.Pdf = string.Empty;
             }
+
+            return JsonCustom(result);
+
         }
 
         public ActionResult DescargarArchivo(int archivoId)
         {
-            try
-            {
-                string rutaArchivoSubido = service.ObtenerRutaArchivo(archivoId);
+            string rutaArchivoSubido = service.ObtenerRutaArchivo(archivoId);
 
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
-                string fileName = Path.GetFileName(rutaArchivoSubido);
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaArchivoSubido);
+            string fileName = Path.GetFileName(rutaArchivoSubido);
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
 
         public ActionResult Combos()
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
+                ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
+                Centro = service.ObtenerTablaSap(TablasSap.Centro),
+                CentrosDireccion = service.ObtenerCentrosDireccion(),
+                Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
+                GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
+                GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
+                Moneda = service.ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList(),
+                Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
+                EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
+                CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
+                EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
+                TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
+                TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
+                TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+
+                Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
+                Regiones = service.ListarRegionesSap(),
+                CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
+                CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
+                CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                 {
-                    ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
-                    Centro = service.ObtenerTablaSap(TablasSap.Centro),
-                    CentrosDireccion = service.ObtenerCentrosDireccion(),
-                    Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
-                    GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
-                    GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
-                    Moneda = service.ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList(),
-                    Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
-                    EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
-                    CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
-                    EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
-                    TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                    TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                    TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+                    ClaseDocumentoCodigo = x.Padre.Codigo,
+                    x.Codigo
+                }),
 
-                    Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
-                    Regiones = service.ListarRegionesSap(),
-                    CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
-                    CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
-                    CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
-                    {
-                        ClaseDocumentoCodigo = x.Padre.Codigo,
-                        x.Codigo
-                    }),
+                Provincia = service.ListarProvincia(),
 
-                    Provincia = service.ListarProvincia(),
+                ListarPendienteList = service.ListarPendienteListComboOptions(),
 
-                    ListarPendienteList = service.ListarPendienteListComboOptions(),
+                // ----- crear PO Múltiple -----
+                DefaultTipoPosicionSolpCrearPoMultiple = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                    .Find(x => x.Codigo.StartsWith("material", StringComparison.InvariantCultureIgnoreCase))
+                    .Codigo,
 
-                    // ----- crear PO Múltiple -----
-                    DefaultTipoPosicionSolpCrearPoMultiple = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
-                        .Find(x => x.Codigo.StartsWith("material", StringComparison.InvariantCultureIgnoreCase))
-                        .Codigo,
-
-                    showNombrePliegoConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
-                        // por ahora, sólo servicio. Se retorna como lista
-                        .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
-                        .Select(x => x.Codigo),
-                    // ----- FIN crear PO Múltiple -----
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                showNombrePliegoConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                    // por ahora, sólo servicio. Se retorna como lista
+                    .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(x => x.Codigo),
+                // ----- FIN crear PO Múltiple -----
+            });
         }
 
         private UsuarioDto ObtenerUsuarioActual()
@@ -167,35 +119,14 @@ namespace SustitucionMOA.Controllers
         public ActionResult ListarSolp(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nombrePedido = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null, bool sap = false, bool mantenimiento = false,
             bool web = false, bool repoAutomatica = false, bool contratoMarco = false, string estados = null, string usuarios = null, string centros = null, string grupoDeCompras = null, string claseDocumento = null, string tipoImputacion = null, string valorTipoImputacion = null)
         {
-            try
+            var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+            var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+            return JsonCustom(new
             {
-                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
-                return JsonCustom(new
-                {
-                    data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                    !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                    !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+            });
         }
 
         [HttpGet]
@@ -221,267 +152,115 @@ namespace SustitucionMOA.Controllers
                                                 string tipoImputacion = null,
                                                 string valorTipoImputacion = null)
         {
-            try
-            {
-                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
-                var usuario_Id = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(new
-                {
-                    data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                    !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                    !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
-                });
-            }
-            catch (InfoCustomException e)
+            var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+            var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+            var usuario_Id = ObtenerUsuarioActual().Id;
+
+            return JsonCustom(new
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+            });
         }
         [HttpGet]
         public ActionResult ObtenerSolpDeSap()
         {
-            try
+            var desde = new DateTime(2021, 01, 01);
+            var hasta = new DateTime(2022, 12, 01);
+            while (desde < hasta)
             {
-                var desde = new DateTime(2021, 01, 01);
-                var hasta = new DateTime(2022, 12, 01);
-                while (desde < hasta)
+                try
                 {
-                    try
+                    Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
+                    ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
                     {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob desde {desde} hasta {desde.AddMonths(3)}");
-                        ObtenerSolpRequest obtenerSolpRequest = new ObtenerSolpRequest
-                        {
-                            FechaDesde = desde,
-                            FechaHasta = desde.AddMonths(3),
-                            CreadoPorUsuarios = new List<string>()
-                        };
-                        service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
-                        desde = desde.AddMonths(3);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Info($"ObtenerSolpesDesdeSAPJob error");
-                        Log.Error(e);
-                    }
+                        FechaDesde = desde,
+                        FechaHasta = desde.AddMonths(3),
+                        CreadoPorUsuarios = new List<string>()
+                    };
+                    service.ObtenerSolpesDesdeSAPJob(obtenerSolpRequest);
+                    desde = desde.AddMonths(3);
                 }
-                Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
-                return JsonCustom(new { success = true });
+                catch (Exception e)
+                {
+                    Log.Info($"ObtenerSolpesDesdeSAPJob error");
+                    Log.Error(e);
+                }
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            Log.Info($"ObtenerSolpesDesdeSAPJob fin hasta {hasta}");
+            return JsonCustom(new { success = true });
         }
 
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
         {
-            try
-            {
-                return JsonCustom(new { data = service.ListarUsuarioCompras() });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ListarUsuarioCompras() });
         }
 
         [HttpGet]
         public ActionResult TraerSolpId(int idSolp)
         {
-            try
-            {
-                if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+            if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
-                var solp = service.TraerSolpId(idSolp);
+            var solp = service.TraerSolpId(idSolp);
 
-                if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
-                    solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
-                else
-                    solp.EspecificacionesTecnicas = null;
+            if (!string.IsNullOrEmpty(solp.EspecificacionesTecnicas) && System.IO.File.Exists(solp.EspecificacionesTecnicas))
+                solp.EspecificacionesTecnicas = System.IO.File.ReadAllText(solp.EspecificacionesTecnicas);
+            else
+                solp.EspecificacionesTecnicas = null;
 
-                return JsonCustom(new { data = solp });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = solp });
         }
 
         [HttpGet]
         public ActionResult BorrarSolp(int idSolp)
         {
-            try
-            {
-                if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
+            if (idSolp <= 0) return Json(new { info = "Id inválido" }, JsonRequestBehavior.AllowGet);
 
-                return JsonCustom(new { data = service.BorrarSolp(idSolp) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.BorrarSolp(idSolp) });
         }
 
         [HttpGet]
         public JsonResult GenerarSolpPdf(int idSolp)
         {
-            try
-            {
-                return JsonCustom(File(service.GenerarSolpPdf(idSolp), System.Net.Mime.MediaTypeNames.Application.Octet, "PliegoSolp" + idSolp + ".pdf"));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(File(service.GenerarSolpPdf(idSolp), System.Net.Mime.MediaTypeNames.Application.Octet, "PliegoSolp" + idSolp + ".pdf"));
+
         }
 
         [HttpGet]
         public JsonResult ObtenerServiciosSap()
         {
-            try
-            {
-                return JsonCustom(new { data = service.ObtenerServiciosSap() });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(new { data = service.ObtenerServiciosSap() });
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteTablaSap(string tabla, string valor)
         {
-            try
-            {
-                return JsonCustom(service.AutocompleteTablaSap(tabla, valor));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(service.AutocompleteTablaSap(tabla, valor));
+
         }
 
         public ActionResult DescargarZipPliego(int solpId)
         {
-            try
-            {
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
 
-                string rutaZip = service.GenerarZipPliego(solpId, path);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
-                string fileName = Path.GetFileName(rutaZip);
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
 
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
+            string rutaZip = service.GenerarZipPliego(solpId, path);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
 
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
+
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+
         }
 
         [AllowAnonymous]
@@ -523,778 +302,309 @@ namespace SustitucionMOA.Controllers
         [ValidateInput(false)]
         public JsonResult ObtenerDatosPorCodigosSap(string codigosSap)
         {
-            try
-            {
-                var codigos = JsonConvert.DeserializeObject<List<TablaSapDto>>(codigosSap);
 
-                return JsonCustom(service.ObtenerDatosPorCodigosSap(codigos));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var codigos = JsonConvert.DeserializeObject<List<TablaSapDto>>(codigosSap);
+
+            return JsonCustom(service.ObtenerDatosPorCodigosSap(codigos));
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteServicioSolp(string valor)
         {
-            try
-            {
-                return JsonCustom(service.AutocompleteServicioSolp(valor));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(service.AutocompleteServicioSolp(valor));
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteCodigoServicioSolp(string valor)
         {
-            try
-            {
-                return JsonCustom(service.AutocompleteCodigoServicioSolp(valor));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(service.AutocompleteCodigoServicioSolp(valor));
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteProveedor(string valor)
         {
-            try
-            {
-                JsonResult result = JsonCustom(service.AutocompleteProveedor(valor));
-                return result;
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            JsonResult result = JsonCustom(service.AutocompleteProveedor(valor));
+            return result;
+
         }
 
         [ValidateInput(false)]
         public JsonResult ObtenerDatosPorCodigosSapServicioSolp(string codigosSap)
         {
-            try
-            {
-                var codigos = JsonConvert.DeserializeObject<List<string>>(codigosSap);
 
-                return JsonCustom(service.ObtenerDatosPorCodigosSapServicioSolp(codigos));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var codigos = JsonConvert.DeserializeObject<List<string>>(codigosSap);
+
+            return JsonCustom(service.ObtenerDatosPorCodigosSapServicioSolp(codigos));
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteMaterialSolp(string valor, int centroId)
         {
-            try
-            {
-                return JsonCustom(service.AutocompleteMaterialSolp(valor, centroId));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(service.AutocompleteMaterialSolp(valor, centroId));
+
         }
 
         [HttpGet]
         public JsonResult AutocompleteCodigoMaterialSolp(string valor, int centroId)
         {
-            try
-            {
-                return JsonCustom(service.AutocompleteCodigoMaterialSolp(valor, centroId));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(service.AutocompleteCodigoMaterialSolp(valor, centroId));
+
         }
 
         [HttpPost]
         public ActionResult EnviarEmail(string emailCompose)
         {
-            try
-            {
-                var emailComposeDto = JsonConvert.DeserializeObject<EmailComposeDto>(emailCompose);
-                service.EnviarEmailSolp(emailComposeDto);
-                return JsonCustom(new { success = true });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress,
-                    SessionPersister.getUsername(),
-                    this.GetType().Name,
-                    System.Reflection.MethodBase.GetCurrentMethod().Name,
-                    e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-
+            var emailComposeDto = JsonConvert.DeserializeObject<EmailComposeDto>(emailCompose);
+            service.EnviarEmailSolp(emailComposeDto);
+            return JsonCustom(new { success = true });
         }
 
         [HttpGet]
         public ActionResult ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(fechaEntregaPosicion)) return Json(new { info = "Fecha entrega posición inválido" }, JsonRequestBehavior.AllowGet);
-                if (string.IsNullOrEmpty(numeroMaterial)) return Json(new { info = "Número material inválido" }, JsonRequestBehavior.AllowGet);
 
-                return JsonCustom(new { data = service.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            if (string.IsNullOrEmpty(fechaEntregaPosicion)) return Json(new { info = "Fecha entrega posición inválido" }, JsonRequestBehavior.AllowGet);
+            if (string.IsNullOrEmpty(numeroMaterial)) return Json(new { info = "Número material inválido" }, JsonRequestBehavior.AllowGet);
+
+            return JsonCustom(new { data = service.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
+
         }
 
         [HttpGet]
         public ActionResult ObtenerContratoMarco(string numeroContrato, string centro)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
 
-                return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
+
+            return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+
         }
 
         [HttpGet]
         public ActionResult ListarPOProveedor(int? pagina = null, int? itemsPorPagina = null, string orden = null, string columna = null, string nroSolp = null, string nroPo = null, string nombrePedido = null,
                     int? estadoLicitacion = null, int? estadoCotizacion = null, DateTime? fechaDesde = null, DateTime? fechaHasta = null)
         {
-            try
-            {
-                var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
-                var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
 
-                return JsonCustom(new
-                {
-                    data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.getUsername(), fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
-                });
-            }
-            catch (InfoCustomException e)
+            var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
+            var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
+
+            return JsonCustom(new
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.getUsername(), fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
+            });
+
         }
 
         [HttpGet]
         public ActionResult ListarOfertasComprador(int peticionOferta_Id)
         {
             var response = new SustitucionMOAApiResponse<PeticionDeOfertaDto>();
-            try
-            {
-                var usuario = ObtenerUsuarioActual();
-                response.Data = service.ListarOfertasComprador(peticionOferta_Id, usuario);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (WSCustomException wsce)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, wsce);
-                response.Error = wsce.Message;
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                response.Error = ErrorMsg.Error;
-            }
+
+            var usuario = ObtenerUsuarioActual();
+            response.Data = service.ListarOfertasComprador(peticionOferta_Id, usuario);
+
             return ContentCustom(response);
         }
 
         [HttpPost]
         public ActionResult ListarAsociarContrato(string solpJson)
         {
-            try
-            {
-                var posiciones = JsonConvert.DeserializeObject<List<SolpPosicionDto>>(solpJson);
-                return JsonCustom(new { data = service.DevolverContratosAsociados(posiciones) });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            var posiciones = JsonConvert.DeserializeObject<List<SolpPosicionDto>>(solpJson);
+            return JsonCustom(new { data = service.DevolverContratosAsociados(posiciones) });
+
         }
 
         [HttpGet]
         public ActionResult ObtenerSolpCompras(int id)
         {
-            try
-            {
-                return JsonCustom(new { data = service.ObtenerSolpCompras(id) });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ObtenerSolpCompras(id) });
+
         }
 
         [HttpPost]
         public ActionResult GrabarPeticionDeOferta(string json)
         {
-            try
-            {
-                var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
-                peticion.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true, null);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
+            peticion.UsuarioActual = ObtenerUsuarioActual();
+            var result = service.GrabarPeticionDeOferta(peticion, Request.Files, true, null);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpGet]
         public ActionResult ListarProveedores(string filtro)
         {
-            try
-            {
-                var result = usuarioService.ListarProveedores(filtro);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = usuarioService.ListarProveedores(filtro);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpGet]
         public ActionResult ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, bool esSolicitante)
         {
             var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                response.Error = ErrorMsg.ErrorWS;
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                response.Error = ErrorMsg.Error;
-            }
+
+            var mailUsuario = SessionPersister.getUsername();
+            response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
+
             return ContentCustom(response);
         }
 
         [ValidateInput(false)]
         public ActionResult GuardarAdjuntosPeticionDeOferta(string idPeticion)
         {
-            try
-            {
-                Resultado result = service.GuardarAdjuntosPeticionDeOferta(int.Parse(idPeticion), Request.Files, ObtenerUsuarioActual());
 
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            Resultado result = service.GuardarAdjuntosPeticionDeOferta(int.Parse(idPeticion), Request.Files, ObtenerUsuarioActual());
+
+            return JsonCustom(result);
+
         }
 
         public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, bool esSolicitante)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
+            var mailUsuario = SessionPersister.getUsername();
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario, esSolicitante);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
-                string fileName = Path.GetFileName(rutaZip);
+            string rutaZip = service.DescargarLegajo(idPeticion, path, idPeticionDeOfertaUsuario, esProveedor, adjudicacionId, mailUsuario, esSolicitante);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
 
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
 
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+
         }
 
         [HttpGet]
         public JsonResult GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario)
         {
-            try
-            {
-                var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
-                return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var pdf = service.GenerarPeticionDeOfertaUsuarioPdf(Math.Abs(idPeticionDeOfertaUsuario));
+            return JsonCustom(File(pdf.data, System.Net.Mime.MediaTypeNames.Application.Octet, pdf.name));
+
         }
 
         [HttpPost]
         public ActionResult GrabarCircular(string json)
         {
-            try
-            {
-                var circular = JsonConvert.DeserializeObject<CircularDto>(json);
-                circular.UsuarioId = ObtenerUsuarioActual().Id;
-                var result = service.GrabarCircular(circular, Request.Files);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var circular = JsonConvert.DeserializeObject<CircularDto>(json);
+            circular.UsuarioId = ObtenerUsuarioActual().Id;
+            var result = service.GrabarCircular(circular, Request.Files);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpGet]
         public ActionResult ObtenerPeticionDeOferta(int peticionDeOfertaId)
         {
-            try
-            {
-                var result = service.ObtenerPeticionDeOfertaParaCircular(peticionDeOfertaId);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ObtenerPeticionDeOfertaParaCircular(peticionDeOfertaId);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpPost]
         public ActionResult GrabarProveedorEnPeticion(string json)
         {
-            try
-            {
-                var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
-                peticion.UsuarioActual = ObtenerUsuarioActual();
-                var result = service.GrabarProveedoresEnPeticionDeOferta(peticion.UsuarioIds, peticion.Id);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var peticion = JsonConvert.DeserializeObject<GuardarPeticionDeOfertaDto>(json);
+            peticion.UsuarioActual = ObtenerUsuarioActual();
+            var result = service.GrabarProveedoresEnPeticionDeOferta(peticion.UsuarioIds, peticion.Id);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpPost]
         public ActionResult CrearOrdenDeCompra(string json)
         {
-            try
-            {
-                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-                var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+            var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
+            return JsonCustom(result);
+
         }
 
         [HttpGet]
         public ActionResult DescargarAdjuntosCotizacion(int cotizacionId, bool desdeRevisionTecnica)
         {
-            try
-            {
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path, desdeRevisionTecnica);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
-                string fileName = Path.GetFileName(rutaZip);
+            string rutaZip = service.DescargarAdjuntosCotizacion(cotizacionId, path, desdeRevisionTecnica);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
 
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
 
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+
         }
 
         [HttpPost]
         public ActionResult GrabarRevisionTecnica(string json, bool finalizar, string jsonRevision)
         {
-            try
-            {
-                var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
-                var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
+            var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+            var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
 
-                var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public ActionResult ObtenerCotizacion(int peticionDeOfertaId)
         {
-            try
-            {
-                var result = service.TraerCotizacion(peticionDeOfertaId);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            var result = service.TraerCotizacion(peticionDeOfertaId);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult GrabarCotizacion(string json)
         {
-            try
-            {
-                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
-                var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, true);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
+            var result = service.GrabarCotizacion(cotizacion, Request.Files, cotizacion.EsFinalizado, true);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult ObtenerPrecioTotalPosicionProveedor(string json)
         {
-            try
-            {
-                var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
-                var result = service.ObtenerPrecioTotalPosicionProveedor(cotizacion);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var cotizacion = JsonConvert.DeserializeObject<GuardarCotizacion>(json);
+            var result = service.ObtenerPrecioTotalPosicionProveedor(cotizacion);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public ActionResult ObtenerAdjudicacion(string nroOC)
         {
-            try
-            {
-                var result = service.ObtenerAdjudicacion(nroOC);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            var result = service.ObtenerAdjudicacion(nroOC);
+            return JsonCustom(new { data = result });
+
         }
 
         [HttpGet]
         public ActionResult ListarAdjudicaciones(int solpId)
         {
-            try
-            {
-                var result = service.ListarAdjudicaciones(solpId);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            var result = service.ListarAdjudicaciones(solpId);
+            return JsonCustom(new { data = result });
         }
 
 
         [HttpGet]
         public ActionResult ListarPeticionesDeOferta(int solpId)
         {
-            try
-            {
-                var result = service.ListarPeticionesDeOferta(solpId);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ListarPeticionesDeOferta(solpId);
+            return JsonCustom(new { data = result });
         }
 
         static readonly object _lockObtenerOrdenDeCompra = new object();
@@ -1304,565 +614,193 @@ namespace SustitucionMOA.Controllers
         {
             lock (_lockObtenerOrdenDeCompra)
             {
-                try
-                {
-                    var result = service.ObtenerOrdenDeCompra(nroOC);
-                    return JsonCustom(new { data = result });
-                }
-                catch (WSCustomException e)
-                {
-                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                    return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                    return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-                }
+                var result = service.ObtenerOrdenDeCompra(nroOC);
+                return JsonCustom(new { data = result });
             }
         }
 
         [HttpPost]
         public ActionResult GuardarAdjudicacionAutomatica(string json)
         {
-            try
-            {
-                //Falta probar el metodo
-                var registrosInfo = JsonConvert.DeserializeObject<List<RegistroInfoDto>>(json);
-                var usuarioActual = ObtenerUsuarioActual();
-                var result = service.CrearOrdenDeCompraConRegistroInfo(registrosInfo, usuarioActual.Id);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            //Falta probar el metodo
+            var registrosInfo = JsonConvert.DeserializeObject<List<RegistroInfoDto>>(json);
+            var usuarioActual = ObtenerUsuarioActual();
+            var result = service.CrearOrdenDeCompraConRegistroInfo(registrosInfo, usuarioActual.Id);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult CerrarCotizacion(int peticionId, string observaciones)
         {
-            try
-            {
-                var result = service.CerrarCotizacion(peticionId, ObtenerUsuarioActual().Id, observaciones);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.CerrarCotizacion(peticionId, ObtenerUsuarioActual().Id, observaciones);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public ActionResult ObtenerUltimaSolp()
         {
-            try
-            {
-                var usuarioId = ObtenerUsuarioActual().Id;
+            var usuarioId = ObtenerUsuarioActual().Id;
 
-                return JsonCustom(new
-                {
-                    data = service.ObtenerUltimaSolp(usuarioId)
-                });
-            }
-            catch (InfoCustomException e)
+            return JsonCustom(new
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ObtenerUltimaSolp(usuarioId)
+            });
         }
 
         [HttpGet]
         public JsonResult AutocompleteMaterialRFC(string material, string centro, string grupoDeCompras)
         {
-            try
-            {
-                return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
         }
 
         [AllowAnonymous]
         [HttpGet]
         public ActionResult ObtenerLegajoParaExternos(int adjudicacionId, string token)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mailUsuario = SessionPersister.getUsername();
+            var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult GrabarPeticionDeOfertaVisualizacionPrecio(string json)
         {
-            try
-            {
-                var peticion = JsonConvert.DeserializeObject<PeticionDeOfertaVisualizacionPrecioDto>(json);
-                peticion.UsuarioCreador_Id = ObtenerUsuarioActual().Id;
-                var result = service.GrabarPeticionDeOfertaVisualizacionPrecio(peticion, Request.Files);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var peticion = JsonConvert.DeserializeObject<PeticionDeOfertaVisualizacionPrecioDto>(json);
+            peticion.UsuarioCreador_Id = ObtenerUsuarioActual().Id;
+            var result = service.GrabarPeticionDeOfertaVisualizacionPrecio(peticion, Request.Files);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
         {
-            try
-            {
-                return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
         }
 
         [HttpGet]
         public ActionResult ObtenerChat(int solpId)
         {
             var response = new SustitucionMOAApiResponse<ChatsDto>();
-            try
-            {
-                response.Data = service.ObtenerChat(solpId, ObtenerUsuarioActual().Id);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                response.Error = ErrorMsg.Error;
-            }
+            response.Data = service.ObtenerChat(solpId, ObtenerUsuarioActual().Id);
             return ContentCustom(response);
         }
 
         [HttpGet]
         public JsonResult ObtenerChatProveedor(int peticionDeOfertaUsuarioId)
         {
-            try
-            {
-                return JsonCustom(service.ObtenerChatProveedor(peticionDeOfertaUsuarioId, ObtenerUsuarioActual().Id));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(service.ObtenerChatProveedor(peticionDeOfertaUsuarioId, ObtenerUsuarioActual().Id));
         }
 
         [HttpPost]
         public ActionResult GrabarMensajeChatInterno(string json)
         {
-            try
-            {
-                var mensaje = JsonConvert.DeserializeObject<ChatInternoComprasDto>(json);
-                mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
-                var result = service.GrabarMensajeChatInterno(mensaje);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mensaje = JsonConvert.DeserializeObject<ChatInternoComprasDto>(json);
+            mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
+            var result = service.GrabarMensajeChatInterno(mensaje);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult GrabarMensajeChatExterno(string json)
         {
-            try
-            {
-                var mensaje = JsonConvert.DeserializeObject<ChatExternoComprasDto>(json);
-                mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
-                var result = service.GrabarMensajeChatExterno(mensaje);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mensaje = JsonConvert.DeserializeObject<ChatExternoComprasDto>(json);
+            mensaje.Usuario_Id = ObtenerUsuarioActual().Id;
+            var result = service.GrabarMensajeChatExterno(mensaje);
+            return JsonCustom(new { data = result });
         }
 
         public ActionResult ObtenerYExportarChat(int solpId, int? peticionDeOfertaUsuarioId)
         {
-            try
-            {
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
 
-                string rutaTxt = service.ExportarChatInternoAtexto(solpId, path, peticionDeOfertaUsuarioId);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
-                string fileName = Path.GetFileName(rutaTxt);
+            string rutaTxt = service.ExportarChatInternoAtexto(solpId, path, peticionDeOfertaUsuarioId);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaTxt);
+            string fileName = Path.GetFileName(rutaTxt);
 
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
 
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Text.Plain, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Text.Plain, fileName));
         }
 
         [HttpGet]
         public ActionResult ListarRegionesSap()
         {
-            try
-            {
-                var result = service.ListarRegionesSap();
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ListarRegionesSap();
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public JsonResult ValidarSolpTratada(string nroSolp)
         {
-            try
-            {
-                return JsonCustom(service.ValidarSolpTratada(nroSolp));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(service.ValidarSolpTratada(nroSolp));
         }
         [HttpGet]
         public JsonResult DevolverMonedaProveedor(string codigoProveedor)
         {
-            try
-            {
-                return JsonCustom(service.DevolverMonedaProveedor(codigoProveedor));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(service.DevolverMonedaProveedor(codigoProveedor));
         }
 
         [HttpGet]
         public ActionResult ListarLiberadorSap()
         {
-            try
-            {
-                return JsonCustom(new { data = service.ListarLiberadorSap() });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ListarLiberadorSap() });
         }
 
         [HttpGet]
         public ActionResult ListarUsuarioCreadorSolp()
         {
-            try
-            {
-                return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
         }
 
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
-            try
-            {
-                var result = service.ListarVisitasDeObra(visitas);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ListarVisitasDeObra(visitas);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public ActionResult ListarTablaSap(string codigos)
         {
             List<string> tablas = !string.IsNullOrEmpty(codigos) ? codigos.Split(',').ToList() : new List<string>();
-            try
-            {
-                return JsonCustom(new { data = service.ListarTablaSap(tablas) });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ListarTablaSap(tablas) });
         }
 
         [HttpPost]
         public ActionResult ModificarOrdenDeCompra(string json)
         {
-            try
-            {
-                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-                var result = service.EditarOrdenDeCompra(adjudicacion);
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+            var result = service.EditarOrdenDeCompra(adjudicacion);
+            return JsonCustom(result);
         }
 
         [HttpGet]
         public JsonResult ListarClaseDocumento(int usuarioId)
         {
-            try
-            {
-                var result = service.ListarClaseDocumento(usuarioId);
-                return JsonCustom(result);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ListarClaseDocumento(usuarioId);
+            return JsonCustom(result);
         }
 
         [HttpPost]
         public ActionResult ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible)
         {
-            try
-            {
-                var result = service.ActualizarProveedorVisibleEnSolicitante(peticionDeOfertaUsuarioId, esVisible);
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ActualizarProveedorVisibleEnSolicitante(peticionDeOfertaUsuarioId, esVisible);
+            return JsonCustom(result);
         }
 
         [HttpGet]
         public ActionResult ObtenerHistorial(int id)
         {
-            try
-            {
-                return JsonCustom(new { data = service.ObtenerHistorial(id) });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ObtenerHistorial(id) });
         }
 
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
-            try
-            {
-                var result = service.ListarUsuarioSolicitante();
-                return JsonCustom(result);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.ListarUsuarioSolicitante();
+            return JsonCustom(result);
         }
 
         [HttpGet]
@@ -1881,44 +819,23 @@ namespace SustitucionMOA.Controllers
                                                        string valorTipoImputacion = null,
                                                        int? numeroPo = null)
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
-                {
-                    data = service.ListarPosicionesPOMultiple(fechaDesde,
-                                                              fechaHasta,
-                                                              sap,
-                                                              mantenimiento,
-                                                              web,
-                                                              repoAutomatica,
-                                                              tratada,
-                                                              contratoMarco,
-                                                              !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
-                                                              !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              numeroPo)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarPosicionesPOMultiple(fechaDesde,
+                                                          fechaHasta,
+                                                          sap,
+                                                          mantenimiento,
+                                                          web,
+                                                          repoAutomatica,
+                                                          tratada,
+                                                          contratoMarco,
+                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          numeroPo)
+            });
         }
 
         [HttpGet]
@@ -1938,45 +855,24 @@ namespace SustitucionMOA.Controllers
                                                        int? numeroPo = null,
                                                        string nombrePliego = null)
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
-                {
-                    data = service.ListarPosicionesPOMultipleServicio(fechaDesde,
-                                                              fechaHasta,
-                                                              sap,
-                                                              mantenimiento,
-                                                              web,
-                                                              repoAutomatica,
-                                                              tratada,
-                                                              contratoMarco,
-                                                              !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
-                                                              !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                              numeroPo,
-                                                              nombrePliego)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarPosicionesPOMultipleServicio(fechaDesde,
+                                                          fechaHasta,
+                                                          sap,
+                                                          mantenimiento,
+                                                          web,
+                                                          repoAutomatica,
+                                                          tratada,
+                                                          contratoMarco,
+                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                          numeroPo,
+                                                          nombrePliego)
+            });
         }
 
         [HttpGet]
@@ -1995,51 +891,30 @@ namespace SustitucionMOA.Controllers
                                                        string valorTipoImputacion = null,
                                                        int? numeroPo = null)
         {
-            try
-            {
-                MemoryStream data = service.DescargarPosicionesPOMultiple(fechaDesde,
-                                                          fechaHasta,
-                                                          sap,
-                                                          mantenimiento,
-                                                          web,
-                                                          repoAutomatica,
-                                                          tratada,
-                                                          contratoMarco,
-                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
-                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          numeroPo);
+            MemoryStream data = service.DescargarPosicionesPOMultiple(fechaDesde,
+                                                      fechaHasta,
+                                                      sap,
+                                                      mantenimiento,
+                                                      web,
+                                                      repoAutomatica,
+                                                      tratada,
+                                                      contratoMarco,
+                                                      !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                      !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      numeroPo);
 
-                string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
-                const string contentType = CustomMediaTypeNames.Application.xlsx;
+            string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+            const string contentType = CustomMediaTypeNames.Application.xlsx;
 
-                return JsonCustom(new
-                {
-                    file = data.ToArray(),
-                    contentType,
-                    fileName,
-                });
-            }
-            catch (InfoCustomException e)
+            return JsonCustom(new
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                file = data.ToArray(),
+                contentType,
+                fileName,
+            });
         }
 
         [HttpGet]
@@ -2059,477 +934,183 @@ namespace SustitucionMOA.Controllers
                                                        int? numeroPo = null,
                                                        string nombrePliego = null)
         {
-            try
-            {
-                MemoryStream data = service.DescargarPosicionesPOMultipleServicio(fechaDesde,
-                                                          fechaHasta,
-                                                          sap,
-                                                          mantenimiento,
-                                                          web,
-                                                          repoAutomatica,
-                                                          tratada,
-                                                          contratoMarco,
-                                                          !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
-                                                          !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                                                          numeroPo,
-                                                          nombrePliego);
+            MemoryStream data = service.DescargarPosicionesPOMultipleServicio(fechaDesde,
+                                                      fechaHasta,
+                                                      sap,
+                                                      mantenimiento,
+                                                      web,
+                                                      repoAutomatica,
+                                                      tratada,
+                                                      contratoMarco,
+                                                      !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
+                                                      !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                                                      numeroPo,
+                                                      nombrePliego);
 
-                string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
-                const string contentType = CustomMediaTypeNames.Application.xlsx;
+            string fileName = $"PoMUltiple-{DateTime.Today:dd-MM-yyyy}";
+            const string contentType = CustomMediaTypeNames.Application.xlsx;
 
-                return JsonCustom(new
-                {
-                    file = data.ToArray(),
-                    contentType,
-                    fileName,
-                });
-            }
-            catch (InfoCustomException e)
+            return JsonCustom(new
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                file = data.ToArray(),
+                contentType,
+                fileName,
+            });
         }
 
         [HttpGet]
         public ActionResult ListarPosicionesPOMultipleSolpId(int idSolp)
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
-                {
-                    data = service.ListarPosicionesPOMultipleSolpId(idSolp)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarPosicionesPOMultipleSolpId(idSolp)
+            });
         }
 
         [HttpGet]
         public ActionResult ListarSubPosicionesPOMultipleSolpId(int idPosicion)
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
-                {
-                    data = service.ListarSubPosicionesPOMultipleSolpId(idPosicion)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ListarSubPosicionesPOMultipleSolpId(idPosicion)
+            });
         }
 
         [HttpGet]
         public ActionResult ObtenerPosicionesMultipleCompras(string ids)
         {
-            try
-            {
-                List<int> listaId = ids.Replace("[", "").Replace("]", "").Split(',').Select(x => int.Parse(x)).ToList();
-                SolpCompraDto resultado = service.ObtenerPosicionesMultipleCompras(listaId);
+            List<int> listaId = ids.Replace("[", "").Replace("]", "").Split(',').Select(x => int.Parse(x)).ToList();
+            SolpCompraDto resultado = service.ObtenerPosicionesMultipleCompras(listaId);
 
-                return JsonCustom(new { data = resultado });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = resultado });
         }
 
         [HttpGet]
         public ActionResult ListarHistorialDeFechas(int peticionId)
         {
-            try
-            {
-                var resultado = service.ListarHistorialDeFechas(peticionId);
-                return JsonCustom(new { data = resultado });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var resultado = service.ListarHistorialDeFechas(peticionId);
+            return JsonCustom(new { data = resultado });
         }
 
         [HttpPost]
         public ActionResult MarcarChatProveedorComoLeido(string json)
         {
-            try
-            {
-                var proveedorChat = JsonConvert.DeserializeObject<ChatProveedoresDto>(json);
-                service.MarcarChatProveedorComoLeido(proveedorChat);
-                return JsonCustom(new { success = true });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress,
-                    SessionPersister.getUsername(),
-                    this.GetType().Name,
-                    System.Reflection.MethodBase.GetCurrentMethod().Name,
-                    e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-
+            var proveedorChat = JsonConvert.DeserializeObject<ChatProveedoresDto>(json);
+            service.MarcarChatProveedorComoLeido(proveedorChat);
+            return JsonCustom(new { success = true });
         }
 
         [HttpGet]
         public ActionResult ListarSolpCondicionEspecial(string filtroJson)
         {
-            try
-            {
-                var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
-                var resultado = service.ListarSolpCondicionEspecial(filtro);
-                return JsonCustom(new { data = resultado });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var filtro = JsonConvert.DeserializeObject<FiltroDto>(filtroJson);
+            var resultado = service.ListarSolpCondicionEspecial(filtro);
+            return JsonCustom(new { data = resultado });
         }
 
         [HttpPost]
         public ActionResult AgruparPeticionesDeOferta(string peticionDeOfertaIds)
         {
-            try
-            {
-                var usuario = ObtenerUsuarioActual();
-                var result = service.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var usuario = ObtenerUsuarioActual();
+            var result = service.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult ValidarPrecioCotizado(string json)
         {
-            try
-            {
-                var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-                var result = service.ValidarPrecioCotizado(adjudicacion);
-                return JsonCustom(new { data = result });
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
+            var result = service.ValidarPrecioCotizado(adjudicacion);
+            return JsonCustom(new { data = result });
         }
 
         [HttpGet]
         public ActionResult ObtenerAdjuntosSolpAgrupar(string nroSolp)
         {
-            try
-            {
-                return JsonCustom(new { data = service.ObtenerAdjuntosSolpAgrupar(nroSolp) });
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = service.ObtenerAdjuntosSolpAgrupar(nroSolp) });
         }
 
         [HttpPost]
         public ActionResult DesagruparPeticionDeOferta(string nroSolp, string po)
         {
-            try
-            {
-                var result = service.DesagruparPO(nroSolp, po);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.DesagruparPO(nroSolp, po);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult GuardarEnvioCircularProveedor(int id, EnviarCircularEnum enviarCircularA, string fechaLimite)
         {
-            try
-            {
-                DateTime? fechaLimiteD;
+            DateTime? fechaLimiteD;
 
-                if (string.IsNullOrWhiteSpace(fechaLimite))
+            if (string.IsNullOrWhiteSpace(fechaLimite))
+            {
+                if (enviarCircularA != EnviarCircularEnum.NoEnviar)
                 {
-                    if (enviarCircularA != EnviarCircularEnum.NoEnviar)
-                    {
-                        throw new ValidationCustomException("La fecha límite es obligatoria cuando se enviará una circular");
-                    }
-                    fechaLimiteD = null;
+                    throw new ValidationCustomException("La fecha límite es obligatoria cuando se enviará una circular");
+                }
+                fechaLimiteD = null;
+            }
+            else
+            {
+#pragma warning disable IDE0018 // Inline variable declaration <--> se deba actualizar langVersion.
+                DateTime fl;
+#pragma warning restore IDE0018 // Inline variable declaration
+                if (!DateTime.TryParse(fechaLimite, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out fl))
+                {
+                    throw new ValidationCustomException("La fecha límite no es válida.");
                 }
                 else
                 {
-#pragma warning disable IDE0018 // Inline variable declaration <--> se deba actualizar langVersion.
-                    DateTime fl;
-#pragma warning restore IDE0018 // Inline variable declaration
-                    if (!DateTime.TryParse(fechaLimite, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal | DateTimeStyles.AllowWhiteSpaces, out fl))
-                    {
-                        throw new ValidationCustomException("La fecha límite no es válida.");
-                    }
-                    else
-                    {
-                        fechaLimiteD = fl; // estas asignaciones raras las tengo que hacer porque el DateTime.TryParse no permite hacer DateTime? (language version??).
-                    }
+                    fechaLimiteD = fl; // estas asignaciones raras las tengo que hacer porque el DateTime.TryParse no permite hacer DateTime? (language version??).
                 }
+            }
 
-                var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, fechaLimiteD);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = service.GuardarEnvioCircularProveedor(id, enviarCircularA, fechaLimiteD);
+            return JsonCustom(new { data = result });
         }
         [HttpGet]
         public ActionResult ValidarFechaVigenciaRegistroInfo([HttpHelper.FromUri] ValidarFechaVigenciaRegistroInfoReqDto request)
         {
-            try
+            return JsonCustom(new
             {
-                return JsonCustom(new
-                {
-                    data = service.ValidarFechaVigenciaRegistroInfo(request)
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = service.ValidarFechaVigenciaRegistroInfo(request)
+            });
         }
         [HttpPost]
         public ActionResult ActualizarFechaVigenciaRegistroInfo(string data)
         {
-            try
+            var dataDeserialized = JsonConvert.DeserializeObject<ActualizarFechaVigenciaRegistroInfoDto>(data);
+            service.ActualizarFechaVigenciaRegistroInfo(dataDeserialized);
+            return JsonCustom(new
             {
-                var dataDeserialized = JsonConvert.DeserializeObject<ActualizarFechaVigenciaRegistroInfoDto>(data);
-                service.ActualizarFechaVigenciaRegistroInfo(dataDeserialized);
-                return JsonCustom(new
-                {
-                    data = true
-                });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+                data = true
+            });
         }
 
         [HttpGet]
         public ActionResult DescargarHistorialCotizaciones(int cotizacionId)
         {
             var response = new SustitucionMOAApiResponse<string>();
-            try
-            {
-                var ms = service.GenerarHistorialCotizaciones(cotizacionId);
-                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialCotizaciones.xlsx"));
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+            var ms = service.GenerarHistorialCotizaciones(cotizacionId);
+            return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialCotizaciones.xlsx"));
             return ContentCustom(response);
         }
 
         public ActionResult DescargarArchivoHistorialMovimientos(int idPeticionOferta)
         {
-            try
-            {
-                var ms = service.GenerarExcelHistorialMovimientos(idPeticionOferta);
-                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialMovimientos.xlsx"));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var ms = service.GenerarExcelHistorialMovimientos(idPeticionOferta);
+            return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "HistorialMovimientos.xlsx"));
         }
 
         [HttpGet]
         public ActionResult DescargarRevisionTecnica(int peticionDeOfertaId)
         {
             var response = new SustitucionMOAApiResponse<string>();
-            try
-            {
-                var ms = service.GenerarArchivoRevisionTecnica(peticionDeOfertaId);
-                return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "RevisionTecnica.xlsx"));
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+            var ms = service.GenerarArchivoRevisionTecnica(peticionDeOfertaId);
+            return JsonCustom(File(ms, System.Net.Mime.MediaTypeNames.Application.Octet, "RevisionTecnica.xlsx"));
             return ContentCustom(response);
         }
 
@@ -2537,25 +1118,17 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult DescargarAdjuntosProveedores(int idPeticion, int? idPeticionDeOfertaUsuario)
         {
-            try
-            {
-                var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
-                Directory.CreateDirectory(path);
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
 
-                string rutaZip = service.DescargarAdjuntosProveedores(idPeticion, path, idPeticionDeOfertaUsuario);
-                byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
-                string fileName = Path.GetFileName(rutaZip);
+            string rutaZip = service.DescargarAdjuntosProveedores(idPeticion, path, idPeticionDeOfertaUsuario);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
 
-                //Para evitar sobrecargar el server con zips, una vez cargado lo borro
-                Directory.Delete(path, true);
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
 
-                return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
     }
 }

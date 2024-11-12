@@ -21,7 +21,7 @@ namespace SustitucionMOA.Controllers
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
     public class AduanaController : BaseController
     {
-        private readonly IDBService dBService;        
+        private readonly IDBService dBService;
         private readonly IAduanaService aduanaService;
 
         public AduanaController(IAduanaService aduanaService, IDBService dBService)
@@ -43,7 +43,8 @@ namespace SustitucionMOA.Controllers
             {
                 return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
             }
-            catch (ValidationCustomException e) {
+            catch (ValidationCustomException e)
+            {
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
@@ -56,23 +57,12 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_PESADA_DETALLE)]
         public ActionResult getPesadaDetalle(int centro, int nroOrden)
         {
-            try
-            {
-                return JsonCustom(dBService.SqlSPDeltallePesada(centro, nroOrden));
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dBService.SqlSPDeltallePesada(centro, nroOrden));
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_CAMARAS_CONSOLIDACION)]
-        public ActionResult obtenerImagenCamaraConsolidacion(string url, string nombre) {
+        public ActionResult obtenerImagenCamaraConsolidacion(string url, string nombre)
+        {
             try
             {
                 return JsonCustom(aduanaService.ObtenerImagen(url, nombre));
@@ -90,6 +80,6 @@ namespace SustitucionMOA.Controllers
                 Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error, nombre = nombre }, JsonRequestBehavior.AllowGet);
             }
-        }        
+        }
     }
 }

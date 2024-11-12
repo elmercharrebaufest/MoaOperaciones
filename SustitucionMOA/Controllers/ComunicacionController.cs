@@ -36,151 +36,58 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult GetAllByProveedor(string vendedor, string fechaInicio, string fechaFin)
         {
-            try
+            if (vendedor == "" || vendedor == null)
             {
-                if (vendedor == "" || vendedor == null)
-                {
-                    vendedor = SessionPersister.Proveedor;
-                }
+                vendedor = SessionPersister.Proveedor;
+            }
 
-                UsuarioDto usuarioActual = ObtenerUsuarioActual();
-                bool obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            bool obtenerTodos = usuarioActual.Permisos.Contains(Permiso.CONSULTA_AMB);
 
-                comunicacionService.ActualizarComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos);
+            comunicacionService.ActualizarComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos);
 
-                return JsonCustom(new { data = comunicacionService.ObtenerComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = comunicacionService.ObtenerComunicacionesPorProveedor(vendedor, SessionPersister.Proveedor, fechaInicio, fechaFin, usuarioActual.Id, obtenerTodos) });
         }
 
 
         //[ValidateInput(false)]
         public ActionResult PostComunicacionLeida(ComunicacionListaIdDto comunicacionIds)
         {
-            try
-            {
-                return JsonCustom(new { data = comunicacionService.GrabarComunicacionComoLeida(comunicacionIds) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = comunicacionService.GrabarComunicacionComoLeida(comunicacionIds) });
         }
 
         public ActionResult PostComunicacionNoLeida(ComunicacionListaIdDto comunicacionIds)
         {
-            try
-            {
-                return JsonCustom(new { data = comunicacionService.GrabarComunicacionComoNoLeida(comunicacionIds) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = comunicacionService.GrabarComunicacionComoNoLeida(comunicacionIds) });
         }
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_DATOS_FISCALES)]
         public ActionResult GetCM05(string vendedor)
         {
-            try
+            if (vendedor == "" || vendedor == null)
             {
-                if (vendedor == "" || vendedor == null)
-                {
-                    vendedor = SessionPersister.Proveedor;
-                }
-                return JsonCustom(new { data = comunicacionService.ProcesarCM05(vendedor, SessionPersister.Proveedor) });
+                vendedor = SessionPersister.Proveedor;
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = comunicacionService.ProcesarCM05(vendedor, SessionPersister.Proveedor) });
         }
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_DATOS_FISCALES)]
         public ActionResult GetCuentasHabilitadas(string vendedor)
         {
-            try
+            if (vendedor == "" || vendedor == null)
             {
-                if (vendedor == "" || vendedor == null)
-                {
-                    vendedor = SessionPersister.Proveedor;
-                }
-                return JsonCustom(new { data = comunicacionService.ProcesarCuentasHabilitadas(vendedor, SessionPersister.Proveedor) });
+                vendedor = SessionPersister.Proveedor;
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = comunicacionService.ProcesarCuentasHabilitadas(vendedor, SessionPersister.Proveedor) });
         }
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CONSULTAR_LIQUIDACIONES)]
         public ActionResult GetLiquidacionesObservadas(string vendedor, string fechaInicio, string fechaFin)
         {
-            try
-            {
-                return JsonCustom(comunicacionService.ProcesarLiquidacionesObservadas(SessionPersister.Proveedor, fechaInicio, fechaFin));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(comunicacionService.ProcesarLiquidacionesObservadas(SessionPersister.Proveedor, fechaInicio, fechaFin));
         }
 
 

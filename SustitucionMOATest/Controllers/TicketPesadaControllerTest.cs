@@ -9,12 +9,7 @@ using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
-using System.Web.Mvc;
 
 namespace SustitucionMOATest.Controllers
 {
@@ -66,11 +61,14 @@ namespace SustitucionMOATest.Controllers
 
             ticketPesadaServiceMock.Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var resultado = target.Obtener(ticketPesadaJson);
-
-            var expected = @"{ error = Mensaje de error }";
-
-            Assert.AreEqual(expected, resultado.Data.ToString()) ;
+            try
+            {
+                target.Obtener(ticketPesadaJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
         [Test()]
@@ -80,11 +78,14 @@ namespace SustitucionMOATest.Controllers
 
             ticketPesadaServiceMock.Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>())).Throws(new InfoCustomException("Mensaje de error"));
 
-            var resultado = target.Obtener(ticketPesadaJson);
-
-            var expected = @"{ info = Mensaje de error }";
-
-            Assert.AreEqual(expected, resultado.Data.ToString());
+            try
+            {
+                target.Obtener(ticketPesadaJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
         [Test()]
@@ -99,11 +100,16 @@ namespace SustitucionMOATest.Controllers
 
             ticketPesadaServiceMock.Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>())).Throws(new Exception());
 
-            var resultado = target.Obtener(ticketPesadaJson);
 
-            var expected = @"{ error = Ha ocurrido un error, por favor intente nuevamente }";
-
-            Assert.AreEqual(expected, resultado.Data.ToString());
+            var expected = "Se produjo una excepción de tipo 'System.Exception'.";
+            try
+            {
+                target.Obtener(ticketPesadaJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual(expected, e.Message);
+            }
         }
     }
 }
