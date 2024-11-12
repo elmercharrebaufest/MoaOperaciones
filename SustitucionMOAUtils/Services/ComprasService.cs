@@ -8224,7 +8224,7 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                
+
                 var unidadBase = unidadesDelMaterial.First(x => x.UnidadDeMedida == solpPosicion.MaterialSolp.UnidadMedidaBase.Codigo);
                 AdjustUnitPriceAndQuantity(registro, cotizacionPosicion.Cantidad.Value, cotizacionPosicion.Precio.Value, unidadCotizada, unidadBase);
             }
@@ -9831,10 +9831,22 @@ namespace SustitucionMOAUtils.Services
                             !centros.Any() || pos.Solp.Posiciones.Any(c => centros.Contains(c.Centro_Id))
                         )
                     &&
-                        (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id))) &&
+                        (
+                            (
+                                pos.TipoPosicion.Codigo == "MATERIALES"
+                                    && (!grupoDeCompras.Any() || grupoDeCompras.Contains((int)pos.GrupoCompras_Id))
+                                    && (!tipoImputacion.Any() || tipoImputacion.Contains(pos.TipoImputacion.Codigo))
+                            )
+                            ||
+                            (
+                                pos.TipoPosicion.Codigo == "SERVICIO"
+                                    && (!grupoDeCompras.Any() || pos.Solp.Posiciones.Any(gc => grupoDeCompras.Contains((int)gc.GrupoCompras_Id)))
+                                    && (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo)))
+                            )
+                        )
+                    &&
                         (!claseDocumento.Any() || pos.Solp.EstadoSolpSap_Id != null && claseDocumento.Contains((int)pos.Solp.ClaseDocumento_Id)) &&
-                        (!tipoImputacion.Any() || pos.Solp.Posiciones.Any(c => tipoImputacion.Contains(c.TipoImputacion.Codigo))) &&
-                        (pos.NumeroContratoSuperior == null || pos.NumeroContratoSuperior == "")
+                        (string.IsNullOrEmpty(pos.NumeroContratoSuperior))
                     &&
                         (
                             !valorTipoImputacion.Any()
@@ -9851,7 +9863,6 @@ namespace SustitucionMOAUtils.Services
 
             return ListarPosicionesPOMultipleCommonFilter;
         }
-
 
         public List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
                                                               DateTime? hasta,
