@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -290,7 +290,6 @@ namespace SustitucionMOAUtils.Services
                 pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
                 pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
                 pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
-                pliegoEntity.TieneVisitaObra = solp.TieneVisitaObra;
                 pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
                 pliegoEntity.TieneObradores = solp.TieneObradores;
                 pliegoEntity.TieneMedioElevacion = solp.TieneMedioElevacion;
@@ -1328,8 +1327,7 @@ namespace SustitucionMOAUtils.Services
                 SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
                 SupervisorTrabajo = solp.Pliego.SupervisorTrabajo,
                 VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraDto(a)).ToList(),
-                TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
-                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
+                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva,
                 TieneObradores = solp.Pliego.TieneObradores ?? false,
                 TieneMedioElevacion = solp.Pliego.TieneMedioElevacion ?? false,
                 TieneAndamio = solp.Pliego.TieneAndamio ?? false,
@@ -1474,8 +1472,7 @@ namespace SustitucionMOAUtils.Services
                 SupervisorSector = solp.Pliego.SupervisorSector.Split(',').ToList(),
                 SupervisorTrabajo = solp.Pliego.SupervisorTrabajo.Split(',').ToList(),
                 VisitasObraMasiva = solp.Pliego.VisitasMasivas.Select(a => new VisitaObraESDto(a)).ToList(),
-                TieneVisitaObra = solp.Pliego.TieneVisitaObra ?? false,
-                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva ?? false,
+                TieneVisitaObraMasiva = solp.Pliego.TieneVisitaObraMasiva,
                 TieneObradores = solp.Pliego.TieneObradores ?? false,
                 TieneMedioElevacion = solp.Pliego.TieneMedioElevacion ?? false,
                 TieneAndamio = solp.Pliego.TieneAndamio ?? false,
@@ -3580,7 +3577,7 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
+                string cuitUsuario = repositorio.Obtener<Usuario>(a => a.Mail == username).CUITRegistro;
                 string[] palabras = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                 if (!string.IsNullOrEmpty(nroSolp) && !nroSolp.StartsWith("0"))
@@ -3588,20 +3585,19 @@ namespace SustitucionMOAUtils.Services
                     nroSolp = "0" + nroSolp;
                 }
 
-                var todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
-                var listId = todasLasPO.ToList().Select(y => y.Id);
+                ListaPaginada<PeticionDeOfertaDto> todasLasPO = repositorio.ListarConsultaPaginada(new ListarSolpPOConsulta(paginacion, nroSolp, nroPo, palabras, cuitUsuario, estadoCotizacion, estadoLicitacion, desde, hasta));
+                IEnumerable<int> listId = todasLasPO.Select(y => y.Id);
 
-                if (todasLasPO != null && todasLasPO.Any())
+                if (todasLasPO.Any())
                 {
-                    var peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
+                    List<PeticionDeOferta> peticionesDeOferta = repositorio.Listar<PeticionDeOferta>(x => listId.Contains(x.Id));
                     todasLasPO.FirstOrDefault().ItemsTotales = todasLasPO.ItemsTotales;
                     foreach (var item in todasLasPO)
                     {
                         item.NroSolp = item.NrosSolp != null ? string.Join(", ", item.NrosSolp.Distinct()) : "";
-                        if (peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego != null)
+                        if (peticionesDeOferta.Find(x => x.Id == item.Id)?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego != null)
                         {
-                            item.VisitasMasivas = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
-                            item.TieneVisitaObra = peticionesDeOferta.Where(x => x.Id == item.Id).FirstOrDefault().Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObra == null ? "No requiere visita" : "Requiere visita a coordinar";
+                            item.VisitasMasivas = peticionesDeOferta.Find(x => x.Id == item.Id)?.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego.VisitasMasivas.Select(x => x.FechaHora.HasValue ? x.FechaHora : (DateTime?)null);
                         }
                     }
                 }
@@ -6025,8 +6021,7 @@ namespace SustitucionMOAUtils.Services
             var cotizaciones = repositorio.Listar<Cotizacion>(x => peticionDeOfertaUsuarios_Id.Contains(x.PeticionDeOfertaUsuario_Id));
             var posicion = peticionEntidad.Posiciones.FirstOrDefault().SolpPosicion;
             var tipoPosicion = posicion.TipoPosicion.Codigo;
-            var tieneVisitaDeObra = posicion.Solp.Pliego.TieneVisitaObra ?? false;
-            var tieneVisitaMasiva = posicion.Solp.Pliego.TieneVisitaObraMasiva ?? false;
+            var tieneVisitaMasiva = posicion.Solp.Pliego.TieneVisitaObraMasiva;
             var esServicio = tipoPosicion == "SERVICIO";
 
             foreach (var u in peticionEntidad.Usuarios)
@@ -6089,7 +6084,6 @@ namespace SustitucionMOAUtils.Services
 
             peticion.Id = peticionEntidad.Id;
             peticion.PlazoDeOfertaEstado = peticionEntidad.PlazoDeOferta > DateTime.Now.Date ? "Abierto" : "Cerrado";
-            peticion.TieneVisitaObraBool = tieneVisitaDeObra;
             peticion.TieneVisitaObraMasiva = tieneVisitaMasiva;
             peticion.TipoPosicionCodigo = tipoPosicion;
 
@@ -6116,8 +6110,7 @@ namespace SustitucionMOAUtils.Services
                             PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(p => p.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                             Observaciones = po.Observaciones,
                             TipoPosicionCodigo = po.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo,
-                            TieneVisitaObraBool = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObra ?? false,
-                            TieneVisitaObraMasiva = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObraMasiva ?? false,
+                            TieneVisitaObraMasiva = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObraMasiva,
                             RevisionTecnicaId = po.RevisionTecnica_Id
                         });
 
@@ -6153,8 +6146,7 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 return u.PropuestaTecnicaAprobada == true &&
-                    (u.RealizoVisita == true || (u.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObra != true
-                    && u.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneVisitaObraMasiva != true));
+                    (u.RealizoVisita == true || u.PeticionDeOferta.Posiciones.FirstOrDefault()?.SolpPosicion.Solp.Pliego.TieneVisitaObraMasiva != true);
             }
         }
         public void EnviarCircularAutomatico(Solp solp)

@@ -328,7 +328,6 @@ export class ComprasService extends BaseService {
             SupervisorSector: solp.supervisorSector,
             SupervisorTrabajo: solp.supervisorTrabajo,
             VisitasObraMasiva: solp.listaVisitas.map(x => { return { Codigo: x.id, FechaHora: this.getFechaHora(x.visitaDeObraFecha, x.visitaDeObraHora) } }),
-            TieneVisitaObra: solp.visitaDeObra,
             TieneVisitaObraMasiva: solp.visitaDeObraMasiva,
             TieneObradores: solp.obradores,
             TieneMedioElevacion: solp.modoElevacion,

@@ -9,8 +9,7 @@
 	[FechaHoraEntrega] [datetime2] NULL,
 	[SupervisorSector] [nvarchar](max) NULL,
 	[SupervisorTrabajo] [nvarchar](max) NULL,
-	[TieneVisitaObra] [bit] NULL,
-	[TieneVisitaObraMasiva] [bit] NULL,
+	[TieneVisitaObraMasiva] [bit] NOT NULL CONSTRAINT DF_Pliego_TieneVisitaObraMasiva DEFAULT 0,
 	[TieneObradores] [bit] NULL,
 	[TieneMedioElevacion] [bit] NULL,
 	[TieneTecnicoSeguridad] [bit] NULL,
@@ -26,11 +25,11 @@
 	[TieneAndamio] BIT NULL, 
 	[TieneGrillaPersonal] BIT NULL, 
 	[TieneFabricacionTallerExterno] BIT NULL, 
-    [RevisadoPor] NVARCHAR(MAX) NULL, 
-    [TieneCondicionesGenerales] BIT NULL,
-    [RequisitoCiberseguridad] BIT NULL, 
-    [ObservacionesCotizacionCondEsp] NVARCHAR(MAX) NULL, 
-    CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
+	[RevisadoPor] NVARCHAR(MAX) NULL, 
+	[TieneCondicionesGenerales] BIT NULL,
+	[RequisitoCiberseguridad] BIT NULL, 
+	[ObservacionesCotizacionCondEsp] NVARCHAR(MAX) NULL, 
+	CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

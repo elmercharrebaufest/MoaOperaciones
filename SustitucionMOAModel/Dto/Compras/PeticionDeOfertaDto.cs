@@ -70,7 +70,6 @@ namespace SustitucionMOAModel.Dto
         public int ItemPorPagina { get; set; }
         public int Pagina { get; set; }
         public int ItemsTotales { get; set; }
-        public string TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
         public IQueryable<CotizacionDto> CotizacionEstado { get; set; }
         public string CotizacionEstadoDescripcion { get; set; }
@@ -103,7 +102,6 @@ namespace SustitucionMOAModel.Dto
         public decimal? PorcentajeDeHoras { get; set; }
         public bool? AdjuntoPliego { get; set; }
         public bool? Urgencia { get; set; }
-        public bool? TieneVisitaObraBool { get; set; }
         public bool RevisionFinalizada { get; set; }
         public bool VerBotonVerPrecio { get; set; }
         public bool RecotizacionEconomica { get; set; }

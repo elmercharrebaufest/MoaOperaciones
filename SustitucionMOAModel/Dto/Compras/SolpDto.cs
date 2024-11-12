@@ -18,7 +18,6 @@ namespace SustitucionMOAModel.Dto
         public List<string> SupervisorSector { get; set; }
         public string SupervisorTrabajo { get; set; }
         public List<VisitaObraDto> VisitasObraMasiva { get; set; }
-        public bool TieneVisitaObra { get; set; }
         public bool TieneVisitaObraMasiva { get; set; }
         public bool TieneObradores { get; set; }
         public bool TieneMedioElevacion { get; set; }
@@ -140,8 +139,7 @@ namespace SustitucionMOAModel.Dto
             SupervisorSector = entity.Pliego.SupervisorSector.Split(',').ToList();
             SupervisorTrabajo = entity.Pliego.SupervisorTrabajo;
             VisitasObraMasiva = new List<VisitaObraDto>();
-            TieneVisitaObra = entity.Pliego.TieneVisitaObra.HasValue && entity.Pliego.TieneVisitaObra.Value;
-            TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva.HasValue && entity.Pliego.TieneVisitaObraMasiva.Value;
+            TieneVisitaObraMasiva = entity.Pliego.TieneVisitaObraMasiva;
             TieneObradores = entity.Pliego.TieneObradores.HasValue && entity.Pliego.TieneObradores.Value;
             TieneMedioElevacion = entity.Pliego.TieneMedioElevacion.HasValue && entity.Pliego.TieneMedioElevacion.Value;
             TieneAndamio = entity.Pliego.TieneAndamio.HasValue && entity.Pliego.TieneAndamio.Value;

@@ -508,7 +508,6 @@ namespace SustitucionMOATest.Services
                 Telefono = "3332323",
                 Email = "bmelgarejo@test.com",
                 FechaHoraEntrega = DateTime.Now,
-                TieneVisitaObra = true,
                 TieneVisitaObraMasiva = false,
                 TieneObradores = false,
                 TieneMedioElevacion = false,
@@ -2998,7 +2997,7 @@ namespace SustitucionMOATest.Services
 
             Assert.That(resultado, Is.Not.Null);
             Assert.AreEqual(resultado.GetType(), regionesEsperadas.GetType());
-        }        
+        }
 
         [Test]
         public void EnviarMailSolpCreadasReporteOk()
