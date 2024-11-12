@@ -100,15 +100,15 @@ namespace SustitucionMOATest.Controllers
 
             ticketPesadaServiceMock.Setup(s => s.ObtenerTicket(It.IsAny<ConsultaTicketPesada>())).Throws(new Exception());
 
-
-            var expected = "Se produjo una excepción de tipo 'System.Exception'.";
             try
             {
                 target.Obtener(ticketPesadaJson);
             }
             catch (Exception e)
             {
-                Assert.AreEqual(expected, e.Message);
+                var esperado1 = "Se produjo una excepción de tipo 'System.Exception'.";
+                var esperado2 = "Exception of type 'System.Exception' was thrown.";
+                Assert.Contains(e.Message, new[] { esperado1, esperado2 });
             }
         }
     }

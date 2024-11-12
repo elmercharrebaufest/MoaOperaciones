@@ -74,7 +74,10 @@ namespace SustitucionMOATest.Controllers
             }
             catch (Exception e)
             {
-                Assert.AreEqual("Se produjo una excepción de tipo 'System.Exception'.", e.Message);
+                var esperado1 = "Se produjo una excepción de tipo 'System.Exception'.";
+                var esperado2 = "Exception of type 'System.Exception' was thrown.";
+                Assert.Contains(e.Message, new[] { esperado1, esperado2 });
+
             }
         }
 
