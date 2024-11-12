@@ -2,10 +2,16 @@
  * Actualizar la base donde tenga TieneVisitaObra a TieneVisitaObraMasiva
  */
 
-UPDATE Pliego
-SET TieneVisitaObraMasiva = 1
-WHERE TieneVisitaObra = 1;
+IF EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'TieneVisitaObra' AND Object_ID = Object_ID(N'dbo.Pliego'))
+BEGIN
 
-UPDATE Pliego
-SET TieneVisitaObraMasiva = 0
-WHERE TieneVisitaObraMasiva IS NULL;
+	EXEC ('
+		UPDATE Pliego
+		SET TieneVisitaObraMasiva = 1
+		WHERE TieneVisitaObra = 1;')
+
+	UPDATE Pliego
+	SET TieneVisitaObraMasiva = 0
+	WHERE TieneVisitaObraMasiva IS NULL;
+
+END
