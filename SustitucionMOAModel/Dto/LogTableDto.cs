@@ -1,9 +1,6 @@
 ﻿using SustitucionMOAModel.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto
 {
@@ -23,7 +20,7 @@ namespace SustitucionMOAModel.Dto
             this.Exception = l.Exception;
         }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
         public DateTime Date { get; set; }
         public string Level { get; set; }
         public string Logger { get; set; }
