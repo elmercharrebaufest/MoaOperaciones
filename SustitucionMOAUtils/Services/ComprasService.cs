@@ -3855,12 +3855,20 @@ namespace SustitucionMOAUtils.Services
                         {
                             var cotizacionPosicion = new CotizacionPosicionDto
                             {
-                                Id = posicion.SolpPosicion_Id,
-                                Cantidad = 1,
+                                Id = 0,
+                                PosicionId = posicion.SolpPosicion_Id,
+                                Cantidad = 0,
                                 Completado = false,
                                 Adjudicado = posicion.SolpPosicion.ProveedorAdjudicado_Id != null,
                                 EstaEliminado = !posicion.SolpPosicion.Estado,
                                 NoDisponible = false,
+                                UnidadDeMedida_Id = 0,
+                                UnidadMedida = new TablaSapDto { },
+                                UnidadMedidaDescripcion = "",
+                                Moneda_Id = 0,
+                                Moneda = new TablaSapDto { },
+                                MonedaCodigo = "",
+                                MonedaDescripcion = "",
                                 PeticionDeOfertaSolpPosicion_Id = posicion.Id,
                                 CotizacionSubPosiciones = posicion.SolpPosicion.Subposiciones
                                     .Select(sub => new CotizacionSubPosicionDto()
@@ -6775,23 +6783,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                var peticionCotizacionAgrupadas = peticionCotizacion.PeticionDeOfertaPosicion.GroupBy(a => a.Posiciones.NroSolp);
-                foreach (var posicionCotizacionDtos in peticionCotizacionAgrupadas)
-                {
-                    var posicionesPendientesAdjudicar = comprasServiceSap.ObtenerPosicionesPendientesAdjudicar(posicionCotizacionDtos.Key);
-                    foreach (var posicion in posicionCotizacionDtos.Select(x => x.Posiciones).ToList())
-                    {
-                        var posicionPendienteAdjudicar = posicionesPendientesAdjudicar.SingleOrDefault(x => int.Parse(x.NumeroPosicion) == posicion.Indice);
-                        if (posicionPendienteAdjudicar != null)
-                        {
-                            posicion.Cantidad = posicionPendienteAdjudicar.Cantidad - posicionPendienteAdjudicar.Ordered;
-                        }
-                        else
-                        {
-                            posicion.Cantidad = 0;
-                        }
-                    }
-                }
                 peticionCotizacion.PeticionDeOfertaPosicion = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0).ToList();
                 if (!peticionCotizacion.PeticionDeOfertaPosicion.Any())
                     throw new WSCustomException("La petición de oferta no tiene posiciones pendientes, por favor contáctese con el área de compras.");
@@ -10844,6 +10835,10 @@ namespace SustitucionMOAUtils.Services
             ValidarFechaVigenciaRegistroInfoReqDto request)
         {
             var cotizacionPosicion = repositorio.Obtener<CotizacionPosicion>(request.CotizacionPosicionId);
+            if (cotizacionPosicion == null)
+            {
+                throw new ValidationCustomException("La posicion seleccionada no fue cotizada.");
+            }
             var ultimoRegistroInfo = ObtenerUltimoRegistroPorMaterialYProveedor(
                 request.MaterialCodigoSap, request.CentroCodigoSap, request.GrupoComprasCodigoSap,
                 cotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor()
