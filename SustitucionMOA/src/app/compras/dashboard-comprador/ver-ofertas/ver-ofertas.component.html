@@ -47,7 +47,7 @@
         </ngb-alert>
     </p>
     <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'MATERIALES'">
-        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="620px">
+        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" scrollHeight="var(--availableSpaceAfterHeaderAndTitle)" frozenWidth="620px">
             <ng-template pTemplate="frozenheader">
                 <tr style="visibility: collapse !important;">
                     <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
@@ -289,7 +289,7 @@
 
     <!--servicios nueva-->
     <div class="col-sm-12 col-md-12 col-lg-12 wrapper" style="margin-left: -15px;" *ngIf="tablaOfertas.TipoPosicionCodigo == 'SERVICIO'">
-        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" frozenWidth="550px">
+        <p-table #tabla [value]="tablaOfertas.PeticionDeOfertaPosicion" dataKey="Id" [scrollable]="true" scrollHeight="var(--availableSpaceAfterHeaderAndTitle)" frozenWidth="550px">
             <ng-template pTemplate="frozenheader">
                 <tr style="visibility: collapse !important;">
                     <th class="headerth2" style="width: 40px !important; height: 0px !important; background-color: transparent !important; border: none !important;"></th>
