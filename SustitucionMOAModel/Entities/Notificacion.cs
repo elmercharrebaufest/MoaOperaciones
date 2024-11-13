@@ -27,10 +27,13 @@ namespace SustitucionMOAModel.Entities
 
         public string Mensaje { get; set; }
 
+        public int Prioridad { get; set; }
+
+        public DateTime FechaCreacion { get; set; }
+
         [InverseProperty("NotificacionesAsociadas")]
+        public virtual ICollection<Rol> FiltroRoles { get; set; }
 
-        public virtual ICollection<Rol> FiltroRoles { get; set; } 
-
-
+        public virtual ICollection<NotificacionAdjunto> ArchivosAdjuntos { get; set; }
     }
 }
