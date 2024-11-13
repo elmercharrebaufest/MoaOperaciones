@@ -7,5 +7,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         void EnviarMailTransporteNoExiste(string razonSocialTransporte, string cuitTransporte);
         void EnviarMailOrdenesVencidas(IEnumerable<OrdenResiduos> ordenes);
+        void EnviarMailIntentoAnulacionOrdenActiva(OrdenResiduos orden);
+        void EnviarMailIntentoEdicionOrdenActiva(OrdenResiduos orden);
     }
 }

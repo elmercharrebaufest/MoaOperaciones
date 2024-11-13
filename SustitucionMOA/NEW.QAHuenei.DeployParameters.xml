@@ -182,6 +182,7 @@
 
 
 	<setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
+	<setParameter name="DestinatariosEmailOrdenResiduosIntentoAnulacionActiva Config" value="moaoperaciones@baufest.com" />
 	<setParameter name="MailsDisconformidadCalidades Config" value="moaoperaciones@molinosagro.com.ar" />
 
 	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />

@@ -87,7 +87,23 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
     }
 
     editarOrdenResiduos() {
-        this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+        if (this.esAdmin) {
+            this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+        }
+        else {
+            this.service.camionOrdenEstaEnPlanta(this.ordenResiduos.Id).subscribe(
+                (resp) => {
+                    const camionEstaEnPlanta = this.manejarErroresApiResponse(resp);
+                    if (camionEstaEnPlanta === true) {
+                        this.floatMsgService.setErrorMsg("La orden no se puede editar por estar el camión en planta");
+                    }
+                    else {
+                        this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+                    }
+                },
+                (err) => { this.mensajeComponent.setErrorMsg(err.message) }
+            );
+        }
     }
 
     verificarTransporte() {

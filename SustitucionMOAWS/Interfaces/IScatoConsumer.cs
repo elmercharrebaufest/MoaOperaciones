@@ -17,5 +17,6 @@ namespace SustitucionMOAWS.Interfaces
         ProveedorDto ObtenerProveedorPorCuit(string cuit);
         RecorridoDto[] ObtenerRecorridoNoRechazadoPorNumeroDocumento(string nroEntrega);
         RecorridoDto ObtenerRecorridoNoRechazadoPorNumeroIdFason(long ordenId);
+        RecorridoDto ObtenerRecorridoOrdenResiduos(int ordenId);
     }
 }

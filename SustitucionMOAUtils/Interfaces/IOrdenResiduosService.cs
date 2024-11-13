@@ -22,10 +22,11 @@ namespace SustitucionMOAUtils.Interfaces
         bool EsCuilCuitValido(string cuilCuit);
         GrabarOrdenResponse CrearNuevaOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto ObtenerOrden(int idOrden);
-        OrdenResiduosDto AnularOrden(int ordenId);
-        GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto);
+        OrdenResiduosDto AnularOrden(int ordenId, string mailUsuario);
+        GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario);
         OrdenResiduosDto VerificarTransporte(int ordenId);
         void VerificarVencimientoOrdenesResiduos();
         IList<DestinoScato> ObtenerDestinosMercaderia(string cuit);
+        bool ValidarCamionEstaEnPlantaParaEditarOrden(int ordenId);
     }
 }
