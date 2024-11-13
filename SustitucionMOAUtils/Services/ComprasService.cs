@@ -3641,7 +3641,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     unidadesDeMedidaSAP = obtenerUnidadesDeMedidaConsumerMOA.Request(todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.Posicion.CodigoMaterialSap.Codigo).ToList());
                 }
-                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId);
+                CompletarCotizacionEnVerOfertas(todasLasOfertas.Usuarios, posicionesId, PeticionOferta_Id);
                 foreach (var usuarioPO in todasLasOfertas.Usuarios)
                 {
                     var respetaMateriales = true;
@@ -3839,7 +3839,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId)
+        private void CompletarCotizacionEnVerOfertas(List<PeticionDeOfertaUsarioDto> usuarios, List<int> posicionesId, int peticionOferta_Id)
         {
             var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => posicionesId.Contains(x.SolpPosicion_Id)).ToList();
 
@@ -3847,7 +3847,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (usuario.Cotizacion != null)
                 {
-                    foreach (var posicion in peticionDeOfertaSolpPosicion)
+                    foreach (var posicion in peticionDeOfertaSolpPosicion.Where(a => a.PeticionDeOferta_Id == peticionOferta_Id))
                     {
                         var posicionExistente = usuario.Cotizacion.CotizacionPosiciones.FirstOrDefault(posi => posi.PosicionId == posicion.SolpPosicion_Id);
 
@@ -3855,7 +3855,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             var cotizacionPosicion = new CotizacionPosicionDto
                             {
-                                Id = 0,
+                                Id = 0,// posicion.SolpPosicion_Id * -1,
                                 PosicionId = posicion.SolpPosicion_Id,
                                 Cantidad = 0,
                                 Completado = false,
