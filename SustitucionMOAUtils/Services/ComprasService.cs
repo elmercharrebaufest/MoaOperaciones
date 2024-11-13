@@ -3847,7 +3847,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (usuario.Cotizacion != null)
                 {
-                    foreach (var posicion in peticionDeOfertaSolpPosicion)
+                    foreach (var posicion in peticionDeOfertaSolpPosicion.Where(a => a.PeticionDeOferta_Id == peticionOferta_Id))
                     {
                         var posicionExistente = usuario.Cotizacion.CotizacionPosiciones.Find(posi => posi.PosicionId == posicion.SolpPosicion_Id);
 
