@@ -259,7 +259,8 @@ namespace SustitucionMOAUtils.Services
                             {
                                 Es.TextoBreve =
                                     string.IsNullOrEmpty(ap.Texto_breve_servicio) || ap.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
-                                    // Odio esto, pero está así en varios lados... ¬¬
+                                    // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
+                                    // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
                                     ? ""
                                     : ap.Texto_breve_servicio.Trim();
                             }
@@ -394,7 +395,8 @@ namespace SustitucionMOAUtils.Services
             es.ImporteARPUSD = moneda + " " + ap.Monto_a_certificar.ToString();
             es.SePuedeBorrar = true;
             es.TextoBreve = string.IsNullOrEmpty(ap.Texto_breve_servicio) || ap.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
-                // Odio esto, pero está así en varios lados... ¬¬
+                // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
+                // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
                 ? ""
                 : ap.Texto_breve_servicio.Trim();
             es.Referencia = ap.Referencia;

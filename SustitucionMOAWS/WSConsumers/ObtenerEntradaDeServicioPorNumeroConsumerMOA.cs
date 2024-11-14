@@ -85,7 +85,8 @@ namespace SustitucionMOAWS.WSConsumers
                     //Descripcion = cabecera.SHORT_TEXT,
                     Descripcion =
                         string.IsNullOrEmpty(cabecera.SHORT_TEXT) || cabecera.SHORT_TEXT == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
-                            // Odio esto, pero está así en varios lados... ¬¬
+                            // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
+                            // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
                             ? ""
                             : cabecera.SHORT_TEXT.Trim(),
 
