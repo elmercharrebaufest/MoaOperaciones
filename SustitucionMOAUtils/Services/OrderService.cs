@@ -1,19 +1,18 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.OrdenesCompra;
+using SustitucionMOAModel.Entities;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio;
 using System.Data;
-using Comunicacion = SustitucionMOAModel.Entities.Comunicacion;
-using System.Reflection;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using SustitucionMOAModel.Consultas;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
@@ -86,7 +85,7 @@ namespace SustitucionMOAUtils.Services
             // Establecer valores predeterminados si son nulos o inválidos
             int itemsTotales = resultados.Count();
 
-            int paginaValida =  pagina > 0 ? pagina : 1;
+            int paginaValida = pagina > 0 ? pagina : 1;
             int elementosPorPaginaValidos = (elementosPorPagina.HasValue && elementosPorPagina.Value > 0) ? elementosPorPagina.Value : 5;
 
             int indiceInicial = (paginaValida - 1) * elementosPorPaginaValidos;
@@ -121,7 +120,7 @@ namespace SustitucionMOAUtils.Services
                         p.CodigoProveedor.Trim() == codigoProveedor
                     ).FirstOrDefault();
                 }
-            } 
+            }
 
             if (_proveedor == null)
             {
@@ -135,7 +134,7 @@ namespace SustitucionMOAUtils.Services
         // Consultas a servicio SAP con distintos criterios de busqueda
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
         {
-            List< DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
+            List<DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
             List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
@@ -187,7 +186,7 @@ namespace SustitucionMOAUtils.Services
                     : fechaInicio;
 
                 DateTime dateEnd = fechaHasta;
-                
+
 
                 ordenesCompra = ordenesCompra
                     .Where(oc => Convert.ToDateTime(oc.Fecha) >= dateInit && Convert.ToDateTime(oc.Fecha) <= dateEnd)
@@ -196,10 +195,10 @@ namespace SustitucionMOAUtils.Services
 
             //MMSN-574
             List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
-            foreach(var oc in ordenesCompra)
+            foreach (var oc in ordenesCompra)
             {
                 DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
-                if(DateTime.Compare(fechaOC, fechaHasta) != 1)
+                if (DateTime.Compare(fechaOC, fechaHasta) != 1)
                 {
                     ocFiltradas.Add(oc);
                 }
@@ -236,7 +235,7 @@ namespace SustitucionMOAUtils.Services
 
                 //MMSN-602
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
-                if(aprobaciones != null && aprobaciones.Count > 0)
+                if (aprobaciones != null && aprobaciones.Count > 0)
                 {
                     foreach (Aprobaciones ap in aprobaciones)
                     {
@@ -248,7 +247,7 @@ namespace SustitucionMOAUtils.Services
 
                         //Buscar posición correspondiente a ES Temporal
                         var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
-                        
+
                         if (ap.Estado_certificacion == "Aprobada")
                         {
                             var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
@@ -258,8 +257,11 @@ namespace SustitucionMOAUtils.Services
 
                             if (Es != null)
                             {
-                                Es.TextoBreve = ap.Texto_breve_servicio;
-
+                                Es.TextoBreve =
+                                    string.IsNullOrEmpty(ap.Texto_breve_servicio) || ap.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
+                                    // Odio esto, pero está así en varios lados... ¬¬
+                                    ? ""
+                                    : ap.Texto_breve_servicio.Trim();
                             }
 
                         }
@@ -345,15 +347,15 @@ namespace SustitucionMOAUtils.Services
                         var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
 
                         if (solpPosicion != null)
-                           solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
+                            solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
                     }
 
-                    suplente = !string.IsNullOrEmpty(solicitante) ? repositorio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty ;
+                    suplente = !string.IsNullOrEmpty(solicitante) ? repositorio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty;
 
                     if (string.IsNullOrEmpty(solicitante))
                     {
                         solicitante = "Aprobador no encontrado";
-                    }   
+                    }
                 }
                 else
                 {
@@ -366,7 +368,7 @@ namespace SustitucionMOAUtils.Services
 
                 result.Add(solicitantesSolpedDto);
             }
-            
+
             return result;
         }
 
@@ -389,9 +391,12 @@ namespace SustitucionMOAUtils.Services
             es.FechaContabilizacion = dtC.ToString("yyyy-MM-dd");
             DateTime dt = (DateTime)ap.Fecha_Documento;
             es.FechaDocumentoString = dt.ToString(dateTimeFormat);
-            es.ImporteARPUSD = moneda + " "+ ap.Monto_a_certificar.ToString();
+            es.ImporteARPUSD = moneda + " " + ap.Monto_a_certificar.ToString();
             es.SePuedeBorrar = true;
-            es.TextoBreve = ap.Texto_breve_servicio;
+            es.TextoBreve = string.IsNullOrEmpty(ap.Texto_breve_servicio) || ap.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
+                // Odio esto, pero está así en varios lados... ¬¬
+                ? ""
+                : ap.Texto_breve_servicio.Trim();
             es.Referencia = ap.Referencia;
             es.Ingresante = ap.Ingresante_CDS;
             es.IdES = ap.ID;
