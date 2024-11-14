@@ -238,12 +238,6 @@ namespace SustitucionMOAUtils.Services
 
                     if (ESTemporales != null && ESTemporales.Count > 0)
                     {
-
-                        if (documento.EntradaServicio == "1001540384")
-                        {
-                            var a = documento.EntradaServicio;
-                        }
-
                         List<Aprobaciones> detalleAprobacionesTemporales = ESTemporales.Where(t => t.NRO_ES_SAP == int.Parse(documento.EntradaServicio)).ToList();
 
                         var detalleEntradadeServicio = MergeDetalle(documento, detalleAprobacionesTemporales, correoSolp);
@@ -267,7 +261,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                throw e;
+                throw;
             }
 
             EntradasServicio = EntradasServicio.Where(x => x.Ingresante.Contains("@")).ToList();
