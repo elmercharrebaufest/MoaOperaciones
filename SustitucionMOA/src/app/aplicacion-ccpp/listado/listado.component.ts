@@ -37,10 +37,10 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
     develop = true;
     seleccionaTodos: boolean;
     aplicacionesSeleccionadas: AplicacionCCPP[] = [];
+    
+    aplicacionesParaAprobarORechazar: AplicacionCCPP[] = [];
 
     mostrarModalAprobarRechazar = false;
-    mostrarModalAprobarRechazarMasivo = false;
-    aprobarRechazarAplicacionId: number;
     opcionesAprobarRechazar: any[] = [{ label: 'Aprobar', value: 'aprobar' }, { label: 'Rechazar', value: 'rechazar' }];
     decisionAprobarRechazar = { label: '', value: '' };
     motivoRechazo: string = "";
@@ -175,32 +175,24 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
     }
 
     aprobarORechazarAplicacion(aplicacion: AplicacionCCPP) {
-        this.aprobarRechazarAplicacionId = aplicacion.Id;
-        this.mostrarModalAprobarRechazarMasivo = false;
+        this.aplicacionesParaAprobarORechazar = [aplicacion];
         this.mostrarModalAprobarRechazar = true;
     }
 
     cancelarDecisionSobreAplicacionPendienteAprobacion() {
         this.mostrarModalAprobarRechazar = false;
-        this.mostrarModalAprobarRechazarMasivo = false;
+        this.limpiarModalAprobarRechazar();
     }
 
     limpiarModalAprobarRechazar() {
-        this.aprobarRechazarAplicacionId = -1;
+        this.aplicacionesParaAprobarORechazar = [];
         this.decisionAprobarRechazar = { label: '', value: '' };
         this.motivoRechazo = '';
     }
 
     grabarDecisionSobreAplicacionPendienteAprobacion() {
-        let idsAplicaciones: number[] = [];
-        if (this.mostrarModalAprobarRechazarMasivo) {
-            idsAplicaciones = this.aplicacionesSeleccionadas.map(a => { return a.Id });
-        }
-        else if (this.mostrarModalAprobarRechazar) {
-            idsAplicaciones = [this.aprobarRechazarAplicacionId];
-        }
+        let idsAplicaciones: number[] = this.aplicacionesParaAprobarORechazar.map(a => { return a.Id });
         this.mostrarModalAprobarRechazar = false;
-        this.mostrarModalAprobarRechazarMasivo = false;
 
         if (this.decisionAprobarRechazar.value == 'aprobar') {
             this.aprobarAplicacionesPendientes(idsAplicaciones);
@@ -291,8 +283,8 @@ export class ListadoComponent extends AplicacionCcppBaseComponent implements OnD
     }
 
     resolverAprobacionMasiva() {
-        this.mostrarModalAprobarRechazar = false;
-        this.mostrarModalAprobarRechazarMasivo = true;
+        this.aplicacionesParaAprobarORechazar = this.aplicacionesSeleccionadas.map(a => {return a});
+        this.mostrarModalAprobarRechazar = true;
     }
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | null {
