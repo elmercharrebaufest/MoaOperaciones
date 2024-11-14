@@ -586,10 +586,11 @@ namespace SustitucionMOAUtils.Services
                 {
                     posEntity.Almacen_Id = null;
                 }
-
+                int? centroId = null;
                 if (pos.Centro != null)
                 {
                     posEntity.Centro = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.Centro && x.Codigo == pos.Centro.Codigo);
+                    centroId = posEntity.Centro.Id;
                 }
 
                 if (pos.GrupoCompras != null)
@@ -617,7 +618,13 @@ namespace SustitucionMOAUtils.Services
 
                 if (pos.CodigoMaterialSap != null)
                 {
-                    posEntity.MaterialSolp = repositorio.Obtener<MaterialSolp>(x => x.CodigoSap == pos.CodigoMaterialSap.Codigo);
+                    posEntity.MaterialSolp = repositorio.Obtener<MaterialSolp>(x => x.Estado && x.CodigoSap == pos.CodigoMaterialSap.Codigo
+                        && centroId == x.Centro_Id
+                    );
+                    if (posEntity.MaterialSolp == null)
+                    {
+                        throw new ValidationCustomException($"Pos: {pos.Indice} .El material {pos.CodigoMaterialSap.Codigo} no esta habilitado para el centro {posEntity.Centro.Descripcion}.");
+                    }
                 }
                 else
                 {
