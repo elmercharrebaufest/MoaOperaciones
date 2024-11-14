@@ -101,7 +101,7 @@ namespace SustitucionMOAWS.WSConsumers
                 SustitucionMOAWS.Logger.Log.Error("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + e.Message);
                 throw e;
             }
-        }   
+        }
 
 
         string GenerateEntrySheetHeaderXml(EntrySheetHeaderSection header)
@@ -112,7 +112,7 @@ namespace SustitucionMOAWS.WSConsumers
             <SHORT_TEXT>{header.Descripcion}</SHORT_TEXT>
             <PO_NUMBER>{header.OrdenCompraNumero}</PO_NUMBER>
             <PO_ITEM>{header.OrdenCompraPosicionNumero}</PO_ITEM>
-            //<REF_DOC_NO>{header.DocumentoReferenciaNumero}</REF_DOC_NO>
+            <REF_DOC_NO>{header.DocumentoReferenciaNumero}</REF_DOC_NO>
             <DOC_DATE>{header.FechaDocumento}</DOC_DATE>
             <POST_DATE>{header.FechaContabilizacion}</POST_DATE>
             <ACCEPTANCE>X</ACCEPTANCE>
@@ -137,7 +137,7 @@ namespace SustitucionMOAWS.WSConsumers
             {
                 // Aquí vá la lógica para generar dinámicamente el XML para cada EntrySheetServiceItemSection
                 // Solo si es la primera vez se carga la parte fija que es como la "cabecera" del detalle
-                if (contadorDeInstancia == 1) 
+                if (contadorDeInstancia == 1)
                 {
                     xmlBuilder.AppendLine(GenerateEntrySheetServiceXml(entrySheetServicesCabeceraFija));
                     contadorDeInstancia++;
