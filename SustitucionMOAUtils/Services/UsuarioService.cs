@@ -170,7 +170,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
-                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "PROVG", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                 "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
             };
 
@@ -275,7 +275,7 @@ namespace SustitucionMOAUtils.Services
             {
                 "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
                 "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
-                "PROVGC", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
+                "PROVG", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
                 "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD"
             };
 
