@@ -1,18 +1,12 @@
-﻿using DocumentFormat.OpenXml.Office.CustomUI;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.ViewModel.Notificacion;
-using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
-using System.Data.Objects;
 using System.Linq;
-using System.Web;
 using Notificacion = SustitucionMOAModel.Entities.Notificacion;
 
 namespace SustitucionMOAUtils.Services
@@ -63,7 +57,7 @@ namespace SustitucionMOAUtils.Services
 
         private string ValidarNotificacion(Notificacion notificacion)
         {
-            if (notificacion.Prioridad==0)
+            if (notificacion.Prioridad == 0)
             {
                 notificacion.Prioridad = 2;
             }
@@ -71,12 +65,12 @@ namespace SustitucionMOAUtils.Services
             {
                 return "El campo Nombre debe tener al menos 3 caracteres";
             }
-            if (notificacion.Mensaje.Length <3)
+            if (notificacion.Mensaje.Length < 3)
             {
                 return "El campo Mensaje debe tener al menos 3 caracteres";
             }
 
-            if (notificacion.FechaInicio>= notificacion.FechaFin)
+            if (notificacion.FechaInicio >= notificacion.FechaFin)
             {
                 return "La Fecha Desde debe ser menos a la Fecha Hasta";
 
@@ -92,7 +86,7 @@ namespace SustitucionMOAUtils.Services
 
 
         private string Agregar(Notificacion notificacion)
-            {
+        {
             notificacion.Borrada = false;
             notificacion.FechaCreacion = DateTime.Now;
 
@@ -135,16 +129,22 @@ namespace SustitucionMOAUtils.Services
             }
 
             //eliminos los archivos asociados a la notificacion 
-            repositorio.RemoverTodos(notificacion.ArchivosAdjuntos.ToList());
+            if (notificacion.ArchivosAdjuntos != null && notificacion.ArchivosAdjuntos.Any())
+            {
+                repositorio.RemoverTodos(notificacion.ArchivosAdjuntos.ToList());
+                notificacion.ArchivosAdjuntos.Clear();
+            }
 
-            notificacion.ArchivosAdjuntos.Clear();
 
             //guardo los nuevos archivos asociados a la notificacion 
             notificacion.ArchivosAdjuntos = oNotificacion.ArchivosAdjuntos;
 
             //EliminarNotificacionesPorId(idNotificacion);
-            List<NotificacionLeida> notificacionesAEliminar = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == idNotificacion).ToList();
-            repositorio.RemoverTodos(notificacionesAEliminar);
+            List<NotificacionLeida> notificacionesAEliminar = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == idNotificacion);
+            if (notificacionesAEliminar != null && notificacionesAEliminar.Any())
+            {
+                repositorio.RemoverTodos(notificacionesAEliminar);
+            }
 
             repositorio.GuardarCambios();
 
@@ -224,8 +224,8 @@ namespace SustitucionMOAUtils.Services
                     && n.Habilitada
                 )
             .AsEnumerable()
-            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id) && DateTime.Now>=n.FechaInicio && DateTime.Now<=n.FechaFin && n.Habilitada == true)
-                      
+            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id) && DateTime.Now >= n.FechaInicio && DateTime.Now <= n.FechaFin && n.Habilitada == true)
+
             ).Select(x => new NotificacionDto
             {
                 Id = x.Id,
@@ -248,7 +248,7 @@ namespace SustitucionMOAUtils.Services
                 DateTime dt;
                 DateTime.TryParse(x.FechaInicio, out dt);
                 return dt;
-            })) 
+            }))
             .ToList();
             return listado;
         }
@@ -299,7 +299,7 @@ namespace SustitucionMOAUtils.Services
 
             List<NotificacionLeida> NoticiaLeida = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == NotificacionId).ToList();
             if (NoticiaLeida.Count == 0)
-                {
+            {
                 var notificacionLeida = new NotificacionLeida
                 {
                     Notificacion_Id = NotificacionId,
@@ -361,7 +361,7 @@ namespace SustitucionMOAUtils.Services
                     && n.Habilitada
                 )
             .AsEnumerable()
-            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id)) && n.Habilitada==true)
+            .Where(n => n.FiltroRoles.Any(x => usuario.Roles.Any(y => y.Id == x.Id)) && n.Habilitada == true)
             .Select(x => new NotificacionSinAdjuntosDto
             {
                 Id = x.Id,
@@ -380,7 +380,7 @@ namespace SustitucionMOAUtils.Services
             })
             .OrderBy(s => s.Leida)
             .ThenBy(s => s.Prioridad)
-            .ThenByDescending((x => 
+            .ThenByDescending((x =>
             {
                 DateTime dt;
                 DateTime.TryParse(x.FechaCreacion, out dt);
