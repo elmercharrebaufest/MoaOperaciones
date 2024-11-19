@@ -30,6 +30,7 @@ import {
 import { DomSanitizer } from '@angular/platform-browser';
 import { AngularEditorModule, AngularEditorConfig, AngularEditorComponent } from "@kolkov/angular-editor";
 import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from "../../common/configs/angularEditor.configs";
+import { ComentarioAutoguardado } from "../../modelos/consulta/comentarioAutoguardado";
 
 declare var $: any;
 
@@ -139,6 +140,9 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
 
+    readonly AUTOGUARDADO_LOCALSTORAGE_KEY: string = 'ConsultaComentarioAutoguardado';
+    debeAutoguardarComentario: boolean = false;
+
     datosExtrasMinimizado = false;
     @Input() modalMaximizado = false;
     iconDatosExtras = 'pi pi-minus'
@@ -156,6 +160,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.jqueryOnInit();
         this.getCombos();
+        this.recuperarComentarioAutoguardado();
     }
 
     ngAfterViewInit(): void {
@@ -312,6 +317,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
+                        localStorage.removeItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY);
                         this.getDetalleConsulta();
                         this.mensajeComponent.setSuccessMsg(
                             "Comentario enviado correctamente"
@@ -856,5 +862,26 @@ export class DetalleConsultaComponent extends BaseComponent {
     toggleDatosExtras() {
         this.datosExtrasMinimizado = !this.datosExtrasMinimizado;
         this.iconDatosExtras = this.datosExtrasMinimizado ? 'pi pi-plus' : 'pi pi-minus'
+    }
+
+    recuperarComentarioAutoguardado() {
+        let comentarioRecuperadoText = localStorage.getItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY);
+        if (comentarioRecuperadoText) {
+            let comentarioRecuperado: ComentarioAutoguardado = JSON.parse(comentarioRecuperadoText);
+            if (comentarioRecuperado && comentarioRecuperado.ConsultaId == this.consultaId) {
+                this.detalle = comentarioRecuperado.Comentario;
+            }
+        }
+    }
+
+    comentarioOnChange() {
+        if (!this.debeAutoguardarComentario) {
+            this.debeAutoguardarComentario = true;
+            setTimeout(() => {
+                let comentarioAGuardar: ComentarioAutoguardado = { ConsultaId: this.consultaId, Comentario: this.detalle };
+                localStorage.setItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY, JSON.stringify(comentarioAGuardar));
+                this.debeAutoguardarComentario = false;
+            }, 3000)
+        }
     }
 }
