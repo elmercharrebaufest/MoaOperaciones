@@ -72,7 +72,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                             Tarea = pop.SolpPosicion.Tarea,
                                             Modelo = pop.SolpPosicion.Modelo,
                                             TextoSuministro = pop.SolpPosicion.TextoSuministro,
-                                            Cantidad = pop.SolpPosicion.Cantidad,
+                                            Cantidad = pop.SolpPosicion.TipoPosicion.Codigo == "SERVICIO" ? 1 : pop.SolpPosicion.Cantidad,
                                             UnidadComprasDescripcion = pop.SolpPosicion.Unidad.Descripcion,
                                             UnidadId = pop.SolpPosicion.Unidad_Id,
                                             FechaEntregaServicio = pop.SolpPosicion.FechaEntregaServicio,
@@ -214,10 +214,10 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         && cp.CotizacionSubPosiciones.Any(s => s.SolpSubPosicion_Id == subposicion.Id)
                                                                        ).FirstOrDefault().CotizacionSubPosiciones
                                                                        .Where(s => s.SolpSubPosicion_Id == subposicion.Id).FirstOrDefault().Cantidad ?? 0 : 0,
-                                            }).ToList().OrderBy(x => x.Numero)
+                                            }).OrderBy(x => x.Numero).ToList()
                                             ,
                                         }
-                                    }).ToList().OrderBy(x => x.Posiciones.Indice),
+                                    }).OrderBy(x => x.Posiciones.Indice).ToList(),
                                 };
 
                 var result = resultado.First();

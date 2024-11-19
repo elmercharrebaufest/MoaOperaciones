@@ -6790,9 +6790,14 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                peticionCotizacion.PeticionDeOfertaPosicion = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0).ToList();
+                peticionCotizacion.PeticionDeOfertaPosicion
+                    = peticionCotizacion.PeticionDeOfertaPosicion.Where(a => a.Posiciones.Cantidad > 0);
+
                 if (!peticionCotizacion.PeticionDeOfertaPosicion.Any())
+                {
                     throw new WSCustomException("La petición de oferta no tiene posiciones pendientes, por favor contáctese con el área de compras.");
+                }
+
                 if (peticionCotizacion.ArchivosPaso4Cotizacion != null)
                 {
                     peticionCotizacion.ArchivosPaso4Cotizacion = peticionCotizacion.ArchivosPaso4Cotizacion.Select(archivo => new ArchivoDto
@@ -6801,11 +6806,12 @@ namespace SustitucionMOAUtils.Services
                         Nombre = Path.GetFileName(archivo.Ruta),
                     }).ToList();
                 }
+
                 return peticionCotizacion;
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"TraerCotizacion {e.Message}");
+                Logger.Log.Error($"TraerCotizacion {e.Message}", e);
                 Log.Error(e);
                 throw;
             }
