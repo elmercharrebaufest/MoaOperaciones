@@ -10006,7 +10006,7 @@ namespace SustitucionMOAUtils.Services
                     pos => pos.TipoPosicion.Codigo == "SERVICIO"
                             && (string.IsNullOrEmpty(nombrePliego)
                                 || string.IsNullOrEmpty(nombrePliego.Trim())
-                                || pos.Solp.Pliego.NombreObra.Trim().ToLower() == nombrePliego.Trim().ToLower()
+                                || pos.Solp.Pliego.NombreObra.Trim().ToLower().Contains(nombrePliego.Trim().ToLower())
                                 );
 #pragma warning restore RCS1155 // Use StringComparison when comparing strings
                 List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()
