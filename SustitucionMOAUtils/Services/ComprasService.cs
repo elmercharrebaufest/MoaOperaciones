@@ -10147,7 +10147,7 @@ namespace SustitucionMOAUtils.Services
                     subPosicion => new SubPosicionCrearPoMultipleDto
                     {
                         NroSubPosicion = subPosicion.Numero,
-                        CodigoServicio = subPosicion.CodigoServicioSap.Descripcion,
+                        CodigoServicio = subPosicion.ServicioSolp.Codigo,
                         Tarea = subPosicion.Tarea,
                         Cantidad = subPosicion.Cantidad,
                         UnidadMedida = subPosicion.Unidad.Descripcion,
