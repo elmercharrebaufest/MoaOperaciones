@@ -1,6 +1,5 @@
 ﻿using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,7 +10,11 @@ namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
     {
         public ValidationType ValidationCriticity => ValidationType.Info;
 
-        private static readonly Regex codigoFacturaRegex = new Regex(@"^(?:CÓD\.?|COD\.?|CODIGO|Código|COD|CODIGO Nº|COD\.? Nº)\s*:?\.?\s*(\d{1,3})", RegexOptions.IgnoreCase);
+        private static readonly Regex codigoFacturaRegex = new Regex(
+            @"^(?:CÓD\.?|COD\.?|CODIGO|Código|COD|CODIGO Nº|COD\.? Nº|Cod\.Nº|Código N°|Código Número|""Cod\."")\s*:?\.?\s*(\d{1,3})",
+            RegexOptions.IgnoreCase);
+
+
 
         public CodigoFacturaValidationCommand() { }
 
