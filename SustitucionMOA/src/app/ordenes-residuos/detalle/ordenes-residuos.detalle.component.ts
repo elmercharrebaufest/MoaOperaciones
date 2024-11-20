@@ -53,6 +53,7 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
     puedeAnular: boolean;
     puedeEditar: boolean;
     puedeVerificarTransporte: boolean;
+    camionHaIngresadoAPlanta: boolean = false;
     
     ngOnInit() {
         let idOrden: number = 0;
@@ -96,6 +97,8 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
                     const camionEstaEnPlanta = this.manejarErroresApiResponse(resp);
                     if (camionEstaEnPlanta === true) {
                         this.floatMsgService.setErrorMsg("La orden no se puede editar por estar el camión en planta");
+                        this.camionHaIngresadoAPlanta = true;
+                        this.verificarBotones();
                     }
                     else {
                         this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
@@ -147,6 +150,9 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
                     this.ordenResiduos = orden;
                     this.verificarBotones();
                 }
+                else {
+                    this.puedeAnular = false;
+                }
             },
             (err) => { this.mensajeComponent.setErrorMsg(err.message); },
             () => { this.blockUI.stop(); }
@@ -164,9 +170,9 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
             EstadoOrdenResiduosEnum.Pendiente,
             EstadoOrdenResiduosEnum.OrdenVencida];
 
-        this.puedeEditar = estadosPermitenEdicion.includes(this.ordenResiduos.Estado.Id);
+        this.puedeEditar = !this.camionHaIngresadoAPlanta && estadosPermitenEdicion.includes(this.ordenResiduos.Estado.Id);
 
-        this.puedeAnular = estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
+        this.puedeAnular = !this.camionHaIngresadoAPlanta && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
         
         this.puedeVerificarTransporte = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.Pendiente;
     }
