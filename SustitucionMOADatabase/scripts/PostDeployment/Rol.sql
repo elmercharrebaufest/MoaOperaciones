@@ -26,7 +26,7 @@ VALUES
     ('ALUMNO_CURSOS',       'ALUMNO CURSOS',        1, 2),
     ('ANUL',		        'ANULADOR',		        1, 1),
     ('API_ORDCARGA',        'API ORDENES DE CARGA', 0, 2),
-    ('API_ORDRESIDUOS',     'API ORDENES RESIDUOS', 0, 3),
+    ('API_ORDRESIDUOS',     'API ORDENES RESIDUOS', 0, 1),
     ('APIKEY',		        'APIKEY',		        1, 1),
     ('APLCCPP ADMIN',		'APLICACION CCPP ADMIN', 1, 1),
     ('APLCCPP',		        'APLICACION CCPP',	    1, 2),
