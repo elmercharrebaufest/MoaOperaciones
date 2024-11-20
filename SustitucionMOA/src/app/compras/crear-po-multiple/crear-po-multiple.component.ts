@@ -169,6 +169,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                                 label: tp.Codigo, value: tp.Codigo
                             })
                         });
+                        this.filtrosPOMultipleDefault.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple;
                         if (!this.selectTipoSolp) { this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple; }
                         this.showNombrePliegoConditionList = result.showNombrePliegoConditionList;
                     }
