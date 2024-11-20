@@ -1,8 +1,9 @@
 CREATE TABLE [dbo].[Rol](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Codigo] [nvarchar](max) NULL,
-	[Nombre] [nvarchar](max) NULL,
- [EsEditable] BIT NOT NULL DEFAULT 1, 
+	[Codigo] [nvarchar](max) NOT NULL,
+	[Nombre] [nvarchar](max) NOT NULL,
+	 [EsEditable] BIT NOT NULL DEFAULT 1, 
+	 [TipoRol] [int] NOT NULL DEFAULT 0,
     CONSTRAINT [PK_dbo.Rol] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

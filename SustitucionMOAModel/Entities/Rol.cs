@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using SustitucionMOAModel.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 
 namespace SustitucionMOAModel.Entities
@@ -13,6 +14,7 @@ namespace SustitucionMOAModel.Entities
         public string Codigo { get; set; }
         public string Nombre { get; set; }
         public bool EsEditable { get; set; }
+        public TipoRol TipoRol { get; set; }
 
         [InverseProperty("Roles")]
         public virtual ICollection<Usuario> Usuarios { get; set; }
@@ -49,4 +51,3 @@ namespace SustitucionMOAModel.Entities
         }
     }
 }
- 

@@ -158,28 +158,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<RolDropdownDto> GetRoles()
         {
-            List<string> interno = new List<string>
-            {
-                "ADM", "OPE", "APRO", "COMPRAS", "COMPRASADMIN", "ADMINCCSS", "TODOS", "COMERCIAL", "SOLP",
-                "APIKEY", "AIGRAN","AINOGRAN", "ADMINPLATCOMPRAS","ANUL", "ECHEQ ADMIN", "FASON ADMIN","APLCCPP ADMIN", "COMPRADOR",
-                "FLETE MOA", "ALLES","ADMINCONTMA","CERTIFICACION", "AUDITOR COMPRAS"
-                ,"ADMIN_CURSOS"
-            };
-
-            List<string> contacto = new List<string>
-            {
-                "BOL", "DATMAE", "REI", "ACT", "PAR", "FIN", "CAL", "COM",
-                "COMP", "APP", "PES", "PAG", "FWEB", "MATBA",
-                "PROVG", "FLECONSULTA", "OTRO", "PARDIR", "PARCOR",
-                "FINDIR", "FINCOR", "FLE", "CRDECPE", "ORD", "DISCAL"
-            };
-
             var roles = repositorio.Listar<Rol>().Where(r => r.EsEditable)
                 .Select(x => new RolDropdownDto
                 {
                     Id = x.Id,
                     Nombre = x.Nombre,
-                    Code = interno.Contains(x.Codigo) ? "Interno" : contacto.Contains(x.Codigo) ? "Contacto" : "Externo"
+                    Code = x.TipoRol.ToString()
                 }).ToList();
 
             return roles;
@@ -200,7 +184,7 @@ namespace SustitucionMOAUtils.Services
 
             usuario.Externo = esExterno;
 
-            if(!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
+            if (!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
                 string dateTimeFormat = "yyyy-MM-dd";
                 DateTime fechaDesdeDT = new DateTime();
@@ -218,34 +202,34 @@ namespace SustitucionMOAUtils.Services
                 //Parsing failsafe
                 //if (fechaDesdeDT != fechaHastaDT)
                 //{
-                    UsuarioReasignacion periodo = new UsuarioReasignacion
-                    {
-                        Usuario_Id = idUsuario,
-                        FechaDesde = fechaDesdeDT,
-                        FechaHasta = fechaHastaDT
-                    };
+                UsuarioReasignacion periodo = new UsuarioReasignacion
+                {
+                    Usuario_Id = idUsuario,
+                    FechaDesde = fechaDesdeDT,
+                    FechaHasta = fechaHastaDT
+                };
 
-                    //Evitar duplicacion de periodos
-                    var per = GetPeriodoReasignacion(idUsuario);
+                //Evitar duplicacion de periodos
+                var per = GetPeriodoReasignacion(idUsuario);
 
-                    if (per.Id == 0)
-                    {
-                        repositorio.Agregar<UsuarioReasignacion>(periodo);
-                    }
-                    else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
-                    {
-                        repositorio.Agregar<UsuarioReasignacion>(periodo);
-                    }
-                
+                if (per.Id == 0)
+                {
+                    repositorio.Agregar<UsuarioReasignacion>(periodo);
+                }
+                else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
+                {
+                    repositorio.Agregar<UsuarioReasignacion>(periodo);
+                }
+
                 //}
 
             }
-            else if((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
+            else if ((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
             {
                 //Provisional - eliminación de registros si existe para el usuario, y esta vacia la fecha.
                 List<Entidades.UsuarioReasignacion> periodos = repositorio.Listar<Entidades.UsuarioReasignacion>(u => u.Usuario_Id == idUsuario).ToList();
 
-                if(periodos.Count > 0)
+                if (periodos.Count > 0)
                 {
                     int[] periodosIds = new int[periodos.Count];
 
@@ -261,7 +245,7 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, currentUsuario.Suplente);
-                    
+
                 }
             }
 
