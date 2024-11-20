@@ -50,9 +50,11 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     PideDocumentacionTecnica = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.TieneDocumentacionTecnica == true,
                                     EsNuevaCotizacion = cotizacion != null && cotizacion.CotizarNuevaPosicion == true ? true : false,
                                     CotizacionEstado_Id = cotizacion == null ? 0 : cotizacion.CotizacionEstado.Id,
-                                    ArchivosPaso4Cotizacion = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.Archivos
+                                    ArchivosPaso4Cotizacion = po.PeticionDeOferta.Posiciones.SelectMany(x => x.SolpPosicion.Solp.Pliego.Archivos)
                                             .Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolp)
-                                            .Select(a => new ArchivoDto { Ruta = a.Ruta, Id = a.Id }).ToList().OrderBy(a => a.Id),
+                                            .Distinct()
+                                            .Select(a => new ArchivoDto { Ruta = a.Ruta, Id = a.Id })
+                                            .OrderBy(a => a.Id),
                                     RequisitoCiberseguridad = po.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.Solp.Pliego.RequisitoCiberseguridad == true ? true : false,
                                     SolpModificada = po.PeticionDeOferta.Posiciones.Any(x => x.SolpPosicion.Solp.TieneModificaciones == true),
                                     PeticionDeOfertaPosicion = po.PeticionDeOferta.Posiciones.Where(posi => posi.SolpPosicion.EsConcluido == true && posi.SolpPosicion.Estado == true).Select(pop =>
