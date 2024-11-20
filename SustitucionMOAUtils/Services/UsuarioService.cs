@@ -507,7 +507,7 @@ namespace SustitucionMOAUtils.Services
 
         public ResultadoGenerico GrabarProveedor(ProveedorDto proveedorDto,
                                                  EstadoAprobacion estadoAprobacion = EstadoAprobacion.AltaIncompleta,
-                                                 bool mantenerEstadoAprobacionExistente = false)
+                                                 bool mantenerEstadoAprobacionExistente = false, string mailUsuarioAdmin = "")
         {
             if (proveedorDto == null) { throw new ArgumentNullException(nameof(proveedorDto)); }
 
@@ -551,6 +551,7 @@ namespace SustitucionMOAUtils.Services
                 FechaSolicitud = DateTime.Now,
                 RazonSocial = proveedorDto.RazonSocial,
                 CodigoProveedor = setCodigoProveedor,
+                SolicitanteInterno = mailUsuarioAdmin
             };
 
             if (!mantenerEstadoAprobacionExistente)

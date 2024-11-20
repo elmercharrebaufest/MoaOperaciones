@@ -488,7 +488,8 @@ namespace SustitucionMOA.Controllers
             var proveedor = JsonConvert.DeserializeObject<ProveedorDto>(json);
             var result = _usuarioService.GrabarProveedor(proveedorDto: proveedor,
                                                          estadoAprobacion: EstadoAprobacion.AltaIncompleta,
-                                                         mantenerEstadoAprobacionExistente: true);
+                                                         mantenerEstadoAprobacionExistente: true,
+                                                         mailUsuarioAdmin: SessionPersister.getUsername());
             return JsonCustom(new { data = result });
         }
 
