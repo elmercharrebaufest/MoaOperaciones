@@ -51,7 +51,6 @@ using System.Net.Mail;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
 
@@ -99,9 +98,6 @@ namespace SustitucionMOAUtils.Services
 
         private readonly IComprasSapService comprasServiceSap;
 
-        private readonly IAzureService azureService;
-        private readonly IAnalisisFacturaService analisisFacturaService;
-
         public ComprasService(IRepositorio repositorio,
             IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
@@ -129,8 +125,7 @@ namespace SustitucionMOAUtils.Services
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
             IComprasArchivosService comprasArchivosService,
-            IComprasSapService comprasServiceSap,
-            IAzureService azureService, IAnalisisFacturaService analisisFacturaService)
+            IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
             this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
@@ -164,65 +159,10 @@ namespace SustitucionMOAUtils.Services
             this.emailComprasService = emailComprasService;
             this.comprasArchivosService = comprasArchivosService;
             this.comprasServiceSap = comprasServiceSap;
-            this.azureService = azureService;
-            this.analisisFacturaService = analisisFacturaService;
         }
 
-        public static void ExportToCsv(List<SustitucionMOAModel.Models.ValidationResult> results, string filePath)
-        {
-            var csvBuilder = new StringBuilder();
-
-            // Encabezados del CSV
-            csvBuilder.AppendLine("IsValid,FileName,Message,ValidationType,Input,Value");
-
-            foreach (var result in results)
-            {
-                // Asegúrate de escapar las comas en los valores
-                var line = string.Join(",",
-                    result.IsValid.ToString(),
-                    EscapeCsvValue(result.FileName),
-                    EscapeCsvValue(result.Message),
-                    EscapeCsvValue(result.ValidataionType),
-                    EscapeCsvValue(result.Input),
-                    EscapeCsvValue(result.Value));
-                csvBuilder.AppendLine(line);
-            }
-
-            // Escribir el contenido en el archivo
-            File.WriteAllText(filePath, csvBuilder.ToString());
-        }
-
-        private static string EscapeCsvValue(string value)
-        {
-            if (string.IsNullOrEmpty(value)) return ""; // Si el valor es null o vacío, devuelve un string vacío
-                                                        // Escapa las comillas y rodea el valor con comillas dobles si contiene comas o comillas
-            return "\"" + value.Replace("\"", "\"\"") + "\"";
-        }
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
-            List<SustitucionMOAModel.Models.ValidationResult> results = new List<SustitucionMOAModel.Models.ValidationResult>();
-            foreach (var file in adjuntos.GetMultiple("fileCotizaciones"))
-            {
-                try
-                {
-                    var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(file)).Result;
-
-                    Thread.Sleep(2000);
-
-                    var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
-
-                    var resultado = analisisFacturaService.AnalizarDocumento(elementosLeidos.ToList(), "20309056400");
-                    resultado.ForEach(a => a.FileName = file.FileName);
-                    results.AddRange(resultado);
-                }
-                catch (Exception e)
-                {
-                    Log.Error(e);
-                }
-
-
-            }
-            ExportToCsv(results, "C:\\Users\\emartin\\Downloads\\ARMOA003-3339_attachments\\resultado.csv");
             Solp solpEntity = null;
             Pliego pliegoEntity = null;
             bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar && solp.TrabajoYaHecho != true;
