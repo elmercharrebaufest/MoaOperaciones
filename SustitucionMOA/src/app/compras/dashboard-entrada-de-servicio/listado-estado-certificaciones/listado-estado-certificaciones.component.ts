@@ -154,6 +154,22 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
   ];
 
+
+    public get columnaVisible_FechaAprobacion(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaAprobacion").visible;
+    }
+
+    public get columnaVisible_FechaRechazo(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaRechazo").visible;
+    }
+
+    public get columnaVisible_FechaCreacion(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaCreacion").visible;
+    }
+
+
+
+
   constructor(protected service: ComprasService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securityService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -605,48 +621,34 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   async SeeAll() {
-    this.blockUI.start('Cargando...');
-    this.isAll = true;
-    const mockEvent = { value: { code: this.estadoCertificacion.code } };
-
-    if (this.estadoCertificacion.code === 'Aprobada') {
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculando = true;
-      await this.getListarPO();
-    } else {
-      this.recalculando = true;
-      await this.getListarPO();
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-    }
+      await this.SeeCommon(true);
   }
 
   async SeeForProvider() {
-    this.blockUI.start('Cargando...');
-    this.isAll = false;
-    const mockEvent = { value: { code: this.estadoCertificacion.code } };
-
-    if (this.estadoCertificacion.code === 'Aprobada') {
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculando = true;
-      await this.getListarPO();
-    } else {
-      this.recalculando = true;
-      await this.getListarPO();
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-    }
+      await this.SeeCommon(false);
   }
+
+    private async SeeCommon(isAll: boolean) {
+        this.blockUI.start('Cargando...');
+        this.isAll = isAll;
+        const mockEvent = { value: { code: this.estadoCertificacion.code } };
+
+        if (this.estadoCertificacion.code === 'Aprobada') {
+            this.recalculandoAprobadas = true;
+            await this.obtenerESSap(this.proveedor, this.documentoNumero);
+            await this.filtrarPorEstado(mockEvent);
+            this.blockUI.stop();
+            this.recalculando = true;
+            await this.getListarPO();
+        } else {
+            this.recalculando = true;
+            await this.getListarPO();
+            await this.filtrarPorEstado(mockEvent);
+            this.blockUI.stop();
+            this.recalculandoAprobadas = true;
+            await this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }
+    }
 
   /**
    * Metodo para definir el perfil de usuario en la tabla de datos con el filtro Pendiente Aprobación.
