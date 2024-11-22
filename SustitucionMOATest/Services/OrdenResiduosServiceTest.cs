@@ -29,6 +29,7 @@ namespace SustitucionMOATest.Services
         private Mock<ICNRTClient> mICNRTClient;
         private Mock<IFeriadoService> mIFeriadoService;
         private Mock<IScatoConsumer> mIScatoConsumer;
+        private Mock<IUbicacionGeograficaService> mIUbicacionGeograficaService;
         private IOrdenResiduosService target;
 
         [SetUp]
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Services
             mIFeriadoService = new Mock<IFeriadoService>();
             mIEmailResiduosService = new Mock<IEmailResiduosService>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
+            mIUbicacionGeograficaService = new Mock<IUbicacionGeograficaService>();
             target = new OrdenResiduosService(
                 mIOrdenCargaConsumerMOA.Object,
                 mIScatoConsumer.Object,
@@ -48,7 +50,8 @@ namespace SustitucionMOATest.Services
                 mIRepositorioOrdenResiduos.Object,
                 mICNRTClient.Object,
                 mIFeriadoService.Object,
-                mIEmailResiduosService.Object);
+                mIEmailResiduosService.Object,
+                mIUbicacionGeograficaService.Object);
         }
 
         [Test]

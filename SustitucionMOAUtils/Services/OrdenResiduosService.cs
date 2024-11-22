@@ -1,4 +1,5 @@
-﻿using SustitucionMOAAssets;
+﻿using Org.BouncyCastle.Asn1.Ocsp;
+using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
@@ -24,6 +25,7 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorioOrdenResiduos repositorioResiduos;
         private readonly IEmailResiduosService emailResiduosService;
+        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         public OrdenResiduosService(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -32,11 +34,13 @@ namespace SustitucionMOAUtils.Services
             IRepositorioOrdenResiduos repositorioResiduos,
             ICNRTClient cNRTClient,
             IFeriadoService feriadoService,
-            IEmailResiduosService emailResiduosService
+            IEmailResiduosService emailResiduosService,
+            IUbicacionGeograficaService ubicacionGeograficaService
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioResiduos, cNRTClient, feriadoService)
         {
             this.repositorioResiduos = repositorioResiduos;
             this.emailResiduosService = emailResiduosService;
+            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes()
@@ -149,6 +153,9 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente
             };
+
+            CompletarDatosDestino(ordenDto);
+            
             for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
             {
                 var ordenEntity = ordenDto.ToEntity();
@@ -368,6 +375,27 @@ namespace SustitucionMOAUtils.Services
         {
             var recorridoScato = scatoConsumer.ObtenerRecorridoOrdenResiduos(ordenId);
             return recorridoScato != null && !recorridoScato.Terminado;
+        }
+
+        private void CompletarDatosDestino(OrdenResiduosDto ordenDto)
+        {
+            ordenDto.DestinoMercaderia = ordenDto.DestinoMercaderia ?? new DestinoScato();
+
+            if (ordenDto.Producto.ValidaSisaRuca && ordenDto.Domicilio != null)
+            {
+                var distanciaARecorrer = ObtenerDistanciaARecorrer(ordenDto.Domicilio.Descripcion);
+                ordenDto.DestinoMercaderia.KmsARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : null;
+            }
+        }
+
+        private int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
+        {
+            if (string.IsNullOrEmpty(domicilioDescripcion))
+            {
+                return null;
+            }
+            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
+            return distanciaDomicilio?.DistanciaKm;
         }
     }
 }
