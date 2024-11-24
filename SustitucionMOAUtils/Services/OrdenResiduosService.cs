@@ -1,14 +1,10 @@
-﻿using Org.BouncyCastle.Asn1.Ocsp;
-using SustitucionMOAAssets;
+﻿using SustitucionMOAAssets;
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAModel.Dto.Scato;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
@@ -17,7 +13,6 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ScatoWS = SustitucionMOAWS.ScatoWebService;
 
 namespace SustitucionMOAUtils.Services
 {

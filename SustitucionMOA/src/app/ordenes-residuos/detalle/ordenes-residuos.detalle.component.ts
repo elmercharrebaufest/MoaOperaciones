@@ -98,7 +98,7 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
                     if (camionEstaEnPlanta === true) {
                         this.floatMsgService.setErrorMsg("La orden no se puede editar por estar el camión en planta");
                         this.camionHaIngresadoAPlanta = true;
-                        this.verificarBotones();
+                        this.puedeEditar = false;
                     }
                     else {
                         this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
