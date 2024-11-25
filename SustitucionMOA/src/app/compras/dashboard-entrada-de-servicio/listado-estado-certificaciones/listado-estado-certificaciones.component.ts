@@ -167,6 +167,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
         return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaCreacion").visible;
     }
 
+    private estadoSeleccionado?: string;
 
 
 
@@ -352,6 +353,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   async filtrarPorEstado(event: any): Promise<void> {
+    this.estadoSeleccionado = event.value.code;
+
     switch (event.value.code) {
       case 'Aprobada':
         this.defaultTablesConfig[0].columns.forEach(col => {
@@ -665,11 +668,11 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
      */
     setColumsByUserProfile(entradasDeServicio: any, user: any): string {
         const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
-        const cantidadAprobadas: number = entradasDeServicio.filter(pa => pa.Estado === 'Aprobada').length;
+        const conservarColumnas = this.estadoSeleccionado === 'Aprobada'; // para este estado, las columnas se seleccionan en otro lado, por lo que no se deben cambiar las columnas mostradas.
 
         let userRole: string;
 
-        if (pendienteAprobacion.length > 0) {
+        if (pendienteAprobacion.length > 0 && !conservarColumnas) {
 
             const sf = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Fiscal, user) && this.equalsIgnoreCase(pa.Suplente, user));
             const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
@@ -686,7 +689,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
 
@@ -698,7 +701,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
 
@@ -710,7 +713,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
@@ -723,7 +726,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
 
@@ -735,7 +738,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
@@ -748,7 +751,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
@@ -761,7 +764,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
 
@@ -773,7 +776,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                 });
 
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                 //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
                 this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
@@ -788,7 +791,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                     });
 
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
@@ -801,7 +804,7 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
                     });
 
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
-                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = cantidadAprobadas > 0;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
                     this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
