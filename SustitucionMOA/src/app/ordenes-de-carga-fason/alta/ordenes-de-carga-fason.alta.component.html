@@ -65,8 +65,8 @@
                                     Destino mercadería (localidad - provincia):
                                 </div>
                                 <div class="styled-select">
-                                    <textarea id="DestinoMercaderia" [(ngModel)]="ordenDeCargaFason.DestinoMercaderia"
-                                        placeholder="Localidad - Provincia" rows="2"
+                                    <textarea id="DestinoMercaderia" placeholder="Localidad - Provincia"
+                                        [(ngModel)]="ordenDeCargaFason.DestinoMercaderia" rows="2" [maxLength]="40"
                                         [disabled]="editando || null"></textarea>
                                 </div>
                             </div>
