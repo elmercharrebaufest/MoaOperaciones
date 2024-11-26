@@ -324,6 +324,19 @@ namespace SustitucionMOAUtils.Email
                 SmtpClient oCliente = GetSmtpClient();
                 SendMail(oMensaje, oCliente);
             }
+            catch (SmtpException ex)
+            {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+#if !DEBUG
+                throw;
+#endif
+            }
             catch (Exception ex)
             {
                 Logger.Log.Info(ex.Message);
@@ -334,7 +347,7 @@ namespace SustitucionMOAUtils.Email
                 Logger.Log.Info("Stack: ");
                 Logger.Log.Info(ex.StackTrace);
 
-                throw ex;
+                throw;
             }
         }
 
