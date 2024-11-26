@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+﻿using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOAUtils.Logger;
 using System;
@@ -11,11 +10,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
-using SustitucionMOAModel.Models.WSMapMOA.Reporte;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 
 namespace SustitucionMOAUtils.Email
 {
