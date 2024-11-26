@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
+﻿using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOAModel.Models.WSMapMOA.Reporte;
 using SustitucionMOAUtils.Logger;
 using System;
@@ -11,11 +10,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Newtonsoft.Json;
-using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
-using SustitucionMOAModel.Models.WSMapMOA.Reporte;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 
 namespace SustitucionMOAUtils.Email
 {
@@ -324,6 +318,19 @@ namespace SustitucionMOAUtils.Email
                 SmtpClient oCliente = GetSmtpClient();
                 SendMail(oMensaje, oCliente);
             }
+            catch (SmtpException ex)
+            {
+                Logger.Log.Info(ex.Message);
+                if (ex.InnerException != null)
+                {
+                    Logger.Log.Info($"{ex.InnerException.Message}");
+                }
+                Logger.Log.Info("Stack: ");
+                Logger.Log.Info(ex.StackTrace);
+#if !DEBUG
+                throw;
+#endif
+            }
             catch (Exception ex)
             {
                 Logger.Log.Info(ex.Message);
@@ -334,7 +341,7 @@ namespace SustitucionMOAUtils.Email
                 Logger.Log.Info("Stack: ");
                 Logger.Log.Info(ex.StackTrace);
 
-                throw ex;
+                throw;
             }
         }
 
