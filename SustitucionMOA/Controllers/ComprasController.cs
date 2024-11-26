@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
@@ -248,7 +247,6 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult DescargarZipPliego(int solpId)
         {
-
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
@@ -260,7 +258,6 @@ namespace SustitucionMOA.Controllers
             Directory.Delete(path, true);
 
             return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
-
         }
 
         [AllowAnonymous]

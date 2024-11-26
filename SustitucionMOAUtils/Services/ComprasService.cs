@@ -1859,17 +1859,19 @@ namespace SustitucionMOAUtils.Services
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
-            var solp = repositorio.Obtener<Solp>(idSolp);
-            var middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
-            var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-            var pdfFilePath = $"{pathBase}/{pdfFilename}";
+            Solp solp = repositorio.Obtener<Solp>(idSolp);
+            string middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
+            string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+            string pdfFilePath = $"{pathBase}/{pdfFilename}";
 
-            if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.Urgencia == true && solp.TrabajoYaHecho != true))
+            if (solp.TipoSolp?.Codigo == "CON_PLIEGO"
+                || (solp.Urgencia == true && solp.TrabajoYaHecho != true)
+                || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
 
-            if (solp.Pliego.Archivos != null && solp.Pliego.Archivos.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+            if (solp.Pliego.Archivos?.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) == true)
             {
                 var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
                 var filePath = $"{pathBase}/{zipFilename}";
@@ -1887,7 +1889,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solp.TipoSolp != null && solp.TipoSolp.Codigo == "CON_PLIEGO" || (solp.Urgencia == true && solp.TrabajoYaHecho != true))
+                        if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.Urgencia == true && solp.TrabajoYaHecho != true))
                         {
                             archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
                         }
