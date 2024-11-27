@@ -161,7 +161,7 @@ namespace SustitucionMOATest.Services
 
             // Assert
             Assert.IsEmpty(result);
-            emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.IsAny<List<OrdenDeCargaFason>>()), Times.Never);
+            emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.IsAny<List<OrdenDeCargaFason>>()), Times.Once);
             repositorioOrdenDeCargaFason.Verify(r => r.GuardarCambios(), Times.Never);
         }
     }
