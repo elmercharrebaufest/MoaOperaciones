@@ -4802,15 +4802,15 @@ namespace SustitucionMOAUtils.Services
             {
                 if (!ocultarArchivosPliego)
                 {
-                    var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
-                    var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
                     var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
                     if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
+                        var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+                        var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
                         //invento registro con id de archivo 0 para bajar el pliego
                         legajo.Add(new LegajoDto
                         {
