@@ -4808,7 +4808,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
-                        string middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
+                        string middleFileName = solp.NroSolp ?? solp.Pliego?.NombreObra ?? "xxxx";
                         string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
 
                         //invento registro con id de archivo 0 para bajar el pliego
