@@ -6,21 +6,20 @@ using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
-using SustitucionMOARepositorio;
+using SustitucionMOAModel.Util;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
-using ScatoWS = SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WSRequests.OrdenCarga;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Linq.Expressions;
-using SustitucionMOAModel.Util;
-using SustitucionMOARepositorio.Repositorios.Interfaces;
+using ScatoWS = SustitucionMOAWS.ScatoWebService;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -149,15 +148,22 @@ namespace SustitucionMOAUtils.Services
             if (repositorioFason.Obtener<HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesDeCargaFasonJob" && a.Habilitado) == null)
                 return new List<OrdenDeCargaFason>();
 
-            var ordenes = repositorioFason.Listar<OrdenDeCargaFason>((orden) => orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
 
+            var ordenes = repositorioFason.Listar<OrdenDeCargaFason>((orden) => orden.Estado == EstadoOrdenDeCargaFason.Generada || orden.Estado == EstadoOrdenDeCargaFason.Pendiente);
+            List<OrdenDeCargaFason> ordenesVencidas = new List<OrdenDeCargaFason>();
             foreach (var orden in ordenes)
             {
                 if (CalcularFechaVencimiento(orden.FechaCreacion) < fechaLimite)
+                {
                     orden.Estado = EstadoOrdenDeCargaFason.Vencida;
+                    ordenesVencidas.Add(orden);
+                }
             }
-            repositorioFason.GuardarCambios();
-            emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenes);
+            if (ordenesVencidas.Any())
+            {
+                repositorioFason.GuardarCambios();
+                emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenesVencidas);
+            }
 
             return ordenes;
         }
@@ -369,7 +375,7 @@ namespace SustitucionMOAUtils.Services
                 x.Id == orden.Cliente &&
                 x.EstadoAprobacion == EstadoAprobacion.Aprobado &&
                 x.TipoProveedor.Id == (int)TipoUsuarioEnum.Cliente);
-            
+
             if (cliente == null)
             {
                 return new List<AutoCompleteDropdownElement>();
@@ -489,7 +495,7 @@ namespace SustitucionMOAUtils.Services
 
             return !responseHandler.TieneRespuesta(ControlCargaResEnum.ClienteInhabilitadoEnSisa);
         }
-        
+
         public bool ValidarExistenciaPatente(string patenteChasis, string cuitCliente)
         {
             return OrdenesConPatentesRepetidas(patenteChasis)
@@ -503,7 +509,7 @@ namespace SustitucionMOAUtils.Services
                 oc.PatenteChasis == patenteChasis
             );
         }
-        
+
         private bool VerificarOrdenConPatentesRepetidas(OrdenDeCargaFason orden, Hashtable hashPatentesCargadas)
         {
 
@@ -533,7 +539,7 @@ namespace SustitucionMOAUtils.Services
             }
             return false;
         }
-        
+
         private List<long> ObtenerOrdenesConPatentesRepetidas(OrdenDeCargaFason orden)
         {
             var hashPatentesCargadas = ObtenerHashPatentesCargadas();
@@ -546,7 +552,7 @@ namespace SustitucionMOAUtils.Services
                 .Select(data => data.Item1)
                 .ToList();
         }
-        
+
         private Hashtable ObtenerHashPatentesCargadas()
         {
             var diasPreviosParaCompararPatentes = -5;
@@ -559,7 +565,7 @@ namespace SustitucionMOAUtils.Services
                     DbFunctions.TruncateTime(oc.FechaCreacion) >= fechaTope)
                 .AsEnumerable());
         }
-        
+
         private Hashtable ObtenerHashPatentesCargadas(IEnumerable<OrdenDeCargaFason> ordenes)
         {
 
@@ -585,7 +591,7 @@ namespace SustitucionMOAUtils.Services
                 });
             return hashPatentesCargadas;
         }
-        
+
         private void ActualizarOrdenDeCarga(OrdenDeCargaFason orden, bool enviarNotificaciones = false)
         {
             var detalleAActualizar = ObtenerDetallesActualizar(orden);
@@ -719,7 +725,7 @@ namespace SustitucionMOAUtils.Services
                 var ordenesConPatentesRepetidas = OrdenesConPatentesRepetidas(ordenDeCarga.PatenteChasis);
                 if (ordenesConPatentesRepetidas.Any(oc => oc.Cliente.CUIT != ordenDeCarga.Cliente.CUIT))
                 {
-                    var cuits =  ordenesConPatentesRepetidas
+                    var cuits = ordenesConPatentesRepetidas
                         .Select(oc => oc.Cliente.CUIT).Distinct().ToList();
                     if (!cuits.Contains(ordenDeCarga.Cliente.CUIT))
                     {
@@ -732,7 +738,8 @@ namespace SustitucionMOAUtils.Services
 
         private List<Variance> ObtenerListaValoresDiferentes(OrdenDeCargaFason orden, EditarOrdenDeCargaFasonRequest request)
         {
-            var ordenEditada = new OrdenDeCargaFason {
+            var ordenEditada = new OrdenDeCargaFason
+            {
                 Cantidad = request.Cantidad,
                 Cliente_Id = request.Cliente,
                 CorredorId = request.CorredorId,

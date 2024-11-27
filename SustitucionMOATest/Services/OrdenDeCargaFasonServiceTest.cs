@@ -1,15 +1,15 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto.OrdenDeCargaFason;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Enums.MoaWS.OrdenCargaWS;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
-using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -60,29 +60,30 @@ namespace SustitucionMOATest.Services
             var cuitTransporte = "";
             var mailUsuario = "mail@user.com";
             var productoId = 12;
-            var producto = new Material { Id= productoId, CodigoSap= "8088", ValidaSisaRuca= false };
-            orden.ProductoSeleccionado = new CrearOrdenDeCargaFasonRequestProducto {
+            var producto = new Material { Id = productoId, CodigoSap = "8088", ValidaSisaRuca = false };
+            orden.ProductoSeleccionado = new CrearOrdenDeCargaFasonRequestProducto
+            {
                 MaterialId = productoId,
-                Descripcion="",
-                Codigo="",
+                Descripcion = "",
+                Codigo = "",
                 CodigoSap = 8088,
-                ValidaSisaRuca=false,
+                ValidaSisaRuca = false,
             };
             orden.Producto_Id = productoId;
             orden.CUITTransporte = cuitTransporte;
             var clientes = new ScatoConsumerWS.ClienteDto[] { };
-            var usuario = new Usuario { Mail= mailUsuario, Roles = new List<Rol>() { new Rol { Nombre = "FLETE MOA", Codigo="FLETE MOA" } } };
+            var usuario = new Usuario { Mail = mailUsuario, Roles = new List<Rol>() { new Rol { Nombre = "FLETE MOA", Codigo = "FLETE MOA" } } };
             ordenCargaConsumer
                 .Setup(occ => occ.GetOrdenCargaControlEstadoTransportista(cuitTransporte))
                 .Returns(ControlEstadoResEnum.TransportistaOK);
             scatoConsumer.Setup(sc => sc.ObtenerClientesPorCuit(It.IsAny<string>())).Returns(clientes);
-            repositorioOrdenDeCargaFason.Setup(r=>r.Obtener<Usuario>(us=>us.Mail== mailUsuario)).Returns(usuario);
+            repositorioOrdenDeCargaFason.Setup(r => r.Obtener<Usuario>(us => us.Mail == mailUsuario)).Returns(usuario);
             repositorioOrdenDeCargaFason.Setup(r => r.Obtener<Material>(It.IsAny<int>())).Returns(producto);
             repositorioOrdenDeCargaFason.Setup(y => y.Obtener(It.IsAny<Expression<Func<Proveedor, bool>>>())).Returns(new Proveedor
-             {
-                 Id = 1,
-                 CUIT ="12345678909"
-             });
+            {
+                Id = 1,
+                CUIT = "12345678909"
+            });
             scatoConsumer.Setup(r => r.BuscarDestinos(It.IsAny<string>())).Returns(new List<ScatoConsumerWS.KmPorProveedorDto> { new ScatoConsumerWS.KmPorProveedorDto { } });
 
             var result = service.Crear(orden, mailUsuario);
@@ -101,6 +102,67 @@ namespace SustitucionMOATest.Services
                 PatenteAcoplado = "",
                 PatenteChasis = "",
             };
+        }
+        [Test]
+        public void VerificarVencimientoOrdenDeCargaFason_OrdenesVencidas_CorrectlyUpdated()
+        {
+            // Arrange
+            var fechaCreacion = DateTime.Now.AddDays(-10);
+            var ordenes = new List<OrdenDeCargaFason>
+            {
+                new OrdenDeCargaFason { Id = 1, Estado = EstadoOrdenDeCargaFason.Generada, FechaCreacion = fechaCreacion },
+                new OrdenDeCargaFason { Id = 2, Estado = EstadoOrdenDeCargaFason.Pendiente, FechaCreacion = fechaCreacion }
+            };
+            var habilitacionJob = new HabilitacionJob { Nombre = "VencimientoOrdenesDeCargaFasonJob", Habilitado = true };
+
+            repositorioOrdenDeCargaFason.Setup(r => r.Obtener<HabilitacionJob>(It.IsAny<Expression<Func<HabilitacionJob, bool>>>())).Returns(habilitacionJob);
+            repositorioOrdenDeCargaFason.Setup(r => r.Listar<OrdenDeCargaFason>(It.IsAny<Expression<Func<OrdenDeCargaFason, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaFason, object>>>>())).Returns(ordenes);
+            feriadoService.Setup(a => a.ObtenerFeriados()).Returns(new List<DateTime> { new DateTime(1900, 01, 01) });
+
+            // Act
+            var result = service.VerificarVencimientoOrdenDeCargaFason();
+
+            // Assert
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(EstadoOrdenDeCargaFason.Vencida, result[0].Estado);
+            Assert.AreEqual(EstadoOrdenDeCargaFason.Vencida, result[1].Estado);
+            emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.Is<List<OrdenDeCargaFason>>(o => o.Count == 2)), Times.Once);
+            repositorioOrdenDeCargaFason.Verify(r => r.GuardarCambios(), Times.Once);
+        }
+
+        [Test]
+        public void VerificarVencimientoOrdenDeCargaFason_NoHabilitacionJob_ReturnsEmptyList()
+        {
+            // Arrange
+            repositorioOrdenDeCargaFason.Setup(r => r.Obtener<HabilitacionJob>(It.IsAny<Expression<Func<HabilitacionJob, bool>>>())).Returns((HabilitacionJob)null);
+
+            // Act
+            var result = service.VerificarVencimientoOrdenDeCargaFason();
+
+            // Assert
+            Assert.IsEmpty(result);
+            emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.IsAny<List<OrdenDeCargaFason>>()), Times.Never);
+            repositorioOrdenDeCargaFason.Verify(r => r.GuardarCambios(), Times.Never);
+        }
+
+        [Test]
+        public void VerificarVencimientoOrdenDeCargaFason_NoOrdenesToVencidas_ReturnsEmptyList()
+        {
+            // Arrange
+            var habilitacionJob = new HabilitacionJob { Nombre = "VencimientoOrdenesDeCargaFasonJob", Habilitado = true };
+            var ordenes = new List<OrdenDeCargaFason>();
+
+            repositorioOrdenDeCargaFason.Setup(r => r.Obtener<HabilitacionJob>(It.IsAny<Expression<Func<HabilitacionJob, bool>>>())).Returns(habilitacionJob);
+            repositorioOrdenDeCargaFason.Setup(r => r.Listar<OrdenDeCargaFason>(It.IsAny<Expression<Func<OrdenDeCargaFason, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<OrdenDeCargaFason, object>>>>())).Returns(ordenes);
+            feriadoService.Setup(a => a.ObtenerFeriados()).Returns(new List<DateTime> { new DateTime(1900, 01, 01) });
+
+            // Act
+            var result = service.VerificarVencimientoOrdenDeCargaFason();
+
+            // Assert
+            Assert.IsEmpty(result);
+            emailFasonService.Verify(e => e.EnviarMailVencieronOrdenesDeCarga(It.IsAny<List<OrdenDeCargaFason>>()), Times.Never);
+            repositorioOrdenDeCargaFason.Verify(r => r.GuardarCambios(), Times.Never);
         }
     }
 }
