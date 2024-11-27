@@ -162,8 +162,8 @@ namespace SustitucionMOAUtils.Services
             if (ordenesVencidas.Any())
             {
                 repositorioFason.GuardarCambios();
-                emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenesVencidas);
             }
+            emailFasonService.EnviarMailVencieronOrdenesDeCarga(ordenesVencidas);
 
             return ordenes;
         }
