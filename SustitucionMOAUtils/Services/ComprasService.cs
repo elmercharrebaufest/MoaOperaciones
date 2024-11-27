@@ -4794,7 +4794,9 @@ namespace SustitucionMOAUtils.Services
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
             bool esMultipleSolp = solps.Count() > 1;
-            bool ocultarArchivosPliego = esProveedor && esMultipleSolp;
+            bool ocultarArchivosPliego =
+                esProveedor
+                && (esMultipleSolp && !solps.Any(s => s.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO"))) /* si es servicio, mostrar aún cuando es múltiple */;
 
             foreach (var solp in solps)
             {
