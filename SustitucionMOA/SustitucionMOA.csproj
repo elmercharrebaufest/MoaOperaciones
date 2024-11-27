@@ -1276,6 +1276,7 @@
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\app\common\models\SeleccionarVendedorResponse.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\services\FileStorageService.ts" />
     <TypeScriptCompile Include="src\app\common\services\UpdateComunicacionService.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.spec.ts" />
