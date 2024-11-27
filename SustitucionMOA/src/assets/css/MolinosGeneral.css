@@ -10,7 +10,13 @@
     --availableSpaceAfterHeaderAndTitle: calc(var(--availableSpaceAfterHeader) - 150px);
 }
 
-html,
+html {
+    transform: scale(0.8);
+    transform-origin: top left;
+    width: 125%; /* Compensa el escalado para mantener el ancho */
+    height: 125%; /* Compensa el escalado para mantener el alto */
+}
+
 body {
     height: 100%;
 }
