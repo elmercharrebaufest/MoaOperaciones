@@ -4795,21 +4795,23 @@ namespace SustitucionMOAUtils.Services
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
             bool esMultipleSolp = solps.Count() > 1;
-            bool ocultarArchivosPliego = esProveedor && esMultipleSolp;
+            bool ocultarArchivosPliego =
+                esProveedor
+                && (esMultipleSolp && !solps.Any(s => s.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO"))) /* si es servicio, mostrar aún cuando es múltiple */;
 
-            foreach (var solp in solps)
+            foreach (Solp solp in solps)
             {
                 if (!ocultarArchivosPliego)
                 {
-                    var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
-                    var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
-                    var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                    bool tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
                     if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
+                        string middleFileName = solp.NroSolp ?? solp.Pliego?.NombreObra ?? "xxxx";
+                        string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
                         //invento registro con id de archivo 0 para bajar el pliego
                         legajo.Add(new LegajoDto
                         {
