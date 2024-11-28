@@ -21,9 +21,8 @@
                         <p class="fecha-mensaje">{{notificacion.FechaInicio.split(" ")[0] }}</p>
                         <p class="modal-mensaje" [innerHTML]="notificacion.Mensaje" [ngClass]="{'expand-message': (notificacion.ArchivosAdjuntos.length == 0), 'adjust-scroll': (notificacion.ArchivosAdjuntos.length > 0)}"></p>
 
-                        <div class="footer-container">
                             <a class="btn btn-primary btn-cerrar btn-footer" (click)="closeModal()">Cerrar</a>
-                        </div>
+                        
                     </div>
 
                     <div class="carousel modal-flex" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" [ngClass]="{'hide-element': (notificacion.ArchivosAdjuntos.length == 0)}">

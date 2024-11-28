@@ -1,37 +1,37 @@
 .modal-dialog {
-  max-width: 1000px;
-  margin: 18px auto;
-  height: auto;
-  width: 1000px;
+    /*max-width: 1000px;*/
+    margin: 18px auto;
+    height: auto;
+    width: auto;
+    /*  width: 1000px;*/
 }
 
-.modal-body {    
+.modal-body {
     display: flex;
     padding: 5px;
     min-height: 200px;
-    width: 509px;
-    height: 458px;
+    width: 90vw;
+    height: 90vh;
 }
 
 .footer-container {
-padding-top: 14px;
+    padding-top: 14px;
 }
 
 .modal-notificacion {
-  z-index: 1;
-  left: 2px;
-  top: 3px;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 9999;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    z-index: 1;
+    left: 2px;
+    top: 3px;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .modal-content {
@@ -39,39 +39,34 @@ padding-top: 14px;
     margin: 15% auto;
     padding: 24px;
     border: 1px solid #888;
-    /* max-width: 1000px; */
-    max-height: 600px;
     border-radius: 4px !important;
     position: relative;
-    min-width: 570px;
-    /* max-width: 70%; */
-    width: 970px;
-    height: 517px;
+    width: 90vw;
+    height: 90vh;
 }
 
-.m-header{
-  background-color: white;
+.m-header {
+    background-color: white;
 }
 
 .hide-scroll {
-    /*overflow: hidden;*/    
+    /*overflow: hidden;*/
 }
 
 .modal-w {
-  /*width: 100%; */  
+    /*width: 100%; */
 }
 
 .hide-element {
-    display: none!important;
+    display: none !important;
 }
 
 .expand-message {
-    min-width: 159% !important;    
+    min-width: 159% !important;
 }
 
 .adjust-scroll {
-    overflow-y:auto!important;
-    
+    overflow-y: auto !important;
 }
 
 .modal-mensaje {
@@ -79,27 +74,23 @@ padding-top: 14px;
     width: 100%;
     height: auto;
     font-family: 'Roboto Regular';
-    max-height: 305px;
+    max-height: 68vh;
     /*width: calc(100% + 20px);*/
     width: fit-content;
-    margin-bottom: 25px;
+    margin-bottom: 5px;
     max-width: 100%;
+    min-width: 80vh;
 }
 
 .close-b {
-  color: black;
+    color: black;
 }
 
-.modal-flex{
-  display: flex;
-  padding: 5px;
-  width: 45%;
-  height: 76%;
-}
-
-.modal-message {
-  /*width: 60%;*/
-  min-width: 373px;
+.modal-flex {
+    display: flex;
+    padding: 5px;
+    width: 45%;
+    height: 76%;
 }
 
 .modal-message-center {
@@ -122,93 +113,92 @@ padding-top: 14px;
 }
 
 .w-card {
-  display: flex;
-  align-items: center;
-  padding-left: 10px;
+    display: flex;
+    align-items: center;
+    padding-left: 10px;
     padding-right: 10px;
-  width: 80%;
-  height: auto;
-  max-height: 316px;
-  justify-content: center;
+    width: 80%;
+    height: auto;
+    max-height: 316px;
+    justify-content: center;
 }
 
 
 video {
-  width: 506px;
-  margin-right: 142px;
-  height: 363px;
-  margin-left:95px;
+    width: 506px;
+    margin-right: 142px;
+    height: 363px;
+    margin-left: 95px;
 }
 
-.nombre-header{
-  font-size: 22px;
-  font-weight: bolder;
-  max-height: 80px;
-  font-family: 'Roboto Regular';
+.nombre-header {
+    font-size: 22px;
+    font-weight: bolder;
+    max-height: 80px;
+    font-family: 'Roboto Regular';
 }
 
 .fecha-mensaje {
-  font-family: 'Roboto Regular';
+    font-family: 'Roboto Regular';
 }
 
 .btn-close {
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 8px;
-  left: auto;
-  font-size: 22px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 8px;
+    left: auto;
+    font-size: 22px;
 }
 
 .btn-cerrar {
-  background-color: #1f8241ed;
-  width: 24%;
-  bottom: 0;
-  font-family: 'Roboto Regular';
-  border-radius: 0px;
-  border-color: transparent;
-  position: absolute;
+    background-color: #1f8241ed;
+    width: 24%;
+    bottom: 0;
+    font-family: 'Roboto Regular';
+    border-radius: 0px;
+    border-color: transparent;
 }
 
 
 .modal {
-  display: none;
+    display: none;
 }
 
 .carousel {
-  position: relative;
-  max-width: 117%;
-  overflow: hidden;
-  margin: auto;
-  min-width: 613px;
+    position: relative;
+    max-width: 117%;
+    overflow: hidden;
+    margin: auto;
+    min-width: 613px;
 }
 
 .carousel-inner {
-  display: flex;
-  transition: transform 0.3s ease-in-out;
+    display: flex;
+    transition: transform 0.3s ease-in-out;
 }
 
 .carousel-item {
-  flex-shrink: 0;
-  width: 100%;
+    flex-shrink: 0;
+    width: 100%;
 }
 
 .carousel-control {
-  position: sticky;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 40px;
-  color: #000;
-  text-decoration: none;
+    position: sticky;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 40px;
+    color: #000;
+    text-decoration: none;
 }
 
 .prev {
-  padding-right: 2px;
-  display: flex;
-  align-items: center;
-  width: min-content;
-  height: min-content;
-  cursor:default;
+    padding-right: 2px;
+    display: flex;
+    align-items: center;
+    width: min-content;
+    height: min-content;
+    cursor: default;
 }
 
 .next {
@@ -220,47 +210,45 @@ video {
 }
 
 .image.zoomed {
-  transform: scale(1.5);
+    transform: scale(1.5);
 }
 
 .pdf-w {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 65%;
-  /* width: 67%; */
-  height: 275px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 65%;
+    /* width: 67%; */
+    height: 275px;
 }
 
 .icon-pdf-download {
-  width: 30%;
+    width: 30%;
 }
 
 .pdf-image {
-  padding-bottom: 20px;
-  height:180px;
-  width: 136px;
+    padding-bottom: 20px;
+    height: 180px;
+    width: 136px;
 }
 
 .isZoomed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.9); 
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
 }
 
-.isZoomed img {
-  max-width: 90%; 
-  max-height: 90%;
-  cursor: pointer;
-}
-
-
+    .isZoomed img {
+        max-width: 90%;
+        max-height: 90%;
+        cursor: pointer;
+    }
