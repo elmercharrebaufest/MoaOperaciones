@@ -154,7 +154,8 @@ video {
 .btn-cerrar {
     background-color: #1f8241ed;
     width: 24%;
-    bottom: 0;
+    position: fixed;
+    bottom: 47px !important;
     font-family: 'Roboto Regular';
     border-radius: 0px;
     border-color: transparent;
