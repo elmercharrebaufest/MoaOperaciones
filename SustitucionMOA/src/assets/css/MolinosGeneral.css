@@ -5008,3 +5008,7 @@ input[type=number]::-webkit-inner-spin-button {
 .content-formulario-ordenes-modal {
     padding-top: 10px;
 }
+
+html {
+    zoom: 80%; /* Reduce el tamaño del sitio al 80% */
+}
