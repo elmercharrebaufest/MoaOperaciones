@@ -1866,7 +1866,8 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.TipoSolp?.Codigo == "CON_PLIEGO"
                 || (solp.Urgencia == true && solp.TrabajoYaHecho != true)
-                || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                || solp.TipoSolpSap == (int)TipoSolpSap.Sap
+                || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
