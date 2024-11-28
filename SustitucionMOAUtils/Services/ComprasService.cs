@@ -5438,8 +5438,8 @@ namespace SustitucionMOAUtils.Services
         private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
         {
             string cssTemplatePath = httpContextService.GetDirectory("Templates/cssTemplate.css");
-            string css = System.IO.File.ReadAllText(cssTemplatePath);
-            string stylesHtml = "<style>" + css + "</style>";
+            string css = File.ReadAllText(cssTemplatePath);
+            string stylesHtml = $"<style>{css}</style>";
 
             var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
             try
@@ -5458,7 +5458,6 @@ namespace SustitucionMOAUtils.Services
             foreach (var item in listaPosiciones.Select(a => a.SolpPosicion))
             {
                 var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice && x.NumeroSolicitud == item.Solp.NroSolp);
-
 
                 posiciones.Append("<tr class='border-top'>");
                 posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.Indice);
@@ -5487,11 +5486,11 @@ namespace SustitucionMOAUtils.Services
 
             xHtml = string.Format(xHtml, stylesHtml,
                 peticion.Id,
-                datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
-                datosProveedor.cabeceras?.FirstOrDefault().descripcion,
-                datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
-                $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
-                datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
+                datosProveedor.cabeceras?.FirstOrDefault()?.cuit.Substring(2, 8),
+                datosProveedor.cabeceras?.FirstOrDefault()?.descripcion,
+                datosProveedor.cabeceras?.FirstOrDefault()?.calleFiscal,
+                $"({datosProveedor.cabeceras?.FirstOrDefault()?.cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault()?.locaFiscal}",
+                datosProveedor.cabeceras?.FirstOrDefault()?.provFiscal,
                 "Argentina",
                 peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
                 listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),
