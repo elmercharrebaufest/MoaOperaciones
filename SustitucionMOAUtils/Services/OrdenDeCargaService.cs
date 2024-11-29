@@ -479,12 +479,6 @@ namespace SustitucionMOAUtils.Services
                         IdsConsultasRealizadas = consultas.Where(cd => cd.Orden_Id == x.Id).Select(cd => cd.Id)
                     }).OrderByDescending(y => y.Id).ToList();
             }
-            if (listado == null || listado.Count == 0)
-            {
-                var error = new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
-                Log.Info(error.Message);
-                throw error;
-            }
             return listado;
         }
 
