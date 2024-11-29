@@ -42,17 +42,20 @@ export class FileStorageService {
                 let transaction = this.db.transaction('archivosContacto', 'readwrite');
                 let storeArchivos = transaction.objectStore('archivosContacto');
 
-                let archivoBD: ArchivoBD = {key: fileKey, archivo: archivo};
+                this.borrarArchivosDeOtrasConsultas(consultaId, storeArchivos)
+                    .then(() => {
+                        let archivoBD: ArchivoBD = {key: fileKey, archivo: archivo};
 
-                let request = storeArchivos.add(archivoBD);
+                        let requestAgregarArchivo = storeArchivos.add(archivoBD);
 
-                request.onsuccess = () => {
-                    resolve();
-                };
-                request.onerror = () => {
-                    console.error('Error al agregar al store el archivo', request.error);
-                    reject(request.error);
-                };
+                        requestAgregarArchivo.onsuccess = () => {
+                            resolve();
+                        };
+                        requestAgregarArchivo.onerror = () => {
+                            console.error('Error al agregar al store el archivo', requestAgregarArchivo.error);
+                            reject(requestAgregarArchivo.error);
+                        };
+                    });
             });
         });
     }
@@ -61,17 +64,16 @@ export class FileStorageService {
         return this.dbReady.then(() => {
             return new Promise<ArchivoBD[]>((resolve, reject) => {
                 let transaction = this.db.transaction('archivosContacto', 'readonly');
-                let store = transaction.objectStore('archivosContacto');
-                let archivosRequest = store.getAll();
+                let storeArchivos = transaction.objectStore('archivosContacto');
+                let requestArchivos = storeArchivos.getAll(IDBKeyRange.bound(consultaId.toString(), (consultaId + 1).toString()));
                 
-                archivosRequest.onsuccess = () => {
-                    let archivosBD = archivosRequest.result as ArchivoBD[];
-                    archivosBD = archivosBD.filter(x => x.key.startsWith(consultaId.toString()));
+                requestArchivos.onsuccess = () => {
+                    let archivosBD = requestArchivos.result as ArchivoBD[];
                     resolve(archivosBD);
                 }
-                archivosRequest.onerror = () => {
-                    console.error('Error al intentar obtener todos los archivos');
-                    reject(archivosRequest.error);
+                requestArchivos.onerror = () => {
+                    console.error('Error al intentar obtener los archivos de consulta ' + consultaId, requestArchivos.error);
+                    reject(requestArchivos.error);
                 }
             });
         });
@@ -83,14 +85,14 @@ export class FileStorageService {
                 let fileKey = `${consultaId}-${archivo.name}`;
                 let transaction = this.db.transaction('archivosContacto', 'readwrite');
                 let storeArchivos = transaction.objectStore('archivosContacto');
-                let request = storeArchivos.delete(fileKey);
-                request.onsuccess = () => {
+                let requestBorrarArch = storeArchivos.delete(fileKey);
+                requestBorrarArch.onsuccess = () => {
                     resolve();
-                }
-                request.onerror = () => {
-                    console.error('Error al borrar archivo', request.error);
-                    reject(request.error);
-                }
+                };
+                requestBorrarArch.onerror = () => {
+                    console.error('Error al borrar archivo', requestBorrarArch.error);
+                    reject(requestBorrarArch.error);
+                };
             });
         });
     }
@@ -100,15 +102,44 @@ export class FileStorageService {
             return new Promise<void>((resolve, reject) => {
                 let transaction = this.db.transaction('archivosContacto', 'readwrite');
                 let storeArchivos = transaction.objectStore('archivosContacto');
-                let request = storeArchivos.clear();
-                request.onsuccess = () => {
+                let requestBorrarArchivos = storeArchivos.clear();
+                requestBorrarArchivos.onsuccess = () => {
                     resolve();
                 }
-                request.onerror = () => {
-                    console.error('Error al borrar todos los archivos', request.error);
-                    reject(request.error);
+                requestBorrarArchivos.onerror = () => {
+                    console.error('Error al borrar todos los archivos', requestBorrarArchivos.error);
+                    reject(requestBorrarArchivos.error);
                 }
             });
+        });
+    }
+
+    private borrarArchivosDeOtrasConsultas(consultaId: number, storeArchivos: IDBObjectStore): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            let requestKeys = storeArchivos.getAllKeys(IDBKeyRange.bound(consultaId.toString(), (consultaId + 1).toString()));
+            requestKeys.onerror = () => {
+                console.error('Error al obtener las keys para consulta ' + consultaId, requestKeys.error);
+                reject(requestKeys.error);
+            };
+            requestKeys.onsuccess = () => {
+                let keysContacto = requestKeys.result;
+                if (keysContacto && keysContacto.length > 0) {
+                    // Si ya hay algún archivo para esta Consulta, no hacemos nada más (los de Consultas previas ya habían sido borrados)
+                    resolve();
+                }
+                else {
+                    // Si no se encuentra ninguna key para este número de Consulta, se trata del primer archivo que se le adjunta.
+                    // Antes de grabarlo, borramos los registros que puedan existir de Consultas previas
+                    let requestBorrarPrevios = storeArchivos.clear();
+                    requestBorrarPrevios.onerror = () => {
+                        console.error('Error al borrar los archivos de Consultas distintas a ' + consultaId, requestBorrarPrevios.error);
+                        reject(requestBorrarPrevios.error);
+                    }
+                    requestBorrarPrevios.onsuccess = () => {
+                        resolve();
+                    }
+                }
+            }
         });
     }
 }
