@@ -44,19 +44,19 @@ export class FileStorageService {
 
                 this.borrarArchivosDeOtrasConsultas(consultaId, storeArchivos)
                     .then(() => {
-                        let archivoBD: ArchivoBD = {key: fileKey, archivo: archivo};
+                let archivoBD: ArchivoBD = {key: fileKey, archivo: archivo};
 
                         let requestAgregarArchivo = storeArchivos.add(archivoBD);
 
                         requestAgregarArchivo.onsuccess = () => {
-                            resolve();
-                        };
+                    resolve();
+                };
                         requestAgregarArchivo.onerror = () => {
                             console.error('Error al agregar al store el archivo', requestAgregarArchivo.error);
                             reject(requestAgregarArchivo.error);
-                        };
-                    });
+                };
             });
+        });
         });
     }
 
