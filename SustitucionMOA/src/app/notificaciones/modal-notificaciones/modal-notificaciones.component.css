@@ -71,15 +71,15 @@
 
 .modal-mensaje {
     overflow: auto;
-    width: 100%;
+    width: 60vw;
     height: auto;
     font-family: 'Roboto Regular';
     max-height: 68vh;
     /*width: calc(100% + 20px);*/
-    width: fit-content;
+    /*width: fit-content;*/
     margin-bottom: 5px;
-    max-width: 100%;
-    min-width: 80vh;
+    max-width: 53vw;
+    /*min-width: 80vh;*/
 }
 
 .close-b {
@@ -154,8 +154,8 @@ video {
 .btn-cerrar {
     background-color: #1f8241ed;
     width: 24%;
-    position: fixed;
-    bottom: 47px !important;
+    position: absolute;
+    bottom: 30px !important;
     font-family: 'Roboto Regular';
     border-radius: 0px;
     border-color: transparent;
@@ -168,10 +168,10 @@ video {
 
 .carousel {
     position: relative;
-    max-width: 117%;
+    /*max-width: 117%;
+    min-width: 613px;*/
     overflow: hidden;
     margin: auto;
-    min-width: 613px;
 }
 
 .carousel-inner {

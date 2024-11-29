@@ -18,6 +18,7 @@ import { AngularEditorConfig } from "@kolkov/angular-editor";
 import { Adjuntos } from '../../common/models/adjuntos';
 
 import { MessageService } from 'primeng/api';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 declare var $: any;
 
@@ -28,6 +29,8 @@ declare var $: any;
     providers: [NotificacionesService, DatePipe, MessageService]
 })
 export class AltaNotificacionesComponent extends BaseComponent implements OnInit {
+    @BlockUI() blockUI: NgBlockUI;
+
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
 
@@ -392,6 +395,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     obtenerNotificacion() {
         try {
+            this.blockUI.start('Cargando...');
             this.subscriptionDropDowns = this.service.getNotificacion(this.notificacionId).subscribe(
                 (result:any) => {
                     if (result.logout == true) {
@@ -455,13 +459,16 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
                           });
                     }
+                    this.blockUI.stop();
                 },
                 error => {
                     this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
                 }
             );
         } catch (e) {
             this.mensajeComponent.setErrorMsg(e);
+            this.blockUI.stop();
         }
     }
 
@@ -583,6 +590,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
+        this.blockUI.start('Guardando...');
         this.unsubscribe();
 
         this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
@@ -664,10 +672,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                         .getElementById("openModalNotificacion")
                         .click();
                 }
+                this.blockUI.stop();
             },
             (error) => {
                 this.spinnerComponent.hideIt();
                 this.mensajeComponent.setErrorMsg(error.message);
+                this.blockUI.stop();
             }
         );
     }
