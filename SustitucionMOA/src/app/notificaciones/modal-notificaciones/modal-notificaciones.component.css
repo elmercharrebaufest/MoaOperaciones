@@ -146,7 +146,7 @@ video {
     position: absolute;
     top: 0;
     right: 0;
-    margin: 8px;
+    margin: 0;
     left: auto;
     font-size: 22px;
 }
