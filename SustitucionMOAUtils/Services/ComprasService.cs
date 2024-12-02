@@ -3770,6 +3770,17 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
+                    if (verAdjudicar) // Lo siguiente se hace unicamente en caso que todavía esté habilitada la adjudicación, ya que es una consulta costosa.
+                    {
+                        List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
+                        var vendedoresMoa = vendedoresConsumerMOA.Request(usuarioPO.CodigoProveedor, fechas);
+                        if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+                        {
+                            mensaje = "No existe un proveedor con ese codigo.";
+                            verAdjudicar = false;
+                        }
+                    }
+
                     if (esAdmin && !noSolicitoVerPrecios)
                     {
                         usuarioPO.VerImportes = true;
