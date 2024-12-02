@@ -66,7 +66,7 @@ export class CeldaEditableComponent implements OnInit {
                * () los paréntesis
                *    el espacio (no borrar el espacio)
                */
-              Validators.pattern(/^[\wá-ú\¿\?\¡\!\-() ]*$/)
+              Validators.pattern(/^[\wá-ú\¿\?\¡\!\-\(\)\*\[\]\:\/\\\$\% ]*$/)
             ]
           ]
         });
