@@ -57,8 +57,12 @@ namespace SustitucionMOA.Controllers
         {
             var mailUsuario = SessionPersister.getUsername();
             var idProveedorSeleccionado = SessionPersister.ProveedorId;
-            var result = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, idProveedorSeleccionado);
-            return JsonCustom(result);
+            var ordenes = ordenDeCargaService.Listar(mailUsuario, fechaInicio, fechaFin, idProveedorSeleccionado);
+            if (ordenes == null || ordenes.Count == 0)
+            {
+                throw new InfoCustomException(string.Format(InfoMsg.SinRegistros, "órdenes de cargas"));
+            }
+            return JsonCustom(ordenes);
         }
 
         [HttpPost]

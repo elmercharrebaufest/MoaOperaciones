@@ -414,6 +414,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Templates\cssTemplate.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\DeclaracionJuradaCcSsListaCamposTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

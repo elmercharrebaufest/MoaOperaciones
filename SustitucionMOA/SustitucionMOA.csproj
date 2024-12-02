@@ -478,6 +478,8 @@
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.css" />
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.html" />
     <Content Include="src\app\vendedor\vendedor_status.component.css" />
+    <Content Include="src\app\zoom-control\zoom-control.component.css" />
+    <Content Include="src\app\zoom-control\zoom-control.component.html" />
     <Content Include="Template\AplicacionesCartaPorteRechazadas.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
@@ -1274,6 +1276,7 @@
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\app\common\models\SeleccionarVendedorResponse.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\services\FileStorageService.ts" />
     <TypeScriptCompile Include="src\app\common\services\UpdateComunicacionService.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.spec.ts" />
@@ -1540,6 +1543,8 @@
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
+    <TypeScriptCompile Include="src\app\zoom-control\zoom-control.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\zoom-control\zoom-control.component.ts" />
     <TypeScriptCompile Include="src\pipes\customDecimalPipe.pipe.ts" />
     <TypeScriptCompile Include="src\pipes\replace.pipe.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />

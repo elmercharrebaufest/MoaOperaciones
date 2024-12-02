@@ -239,16 +239,11 @@ namespace SustitucionMOAUtils.Services
                 LinkAdjunto = x.LinkAdjunto,
                 Prioridad = x.Prioridad,
                 ArchivosAdjuntos = x.ArchivosAdjuntos.Where(y => y.AdjuntoTipo == "previsualizacion").ToList(),
-                Leida = NoticiasLeidas.Any(nl => nl.Notificacion_Id == x.Id) ? 1 : 0
+                Leida = NoticiasLeidas.Exists(nl => nl.Notificacion_Id == x.Id) ? 1 : 0
             })
             .OrderBy(s => s.Leida)
             .ThenBy(s => s.Prioridad)
-            .ThenByDescending((x =>
-            {
-                DateTime dt;
-                DateTime.TryParse(x.FechaInicio, out dt);
-                return dt;
-            }))
+            .ThenByDescending(x => x.Id)
             .ToList();
             return listado;
         }

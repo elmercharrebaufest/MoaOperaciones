@@ -237,7 +237,7 @@
                                                     <td class="columna">{{ posicion.Centro }}</td>
                                                     <td class="columna">{{ posicion.Almacen }}</td>
                                                     <td class="columna">{{ posicion.Moneda }}</td>
-                                                    <td class="columna">{{ posicion.ValorTotal }}</td>
+                                                    <td class="columna">{{ posicion.ValorTotal | number:'1.2-2' }}</td>
                                                 </tr>
                                                 <tr *ngIf="posicion.Expanded">
                                                     <td [attr.colspan]="9">
@@ -260,10 +260,10 @@
                                                                     <td class="columna">{{ subPosicion.NroSubPosicion }}</td>
                                                                     <td class="columna">{{ subPosicion.CodigoServicio }}</td>
                                                                     <td class="columna">{{ subPosicion.Tarea }}</td>
-                                                                    <td class="columna">{{ subPosicion.Cantidad }}</td>
+                                                                    <td class="columna">{{ subPosicion.Cantidad | number }}</td>
                                                                     <td class="columna">{{ subPosicion.UnidadMedida }}</td>
-                                                                    <td class="columna">{{ subPosicion.PrecioBruto }}</td>
-                                                                    <td class="columna">{{ subPosicion.ValorNeto }}</td>
+                                                                    <td class="columna">{{ subPosicion.PrecioBruto | number:'1.2-2' }}</td>
+                                                                    <td class="columna">{{ subPosicion.ValorNeto | number:'1.2-2' }}</td>
                                                                     <td class="columna">{{ subPosicion.CuentaMayor }}</td>
                                                                     <td class="columna">{{ subPosicion.Imputacion }}</td>
                                                                 </tr>

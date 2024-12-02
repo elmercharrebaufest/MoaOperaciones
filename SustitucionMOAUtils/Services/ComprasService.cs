@@ -1866,7 +1866,8 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.TipoSolp?.Codigo == "CON_PLIEGO"
                 || (solp.Urgencia == true && solp.TrabajoYaHecho != true)
-                || solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                || solp.TipoSolpSap == (int)TipoSolpSap.Sap
+                || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
             }
@@ -3769,6 +3770,17 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
 
+                    if (verAdjudicar) // Lo siguiente se hace unicamente en caso que todavía esté habilitada la adjudicación, ya que es una consulta costosa.
+                    {
+                        List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
+                        var vendedoresMoa = vendedoresConsumerMOA.Request(usuarioPO.CodigoProveedor, fechas);
+                        if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+                        {
+                            mensaje = "No existe un proveedor con ese codigo.";
+                            verAdjudicar = false;
+                        }
+                    }
+
                     if (esAdmin && !noSolicitoVerPrecios)
                     {
                         usuarioPO.VerImportes = true;
@@ -4794,21 +4806,23 @@ namespace SustitucionMOAUtils.Services
             var solpsAgrupadasStr = string.Join(", ", solpsAgrupadas.Distinct());
 
             bool esMultipleSolp = solps.Count() > 1;
-            bool ocultarArchivosPliego = esProveedor && esMultipleSolp;
+            bool ocultarArchivosPliego =
+                esProveedor
+                && (esMultipleSolp && !solps.Any(s => s.Posiciones.Any(p => p.TipoPosicion.Codigo == "SERVICIO"))) /* si es servicio, mostrar aún cuando es múltiple */;
 
-            foreach (var solp in solps)
+            foreach (Solp solp in solps)
             {
                 if (!ocultarArchivosPliego)
                 {
-                    var middleFileName = solp.NroSolp ?? solp.Pliego.NombreObra ?? "xxxx";
-                    var pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
-
-                    var tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
+                    bool tienePliego = (solp.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.Sap ||
                         solp.TipoSolpSap == (int?)TipoSolpSap.ReposicionAutomatica) && solp.EstadoDocumento.Codigo == "CREADO";
 
                     if (tienePliego || solp.TipoSolp?.Codigo == "CON_PLIEGO")
                     {
+                        string middleFileName = solp.NroSolp ?? solp.Pliego?.NombreObra ?? "xxxx";
+                        string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+
                         //invento registro con id de archivo 0 para bajar el pliego
                         legajo.Add(new LegajoDto
                         {
@@ -5436,7 +5450,10 @@ namespace SustitucionMOAUtils.Services
 
         private string CompletarHtml(string xHtml, PeticionDeOferta peticion, string codigoProveedor)
         {
-            var stylesHtml = @"<style>h1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:12px}.s1{color:#000;font-family:'Times New Roman',serif;font-style:italic;font-weight:400;text-decoration:none;font-size:10px}.s2{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:8px}.s3{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}h2{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:8px}p{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:7px;margin:0}table,tbody{vertical-align:top;overflow:visible}.peticion{font-family:'Times New Roman',serif;font-style:italic;font-weight:700;text-decoration:none;font-size:10px;border:.1px solid #000;border-collapse:collapse}.s4{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:700;text-decoration:none;font-size:9px}.s5{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:8px}.s6{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:700;text-decoration:none;font-size:18px}.s7{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}.s8{color:#000;font-family:Arial,sans-serif;font-style:italic;font-weight:400;text-decoration:none;font-size:9px}.s9{color:#000;font-family:Arial,sans-serif;font-style:normal;font-weight:400;text-decoration:none;font-size:9px}table,tbody{vertical-align:top;overflow:visible}.border{border:.1px solid #000;border-collapse:collapse}.s6{color:#000;font-family:Arial,sans-serif;font-style:italic;text-decoration:none;font-size:7px}.cls_003{font-family:Arial,serif;font-size:12.1px;color:#fff;font-weight:700;font-style:normal;text-decoration:none;background-color:#000;text-align:center;top:-59px;position:relative;left:-1px;width:102%}.cls_002{font-family:Arial,serif;font-size:14.1px;color:#000;font-weight:700;font-style:italic;text-decoration:none}.noborder{border-collapse:collapse;border:1px solid #fff}.cls_005{font-family:Arial,serif;font-size:8.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none}.cls_006{font-family:Arial,serif;font-size:8px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_008{font-family:Arial,serif;font-size:10px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.cls_009{font-family:Arial,serif;font-size:11.1px;color:#000;font-weight:700;font-style:normal;text-decoration:none;text-align:center}.cls_011{font-family:Courier New,serif;font-size:10.1px;color:#000;font-weight:400;font-style:normal;text-decoration:none}.espacio{height:10px;display:block}.w33{width:30%;display:inline-block}.cls_012{font-family:Arial,serif;font-size:6px;text-align:justify}</style>";
+            string cssTemplatePath = httpContextService.GetDirectory("Templates/cssTemplate.css");
+            string css = File.ReadAllText(cssTemplatePath);
+            string stylesHtml = $"<style>{css}</style>";
+
             var datosProveedor = new VendedorDetalleWSMOAResponse() { cabeceras = null };
             try
             {
@@ -5455,8 +5472,7 @@ namespace SustitucionMOAUtils.Services
             {
                 var valorEnSAP = posicionesValoresSAP.FirstOrDefault(x => int.Parse(x.NumeroPosicion) == item.Indice && x.NumeroSolicitud == item.Solp.NroSolp);
 
-
-                posiciones.Append("<tr class='border'>");
+                posiciones.Append("<tr class='border-top'>");
                 posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.Indice);
                 posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.MaterialSolp != null ? item.MaterialSolp.Codigo : "");
                 posiciones.AppendFormat("<td style='font-size: 8px;'>{0}</td>", item.MaterialSolp != null ? item.MaterialSolp.Descripcion : item.Tarea);
@@ -5472,6 +5488,8 @@ namespace SustitucionMOAUtils.Services
                 posiciones.AppendFormat("<tr><td colspan='7' style='font-size: 8px; text-align: justify'>{0}</td></tr>",
                     item.MaterialSolp != null ? item.MaterialSolp.TextoAmpliado : "");
 
+                posiciones.AppendFormat("<tr class='border-bottom'><td colspan='7' style='font-size: 8px; text-align: justify'>Texto de Suministro: {0}</td></tr>",
+                    item.TextoSuministro);
             }
 
             var posicion = listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.Id).FirstOrDefault();
@@ -5481,11 +5499,11 @@ namespace SustitucionMOAUtils.Services
 
             xHtml = string.Format(xHtml, stylesHtml,
                 peticion.Id,
-                datosProveedor.cabeceras?.FirstOrDefault().cuit.Substring(2, 8),
-                datosProveedor.cabeceras?.FirstOrDefault().descripcion,
-                datosProveedor.cabeceras?.FirstOrDefault().calleFiscal,
-                $"({datosProveedor.cabeceras?.FirstOrDefault().cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault().locaFiscal}",
-                datosProveedor.cabeceras?.FirstOrDefault().provFiscal,
+                datosProveedor.cabeceras?.FirstOrDefault()?.cuit.Substring(2, 8),
+                datosProveedor.cabeceras?.FirstOrDefault()?.descripcion,
+                datosProveedor.cabeceras?.FirstOrDefault()?.calleFiscal,
+                $"({datosProveedor.cabeceras?.FirstOrDefault()?.cpFiscal}) {datosProveedor.cabeceras?.FirstOrDefault()?.locaFiscal}",
+                datosProveedor.cabeceras?.FirstOrDefault()?.provFiscal,
                 "Argentina",
                 peticion.PlazoDeOferta.ToString("dd.MM.yyyy"),
                 listaPosiciones.Select(x => x.SolpPosicion).OrderByDescending(x => x.FechaEntregaServicio).Select(x => x.FechaEntregaServicio).FirstOrDefault().Value.ToString("dd.MM.yyyy"),

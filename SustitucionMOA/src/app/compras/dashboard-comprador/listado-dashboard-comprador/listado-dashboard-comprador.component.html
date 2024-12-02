@@ -205,7 +205,7 @@
                                      style="height: 30px; cursor:default" />
                             </span>
                         </div>
-                        <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos || rowData.TipoSolpSap == 3">
+                        <div class="col-md-2" *ngIf="rowData.TipoSolp.Codigo == 'CON_PLIEGO' || rowData.SolpConAdjuntos || rowData.PliegoVinculado">
                             <span>
                                 <img class="pointer" src="./Content/images/icons/descargar.svg" alt="descargar"
                                      (click)="generarZipPliego(rowData.Id)" />

@@ -124,6 +124,7 @@ namespace SustitucionMOAModel.Dto
         public bool? TieneModificaciones { get; set; }
         public bool? TieneRevisionTecnicaFinalizada { get; set; }
         public EnviarCircularEnum? EnvioCircularA { get; set; }
+        public bool PliegoVinculado { get; set; }
 
 
         public SolpDto() { }
