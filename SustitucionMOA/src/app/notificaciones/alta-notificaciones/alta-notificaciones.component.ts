@@ -618,7 +618,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.notificacion.FechaCreacion = new Date();
 
         this.notificacion.HoraInicio = this.horaInicio;
-        
+
+        this.notificacion.ArchivosAdjuntos = [];
         this.adjuntos = this.notificacion.ArchivosAdjuntos;
 
         this.adjuntos = [
