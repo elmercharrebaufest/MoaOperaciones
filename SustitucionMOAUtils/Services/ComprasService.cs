@@ -1859,7 +1859,7 @@ namespace SustitucionMOAUtils.Services
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
-            Solp solp = repositorio.Obtener<Solp>(idSolp);
+            Solp solp = repositorio.Obtener<Solp>(idSolp) ?? throw new ArgumentException("Invalid Solp ID");
             string middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
             string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
             string pdfFilePath = $"{pathBase}/{pdfFilename}";
