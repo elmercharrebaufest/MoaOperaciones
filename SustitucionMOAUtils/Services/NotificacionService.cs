@@ -292,7 +292,7 @@ namespace SustitucionMOAUtils.Services
             Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == mailUsuario);
             int UsuarioId = usuario.Id;
 
-            List<NotificacionLeida> NoticiaLeida = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == NotificacionId).ToList();
+            List<NotificacionLeida> NoticiaLeida = repositorio.Listar<NotificacionLeida>(x => x.Notificacion_Id == NotificacionId && x.Usuario_Id == UsuarioId).ToList();
             if (NoticiaLeida.Count == 0)
             {
                 var notificacionLeida = new NotificacionLeida
