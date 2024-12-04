@@ -1859,10 +1859,11 @@ namespace SustitucionMOAUtils.Services
 
         public string GenerarZipPliego(int idSolp, string pathBase)
         {
-            Solp solp = repositorio.Obtener<Solp>(idSolp);
+            Solp solp = repositorio.Obtener<Solp>(idSolp) ?? throw new ArgumentException("Invalid Solp ID");
             string middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
             string pdfFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
             string pdfFilePath = $"{pathBase}/{pdfFilename}";
+            bool pdfPliegoDisponible = false;
 
             if (solp.TipoSolp?.Codigo == "CON_PLIEGO"
                 || (solp.Urgencia == true && solp.TrabajoYaHecho != true)
@@ -1870,6 +1871,7 @@ namespace SustitucionMOAUtils.Services
                 || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
             {
                 File.WriteAllBytes(pdfFilePath, GenerarSolpPdf(idSolp));
+                pdfPliegoDisponible = true;
             }
 
             if (solp.Pliego.Archivos?.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) == true)
@@ -1890,7 +1892,7 @@ namespace SustitucionMOAUtils.Services
                             }
                         }
 
-                        if (solp.TipoSolp?.Codigo == "CON_PLIEGO" || (solp.Urgencia == true && solp.TrabajoYaHecho != true))
+                        if (pdfPliegoDisponible)
                         {
                             archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
                         }
