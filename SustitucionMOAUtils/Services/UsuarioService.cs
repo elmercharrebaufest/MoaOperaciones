@@ -187,9 +187,9 @@ namespace SustitucionMOAUtils.Services
 
         public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente)
         {
-            Entidades.Usuario currentUsuario = repositorio.ObtenerNoTracking<Entidades.Usuario>(u => u.Id == idUsuario);
+            Usuario currentUsuario = repositorio.ObtenerNoTracking<Usuario>(u => u.Id == idUsuario);
 
-            Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == idUsuario);
 
             bool suplenteCambia =
                 (usuario.Suplente is null && (suplente != "null" && suplente != ""))
@@ -209,22 +209,18 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
-                string dateTimeFormat = "yyyy-MM-dd";
+                const string dateTimeFormat = "yyyy-MM-dd";
                 DateTime fechaDesdeDT = new DateTime();
                 DateTime fechaHastaDT = new DateTime();
-                DateTime auxFDesde;
-                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime auxFDesde))
                 {
                     fechaDesdeDT = auxFDesde;
                 };
-                DateTime auxFHasta;
-                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFHasta))
+                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime auxFHasta))
                 {
                     fechaHastaDT = auxFHasta;
                 };
                 //Parsing failsafe
-                //if (fechaDesdeDT != fechaHastaDT)
-                //{
                 UsuarioReasignacion periodo = new UsuarioReasignacion
                 {
                     Usuario_Id = idUsuario,
@@ -245,9 +241,6 @@ namespace SustitucionMOAUtils.Services
                     }
                     repositorio.Agregar<UsuarioReasignacion>(periodo);
                 }
-
-                //}
-
             }
             else if ((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
             {
@@ -265,7 +258,7 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (int id in periodosIds)
                     {
-                        UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
+                        UsuarioReasignacion per = periodos.LastOrDefault(x => x.Id == id);
                         if (!puedeEditarSuplente)
                         {
                             throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
@@ -274,7 +267,6 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, currentUsuario.Suplente);
-
                 }
             }
 
