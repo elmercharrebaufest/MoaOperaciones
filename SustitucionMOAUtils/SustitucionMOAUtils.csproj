@@ -34,8 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BigExcelCreator, Version=2.3.2023.24606, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\BigExcelCreator.2.3.2023.24606\lib\net40\BigExcelCreator.dll</HintPath>
+    <Reference Include="BigExcelCreator, Version=2.3.2024.30215, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\BigExcelCreator.2.3.2024.30215\lib\net40\BigExcelCreator.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.6.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
@@ -414,6 +414,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Templates\cssTemplate.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\DeclaracionJuradaCcSsListaCamposTemplate.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

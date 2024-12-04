@@ -1,18 +1,12 @@
-﻿using Microsoft.Ajax.Utilities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.DataAgroServices;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -26,165 +20,98 @@ namespace SustitucionMOA.Controllers
             this.notificacionService = notificacionService;
         }
 
-
+        [ValidateInput(false)]
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
-        public ActionResult Grabar(string notificacionJson)
+        public ActionResult Grabar(List<HttpPostedFileBase> files, string notificacionJson)
         {
-            try
+            var notificacion = JsonConvert.DeserializeObject<Notificacion>(notificacionJson);
+            if (files != null)
             {
-                var notificacion = JsonConvert.DeserializeObject<Notificacion>(notificacionJson);
+                notificacion.ArchivosAdjuntos = new List<NotificacionAdjunto>();
+                foreach (var file in files)
+                {
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        // Convertir el archivo a bytes
+                        byte[] fileData;
+                        using (var binaryReader = new BinaryReader(file.InputStream))
+                        {
+                            fileData = binaryReader.ReadBytes(file.ContentLength);
+                        }
+                        string base64Archivo = Convert.ToBase64String(fileData);
+                        NotificacionAdjunto fileEntity = new NotificacionAdjunto()
+                        {
+                            AdjuntoNombre = file.FileName,
+                            AdjuntoTipo = file.ContentType,
+                            AdjuntoContenido = base64Archivo
+                        };
 
-                return JsonCustom(new { data = notificacionService.GrabarNotificacion(notificacion) });
+                        notificacion.ArchivosAdjuntos.Add(fileEntity);
+                    }
+                }
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.GrabarNotificacion(notificacion) });
         }
-
 
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.c)]
         public ActionResult GetListado()
         {
-            try
-            {
-                return JsonCustom(new { data = notificacionService.Listar() });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.Listar() });
         }
 
         public ActionResult GetNotificacion(int notificacionId)
         {
-            try
-            {
-                return JsonCustom(new { data = notificacionService.ObtenerNotificacion(notificacionId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.ObtenerNotificacion(notificacionId) });
         }
 
         public ActionResult GetNotificaciones()
         {
-            try
-            {
-                //se comenta hasta volver a implementar
-                //string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-                //return JsonCustom(new { data = notificacionService.ObtenerNotificacionesUsuario(userMail) });
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            return JsonCustom(new { data = notificacionService.ObtenerNotificacionesUsuario(userMail) });
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Eliminar(int notificacionId)
         {
-            try
-            {
-                return JsonCustom(new { data = notificacionService.Eliminar(notificacionId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.Eliminar(notificacionId) });
         }
 
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Deshabilitar(int notificacionId)
         {
-            try
-            {
-                return JsonCustom(new { data = notificacionService.Deshabilitar(notificacionId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.Deshabilitar(notificacionId) });
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_NOTIFICACONES)]
         public ActionResult Habilitar(int notificacionId)
         {
-            try
-            {
-                return JsonCustom(new { data = notificacionService.Habilitar(notificacionId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = notificacionService.Habilitar(notificacionId) });
         }
+
+        public ActionResult GetAllNotificacionPrioridad()
+        {
+            return JsonCustom(new { data = notificacionService.ObtenerTodosNotificacionPrioridad() });
+        }
+
+        /// <summary>
+        /// Agrega marca de notificacion leida.
+        /// </summary>
+        /// <param name="notificacionId"></param>
+        /// <returns></returns>
+        public ActionResult PostNotificacionLeida(int notificacionId)
+        {
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            return JsonCustom(new { data = notificacionService.GrabarNotificacionComoLeida(notificacionId, userMail) });
+        }
+
+        public ActionResult GetListadoCompletoNotificacion()
+        {
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            return JsonCustom(new { data = notificacionService.ObtenerListadoCompletoNotificacion(userMail) });
+        }
+
+
     }
+
 }

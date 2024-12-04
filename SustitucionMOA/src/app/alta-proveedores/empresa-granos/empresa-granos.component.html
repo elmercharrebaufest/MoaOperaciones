@@ -17,25 +17,25 @@
                             </div>
                             <div class="col-xs-12">
                                 <label for="informeComercialFirmado">
-                                    <span class="link-adjuntar">Adjuntar</span> informe comercial <strong> completo y
+                                    <span class="link-adjuntar">Adjuntar</span> informe comercial <strong>
+                                        completo y
                                         firmado
                                         <span class="requerido">*</span>
                                     </strong>
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="informeComercialFirmado"
-                                    (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
+                                       id="informeComercialFirmado"
+                                       (change)="handleFileInput($event.target.files, 'informeComercialFirmado')">
 
                                 <div class="container-archivos">
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'informeComercialFirmado'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo )">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -61,24 +61,24 @@
                             <div class="col-xs-12">
                                 <label class="informe-firmado label" for="cartaDePresentacionFirmada">
                                     <span class="link-adjuntar">Adjuntar</span>
-                                    carta de presentación <strong>completa y firmada <span
-                                            class="requerido">*</span></strong>
+                                    carta de presentación <strong>
+                                        completa y firmada <span class="requerido">*</span>
+                                    </strong>
 
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="cartaDePresentacionFirmada"
-                                    (change)="handleFileInput($event.target.files, 'cartaDePresentacionFirmada')">
+                                       id="cartaDePresentacionFirmada"
+                                       (change)="handleFileInput($event.target.files, 'cartaDePresentacionFirmada')">
 
                                 <div class="container-archivos">
 
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'cartaDePresentacionFirmada'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'cartaDePresentacionFirmada'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo )">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
 
@@ -108,7 +108,7 @@
 
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="constanciaCBU"
-                                    (change)="handleFileInput($event.target.files, 'constanciaCBU')">
+                                       (change)="handleFileInput($event.target.files, 'constanciaCBU')">
 
                                 <div class="container-archivos">
 
@@ -118,7 +118,7 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -139,19 +139,18 @@
                                     por banco mercadería
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="constanciaCBUMercaderia"
-                                    (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
+                                       id="constanciaCBUMercaderia"
+                                       (change)="handleFileInput($event.target.files, 'constanciaCBUMercaderia')">
 
                                 <div class="container-archivos">
 
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCBUMercaderia'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo )">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -172,7 +171,7 @@
                                 </label>
                                 <div class="container-archivos">
                                     <input style="display:none" type="file" class="form-control-file" id="otrosArchivos"
-                                        multiple (change)="handleFileInput($event.target.files, 'otrosArchivos')">
+                                           multiple (change)="handleFileInput($event.target.files, 'otrosArchivos')">
 
                                     <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'otrosArchivos'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
@@ -180,7 +179,7 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +198,7 @@
                                     <span class="link-adjuntar">Adjuntar</span> constancia de CUIT
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="constanciaCUIT"
-                                    (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
+                                       (change)="handleFileInput($event.target.files, 'constanciaCUIT')">
 
                                 <div class="container-archivos">
                                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'constanciaCUIT'">
@@ -208,7 +207,7 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -222,7 +221,7 @@
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file" id="inscripcionIIBB"
-                                    (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
+                                       (change)="handleFileInput($event.target.files, 'inscripcionIIBB')">
 
                                 <div class="container-archivos">
                                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'inscripcionIIBB'">
@@ -231,7 +230,7 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -243,18 +242,17 @@
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="certificadoExclusionIVA"
-                                    (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
+                                       id="certificadoExclusionIVA"
+                                       (change)="handleFileInput($event.target.files, 'certificadoExclusionIVA')">
 
                                 <div class="container-archivos">
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIVA'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -267,18 +265,17 @@
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="certificadoExclusionIIBB" multiple
-                                    (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
+                                       id="certificadoExclusionIIBB" multiple
+                                       (change)="handleFileInput($event.target.files, 'certificadoExclusionIIBB')">
 
                                 <div class="container-archivos">
-                                    <div
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
+                                    <div *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionIIBB'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </div>
                                 </div>
                             </div>
@@ -291,18 +288,17 @@
                                 </label>
 
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="certificadoExclusionSUSS"
-                                    (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
+                                       id="certificadoExclusionSUSS"
+                                       (change)="handleFileInput($event.target.files, 'certificadoExclusionSUSS')">
 
                                 <div class="container-archivos">
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionSUSS'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -314,19 +310,18 @@
                                     Ganancias
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file"
-                                    id="certificadoExclusionGanancias"
-                                    (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
+                                       id="certificadoExclusionGanancias"
+                                       (change)="handleFileInput($event.target.files, 'certificadoExclusionGanancias')">
 
 
                                 <div class="container-archivos">
-                                    <span
-                                        *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
+                                    <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'certificadoExclusionGanancias'">
                                         <a class="link-archivo" (click)="descargarArchivo(archivo)">
                                             {{archivo.Nombre}}
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -338,7 +333,7 @@
                                     <span *ngIf="estadoSISA != '1'" class="requerido">*</span>
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="SIPER"
-                                    (change)="handleFileInput($event.target.files, 'SIPER')">
+                                       (change)="handleFileInput($event.target.files, 'SIPER')">
 
                                 <div class="container-archivos">
                                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'SIPER'">
@@ -347,7 +342,7 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
@@ -366,7 +361,7 @@
                                     <span class="requerido">*</span>
                                 </label>
                                 <input style="display:none" type="file" class="form-control-file" id="DDJJ"
-                                    (change)="handleFileInput($event.target.files, 'DDJJ')">
+                                       (change)="handleFileInput($event.target.files, 'DDJJ')">
 
                                 <div class="container-archivos">
                                     <span *ngFor="let archivo of listaArchivos | archivosFilterPipe:'DDJJ'">
@@ -375,12 +370,12 @@
                                         </a>
 
                                         <a class="link-eliminar" (click)="eliminarArchivo(archivo)"
-                                            title="Eliminar Adjunto">Eliminar</a>
+                                           title="Eliminar Adjunto">Eliminar</a>
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
@@ -392,14 +387,13 @@
                             <div class="card-header" id="headingOne">
                                 <h5 class="mb-0">
                                     <button class="titulos " type="button" data-toggle="collapse"
-                                        data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                                        Vínculos a declarar con Empleados de Molinos agro S.A.<span
-                                            class="requerido">*</span>
+                                            data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        Vínculos a declarar con Empleados de Molinos agro S.A.<span class="requerido">*</span>
                                     </button>
                                 </h5>
                             </div>
                             <div id="collapseOne" class="collapse card-container " aria-labelledby="headingOne"
-                                data-parent="#accordionExample">
+                                 data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div>
                                         <label>
@@ -419,7 +413,7 @@
                                             <label style="display:inline-block;">
                                                 No
                                                 <input type="radio" name="radioEmpleados" id="radioEmpleadosNo"
-                                                    value="false" (change)="relacionConEmpleadosCheckNo($event)">
+                                                       value="false" (change)="relacionConEmpleadosCheckNo($event)">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
@@ -427,7 +421,7 @@
                                             <label style=" display:inline-block;">
                                                 Si
                                                 <input type="radio" name="radioEmpleados" id="radioEmpleadosSi"
-                                                    value="true" (change)="relacionConEmpleadosCheckSi($event)">
+                                                       value="true" (change)="relacionConEmpleadosCheckSi($event)">
                                                 <span class="checkmark"></span>
                                             </label>
                                         </div>
@@ -438,18 +432,30 @@
                                         <table class="table table-bordered cssTable">
                                             <thead>
                                                 <tr>
-                                                    <th><b>Nombre y Apellido</b> <br /><label
-                                                            style="font-weight:100;">(integrante
-                                                            de la Firma Proveedora)</label>
+                                                    <th>
+                                                        <b>Nombre y Apellido</b> <br /><label style="font-weight:100;">
+                                                            (integrante
+                                                            de la Firma Proveedora)
+                                                        </label>
                                                     </th>
-                                                    <th><b>Cargo y/o Función</b> <br /><label
-                                                            style="font-weight:100;">en la
-                                                            Firma Proveedora</label></th>
-                                                    <th><b>Nombre y Apellido</b> <br /><label
-                                                            style="font-weight:100;">(integrante
-                                                            de Molinos agro)</label></th>
-                                                    <th><b>Vínculo</b><br /><label style="font-weight:100;">(Comercial,
-                                                            personal, parentesco, deudor, acreedor, etc.)</label></th>
+                                                    <th>
+                                                        <b>Cargo y/o Función</b> <br /><label style="font-weight:100;">
+                                                            en la
+                                                            Firma Proveedora
+                                                        </label>
+                                                    </th>
+                                                    <th>
+                                                        <b>Nombre y Apellido</b> <br /><label style="font-weight:100;">
+                                                            (integrante
+                                                            de Molinos agro)
+                                                        </label>
+                                                    </th>
+                                                    <th>
+                                                        <b>Vínculo</b><br /><label style="font-weight:100;">
+                                                            (Comercial,
+                                                            personal, parentesco, deudor, acreedor, etc.)
+                                                        </label>
+                                                    </th>
                                                     <th>Acciones</th>
                                                 </tr>
                                             </thead>
@@ -458,24 +464,24 @@
 
                                                     <td>
                                                         <input [(ngModel)]="field.NombreProveedora" class="form-control"
-                                                            type="text" style="font-weight: 300;"
-                                                            name="{{field.NombreProveedora}}" />
+                                                               type="text" style="font-weight: 300;"
+                                                               name="{{field.NombreProveedora}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.CargoProveedora" class="form-control"
-                                                            type="text" name="{{field.CargoProveedora}}" />
+                                                               type="text" name="{{field.CargoProveedora}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.NombreMolinos" class="form-control"
-                                                            type="text" name="{{field.NombreMolinos}}" />
+                                                               type="text" name="{{field.NombreMolinos}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.Vinculo" class="form-control"
-                                                            type="text" name="{{field.Vinculo}}" />
+                                                               type="text" name="{{field.Vinculo}}" />
                                                     </td>
                                                     <td width="75px">
                                                         <button class="btn-remove btn-custom" type="button"
-                                                            (click)="deleteFieldValueEmpleados(i)">
+                                                                (click)="deleteFieldValueEmpleados(i)">
                                                             Eliminar
                                                         </button>
                                                     </td>
@@ -484,7 +490,7 @@
                                         </table>
                                         <div class="btn-add-container">
                                             <button class="btn-add btn-custom" type="button"
-                                                (click)="addFieldValueEmpleados()">
+                                                    (click)="addFieldValueEmpleados()">
                                                 Agregar
                                             </button>
 
@@ -498,14 +504,14 @@
                             <div class="card-header" id="headingTwo">
                                 <h5 class="mb-0">
                                     <button class="collapsed titulos" type="button" data-toggle="collapse"
-                                        data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                            data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
                                         Vínculos a declarar con Funcionarios Públicos <span class="requerido">*</span>
                                     </button>
                                 </h5>
                             </div>
 
                             <div id="collapseTwo" class="collapse card-container" aria-labelledby="headingTwo"
-                                data-parent="#accordionExample">
+                                 data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div>
                                         <label>
@@ -525,8 +531,8 @@
                                                     <label style="display:inline-block;">
                                                         Si
                                                         <input type="radio" name="radioFuncionarios"
-                                                            id="radioFuncionariosSi" value="true"
-                                                            (change)="relacionConFuncionariosCheckSi($event)">
+                                                               id="radioFuncionariosSi" value="true"
+                                                               (change)="relacionConFuncionariosCheckSi($event)">
                                                         <span class="checkmark"></span>
                                                     </label>
                                                 </div>
@@ -535,8 +541,8 @@
                                                 <label style="display:inline-block;">
                                                     No
                                                     <input type="radio" name="radioFuncionarios"
-                                                        id="radioFuncionariosNo" value="false"
-                                                        (change)="relacionConFuncionariosCheckNo($event)">
+                                                           id="radioFuncionariosNo" value="false"
+                                                           (change)="relacionConFuncionariosCheckNo($event)">
                                                     <span class="checkmark"></span>
                                                 </label>
                                             </div>
@@ -573,13 +579,21 @@
                                                     <th><label style="font-weight:100;">Nombre y Apellido</label></th>
                                                     <th><label style="font-weight:100;">Cargo y/o Función</label></th>
                                                     <th><label style="font-weight:100;">Nombre y Apellido</label></th>
-                                                    <th><label style="font-weight:100;">Ámbito donde desempeña sus
+                                                    <th>
+                                                        <label style="font-weight:100;">
+                                                            Ámbito donde desempeña sus
                                                             funciones
                                                             /
-                                                            Cargo</label></th>
-                                                    <th><label style="font-weight:100;">Comercial, personal, parentesco,
+                                                            Cargo
+                                                        </label>
+                                                    </th>
+                                                    <th>
+                                                        <label style="font-weight:100;">
+                                                            Comercial, personal, parentesco,
                                                             deudor,
-                                                            acreedor, pleito pendiente, etc.</label></th>
+                                                            acreedor, pleito pendiente, etc.
+                                                        </label>
+                                                    </th>
 
                                                 </tr>
                                             </thead>
@@ -588,29 +602,29 @@
 
                                                     <td>
                                                         <input [(ngModel)]="field.NombreFirma" class="form-control"
-                                                            type="text" style="font-weight: 300;"
-                                                            name="{{field.NombreFirma}}" />
+                                                               type="text" style="font-weight: 300;"
+                                                               name="{{field.NombreFirma}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.CargoFirma" class="form-control"
-                                                            type="text" name="{{field.CargoFirma}}" />
+                                                               type="text" name="{{field.CargoFirma}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.NombreFuncionario"
-                                                            class="form-control" type="text"
-                                                            name="{{field.NombreFuncionario}}" />
+                                                               class="form-control" type="text"
+                                                               name="{{field.NombreFuncionario}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.CargoFuncionario" class="form-control"
-                                                            type="text" name="{{field.CargoFuncionario}}" />
+                                                               type="text" name="{{field.CargoFuncionario}}" />
                                                     </td>
                                                     <td>
                                                         <input [(ngModel)]="field.Vinculo" class="form-control"
-                                                            type="text" name="{{field.Vinculo}}" />
+                                                               type="text" name="{{field.Vinculo}}" />
                                                     </td>
                                                     <td width="75px">
                                                         <button class="btn-remove btn-custom" type="button"
-                                                            (click)="deleteFieldValueFuncionarios(i)">
+                                                                (click)="deleteFieldValueFuncionarios(i)">
                                                             Eliminar
                                                         </button>
                                                     </td>
@@ -621,7 +635,7 @@
                                         </table>
                                         <div class="btn-add-container">
                                             <button class="btn-add btn-custom" type="button"
-                                                (click)="addFieldValueFuncionarios()">
+                                                    (click)="addFieldValueFuncionarios()">
                                                 Agregar
                                             </button>
 
@@ -634,21 +648,23 @@
                             <div *ngIf="!puedeAltaInterna" class="card-header" id="headingThree">
                                 <h5 class="mb-0" (click)="abrirCodigoConducta()">
                                     <button class="titulos collapsed" type="button" data-toggle="collapse"
-                                        data-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
+                                            data-target="#collapseThree" aria-expanded="false"
+                                            aria-controls="collapseThree">
                                         Aceptación del Código de Conducta <span class="requerido">*</span>
                                     </button>
                                 </h5>
                             </div>
                             <div *ngIf="!puedeAltaInterna" id="collapseThree" class="collapse  card-container " aria-labelledby="headingThree"
-                                data-parent="#accordionExample">
+                                 data-parent="#accordionExample">
                                 <div class="card-body">
                                     <div class="col-xs-12">
                                         <p>
                                             Declaramos que hemos leído el
-                                            <a (click)="abrirCodigoConducta(true)" class="trigger-btn">Código de
+                                            <a (click)="abrirCodigoConducta(true)" class="trigger-btn">
+                                                Código de
                                                 Conducta de
-                                                Proveedores de Molinos agro S.A.</a>
+                                                Proveedores de Molinos agro S.A.
+                                            </a>
                                             ,
                                             de cuyo contenido nos notificamos y declaramos comprender y aceptar.
                                             <br />
@@ -656,9 +672,11 @@
 
                                         </p>
                                         <ol>
-                                            <li>Adherimos plenamente a los valores éticos de Molinos agro, expresados en
+                                            <li>
+                                                Adherimos plenamente a los valores éticos de Molinos agro, expresados en
                                                 su
-                                                Código de Conducta;</li>
+                                                Código de Conducta;
+                                            </li>
                                             <li>
                                                 Conocemos acabadamente la normativa nacional e internacional
                                                 anticorrupción;
@@ -671,7 +689,7 @@
                                     <div class="col-xs-12">
                                         <label class="form-check-label">
                                             <input type="checkbox" class="form-check-input" value=""
-                                                [(ngModel)]="this.codigoDeConducta"><b>Acepto</b> - Código de Conducta
+                                                   [(ngModel)]="this.codigoDeConducta"><b>Acepto</b> - Código de Conducta
                                             de
                                             Proveedores de Molinos agro S.A.
                                         </label>
@@ -696,22 +714,22 @@
 
                     <!--  MISMO BOTON QUE EL DE LA LINEA 720 *ngIf="!esAltaInternaGranos"-->
                     <button *ngIf="!puedeAltaInterna" type="button" id="openModalNotificacion" data-toggle="modal"
-                        style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
+                            style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
                     <input *ngIf="!puedeAltaInterna" type="submit" (click)="onSubmit()"
-                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                           class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--Granos-->
                     <!-- empresa.EstadoAprobacion === 1 || empresa.EstadoAprobacion === 4) -->
                     <!--si viene de listado de altas pendientes-->
                     <input type="submit" *ngIf="puedeAltaInterna" (click)="submitAltaInterna()"
-                        class="btn-custom btn-guardar btn-mediano" value="Enviar">
+                           class="btn-custom btn-guardar btn-mediano" value="Enviar">
 
                     <!--
-                    <button *ngIf="altaInterna" type="button" 
+                    <button *ngIf="altaInterna" type="button"
                         style="display:none" class="btn-custom btn-azul"></button>
                     <input *ngIf="altaInterna" type="submit" (click)="onSubmit()"
                         class="btn-custom btn-guardar btn-mediano" value="Enviar">
-                    
+
                     <button *ngIf="!altaInterna" type="button" id="openModalNotificacion" data-toggle="modal"
                         style="display:none" data-target="#modalNotificación" class="btn-custom btn-azul"></button>
                     <input *ngIf="!altaInterna" type="submit" (click)="onSubmit()"
@@ -723,10 +741,12 @@
 
     <!-- Modal confirmar eliminar -->
     <a href="#confirmModal" class="trigger-btn" id="openModalConfirmModal" data-toggle="modal"
-        style="display:none;">Click
-        to Open Confirm Modal</a>
+       style="display:none;">
+        Click
+        to Open Confirm Modal
+    </a>
     <div class="modal fade fade-complete" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -756,15 +776,16 @@
         data-target="#modalNotificación"></button> -->
 
     <div class="modal fade fade-complete" id="modalNotificación" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         aria-labelledby="myModalLabel" data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close btn-close" data-dismiss="modal" aria-label="Close"
-                        onClick="abrirModal()">
+                            onClick="abrirModal()">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" *ngIf="granosFlag == 'NG'" id="myModalLabel">SOLICITUD ENVIADA CON ÉXITO
+                    <h4 class="modal-title" *ngIf="granosFlag == 'NG'" id="myModalLabel">
+                        SOLICITUD ENVIADA CON ÉXITO
                     </h4>
                     <h4 *ngIf="granosFlag != 'NG'" class="modal-title" id="myModalLabel">Solicitud de alta enviada</h4>
                 </div>
@@ -774,28 +795,30 @@
                 </div>
                 <ng-template #elseBlock>
                     <label>¡Su solicitud fue enviada con éxito!</label><br />
-                    <label style="color: red;">ENVIAR ESTA DOCUMENTACION EN ORIGINAL PARA QUE SU ALTA SEA
-                        DEFINITIVA</label><br />
-                    <label>(Datos Maestros, Molinos Agro, Uruguay 4075 (1644) Victoria, Bs As)</label><br />
+                    <label style="color: red;">Por favor, enviar la cbu con firma certificada en físico original a nuestras oficinas de</label><br />
+                    <label>URUGUAY 4075 (1644) Victoria, Buenos Aires.</label><br />
                     <br>
-                    <label>¡Muchas gracias!</label><br />
+                    <label>¡Muchas gracias!, Datos Maestros.</label><br />
                 </ng-template>
 
                 <div class="modal-footer">
                     <button (click)="redirigirAEstado()"
-                        class="btn-custom btn-guardar btn-grande centerbtn">Aceptar</button>
+                            class="btn-custom btn-guardar btn-grande centerbtn">
+                        Aceptar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
     <!-- end modal notificacion -->
-
     <!-- Modal Codigo de Conducta-->
     <a href="#conductaModal" style="display:none;" class="trigger-btn" id="openModalconductaModal"
-        data-toggle="modal">Click
-        to Open Conducta Modal</a>
+       data-toggle="modal">
+        Click
+        to Open Conducta Modal
+    </a>
     <div class="modal fade" id="conductaModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-        data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
+         data-backdrop="false" style="background-color: rgba(0, 0, 0, 0.5);">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">

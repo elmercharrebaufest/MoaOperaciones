@@ -8,15 +8,133 @@
     padding-bottom: 35px;
 }
 
+.input-select {
+    border: 1px solid #95959561;
+    width: 50%;
+    padding: 4px;
+    width: 500px;
+    cursor: pointer;
+}
+
+.text-lista-adjuntos {
+    overflow: hidden;
+    white-space: -moz-pre-space;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.display-f {
+    display: -webkit-inline-box;
+    width: 25%;
+}
+
+.m-b {
+    margin-bottom: 4px;
+}
+
+.delete-f {
+    width: 35%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.font-n {
+    font-weight: normal;
+}
+
 .checkboxGrande {
     zoom: 1.1;
 }
 
 .modal-footer {
-    justify-content: center;
-    display: flex;
+  justify-content: center;
+  display: flex;
 }
 
 .containerBotones {
     padding-top: 15px;
 }
+
+.step-container {
+    position: relative;
+    text-align: left;
+    background-color: white;
+    border-radius: 11px;
+    margin-bottom: 15px;
+}
+
+.step-container-header {
+  padding: 10px;
+  background-color: #959595;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: auto;
+  font-size: 15px;
+  color: white;
+}
+
+
+/* Cambiar el color de fondo del toast */
+.ui-toast {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Modificar el tamaño del texto del mensaje */
+.ui-toast-message {
+    font-size: 14px;
+}
+
+/* Personalizar el icono del toast */
+.ui-toast-icon {
+    color: #ffcc00; /* Cambiar el color del icono */
+    font-size: 20px; /* Cambiar el tamaño del icono */
+}
+
+.styled-select {
+    display: flex;
+    align-items: center;
+}
+
+    .styled-select input {
+        margin-right: 5px; /* Ajusta el margen entre el input y el span según tus necesidades */
+    }
+
+
+    .styled-select span.requerido {
+        padding-left: 5px;
+      
+    }
+
+
+
+
+.styled-select {
+    margin-top: 10px; /* Ajusta el margen superior según tus necesidades */
+}
+
+.contenedorNuevoComentario {
+    display: flex;
+  
+}
+
+    .contenedorNuevoComentario span.requerido {
+        margin-left: 10px; /* Ajusta el margen entre el editor y el span según tus necesidades */
+    }
+
+.custom-width {
+    width: 95%; /* Establece el ancho al 95% del contenedor padre */
+    box-sizing: border-box; /* Incluye el padding y el borde en el ancho total */
+}
+
+/* ROLES SELECTORS */
+#checkAllRoles, #checkExternalRoles, #checkInternalRoles {
+    margin-right: .5em;
+}
+
+#checkInternalRoles, #checkExternalRoles {
+    margin-left: 1em;
+}
+/* ROLES SELECTORS END */

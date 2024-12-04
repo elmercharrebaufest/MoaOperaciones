@@ -180,8 +180,9 @@
     width: 880px;
 }
 
-@media only screen and (min-width: 1240px) { 
+@media only screen and (min-width: 1240px) {
     .sub-tabla {
-        width: calc(100vw - 377px);
+        width: calc(100vw - 220px); /* FailOver, en caso que dvw no esté disponible */
+        width: calc(100dvw - 220px); /* ARMOA003-3550. La medida anterior entra en conflicto con "zoom: 90%;" en MolinosGeneral.css */
     }
 }

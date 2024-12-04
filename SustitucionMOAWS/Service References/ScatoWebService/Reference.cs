@@ -1115,6 +1115,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string FechaSapField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FleteMOAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string FotoCamionRutaDestinoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -1364,6 +1367,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.FechaSapField, value) != true)) {
                     this.FechaSapField = value;
                     this.RaisePropertyChanged("FechaSap");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FleteMOA {
+            get {
+                return this.FleteMOAField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FleteMOAField, value) != true)) {
+                    this.FleteMOAField = value;
+                    this.RaisePropertyChanged("FleteMOA");
                 }
             }
         }
@@ -7059,6 +7075,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string CodigoPostalField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CodigoRENSPAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string ComercialField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -7075,6 +7094,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string DomicilioField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EsEUDRField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool EsProvisorioField;
@@ -7165,6 +7187,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CodigoRENSPA {
+            get {
+                return this.CodigoRENSPAField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CodigoRENSPAField, value) != true)) {
+                    this.CodigoRENSPAField = value;
+                    this.RaisePropertyChanged("CodigoRENSPA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public string Comercial {
             get {
                 return this.ComercialField;
@@ -7238,6 +7273,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.DomicilioField, value) != true)) {
                     this.DomicilioField = value;
                     this.RaisePropertyChanged("Domicilio");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EsEUDR {
+            get {
+                return this.EsEUDRField;
+            }
+            set {
+                if ((this.EsEUDRField.Equals(value) != true)) {
+                    this.EsEUDRField = value;
+                    this.RaisePropertyChanged("EsEUDR");
                 }
             }
         }
@@ -12922,6 +12970,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string ColorTextoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EsCuitNestleField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool EsDemoradoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -13047,6 +13098,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.ColorTextoField, value) != true)) {
                     this.ColorTextoField = value;
                     this.RaisePropertyChanged("ColorTexto");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EsCuitNestle {
+            get {
+                return this.EsCuitNestleField;
+            }
+            set {
+                if ((this.EsCuitNestleField.Equals(value) != true)) {
+                    this.EsCuitNestleField = value;
+                    this.RaisePropertyChanged("EsCuitNestle");
                 }
             }
         }
@@ -13479,6 +13543,400 @@ namespace SustitucionMOAWS.ScatoWebService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Consultas")]
+    [System.SerializableAttribute()]
+    public partial class ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private SustitucionMOAWS.ScatoWebService.HuellaDigitalDto[] ItemsField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ItemsPorPaginaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int ItemsTotalesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int PaginaField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public SustitucionMOAWS.ScatoWebService.HuellaDigitalDto[] Items {
+            get {
+                return this.ItemsField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ItemsField, value) != true)) {
+                    this.ItemsField = value;
+                    this.RaisePropertyChanged("Items");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ItemsPorPagina {
+            get {
+                return this.ItemsPorPaginaField;
+            }
+            set {
+                if ((this.ItemsPorPaginaField.Equals(value) != true)) {
+                    this.ItemsPorPaginaField = value;
+                    this.RaisePropertyChanged("ItemsPorPagina");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int ItemsTotales {
+            get {
+                return this.ItemsTotalesField;
+            }
+            set {
+                if ((this.ItemsTotalesField.Equals(value) != true)) {
+                    this.ItemsTotalesField = value;
+                    this.RaisePropertyChanged("ItemsTotales");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Pagina {
+            get {
+                return this.PaginaField;
+            }
+            set {
+                if ((this.PaginaField.Equals(value) != true)) {
+                    this.PaginaField = value;
+                    this.RaisePropertyChanged("Pagina");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="HuellaDigitalDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
+    [System.SerializableAttribute()]
+    public partial class HuellaDigitalDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
+        
+        [System.NonSerializedAttribute()]
+        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string AcopladoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int BalanzaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CentroField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ChoferField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CuitChoferField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string CuitTransportistaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EstadoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string EstadoRegistroField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FechaHoraPesajeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int IdField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int LugarPesajeField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string ObservacionesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string PatenteField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int PesoTaraField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TipoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string TransportistaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string UsuarioField;
+        
+        [global::System.ComponentModel.BrowsableAttribute(false)]
+        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
+            get {
+                return this.extensionDataField;
+            }
+            set {
+                this.extensionDataField = value;
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Acoplado {
+            get {
+                return this.AcopladoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.AcopladoField, value) != true)) {
+                    this.AcopladoField = value;
+                    this.RaisePropertyChanged("Acoplado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Balanza {
+            get {
+                return this.BalanzaField;
+            }
+            set {
+                if ((this.BalanzaField.Equals(value) != true)) {
+                    this.BalanzaField = value;
+                    this.RaisePropertyChanged("Balanza");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Centro {
+            get {
+                return this.CentroField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CentroField, value) != true)) {
+                    this.CentroField = value;
+                    this.RaisePropertyChanged("Centro");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Chofer {
+            get {
+                return this.ChoferField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ChoferField, value) != true)) {
+                    this.ChoferField = value;
+                    this.RaisePropertyChanged("Chofer");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CuitChofer {
+            get {
+                return this.CuitChoferField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CuitChoferField, value) != true)) {
+                    this.CuitChoferField = value;
+                    this.RaisePropertyChanged("CuitChofer");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string CuitTransportista {
+            get {
+                return this.CuitTransportistaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.CuitTransportistaField, value) != true)) {
+                    this.CuitTransportistaField = value;
+                    this.RaisePropertyChanged("CuitTransportista");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool Estado {
+            get {
+                return this.EstadoField;
+            }
+            set {
+                if ((this.EstadoField.Equals(value) != true)) {
+                    this.EstadoField = value;
+                    this.RaisePropertyChanged("Estado");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string EstadoRegistro {
+            get {
+                return this.EstadoRegistroField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.EstadoRegistroField, value) != true)) {
+                    this.EstadoRegistroField = value;
+                    this.RaisePropertyChanged("EstadoRegistro");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FechaHoraPesaje {
+            get {
+                return this.FechaHoraPesajeField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FechaHoraPesajeField, value) != true)) {
+                    this.FechaHoraPesajeField = value;
+                    this.RaisePropertyChanged("FechaHoraPesaje");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int Id {
+            get {
+                return this.IdField;
+            }
+            set {
+                if ((this.IdField.Equals(value) != true)) {
+                    this.IdField = value;
+                    this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int LugarPesaje {
+            get {
+                return this.LugarPesajeField;
+            }
+            set {
+                if ((this.LugarPesajeField.Equals(value) != true)) {
+                    this.LugarPesajeField = value;
+                    this.RaisePropertyChanged("LugarPesaje");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Observaciones {
+            get {
+                return this.ObservacionesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.ObservacionesField, value) != true)) {
+                    this.ObservacionesField = value;
+                    this.RaisePropertyChanged("Observaciones");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Patente {
+            get {
+                return this.PatenteField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.PatenteField, value) != true)) {
+                    this.PatenteField = value;
+                    this.RaisePropertyChanged("Patente");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int PesoTara {
+            get {
+                return this.PesoTaraField;
+            }
+            set {
+                if ((this.PesoTaraField.Equals(value) != true)) {
+                    this.PesoTaraField = value;
+                    this.RaisePropertyChanged("PesoTara");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Tipo {
+            get {
+                return this.TipoField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TipoField, value) != true)) {
+                    this.TipoField = value;
+                    this.RaisePropertyChanged("Tipo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Transportista {
+            get {
+                return this.TransportistaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.TransportistaField, value) != true)) {
+                    this.TransportistaField = value;
+                    this.RaisePropertyChanged("Transportista");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Usuario {
+            get {
+                return this.UsuarioField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.UsuarioField, value) != true)) {
+                    this.UsuarioField = value;
+                    this.RaisePropertyChanged("Usuario");
+                }
+            }
+        }
+        
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
+        
+        protected void RaisePropertyChanged(string propertyName) {
+            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
+            if ((propertyChanged != null)) {
+                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+    
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
     [System.Runtime.Serialization.DataContractAttribute(Name="InstanciaWorkflowDto", Namespace="http://schemas.datacontract.org/2004/07/Molinos.Scato.Dominio.Dto")]
     [System.SerializableAttribute()]
     public partial class InstanciaWorkflowDto : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
@@ -13598,6 +14056,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private System.Nullable<System.DateTime> FechaUltimaModificacionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string FleteMOAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool FueAsignadoField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -13668,6 +14129,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool SojaEPAField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool SojaEUDRField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool SojaIMPOField;
@@ -14203,6 +14667,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string FleteMOA {
+            get {
+                return this.FleteMOAField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.FleteMOAField, value) != true)) {
+                    this.FleteMOAField = value;
+                    this.RaisePropertyChanged("FleteMOA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool FueAsignado {
             get {
                 return this.FueAsignadoField;
@@ -14510,6 +14987,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.SojaEPAField.Equals(value) != true)) {
                     this.SojaEPAField = value;
                     this.RaisePropertyChanged("SojaEPA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool SojaEUDR {
+            get {
+                return this.SojaEUDRField;
+            }
+            set {
+                if ((this.SojaEUDRField.Equals(value) != true)) {
+                    this.SojaEUDRField = value;
+                    this.RaisePropertyChanged("SojaEUDR");
                 }
             }
         }
@@ -16366,6 +16856,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string CosechaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool EstablecimientoAnuladoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.DateTime FechaDesdeField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -16439,6 +16932,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((object.ReferenceEquals(this.CosechaField, value) != true)) {
                     this.CosechaField = value;
                     this.RaisePropertyChanged("Cosecha");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool EstablecimientoAnulado {
+            get {
+                return this.EstablecimientoAnuladoField;
+            }
+            set {
+                if ((this.EstablecimientoAnuladoField.Equals(value) != true)) {
+                    this.EstablecimientoAnuladoField = value;
+                    this.RaisePropertyChanged("EstablecimientoAnulado");
                 }
             }
         }
@@ -18201,6 +18707,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         AbmExcepcionAlControlProveedor = 702,
+        
+        [System.Runtime.Serialization.EnumMemberAttribute()]
+        AbmHuellaDigital = 703,
         
         [System.Runtime.Serialization.EnumMemberAttribute()]
         ActividadAutorizarDescuentosEntregador = 100,
@@ -47342,6 +47851,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private bool SojaEPAField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private bool SojaEUDRField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool SustentableField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -47700,6 +48212,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.SojaEPAField.Equals(value) != true)) {
                     this.SojaEPAField = value;
                     this.RaisePropertyChanged("SojaEPA");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public bool SojaEUDR {
+            get {
+                return this.SojaEUDRField;
+            }
+            set {
+                if ((this.SojaEUDRField.Equals(value) != true)) {
+                    this.SojaEUDRField = value;
+                    this.RaisePropertyChanged("SojaEUDR");
                 }
             }
         }
@@ -86467,6 +86992,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private int IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string Id_operacionesField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private System.Guid InstanciaWorkflowField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -86796,6 +87324,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.IdField.Equals(value) != true)) {
                     this.IdField = value;
                     this.RaisePropertyChanged("Id");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public string Id_operaciones {
+            get {
+                return this.Id_operacionesField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.Id_operacionesField, value) != true)) {
+                    this.Id_operacionesField = value;
+                    this.RaisePropertyChanged("Id_operaciones");
                 }
             }
         }
@@ -87261,6 +87802,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         private System.Nullable<int> DestinatarioIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private string DestinoMercaderiaField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
         private bool EsExtranjeroField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
@@ -87288,7 +87832,7 @@ namespace SustitucionMOAWS.ScatoWebService {
         private string LocalidadDestinoDescripcionField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private int LocalidadDestinoIdField;
+        private System.Nullable<int> LocalidadDestinoIdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string MaterialDescField;
@@ -87361,6 +87905,9 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private SustitucionMOAWS.ScatoWebService.TipoVehiculo TipoVehiculoField;
+        
+        [System.Runtime.Serialization.OptionalFieldAttribute()]
+        private int TipoVehiculoLecturaField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private string TipoYOrdenDestinoField;
@@ -87603,6 +88150,19 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
+        public string DestinoMercaderia {
+            get {
+                return this.DestinoMercaderiaField;
+            }
+            set {
+                if ((object.ReferenceEquals(this.DestinoMercaderiaField, value) != true)) {
+                    this.DestinoMercaderiaField = value;
+                    this.RaisePropertyChanged("DestinoMercaderia");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
         public bool EsExtranjero {
             get {
                 return this.EsExtranjeroField;
@@ -87720,7 +88280,7 @@ namespace SustitucionMOAWS.ScatoWebService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public int LocalidadDestinoId {
+        public System.Nullable<int> LocalidadDestinoId {
             get {
                 return this.LocalidadDestinoIdField;
             }
@@ -88040,6 +88600,19 @@ namespace SustitucionMOAWS.ScatoWebService {
                 if ((this.TipoVehiculoField.Equals(value) != true)) {
                     this.TipoVehiculoField = value;
                     this.RaisePropertyChanged("TipoVehiculo");
+                }
+            }
+        }
+        
+        [System.Runtime.Serialization.DataMemberAttribute()]
+        public int TipoVehiculoLectura {
+            get {
+                return this.TipoVehiculoLecturaField;
+            }
+            set {
+                if ((this.TipoVehiculoLecturaField.Equals(value) != true)) {
+                    this.TipoVehiculoLecturaField = value;
+                    this.RaisePropertyChanged("TipoVehiculoLectura");
                 }
             }
         }
@@ -97299,11 +97872,11 @@ namespace SustitucionMOAWS.ScatoWebService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerVariedadIdPorMaterial", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerVariedadIdPorMaterialResp" +
             "onse")]
-        System.Nullable<int> ObtenerVariedadIdPorMaterial(int materialId, string titularCP, bool esEpa, bool esSustentable);
+        System.Nullable<int> ObtenerVariedadIdPorMaterial(int materialId, string titularCP, bool esEpa, bool esSustentable, bool esEUDR);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerVariedadIdPorMaterial", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerVariedadIdPorMaterialResp" +
             "onse")]
-        System.Threading.Tasks.Task<System.Nullable<int>> ObtenerVariedadIdPorMaterialAsync(int materialId, string titularCP, bool esEpa, bool esSustentable);
+        System.Threading.Tasks.Task<System.Nullable<int>> ObtenerVariedadIdPorMaterialAsync(int materialId, string titularCP, bool esEpa, bool esSustentable, bool esEUDR);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutomatismoGrano", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarAutomatismoGranoResponse")]
         SustitucionMOAWS.ScatoWebService.AutomatismoGranoDto[] ListarAutomatismoGrano();
@@ -97701,6 +98274,12 @@ namespace SustitucionMOAWS.ScatoWebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCargaFason", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCargaFasonResponse")]
         System.Threading.Tasks.Task<bool> ExisteOrdenCargaFasonAsync(string ordenExterno);
         
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientes", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientesResponse")]
+        int ContarClientes(string nCuit);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientes", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ContarClientesResponse")]
+        System.Threading.Tasks.Task<int> ContarClientesAsync(string nCuit);
+        
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFason", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFasonRe" +
             "sponse")]
         string ObtenerNuevoNumeroDeOrdenFason();
@@ -97708,6 +98287,86 @@ namespace SustitucionMOAWS.ScatoWebService {
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFason", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerNuevoNumeroDeOrdenFasonRe" +
             "sponse")]
         System.Threading.Tasks.Task<string> ObtenerNuevoNumeroDeOrdenFasonAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCarga", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCargaResponse")]
+        bool ExisteOrdenCarga(string ordenExterno);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCarga", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ExisteOrdenCargaResponse")]
+        System.Threading.Tasks.Task<bool> ExisteOrdenCargaAsync(string ordenExterno);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferesPorCuits", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferesPorCuitsResponse")]
+        SustitucionMOAWS.ScatoWebService.ChoferDto[] ObtenerChoferesPorCuits(string[] cuils);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferesPorCuits", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerChoferesPorCuitsResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ChoferDto[]> ObtenerChoferesPorCuitsAsync(string[] cuils);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMaterialPorId", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMaterialPorIdResponse")]
+        SustitucionMOAWS.ScatoWebService.MaterialDto ObtenerMaterialPorId(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMaterialPorId", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerMaterialPorIdResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MaterialDto> ObtenerMaterialPorIdAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPatentePorIdCargaCupo", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPatentePorIdCargaCupoResp" +
+            "onse")]
+        string ObtenerPatentePorIdCargaCupo(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPatentePorIdCargaCupo", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerPatentePorIdCargaCupoResp" +
+            "onse")]
+        System.Threading.Tasks.Task<string> ObtenerPatentePorIdCargaCupoAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaInter" +
+            "na", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaInter" +
+            "naResponse")]
+        bool ValidarCuitNestleOrdenCargaInterna(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaInter" +
+            "na", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaInter" +
+            "naResponse")]
+        System.Threading.Tasks.Task<bool> ValidarCuitNestleOrdenCargaInternaAsync(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaFas", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaFasRe" +
+            "sponse")]
+        bool ValidarCuitNestleOrdenCargaFas(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaFas", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleOrdenCargaFasRe" +
+            "sponse")]
+        System.Threading.Tasks.Task<bool> ValidarCuitNestleOrdenCargaFasAsync(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestle", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleResponse")]
+        bool ValidarCuitNestle(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestle", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ValidarCuitNestleResponse")]
+        System.Threading.Tasks.Task<bool> ValidarCuitNestleAsync(int idRecorrido);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoNoRechazadoPorId" +
+            "Insumos", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoNoRechazadoPorId" +
+            "InsumosResponse")]
+        SustitucionMOAWS.ScatoWebService.RecorridoDto ObtenerRecorridoNoRechazadoPorIdInsumos(string numero);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoNoRechazadoPorId" +
+            "Insumos", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerRecorridoNoRechazadoPorId" +
+            "InsumosResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RecorridoDto> ObtenerRecorridoNoRechazadoPorIdInsumosAsync(string numero);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigital", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalResponse")]
+        SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P ListarHuellaDigital(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion, bool esHistorico);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigital", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P> ListarHuellaDigitalAsync(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion, bool esHistorico);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigital", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigitalResponse")]
+        SustitucionMOAWS.ScatoWebService.HuellaDigitalDto ObtenerHuellaDigital(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigital", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ObtenerHuellaDigitalResponse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.HuellaDigitalDto> ObtenerHuellaDigitalAsync(int id);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalHistorico", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalHistoricoResp" +
+            "onse")]
+        SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P ListarHuellaDigitalHistorico(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalHistorico", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarHuellaDigitalHistoricoResp" +
+            "onse")]
+        System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P> ListarHuellaDigitalHistoricoAsync(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflowsPendientes" +
             "", ReplyAction="http://scato.molinos.com.ar/IServicioRepositorio/ListarDatosDeWorkflowsPendientes" +
@@ -105223,12 +105882,12 @@ namespace SustitucionMOAWS.ScatoWebService {
             return base.Channel.ObtenerVariedadPorTipoMaterialAsync(idMaterial);
         }
         
-        public System.Nullable<int> ObtenerVariedadIdPorMaterial(int materialId, string titularCP, bool esEpa, bool esSustentable) {
-            return base.Channel.ObtenerVariedadIdPorMaterial(materialId, titularCP, esEpa, esSustentable);
+        public System.Nullable<int> ObtenerVariedadIdPorMaterial(int materialId, string titularCP, bool esEpa, bool esSustentable, bool esEUDR) {
+            return base.Channel.ObtenerVariedadIdPorMaterial(materialId, titularCP, esEpa, esSustentable, esEUDR);
         }
         
-        public System.Threading.Tasks.Task<System.Nullable<int>> ObtenerVariedadIdPorMaterialAsync(int materialId, string titularCP, bool esEpa, bool esSustentable) {
-            return base.Channel.ObtenerVariedadIdPorMaterialAsync(materialId, titularCP, esEpa, esSustentable);
+        public System.Threading.Tasks.Task<System.Nullable<int>> ObtenerVariedadIdPorMaterialAsync(int materialId, string titularCP, bool esEpa, bool esSustentable, bool esEUDR) {
+            return base.Channel.ObtenerVariedadIdPorMaterialAsync(materialId, titularCP, esEpa, esSustentable, esEUDR);
         }
         
         public SustitucionMOAWS.ScatoWebService.AutomatismoGranoDto[] ListarAutomatismoGrano() {
@@ -105583,12 +106242,108 @@ namespace SustitucionMOAWS.ScatoWebService {
             return base.Channel.ExisteOrdenCargaFasonAsync(ordenExterno);
         }
         
+        public int ContarClientes(string nCuit) {
+            return base.Channel.ContarClientes(nCuit);
+        }
+        
+        public System.Threading.Tasks.Task<int> ContarClientesAsync(string nCuit) {
+            return base.Channel.ContarClientesAsync(nCuit);
+        }
+        
         public string ObtenerNuevoNumeroDeOrdenFason() {
             return base.Channel.ObtenerNuevoNumeroDeOrdenFason();
         }
         
         public System.Threading.Tasks.Task<string> ObtenerNuevoNumeroDeOrdenFasonAsync() {
             return base.Channel.ObtenerNuevoNumeroDeOrdenFasonAsync();
+        }
+        
+        public bool ExisteOrdenCarga(string ordenExterno) {
+            return base.Channel.ExisteOrdenCarga(ordenExterno);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ExisteOrdenCargaAsync(string ordenExterno) {
+            return base.Channel.ExisteOrdenCargaAsync(ordenExterno);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.ChoferDto[] ObtenerChoferesPorCuits(string[] cuils) {
+            return base.Channel.ObtenerChoferesPorCuits(cuils);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ChoferDto[]> ObtenerChoferesPorCuitsAsync(string[] cuils) {
+            return base.Channel.ObtenerChoferesPorCuitsAsync(cuils);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.MaterialDto ObtenerMaterialPorId(int id) {
+            return base.Channel.ObtenerMaterialPorId(id);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.MaterialDto> ObtenerMaterialPorIdAsync(int id) {
+            return base.Channel.ObtenerMaterialPorIdAsync(id);
+        }
+        
+        public string ObtenerPatentePorIdCargaCupo(int id) {
+            return base.Channel.ObtenerPatentePorIdCargaCupo(id);
+        }
+        
+        public System.Threading.Tasks.Task<string> ObtenerPatentePorIdCargaCupoAsync(int id) {
+            return base.Channel.ObtenerPatentePorIdCargaCupoAsync(id);
+        }
+        
+        public bool ValidarCuitNestleOrdenCargaInterna(int idRecorrido) {
+            return base.Channel.ValidarCuitNestleOrdenCargaInterna(idRecorrido);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ValidarCuitNestleOrdenCargaInternaAsync(int idRecorrido) {
+            return base.Channel.ValidarCuitNestleOrdenCargaInternaAsync(idRecorrido);
+        }
+        
+        public bool ValidarCuitNestleOrdenCargaFas(int idRecorrido) {
+            return base.Channel.ValidarCuitNestleOrdenCargaFas(idRecorrido);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ValidarCuitNestleOrdenCargaFasAsync(int idRecorrido) {
+            return base.Channel.ValidarCuitNestleOrdenCargaFasAsync(idRecorrido);
+        }
+        
+        public bool ValidarCuitNestle(int idRecorrido) {
+            return base.Channel.ValidarCuitNestle(idRecorrido);
+        }
+        
+        public System.Threading.Tasks.Task<bool> ValidarCuitNestleAsync(int idRecorrido) {
+            return base.Channel.ValidarCuitNestleAsync(idRecorrido);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.RecorridoDto ObtenerRecorridoNoRechazadoPorIdInsumos(string numero) {
+            return base.Channel.ObtenerRecorridoNoRechazadoPorIdInsumos(numero);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.RecorridoDto> ObtenerRecorridoNoRechazadoPorIdInsumosAsync(string numero) {
+            return base.Channel.ObtenerRecorridoNoRechazadoPorIdInsumosAsync(numero);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P ListarHuellaDigital(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion, bool esHistorico) {
+            return base.Channel.ListarHuellaDigital(filtro, paginacion, esHistorico);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P> ListarHuellaDigitalAsync(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion, bool esHistorico) {
+            return base.Channel.ListarHuellaDigitalAsync(filtro, paginacion, esHistorico);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.HuellaDigitalDto ObtenerHuellaDigital(int id) {
+            return base.Channel.ObtenerHuellaDigital(id);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.HuellaDigitalDto> ObtenerHuellaDigitalAsync(int id) {
+            return base.Channel.ObtenerHuellaDigitalAsync(id);
+        }
+        
+        public SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P ListarHuellaDigitalHistorico(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion) {
+            return base.Channel.ListarHuellaDigitalHistorico(filtro, paginacion);
+        }
+        
+        public System.Threading.Tasks.Task<SustitucionMOAWS.ScatoWebService.ListaPaginadaOfHuellaDigitalDtoT7DPfI5_P> ListarHuellaDigitalHistoricoAsync(string filtro, SustitucionMOAWS.ScatoWebService.Paginacion paginacion) {
+            return base.Channel.ListarHuellaDigitalHistoricoAsync(filtro, paginacion);
         }
         
         public SustitucionMOAWS.ScatoWebService.InstanciaWorkflowDto[] ListarDatosDeWorkflowsPendientes(int centroId, int cantidad) {

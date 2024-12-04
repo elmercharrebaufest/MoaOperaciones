@@ -179,35 +179,45 @@
                 </pagination-template>
             </div>
         </div>
-        <!-- END tables-->
     </section>
-    <!--End CONTENT-->
 </div>
 
-<p-dialog [header]="'Aplicación pendiente de aprobación'"
-    [(visible)]="mostrarModalAprobarRechazar || mostrarModalAprobarRechazarMasivo" [modal]="true" [responsive]="true"
-    [style]="{width: '350px', minWidth: '200px', maxWidth:'350px'}" [minY]="70" [draggable]="false" appendTo="body"
+<p-dialog [header]="'Aplicaciones pendientes de aprobación'"
+    [(visible)]="mostrarModalAprobarRechazar" [modal]="true" [responsive]="true"
+    [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body"
     [closable]="false">
 
-    <div *ngIf="mostrarModalAprobarRechazarMasivo">
-        <label>Aplicaciones seleccionadas:</label>
-        <table id="tablaAplicacionesSeleccionadas" style="border: 1px solid;">
-            <!-- <tbody> -->
+    <div>
+        <table id="tablaAplicacionesAResolver" class="display nowrap dataTable no-footer dtr-inline rounded shadow animate"
+            role="grid" aria-describedby="tableModal_info" style="width: 100%;padding: 30px 0">
+            <thead>
                 <tr role="row">
-                    <td style="border: 1px solid; padding: 2px;"><b>Razón social</b></td>
-                    <td style="border: 1px solid; padding: 2px;"><b>Contrato</b></td>
-                    <td style="border: 1px solid; padding: 2px;"><b>CCPP</b></td>
+                    <th class="fw-bold fs-medium" *ngIf="verRazonSocial">
+                        Razón social
+                    </th>
+                    <th class="fw-bold fs-medium">
+                        Contrato
+                    </th>
+                    <th class="fw-bold fs-medium">
+                        CCPP
+                    </th>
+                    <th class="fw-bold fs-medium">
+                        Kilos aplicados
+                    </th>
                 </tr>
-                <tr *ngFor="let aplicacion of aplicacionesSeleccionadas" role="row">
-                    <td style="border: 1px solid; padding: 2px;">{{aplicacion.RazonSocial}}</td>
-                    <td style="border: 1px solid; padding: 2px;">{{aplicacion.Contrato}}</td>
-                    <td style="border: 1px solid; padding: 2px;">{{aplicacion.CartaPorte}}</td>
+            </thead>
+            <tbody>
+                <tr *ngFor="let aplicacion of aplicacionesParaAprobarORechazar" role="row">
+                    <td *ngIf="verRazonSocial">{{aplicacion.RazonSocial}}</td>
+                    <td>{{aplicacion.Contrato}}</td>
+                    <td>{{aplicacion.CartaPorte}}</td>
+                    <td style="text-align: center;">{{aplicacion.Kilogramos| number:'2.0'}} Kg</td>
                 </tr>
-            <!-- </tbody> -->
+            </tbody>
         </table>
     </div>
 
-    <div class="card flex justify-content-center" style="margin: 5px;">
+    <div class="card flex justify-content-center" style="margin: 15px;">
         <p-selectButton [options]="opcionesAprobarRechazar" [(ngModel)]="decisionAprobarRechazar" optionLabel="label"
             optionValue="value">
         </p-selectButton>

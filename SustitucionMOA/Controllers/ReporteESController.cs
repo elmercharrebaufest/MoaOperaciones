@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.html.simpleparser;
-using iTextSharp.text.pdf;
+﻿using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAUtils.Logger;
-using System.Text;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using System.Globalization;
 using Newtonsoft.Json;
+using SustitucionMOAModel.Dto.OrdenesCompra;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
@@ -21,61 +16,53 @@ namespace SustitucionMOA.Controllers
     {
 
         private static readonly string TEMPLATE_REPORTE_ALTA_ES = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "ReporteAltaES.html");
-        
+
         public ActionResult BuildReportES(string reportRequest)
         {
-            try
+            var report = JsonConvert.DeserializeObject<List<ReporteDto>>(reportRequest);
+
+            string templateContent = string.Empty;
+            string htmlTable = string.Empty;
+
+            var groupedReportsForPosition = report.GroupBy(r => r.PosicionId);
+
+            using (StreamReader reader = new StreamReader(TEMPLATE_REPORTE_ALTA_ES))
             {
-                var report = JsonConvert.DeserializeObject<List<ReporteDto>>(reportRequest);
+                templateContent = reader.ReadToEnd();
+            }
 
-                string templateContent = string.Empty;
-                string htmlTable = string.Empty;
+            decimal generalAmount = 0;
 
-                var groupedReportsForPosition = report.GroupBy(r => r.PosicionId);
-                
-                using (StreamReader reader = new StreamReader(TEMPLATE_REPORTE_ALTA_ES))
+            foreach (var group in groupedReportsForPosition)
+            {
+                var data = BuildHtmlTable(group.ToList());
+                htmlTable += data.Table;
+                generalAmount += data.TotalAmount;
+            }
+
+            string fullHtml = templateContent.Replace("{table}", htmlTable);
+            fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
+            fullHtml = fullHtml.Replace("{generalAmount}", (report[0].Moneda == "ARP" ? "$ " : report[0].Moneda + " ") + generalAmount.ToString("N2"));
+
+            using (var ms = new MemoryStream())
+            {
+                using (var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f))
                 {
-                    templateContent = reader.ReadToEnd();
-                }
+                    PdfWriter writer = PdfWriter.GetInstance(pdfDoc, ms);
+                    pdfDoc.Open();
 
-                decimal generalAmount = 0;
-
-                foreach (var group in groupedReportsForPosition)
-                {
-                    var data = BuildHtmlTable(group.ToList());
-                    htmlTable += data.Table;
-                    generalAmount += data.TotalAmount;
-                }
-
-                string fullHtml = templateContent.Replace("{table}", htmlTable);
-                fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
-                fullHtml = fullHtml.Replace("{generalAmount}", (report[0].Moneda == "ARP" ? "$ " : report[0].Moneda + " ") + generalAmount.ToString("N2"));
-
-                using (var ms = new MemoryStream())
-                {
-                    using (var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f))
+                    using (var stringReader = new StringReader(fullHtml))
                     {
-                        PdfWriter writer = PdfWriter.GetInstance(pdfDoc, ms);
-                        pdfDoc.Open();
-
-                        using (var stringReader = new StringReader(fullHtml))
-                        {
-                            XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, stringReader);
-                        }
-
-                        pdfDoc.Close();
+                        XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, stringReader);
                     }
 
-                    return JsonCustom(File(ms.ToArray(), "application/pdf", $"Reporte-{DateTime.Now}.pdf"));
-
+                    pdfDoc.Close();
                 }
 
+                return JsonCustom(File(ms.ToArray(), "application/pdf", $"Reporte-{DateTime.Now}.pdf"));
+
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-           
+
         }
 
         private HtmlTableResult BuildHtmlTable(List<ReporteDto> reports)
@@ -143,7 +130,7 @@ namespace SustitucionMOA.Controllers
                 // Anteriores
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadReal.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{porcentajeAnteriorFormateado}</td>");
-                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US")) }</td>");
+                sb.AppendLine($"<td class=\"text-right\" style=\"border: 1px solid black; padding: 8px; text-align: right;\">{(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (report.CantidadReal * report.Importe).ToString("N", CultureInfo.GetCultureInfo("en-US"))}</td>");
 
                 // A certificar
                 sb.AppendLine($"<td style=\"border: 1px solid black; padding: 8px; text-align: center;\">{report.CantidadACertificar.ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>");
@@ -170,7 +157,8 @@ namespace SustitucionMOA.Controllers
             sb.AppendLine("</tfoot>");
             sb.AppendLine("</table>");
 
-            return new HtmlTableResult {
+            return new HtmlTableResult
+            {
                 Table = sb.ToString(),
                 TotalAmount = montoTotal,
             };

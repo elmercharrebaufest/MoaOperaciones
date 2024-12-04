@@ -26,129 +26,56 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GetListado(string fechaInicio, string fechaFin)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var data = aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
-                if (! (data.Count > 0))
-                    throw new InfoCustomException("No se han encontrado aplicaciones cargadas");
-                var filtros = aplicacionCCPPService.ObtenerFiltros(data);
-                return JsonCustom(new { data, filtros });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mailUsuario = SessionPersister.getUsername();
+            var data = aplicacionCCPPService.Listar(mailUsuario, fechaInicio, fechaFin);
+            if (!(data.Count > 0))
+                throw new InfoCustomException("No se han encontrado aplicaciones cargadas");
+            var filtros = aplicacionCCPPService.ObtenerFiltros(data);
+            return JsonCustom(new { data, filtros });
+
         }
 
         [HttpGet]
         public ActionResult Get(int aplicacionCCPPId)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = aplicacionCCPPService.Obtener(aplicacionCCPPId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mailUsuario = SessionPersister.getUsername();
+
+            return JsonCustom(new { data = aplicacionCCPPService.Obtener(aplicacionCCPPId, mailUsuario) });
+
         }
 
         [HttpGet]
         public ContentResult EliminarAplicacion(int aplicacionId)
         {
             var response = new SustitucionMOAApiResponse<bool>();
-            try
-            {
-               aplicacionCCPPService.EliminarAplicacion(aplicacionId);
-               response.Data = true;
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+
+            aplicacionCCPPService.EliminarAplicacion(aplicacionId);
+            response.Data = true;
             return ContentCustom(response);
         }
 
         public ContentResult ObtenerComboContratosCcpp()
         {
             var response = new SustitucionMOAApiResponse<ComboAplicacionesContratosCcppResponse>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var codigoProveedor = SessionPersister.Proveedor;
-                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
-                response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor, esCodigoCorredor);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+
+            var mailUsuario = SessionPersister.getUsername();
+            var codigoProveedor = SessionPersister.Proveedor;
+            var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+            response.Data = aplicacionCCPPService.ObtenerCombosDeContratoCCPP(mailUsuario, codigoProveedor, esCodigoCorredor);
+
             return ContentCustom(response);
         }
         [HttpPost]
         public ContentResult GuardarAplicacion(string aplicacionCCPPJSON)
         {
             var response = new SustitucionMOAApiResponse<bool>();
-            try
-            {
 
-                var aplicacionACrear = JsonConvert.DeserializeObject<CrearAplicacionCartaPorte>(aplicacionCCPPJSON);
-                var mailUsuario = SessionPersister.getUsername();
-                aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
-                response.Data = true;
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error;
-            }
+            var aplicacionACrear = JsonConvert.DeserializeObject<CrearAplicacionCartaPorte>(aplicacionCCPPJSON);
+            var mailUsuario = SessionPersister.getUsername();
+            aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
+            response.Data = true;
+
             return ContentCustom(response);
         }
 
@@ -156,28 +83,11 @@ namespace SustitucionMOA.Controllers
         public ContentResult CargarMasiva(HttpPostedFileBase archivo)
         {
             var response = new SustitucionMOAApiResponse<CargaMasivaResponse>();
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var codigoProveedor = SessionPersister.Proveedor;
-                var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
-                response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor, esCodigoCorredor);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                var errorId = Guid.NewGuid();
-                Log.Error($"Error id {errorId}", ex);
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
-            }
+            var mailUsuario = SessionPersister.getUsername();
+            var codigoProveedor = SessionPersister.Proveedor;
+            var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+            response.Data = aplicacionCCPPService.ProcesarCargaMasiva(archivo, mailUsuario, codigoProveedor, esCodigoCorredor);
+
             return ContentCustom(response);
         }
 
@@ -185,25 +95,8 @@ namespace SustitucionMOA.Controllers
         public ContentResult AprobarAplicacionesPendientes(List<int> idsAplicaciones)
         {
             var response = new SustitucionMOAApiResponse<bool> { Data = true };
-            try
-            {
-                aplicacionCCPPService.AprobarAplicacionesPendientes(idsAplicaciones);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                var errorId = Guid.NewGuid();
-                Log.Error($"Error id {errorId}", ex);
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
-            }
+            aplicacionCCPPService.AprobarAplicacionesPendientes(idsAplicaciones);
+
             return ContentCustom(response);
         }
 
@@ -211,25 +104,9 @@ namespace SustitucionMOA.Controllers
         public ContentResult RechazarAplicacionesPendientes(List<int> idsAplicaciones, string motivo)
         {
             var response = new SustitucionMOAApiResponse<bool> { Data = true };
-            try
-            {
-                aplicacionCCPPService.RechazarAplicacionesPendientes(idsAplicaciones, motivo);
-            }
-            catch (InfoCustomException ice)
-            {
-                response.Info = ice.Message;
-            }
-            catch (ValidationCustomException vce)
-            {
-                response.Error = vce.Message;
-            }
-            catch (Exception ex)
-            {
-                var errorId = Guid.NewGuid();
-                Log.Error($"Error id {errorId}", ex);
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                response.Error = ErrorMsg.Error + $" (ID Error: {errorId})";
-            }
+
+            aplicacionCCPPService.RechazarAplicacionesPendientes(idsAplicaciones, motivo);
+
             return ContentCustom(response);
         }
     }

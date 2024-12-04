@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SustitucionMOAModel.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IEmailAplicacionCPService
     {
-        void EnviarMailAplicacionRechazada(string cartaPorte, string contrato, string motivo, string destinatario);
+        void EnviarMailAplicacionRechazada(IEnumerable<AplicacionCartaPorte> aplicaciones, string motivo, string destinatario);
     }
 }

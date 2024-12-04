@@ -51,11 +51,9 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
     estadoOrdenEntregada: EstadoOrdenResiduosEnum.OrdenEntregada;
 
     puedeAnular: boolean;
-    puedeSolicitarAnulacion: boolean;
     puedeEditar: boolean;
-    puedeResolverSolicitudAnulacion: boolean;
-    puedeResolverSolicitudEdicion: boolean;
     puedeVerificarTransporte: boolean;
+    camionHaIngresadoAPlanta: boolean = false;
     
     ngOnInit() {
         let idOrden: number = 0;
@@ -90,7 +88,25 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
     }
 
     editarOrdenResiduos() {
-        this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+        if (this.esAdmin) {
+            this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+        }
+        else {
+            this.service.camionOrdenEstaEnPlanta(this.ordenResiduos.Id).subscribe(
+                (resp) => {
+                    const camionEstaEnPlanta = this.manejarErroresApiResponse(resp);
+                    if (camionEstaEnPlanta === true) {
+                        this.floatMsgService.setErrorMsg("La orden no se puede editar por estar el camión en planta");
+                        this.camionHaIngresadoAPlanta = true;
+                        this.puedeEditar = false;
+                    }
+                    else {
+                        this.goToSeccion('/ordenes-residuos/alta/' + this.ordenResiduos.Id);
+                    }
+                },
+                (err) => { this.mensajeComponent.setErrorMsg(err.message) }
+            );
+        }
     }
 
     verificarTransporte() {
@@ -134,83 +150,8 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
                     this.ordenResiduos = orden;
                     this.verificarBotones();
                 }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
-
-    confirmarSolicitudAnulacion() {
-        this.confirmationService.confirm({
-            key: 'confirmarSA',
-            message: '¿Desea solicitar anulación?',
-            accept: () => { this.solicitarAnulacion() },
-            reject: () => {}
-        });
-    }
-
-    solicitarAnulacion() {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start("Procesando...");
-        this.service.solicitarAnulacion(this.ordenResiduos.Id).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
-                }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
-    
-    confirmarRechazarSolicitudAnulacion(aprobarSolicitud: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarRSA',
-            message: `¿Desea ${aprobarSolicitud ? "aprobar" : "rechazar"} la solicitud de anulación?`,
-            accept: () => { this.resolverSolicitudAnulacion(aprobarSolicitud) },
-            reject: () => {}
-        });
-    }
-
-    resolverSolicitudAnulacion(aprobarSolicitud: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        this.service.resolverSolicitudAnulacion(this.ordenResiduos.Id, aprobarSolicitud).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
-                }
-            },
-            (err) => { this.mensajeComponent.setErrorMsg(err.message); },
-            () => { this.blockUI.stop(); }
-        );
-    }
-
-    confirmarRechazarSolicitudEdicion(aprobarSolicitud: boolean) {
-        this.confirmationService.confirm({
-            key: 'confirmarSolicitudEdicion',
-            message: `¿Desea ${aprobarSolicitud ? 'aprobar' : 'rechazar'} la solicitud de anulación?`,
-            accept: () => { this.resolverSolicitudEdicion(aprobarSolicitud) },
-            reject: () => {}
-        });
-    }
-
-    resolverSolicitudEdicion(aprobarSolicitud: boolean) {
-        this.mensajeComponent.setMsgsEmpty();
-        this.unsubscribe();
-        this.blockUI.start('Procesando...');
-        this.service.resolverSolicitudEdicion(this.ordenResiduos.Id, aprobarSolicitud).subscribe(
-            (resp) => {
-                let orden = this.manejarErroresApiResponse(resp);
-                if (orden) {
-                    this.ordenResiduos = orden;
-                    this.verificarBotones();
+                else {
+                    this.puedeAnular = false;
                 }
             },
             (err) => { this.mensajeComponent.setErrorMsg(err.message); },
@@ -229,16 +170,10 @@ export class OrdenesResiduosDetalleComponent extends BaseComponent implements On
             EstadoOrdenResiduosEnum.Pendiente,
             EstadoOrdenResiduosEnum.OrdenVencida];
 
-        this.puedeEditar = estadosPermitenEdicion.includes(this.ordenResiduos.Estado.Id);
+        this.puedeEditar = !this.camionHaIngresadoAPlanta && estadosPermitenEdicion.includes(this.ordenResiduos.Estado.Id);
 
-        this.puedeAnular = this.esAdmin && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
+        this.puedeAnular = !this.camionHaIngresadoAPlanta && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
         
-        this.puedeSolicitarAnulacion = this.esClienteResiduos && estadosPermitenAnulacion.includes(this.ordenResiduos.Estado.Id);
-
-        this.puedeResolverSolicitudAnulacion = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.AnulacionSolicitada;
-
-        this.puedeResolverSolicitudEdicion = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.EdicionSolicitada;
-
         this.puedeVerificarTransporte = this.esAdmin && this.ordenResiduos.Estado.Id == EstadoOrdenResiduosEnum.Pendiente;
     }
 

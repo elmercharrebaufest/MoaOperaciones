@@ -3,10 +3,8 @@ using SustitucionMOAFotmatter;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto.OrdenResiduos;
 using SustitucionMOAModel.Dto.Scato;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
@@ -15,7 +13,6 @@ using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ScatoWS = SustitucionMOAWS.ScatoWebService;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -23,6 +20,7 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorioOrdenResiduos repositorioResiduos;
         private readonly IEmailResiduosService emailResiduosService;
+        private readonly IUbicacionGeograficaService ubicacionGeograficaService;
 
         public OrdenResiduosService(
             IOrdenCargaConsumerMOA ordenCargaConsumer,
@@ -31,11 +29,13 @@ namespace SustitucionMOAUtils.Services
             IRepositorioOrdenResiduos repositorioResiduos,
             ICNRTClient cNRTClient,
             IFeriadoService feriadoService,
-            IEmailResiduosService emailResiduosService
+            IEmailResiduosService emailResiduosService,
+            IUbicacionGeograficaService ubicacionGeograficaService
             ) : base(ordenCargaConsumer, scatoConsumer, scatoRepositorioClient, repositorioResiduos, cNRTClient, feriadoService)
         {
             this.repositorioResiduos = repositorioResiduos;
             this.emailResiduosService = emailResiduosService;
+            this.ubicacionGeograficaService = ubicacionGeograficaService;
         }
 
         public List<SustitucionMOAModel.Dto.ProveedorDto> ObtenerClientes()
@@ -48,12 +48,15 @@ namespace SustitucionMOAUtils.Services
             return repositorioResiduos.ObtenerMateriales();
         }
 
-        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr)
+        public ListarOrdenesResiduosResponse ObtenerListadoOrdenes(string fechaInicioStr, string fechaFinStr, string mailUsuario)
         {
             var fechaInicio = DataFormatter.StringToDateTime(fechaInicioStr, "");
             var fechaFin = DataFormatter.StringToDateTime(fechaFinStr, "");
 
-            var listado = repositorioResiduos.ObtenerListadoOrdenes(fechaInicio, fechaFin);
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaResiduosAdmin);
+
+            var listado = repositorioResiduos.ObtenerListadoOrdenes(fechaInicio, fechaFin, esInterno);
 
             if (listado == null || listado.Count == 0)
             {
@@ -145,6 +148,9 @@ namespace SustitucionMOAUtils.Services
             {
                 Id = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente
             };
+
+            CompletarDatosDestino(ordenDto);
+            
             for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
             {
                 var ordenEntity = ordenDto.ToEntity();
@@ -165,10 +171,22 @@ namespace SustitucionMOAUtils.Services
 
         public GrabarOrdenResponse EditarOrden(OrdenResiduosDto ordenDto, string mailUsuario)
         {
-            Log.Info($"Editar orden residuos: [{ordenDto.ToJson()}], usuario: [{mailUsuario}]");
+            Log.Info($"Editar orden residuos: [{ordenDto.ToJson()}]");
             ValidarOrden(ordenDto);
 
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaResiduosAdmin);
             var ordenEntity = repositorioResiduos.ObtenerOrdenResiduos(ordenDto.Id);
+
+            if (!esInterno)
+            {
+                var camionEstaEnPlanta = OrdenEstaActivaEnScato(ordenDto.Id);
+                if (camionEstaEnPlanta)
+                {
+                    emailResiduosService.EnviarMailIntentoEdicionOrdenActiva(ordenEntity);
+                    throw new ValidationCustomException("La orden no se puede editar por estar el camión en planta");
+                }
+            }
 
             var estadosPermitenEdicion = new EstadoOrdenResiduosEnum[]
             {
@@ -183,17 +201,13 @@ namespace SustitucionMOAUtils.Services
 
             ordenEntity = ordenDto.ToEntity(ordenEntity);
 
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
+            if (ordenEntity.EstadoId != (int)EstadoOrdenResiduosEnum.OrdenVencida)
             {
-                ordenEntity.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionSolicitada;
-            }
-            else
-            {
-                if (ordenEntity.EstadoId != (int)EstadoOrdenResiduosEnum.OrdenVencida)
+                var existeTransporte = ExisteTransporte(ordenEntity.TransporteCuit);
+                ordenEntity.EstadoId = (int)(existeTransporte ? EstadoOrdenResiduosEnum.OrdenGenerada : EstadoOrdenResiduosEnum.Pendiente);
+                if (!existeTransporte)
                 {
-                    var existeTransporte = ExisteTransporte(ordenEntity.TransporteCuit);
-                    ordenEntity.EstadoId = (int)(existeTransporte ? EstadoOrdenResiduosEnum.OrdenGenerada : EstadoOrdenResiduosEnum.Pendiente);
+                    emailResiduosService.EnviarMailTransporteNoExiste(ordenEntity.TransporteRazonSocial, ordenEntity.TransporteCuit);
                 }
             }
 
@@ -211,100 +225,26 @@ namespace SustitucionMOAUtils.Services
 
         public OrdenResiduosDto AnularOrden(int ordenId, string mailUsuario)
         {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
+            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new ValidationCustomException("Orden no encontrada");
             if (orden.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenEntregada)
             {
-                throw new InfoCustomException("Esta orden no puede ser anulada, ya fue entregada");
+                throw new ValidationCustomException("Esta orden no puede ser anulada, ya fue entregada");
             }
 
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
+            var usuario = repositorioResiduos.ObtenerUsuarioSegunMail(mailUsuario);
+            var esInterno = usuario.TienePermiso(PermisoEnum.VerOrdenesDeCargaResiduosAdmin);
+            if (!esInterno)
             {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
+                var camionEstaEnPlanta = OrdenEstaActivaEnScato(ordenId);
+                if (camionEstaEnPlanta)
+                {
+                    emailResiduosService.EnviarMailIntentoAnulacionOrdenActiva(orden);
+                    throw new ValidationCustomException("La orden no se puede anular por estar el camión en planta");
+                }
             }
-
             orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
             repositorioResiduos.GuardarCambios();
 
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto SolicitarAnulacion(int ordenId, string mailUsuario)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            var estadosPermitenAnulacion = new EstadoOrdenResiduosEnum[]
-            {
-                EstadoOrdenResiduosEnum.OrdenGenerada,
-                EstadoOrdenResiduosEnum.Pendiente,
-                EstadoOrdenResiduosEnum.OrdenVencida
-            };
-            if (!estadosPermitenAnulacion.Contains((EstadoOrdenResiduosEnum)orden.EstadoId))
-            {
-                throw new InfoCustomException("Esta orden no puede anularse en el estado actual");
-            }
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            orden.EstadoId = (int)EstadoOrdenResiduosEnum.AnulacionSolicitada;
-            repositorioResiduos.GuardarCambios();
-
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto ActualizarSolicitudAnulacion(int ordenId, string mailUsuario, bool aprobarSolicitud)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.AnulacionSolicitada)
-            {
-                throw new InfoCustomException("Esta orden no está en estado de anulación solicitada");
-            }
-
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            if (aprobarSolicitud)
-            {
-                orden.EstadoId = (int)EstadoOrdenResiduosEnum.Anulada;
-            }
-            else
-            {
-                var existeTransporte = ExisteTransporte(orden.TransporteCuit);
-                orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
-            }
-            repositorioResiduos.GuardarCambios();
-            return new OrdenResiduosDto().FromEntity(orden);
-        }
-
-        public OrdenResiduosDto ActualizarSolicitudEdicion(int ordenId, string mailUsuario, bool aprobarSolicitud)
-        {
-            var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId) ?? throw new InfoCustomException("Orden no encontrada");
-            if (orden.EstadoId != (int)EstadoOrdenResiduosEnum.EdicionSolicitada)
-            {
-                throw new InfoCustomException("Esta orden no está en estado de edición solicitada");
-            }
-
-            var usuario = repositorioResiduos.ObtenerUsuarioPorMail(mailUsuario);
-            if (!usuario.TieneRol(RolEnum.ResiduosAdmin))
-            {
-                throw new InfoCustomException("Usuario sin permiso para realizar esta acción");
-            }
-
-            if (aprobarSolicitud)
-            {
-                var existeTransporte = ExisteTransporte(orden.TransporteCuit);
-                orden.EstadoId = existeTransporte ? (int)EstadoOrdenResiduosEnum.OrdenGenerada : (int)EstadoOrdenResiduosEnum.Pendiente;
-            }
-            else
-            {
-                orden.EstadoId = (int)EstadoOrdenResiduosEnum.EdicionRechazada;
-            }
-            repositorioResiduos.GuardarCambios();
             return new OrdenResiduosDto().FromEntity(orden);
         }
 
@@ -367,6 +307,17 @@ namespace SustitucionMOAUtils.Services
             return destinosMercaderia;
         }
 
+        public bool ValidarCamionEstaEnPlantaParaEditarOrden(int ordenId)
+        {
+            var camionEstaEnPlanta = OrdenEstaActivaEnScato(ordenId);
+            if (camionEstaEnPlanta)
+            {
+                var orden = repositorioResiduos.ObtenerOrdenResiduos(ordenId);
+                emailResiduosService.EnviarMailIntentoEdicionOrdenActiva(orden);
+            }
+            return camionEstaEnPlanta;
+        }
+
         private void ValidarOrden(OrdenResiduosDto ordenDto)
         {
             if (ordenDto.Id == 0 && (ordenDto.CantidadDeViajes is null || ordenDto.CantidadDeViajes < 1 || ordenDto.CantidadDeViajes > 3))
@@ -413,6 +364,33 @@ namespace SustitucionMOAUtils.Services
             }
             var ultimoDigito = char.GetNumericValue(cuit.Last());
             return auxiliar == ultimoDigito;
+        }
+
+        private bool OrdenEstaActivaEnScato(int ordenId)
+        {
+            var recorridoScato = scatoConsumer.ObtenerRecorridoOrdenResiduos(ordenId);
+            return recorridoScato != null && !recorridoScato.Terminado;
+        }
+
+        private void CompletarDatosDestino(OrdenResiduosDto ordenDto)
+        {
+            ordenDto.DestinoMercaderia = ordenDto.DestinoMercaderia ?? new DestinoScato();
+
+            if (ordenDto.Producto.ValidaSisaRuca && ordenDto.Domicilio != null)
+            {
+                var distanciaARecorrer = ObtenerDistanciaARecorrer(ordenDto.Domicilio.Descripcion);
+                ordenDto.DestinoMercaderia.KmsARecorrer = distanciaARecorrer.HasValue ? distanciaARecorrer.ToString() : null;
+            }
+        }
+
+        private int? ObtenerDistanciaARecorrer(string domicilioDescripcion)
+        {
+            if (string.IsNullOrEmpty(domicilioDescripcion))
+            {
+                return null;
+            }
+            var distanciaDomicilio = ubicacionGeograficaService.ObtenerDistanciaDePlantaMoaADestino(domicilioDescripcion);
+            return distanciaDomicilio?.DistanciaKm;
         }
     }
 }

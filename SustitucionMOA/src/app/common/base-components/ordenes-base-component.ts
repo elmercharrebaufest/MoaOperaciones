@@ -115,10 +115,9 @@ export class OrdenesBaseComponent extends BaseComponent {
     listaDomicilios?: Domicilio[];
     domicilioSeleccionado?: Domicilio;
 
-    esPatenteValida(patente: string) {
-        const exprReg = /[A-Z]{3}[0-9]{3}|[A-Z]{2}[0-9]{3}[A-Z]{2}/;
+    esPatenteValida(patente: string): boolean {
+        const exprReg = /^[A-Z]{3}[\d]{3}$|^[A-Z]{2}[\d]{3}[A-Z]{2}$/;
         const esValida = exprReg.test(patente);
-        // console.log("Patente " + patente + " es válida? -> " + esValida);
         return esValida;
     }
 

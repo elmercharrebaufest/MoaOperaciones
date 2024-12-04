@@ -1521,15 +1521,14 @@ namespace SustitucionMOAUtils.Export
                 {
                     ExcelCellType cellType =
                         columnName.GetCustomAttribute<ExcelColumnTypeAttribute>()?.Type ?? ExcelCellType.Text;
-                    object cellData = columnName.GetValue(filaDto);
+                    dynamic cellData = columnName.GetValue(filaDto);
 
                     switch (cellType)
                     {
                         case ExcelCellType.Number:
                             if (cellData != null)
                             {
-                                float cellDataNumber = Convert.ToSingle(cellData);
-                                excelWriter.WriteNumberCell(cellDataNumber);
+                                excelWriter.WriteNumberCell(cellData);
                             }
                             else
                             {

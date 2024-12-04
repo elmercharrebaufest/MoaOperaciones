@@ -1450,7 +1450,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     condicionCircular(): boolean {
-        let tieneVisita: boolean = this.solpActual.visitaDeObra || this.solpActual.visitaDeObraMasiva;
+        let tieneVisita: boolean = this.solpActual.visitaDeObraMasiva;
         return this.solpActual.tieneModificaciones && tieneVisita && this.solpActual.tienePeticionDeOferta;
     }
 

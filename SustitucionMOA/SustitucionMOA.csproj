@@ -440,6 +440,16 @@
     <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
     <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
     <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.html" />
+    <Content Include="src\app\cursos\acciones\asignar-cursos\asignar-cursos.component.css" />
+    <Content Include="src\app\cursos\acciones\asignar-cursos\asignar-cursos.component.html" />
+    <Content Include="src\app\cursos\acciones\ver-progreso-alumnos\ver-progreso-alumnos.component.css" />
+    <Content Include="src\app\cursos\acciones\ver-progreso-alumnos\ver-progreso-alumnos.component.html" />
+    <Content Include="src\app\cursos\acciones\ver-progreso-curso\ver-progreso-curso.component.css" />
+    <Content Include="src\app\cursos\acciones\ver-progreso-curso\ver-progreso-curso.component.html" />
+    <Content Include="src\app\cursos\administrar-cursos\administrar-cursos.component.css" />
+    <Content Include="src\app\cursos\administrar-cursos\administrar-cursos.component.html" />
+    <Content Include="src\app\cursos\mis-cursos\mis-cursos.component.css" />
+    <Content Include="src\app\cursos\mis-cursos\mis-cursos.component.html" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
@@ -468,6 +478,9 @@
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.css" />
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.html" />
     <Content Include="src\app\vendedor\vendedor_status.component.css" />
+    <Content Include="src\app\zoom-control\zoom-control.component.css" />
+    <Content Include="src\app\zoom-control\zoom-control.component.html" />
+    <Content Include="Template\AplicacionesCartaPorteRechazadas.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion.html" />
@@ -1087,7 +1100,7 @@
     <Content Include="src\styles.css" />
     <Content Include="Template\AvisoEdicionOrdenDeCarga.html" />
     <Content Include="Template\NotificacionOrdenesDeCargaFason.html" />
-    <Content Include="Template\NotificacionOrdenesResiduosVencidas.html" />
+    <Content Include="Template\NotificacionOrdenesResiduos.html" />
     <Content Include="Template\NuevaConsultaInterna.html" />
     <Content Include="Template\ReporteAltaES.html" />
     <Content Include="Template\ReporteCamposSustentables.html">
@@ -1197,6 +1210,7 @@
     <Compile Include="Controllers\UsuarioController.cs" />
     <Compile Include="Controllers\VendedorController.cs" />
     <Compile Include="Filter\GZipOrDeflateAttribute.cs" />
+    <Compile Include="Filter\HandleErrorAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -1262,6 +1276,7 @@
     <TypeScriptCompile Include="src\app\common\models\rol.ts" />
     <TypeScriptCompile Include="src\app\common\models\SeleccionarVendedorResponse.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\services\FileStorageService.ts" />
     <TypeScriptCompile Include="src\app\common\services\UpdateComunicacionService.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador.component.spec.ts" />
@@ -1385,6 +1400,18 @@
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato-routing.module.ts" />
     <TypeScriptCompile Include="src\app\crear-contrato\crear-contrato.module.ts" />
     <TypeScriptCompile Include="src\app\cuenta-corriente\partidas-abiertas\cuenta-corriente.partidas-abiertas.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\acciones\asignar-cursos\asignar-cursos.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\acciones\ver-progreso-alumnos\ver-progreso-alumnos.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\acciones\ver-progreso-curso\ver-progreso-curso.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\administrar-cursos\administrar-cursos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\cursos\administrar-cursos\administrar-cursos.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\curso-base.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\cursos-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\cursos\cursos.module.ts" />
+    <TypeScriptCompile Include="src\app\cursos\cursos.service.ts" />
+    <TypeScriptCompile Include="src\app\cursos\mis-cursos\mis-cursos.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\cursos\mis-cursos\mis-cursos.component.ts" />
+    <TypeScriptCompile Include="src\app\cursos\scorm.service.ts" />
     <TypeScriptCompile Include="src\app\directivas\drag-and-drop.directive.ts" />
     <TypeScriptCompile Include="src\app\error.interceptor.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
@@ -1516,6 +1543,8 @@
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.module.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.service.ts" />
+    <TypeScriptCompile Include="src\app\zoom-control\zoom-control.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\zoom-control\zoom-control.component.ts" />
     <TypeScriptCompile Include="src\pipes\customDecimalPipe.pipe.ts" />
     <TypeScriptCompile Include="src\pipes\replace.pipe.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />

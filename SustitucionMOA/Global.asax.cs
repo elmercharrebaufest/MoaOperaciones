@@ -25,6 +25,7 @@ namespace SustitucionMOA
 
             // Configurar NLog con la cadena de conexión desde web.config
             LogConfig.ConfigureNLog();
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
 
         protected void Application_Error()

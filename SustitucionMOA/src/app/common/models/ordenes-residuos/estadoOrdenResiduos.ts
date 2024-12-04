@@ -11,7 +11,10 @@ export enum EstadoOrdenResiduosEnum {
     OrdenVencida = 3,
     OrdenEntregada = 4,
     Anulada = 5,
-    EdicionSolicitada = 6,
-    EdicionRechazada = 7,
-    AnulacionSolicitada = 8
+    // EdicionSolicitada = 6,
+    // EdicionRechazada = 7,
+    // AnulacionSolicitada = 8
+    Ingresada = 9,
+    Retirada = 10,
+    Rechazada = 11
 }

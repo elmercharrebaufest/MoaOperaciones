@@ -162,6 +162,13 @@
 	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
 	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
+	<setParameter name="ConsultaOpenStreetMapHabilitada Config" value="true" />
+	<setParameter name="RuteoOSRMHabilitado Config" value="true" />
+	<setParameter name="OsrmApiBaseAddress Config" value="http://router.project-osrm.org/" />
+	<setParameter name="OpenStreetMapApiBaseAddress Config" value="https://nominatim.openstreetmap.org/" />
+	<setParameter name="CoordenadasPlantaMoaLatitud Config" value="-32,773465" />
+	<setParameter name="CoordenadasPlantaMoaLongitud Config" value="-60,728782" />
+
 	<setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
 	<setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
 	<setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
@@ -170,6 +177,7 @@
 
 
 	<setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
+	<setParameter name="DestinatariosEmailOrdenResiduosIntentoAnulacionActiva Config" value="moaoperaciones@baufest.com" />
 
   <!--Servicios SAP que se necesitan consumir con HttpClient-->
   <setParameter name="ServicioSAPEntradasServicioCabecera Config" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" />

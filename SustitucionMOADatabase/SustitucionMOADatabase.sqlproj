@@ -258,6 +258,8 @@
     <Build Include="LOGS\schema.sql" />
     <Build Include="DBO\Tables\DistanciaDomicilio.sql" />
     <Build Include="DBO\Tables\DistanciaDomicilioReemplazos.sql" />
+    <PreDeploy Include="scripts\PreDeployment\_ScriptBasePreDeployment.sql" />
+    <None Include="scripts\PreDeployment\ARMOA003-3423_TieneVisitaObra_cambiaA_TieneVisitaObraMasiva.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

@@ -233,21 +233,19 @@ namespace SustitucionMOAUtils.Services
 
         public void RechazarAplicacionesPendientes(List<int> idsAplicaciones, string motivo)
         {
-            var aplicaciones = repositorio.Listar<AplicacionCartaPorte>(x => idsAplicaciones.Contains(x.Id));
+            var aplicaciones = repositorio.Listar<AplicacionCartaPorte>(
+                x =>
+                    idsAplicaciones.Contains(x.Id) &&
+                    x.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion);
 
-            foreach (var idAplicacion in idsAplicaciones.Distinct())
+            aplicaciones.ForEach((aplicacion) =>
             {
-                var aplicacion = aplicaciones.FirstOrDefault(x => x.Id == idAplicacion);
-
-                if (aplicacion.Estado == EstadoAplicacionCartaPorte.PendienteAprobacion)
-                {
-                    aplicacion.Estado = EstadoAplicacionCartaPorte.Rechazada;
-                    aplicacion.Error = motivo;
-
-                    emailAplicacionCPService.EnviarMailAplicacionRechazada(aplicacion.CartaPorte, aplicacion.Contrato, motivo, aplicacion.Usuario.Mail);
-                }
-            }
+                aplicacion.Estado = EstadoAplicacionCartaPorte.Rechazada;
+                aplicacion.Error = motivo;
+            });
             repositorio.GuardarCambios();
+            
+            NotificarRechazoAplicaciones(aplicaciones, motivo);
         }
 
         private void ValidarSchema<T>(T schema, string controller, string metodo)
@@ -494,6 +492,17 @@ namespace SustitucionMOAUtils.Services
             else
             {
                 return EstadoAplicacionCartaPorte.Pendiente;
+            }
+        }
+
+        private void NotificarRechazoAplicaciones(List<AplicacionCartaPorte> aplicaciones, string motivo)
+        {
+            var agrupadasPorUsuario = aplicaciones.GroupBy(x => x.Usuario_Id);
+
+            foreach (var grupo in agrupadasPorUsuario)
+            {
+                var destinatario = grupo.First().Usuario.Mail;
+                emailAplicacionCPService.EnviarMailAplicacionRechazada(grupo, motivo, destinatario);
             }
         }
     }

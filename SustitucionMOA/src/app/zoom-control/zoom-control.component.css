@@ -1,0 +1,48 @@
+/* Estilo del contenedor */
+.zoom-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2em;
+    justify-content: center;
+    margin: 20px;
+}
+
+/* Botones circulares más pequeños */
+.zoom-button {
+    width: 25px; /* Mitad del tamaño anterior */
+    height: 25px; /* Mitad del tamaño anterior */
+    border-radius: 50%;
+    border: 2px solid #6c757d; /* Borde gris */
+    background-color: white; /* Fondo blanco */
+    color: #6c757d; /* Texto gris */
+    font-size: 1em; /* Tamaño reducido del signo */
+    cursor: pointer;
+    outline: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra ligera */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animaciones */
+}
+
+    /* Efecto al pasar el mouse */
+    .zoom-button:hover {
+        background-color: #6c757d; /* Fondo gris */
+        color: white; /* Texto blanco */
+        transform: scale(1.1); /* Aumenta ligeramente el tamaño */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+    }
+
+    /* Efecto al hacer clic */
+    .zoom-button:active {
+        transform: scale(0.95); /* Reduce ligeramente el tamaño */
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); /* Sombra más pequeña */
+    }
+
+/* Estilo del texto central */
+span {
+    min-width: 40px;
+    text-align: center;
+    font-weight: bold;
+}

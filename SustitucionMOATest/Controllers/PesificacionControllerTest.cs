@@ -10,9 +10,6 @@ using SustitucionMOAUtils.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOATest.Controllers
@@ -71,13 +68,17 @@ namespace SustitucionMOATest.Controllers
                    .Setup(s => s.GetFechaPesificacion(It.IsAny<string>()))
                    .Throws(new Exception());
 
-            var result = target.GetFechaPesificacion();
+            try
+            {
+                target.GetFechaPesificacion();
+            }
+            catch (Exception e)
+            {
+                var esperado1 = "Se produjo una excepción de tipo 'System.Exception'.";
+                var esperado2 = "Exception of type 'System.Exception' was thrown.";
+                Assert.Contains(e.Message, new[] { esperado1, esperado2 });
 
-            var resultJson = JsonConvert.SerializeObject(result.Data);
-
-            var expectedJson = "{\"error\":\"Ha ocurrido un error, por favor intente nuevamente\"}";
-
-            Assert.AreEqual(expectedJson, resultJson);
+            }
         }
 
         [Test()]
@@ -122,11 +123,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(s => s.GetPesificacionesSAP(It.IsAny<string>()))
                 .Throws(new InfoCustomException("Mensaje de error"));
 
-            var expected = @"{ info = Mensaje de error }";
-
-            var result = target.PesificacionesSAP();
-
-            Assert.AreEqual(expected, result.Data.ToString());
+            try
+            {
+                target.PesificacionesSAP();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
         [Test()]
@@ -135,12 +139,14 @@ namespace SustitucionMOATest.Controllers
             pesificacionServiceMock
                 .Setup(s => s.GetPesificacionesSAP(It.IsAny<string>()))
                 .Throws(new ValidationCustomException("Mensaje de error"));
-
-            var expected = @"{ error = Mensaje de error }";
-
-            var result = target.PesificacionesSAP();
-
-            Assert.AreEqual(expected, result.Data.ToString());
+            try
+            {
+                target.PesificacionesSAP();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
         [Test()]
@@ -155,11 +161,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(s => s.GetPesificacionesSAP(It.IsAny<string>()))
                 .Throws(new Exception(""));
 
-            var expected = @"{ error = Ha ocurrido un error, por favor intente nuevamente }";
-
-            var result = target.PesificacionesSAP();
-
-            Assert.AreEqual(expected, result.Data.ToString());
+            try
+            {
+                target.PesificacionesSAP();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("", e.Message);
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ namespace SustitucionMOA
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new GZipOrDeflateAttribute());
+            filters.Add(new CustomExceptionFilterAttribute());
         }
     }
 }

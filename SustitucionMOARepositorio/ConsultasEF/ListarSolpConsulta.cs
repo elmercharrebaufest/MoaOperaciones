@@ -92,6 +92,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                 var rol = usuario.Roles.Any(r => r.Codigo == "COMPRADOR") ? "SOLP" : "COMPRADOR";
                 var visualizarEditarOC = usuario.ObtenerPermisos().Contains("EDITAR OC");
                 var sinSolps = !Solps.Any();
+
                 var resultado = from x in contexto.Set<Solp>()
                                 where (sinSolps || Solps.Contains(x.NroSolp)) &&
                                 !string.IsNullOrEmpty(x.NroSolp) &&
@@ -157,6 +158,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     FechaLiberacionSapFormateada = x.FechaLiberacionSap == null ? "" : SqlFunctions.DateName("day", x.FechaLiberacionSap) + "/" + SqlFunctions.DatePart("month", x.FechaLiberacionSap) + "/" + SqlFunctions.DateName("year", x.FechaLiberacionSap),
                                     FechaLiberacionSap = x.FechaLiberacionSap,
                                     ChatSinLeer = x.ChatInternoCompras.Any(a => a.Leido == false && a.Usuario.Roles.Any(r => r.Codigo == rol)),
+                                    PliegoVinculado = (x.TipoSolpSap == (int)TipoSolpSap.Sap || x.TipoSolpSap == (int)TipoSolpSap.Mantenimiento) && (x.EstadoDocumento != null && x.EstadoDocumento.Codigo.ToLower() == "CREADO".ToLower()),
                                     PeticionesDeOferta = (from po in contexto.Set<PeticionDeOferta>()
                                                               //where po.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == x.Id && po.RegistroInfo != true
                                                           where po.Posiciones.Select(so => so.SolpPosicion.Solp_Id).Contains(x.Id) && po.RegistroInfo != true
@@ -184,7 +186,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                           })
                                 };
                 var pagina = Paginacion;
-                
+
                 var result = resultado.OrdenarPaginarLista(pagina);
                 return result;
             }

@@ -3,11 +3,8 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using SustitucionMOA.Controllers;
 using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
@@ -18,7 +15,6 @@ using System.Security.Claims;
 using System.Security.Principal;
 using System.Threading;
 using System.Web;
-using System.Web.Http.Results;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 
@@ -108,7 +104,7 @@ namespace SustitucionMOATest.Controllers
 
             // Assert
             Assert.NotNull(result);
-            var data = (dynamic)((JsonResult)result).Data;
+            var data = (dynamic)result.Data;
             var propiedad = data.GetType().GetProperties()[0];
             var valor = (List<TablaSapDto>)propiedad.GetValue(data);
             Assert.AreEqual(valor.Count, 2);
@@ -319,7 +315,7 @@ namespace SustitucionMOATest.Controllers
 
             // Assert
             Assert.NotNull(result);
-            var data = (dynamic)((JsonResult)result).Data;
+            var data = (dynamic)result.Data;
             var propiedad = data.GetType().GetProperties()[0];
             var valor = (List<ProveedorDto>)propiedad.GetValue(data);
             Assert.AreEqual(valor.Count, 2);
@@ -368,7 +364,7 @@ namespace SustitucionMOATest.Controllers
                             .Returns(expected);
 
 
-            var result = target.AutocompleteMaterialRFC(material, centro, grupoDeCompras) as JsonResult;
+            var result = target.AutocompleteMaterialRFC(material, centro, grupoDeCompras);
 
             string expectedjson = JsonConvert.SerializeObject(expected);
 
@@ -393,7 +389,7 @@ namespace SustitucionMOATest.Controllers
             var resultText = serializer.Serialize(result);
 
             var expected = "{\"ContentEncoding\":null,\"ContentType\":null,\"Data\":{\"data\":{\"FiscalContrato\":null,\"EmailFiscalContrato\":null,\"Telefono\":null,\"ClaseDocumento\":null,\"TipoPosicion\":null,\"Almacen\":null,\"CuentaMayor\":null,\"CuentaMayorSP\":null,\"GrupoCompras\":null,\"Centro\":null}},\"JsonRequestBehavior\":0,\"MaxJsonLength\":2147483647,\"RecursionLimit\":null}";
-           
+
 
             Assert.AreEqual(expected.Normalize(), resultText.Normalize());
         }
@@ -429,7 +425,7 @@ namespace SustitucionMOATest.Controllers
 
                 });
 
-            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
+            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
@@ -447,10 +443,14 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Throws(new InfoCustomException("Información personalizada"));
 
-            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor) as JsonResult;
-
-            Assert.IsNotNull(result);
-            Assert.IsNotNull(result.Data);
+            try
+            {
+                target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Información personalizada", e.Message);
+            }
         }
 
         [Test]
@@ -486,7 +486,7 @@ namespace SustitucionMOATest.Controllers
 
             comprasServiceMock.Setup(x => x.DevolverMonedaProveedor(It.IsAny<string>())).Returns(new ProveedorComprasDto { Moneda = "ARP" });
 
-            var result = target.DevolverMonedaProveedor(It.IsAny<string>()) as JsonResult;
+            var result = target.DevolverMonedaProveedor(It.IsAny<string>());
 
             Assert.IsNotNull(result);
             Assert.IsNotNull(result.Data);
@@ -522,9 +522,14 @@ namespace SustitucionMOATest.Controllers
 
             comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new InfoCustomException("Mensaje de información"));
 
-            var result = target.ModificarOrdenDeCompra(json) as JsonResult;
-
-            Assert.IsNotNull(result);
+            try
+            {
+                target.ModificarOrdenDeCompra(json);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de información", e.Message);
+            }
         }
 
         [Test]
@@ -534,9 +539,14 @@ namespace SustitucionMOATest.Controllers
 
             comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new ValidationCustomException("Mensaje de validación"));
 
-            var result = target.ModificarOrdenDeCompra(json) as JsonResult;
-
-            Assert.IsNotNull(result);
+            try
+            {
+                target.ModificarOrdenDeCompra(json);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de validación", e.Message);
+            }
         }
 
         [Test]
@@ -617,11 +627,15 @@ namespace SustitucionMOATest.Controllers
             var expectedInfoMessage = "InfoCustomException message";
             comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new InfoCustomException(expectedInfoMessage));
 
-            var result = target.ListarSolpCondicionEspecial(filtroJson);
+            try
+            {
+                target.ListarSolpCondicionEspecial(filtroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("InfoCustomException message", e.Message);
+            }
 
-            Assert.IsNotNull(result);
-            var jsonResult = (JsonResult)result;
-            Assert.IsNotNull(jsonResult.Data);
             comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
@@ -632,11 +646,15 @@ namespace SustitucionMOATest.Controllers
             var expectedValidationMessage = "ValidationCustomException message";
             comprasServiceMock.Setup(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>())).Throws(new ValidationCustomException(expectedValidationMessage));
 
-            var result = target.ListarSolpCondicionEspecial(filtroJson);
+            try
+            {
+                target.ListarSolpCondicionEspecial(filtroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("ValidationCustomException message", e.Message);
+            }
 
-            Assert.IsNotNull(result);
-            var jsonResult = (JsonResult)result;
-            Assert.IsNotNull(jsonResult.Data);
             comprasServiceMock.Verify(x => x.ListarSolpCondicionEspecial(It.IsAny<FiltroDto>()), Times.Once);
         }
 
@@ -649,7 +667,7 @@ namespace SustitucionMOATest.Controllers
             var expectedResult = new { data = "success" };
 
             usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuario);
-            comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Returns(new Resultado { IdEntidad = 78});
+            comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Returns(new Resultado { IdEntidad = 78 });
 
             // Act
             var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
@@ -673,13 +691,17 @@ namespace SustitucionMOATest.Controllers
             usuarioServiceMock.Setup(x => x.GetUsuario(It.IsAny<string>())).Returns(usuario);
             comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Throws(new InfoCustomException(expectedInfoMessage));
 
-            // Act
-            var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
 
-            // Assert
-            Assert.IsNotNull(result);
-            var jsonResult = (JsonResult)result;
-            Assert.IsNotNull(jsonResult.Data);
+            try
+            {
+                target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("InfoCustomException message", e.Message);
+            }
+
+
             usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
             comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
         }
@@ -696,12 +718,15 @@ namespace SustitucionMOATest.Controllers
             comprasServiceMock.Setup(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds)).Throws(new ValidationCustomException(expectedValidationMessage));
 
             // Act
-            var result = target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+            try
+            {
+                target.AgruparPeticionesDeOferta(peticionDeOfertaIds);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("ValidationCustomException message", e.Message);
+            }
 
-            // Assert
-            Assert.IsNotNull(result);
-            var jsonResult = (JsonResult)result;
-            Assert.IsNotNull(jsonResult.Data);
             usuarioServiceMock.Verify(x => x.GetUsuario(It.IsAny<string>()), Times.Once);
             comprasServiceMock.Verify(x => x.AgruparPeticionesDeOferta(usuario.Id, peticionDeOfertaIds), Times.Once);
         }

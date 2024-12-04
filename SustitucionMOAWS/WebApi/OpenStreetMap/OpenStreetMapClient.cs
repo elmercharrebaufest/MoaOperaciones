@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -11,11 +12,14 @@ namespace SustitucionMOAWS.WebApi.OpenStreetMap
 {
     public class OpenStreetMapClient : IOpenStreetMapClient
     {
+        private static readonly string ConsultaOpenStreetMapHabilitada = ConfigurationManager.AppSettings["ConsultaOpenStreetMapHabilitada"];
+        private static readonly string OpenStreetMapApiBaseAddress = ConfigurationManager.AppSettings["OpenStreetMapApiBaseAddress"];
+
         private readonly HttpClient _clienteHttp;
 
         public OpenStreetMapClient()
         {
-            _clienteHttp = new HttpClient { BaseAddress = new Uri("https://nominatim.openstreetmap.org/") };
+            _clienteHttp = new HttpClient { BaseAddress = new Uri(OpenStreetMapApiBaseAddress) };
             _clienteHttp.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (compatible; AcmeInc/1.0)");
         }
 
@@ -28,6 +32,10 @@ namespace SustitucionMOAWS.WebApi.OpenStreetMap
         {
             try
             {
+                if (!bool.TryParse(ConsultaOpenStreetMapHabilitada, out bool habilitado) || !habilitado)
+                {
+                    return null;
+                }
                 var rutaApi = $"search?q={direccion}&format=json";
 
                 var responseMessage = await _clienteHttp.GetAsync(rutaApi).ConfigureAwait(false);
