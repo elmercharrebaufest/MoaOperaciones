@@ -702,3 +702,16 @@ BEGIN
 		(SELECT id FROM rol WHERE rol.Nombre = 'API ORDENES DE CARGA'),
 		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'API ORDENES DE CARGA'))
 END
+
+
+IF NOT EXISTS(
+	SELECT 1 FROM
+		RolPermisoPorRol inner join 
+		PermisoPorRol on PermisoPorRol.Id = RolPermisoPorRol.PermisoPorRol_Id inner join 
+		Rol on Rol.Id = RolPermisoPorRol.Rol_Id
+	WHERE Rol.Nombre = 'VER TODOS LOS ESTADOS DE ES' and PermisoPorRol.Permiso = 'EDITAR SUPLENTE')
+BEGIN
+	INSERT INTO RolPermisoPorRol VALUES (
+		(SELECT id FROM rol WHERE rol.Nombre = 'VER TODOS LOS ESTADOS DE ES'),
+		(SELECT id FROM PermisoPorRol WHERE PermisoPorRol.Permiso = 'EDITAR SUPLENTE'))
+END
