@@ -71,14 +71,14 @@
 
 .modal-mensaje {
     overflow: auto;
-    width: 60vw;
+    width: 48vw6;
     height: auto;
     font-family: 'Roboto Regular';
     max-height: 68vh;
     /*width: calc(100% + 20px);*/
     /*width: fit-content;*/
     margin-bottom: 5px;
-    max-width: 53vw;
+    max-width: 48vw;
     /*min-width: 80vh;*/
 }
 
@@ -89,7 +89,8 @@
 .modal-flex {
     display: flex;
     padding: 5px;
-    width: 45%;
+    min-width: 43vw;
+    max-width: 43vw;
     height: 76%;
 }
 
