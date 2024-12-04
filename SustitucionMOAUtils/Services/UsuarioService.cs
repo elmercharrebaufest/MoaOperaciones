@@ -266,6 +266,10 @@ namespace SustitucionMOAUtils.Services
                     foreach (int id in periodosIds)
                     {
                         UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
+                        if (!puedeEditarSuplente)
+                        {
+                            throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+                        }
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
 
