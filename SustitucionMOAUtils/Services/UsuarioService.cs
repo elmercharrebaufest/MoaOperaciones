@@ -232,15 +232,17 @@ namespace SustitucionMOAUtils.Services
                     FechaHasta = fechaHastaDT
                 };
 
-                //Evitar duplicacion de periodos
-                var per = GetPeriodoReasignacion(idUsuario);
+                //Evitar duplicación de periodos
+                UsuarioReasignacionDto per = GetPeriodoReasignacion(idUsuario);
+                bool noExistePeriodoAnterior = per == null || per.Id == 0;
+                bool deboActualizarPeriodo = per?.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde);
 
-                if (per.Id == 0)
+                if (noExistePeriodoAnterior || deboActualizarPeriodo)
                 {
-                    repositorio.Agregar<UsuarioReasignacion>(periodo);
-                }
-                else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
-                {
+                    if (!puedeEditarSuplente)
+                    {
+                        throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+                    }
                     repositorio.Agregar<UsuarioReasignacion>(periodo);
                 }
 
