@@ -15,7 +15,7 @@ namespace SustitucionMOAUtils.Interfaces
         Rol ObtenerRolPorCodigo(string codigo);
         List<RolDropdownDto> GetRoles();
         byte[] getDocumento(string nombre);
-        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno);
+        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente);
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);

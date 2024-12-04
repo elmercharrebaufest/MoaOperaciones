@@ -185,12 +185,19 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente)
         {
             Entidades.Usuario currentUsuario = repositorio.ObtenerNoTracking<Entidades.Usuario>(u => u.Id == idUsuario);
 
             Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
 
+            bool suplenteCambia =
+                (usuario.Suplente is null && (suplente != "null" && suplente != ""))
+                || (!(usuario.Suplente is null) && usuario.Suplente != suplente);
+            if (suplenteCambia && !puedeEditarSuplente)
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+            }
 
             usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
 
