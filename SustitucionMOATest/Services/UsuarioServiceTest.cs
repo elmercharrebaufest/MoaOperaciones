@@ -1,11 +1,9 @@
 ﻿using Moq;
 using NUnit.Framework;
-using SustitucionMOA.Jobs;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
@@ -230,7 +228,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -260,7 +258,7 @@ namespace SustitucionMOATest.Services
                       {
                         new Proveedor
                         {
-                            Id = 1, 
+                            Id = 1,
                             EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro,
                             CUIT = "23333333333",
                             Mail = mailUsuario,
@@ -311,7 +309,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
