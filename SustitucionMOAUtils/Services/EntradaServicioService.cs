@@ -817,7 +817,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 List<ReporteDto> reporte = new List<ReporteDto>();
 
-                await NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                await NotifyCreation(completeAp, prov, userId, aprobador);
             }
 
         }
@@ -1672,7 +1672,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
                 List<ReporteDto> reporte = new List<ReporteDto>();
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte);
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
 
                 repositorio.GuardarCambios();
 
