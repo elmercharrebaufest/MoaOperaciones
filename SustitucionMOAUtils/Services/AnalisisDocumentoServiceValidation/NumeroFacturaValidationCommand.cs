@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
+namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 {
-    public class NumeroFacturaValidationCommand : IAnalisisFacturaServiceValidationCommand
+    public class NumeroFacturaValidationCommand : IAnalisisDocumentoServiceValidationCommand
     {
-        public ValidationType ValidationCriticity => ValidationType.Critical;
+        public ValidationLevel ValidationCriticity => ValidationLevel.Critical;
 
         private static readonly Regex NumeroFacturaRegex = new Regex(@"\d{3,5}[^\d]\d{8}\s*$", RegexOptions.Compiled);
 

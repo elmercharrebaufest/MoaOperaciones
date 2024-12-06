@@ -34,6 +34,7 @@ namespace SustitucionMOAModel.Dto
         public string UsuarioComprasSAP { get; set; }
         public string OrganizacionDeComprasCodigo { get; set; }
         public string MailProveedor { get; set; }
+        public decimal SaldoDisponible { get; set; }
 
         //        <COMP_CODE>MOA</COMP_CODE>// fijo
         //        <DOC_TYPE>ZPE1</DOC_TYPE>//tipo de documento
@@ -59,6 +60,7 @@ namespace SustitucionMOAModel.Dto
         public string RegistroInfo { get; set; }
         public string NroSolp { get; set; }
         public DateTime? PlazoDeOferta { get; set; }
+        public string TipoPosicion { get; set; }
     }
 
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega

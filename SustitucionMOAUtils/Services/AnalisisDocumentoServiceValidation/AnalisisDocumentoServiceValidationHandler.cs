@@ -1,15 +1,14 @@
 ﻿using SustitucionMOAModel.Models;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
 
-namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
+namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 {
-    public class AnalisisFacturaServiceValidationHandler
+    public class AnalisisDocumentoServiceValidationHandler
     {
-        private readonly List<IAnalisisFacturaServiceValidationCommand> _validations = new List<IAnalisisFacturaServiceValidationCommand>();
+        private readonly List<IAnalisisDocumentoServiceValidationCommand> _validations = new List<IAnalisisDocumentoServiceValidationCommand>();
 
-        public void AddValidation(IAnalisisFacturaServiceValidationCommand validation)
+        public void AddValidation(IAnalisisDocumentoServiceValidationCommand validation)
         {
             _validations.Add(validation);
         }
@@ -17,9 +16,9 @@ namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
         public List<ValidationResult> ExecuteValidations(List<string> inputs)
         {
             List<ValidationResult> results = new List<ValidationResult>();
-            
+
             foreach (var validation in _validations)
-            {                 
+            {
                 results.AddRange(validation.Execute(inputs));
             }
 

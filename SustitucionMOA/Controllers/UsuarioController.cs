@@ -168,6 +168,8 @@ namespace SustitucionMOA.Controllers
                 identity.AddClaim(new Claim(Globals.ClaimsTipoUsuarioType, nuevoTipoUsuario));
             }
 
+            identity.RemoveClaim(identity.FindFirst(Globals.ClaimsCuit));
+            identity.AddClaim(new Claim(Globals.ClaimsCuit, proveedorAAsignar.CUIT));
 
             // tell the authentication manager to use this new identity
             authenticationManager.AuthenticationResponseGrant =

@@ -1,43 +1,202 @@
-﻿using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Models.WSMapMOA;
+﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models;
+using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation;
+using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Web;
+using Usuario = SustitucionMOAModel.Entities.Usuario;
 
 namespace SustitucionMOAUtils.Services
 {
     public class FacturaService : IFacturaService
     {
-        public FacturaService()
+        private readonly IAzureService azureService;
+        private readonly IAnalisisDocumentoService analisisDocumentoService;
+        private readonly IRepositorio repositorio;
+        private readonly IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA;
+        private readonly IEmailService emailService;
+        private readonly string EmailFacturasES = ConfigurationManager.AppSettings["EmailFacturasES"];
+
+
+        public FacturaService(IAzureService azureService, IAnalisisDocumentoService analisisDocumentoService, IRepositorio repositorio,
+            IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA, IEmailService emailService)
+        {
+            this.azureService = azureService ?? throw new ArgumentNullException(nameof(azureService));
+            this.analisisDocumentoService = analisisDocumentoService ?? throw new ArgumentNullException(nameof(analisisDocumentoService));
+            this.repositorio = repositorio;
+            this.obtenerOrdenDeCompraConsumerMOA = obtenerOrdenDeCompraConsumerMOA;
+            this.emailService = emailService;
+        }
+
+        public List<ValidationResult> SubirPDF(List<HttpPostedFileBase> files, string cuit, string codigo, string mail)
+        {
+            List<ValidationResult> results = new List<ValidationResult>();
+            List<ValidationResult> resultadoOcrs = new List<ValidationResult>();
+            files.AsParallel().ForAll(file =>
+            {
+                var operacionOCRId = azureService.AnalizarImagenAsync(file).Result;
+                Thread.Sleep(2000);
+                var elementosLeidos = azureService.ObtenerResultadoOCRAsync(operacionOCRId).Result;
+                resultadoOcrs.AddRange(elementosLeidos.Select(a => new ValidationResult { Input = a, FileName = file.FileName }));
+            });
+
+            int usuarioId = repositorio.Obtener<Usuario>(u => u.Mail == mail).Id;
+
+            foreach (var file in files)
+            {
+                List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
+                List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
+                List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
+                string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                file.SaveAs(ruta);
+                Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
+                repositorio.Agregar(archivo);
+                repositorio.GuardarCambios();
+                resultado.ForEach(r => r.FileName = file.FileName);
+                resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
+                if (resultado.Exists(r => r.IsValid))
+                {
+                    EnviarMail(file);
+                }
+
+
+
+                GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+
+                results.AddRange(resultado);
+            }
+
+
+            return results;
+        }
+
+        private void GuardarResultadosYArchivo(List<string> elementosLeidos, List<ValidationResult> resultadoAnalisis, string ruta, int usuarioId)
         {
 
+
+
+            var resultadosORC = elementosLeidos.Select(a => new ResultadoOcr
+            {
+                Archivo_Id = resultadoAnalisis[0].Archivo_Id,
+                Texto = a,
+                Usuario_Id = usuarioId,
+                FechaAlta = DateTime.Now
+            }).ToList();
+            repositorio.AgregarTodos(resultadosORC);
+
+
+            var resultadosAnalisisOcr = resultadoAnalisis.Select(item => new ResultadoAnalisisOcr
+            {
+                Archivo_Id = item.Archivo_Id,
+                Usuario_Id = usuarioId,
+                FechaAlta = DateTime.Now,
+                IsValid = item.IsValid,
+                Message = item.Message,
+                ValidataionType = item.ValidataionType,
+                Value = item.Value,
+                Input = item.Input
+            }).ToList();
+            repositorio.AgregarTodos(resultadosAnalisisOcr);
+
         }
-        public string SubirPDF(HttpPostedFileBase file, string folderPath)
+
+        private static string GenerarRutaArchivo(string folderBase, int usuarioId, string fileName)
         {
-            try
+            string directorioUsuario = Path.Combine(folderBase, usuarioId.ToString());
+
+            if (!Directory.Exists(directorioUsuario))
             {
-                file.SaveAs(folderPath + Path.GetFileName(file.FileName));
-                return "El archivo se ha subido correctamente";
+                Directory.CreateDirectory(directorioUsuario);
             }
-            catch (ValidationCustomException e)
+
+            string rutaArchivo = Path.Combine(directorioUsuario, fileName);
+
+            int contador = 1;
+            string nombreArchivo = Path.GetFileNameWithoutExtension(fileName);
+            string extension = Path.GetExtension(fileName);
+
+            while (File.Exists(rutaArchivo))
             {
-                throw e;
+                rutaArchivo = Path.Combine(directorioUsuario, $"{nombreArchivo}_{contador}{extension}");
+                contador++;
             }
-            catch (InfoCustomException e)
+
+            return rutaArchivo;
+        }
+
+
+        private void EnviarMail(HttpPostedFileBase file)
+        {
+            emailService.EnviarMail(new SustitucionMOAUtils.Email.EmailSenderData
             {
-                throw e;
-            }
-            catch (Exception e)
+                Archivo = ConvertHttpPostedFileBaseToByteArray(file),
+                Asunto = "Envio Factura" + file.FileName,
+                NombreArchivo = file.FileName,
+                Mails = new List<string> { EmailFacturasES }
+            });
+        }
+
+        private static byte[] ConvertHttpPostedFileBaseToByteArray(HttpPostedFileBase file)
+        {
+            using (var memoryStream = new MemoryStream())
             {
-                throw new WSCustomException(ErrorMsg.ErrorWS, e);
+                file.InputStream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
             }
+        }
+
+        private List<ValidationResult> AnalizarResultados(List<ValidationResult> resultadoAnalisis, string codigoProveedor)
+        {
+            List<ValidationResult> result = new List<ValidationResult>();
+            if (!resultadoAnalisis.Any())
+            {
+                result.Add(new ValidationResult(false, "No se pudo procesar el documento", "OCR", "", ""));
+                return result;
+            }
+
+            var CuitNoEncontrado = resultadoAnalisis.Where(a => !a.IsValid && a.ValidataionType == typeof(CuitValidationCommand).Name);
+            if (CuitNoEncontrado.Any())
+            {
+                result.AddRange(CuitNoEncontrado.ToList());
+                return result;
+            }
+
+            var FacturaNoEncontrada = resultadoAnalisis.Where(a => !a.IsValid && (a.ValidataionType == typeof(NumeroFacturaValidationCommand).ToString() || a.ValidataionType == typeof(CodigoFacturaValidationCommand).ToString()));
+            if (FacturaNoEncontrada.Any())
+            {
+                result.AddRange(FacturaNoEncontrada.ToList());
+                return result;
+            }
+
+            var OrdenDeCompraEncontrada = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
+            if (OrdenDeCompraEncontrada != null)
+            {
+                var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(OrdenDeCompraEncontrada.Value);
+                if (ordenDeCompraSAP.Cabecera.CodigoProveedor != codigoProveedor)
+                {
+                    result.Add(new ValidationResult(false, "La orden de compra pertenece a otro proveedor", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    return result;
+                }
+
+                if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
+                {
+                    result.Add(new ValidationResult(false, "La orden de compra no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    return result;
+                }
+
+            }
+
+            result.Add(new ValidationResult(true, "El documento se envió a para su análisis.", "OCR", "", ""));
+
+            return result;
         }
     }
 }

@@ -14,6 +14,8 @@ import { ModalService } from './../common/services/ModalService';
 import { SpinnerSmallComponent } from './../common/view-child/spinner-small/spinner-small.component';
 import { DropdownComponent, DropdownOption } from './../common/view-child/dropdown/dropdown.component';
 import { ReCaptchaComponent } from 'angular2-recaptcha';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ValidationResult } from '../common/models/validationResult';
 
 
 declare var $: any;
@@ -24,9 +26,8 @@ declare var $: any;
     templateUrl: `factura.component.html`,
     providers: [FacturaService]
 })
-export class FacturaComponent extends ListBaseComponent{
-
-    tituloArchivo = "Factura.xls";
+export class FacturaComponent extends ListBaseComponent {
+    @BlockUI() blockUI: NgBlockUI;
 
     @ViewChild(MensajeComponent)
     protected mensajeComponent: MensajeComponent;
@@ -42,6 +43,7 @@ export class FacturaComponent extends ListBaseComponent{
 
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
+    resultados: ValidationResult[];
 
     constructor(protected service: FacturaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
@@ -51,7 +53,7 @@ export class FacturaComponent extends ListBaseComponent{
     checkPermisos() { this.securityService.tienePermisoRedirect("CARGAR FACT PROV"); }
 
     modalServiceSusbcription: any;
-    file: any;
+    file: FileList;
     captchaOk: any = null;
 
 
@@ -64,9 +66,11 @@ export class FacturaComponent extends ListBaseComponent{
         this.checkPermisos();
         var secciones = [];
         secciones.push(new Seccion('/factura', 'factura', 'Factura'));
-        this.navService.setSeccionList(secciones);    }
+        this.navService.setSeccionList(secciones);
+    }
 
-    subirPDF() {;
+    subirPDF() {
+        ;
         this.floatMsgService.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
 
@@ -77,16 +81,18 @@ export class FacturaComponent extends ListBaseComponent{
             return false;
         }
 
-        if (this.captchaOk == null) {
-            this.spinnerSmallComponent.hideIt();
-            this.floatMsgService.setErrorMsg("Debe completar el Captcha");
-            return false;
-        }
+        //if (this.captchaOk == null) {
+        //    this.spinnerSmallComponent.hideIt();
+        //    this.floatMsgService.setErrorMsg("Debe completar el Captcha");
+        //    return false;
+        //}
 
         this.unsubscribe();
         try {
+            this.resultados = [];
+            this.blockUI.start('Scanneandno documentos...');
             this.subscription = this.service.subirPDF(this.file).subscribe(
-                (result:any) => {
+                (result: any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
                         this.sessionDataService.logout();
@@ -96,8 +102,10 @@ export class FacturaComponent extends ListBaseComponent{
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         this.vaciarCampos();
-                        this.floatMsgService.setSuccessMsg(result.data);
+                        this.resultados = result.data as ValidationResult[];
+                        console.log(this.resultados);
                     }
+                    this.blockUI.stop();
                     return false;
                 },
                 error => {
@@ -105,23 +113,22 @@ export class FacturaComponent extends ListBaseComponent{
                     if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; }
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
+                    this.blockUI.stop();
                 }
 
             );
         } catch (e) {
             this.spinnerSmallComponent.hideIt();
             this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
 
     cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
-        if (fileList.length > 0) {
-            this.file = fileList[0];
-        }
+        this.file = fileList;
     }
 
     handleCorrectCaptcha(event: any) {

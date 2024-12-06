@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
+namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 {
-    public class CuitValidationCommand : IAnalisisFacturaServiceValidationCommand
+    public class CuitValidationCommand : IAnalisisDocumentoServiceValidationCommand
     {
-        public ValidationType ValidationCriticity => ValidationType.Critical;
+        public ValidationLevel ValidationCriticity => ValidationLevel.Critical;
 
         private readonly string _expectedCuit;
         private readonly string _expectedCuitSinGuiones;

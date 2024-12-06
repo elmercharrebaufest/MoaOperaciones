@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
+namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 {
-    public class OrdenCompraValidationCommand : IAnalisisFacturaServiceValidationCommand
+    public class OrdenCompraValidationCommand : IAnalisisDocumentoServiceValidationCommand
     {
-        public ValidationType ValidationCriticity => ValidationType.Warning;
+        public ValidationLevel ValidationCriticity => ValidationLevel.Warning;
 
         private static readonly Regex OrdenCompraRegex = new Regex(@"(?<!\d)(0*41\d{8})(?!\d)", RegexOptions.Compiled);
 

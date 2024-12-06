@@ -154,6 +154,8 @@
     <Compile Include="Entities\ConfiguracionUsuario.cs" />
     <Compile Include="Entities\PeticionDeOfertaUsuarioAdicional.cs" />
     <Compile Include="Entities\RegionSap.cs" />
+    <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
+    <Compile Include="Entities\ResultadoOCR.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />

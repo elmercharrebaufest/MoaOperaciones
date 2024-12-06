@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace SustitucionMOAUtils.Services.AnalisisFacturaServiceValidation
+namespace SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation
 {
-    public class CodigoFacturaValidationCommand : IAnalisisFacturaServiceValidationCommand
+    public class CodigoFacturaValidationCommand : IAnalisisDocumentoServiceValidationCommand
     {
-        public ValidationType ValidationCriticity => ValidationType.Info;
+        public ValidationLevel ValidationCriticity => ValidationLevel.Info;
 
         private static readonly Regex codigoFacturaRegex = new Regex(
             @"^(?:CÓD\.?|COD\.?|CODIGO|Código|COD|CODIGO Nº|COD\.? Nº|Cod\.Nº|Código N°|Código Número|""Cod\."")\s*:?\.?\s*(\d{1,3})",

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Enums
+﻿namespace SustitucionMOAModel.Enums
 {
     public static class FileKeys
     {
@@ -43,5 +37,6 @@ namespace SustitucionMOAModel.Enums
         public const string AdjuntoCotizacionRevisionEconomica = "CotizacionRevisionEconomica";
         public const string DeclaracionVinculosAltaInterna = "declaracionVinculosAltaInterna";
         public const string PeticionDeOfertaVisualizacionPrecio = "PeticionDeOfertaVisualizacionPrecio";
+        public const string FacturaEntradaDeServicios = "FacturaEntradaDeServicios";
     }
 }
