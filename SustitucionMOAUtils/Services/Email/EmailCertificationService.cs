@@ -216,11 +216,11 @@ namespace SustitucionMOAUtils.Services.Email
 
         public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata)
         {
-            var ms = new MemoryStream();
+            MemoryStream ms = new MemoryStream();
 
             try
             {
-                string dateTimeFormat = "dd/MM/yyyy";
+                const string dateTimeFormat = "dd/MM/yyyy";
                 List<string> dest = new List<string>();
                 List<EmailAttachment> attachments = new List<EmailAttachment>();
                 dest.Add(destinatario);
@@ -240,7 +240,7 @@ namespace SustitucionMOAUtils.Services.Email
                 }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
-                var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
+                string cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_APROBACIONES_EXT);
 
                 //Variables para completar el template
                 string proveedor = string.IsNullOrEmpty(prov.RazonSocial) ? string.Empty : prov.RazonSocial;
@@ -252,35 +252,31 @@ namespace SustitucionMOAUtils.Services.Email
                 //MMSN-928 - Agregar OC al email.
                 string OC = string.Empty;
                 string NroPosicion = string.Empty;
-                StringBuilder tabla = new StringBuilder();
-                if (apList.Count > 0)
-                {
-                    usuario = apList[0].Ingresante_CDS;
-                    cert = apList[0].NRO_ES_LOCAL;
-                    DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
-                    FechaCert = fechaCarga.ToString(dateTimeFormat);
-                    desc = apList[0].Texto_breve_servicio;
-                    importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"))
-                        : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
-                    OC = apList[0].NRO_OC;
-                    tabla = GenerarTablaAprobaciones(reports);
-                    NroPosicion = apList[0].NRO_POS;
-                }
 
+                usuario = apList[0].Ingresante_CDS;
+                cert = apList[0].NRO_ES_LOCAL;
+                DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
+                FechaCert = fechaCarga.ToString(dateTimeFormat);
+                desc = apList[0].Texto_breve_servicio;
+                importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"))
+                    : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
+                OC = apList[0].NRO_OC;
+                StringBuilder tabla = GenerarTablaAprobaciones(reports);
+                NroPosicion = apList[0].NRO_POS;
 
                 string baseURL = ConfigurationManager.AppSettings["SpaUrl"];
                 string approvalURL = "\"" + baseURL + "/aprobacion-externa/approve/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
                 string rejectURL = "\"" + baseURL + "/aprobacion-externa/reject/" + apList[0].NRO_ES_LOCAL + "&" + userId + "\"";
 
                 string _baseURL = "\"" + baseURL + "\"";
-                var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion, _baseURL);
+                string cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion, _baseURL);
 
                 if (ms.Length > 0)
                 {
                     attachments.Add(new EmailAttachment(ms, "Reporte.pdf"));
                 }
 
-                foreach (var adjuntoMetadata in adjuntosMetadata)
+                foreach (AdjuntosEntradasDeServicio adjuntoMetadata in adjuntosMetadata)
                 {
                     MemoryStream adjunto = await azureService.ObtenerArchivoBlobStorageAsync(adjuntoMetadata.NombreEnBlob, "certificaciones").ConfigureAwait(false);
                     adjunto.Position = 0;
@@ -291,7 +287,7 @@ namespace SustitucionMOAUtils.Services.Email
                     }
                 }
 
-                var emailSenderData = new EmailSenderData()
+                EmailSenderData emailSenderData = new EmailSenderData()
                 {
                     Mails = dest,
                     Asunto = asunto,
@@ -308,7 +304,7 @@ namespace SustitucionMOAUtils.Services.Email
             }
         }
 
-        private StringBuilder GenerarTablaAprobaciones(List<ReporteDto> reports)
+        private static StringBuilder GenerarTablaAprobaciones(List<ReporteDto> reports)
         {
             decimal montoTotal = 0;
             var aprStrBuilder = new StringBuilder();

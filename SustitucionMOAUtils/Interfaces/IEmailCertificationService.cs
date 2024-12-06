@@ -11,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto);
 
-        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata);
+        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata);
 
         Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference);
 
