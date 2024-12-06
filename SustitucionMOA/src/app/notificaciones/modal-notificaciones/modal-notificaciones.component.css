@@ -126,10 +126,12 @@
 
 
 video {
-    width: 506px;
-    margin-right: 142px;
-    height: 363px;
-    margin-left: 95px;
+    width: 100%; /* Asegura que ocupe todo el ancho disponible del contenedor */
+    height: auto; /* Mantiene la relación de aspecto */
+    max-width: 90%; /* Opcional: agrega un límite para evitar que sea demasiado grande */
+    max-height: 90vh; /* Se adapta al alto de la ventana */
+    margin: auto; /* Centra el video */
+    display: block; /* Asegura que se comporte como un bloque */
 }
 
 .nombre-header {
