@@ -492,13 +492,10 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.BodyEncoding = Encoding.UTF8;
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
 
-                if (emailSenderData.Archivo != null)
+                foreach (EmailAttachment adjunto in emailSenderData.Adjuntos)
                 {
-                    using (var stream = new MemoryStream(emailSenderData.Archivo))
-                    {
-                        Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
-                        oMensaje.Attachments.Add(attachment);
-                    }
+                    Attachment data = new Attachment(adjunto.Archivo, adjunto.Nombre);
+                    oMensaje.Attachments.Add(data);
                 }
 
                 oMensaje.Subject = emailSenderData.Asunto ?? "";
