@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation;
 using SustitucionMOAWS.Interfaces;
@@ -135,22 +136,12 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarMail(HttpPostedFileBase file)
         {
-            emailService.EnviarMail(new SustitucionMOAUtils.Email.EmailSenderData
+            emailService.EnviarMail(new EmailSenderData
             {
-                Archivo = ConvertHttpPostedFileBaseToByteArray(file),
                 Asunto = "Envio Factura" + file.FileName,
-                NombreArchivo = file.FileName,
-                Mails = new List<string> { EmailFacturasES }
+                Mails = new List<string> { EmailFacturasES },
+                Adjuntos = new List<EmailAttachment> { new EmailAttachment(file.InputStream, file.FileName) }
             });
-        }
-
-        private static byte[] ConvertHttpPostedFileBaseToByteArray(HttpPostedFileBase file)
-        {
-            using (var memoryStream = new MemoryStream())
-            {
-                file.InputStream.CopyTo(memoryStream);
-                return memoryStream.ToArray();
-            }
         }
 
         private List<ValidationResult> AnalizarResultados(List<ValidationResult> resultadoAnalisis, string codigoProveedor)
