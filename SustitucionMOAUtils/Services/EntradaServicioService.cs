@@ -714,7 +714,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -773,18 +773,19 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
         {
-
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
 
-            reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
+            List<ReporteDto> reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
 
+            IEnumerable<string> aprobaciones = completeAp.Select(aprobacion => aprobacion.NRO_ES_LOCAL);
+            IEnumerable<AdjuntosEntradasDeServicio> adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(adjunto => aprobaciones.Contains(adjunto.NroESTemporal));
 
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte, adjuntos);
 
             return true;
         }
@@ -816,7 +817,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 List<ReporteDto> reporte = new List<ReporteDto>();
 
-                await NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                await NotifyCreation(completeAp, prov, userId, aprobador);
             }
 
         }
@@ -1671,7 +1672,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
                 List<ReporteDto> reporte = new List<ReporteDto>();
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte);
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
 
                 repositorio.GuardarCambios();
 
