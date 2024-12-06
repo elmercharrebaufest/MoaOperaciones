@@ -1,22 +1,19 @@
-﻿using SustitucionMOAModel.Dto.Compras;
+﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAModel.Dto.OrdenesCompra;
-using System.Globalization;
-using DocumentFormat.OpenXml.Bibliography;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Dto;
-using SustitucionMOARepositorio.Extensiones;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -130,7 +127,7 @@ namespace SustitucionMOAUtils.Services.Email
 
             var emailSenderData = new EmailSenderData
             {
-                Mails = new List<string> {to},
+                Mails = new List<string> { to },
                 Asunto = "Certificaciones pendientes de aprobación",
                 Cuerpo = body,
             };
@@ -217,7 +214,7 @@ namespace SustitucionMOAUtils.Services.Email
             return bodyTable;
         }
 
-        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports)
+        public async Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata)
         {
             var ms = new MemoryStream();
 
@@ -225,6 +222,7 @@ namespace SustitucionMOAUtils.Services.Email
             {
                 string dateTimeFormat = "dd/MM/yyyy";
                 List<string> dest = new List<string>();
+                List<EmailAttachment> attachments = new List<EmailAttachment>();
                 dest.Add(destinatario);
 
                 string asunto = $" Aprobación de servicio - Certificación nro {apList[0].NRO_ES_LOCAL} - {prov.RazonSocial} - {apList[0].Texto_breve_servicio}";
@@ -235,10 +233,10 @@ namespace SustitucionMOAUtils.Services.Email
 
                     await report.CopyToAsync(ms);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Log.AzureError(e);
-                    Log.Error("EnviarMailAprobacion: error al obtener archivo ",e);
+                    Log.Error("EnviarMailAprobacion: error al obtener archivo ", e);
                 }
 
                 //Leer Template - CertificacionesPendientesDeAprobacion.html
@@ -262,7 +260,7 @@ namespace SustitucionMOAUtils.Services.Email
                     DateTime fechaCarga = apList[0].Fecha_Carga_ES != null ? (DateTime)apList[0].Fecha_Carga_ES : DateTime.Now;
                     FechaCert = fechaCarga.ToString(dateTimeFormat);
                     desc = apList[0].Texto_breve_servicio;
-                    importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US")) 
+                    importe = reports[0].Moneda == "ARP" ? "$ " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"))
                         : reports[0].Moneda + " " + Convert.ToDecimal(apList[0].Monto_total).ToString("N2", CultureInfo.GetCultureInfo("en-US"));
                     OC = apList[0].NRO_OC;
                     tabla = GenerarTablaAprobaciones(reports);
@@ -277,17 +275,29 @@ namespace SustitucionMOAUtils.Services.Email
                 string _baseURL = "\"" + baseURL + "\"";
                 var cuerpo = string.Format(cuerpoTemplate, proveedor, usuario, cert, FechaCert, desc, importe, tabla, approvalURL, rejectURL, OC, NroPosicion, _baseURL);
 
-                ms.Position = 0;
+                if (ms.Length > 0)
+                {
+                    attachments.Add(new EmailAttachment(ms, "Reporte.pdf"));
+                }
+
+                foreach (var adjuntoMetadata in adjuntosMetadata)
+                {
+                    MemoryStream adjunto = await azureService.ObtenerArchivoBlobStorageAsync(adjuntoMetadata.NombreEnBlob, "certificaciones").ConfigureAwait(false);
+                    adjunto.Position = 0;
+
+                    if (adjunto.Length > 0)
+                    {
+                        attachments.Add(new EmailAttachment(adjunto, adjuntoMetadata.NombreArchivo));
+                    }
+                }
 
                 var emailSenderData = new EmailSenderData()
                 {
                     Mails = dest,
                     Asunto = asunto,
                     Cuerpo = cuerpo,
-                    Archivo = ms.Length > 0 ? ms.GetBuffer(): null,
-                    NombreArchivo = "Reporte.pdf"
+                    Adjuntos = attachments,
                 };
-
 
                 Task emailSendTask = Task.Run(() => EmailSender.EnviarMail(emailSenderData));
                 await emailSendTask;
@@ -357,7 +367,7 @@ namespace SustitucionMOAUtils.Services.Email
         private async Task<MemoryStream> GetReportES(string reference)
         {
             var blobResult = await azureService.ObtenerArchivoBlobStorageAsync(reference, "certificaciones").ConfigureAwait(false);
-                
+
             return blobResult;
         }
     }

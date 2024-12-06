@@ -307,14 +307,12 @@ namespace SustitucionMOAUtils.Email
                 oMensaje.BodyEncoding = Encoding.UTF8;
                 oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
 
-                if (emailSenderData.Archivo != null)
+                foreach (var adjunto in emailSenderData.Adjuntos)
                 {
-                    var stream = new MemoryStream(emailSenderData.Archivo);
-                    stream.Position = 0;
-                    Attachment attachment = new Attachment(stream, emailSenderData.NombreArchivo);
-                    oMensaje.Attachments.Add(attachment);
-
+                    Attachment data = new Attachment(adjunto.Archivo, adjunto.Nombre);
+                    oMensaje.Attachments.Add(data);
                 }
+
                 SmtpClient oCliente = GetSmtpClient();
                 SendMail(oMensaje, oCliente);
             }
@@ -565,7 +563,19 @@ namespace SustitucionMOAUtils.Email
         public string Cuerpo { get; set; }
         public List<string> Copias { get; set; } = null;
         public AlternateView VistaAlternativa { get; set; } = null;
-        public byte[] Archivo { get; set; } = null;
-        public string NombreArchivo { get; set; } = null;
+        public IEnumerable<EmailAttachment> Adjuntos { get; set; } = Enumerable.Empty<EmailAttachment>();
+    }
+
+    public class EmailAttachment
+    {
+        public string Nombre { get; }
+        public Stream Archivo { get; }
+
+        public EmailAttachment(Stream archivo, string nombre)
+        {
+            Archivo = archivo;
+            Archivo.Seek(0, SeekOrigin.Begin);
+            Nombre = nombre;
+        }
     }
 }

@@ -714,7 +714,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -773,7 +773,7 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
         {
 
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
@@ -781,10 +781,11 @@ namespace SustitucionMOAUtils.Services
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
 
-            reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
+            List<ReporteDto> reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
 
+            IEnumerable<AdjuntosEntradasDeServicio> adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(adjunto => completeAp.Select(aprobacion => aprobacion.NRO_ES_LOCAL).Contains(adjunto.NroESTemporal)).ToList();
 
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte, adjuntos);
 
             return true;
         }
