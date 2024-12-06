@@ -782,7 +782,8 @@ namespace SustitucionMOAUtils.Services
 
             List<ReporteDto> reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
 
-            IEnumerable<AdjuntosEntradasDeServicio> adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(adjunto => completeAp.Select(aprobacion => aprobacion.NRO_ES_LOCAL).Contains(adjunto.NroESTemporal)).ToList();
+            IEnumerable<string> aprobaciones = completeAp.Select(aprobacion => aprobacion.NRO_ES_LOCAL);
+            IEnumerable<AdjuntosEntradasDeServicio> adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(adjunto => aprobaciones.Contains(adjunto.NroESTemporal));
 
             await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte, adjuntos);
 
