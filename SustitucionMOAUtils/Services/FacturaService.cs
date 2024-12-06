@@ -53,26 +53,36 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var file in files)
             {
-                List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
-                List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
-                List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
-                string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
-                file.SaveAs(ruta);
-                Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
-                repositorio.Agregar(archivo);
-                repositorio.GuardarCambios();
-                resultado.ForEach(r => r.FileName = file.FileName);
-                resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
-                if (resultado.Exists(r => r.IsValid))
+                try
                 {
-                    EnviarMail(file);
+                    Logger.Log.Info("Procesando el documento " + file.FileName);
+                    List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
+                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
+                    List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
+                    string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                    file.SaveAs(ruta);
+                    Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
+                    repositorio.Agregar(archivo);
+                    repositorio.GuardarCambios();
+                    resultado.ForEach(r => r.FileName = file.FileName);
+                    resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
+                    if (resultado.Exists(r => r.IsValid))
+                    {
+                        EnviarMail(file);
+                    }
+
+                    GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+
+                    results.AddRange(resultado);
+                }
+                catch (Exception e)
+                {
+                    var error = new ValidationResult(false, "El documento se envió a para su análisis.", "OCR", "", "");
+                    error.FileName = file.FileName;
+                    results.Add(error);
+                    Logger.Log.Error("Error al procesar el documento " + file.FileName, e);
                 }
 
-
-
-                GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
-
-                results.AddRange(resultado);
             }
 
 
