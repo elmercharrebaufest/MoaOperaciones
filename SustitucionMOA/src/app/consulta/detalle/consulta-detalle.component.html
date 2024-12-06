@@ -69,7 +69,7 @@
                 <hr>
                 <div class="col-sm-12 col-md-11">
                     <angular-editor #angularEditor [placeholder]="'Añadir Comentario'" [(ngModel)]="detalle"
-                        [config]="config"></angular-editor>
+                        [config]="config" (ngModelChange)="comentarioOnChange()"></angular-editor>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-1 grid pt-5">
                     <div class="flex flex-column gap-4px">

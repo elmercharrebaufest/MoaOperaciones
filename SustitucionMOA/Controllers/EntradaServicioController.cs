@@ -1,29 +1,13 @@
 ﻿using Newtonsoft.Json;
-using Org.BouncyCastle.Ocsp;
 using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.Consultas;
-using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using SustitucionMOAWS.WSConsumers;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.Services.Description;
 
 namespace SustitucionMOA.Controllers
 {
@@ -48,39 +32,18 @@ namespace SustitucionMOA.Controllers
         //[CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_SOLP)]
         public async Task<ActionResult> GetByProveedorAsync(EntradaServicioParamsDto parametros)
         {
-            try
-            {
 
-                // Este debe combinarse con permisos de usuario.
-                //if (parametros.vendedor == "" || parametros.vendedor == null)
-                //{
-                //    parametros.vendedor = SessionPersister.Proveedor;
-                //}
-                UsuarioDto usuarioActual = ObtenerUsuarioActual();
-                List<EntradaServicioCabeceraDto> result = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
+            // Este debe combinarse con permisos de usuario.
+            //if (parametros.vendedor == "" || parametros.vendedor == null)
+            //{
+            //    parametros.vendedor = SessionPersister.Proveedor;
+            //}
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            List<EntradaServicioCabeceraDto> result = await EntradaServicioService.ObtenerEntradasServicioCompleta(parametros, usuarioActual);
 
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = result });
         }
-        
+
         /// <summary>
         /// Servicio para obtener las entradas de servicios guardadas en aprobaciones.
         /// </summary>
@@ -88,66 +51,24 @@ namespace SustitucionMOA.Controllers
         /// <returns></returns>
         public ActionResult ObtenerESLocales(EntradaServicioParamsDto parametros)
         {
-            try
-            {
-                UsuarioDto usuarioActual = ObtenerUsuarioActual();
-                List<EntradaServicioCabeceraDto> result =  EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            List<EntradaServicioCabeceraDto> result = EntradaServicioService.ServicioAprobaciones_EntradasServicioCabecera(parametros, usuarioActual);
 
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = result });
         }
 
 
         public ActionResult DeleteById(EntradaServicioParamsDto parametros)
         {
-            try
-            {
-                // Este debe combinarse con permisos de usuario.
-                //if (parametros.vendedor == "" || parametros.vendedor == null)
-                //{
-                //    parametros.vendedor = SessionPersister.Proveedor;
-                //}
-                UsuarioDto usuarioActual = ObtenerUsuarioActual();
-                string result = EntradaServicioService.BorrarEntradaServicio(parametros, usuarioActual);
+            // Este debe combinarse con permisos de usuario.
+            //if (parametros.vendedor == "" || parametros.vendedor == null)
+            //{
+            //    parametros.vendedor = SessionPersister.Proveedor;
+            //}
+            UsuarioDto usuarioActual = ObtenerUsuarioActual();
+            string result = EntradaServicioService.BorrarEntradaServicio(parametros, usuarioActual);
 
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = result });
         }
 
 
@@ -176,176 +97,69 @@ namespace SustitucionMOA.Controllers
         {
             SustitucionMOAWS.Logger.Log.Info("EntradaServicioController.CreateAsync");
 
-            try
+            var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
+
+            // Este debe combinarse con permisos de usuario.
+            //if (parametros.vendedor == "" || parametros.vendedor == null)
+            //{
+            //    parametros.vendedor = SessionPersister.Proveedor;
+            //}
+            //MMSN-601
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
+
+
+            foreach (EntradaServicioCreateParamsDto posicion in payload.Posiciones)
             {
+                string solpedNumber = posicion.EntrySheetHeader.SolPedNumber;
 
-                var payload = JsonConvert.DeserializeObject<CreateEntradaServicioDto>(request);
-
-                // Este debe combinarse con permisos de usuario.
-                //if (parametros.vendedor == "" || parametros.vendedor == null)
-                //{
-                //    parametros.vendedor = SessionPersister.Proveedor;
-                //}
-                //MMSN-601
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
-                List<EntradaServicioCreateRespuestaDto> ret = new List<EntradaServicioCreateRespuestaDto>();
-                
-
-                foreach(EntradaServicioCreateParamsDto posicion in payload.Posiciones)
+                var validacion = EntradaServicioService.ValidarIngresante(posicion, userMail, solpedNumber);
+                var result = new EntradaServicioCreateRespuestaDto();
+                if (validacion.Message == "Auto")
                 {
-                    string solpedNumber = posicion.EntrySheetHeader.SolPedNumber;                    
-
-                    var validacion = EntradaServicioService.ValidarIngresante(posicion, userMail, solpedNumber);
-                    var result = new EntradaServicioCreateRespuestaDto();
-                    if (validacion.Message == "Auto")
-                    {
-                        result = await EntradaServicioService.CrearEntradaServicio(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
-                    }
-                    else if (validacion.Message == "Temporal")
-                    {
-                        result = EntradaServicioService.CrearEntradaServicioTemporal(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
-                    }
-                    else
-                    {
-                        result = validacion;
-                    }
-                    ret.Add(result);
+                    result = await EntradaServicioService.CrearEntradaServicio(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
                 }
+                else if (validacion.Message == "Temporal")
+                {
+                    result = EntradaServicioService.CrearEntradaServicioTemporal(posicion, userMail, payload.report, payload.IdAdjuntos, solpedNumber, posicion.EntrySheetHeader.Proveedor);
+                }
+                else
+                {
+                    result = validacion;
+                }
+                ret.Add(result);
+            }
 
 
-                return JsonCustom(new { data = ret });
-            }
-            catch (InfoCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { info = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = e, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error, data = new object[] { null } }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = ret });
         }
+
         [HttpPost]
         public ActionResult RechazarEntradaDeServicio(string json)
         {
-            try
-            {
-                var motivoRechazo = JsonConvert.DeserializeObject<EmailDetailCertificateDto>(json);
-                var toRet = EntradaServicioService.RechazarEntradaDeServicio(motivoRechazo);
-                return JsonCustom(new { data = toRet });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var motivoRechazo = JsonConvert.DeserializeObject<EmailDetailCertificateDto>(json);
+            var toRet = EntradaServicioService.RechazarEntradaDeServicio(motivoRechazo);
+            return JsonCustom(new { data = toRet });
         }
 
         [HttpPost]
         public async Task<ActionResult> AprobarEntradaDeServicio(string nro_es_local, string Moneda)
         {
-            try
-            {
-                var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local, Moneda);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = await EntradaServicioService.AprobarEntradaDeServicio(nro_es_local, Moneda);
+            return JsonCustom(new { data = result });
         }
 
         public ActionResult ReasignarSuplente(string nro_es_local, string suplente)
         {
-            try
-            {
-                var result = EntradaServicioService.ReasignarSuplente(nro_es_local, suplente);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = EntradaServicioService.ReasignarSuplente(nro_es_local, suplente);
+            return JsonCustom(new { data = result });
         }
 
         [HttpPost]
         public ActionResult ActualizarInformacionIngresante(IngresanteInfoEditableDto info)
         {
-            try
-            {
-                var result = EntradaServicioService.ActualizarInformacionIngresante(info);
-                return JsonCustom(new { data = result });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var result = EntradaServicioService.ActualizarInformacionIngresante(info);
+            return JsonCustom(new { data = result });
         }
     }
 }

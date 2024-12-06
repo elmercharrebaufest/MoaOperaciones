@@ -29,6 +29,7 @@ namespace SustitucionMOATest.Services
         private Mock<ICNRTClient> mICNRTClient;
         private Mock<IFeriadoService> mIFeriadoService;
         private Mock<IScatoConsumer> mIScatoConsumer;
+        private Mock<IUbicacionGeograficaService> mIUbicacionGeograficaService;
         private IOrdenResiduosService target;
 
         [SetUp]
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Services
             mIFeriadoService = new Mock<IFeriadoService>();
             mIEmailResiduosService = new Mock<IEmailResiduosService>();
             mIScatoConsumer = new Mock<IScatoConsumer>();
+            mIUbicacionGeograficaService = new Mock<IUbicacionGeograficaService>();
             target = new OrdenResiduosService(
                 mIOrdenCargaConsumerMOA.Object,
                 mIScatoConsumer.Object,
@@ -48,7 +50,8 @@ namespace SustitucionMOATest.Services
                 mIRepositorioOrdenResiduos.Object,
                 mICNRTClient.Object,
                 mIFeriadoService.Object,
-                mIEmailResiduosService.Object);
+                mIEmailResiduosService.Object,
+                mIUbicacionGeograficaService.Object);
         }
 
         [Test]
@@ -94,48 +97,17 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void ObtenerProveedor_Ok()
-        {
-            var proveedorBD = new Proveedor
-            {
-                Id = 1,
-                RazonSocial = "Prov1",
-                CodigoProveedor = "PRV1",
-                TipoProveedor = new TipoUsuario { Id = 7 }
-            };
-
-            mIRepositorioOrdenResiduos
-                .Setup(x => x.ObtenerProveedor(1))
-                .Returns(proveedorBD);
-
-            var provResult = target.ObtenerProveedor(1);
-
-            Assert.IsNotNull(provResult);
-            Assert.That(provResult.Id, Is.EqualTo(1));
-            Assert.That(provResult.RazonSocial, Is.EqualTo("Prov1"));
-            Assert.That(provResult.CodigoProveedor, Is.EqualTo("PRV1"));
-            mIRepositorioOrdenResiduos
-                .Verify(x => x.ObtenerProveedor(1), Times.Once);
-        }
-
-        [Test]
-        public void ObtenerProveedor_NoExiste()
-        {
-            mIRepositorioOrdenResiduos
-                .Setup(x => x.ObtenerProveedor(3))
-                .Returns((Proveedor)null);
-
-            Assert.Throws<Exception>(() => target.ObtenerProveedor(3));
-
-            mIRepositorioOrdenResiduos
-                .Verify(x => x.ObtenerProveedor(3), Times.Once);
-        }
-
-        [Test]
         public void ObtenerListadoOrdenes_Ok()
         {
             var fechaInicio = new DateTime(2024, 3, 1);
             var fechaFin = new DateTime(2024, 3, 7);
+            var mailUsuario = "carlos@baufest.com";
+
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Roles = new List<Rol> { new Rol { PermisosAsociados =  new List<PermisoPorRol> { new PermisoPorRol { Permiso = "VER ORDENES DE CARGA RESIDUOS ADMIN" } } } }
+            };
 
             var filas = new List<OrdenResiduosFila>
             {
@@ -144,19 +116,25 @@ namespace SustitucionMOATest.Services
             };
 
             mIRepositorioOrdenResiduos
+                .Setup(x => x.ObtenerUsuarioSegunMail(It.Is<string>(m => m == mailUsuario)))
+                .Returns(usuario);
+
+            mIRepositorioOrdenResiduos
                 .Setup(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)))
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true))
                 .Returns(filas);
 
-            var listadoRes = target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString());
+            var listadoRes = target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString(), mailUsuario);
 
             Assert.IsNotNull(listadoRes);
             Assert.That(listadoRes.ListaOrdenes.Count, Is.EqualTo(2));
             mIRepositorioOrdenResiduos
                 .Verify(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)), Times.Once);
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true), Times.Once);
         }
 
         [Test]
@@ -164,20 +142,32 @@ namespace SustitucionMOATest.Services
         {
             var fechaInicio = new DateTime(2024, 3, 1);
             var fechaFin = new DateTime(2024, 3, 7);
+            var mailUsuario = "carlos@baufest.com";
+
+            var usuario = new Usuario
+            {
+                Mail = mailUsuario,
+                Roles = new List<Rol> { new Rol { PermisosAsociados = new List<PermisoPorRol> { new PermisoPorRol { Permiso = "VER ORDENES DE CARGA RESIDUOS ADMIN" } } } }
+            };
+            mIRepositorioOrdenResiduos
+               .Setup(x => x.ObtenerUsuarioSegunMail(It.Is<string>(m => m == mailUsuario)))
+               .Returns(usuario);
 
             var filas = new List<OrdenResiduosFila>();
 
             mIRepositorioOrdenResiduos
                 .Setup(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)))
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true))
                 .Returns(filas);
 
-            Assert.Throws<InfoCustomException>(() => target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString()));
+            Assert.Throws<InfoCustomException>(() => target.ObtenerListadoOrdenes(fechaInicio.ToString(), fechaFin.ToString(), mailUsuario));
             mIRepositorioOrdenResiduos
                 .Verify(x => x.ObtenerListadoOrdenes(
                     It.Is<DateTime>(fi => fi == fechaInicio),
-                    It.Is<DateTime>(ff => ff == fechaFin)), Times.Once);
+                    It.Is<DateTime>(ff => ff == fechaFin),
+                    true), Times.Once);
         }
     }
 }

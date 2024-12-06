@@ -154,6 +154,23 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     }
   ];
 
+
+    public get columnaVisible_FechaAprobacion(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaAprobacion").visible;
+    }
+
+    public get columnaVisible_FechaRechazo(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaRechazo").visible;
+    }
+
+    public get columnaVisible_FechaCreacion(): boolean {
+        return this.defaultTablesConfig.find(x => x.name === "Certificaciones").columns.find(x => x.field === "FechaCreacion").visible;
+    }
+
+    private estadoSeleccionado?: string;
+
+
+
   constructor(protected service: ComprasService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securityService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService,
@@ -336,6 +353,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   async filtrarPorEstado(event: any): Promise<void> {
+    this.estadoSeleccionado = event.value.code;
+
     switch (event.value.code) {
       case 'Aprobada':
         this.defaultTablesConfig[0].columns.forEach(col => {
@@ -605,139 +624,197 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
   }
 
   async SeeAll() {
-    this.blockUI.start('Cargando...');
-    this.isAll = true;
-    const mockEvent = { value: { code: this.estadoCertificacion.code } };
-
-    if (this.estadoCertificacion.code === 'Aprobada') {
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculando = true;
-      await this.getListarPO();
-    } else {
-      this.recalculando = true;
-      await this.getListarPO();
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-    }
+      await this.SeeCommon(true);
   }
 
   async SeeForProvider() {
-    this.blockUI.start('Cargando...');
-    this.isAll = false;
-    const mockEvent = { value: { code: this.estadoCertificacion.code } };
-
-    if (this.estadoCertificacion.code === 'Aprobada') {
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculando = true;
-      await this.getListarPO();
-    } else {
-      this.recalculando = true;
-      await this.getListarPO();
-      await this.filtrarPorEstado(mockEvent);
-      this.blockUI.stop();
-      this.recalculandoAprobadas = true;
-      await this.obtenerESSap(this.proveedor, this.documentoNumero);
-    }
+      await this.SeeCommon(false);
   }
 
-  /**
-   * Metodo para definir el perfil de usuario en la tabla de datos con el filtro Pendiente Aprobación.
-   * FAI: Fiscal, Aprobador, Ingresante
-   * AI: Aprobador, Ingresante
-   * FA: Fiscal, Aprobador
-   * FI: Fiscal, Ingresante
-   * A: Aprobador
-   * I: Ingresante
-   * F: Fiscal
-   * @param entradasDeServicio 
-   * @param user 
-   * @returns 
-   */
-  setColumsByUserProfile(entradasDeServicio: any, user: any): string {
-    const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
-    if (pendienteAprobacion.length > 0) {
+    private async SeeCommon(isAll: boolean) {
+        this.blockUI.start('Cargando...');
+        this.isAll = isAll;
+        const mockEvent = { value: { code: this.estadoCertificacion.code } };
 
-      const sf = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Fiscal, user) && this.equalsIgnoreCase(pa.Suplente, user));
-      if (sf.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "SF";
-      }
-
-      const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
-      if (fai.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "FAI";
-      }
-      const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
-      if (ai.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "AI";
-      }
-      const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
-      if (fa.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "FA";
-      }
-      const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
-      if (fi.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "FI";
-      }
-      const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
-      if (a.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "A";
-      }
-      
-      const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
-      if (f.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "F";
-      }
-
-      const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
-      if (i.length > 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Reasignar' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
-        });
-        return "I";
-      }
-      
-      if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
-        });
-      }
-
-      if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
-        this.defaultTablesConfig[0].columns.forEach((col: any) => {
-          col.visible = col.field === 'MotivoRechazo' || col.field === 'FechaAprobacion' || col.field === 'FechaRechazo' || col.field === 'Acciones' || col.field === 'AnuladoPor' ? false : true;
-        });
-      }
+        if (this.estadoCertificacion.code === 'Aprobada') {
+            this.recalculandoAprobadas = true;
+            await this.obtenerESSap(this.proveedor, this.documentoNumero);
+            await this.filtrarPorEstado(mockEvent);
+            this.blockUI.stop();
+            this.recalculando = true;
+            await this.getListarPO();
+        } else {
+            this.recalculando = true;
+            await this.getListarPO();
+            await this.filtrarPorEstado(mockEvent);
+            this.blockUI.stop();
+            this.recalculandoAprobadas = true;
+            await this.obtenerESSap(this.proveedor, this.documentoNumero);
+        }
     }
-  }
+
+    /**
+     * Metodo para definir el perfil de usuario en la tabla de datos con el filtro Pendiente Aprobación.
+     * FAI: Fiscal, Aprobador, Ingresante
+     * AI: Aprobador, Ingresante
+     * FA: Fiscal, Aprobador
+     * FI: Fiscal, Ingresante
+     * A: Aprobador
+     * I: Ingresante
+     * F: Fiscal
+     * @param entradasDeServicio 
+     * @param user 
+     * @returns 
+     */
+    setColumsByUserProfile(entradasDeServicio: any, user: any): string {
+        const pendienteAprobacion = entradasDeServicio.filter(pa => pa.Estado === 'Pendiente Aprobación');
+        const conservarColumnas = this.estadoSeleccionado === 'Aprobada'; // para este estado, las columnas se seleccionan en otro lado, por lo que no se deben cambiar las columnas mostradas.
+
+        let userRole: string;
+
+        if (pendienteAprobacion.length > 0 && !conservarColumnas) {
+
+            const sf = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Fiscal, user) && this.equalsIgnoreCase(pa.Suplente, user));
+            const fai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+            const ai = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+            const fa = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+            const fi = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+            const a = pendienteAprobacion.filter(pa => this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+            const f = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && !this.equalsIgnoreCase(pa.Ingresante, user) && this.equalsIgnoreCase(pa.Fiscal, user));
+            const i = pendienteAprobacion.filter(pa => !this.equalsIgnoreCase(pa.Aprobador, user) && this.equalsIgnoreCase(pa.Ingresante, user) && !this.equalsIgnoreCase(pa.Fiscal, user));
+
+            if (sf.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "SF";
+
+            } else if (fai.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "FAI";
+
+            } else if (ai.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "AI";
+
+            } else if (fa.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "FA";
+
+            } else if (fi.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "FI";
+
+            } else if (a.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "A";
+
+            } else if (f.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "F";
+
+            } else if (i.length > 0) {
+                this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                    col.visible = true;
+                });
+
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                //this.defaultTablesConfig[0].columns.find(x => x.field === 'Reasignar').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
+                this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                userRole = "I";
+
+            } else {
+                if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
+                    this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                        col.visible = true;
+                    });
+
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                }
+
+                if (fai.length === 0 && ai.length === 0 && fa.length === 0 && fi.length === 0 && a.length === 0 && i.length === 0 && f.length === 0) {
+                    this.defaultTablesConfig[0].columns.forEach((col: any) => {
+                        col.visible = true;
+                    });
+
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'MotivoRechazo').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaAprobacion').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'FechaRechazo').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'Acciones').visible = false;
+                    this.defaultTablesConfig[0].columns.find(x => x.field === 'AnuladoPor').visible = false;
+
+                }
+            }
+        }
+
+        return userRole;
+    }
 
   equalsIgnoreCase(str1: string, str2: string): boolean {
     let areEqual = false;

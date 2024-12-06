@@ -1,30 +1,12 @@
-﻿using System;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOARepositorio;
-using SustitucionMOAUtils.Logger;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using ICSharpCode.SharpZipLib.Core;
-using ICSharpCode.SharpZipLib.Zip;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Models.WSMapMOA.Reporte;
-using SustitucionMOAUtils.Email;
-using SustitucionMOAUtils.Export;
+using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net.Mail;
-using System.Configuration;
-using Newtonsoft.Json;
-using System.Text;
-using SustitucionMOAFotmatter;
-using System.Data.Entity;
-using SustitucionMOARepositorio.ConsultasEF;
-using SustitucionMOAWS.Logger;
 using Log = SustitucionMOAUtils.Logger.Log;
-using SustitucionMOAModel.Models.WSMapMOA.Liquidacion.NoGranos;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
-using SustitucionMOAUtils.Services;
 
 namespace SustitucionMOA.Jobs
 {
@@ -57,13 +39,13 @@ namespace SustitucionMOA.Jobs
                 int minutos = int.Parse(repositorio.Obtener<Configuracion, string>(hj => hj.Code == "NotificacionErroresMinutos", x => x.Value));
                 int cantidad = int.Parse(repositorio.Obtener<Configuracion, string>(hj => hj.Code == "NotificacionErroresCantidad", x => x.Value));
                 List<string> enviarA = repositorio.Obtener<Configuracion, string>(hj => hj.Code == "NotificacionErroresEnviarA", x => x.Value).Replace(" ", "").Split(';').ToList();
-                DateTime desde = DateTime.Now.AddMinutes(minutos);
+                DateTime desde = DateTime.Now.AddMinutes(minutos * -1);
 
                 var agrupado = logTableService.ObtenerLogs(desde, true)
                     .Where(x => x.Count >= cantidad).ToList();
 
                 if (agrupado.Any())
-                {                   
+                {
                     emailService.EnviarMail(enviarA, "Notificacion Errores", "", null, CuerpoEnviarMail(agrupado, minutos));
 
                 }

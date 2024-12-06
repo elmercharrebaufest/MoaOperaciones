@@ -59,492 +59,193 @@ namespace SustitucionMOA.Controllers
         }
         public ActionResult ObteneDatosContrato(int tiponegocio)
         {
-            try
-            {
-                string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
-                string DatosContrato = dataAgroApiService.ObteneDatosContrato(tiponegocio);
-                return JsonCustom(new { DatosContrato, BolsaAutomatica });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            string BolsaAutomatica = dataAgroApiService.ConfiguracionBolsaAutomatica();
+            string DatosContrato = dataAgroApiService.ObteneDatosContrato(tiponegocio);
+            return JsonCustom(new { DatosContrato, BolsaAutomatica });
         }
         public ActionResult ObtenerDatosCompraNet(int? idProveedorDataAgro)
         {
-            try
+            if (idProveedorDataAgro.HasValue)
             {
-                if (idProveedorDataAgro.HasValue)
-                {
-                    return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
-                }
-                var proveedor = ObtenerProveedor();
-                return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
+                return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(idProveedorDataAgro.Value));
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var proveedor = ObtenerProveedor();
+            return JsonCustom(dataAgroApiService.ObtenerDatosCompraNet(proveedor.IdDataAgro.Value));
         }
         public ActionResult CrearContratoAPrecio(string contrato)
         {
-            try
-            {
-                contrato = contrato.Replace("nia", "ña");
-                var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAPrecio>(contrato);
+            contrato = contrato.Replace("nia", "ña");
+            var contratoAPrecio = JsonConvert.DeserializeObject<ContratoAPrecio>(contrato);
 
 
-                var proveedor = ObtenerProveedor();
+            var proveedor = ObtenerProveedor();
 
-                if (contratoAPrecio.CorredorId == null)
-                {
-                    contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
-                }
-                if (contratoAPrecio.ComercialId == 0)
-                {
-                    contratoAPrecio.ComercialId = (int)proveedor.IdComercialDataAgro;
-                }
-                contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                contratoAPrecio.ComercialCreadorId = null;
-                contratoAPrecio.MonedaSustentableId = "USDM ";
-                contratoAPrecio.ContratoSAP = "";
-                contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
-                contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
+            if (contratoAPrecio.CorredorId == null)
+            {
+                contratoAPrecio.ProveedorId = (int)proveedor.IdDataAgro;
+            }
+            if (contratoAPrecio.ComercialId == 0)
+            {
+                contratoAPrecio.ComercialId = (int)proveedor.IdComercialDataAgro;
+            }
+            contratoAPrecio.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+            contratoAPrecio.ComercialCreadorId = null;
+            contratoAPrecio.MonedaSustentableId = "USDM ";
+            contratoAPrecio.ContratoSAP = "";
+            contratoAPrecio.CantidadCamiones = contratoAPrecio.CantidadCamiones == 0 ? null : contratoAPrecio.CantidadCamiones;
+            contratoAPrecio.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                string result = dataAgroApiService.CrearContratoAPrecio(contratoAPrecio);
+            string result = dataAgroApiService.CrearContratoAPrecio(contratoAPrecio);
 
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(result);
         }
         public ActionResult CrearContratoAFijar(string contrato)
         {
-            try
+            contrato = contrato.Replace("nia", "ña");
+            var contratoAFijar = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
+
+            var proveedor = ObtenerProveedor();
+
+            if (contratoAFijar.CorredorId == null)
             {
-                contrato = contrato.Replace("nia", "ña");
-                var contratoAFijar = JsonConvert.DeserializeObject<ContratoAFijar>(contrato);
-
-                var proveedor = ObtenerProveedor();
-
-                if (contratoAFijar.CorredorId == null)
-                {
-                    contratoAFijar.ProveedorId = (int)proveedor.IdDataAgro;
-                }
-                if (contratoAFijar.ComercialId == 0)
-                {
-                    contratoAFijar.ComercialId = (int)proveedor.IdComercialDataAgro;
-                }
-                contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                contratoAFijar.ComercialCreadorId = null;
-                contratoAFijar.MonedaSustentableId = "USDM ";
-                contratoAFijar.ContratoSAP = "";
-                contratoAFijar.CantidadCamiones = contratoAFijar.CantidadCamiones == 0 ? null : contratoAFijar.CantidadCamiones;
-                contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
+                contratoAFijar.ProveedorId = (int)proveedor.IdDataAgro;
+            }
+            if (contratoAFijar.ComercialId == 0)
+            {
+                contratoAFijar.ComercialId = (int)proveedor.IdComercialDataAgro;
+            }
+            contratoAFijar.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+            contratoAFijar.ComercialCreadorId = null;
+            contratoAFijar.MonedaSustentableId = "USDM ";
+            contratoAFijar.ContratoSAP = "";
+            contratoAFijar.CantidadCamiones = contratoAFijar.CantidadCamiones == 0 ? null : contratoAFijar.CantidadCamiones;
+            contratoAFijar.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
 
-                string result = dataAgroApiService.CrearContratoAFijar(contratoAFijar);
+            string result = dataAgroApiService.CrearContratoAFijar(contratoAFijar);
 
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(result);
         }
         public ActionResult ValidarDirecto()
         {
-            try
-            {
-                var proveedor = ObtenerProveedor();
+            var proveedor = ObtenerProveedor();
 
-                var directo = dataAgroApiService.ValidarDirecto(proveedor.CUIT);
-                int result = 0;
-                if (directo == "false")
-                {
-                    result = proveedor.IdDataAgro ?? 0;
-                }
+            var directo = dataAgroApiService.ValidarDirecto(proveedor.CUIT);
+            int result = 0;
+            if (directo == "false")
+            {
+                result = proveedor.IdDataAgro ?? 0;
+            }
 
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(result);
         }
         public ActionResult BuscarProveedoresConCorredor(string filtro)
         {
-            try
-            {
-                filtro = filtro.IsNullOrWhiteSpace() ? "" : filtro;
+            filtro = filtro.IsNullOrWhiteSpace() ? "" : filtro;
 
-                if (filtro.Length > 2)
-                {
-                    var proveedor = ObtenerProveedor();
+            if (filtro.Length > 2)
+            {
+                var proveedor = ObtenerProveedor();
 
-                    return JsonCustom(dataAgroApiService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
-                }
-                else
-                {
-                    return JsonCustom("");
+                return JsonCustom(dataAgroApiService.BuscarProveedoresConCorredor(filtro, proveedor.CUIT));
+            }
+            else
+            {
+                return JsonCustom("");
 
-                }
-
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult Habilitaciones(int material, int tiponegocio)
         {
-            try
-            {
-                string HabilitarPizarra = dataAgroApiService.HabilitarPizarra(material, tiponegocio);
-                string HabilitarCampana = dataAgroApiService.HabilitarCampaña(material);
-                string TraerPrecioMoa = dataAgroApiService.TraerPrecioMoa(material, tiponegocio);
-                string TraerPagosDiferido = dataAgroApiService.TraerPagosDiferido(material, tiponegocio);
-                string TraerHabilitarSustentable = dataAgroApiService.TraerHabilitarSustentable();
-                var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            string HabilitarPizarra = dataAgroApiService.HabilitarPizarra(material, tiponegocio);
+            string HabilitarCampana = dataAgroApiService.HabilitarCampaña(material);
+            string TraerPrecioMoa = dataAgroApiService.TraerPrecioMoa(material, tiponegocio);
+            string TraerPagosDiferido = dataAgroApiService.TraerPagosDiferido(material, tiponegocio);
+            string TraerHabilitarSustentable = dataAgroApiService.TraerHabilitarSustentable();
+            var result = new { HabilitarPizarra, HabilitarCampana, TraerPrecioMoa, TraerPagosDiferido, TraerHabilitarSustentable };
+            return JsonCustom(result);
         }
         public ActionResult HabilitarCampana(int material)
         {
-            try
-            {
-                return JsonCustom(dataAgroApiService.HabilitarCampaña(material));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.HabilitarCampaña(material));
         }
         public ActionResult HabilitarPizarra(int material, int tiponegocio)
         {
-            try
-            {
-                return JsonCustom(dataAgroApiService.HabilitarPizarra(material, tiponegocio));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.HabilitarPizarra(material, tiponegocio));
         }
         public ActionResult ObtenerFijacionesAutomaticas(bool esCorredorEnDataAgro, string cuitProveedor, int materialId, string filtro)
         {
-            try
-            {
-                var proveedor = ObtenerProveedor();
+            var proveedor = ObtenerProveedor();
 
-                if (esCorredorEnDataAgro)
-                {
-                    return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
-                }
-                else
-                {
-                    return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
+            if (esCorredorEnDataAgro)
+            {
+                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(cuitProveedor, proveedor.CUIT, materialId, filtro, 0));
+            }
+            else
+            {
+                return JsonCustom(dataAgroApiService.ObtenerFijacionesAutomaticas(proveedor.CUIT, "", materialId, filtro, 0));
 
-                }
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult CrearContratoFijacion(string contrato)
         {
-            try
+            contrato = contrato.Replace("nia", "ña");
+            var contratoFijacion = JsonConvert.DeserializeObject<ContratoFijacion>(contrato);
+
+
+            var proveedor = ObtenerProveedor();
+
+
+            if (contratoFijacion.CorredorId == null)
             {
-                contrato = contrato.Replace("nia", "ña");
-                var contratoFijacion = JsonConvert.DeserializeObject<ContratoFijacion>(contrato);
-
-
-                var proveedor = ObtenerProveedor();
-
-
-                if (contratoFijacion.CorredorId == null)
-                {
-                    contratoFijacion.ProveedorId = (int)proveedor.IdDataAgro;
-                }
-                if (contratoFijacion.ComercialId == 0)
-                {
-                    contratoFijacion.ComercialId = (int)proveedor.IdComercialDataAgro;
-                }
-                contratoFijacion.ProveedorCreadorId = (int)proveedor.IdDataAgro;
-                contratoFijacion.ComercialCreadorId = null;
-                contratoFijacion.MonedaSustentable = "USDM ";
-                contratoFijacion.CantidadCamiones = contratoFijacion.CantidadCamiones == 0 ? null : contratoFijacion.CantidadCamiones;
-                contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-
-                string result = dataAgroApiService.CrearContratoFijacion(contratoFijacion);
-
-                return JsonCustom(result);
+                contratoFijacion.ProveedorId = (int)proveedor.IdDataAgro;
             }
-            catch (InfoCustomException e)
+            if (contratoFijacion.ComercialId == 0)
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+                contratoFijacion.ComercialId = (int)proveedor.IdComercialDataAgro;
             }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            contratoFijacion.ProveedorCreadorId = (int)proveedor.IdDataAgro;
+            contratoFijacion.ComercialCreadorId = null;
+            contratoFijacion.MonedaSustentable = "USDM ";
+            contratoFijacion.CantidadCamiones = contratoFijacion.CantidadCamiones == 0 ? null : contratoFijacion.CantidadCamiones;
+            contratoFijacion.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
+
+
+            string result = dataAgroApiService.CrearContratoFijacion(contratoFijacion);
+
+            return JsonCustom(result);
         }
         public ActionResult GetContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
             int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
             bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero, string contratoCorredor)
         {
-            try
-            {
+            var proveedor = ObtenerProveedor();
 
-                var proveedor = ObtenerProveedor();
+            string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
 
-                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
-
-                return JsonCustom(result);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(result);
         }
         public ActionResult ExportContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId,
            int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId,
            bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, bool? sustentableTercero, string contratoCorredor)
         {
-            try
-            {
-                var proveedor = ObtenerProveedor();
+            var proveedor = ObtenerProveedor();
 
-                string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
-                System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
-                var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
-                var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
-                foreach (var item in list)
-                {
-                    if (item.FechaDesde.HasValue)
-                        item.FechaDesde = item.FechaDesde.Value.AddHours(-3);
-                    if (item.FechaHasta.HasValue)
-                        item.FechaHasta = item.FechaHasta.Value.AddHours(-3);
-                }
-                var excel = ExcelExport.ToExcel(list, new string[] { "Cuit", "Proveedor", "Corredor", "ContratoCorredor", "TipoNegocio", "Cantidad", "Precio", "Moneda",
+            string result = obteberContratos(fechaDesde, fechaHasta, entregaDesde, entregaHasta, fijacionHasta, corredorId, proveedorId, boletoId, clasificacionId, destinoId, estadoId, materialId, campaniaId, tipoNegocioId, pagoDiferidoTercero, calidadTercero, dolarizadoTercero, proveedor, sustentableTercero, contratoCorredor);
+            System.Web.Script.Serialization.JavaScriptSerializer ser = new System.Web.Script.Serialization.JavaScriptSerializer();
+            var result2 = (Dictionary<string, object>)ser.DeserializeObject(result);
+            var list = ser.Deserialize<List<BasicoContrato>>(ser.Serialize(result2["Data"]));
+            foreach (var item in list)
+            {
+                if (item.FechaDesde.HasValue)
+                    item.FechaDesde = item.FechaDesde.Value.AddHours(-3);
+                if (item.FechaHasta.HasValue)
+                    item.FechaHasta = item.FechaHasta.Value.AddHours(-3);
+            }
+            var excel = ExcelExport.ToExcel(list, new string[] { "Cuit", "Proveedor", "Corredor", "ContratoCorredor", "TipoNegocio", "Cantidad", "Precio", "Moneda",
                     "Destino", "FechaDesde", "FechaHasta", "Material", "Campaña", "Clasificacion", "Localidad", "Consignatario", "Estado", "Pago Diferido", "Dolarizado", "Calidad", "Sustentable" }, "Reporte Contratos");
 
-                return JsonCustom(excel);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(excel);
         }
 
         private string obteberContratos(string fechaDesde, string fechaHasta, string entregaDesde, string entregaHasta, string fijacionHasta, int? corredorId, int? proveedorId, int? boletoId, int? clasificacionId, int? destinoId, string estadoId, int? materialId, int? campaniaId, int? tipoNegocioId, bool? pagoDiferidoTercero, bool? calidadTercero, bool? dolarizadoTercero, Proveedor proveedor, bool? sustentableTercero, string contratoCorredor)
@@ -646,287 +347,169 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ValidarProveedor(string proveedorId)
         {
-            try
+            if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
             {
-                if (!string.IsNullOrEmpty(proveedorId) && proveedorId != "0")
-                {
-                    return JsonCustom(dataAgroApiService.ValidarProveedor(proveedorId));
-                }
-                Proveedor proveedor = ObtenerProveedor();
+                return JsonCustom(dataAgroApiService.ValidarProveedor(proveedorId));
+            }
+            Proveedor proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.ValidarProveedor(proveedor.IdDataAgro.Value.ToString()));
         }
 
         public ActionResult TraerPrecioMoaMateriales(int tipoNegocioId = 0)
         {
-            try
-            {
-                return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.TraerPrecioMoaMateriales(tipoNegocioId));
         }
 
         public ActionResult AnularNegocio(int negocioId, int tipoNegocioId, string motivo)
         {
-            try
-            {
-                return JsonCustom(dataAgroApiService.AnularNegocio(negocioId, tipoNegocioId, motivo));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.AnularNegocio(negocioId, tipoNegocioId, motivo));
         }
 
         public ActionResult TraerContratoCompleto(int negocioId, int tipoNegocioId)
         {
-            try
-            {
-                return JsonCustom(dataAgroApiService.TraerContratoCompleto(negocioId, tipoNegocioId));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.TraerContratoCompleto(negocioId, tipoNegocioId));
         }
 
 
         [HttpPost]
         public ActionResult AltaMasivaAcuerdo()
         {
-            try
+            List<string> errores = new List<string>();
+
+            //parsear excel
+            //validar tipo de datos
+            //enviar lista
+            var proveedor = ObtenerProveedor();
+
+
+            var contratoAcuerdo = Request.Form.Get("contratoAcuerdo");
+
+            int ncontratoAcuerdo;
+            if (!int.TryParse(contratoAcuerdo, out ncontratoAcuerdo))
             {
-                List<string> errores = new List<string>();
+                errores.Add(string.Concat("Debe seleccionar el contrato acuerdo."));
+                return JsonCustom(new { info = errores });
+            }
 
-                //parsear excel
-                //validar tipo de datos
-                //enviar lista
-                var proveedor = ObtenerProveedor();
+            BasicoContrato acuerdo = dataAgroApiService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
+            if (acuerdo.ContratoId == 0)
+            {
+                errores.Add(string.Concat("El Acuerdo seleccionado no es valido."));
+                return JsonCustom(new { info = errores });
+            }
+            if (Request.Files.Count == 0)
+            {
+                errores.Add(string.Concat("Debe seleccionar el archivo."));
+                return JsonCustom(new { info = errores });
+            }
+            if (Request.Files.Count > 1)
+            {
+                errores.Add(string.Concat("Debe seleccionar un solo archivo."));
+                return JsonCustom(new { info = errores });
+            }
 
+            var fileSubido = Request.Files[0];
+            var extension = Path.GetExtension(fileSubido.FileName).ToUpper();
+            if (extension != ".XLSX" && extension != ".XLS")
+            {
+                errores.Add(string.Concat("Archivo no soportado. Debe subir un Excel en formato xlsx."));
+                return JsonCustom(new { info = errores });
+            }
+            if (fileSubido.ContentLength > 0)
+            {
+                var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
+                var materiales = dataAgroApiService.BuscarMateriales();
+                var centros = dataAgroApiService.BuscarCentros();
+                var campanias = dataAgroApiService.BuscarCampanias();
+                var validations = GetValidatorContratos(materiales, centros, campanias);
+                var validator = new ExcelValidator(validations);
 
-                var contratoAcuerdo = Request.Form.Get("contratoAcuerdo");
+                var resultValidation = validator.Validate(dsExcel.Tables[0], false);
 
-                int ncontratoAcuerdo;
-                if (!int.TryParse(contratoAcuerdo, out ncontratoAcuerdo))
+                if (!resultValidation.IsValid)
                 {
-                    errores.Add(string.Concat("Debe seleccionar el contrato acuerdo."));
-                    return JsonCustom(new { info = errores });
+                    return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
                 }
+                else
+                {
+                    List<BasicoContrato> contratos = new List<BasicoContrato>();
+                    int tiponegocioid = acuerdo.Precio > 0 ? 2 : 1;
+                    List<int> rowsOk = resultValidation.RowsResult.Where(a => a.IsValid).Select(a => a.RowNumber).ToList();
+                    if (rowsOk.Count == 0)
+                    {
+                        return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
+                    }
+                    var rows = dsExcel.Tables[0].AsEnumerable().Select(x => x.ItemArray).Skip(0);
+                    for (int ii = 0; ii < rows.Count(); ii++)
+                    {
+                        if (!rowsOk.Contains(ii))
+                            continue;
+                        var contrato = new BasicoContrato();
+                        contrato.ContratoAcuerdoId = acuerdo.ContratoId;
+                        contrato.CorredorId = acuerdo.CorredorId;
 
-                BasicoContrato acuerdo = dataAgroApiService.TraerContratoCompleto(ncontratoAcuerdo, "acuerdo");
-                if (acuerdo.ContratoId == 0)
-                {
-                    errores.Add(string.Concat("El Acuerdo seleccionado no es valido."));
-                    return JsonCustom(new { info = errores });
-                }
-                if (Request.Files.Count == 0)
-                {
-                    errores.Add(string.Concat("Debe seleccionar el archivo."));
-                    return JsonCustom(new { info = errores });
-                }
-                if (Request.Files.Count > 1)
-                {
-                    errores.Add(string.Concat("Debe seleccionar un solo archivo."));
-                    return JsonCustom(new { info = errores });
-                }
+                        contrato.ContratoCorredor = rows.ElementAt(ii)[0].ToString().Trim();
+                        contrato.ContratoVendedor = rows.ElementAt(ii)[1].ToString().Trim();
+                        contrato.MaterialId = materiales.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[2].ToString().Trim().ToLower()).Single().MaterialId;
+                        contrato.CampanaId = campanias.Where(a => a.Descripcion.Replace("-", "").ToLower() == rows.ElementAt(ii)[3].ToString().Trim().ToLower()).Single().CampaniaId;
+                        contrato.FechaOperacion = DateTime.Parse(rows.ElementAt(ii)[4].ToString().Trim());
+                        contrato.FechaDesde = DateTime.Parse(rows.ElementAt(ii)[5].ToString().Trim());
+                        contrato.FechaHasta = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
+                        contrato.FechaEntrega = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
+                        contrato.Cantidad = int.Parse(rows.ElementAt(ii)[7].ToString().Trim());
+                        contrato.Cuit = rows.ElementAt(ii)[8].ToString().Trim();
+                        contrato.ClasificacionId = rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "productor" ? 1 : rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "acopiador" ? 2 : 3;
+                        contrato.PlanCanje = rows.ElementAt(ii)[10].ToString().Trim().ToUpper() == "X";
+                        contrato.Consignatario = rows.ElementAt(ii)[11].ToString().Trim().ToUpper() == "X";
+                        contrato.DestinoId = centros.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[12].ToString().Trim().ToLower()).Single().Id;
+                        contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString().Trim());
+                        contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString().Trim());
+                        contrato.Observacion = ii.ToString().Trim();
+                        contrato.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                var fileSubido = Request.Files[0];
-                var extension = Path.GetExtension(fileSubido.FileName).ToUpper();
-                if (extension != ".XLSX" && extension != ".XLS")
-                {
-                    errores.Add(string.Concat("Archivo no soportado. Debe subir un Excel en formato xlsx."));
-                    return JsonCustom(new { info = errores });
-                }
-                if (fileSubido.ContentLength > 0)
-                {
-                    var dsExcel = ExcelImport.LeerExcelDesdeHttpRequest(Request);
-                    var materiales = dataAgroApiService.BuscarMateriales();
-                    var centros = dataAgroApiService.BuscarCentros();
-                    var campanias = dataAgroApiService.BuscarCampanias();
-                    var validations = GetValidatorContratos(materiales, centros, campanias);
-                    var validator = new ExcelValidator(validations);
 
-                    var resultValidation = validator.Validate(dsExcel.Tables[0], false);
+                        contratos.Add(contrato);
 
+                    }
+
+                    validacionContratoFatal(contratos, acuerdo, resultValidation);
                     if (!resultValidation.IsValid)
                     {
                         return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
-                        List<BasicoContrato> contratos = new List<BasicoContrato>();
-                        int tiponegocioid = acuerdo.Precio > 0 ? 2 : 1;
-                        List<int> rowsOk = resultValidation.RowsResult.Where(a => a.IsValid).Select(a => a.RowNumber).ToList();
-                        if (rowsOk.Count == 0)
+                        List<GrabarContratoResult> resultados = dataAgroApiService.CrearContratoMasivo(contratos);
+
+                        foreach (var item in resultados)
                         {
-                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
-                        }
-                        var rows = dsExcel.Tables[0].AsEnumerable().Select(x => x.ItemArray).Skip(0);
-                        for (int ii = 0; ii < rows.Count(); ii++)
-                        {
-                            if (!rowsOk.Contains(ii))
-                                continue;
-                            var contrato = new BasicoContrato();
-                            contrato.ContratoAcuerdoId = acuerdo.ContratoId;
-                            contrato.CorredorId = acuerdo.CorredorId;
-
-                            contrato.ContratoCorredor = rows.ElementAt(ii)[0].ToString().Trim();
-                            contrato.ContratoVendedor = rows.ElementAt(ii)[1].ToString().Trim();
-                            contrato.MaterialId = materiales.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[2].ToString().Trim().ToLower()).Single().MaterialId;
-                            contrato.CampanaId = campanias.Where(a => a.Descripcion.Replace("-", "").ToLower() == rows.ElementAt(ii)[3].ToString().Trim().ToLower()).Single().CampaniaId;
-                            contrato.FechaOperacion = DateTime.Parse(rows.ElementAt(ii)[4].ToString().Trim());
-                            contrato.FechaDesde = DateTime.Parse(rows.ElementAt(ii)[5].ToString().Trim());
-                            contrato.FechaHasta = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
-                            contrato.FechaEntrega = DateTime.Parse(rows.ElementAt(ii)[6].ToString().Trim());
-                            contrato.Cantidad = int.Parse(rows.ElementAt(ii)[7].ToString().Trim());
-                            contrato.Cuit = rows.ElementAt(ii)[8].ToString().Trim();
-                            contrato.ClasificacionId = rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "productor" ? 1 : rows.ElementAt(ii)[9].ToString().Trim().ToLower() == "acopiador" ? 2 : 3;
-                            contrato.PlanCanje = rows.ElementAt(ii)[10].ToString().Trim().ToUpper() == "X";
-                            contrato.Consignatario = rows.ElementAt(ii)[11].ToString().Trim().ToUpper() == "X";
-                            contrato.DestinoId = centros.Where(a => a.Descripcion.ToLower() == rows.ElementAt(ii)[12].ToString().Trim().ToLower()).Single().Id;
-                            contrato.LocalidadId = int.Parse(rows.ElementAt(ii)[13].ToString().Trim());
-                            contrato.ProvinciaId = int.Parse(rows.ElementAt(ii)[14].ToString().Trim());
-                            contrato.Observacion = ii.ToString().Trim();
-                            contrato.UsuarioTercero = ClaimsPrincipalExtension.GetClaimValue("emails");
-
-
-                            contratos.Add(contrato);
-
-                        }
-
-                        validacionContratoFatal(contratos, acuerdo, resultValidation);
-                        if (!resultValidation.IsValid)
-                        {
-                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
-                        }
-                        else
-                        {
-                            List<GrabarContratoResult> resultados = dataAgroApiService.CrearContratoMasivo(contratos);
-
-                            foreach (var item in resultados)
+                            if (item.HayError)
                             {
-                                if (item.HayError)
-                                {
-                                    var tipo = item.ListaErrores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
-                                    //item.ContratoId estoy usando ese campo para devolver el numero de row
-                                    resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = tipo, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
-                                }
+                                var tipo = item.ListaErrores.Any(a => a.Source == "Fatal") ? ExcelValidationErrorType.Fatal : ExcelValidationErrorType.Error;
+                                //item.ContratoId estoy usando ese campo para devolver el numero de row
+                                resultValidation.RowsResult[item.ContratoId ?? 0].ItemsResult.Add(new ExcelValidatorItemResult { Errors = item.Errores.Select(a => a.Message).ToList(), Item = new ExcelValidatorItem { ErrorType = tipo, Name = "", Options = null, Position = 1, Required = true, Type = ExcelValidationColumnType.String } });
                             }
-                            return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
-
                         }
+                        return Json(new { Resume = resultValidation.Resume }, JsonRequestBehavior.AllowGet);
+
                     }
-
-
-                }
-                else
-                {
-                    errores.Add(string.Concat("El archivo ", fileSubido.FileName, " está vacío."));
                 }
 
 
-                if (errores.Count > 0)
-                {
-                    return JsonCustom(new { info = errores });
-                }
+            }
+            else
+            {
+                errores.Add(string.Concat("El archivo ", fileSubido.FileName, " está vacío."));
+            }
 
-                return JsonCustom(new { data = SuccessMsg.ArchivoSubidoOK });
 
-            }
-            catch (InfoCustomException e)
+            if (errores.Count > 0)
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
+                return JsonCustom(new { info = errores });
             }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(new { data = SuccessMsg.ArchivoSubidoOK });
         }
 
         private void validacionContratoFatal(List<BasicoContrato> contratos, BasicoContrato acuerdo, ExcelValidatorResult resultValidation)
@@ -1125,71 +708,23 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult ObteneContratosAcuerdo()
         {
-            try
-            {
-                var proveedor = ObtenerProveedor();
+            var proveedor = ObtenerProveedor();
 
-                return JsonCustom(dataAgroApiService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(dataAgroApiService.ObteneContratosAcuerdo(proveedor.IdDataAgro.Value));
         }
 
         public ActionResult ExcelModeloAltaMasiva()
         {
-            try
+            var excel = dataAgroApiService.ExcelModeloAltaMasiva();
+            PDFResponse result = new PDFResponse
             {
-                var excel = dataAgroApiService.ExcelModeloAltaMasiva();
-                PDFResponse result = new PDFResponse
+                Pdf = new Pdf()
                 {
-                    Pdf = new Pdf()
-                    {
-                        data = excel
-                    }
-                };
+                    data = excel
+                }
+            };
 
-                return JsonCustom(result.Pdf);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(result.Pdf);
         }
 
         private Proveedor ObtenerProveedor()

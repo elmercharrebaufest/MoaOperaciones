@@ -46,10 +46,14 @@
                 </div>
     
                 <div *ngIf="havePermission">
-                    <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all" [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver
-                        todo</button>
+                    <button *ngIf="!isAll;" (click)="SeeAll()" class="see-all"
+                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                        Ver todo
+                    </button>
                     <button *ngIf="isAll;" (click)="SeeForProvider()" class="see-provider"
-                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">Ver Propias</button>
+                        [disabled]="(recalculando && estadoCertificacion.code === 'Pendiente Aprobación') || (recalculando && estadoCertificacion.code === 'Rechazado') || (recalculandoAprobadas && estadoCertificacion.code === 'Aprobada')">
+                        Ver Propias
+                    </button>
                 </div>
             </div>
             <!-- FILTERS END -->
@@ -86,10 +90,10 @@
                         </a>
                     </td>
                     <td>{{ rowData.EntradaServicio }}</td>
-                    <td *ngIf="rowData.Estado === 'Aprobada'">
+                    <td *ngIf="columnaVisible_FechaAprobacion">
                         {{ rowData.FechaAprobacion }}
                     </td>
-                    <td *ngIf="rowData.Estado === 'Rechazado'">
+                    <td *ngIf="columnaVisible_FechaRechazo">
                         {{ rowData.FechaRechazo }}
                     </td>
                     <td>
@@ -129,7 +133,7 @@
                         rowData.Aprobador | defaultData}}</td>
                     <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
-                    <td>                                                                                
+                    <td>
                         <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
                         <div *ngIf="loadingRows[item]" class="loader"></div>
                     </td>

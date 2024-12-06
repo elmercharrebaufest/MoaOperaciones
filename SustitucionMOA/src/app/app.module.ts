@@ -92,7 +92,8 @@ import { TooltipModule } from "primeng/tooltip";
 import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
 import { CalendarModule } from 'primeng/calendar';
 import { ErrorInterceptor } from "./error.interceptor";;
-import { LogViewerComponent } from './log-viewer/log-viewer.component'
+import { LogViewerComponent } from './log-viewer/log-viewer.component';
+import { ZoomControlComponent } from './zoom-control/zoom-control.component'
 
 @NgModule({
   imports: [
@@ -165,7 +166,8 @@ import { LogViewerComponent } from './log-viewer/log-viewer.component'
     ComunicacionesComponent,
     AprobacionExternaComponent,
     MessageSpinnerComponent,
-    LogViewerComponent
+    LogViewerComponent,
+    ZoomControlComponent
     ],
     providers: [
         DatePipe,

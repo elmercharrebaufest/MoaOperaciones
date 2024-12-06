@@ -20,6 +20,7 @@ import { Planta } from "../../common/models/ordenes-residuos/planta";
 import { Domicilio } from "../../common/models/ordenes-residuos/domicilio";
 import { EstadoOrdenResiduosEnum } from "../../common/models/ordenes-residuos/estadoOrdenResiduos";
 import { DestinoScato } from "../../common/models/scato/destinoScato";
+import { Message, MessageService } from "primeng/api";
 
 
 @Component({
@@ -46,7 +47,8 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         protected seleccionarProveedorService: SeleccionarProveedorService,
         protected sessionDataService: SessionDataService,
         protected modalService: ModalService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        protected msgService: MessageService) {
         super(navService, securityService, floatMsgService, modalService)
     }
 
@@ -308,11 +310,23 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.ordenResiduos.PatenteChasis = event.toUpperCase();
     }
 
-    onPatenteAcopladoValueChanged(valor: string) {
+    onPatenteChasisBlur(valor: string) {
+        if (!this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
+            this.mostrarWarningFlotante('Patente chasis', 'Patente inválida: ' + this.ordenResiduos.PatenteChasis);
+        }
     }
 
     onPatenteAcopladoBlur(valor: string) {
-        this.obtenerIdsTransportes();
+        if (this.esPatenteValida(this.ordenResiduos.PatenteAcoplado)) {
+            this.obtenerIdsTransportes();
+        }
+        else {
+            this.mostrarWarningFlotante('Patente acoplado', 'Patente inválida: ' + this.ordenResiduos.PatenteAcoplado);
+        }
+    }
+
+    pasarAMayusculas(event: any): string {
+        return event.toUpperCase();
     }
 
     onPatenteAcopladoSeleccionado(event: any) {
@@ -396,13 +410,11 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
             this.mensajeComponent.setInfoMsg("Ingrese un CUIL de chofer válido.");
             return false;
         }
-        if (this.ordenResiduos.PatenteAcoplado &&
-            this.ordenResiduos.PatenteAcoplado.trim().length > 0 &&
-            this.ordenResiduos.PatenteAcoplado.trim().length < 6) {
+        if (this.ordenResiduos.PatenteAcoplado && !this.esPatenteValida(this.ordenResiduos.PatenteAcoplado)) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente acoplado válida.");
             return false;
         }
-        if (this.ordenResiduos.PatenteChasis == undefined || this.ordenResiduos.PatenteChasis.trim().length < 6) {
+        if (!this.ordenResiduos.PatenteChasis || !this.esPatenteValida(this.ordenResiduos.PatenteChasis)) {
             this.mensajeComponent.setInfoMsg("Ingrese una patente chasis válida.");
             return false;
         }
@@ -560,6 +572,19 @@ export class OrdenesResiduosAltaComponent extends BaseComponent implements OnIni
         this.ordenResiduos.DestinoMercaderia = undefined;
     }
 
+    esPatenteValida(patente: string): boolean {
+        if (!patente) {
+            return true;
+        }
+        const exprRegPatente = /^[A-Z]{3}[\d]{3}$|^[A-Z]{2}[\d]{3}[A-Z]{2}$/;
+        return exprRegPatente.test(patente);
+    }
+
+
+    mostrarWarningFlotante(titulo: string, mensaje: string) {
+        const message: Message = { severity: 'warn', summary: titulo, detail: mensaje, life: 5000 };
+        this.msgService.add(message);
+    }
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
         this.mensajeComponent.setMsgsEmpty();

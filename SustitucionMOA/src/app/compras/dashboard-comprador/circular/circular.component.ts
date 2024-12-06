@@ -57,7 +57,9 @@ export class CircularComponent implements OnInit, OnChanges {
     ngOnChanges(changes: SimpleChanges): void {
         if (this.solicitante) {
             if (this.peticion != null) {
-                this.selectedProv = this.peticion.Usuarios.map(x => x.UsuarioId);
+                this.selectedProv = this.peticion.Usuarios
+                    .filter(x => x.RealizoVisita)
+                    .map(x => x.UsuarioId);
             }
         } else {
             if (this.peticion != null) {

@@ -28,47 +28,30 @@ namespace SustitucionMOA.Controllers
         /// <returns></returns>
         public ActionResult CorrerReasignacionManual()
         {
-            try
-            {
-                string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
+            string userMail = ClaimsPrincipalExtension.GetClaimValue("emails");
 
-                if (logicaDerivacionAutomaticaService.isUserAllowed(userMail))
+            if (logicaDerivacionAutomaticaService.isUserAllowed(userMail))
+            {
+                string res = "";
+                try
                 {
-                    string res = "";
-                    try
-                    {
-                        res = logicaDerivacionAutomaticaService.CorrerProcesoReasignacion();
-                    }
-                    catch (Exception ex)
-                    {
-                        return JsonCustom(new { error = ex.Message });
-                    }
-
-                    if(res == "SinRegistros")
-                    {
-                        return JsonCustom(new { error = "No hay registros en la tabla UsuarioReasignacion para procesar." });
-                    }
-
-                    return JsonCustom(new { data = "Proceso ejecutado con éxito" });
+                    res = logicaDerivacionAutomaticaService.CorrerProcesoReasignacion();
                 }
-                else
+                catch (Exception ex)
                 {
-                    return JsonCustom(new { data = "Usuario " + userMail + " no autorizado para correr el proceso" });
+                    return JsonCustom(new { error = ex.Message });
                 }
-                
+
+                if (res == "SinRegistros")
+                {
+                    return JsonCustom(new { error = "No hay registros en la tabla UsuarioReasignacion para procesar." });
+                }
+
+                return JsonCustom(new { data = "Proceso ejecutado con éxito" });
             }
-            catch (InfoCustomException e)
+            else
             {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
+                return JsonCustom(new { data = "Usuario " + userMail + " no autorizado para correr el proceso" });
             }
         }
 

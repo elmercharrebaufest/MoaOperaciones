@@ -5,6 +5,12 @@
 
 /*     General & overwrite     */
 
+:root {
+    --availableSpaceAfterHeader: calc(100vh - 178px);
+    --availableSpaceAfterHeaderAndTitle: calc(var(--availableSpaceAfterHeader) - 150px);
+}
+
+
 html,
 body {
     height: 100%;
@@ -415,14 +421,14 @@ label {
     z-index: 1;
     float: right;
     width: calc(100% - 260px);
-    min-height: 100%;
+    min-height: var(--availableSpaceAfterHeader);
     top: 103px;
 }
 
 .main-panel {
     /*overflow: auto;*/
     max-height: 100%;
-    height: 100%;
+    height: var(--availableSpaceAfterHeader);
     -webkit-overflow-scrolling: touch;
 }
 
@@ -1395,8 +1401,8 @@ Content*/
 
 
 /*.inicio {
-	margin-top: 0px;
-	padding-top:0px;
+    margin-top: 0px;
+    padding-top:0px;
 }*/
 
 .inicioNotificaciones {
@@ -1725,10 +1731,10 @@ Texto con recuadro gris*/
 
 
 /*#Pagos, #Fijaciones, #Aplicaciones, #Hijos, #Calidad, #Pago {
-	padding-left:0px;
+    padding-left:0px;
 }
 #Liquidaciones, #Ampliaciones, #Aplicaciones, #Hijos, #Calidad, #Pago {
-	padding-right:0px;
+    padding-right:0px;
 }*/
 
 .ccpp #Aplicaciones {
@@ -2584,7 +2590,7 @@ margin-top:25px;
             border-bottom: 1px solid #ccd2cf;
         }
         /*.rowInfoGrey [class*='col']:first-child {
-	margin-top:0px;
+    margin-top:0px;
 }*/
         .rowInfoGrey .row:last-child [class*="col"]:last-child {
             border: none;
@@ -3810,7 +3816,7 @@ modal-content > dl.dl-horizontal {
 
 
 /*.fletesAFacturar .mySearch #searchCCPP, .fletesAFacturar .mySearch #searchProforma, .fletesAFacturar .mySearch #searchProducto {
-	display: block;
+    display: block;
 }*/
 
 .fletesAFacturar .btnSection .fa-times,
@@ -3928,21 +3934,21 @@ div.dtr-modal div.dtr-modal-display {
 
 @media (max-width: 768px) {
     /*.fletesAFacturar .mySearch #searchProforma, .fletesAFacturar .mySearch #searchProducto, .fletesAFacturar .mySearch #searchLegal {
-	display:none;
-	}
-	.fletesAFacturar .mySearch .titleSection span, .fletesAFacturar .mySearch .titleSection {
-	font-size: 18px;
-	}
-	.fletesAFacturar .mySearch .titleSection .titleExtraData {
-	margin-bottom: 0px;
-	line-height: 1.2;
-	}
-	.fletesAFacturar .mySearch {
-	margin-bottom: 10px;
-	}
-	.fletesAFacturar .cargaDeDatos {
-	margin-bottom: 0px;
-	}*/
+    display:none;
+    }
+    .fletesAFacturar .mySearch .titleSection span, .fletesAFacturar .mySearch .titleSection {
+    font-size: 18px;
+    }
+    .fletesAFacturar .mySearch .titleSection .titleExtraData {
+    margin-bottom: 0px;
+    line-height: 1.2;
+    }
+    .fletesAFacturar .mySearch {
+    margin-bottom: 10px;
+    }
+    .fletesAFacturar .cargaDeDatos {
+    margin-bottom: 0px;
+    }*/
 }
 
 
@@ -4188,9 +4194,9 @@ div.panel-body a.active {
     font-weight: 300 !important;
 }
 
-    .btn-custom:disabled {
-        opacity: 0.65;
-    }
+.btn-custom:disabled {
+    opacity: 0.65;
+}
 
 .btn-grande {
     width: 201px;
@@ -4984,6 +4990,7 @@ input[type=number]::-webkit-inner-spin-button {
 .cursor-pointer {
     cursor: pointer;
 }
+
 .content-wraper-ordenes-modal {
     padding-left: 35px;
     padding-right: 35px;
@@ -4997,6 +5004,11 @@ input[type=number]::-webkit-inner-spin-button {
     padding-top: 25px;
     margin-bottom: 40px;
 }
+
 .content-formulario-ordenes-modal {
     padding-top: 10px;
+}
+
+html {
+    zoom: 90%;
 }

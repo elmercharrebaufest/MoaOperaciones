@@ -9,6 +9,7 @@ using SustitucionMOAWS.WebApi.OSRM.Common;
 using SustitucionMOAWS.WebApi.OSRM.Response.Common;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -75,14 +76,17 @@ namespace SustitucionMOAUtils.Services
             var direccionABuscar = GenerarDireccionABuscar(direccionDestino);
             distanciaDomicilio.DireccionBuscada = direccionABuscar;
 
-            var lugaresResponse = openStreetMapClient.BuscarLugaresSegunDireccionAsync(direccionABuscar).GetAwaiter().GetResult(); //var lugaresResponse = await openStreetMapClient.BuscarLugaresSegunDireccionAsync(direccionABuscar);
-
-            if (lugaresResponse != null)
+            if (!string.IsNullOrEmpty(direccionABuscar))
             {
-                distanciaDomicilio.JsonLugaresOSM = lugaresResponse.JsonResponseRaw;
-                if (lugaresResponse.Lugares != null && lugaresResponse.Lugares.Count > 0)
+                var lugaresResponse = openStreetMapClient.BuscarLugaresSegunDireccionAsync(direccionABuscar).GetAwaiter().GetResult(); //var lugaresResponse = await openStreetMapClient.BuscarLugaresSegunDireccionAsync(direccionABuscar);
+
+                if (lugaresResponse != null)
                 {
-                    return lugaresResponse.Lugares[0];
+                    distanciaDomicilio.JsonLugaresOSM = lugaresResponse.JsonResponseRaw;
+                    if (lugaresResponse.Lugares != null && lugaresResponse.Lugares.Count > 0)
+                    {
+                        return lugaresResponse.Lugares[0];
+                    }
                 }
             }
             return null;
@@ -114,7 +118,10 @@ namespace SustitucionMOAUtils.Services
 
         private Route<GeoJsonGeometry> ObtenerRutaDesdePlantaMOA(OSMPlace lugarDestino, DistanciaDomicilio distanciaDomicilio) //private async Task<RutaOSRMResponse> ObtenerRutaDesdePlantaMOAAsync(OSMPlace lugarDestino)
         {
-            var coordenadasPlantaMoa = new GeoCoordenada { Latitud = -32.773465, Longitud = -60.728782 };
+            var plantaMoaLatitud = ConfigurationManager.AppSettings["CoordenadasPlantaMoaLatitud"];
+            var plantaMoaLongitud = ConfigurationManager.AppSettings["CoordenadasPlantaMoaLongitud"];
+
+            var coordenadasPlantaMoa = new GeoCoordenada { Latitud = double.Parse(plantaMoaLatitud), Longitud = double.Parse(plantaMoaLongitud) };
             var coordenadasDestino = new GeoCoordenada { Latitud = lugarDestino.Lat, Longitud = lugarDestino.Lon };
 
             var rutaResponse = osrmApiClient.ObtenerRuta(coordenadasPlantaMoa, coordenadasDestino); //var rutaResponse = await osrmApiClient.ObtenerRuta(coordenadasPlantaMoa, coordenadasDestino);

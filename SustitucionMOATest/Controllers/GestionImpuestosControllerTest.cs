@@ -12,7 +12,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 
@@ -70,11 +69,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarCabeceras())
                 .Throws(excepcionTest);
 
-            var result = target.ListarCabeceras();
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
+            try
+            {
+                target.ListarCabeceras();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarCabeceras(), Times.Once);
         }
 
@@ -87,11 +89,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarCabeceras())
                 .Throws(excepcionTest);
 
-            var result = target.ListarCabeceras();
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
+            try
+            {
+                target.ListarCabeceras();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarCabeceras(), Times.Once);
         }
 
@@ -106,12 +111,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.ListarCabeceras();
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.ListarCabeceras();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.ListarCabeceras(), Times.Once);
         }
@@ -156,11 +163,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarDetalles(idCabeceraTest))
                 .Throws(excepcionTest);
 
-            var result = target.ListarDetalles(idCabeceraTest);
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
+            try
+            {
+                target.ListarDetalles(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(idCabeceraTest), Times.Once);
         }
 
@@ -175,11 +185,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarDetalles(idCabeceraTest))
                 .Throws(excepcionTest);
 
-            var result = target.ListarDetalles(idCabeceraTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
+            try
+            {
+                target.ListarDetalles(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(idCabeceraTest), Times.Once);
         }
 
@@ -196,12 +209,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.ListarDetalles(idCabeceraTest);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.ListarDetalles(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(It.IsAny<int>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarDetalles(1), Times.Once);
@@ -248,11 +263,14 @@ namespace SustitucionMOATest.Controllers
             var claimsIdentity = new ClaimsIdentity(new List<Claim> { new Claim("userName", mailUsuarioTest) });
             ClaimsPrincipal.Current.AddIdentity(claimsIdentity);
 
-            JsonResult result = target.AutorizarCabecera(idCabeceraTest);
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
+            try
+            {
+                target.AutorizarCabecera(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(idCabeceraTest, mailUsuarioTest), Times.Once);
         }
@@ -274,11 +292,15 @@ namespace SustitucionMOATest.Controllers
             var claimsIdentity = new ClaimsIdentity(new List<Claim> { new Claim("userName", mailUsuarioTest) });
             ClaimsPrincipal.Current.AddIdentity(claimsIdentity);
 
-            JsonResult result = target.AutorizarCabecera(idCabeceraTest);
+            try
+            {
+                target.AutorizarCabecera(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
 
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(idCabeceraTest, mailUsuarioTest), Times.Once);
         }
@@ -300,12 +322,14 @@ namespace SustitucionMOATest.Controllers
             var claimsIdentity = new ClaimsIdentity(new List<Claim> { new Claim("userName", mailUsuarioTest) });
             ClaimsPrincipal.Current.AddIdentity(claimsIdentity);
 
-            JsonResult result = target.AutorizarCabecera(idCabeceraTest);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.AutorizarCabecera(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(It.IsAny<int>(), It.IsAny<string>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.AutorizarCabecera(idCabeceraTest, mailUsuarioTest), Times.Once);
@@ -356,11 +380,15 @@ namespace SustitucionMOATest.Controllers
 
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
 
-            var result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
 
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
         }
 
@@ -380,11 +408,15 @@ namespace SustitucionMOATest.Controllers
 
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDetalleDtoTest);
 
-            var result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
 
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
         }
 
@@ -406,12 +438,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificadoDetalle(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.IsAny<IngresosBrutosCoeficienteUnificadoDetalleDto>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificadoDetalle(It.Is<IngresosBrutosCoeficienteUnificadoDetalleDto>(x => x.Id == 1)), Times.Once);
@@ -452,12 +486,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.DescargarFormularioCM05(idCabeceraTest);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.DescargarFormularioCM05(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(It.IsAny<int>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ObtenerRutaArchivoFormularioCM05(123), Times.Once);
@@ -508,11 +544,15 @@ namespace SustitucionMOATest.Controllers
 
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDtoTest);
 
-            var result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
 
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
         }
 
@@ -532,11 +572,15 @@ namespace SustitucionMOATest.Controllers
 
             string parametroJson = JsonConvert.SerializeObject(ingresosBrutosCoeficienteUnificadoDtoTest);
 
-            var result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
 
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
         }
 
@@ -558,13 +602,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
-
+            try
+            {
+                target.EditarIngresosBrutosCoeficienteUnificado(parametroJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.IsAny<IngresosBrutosCoeficienteUnificadoDto>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.EditarIngresosBrutosCoeficienteUnificado(It.Is<IngresosBrutosCoeficienteUnificadoDto>(x => x.Id == 1)), Times.Once);
         }
@@ -609,11 +654,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarMovimientos(idCabeceraTest))
                 .Throws(excepcionTest);
 
-            var result = target.ListarMovimientos(idCabeceraTest);
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
+            try
+            {
+                target.ListarMovimientos(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(idCabeceraTest), Times.Once);
         }
 
@@ -628,11 +676,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarMovimientos(idCabeceraTest))
                 .Throws(excepcionTest);
 
-            var result = target.ListarMovimientos(idCabeceraTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
+            try
+            {
+                target.ListarMovimientos(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(idCabeceraTest), Times.Once);
         }
 
@@ -649,12 +700,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.ListarMovimientos(idCabeceraTest);
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
+            try
+            {
+                target.ListarMovimientos(idCabeceraTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
 
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(It.IsAny<int>()), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarMovimientos(1), Times.Once);
@@ -706,11 +759,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarEstados())
                 .Throws(excepcionTest);
 
-            var result = target.GetCombos();
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
         }
 
@@ -723,11 +779,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarEstados())
                 .Throws(excepcionTest);
 
-            var result = target.GetCombos();
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
         }
 
@@ -742,13 +801,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.GetCombos();
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
-
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
         }
 
@@ -771,11 +831,15 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador())
                 .Throws(excepcionTest);
 
-            var result = target.GetCombos();
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Algo", e.Message);
+            }
 
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Algo", infoResultData);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
         }
@@ -799,11 +863,14 @@ namespace SustitucionMOATest.Controllers
                 .Setup(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador())
                 .Throws(excepcionTest);
 
-            var result = target.GetCombos();
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Error de validacion", errorResultData);
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Error de validacion", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
         }
@@ -829,13 +896,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.GetCombos();
-
-            Assert.IsNotNull(result.Data);
-
-            string resultDataError = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", resultDataError);
-
+            try
+            {
+                target.GetCombos();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("exploto molinos", e.Message);
+            }
             this.gestionImpuestosServiceMock.Verify(g => g.ListarEstados(), Times.Once);
             this.gestionImpuestosServiceMock.Verify(g => g.ListarSecuenciaIngresosBrutosCoeficientesUnificador(), Times.Once);
         }

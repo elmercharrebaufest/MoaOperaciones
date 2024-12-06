@@ -82,7 +82,13 @@ namespace SustitucionMOAWS.WSConsumers
                 var item = new ItemEntradaServicioDto
                 {
                     Id = cabecera.SHEET_NO,
-                    Descripcion = cabecera.SHORT_TEXT,
+                    //Descripcion = cabecera.SHORT_TEXT,
+                    Descripcion =
+                        string.IsNullOrEmpty(cabecera.SHORT_TEXT) || cabecera.SHORT_TEXT == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
+                            // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
+                            // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
+                            ? ""
+                            : cabecera.SHORT_TEXT.Trim(),
 
                     ItemNumero = elementoEntrySheetService.PLN_PCKG,
                     Cantidad = elementoEntrySheetService.QUANTITY,

@@ -45,6 +45,7 @@ namespace SustitucionMOARepositorio
         List<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc, IEnumerable<Expression<Func<TEntidad, object>>> includes = null) where TEntidad : class;
         IEnumerable<List<TProyeccion>> ListarAgrupado<TEntidad, TKey, TProyeccion>(Expression<Func<TEntidad, TKey>> agrupamiento = null, Expression<Func<TEntidad, TProyeccion>> proyeccion = null, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
         List<TProyeccion> Listar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Expression<Func<TEntidad, bool>> filtro = null, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc) where TEntidad : class;
+        List<TProyeccion> ListarIntersecar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, IEnumerable<Expression<Func<TEntidad, bool>>> filtros, int maxResultados = 0, string orden = null, DirOrden direccionOrden = DirOrden.Asc) where TEntidad : class;
         ListaPaginada<TProyeccion> Listar<TEntidad, TProyeccion>(Expression<Func<TEntidad, TProyeccion>> proyeccion, Paginacion paginacions, Expression<Func<TEntidad, bool>> filtro = null) where TEntidad : class;
 
         ListaPaginada<TEntidad> Listar<TEntidad>(Expression<Func<TEntidad, Boolean>> condicion, Paginacion paginacion) where TEntidad : class;

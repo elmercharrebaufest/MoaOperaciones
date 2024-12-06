@@ -180,6 +180,21 @@ namespace SustitucionMOAWS.WSConsumers
                 throw ex;
             }
         }
+
+        public RecorridoDto ObtenerRecorridoOrdenResiduos(int ordenId)
+        {
+            try
+            {
+                var recorridoDto = service.ObtenerRecorridoNoRechazadoPorIdInsumos(ordenId.ToString());
+                Log.Info($"ScatoConsumer.ObtenerRecorridoOrdenResiduos. Id orden: {ordenId}. Respuesta Scato: {recorridoDto.ToJson()}");
+                return recorridoDto;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error en llamada Scato para obtener recorrido para la orden de residuos ID: " + ordenId);
+                throw ex;
+            }
+        }
     }
 
 }

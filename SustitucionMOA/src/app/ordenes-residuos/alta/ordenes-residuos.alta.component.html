@@ -131,7 +131,8 @@
                                         [no-match-found-text]="'No se encontraron resultados'" maxlength="7"
                                         mask="AAAAAAA" [source]="patentesChasis"
                                         [(ngModel)]="ordenResiduos.PatenteChasis"
-                                        (ngModelChange)="onPatenteChasisSeleccionado($event)" />
+                                        (ngModelChange)="onPatenteChasisSeleccionado($event)"
+                                        (blur)="onPatenteChasisBlur()" />
                                 </div>
                             </div>
 
@@ -155,14 +156,14 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" maxlength="25" [(ngModel)]="ordenResiduos.NombreChofer"
-                                        (ngModelChange)="ordenResiduos.NombreChofer = $event.toUpperCase()">
+                                        (ngModelChange)="ordenResiduos.NombreChofer = pasarAMayusculas($event)">
                                 </div>
                                 <div class="formulario-label">
                                     Apellido del chofer:
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" maxlength="25" [(ngModel)]="ordenResiduos.ApellidoChofer"
-                                        (ngModelChange)="ordenResiduos.ApellidoChofer = $event.toUpperCase()">
+                                        (ngModelChange)="ordenResiduos.ApellidoChofer = pasarAMayusculas($event)">
                                 </div>
                             </div>
 
@@ -188,7 +189,7 @@
                                 </div>
                                 <div class="styled-select">
                                     <input type="text" maxlength="50" [(ngModel)]="ordenResiduos.RazonSocialTransporte"
-                                        (ngModelChange)="ordenResiduos.RazonSocialTransporte = $event.toUpperCase()">
+                                        (ngModelChange)="ordenResiduos.RazonSocialTransporte = pasarAMayusculas($event)">
                                 </div>
                             </div>
 

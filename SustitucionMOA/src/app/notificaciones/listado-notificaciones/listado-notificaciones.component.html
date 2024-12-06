@@ -1,103 +1,102 @@
 <div class="content-wraper">
-    <!-- CONTENT-->
-    <section class="container-fluid clearfix">
-        <!--Title-->
-        <div class="row titleSection">
-            <div class="col-xs-12 col-sm-10 "><strong>Notificaciones</strong> </div>
-            <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
-                <!-- Button trigger modal -->
-                <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
-                        (click)="goToSeccion('/notificaciones/alta')" id="modalToggleButton">
-                    Nueva notificación
-                </button>
+  <!-- CONTENT-->
+  <section class="container-fluid clearfix">
+    <!--Title-->
+    <div class="row titleSection">
+      <div class="col-xs-12 col-sm-10 "><strong>Novedades</strong> </div>
+      <div class="col-xs-12 col-sm-2" style="display: flex; justify-content: flex-end;">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-custom col-xs-12 col-sm-11 btn-add btn-grande"
+          (click)="goToSeccion('/novedades/alta')" id="modalToggleButton">
+          Nueva novedad
+        </button>
 
-            </div>
+      </div>
+    </div>
+    <!--End Title-->
+    <!--Search-->
+    <div class="myRow firstSection mySearch">
+      <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
+        <div class="col-xs-12 col-md-12 search-header">
+          <title-caps>Refinar resultados</title-caps>
         </div>
-        <!--End Title-->
-        <!--Search-->
-        <div class="myRow firstSection mySearch">
-            <div class="col-xs-12 col-md-12 rounded shadow animate no-padding-left-right">
-                <div class="col-xs-12 col-md-12 search-header">
-                    <title-caps>Refinar resultados</title-caps>
-                </div>
-                <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
-                    Nombre:
-                    <div class="styled-select">
-                        <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal" [(ngModel)]="filtroAlta">
-                    </div>
-                </div>
-            </div>
-
+        <div id="searchTexto" class="col-xs-6 col-sm-4 col-md-5 ">
+          Nombre:
+          <div class="styled-select">
+            <input type="search" class="" placeholder="" [value]="" aria-controls="tableModal" [(ngModel)]="filtroAlta">
+          </div>
         </div>
+      </div>
 
-        <!-- End Search-->
-        <!-- Tables-->
-        <div class="row myRow">
-            <div class="clearfix myTables">
-                <mensaje></mensaje>
-                <spinner></spinner>
-                <table *ngIf="data && data.length != 0;" id="tableModal"
-                       class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
-                       role="grid" aria-describedby="tableModal_info"
-                       style="width: 100%; padding:10px 0; background: white !important;">
-                    <thead>
-                        <tr role="row">
-                            <th>Id</th>
-                            <th>
-                                Nombre
-                            </th>
-                            <th>Fecha inicio</th>
-                            <th>Fecha fin</th>
-                            <th>Habilitada</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let notificacion of data
+    </div>
+
+    <!-- End Search-->
+    <!-- Tables-->
+    <div class="row myRow">
+      <div class="clearfix myTables">
+        <mensaje></mensaje>
+        <spinner></spinner>
+        <table *ngIf="data && data.length != 0;" id="tableModal"
+          class="display nowrap dataTable no-footer dtr-inline rounded shadow animate ccpp-table" cellspacing="0"
+          role="grid" aria-describedby="tableModal_info"
+          style="width: 100%; padding:10px 0; background: white !important;">
+          <thead>
+            <tr role="row">
+              <th (click)="orderColumnBy('Id')">Id</th>
+              <th (click)="orderColumnBy('Nombre')">Nombre</th>
+              <th (click)="orderColumnBy('FechaInicio')">Fecha inicio</th>
+              <th (click)="orderColumnBy('FechaFin')">Fecha fin</th>
+              <th (click)="orderColumnBy('Habilitada')">Habilitada</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let notificacion of data 
                                 | customFilter : 'Nombre' : filtroAlta
-                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}
-                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p }
+                                | orderedColumn : {property: orderedByColumn, direction: orderDirection}  
+                                | paginate: { itemsPerPage:itemsPerPage, currentPage: p } 
                                 ; let odd = odd" role="row" [class.odd]="!odd">
-                            <td>{{notificacion.Id}}</td>
-                            <td>{{notificacion.Nombre || "-"}}</td>
-                            <td>{{ notificacion.FechaInicio.split(":")[0] }}:00</td>
-                            <td>{{ notificacion.FechaFin.split(" ")[0] }}</td>
-                            <td>
-                                <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
-                                <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
-                            </td>
-                            <td>
-                                <a (click)="goToSeccionParam('/notificaciones/alta', notificacion.Id)" class="cursor"
-                                   role='button'>Editar</a>
-                                <br><br>
-                                <a *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)" class="cursor"
-                                   role='button'>Habilitar</a>
-                                <a *ngIf="notificacion.Habilitada" (click)="deshabilitar(notificacion.Id)" class="cursor"
-                                   role='button'>Deshabilitar</a>
-                                <br><br>
-                                <a (click)="eliminar(notificacion.Id)" class="cursor" role='button'>Eliminar</a>
+              <td>{{notificacion.Id}}</td>
+              <td>{{notificacion.Nombre || "-"}}</td>
+              <!-- <td>{{notificacion.FechaInicio}}</td>
+              <td>{{notificacion.FechaFin}}</td> -->
+              <td>{{ notificacion.FechaInicio.split(":")[0] }}:00</td>
+              <td>{{ notificacion.FechaFin.split(" ")[0] }}</td>
+              <td>
+                <i *ngIf="notificacion.Habilitada" class="fa fa-check-circle"></i>
+                <i *ngIf="!notificacion.Habilitada" class="fa fa-times-circle"></i>
+              </td>
+              <td>
+                <a (click)="goToSeccionParam('/novedades/alta', notificacion.Id)" class="cursor"
+                  role='button'>Editar</a>
+                <br><br>
+                <a *ngIf="!notificacion.Habilitada" (click)="habilitar(notificacion.Id)" class="cursor"
+                  role='button'>Habilitar</a>
+                <a *ngIf="notificacion.Habilitada" (click)="deshabilitar(notificacion.Id)" class="cursor"
+                  role='button'>Deshabilitar</a>
+                <br><br>
+                <a (click)="eliminar(notificacion.Id)" class="cursor" role='button'>Eliminar</a>
 
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
-                    <div class="dataTables_paginate paging_simple_numbers">
-                        <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
-                           [class.disabled]="pT.isFirstPage()"> Anterior </a>
-                        <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
-                            <a class="paginate_button" (click)="pT.setCurrent(page.value)"
-                               *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
-                            <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
-                        </span>
-                        <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
-                            Siguiente
-                        </a>
-                    </div>
-                </pagination-template>
-            </div>
-        </div>
-        <!-- END tables-->
-    </section>
-    <!--End CONTENT-->
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <pagination-template #pT="paginationApi" (pageChange)="p = $event" *ngIf="data && data.length != 0">
+          <div class="dataTables_paginate paging_simple_numbers">
+            <a id="tableModal_previous" class="paginate_button previous" (click)="pT.previous()"
+              [class.disabled]="pT.isFirstPage()"> Anterior </a>
+            <span *ngFor="let page of pT.pages" [class.current]="pT.getCurrent() === page.value">
+              <a class="paginate_button" (click)="pT.setCurrent(page.value)"
+                *ngIf="pT.getCurrent() !== page.value">{{ page.label }}</a>
+              <a class="paginate_button current" *ngIf="pT.getCurrent() === page.value">{{ page.label }}</a>
+            </span>
+            <a id="tableModal_next" class="paginate_button next" (click)="pT.next()" [class.disabled]="pT.isLastPage()">
+              Siguiente </a>
+          </div>
+        </pagination-template>
+      </div>
+    </div>
+    <!-- END tables-->
+  </section>
+  <!--End CONTENT-->
 </div>

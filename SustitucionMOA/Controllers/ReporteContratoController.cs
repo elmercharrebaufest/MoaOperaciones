@@ -1,10 +1,7 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Models.WSMapMOA.ReporteContrato;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
 using System;
 using System.Web.Mvc;
 
@@ -25,151 +22,64 @@ namespace SustitucionMOA.Controllers
 
         public JsonResult GetContratos(string fechaInicio, string fechaFin, bool mostrarPendientes, string contrato)
         {
-            try
+            var proveedor = SessionPersister.Proveedor;
+            var mailUsuario = SessionPersister.getUsername();
+            if (string.IsNullOrEmpty(proveedor))
             {
-                var proveedor = SessionPersister.Proveedor;
-                var mailUsuario = SessionPersister.getUsername();
-                if (string.IsNullOrEmpty(proveedor))
-                {
-                    return JsonCustom(new { logout = true });
-                }
+                return JsonCustom(new { logout = true });
+            }
 
-                var contratos = reporteContratoService.GetContratosReporte(mailUsuario,proveedor, fechaInicio, fechaFin, mostrarPendientes, null);
-                return JsonCustom(contratos);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var contratos = reporteContratoService.GetContratosReporte(mailUsuario, proveedor, fechaInicio, fechaFin, mostrarPendientes, null);
+            return JsonCustom(contratos);
         }
 
         public ActionResult ObtenerContratosFiltro(string fechaInicio, string fechaFin, string cliente, string producto, string tipoContrato, bool mostrarPendientes, string dataContrato)
         {
-            try
+            var proveedor = SessionPersister.Proveedor;
+            var mailUsuario = SessionPersister.getUsername();
+            if (string.IsNullOrEmpty(proveedor))
             {
-                var proveedor = SessionPersister.Proveedor;
-                var mailUsuario = SessionPersister.getUsername();
-                if (string.IsNullOrEmpty(proveedor))
-                {
-                    return JsonCustom(new { logout = true });
-                }
-                var dataFiltro = JsonConvert.DeserializeObject<ReporteContratoWSMOAResponse>(dataContrato);
-                var contratos = reporteContratoService.GetContratosReporte(mailUsuario, proveedor, fechaInicio, fechaFin, mostrarPendientes, dataFiltro);
-                return JsonCustom(contratos);
+                return JsonCustom(new { logout = true });
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new
-                {
-                    info = e.Message
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var dataFiltro = JsonConvert.DeserializeObject<ReporteContratoWSMOAResponse>(dataContrato);
+            var contratos = reporteContratoService.GetContratosReporte(mailUsuario, proveedor, fechaInicio, fechaFin, mostrarPendientes, dataFiltro);
+            return JsonCustom(contratos);
         }
 
         public ActionResult ObtenerDetalleContrato(string contrato, string fechaInicio, string fechaFin)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
-                
-                Result result = new Result();
-                foreach (var det in detalleContrato.data.Resultados)
-                {
-                    result.Detalles = det.Detalles;
+            var mailUsuario = SessionPersister.getUsername();
+            var detalleContrato = reporteContratoService.GetContratosDetalle(contrato, SessionPersister.Proveedor, fechaInicio, fechaFin);
 
-                    foreach(var item in result.Detalles)
+            Result result = new Result();
+            foreach (var det in detalleContrato.data.Resultados)
+            {
+                result.Detalles = det.Detalles;
+
+                foreach (var item in result.Detalles)
+                {
+                    if (!item.Entrega.Equals(string.Empty))
                     {
-                        if (!item.Entrega.Equals(string.Empty))
+                        try
                         {
-                            try
-                            {
-                                var orden = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, item.Entrega);
-                                item.OrdenCargaId = orden.Id.ToString();
-                            }
-                            catch(Exception ex)
-                            {
-                                item.OrdenCargaId= string.Empty;
-                            }
+                            var orden = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, item.Entrega);
+                            item.OrdenCargaId = orden.Id.ToString();
+                        }
+                        catch (Exception)
+                        {
+                            item.OrdenCargaId = string.Empty;
                         }
                     }
                 }
-   
-                return JsonCustom(new { data = result.Detalles });
             }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+
+            return JsonCustom(new { data = result.Detalles });
         }
         public ActionResult ObtenerOrdenDeCarga(string nroEntrega)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.getUsername();
 
-                return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, nroEntrega) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (WSCustomException e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.ErrorWS }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = ordenDeCargaService.ObtenerPorNroEntrega(mailUsuario, nroEntrega) });
         }
     }
 }

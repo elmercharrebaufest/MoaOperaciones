@@ -16,13 +16,40 @@ namespace SustitucionMOAUtils.Services.Email
         private static readonly string DireccionCCAltaTransporteCuitResiduos = ConfigurationManager.AppSettings["EmailAltaTransporteResiduosCC"];
 
         private readonly string DireccionMailAuditoriaOrdenesResiduosVencidas = ConfigurationManager.AppSettings["EmailOrdenesResiduosVencidas"];
-        private readonly string TEMPLATE_NOTIFICACION_ORDENES_VENCIDAS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesResiduosVencidas.html");
+        private readonly string DireccionMailIntentoEdicionAnulacionActiva = ConfigurationManager.AppSettings["DestinatariosEmailOrdenResiduosIntentoAnulacionActiva"];
+        private readonly string TEMPLATE_NOTIFICACION_ORDENES_RESIDUOS = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "NotificacionOrdenesResiduos.html");
         
         private readonly IEmailService emailService;
 
         public EmailResiduosService(IEmailService emailService)
         {
             this.emailService = emailService;
+        }
+
+        public void EnviarMailIntentoAnulacionOrdenActiva(OrdenResiduos orden)
+        {
+            var cuerpo = GenerarCuerpoConListadoOrdenes("Se ha intentado anular una orden de residuos e insumos activa.", "Orden:", new List<OrdenResiduos> { orden });
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailIntentoEdicionAnulacionActiva }),
+                Asunto = $"Intento anulación orden residuos activa - Nro. orden: {orden.Id} - {orden.Cliente?.RazonSocial}",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
+        }
+
+        public void EnviarMailIntentoEdicionOrdenActiva(OrdenResiduos orden)
+        {
+            var cuerpo = GenerarCuerpoConListadoOrdenes("Se ha intentado editar una orden de residuos e insumos activa.", "Orden:", new List<OrdenResiduos> { orden });
+
+            var emailSenderData = new EmailSenderData
+            {
+                Mails = emailService.ObtenerListaDestinatarios(new string[] { DireccionMailIntentoEdicionAnulacionActiva }),
+                Asunto = $"Intento edición orden residuos activa - Nro. orden: {orden.Id} - {orden.Cliente?.RazonSocial}",
+                Cuerpo = cuerpo
+            };
+            emailService.EnviarMail(emailSenderData);
         }
 
         public void EnviarMailTransporteNoExiste(string razonSocialTransporte, string cuitTransporte)
@@ -40,23 +67,19 @@ namespace SustitucionMOAUtils.Services.Email
 
         public void EnviarMailOrdenesVencidas(IEnumerable<OrdenResiduos> ordenes)
         {
-            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES_VENCIDAS);
-            string descripcion;
-            var tablaOrdenes = new StringBuilder(string.Empty);
-            var hoy = DateTime.Now;
-            var cabecera = string.Empty;
+            string mensaje;
+            var cabeceraTabla = string.Empty;
 
             if (ordenes.Any())
             {
-                descripcion = $"Se informa que el día {hoy} se han vencido las siguientes órdenes de residuos:";
-                cabecera = "Órdenes: ";
-                tablaOrdenes = GenerarTablaOrdenesANotificar(ordenes);
+                mensaje = $"Se informa que el día {DateTime.Now} se han vencido las siguientes órdenes de residuos:";
+                cabeceraTabla = "Órdenes: ";
             }
             else
-        {
-                descripcion = $"Se informa que para el día {hoy} no hay órdenes de residuos vencidas";
+            {
+                mensaje = $"Se informa que para el día {DateTime.Now} no hay órdenes de residuos vencidas";
             }
-            var cuerpo = string.Format(cuerpoTemplate, "", "", tablaOrdenes, descripcion, cabecera);
+            var cuerpo = GenerarCuerpoConListadoOrdenes(mensaje, cabeceraTabla, ordenes);
 
             var emailSenderData = new EmailSenderData
             {
@@ -65,6 +88,14 @@ namespace SustitucionMOAUtils.Services.Email
                 Cuerpo = cuerpo
             };
             emailService.EnviarMail(emailSenderData);
+        }
+
+        private string GenerarCuerpoConListadoOrdenes(string mensaje, string cabeceraTabla, IEnumerable<OrdenResiduos> ordenes)
+        {
+            var cuerpoTemplate = File.ReadAllText(TEMPLATE_NOTIFICACION_ORDENES_RESIDUOS);
+            var tablaOrdenes = GenerarTablaOrdenesANotificar(ordenes);
+            var cuerpo = string.Format(cuerpoTemplate, mensaje, cabeceraTabla, tablaOrdenes);
+            return cuerpo;
         }
 
         private StringBuilder GenerarTablaOrdenesANotificar(IEnumerable<OrdenResiduos> ordenes)

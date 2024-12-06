@@ -308,6 +308,42 @@
                            /@value" />
 	</parameter>
 
+	<parameter name="ConsultaOpenStreetMapHabilitada Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='ConsultaOpenStreetMapHabilitada']
+                           /@value" />
+	</parameter>
+
+	<parameter name="RuteoOSRMHabilitado Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='RuteoOSRMHabilitado']
+                           /@value" />
+	</parameter>
+
+	<parameter name="OsrmApiBaseAddress Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='OsrmApiBaseAddress']
+                           /@value" />
+	</parameter>
+
+	<parameter name="OpenStreetMapApiBaseAddress Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='OpenStreetMapApiBaseAddress']
+                           /@value" />
+	</parameter>
+
+	<parameter name="CoordenadasPlantaMoaLongitud Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='CoordenadasPlantaMoaLongitud']
+                           /@value" />
+	</parameter>
+
+	<parameter name="CoordenadasPlantaMoaLatitud Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='CoordenadasPlantaMoaLatitud']
+                           /@value" />
+	</parameter>
+
 	<parameter name="AzureADTenantId Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='AzureADTenantId']
@@ -874,6 +910,12 @@
  	<parameter name="EmailOrdenesResiduosVencidas Config">
 		<parameterEntry kind="XmlFile" scope="Web.config"
 						match="/configuration/appSettings/add[@key='EmailOrdenesResiduosVencidas']
+                           /@value" />
+	</parameter>
+
+	<parameter name="DestinatariosEmailOrdenResiduosIntentoAnulacionActiva Config">
+		<parameterEntry kind="XmlFile" scope="Web.config"
+						match="/configuration/appSettings/add[@key='DestinatariosEmailOrdenResiduosIntentoAnulacionActiva']
                            /@value" />
 	</parameter>
 

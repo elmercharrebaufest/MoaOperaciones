@@ -12,12 +12,9 @@ using SustitucionMOAUtils.Interfaces.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -92,8 +89,6 @@ namespace SustitucionMOATest.Controllers
         {
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
-            var expected = @"{ error = Mensaje de error }";
-
             HttpPostedFileBase file = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
@@ -102,13 +97,15 @@ namespace SustitucionMOATest.Controllers
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
@@ -117,7 +114,7 @@ namespace SustitucionMOATest.Controllers
         {
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
-            var expected = @"{ info = Mensaje de info }";
+            var expected = "Mensaje de info";
 
             HttpPostedFileBase file = null;
 
@@ -126,13 +123,17 @@ namespace SustitucionMOATest.Controllers
             campoSustentableServiceMock.Setup(s => s.Agregar(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>(), It.IsAny<bool>())).Throws(new InfoCustomException("Mensaje de info"));
-
-            var result = target.CampoProveedorAgregar(campoProveedorJson, file,UsarArchivoId);
-
             expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
 
-            Assert.NotNull(result);
+            try
+            {
+                target.CampoProveedorAgregar(campoProveedorJson, file, UsarArchivoId);
+            }
+            catch (InfoCustomException e)
+            {
+                resultJson = JsonConvert.SerializeObject(e.Message.ToString());
+            }
+
             Assert.AreEqual(expectedJson, resultJson);
         }
 
@@ -170,8 +171,6 @@ namespace SustitucionMOATest.Controllers
         {
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
 
-            var expected = @"{ error = Mensaje de error }";
-
             HttpPostedFileBase file = null;
 
             string campoProveedorJson = JsonConvert.SerializeObject(campoProveedor);
@@ -180,13 +179,14 @@ namespace SustitucionMOATest.Controllers
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CampoProveedorEditar(campoProveedorJson, file);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CampoProveedorEditar(campoProveedorJson, file);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
@@ -194,8 +194,6 @@ namespace SustitucionMOATest.Controllers
         public void CampoProveedorEditarInfoCustomExceptionTest()
         {
             var campoProveedor = new CampoProveedor { Proveedor_Id = 1, CampoCosecha_Id = 0, HectareasSoja = 100, HectareasTotales = 100 };
-
-            var expected = @"{ info = Mensaje de info }";
 
             HttpPostedFileBase file = null;
 
@@ -205,13 +203,14 @@ namespace SustitucionMOATest.Controllers
                                                                   It.IsAny<CampoProveedor>(),
                                                                   It.IsAny<HttpPostedFileBase>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.CampoProveedorEditar(campoProveedorJson, file);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CampoProveedorEditar(campoProveedorJson, file);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test()]
@@ -237,34 +236,32 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void CamposProveedoresValidationCustomExceptionTest()
         {
-            var expected = @"{ error = Mensaje de error }";
-
             campoSustentableServiceMock.Setup(s => s.Listar(It.Is<string>(i => i == mailUsuario))).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CamposProveedores();
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CamposProveedores();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
         [Test()]
         public void CamposProveedoresInfoCustomExceptionTest()
         {
-            var expected = @"{ info = Mensaje de info }";
-
             campoSustentableServiceMock.Setup(s => s.Listar(It.Is<string>(i => i == mailUsuario))).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.CamposProveedores();
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CamposProveedores();
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test()]
@@ -291,38 +288,38 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void CampoProveedorValidationCustomExceptionTest()
         {
-            var expected = @"{ error = Mensaje de error }";
-
             campoSustentableServiceMock.Setup(s => s.ObtenerCampo(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<int>(),
                                                                   It.IsAny<int>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.CampoProveedor(1, 2);
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CampoProveedor(1, 2);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
         [Test()]
         public void CampoProveedorInfoCustomExceptionTest()
         {
-            var expected = @"{ info = Mensaje de info }";
-
             campoSustentableServiceMock.Setup(s => s.ObtenerCampo(It.Is<string>(i => i == mailUsuario),
                                                                   It.IsAny<int>(),
                                                                   It.IsAny<int>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.CampoProveedor(1, 2);
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.CampoProveedor(1, 2);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test()]
@@ -349,34 +346,32 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void CosechasValidationCustomExceptionTest()
         {
-            var expected = @"{ error = Mensaje de error }";
-
             campoSustentableServiceMock.Setup(s => s.ObtenerCosechas(true)).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.Cosechas(true);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.Cosechas(true);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
         [Test()]
         public void CosechasInfoCustomExceptionTest()
         {
-            var expected = @"{ info = Mensaje de info }";
-
             campoSustentableServiceMock.Setup(s => s.ObtenerCosechas(true)).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.Cosechas(true);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.Cosechas(true);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test()]
@@ -405,34 +400,34 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void VerificarDeclaracionValidationCustomExceptionTest()
         {
-            var expected = @"{ error = Mensaje de error }";
-
             campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Throws(new ValidationCustomException("Mensaje de error"));
 
-            var result = target.VerificarDeclaracion(1, 1, "");
+            try
+            {
+                target.VerificarDeclaracion(1, 1, "");
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
         [Test()]
         public void VerificarDeclaracionInfoCustomExceptionTest()
         {
-            var expected = @"{ info = Mensaje de info }";
-
             campoSustentableServiceMock.Setup(s => s.VerificarDeclaracion(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>())).Throws(new InfoCustomException("Mensaje de info"));
 
-            var result = target.VerificarDeclaracion(1, 1, "");
 
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.VerificarDeclaracion(1, 1, "");
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test()]
@@ -465,8 +460,6 @@ namespace SustitucionMOATest.Controllers
         [Test()]
         public void FirmarDeclaracionValidationCustomExceptionTest()
         {
-            var expected = @"{ error = Mensaje de error }";
-
             campoSustentableServiceMock.Setup(s => s.AdjuntarDeclaracionFirmada(
                 It.Is<string>(i => i == mailUsuario),
                 It.IsAny<int>(),
@@ -477,21 +470,20 @@ namespace SustitucionMOATest.Controllers
             var fileMock = new Mock<HttpPostedFileBase>();
             fileMock.Setup(x => x.FileName).Returns("file1.pdf");
 
-            var result = target.AdjuntarDeclaracionFirmada(1, 1, "2333333333", fileMock.Object);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.AdjuntarDeclaracionFirmada(1, 1, "2333333333", fileMock.Object);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de error", e.Message);
+            }
         }
 
 
         [Test()]
         public void FirmarDeclaracionInfoCustomExceptionTest()
         {
-            var expected = @"{ info = Mensaje de info }";
-
             campoSustentableServiceMock.Setup(s => s.AdjuntarDeclaracionFirmada(It.Is<string>(i => i == mailUsuario),
                 It.IsAny<int>(),
                 It.IsAny<int>(),
@@ -501,13 +493,14 @@ namespace SustitucionMOATest.Controllers
             var fileMock = new Mock<HttpPostedFileBase>();
             fileMock.Setup(x => x.FileName).Returns("file1.pdf");
 
-            var result = target.AdjuntarDeclaracionFirmada(1, 1, "2333333333", fileMock.Object);
-
-            expectedJson = JsonConvert.SerializeObject(expected);
-            resultJson = JsonConvert.SerializeObject(result.Data.ToString());
-
-            Assert.NotNull(result);
-            Assert.AreEqual(expectedJson, resultJson);
+            try
+            {
+                target.AdjuntarDeclaracionFirmada(1, 1, "2333333333", fileMock.Object);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("Mensaje de info", e.Message);
+            }
         }
 
         [Test]
@@ -535,13 +528,14 @@ namespace SustitucionMOATest.Controllers
             InfoCustomException infoCustomExceptionTest = new InfoCustomException("mensaje excepcion");
 
             this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
-
-            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("mensaje excepcion", infoResultData);
-
+            try
+            {
+                target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("mensaje excepcion", e.Message);
+            }
             this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
         }
@@ -556,11 +550,14 @@ namespace SustitucionMOATest.Controllers
 
             this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
 
-            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("mensaje excepcion", errorResultData);
+            try
+            {
+                target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("mensaje excepcion", e.Message);
+            }
 
             this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
@@ -577,11 +574,14 @@ namespace SustitucionMOATest.Controllers
             this.campoSustentableServiceMock.Setup(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+            try
+            {
+                target.CampoProveedorBorrar(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("mensaje excepcion", e.Message);
+            }
 
             this.campoSustentableServiceMock.Verify(x => x.Borrar(It.IsAny<string>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.Borrar(mailUsuario, campoCosechaIdTest, proveedorIdTest), Times.Once);
@@ -622,11 +622,14 @@ namespace SustitucionMOATest.Controllers
             InfoCustomException infoCustomExceptionTest = new InfoCustomException("excepcion");
             this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Throws(infoCustomExceptionTest);
 
-            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
-
-            string infoResultData = result.Data.GetType().GetProperty("info").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("excepcion", infoResultData);
+            try
+            {
+                target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("excepcion", e.Message);
+            }
 
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
@@ -641,11 +644,14 @@ namespace SustitucionMOATest.Controllers
             ValidationCustomException validationCustomExceptionTest = new ValidationCustomException("excepcion");
             this.campoSustentableServiceMock.Setup(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest)).Throws(validationCustomExceptionTest);
 
-            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("excepcion", errorResultData);
+            try
+            {
+                target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("excepcion", e.Message);
+            }
 
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);
@@ -662,11 +668,14 @@ namespace SustitucionMOATest.Controllers
 
             HttpContext.Current = new HttpContext(new HttpRequest("", "http://tempuri.org", ""), new HttpResponse(new StringWriter()));
 
-            JsonResult result = target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
-
-            string errorResultData = result.Data.GetType().GetProperty("error").GetValue(result.Data).ToString();
-
-            Assert.AreEqual("Ha ocurrido un error, por favor intente nuevamente", errorResultData);
+            try
+            {
+                target.DescargarArchivoKMZ(campoCosechaIdTest, proveedorIdTest);
+            }
+            catch (Exception e)
+            {
+                Assert.AreEqual("excepcion", e.Message);
+            }
 
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(It.IsAny<int>(), It.IsAny<int>()), Times.Once);
             this.campoSustentableServiceMock.Verify(x => x.ObtenerRutaArchivoKMZ(campoCosechaIdTest, proveedorIdTest), Times.Once);

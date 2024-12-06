@@ -848,18 +848,18 @@
         <div class="headerbar">
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('CONSULTAR DOCUMENTACION')">
                 <a (click)="goToSeccion('/dato-fiscal/documentacion')" onClick="userCloseSmall()" href="#"
-                    class="animate">
+                   class="animate">
                     Documentación<span class="fa fa-file-text" aria-hidden="true"></span>
                 </a>
             </div>
             <!-- <div class="col-md-12 col-sm-12 userData">
-                <a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#" class="animate">
-                    Cambio de contraseña<span aria-hidden="true"><img src="/Content/images/header/key-solid.svg" style="width: 16px; height: 16px; color: #959595;" alt="clave"/></span>
-                </a>
-            </div> -->
+        <a (click)="goToSeccion('/usuario/cambio-contrasenia')" href="#" class="animate">
+            Cambio de contraseña<span aria-hidden="true"><img src="/Content/images/header/key-solid.svg" style="width: 16px; height: 16px; color: #959595;" alt="clave"/></span>
+        </a>
+    </div> -->
             <div class="col-md-12 col-sm-12 userData" *ngIf="isAuthorized('SELECCIONAR VENDEDOR')">
                 <a (click)="goToSeccion('/usuario/cambio-vendedor')" href="#" class="animate"
-                    onClick="userCloseSmall()">
+                   onClick="userCloseSmall()">
                     Cambio de vendedor<span class="fa fa-id-card" aria-hidden="true"></span>
                 </a>
             </div>
@@ -868,6 +868,9 @@
                     Cerrar sesión<span class="fa fa-sign-out" aria-hidden="true"></span>
                 </a>
             </div>
+            <!--<div class="col-md-12 col-sm-12 userData no-border">
+                <app-zoom-control></app-zoom-control>
+            </div>-->
         </div>
     </usuario-small>
 </header-user>

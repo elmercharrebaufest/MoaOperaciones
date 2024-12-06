@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAModel.Entities;
-using SustitucionMOARepositorio;
-using DocumentFormat.OpenXml.Bibliography;
-using System.Web;
+﻿using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Interfaces;
+using System;
+using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -87,7 +83,7 @@ namespace SustitucionMOAUtils.Services
                     }
 
                     //Registros fin del periodo - Dia siguiente al final de reasignación
-                  
+
                     if ((today.Date - registro.FechaHasta.Date).TotalDays == 1)
                     {
                         userIdsFin.Add(registro.Usuario_Id);
@@ -128,8 +124,8 @@ namespace SustitucionMOAUtils.Services
                         if ((mail != null && mail != "" && mail.Contains("@")) && (suplente != null && suplente != ""))
                         {
                             //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
-                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Aprobador_CDS == mail && x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
-                        
+                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
+
                             if (aprobacionesAsociadas.Count > 0)
                                 Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
 
@@ -164,7 +160,7 @@ namespace SustitucionMOAUtils.Services
 
                         if ((!string.IsNullOrEmpty(mail) && mail.Contains("@")) && (!string.IsNullOrEmpty(suplente)))
                         {
-                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Aprobador_CDS == suplente && x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
+                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
 
                             if (aprobacionesAsociadas.Count > 0)
                                 Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus fiscales por fecha de reasignación vencida");
@@ -179,7 +175,7 @@ namespace SustitucionMOAUtils.Services
                                     eSLocalesFin.Add(ap.NRO_ES_LOCAL);
                                 }
                             }
-                            
+
                             UsuarioReasignacion registroReasignacion = repositorio.Obtener<UsuarioReasignacion>(x => x.Usuario_Id == user.Id);
                             if (registroReasignacion != null)
                                 repositorio.Remover(registroReasignacion);

@@ -5,7 +5,7 @@ import { CarouselNotificacionesComponent } from './carousel-notificaciones.compo
 describe('CarouselNotificacionesComponent', () => {
   let component: CarouselNotificacionesComponent;
   let fixture: ComponentFixture<CarouselNotificacionesComponent>;
-     
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CarouselNotificacionesComponent ]

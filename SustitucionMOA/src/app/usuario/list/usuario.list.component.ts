@@ -641,4 +641,9 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
 
         return control.touched && control.invalid && control.errors && control.errors.invalidEmail;
     }
+    abrirModalVerVendedores(usuario) {
+        this.usuarioModificacionSel = usuario.Mail;
+        const id: number = usuario.Id;
+        this.service.setUsuarioVerVendedores(id);
+    }
 }

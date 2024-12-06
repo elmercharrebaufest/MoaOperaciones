@@ -30,6 +30,8 @@ import {
 import { DomSanitizer } from '@angular/platform-browser';
 import { AngularEditorModule, AngularEditorConfig, AngularEditorComponent } from "@kolkov/angular-editor";
 import { GET_ANGULAR_EDITOR_CONFIG, eliminarBotonesExtraEditor } from "../../common/configs/angularEditor.configs";
+import { ComentarioAutoguardado } from "../../modelos/consulta/comentarioAutoguardado";
+import { FileStorageService } from "../../common/services/FileStorageService";
 
 declare var $: any;
 
@@ -70,7 +72,6 @@ export class DetalleConsultaComponent extends BaseComponent {
         const targetElement = event.target as HTMLElement;
         var img = targetElement;
         if (img.className == "galeryimg col-md-12 cursor-pointer") {
-            console.log(img);
             $('#myModal2').modal('show');
             var modalImg = document.getElementById("img01");
             $(modalImg).attr("src", $(img).attr("src"));
@@ -95,6 +96,7 @@ export class DetalleConsultaComponent extends BaseComponent {
         protected floatMsgService: FloatMsgService,
         protected modalService: ModalService,
         protected html_sanitizer: DomSanitizer,
+        private fileStorageService: FileStorageService
     ) {
         super(navService, securityService, floatMsgService, modalService);
         this.mensajeComponent = new MensajeComponent();
@@ -139,6 +141,9 @@ export class DetalleConsultaComponent extends BaseComponent {
 
     config: AngularEditorConfig = GET_ANGULAR_EDITOR_CONFIG();
 
+    readonly AUTOGUARDADO_LOCALSTORAGE_KEY: string = 'ConsultaComentarioAutoguardado';
+    debeAutoguardarComentario: boolean = false;
+
     datosExtrasMinimizado = false;
     @Input() modalMaximizado = false;
     iconDatosExtras = 'pi pi-minus'
@@ -156,6 +161,8 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.checkPermisos();
         this.jqueryOnInit();
         this.getCombos();
+        this.recuperarComentarioAutoguardado();
+        this.recuperarArchivosAutoguardados();
     }
 
     ngAfterViewInit(): void {
@@ -187,6 +194,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                 const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
                 fileEntry.file((file: File) => {
                     this.listaArchivos.push(file);
+                    this.autoguardarArchivo(file);
                 });
             } else {
                 // It was a directory (empty directories are added, otherwise only files)
@@ -197,15 +205,16 @@ export class DetalleConsultaComponent extends BaseComponent {
         this.file = this.listaArchivos;
     }
 
-    cargarArchivo(event: any) {
+    async cargarArchivo(event: any) {
         let fileList: FileList = event.target.files;
-        let file;
+        // let file;
 
         if (fileList.length > 0) {
             this.file = fileList;
             for (let i = 0; i < fileList.length; i++) {
-                file = fileList[i];
+                let file = fileList[i];
                 this.listaArchivos.push(file);
+                this.autoguardarArchivo(file);
             }
         }
 
@@ -312,6 +321,8 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                         this.blockUI.stop();
                     } else {
+                        localStorage.removeItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY);
+                        this.fileStorageService.borrarTodosArchivosContacto();
                         this.getDetalleConsulta();
                         this.mensajeComponent.setSuccessMsg(
                             "Comentario enviado correctamente"
@@ -494,7 +505,7 @@ export class DetalleConsultaComponent extends BaseComponent {
                         this.mensajeComponent.setInfoMsg(result.info);
                     } else {
                         this.mensajeComponent.setSuccessMsg(
-                            "El estado de la consulta cambio correctamente"
+                            "El estado de la consulta cambió correctamente"
                         );
                         this.getDetalleConsulta();
                     }
@@ -823,7 +834,9 @@ export class DetalleConsultaComponent extends BaseComponent {
     }
 
     borrarArchivo(i: number) {
+        let archivoABorrar = this.listaArchivos[i];
         this.listaArchivos.splice(i, 1);
+        this.fileStorageService.borrarArchivoContactoAutoguardado(this.consultaId, archivoABorrar);
     }
 
     reabrirConsulta(): void {
@@ -853,8 +866,46 @@ export class DetalleConsultaComponent extends BaseComponent {
                 }
             );
     }
+
     toggleDatosExtras() {
         this.datosExtrasMinimizado = !this.datosExtrasMinimizado;
         this.iconDatosExtras = this.datosExtrasMinimizado ? 'pi pi-plus' : 'pi pi-minus'
+    }
+
+    comentarioOnChange() {
+        if (!this.debeAutoguardarComentario) {
+            this.debeAutoguardarComentario = true;
+            setTimeout(() => {
+                let comentarioAGuardar: ComentarioAutoguardado = { ConsultaId: this.consultaId, Comentario: this.detalle };
+                localStorage.setItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY, JSON.stringify(comentarioAGuardar));
+                this.debeAutoguardarComentario = false;
+            }, 3000)
+        }
+    }
+
+    recuperarComentarioAutoguardado() {
+        let comentarioRecuperadoText = localStorage.getItem(this.AUTOGUARDADO_LOCALSTORAGE_KEY);
+        if (comentarioRecuperadoText) {
+            let comentarioRecuperado: ComentarioAutoguardado = JSON.parse(comentarioRecuperadoText);
+            if (comentarioRecuperado && comentarioRecuperado.ConsultaId == this.consultaId) {
+                this.detalle = comentarioRecuperado.Comentario;
+            }
+        }
+    }
+
+    autoguardarArchivo(archivo: File) {
+        this.fileStorageService.guardarArchivoContacto(this.consultaId, archivo);
+    }
+
+    recuperarArchivosAutoguardados() {
+        this.fileStorageService.obtenerArchivosContacto(this.consultaId)
+            .then(archivosAutoguardados => {
+                if (archivosAutoguardados && archivosAutoguardados.length > 0) {
+                    archivosAutoguardados.forEach(x => this.listaArchivos.push(x.archivo));
+                }
+            })
+            .catch(error => {
+                console.error('Error al obtener archivos de contacto', error);
+            });
     }
 }

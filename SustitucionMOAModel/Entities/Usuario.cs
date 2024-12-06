@@ -451,7 +451,7 @@ namespace SustitucionMOAModel.Entities
                 case "PARCOR": return RolEnum.ParcialCorredor;
                 case "PARDIR": return RolEnum.ParcialDirecto;
                 case "PES": return RolEnum.Pesificaciones;
-                case "PROVGC": return RolEnum.ProveedorGeneralConsulta;
+                case "PROVG": return RolEnum.ProveedorGeneralConsulta;
                 case "PUERTO": return RolEnum.Puerto;
                 case "REI": return RolEnum.ReclamoImpositivo;
                 case "REVENDEDOR": return RolEnum.Revendedor;

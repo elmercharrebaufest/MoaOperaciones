@@ -1,17 +1,16 @@
-﻿using System;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAModel.Dto.OrdenDeCargaFason;
-using SustitucionMOASecurity;
-using System.Web.Mvc;
+﻿using Newtonsoft.Json;
 using SustitucionMOAAssets;
-using SustitucionMOAUtils.Logger;
-using Newtonsoft.Json;
-using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenDeCarga;
+using SustitucionMOAModel.Dto.OrdenDeCargaFason;
+using SustitucionMOAModel.Enums;
+using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using System;
 using System.Collections.Generic;
-using SustitucionMOAUtils.Services;
+using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
@@ -60,28 +59,13 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult GetDetalle(int IdOrdenCargaFason)
         {
-            try
+            var mailUsuario = SessionPersister.getUsername();
+            var request = new DetalleOrdenDeCargaFasonRequest()
             {
-                var mailUsuario = SessionPersister.getUsername();
-                var request = new DetalleOrdenDeCargaFasonRequest()
-                {
-                    MailUsuario = mailUsuario
-                };
+                MailUsuario = mailUsuario
+            };
 
-                return JsonCustom(new { data = ordenDeCargaFasonService.ObtenerDetalle(IdOrdenCargaFason, request) });
-            }
-            catch (InfoCustomException ex)
-            {
-                return Json(new { info = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException ex)
-            {
-                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(ex.Message);
-            }
+            return JsonCustom(new { data = ordenDeCargaFasonService.ObtenerDetalle(IdOrdenCargaFason, request) });
         }
 
 
@@ -113,23 +97,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerDestinos(int clienteId)
         {
-            try
-            {
-                return JsonCustom(new { data = ordenDeCargaFasonService.ObtenerDestinos(clienteId) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = ordenDeCargaFasonService.ObtenerDestinos(clienteId) });
         }
 
         [HttpPost]
@@ -140,7 +108,7 @@ namespace SustitucionMOA.Controllers
             {
                 var crearOrdenReq = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
                 var mailUsuario = SessionPersister.getUsername();
-                
+
                 response.Data = ordenDeCargaFasonService.Crear(crearOrdenReq, mailUsuario);
             }
             catch (InfoCustomException ice)
@@ -162,70 +130,30 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Editar(string ordenDeCargaJson)
         {
-            try
-            {
-                var editarOrdenReq = JsonConvert.DeserializeObject<EditarOrdenDeCargaFasonRequest>(ordenDeCargaJson);
-                var mailUsuario = SessionPersister.getUsername();
-                var resultado = ordenDeCargaFasonService.Editar(editarOrdenReq, mailUsuario);
-                return JsonCustom(new { data = resultado });
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return JsonCustom(new { error = ErrorMsg.Error });
-            }
+            var editarOrdenReq = JsonConvert.DeserializeObject<EditarOrdenDeCargaFasonRequest>(ordenDeCargaJson);
+            var mailUsuario = SessionPersister.getUsername();
+            var resultado = ordenDeCargaFasonService.Editar(editarOrdenReq, mailUsuario);
+            return JsonCustom(new { data = resultado });
         }
 
         [HttpGet]
         public ActionResult ObtenerCorredores()
         {
-            try
-            {
-                var corredores = ordenDeCargaFasonService.GetCorredores();
-                return JsonCustom(new { corredores = corredores });
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return JsonCustom(new { error = ErrorMsg.Error });
-            }
+            var corredores = ordenDeCargaFasonService.GetCorredores();
+            return JsonCustom(new { corredores = corredores });
         }
 
         [HttpGet]
         public ActionResult ObtenerClientes(string codigoCorredor)
         {
-            try
-            {
-                var clientes = ordenDeCargaFasonService.GetClientesDeCorredor(codigoCorredor);
-                return JsonCustom(new { clientes = clientes });
-            }
-            catch (Exception ex)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
-                return JsonCustom(new { error = ErrorMsg.Error });
-            }
+            var clientes = ordenDeCargaFasonService.GetClientesDeCorredor(codigoCorredor);
+            return JsonCustom(new { clientes = clientes });
         }
 
         [HttpGet]
         public ActionResult Materiales()
         {
-            try
-            {
-                return JsonCustom(new { data = consultaService.ObtenerMaterial(TablaSeccionMaterial.OrdenDeCargaFason) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            return JsonCustom(new { data = consultaService.ObtenerMaterial(TablaSeccionMaterial.OrdenDeCargaFason) });
         }
 
         [HttpGet]
@@ -251,7 +179,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpGet]
         public ActionResult ObtenerPlantasDestino(string destinoCuit)
         {
@@ -371,7 +299,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpPost]
         public ActionResult AnularOrden(int ordenId)
         {
@@ -396,7 +324,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpGet]
         public ActionResult ValidarCuilChofer(string cuilChofer)
         {
@@ -420,7 +348,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpGet]
         public ActionResult ValidarCuitTransporte(string cuitTransporte)
         {
@@ -468,78 +396,30 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpPost]
         public ActionResult ObtenerCuilsChofer(string ordenDeCargaFasonJson)
         {
-            try
-            {
-                var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-                var mailUsuario = SessionPersister.getUsername();
-                return Json(new { cuils = ordenDeCargaFasonService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
+            var mailUsuario = SessionPersister.getUsername();
+            return Json(new { cuils = ordenDeCargaFasonService.ObtenerCuilsChofer(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
-        
+
         [HttpPost]
         public ActionResult ObtenerCuitsTransporte(string ordenDeCargaFasonJson)
         {
-            try
-            {
-                var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-                var mailUsuario = SessionPersister.getUsername();
-                return Json(new { cuits = ordenDeCargaFasonService.ObtenerCuitsTransporte(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
+            var mailUsuario = SessionPersister.getUsername();
+            return Json(new { cuits = ordenDeCargaFasonService.ObtenerCuitsTransporte(ordenDeCarga, mailUsuario) }, JsonRequestBehavior.AllowGet);
 
         }
-        
+
         public ActionResult ObtenerPatentes(string ordenDeCargaFasonJson)
         {
-            try
-            {
-                var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
-                var mailUsuario = SessionPersister.getUsername();
-                return Json(ordenDeCargaFasonService.ObtenerPatentes(ordenDeCarga, mailUsuario), JsonRequestBehavior.AllowGet);
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var ordenDeCarga = JsonConvert.DeserializeObject<CrearOrdenDeCargaFasonRequest>(ordenDeCargaFasonJson);
+            var mailUsuario = SessionPersister.getUsername();
+            return Json(ordenDeCargaFasonService.ObtenerPatentes(ordenDeCarga, mailUsuario), JsonRequestBehavior.AllowGet);
         }
 
         [HttpGet]
@@ -565,7 +445,7 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpPost]
         public ActionResult EnviarMailAltaCuitTerceros(bool gestionaFlete, bool gestionaDestino, bool gestionaDestinatario,
             string ordenId)
@@ -590,30 +470,14 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpGet]
         public ActionResult VerificarCuitsTerceros(int ordenId)
         {
-            try
-            {
-                var mailUsuario = SessionPersister.getUsername();
-                return JsonCustom(new { data = ordenDeCargaFasonService.VerificarCuitsTerceros(ordenId, mailUsuario) });
-            }
-            catch (InfoCustomException e)
-            {
-                return Json(new { info = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (ValidationCustomException e)
-            {
-                return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception e)
-            {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
-                return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
-            }
+            var mailUsuario = SessionPersister.getUsername();
+            return JsonCustom(new { data = ordenDeCargaFasonService.VerificarCuitsTerceros(ordenId, mailUsuario) });
         }
-        
+
         [HttpGet]
         public ActionResult ValidarOrdenActivaScato(long ordenId)
         {
@@ -637,14 +501,14 @@ namespace SustitucionMOA.Controllers
             }
             return ContentCustom(response);
         }
-        
+
         [HttpGet]
         public ActionResult ValidarSisaCliente(string codigoCliente, string codigoMaterial)
         {
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                response.Data = ordenDeCargaFasonService.ValidarSisaCliente(codigoCliente,codigoMaterial);
+                response.Data = ordenDeCargaFasonService.ValidarSisaCliente(codigoCliente, codigoMaterial);
             }
             catch (InfoCustomException ice)
             {
