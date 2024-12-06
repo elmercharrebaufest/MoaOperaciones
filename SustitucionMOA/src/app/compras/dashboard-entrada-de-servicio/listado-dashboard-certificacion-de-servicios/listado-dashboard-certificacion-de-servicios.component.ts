@@ -16,7 +16,7 @@ import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, SortEvent } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
@@ -209,6 +209,41 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             ]
         }
     ];
+
+
+    ordenesSortFunction(event: SortEvent): void {
+        event.data.sort((data1, data2) => {
+            let value1 = data1[event.field];
+            let value2 = data2[event.field];
+            let result = null;
+            let colmnType: string | null | undefined =
+                this.defaultTablesConfig
+                    .find(x => x.name === "Ordenes")
+                    .columns
+                    .find(x => x.field === event.field)
+                    .type;
+
+            if (value1 == null && value2 != null) {
+                result = -1;
+            } else if (value1 != null && value2 == null) {
+                result = 1;
+            } else if (value1 == null && value2 == null) {
+                result = 0;
+            } else if (colmnType === 'date') {
+                const value1DateComponents: number[] = value1.split('/');
+                const value2DateComponents: number[] = value2.split('/');
+                const date1: Date = new Date(value1DateComponents[2], value1DateComponents[1], value1DateComponents[0])
+                const date2: Date = new Date(value2DateComponents[2], value2DateComponents[1], value2DateComponents[0])
+                result = (date1 < date2) ? -1 : (date1 > date2) ? 1 : 0;
+            } else if (typeof value1 === 'string' && typeof value2 === 'string') {
+                result = value1.localeCompare(value2);
+            } else {
+                result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
+            }
+
+            return (event.order * result);
+        });
+    }
 
     formularioResumenCertificacion: FormGroup = this.formBuilder.group({
         descriptions: this.formBuilder.array([])
