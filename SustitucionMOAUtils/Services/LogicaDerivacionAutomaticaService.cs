@@ -34,14 +34,14 @@ namespace SustitucionMOAUtils.Services
         {
             Logger.Log.Info("Corriendo proceso de reasignación automática");
 
-            List<UsuarioReasignacion> registrosSinDuplicados;
+            List<IGrouping<int, UsuarioReasignacion>> registrosAgrupados;
+            IEnumerable<UsuarioReasignacion> registrosReasignacion;
 
             try
             {
-                IEnumerable<UsuarioReasignacion> registrosReasignacion =
+                registrosReasignacion =
                     repositorio
-                    .ListarTodos<UsuarioReasignacion>()
-                    .Where(x => x.FechaDesde <= DateTime.Today);
+                    .ListarTodos<UsuarioReasignacion>();
 
                 if (!registrosReasignacion.Any())
                 {
@@ -50,9 +50,8 @@ namespace SustitucionMOAUtils.Services
                 }
 
                 //En caso de registros con ID duplicados
-                registrosSinDuplicados = registrosReasignacion
+                registrosAgrupados = registrosReasignacion
                 .GroupBy(r => r.Usuario_Id)
-                .Select(g => g.OrderByDescending(r => r.Id).First())
                 .ToList();
             }
             catch (Exception ex)
@@ -63,33 +62,41 @@ namespace SustitucionMOAUtils.Services
 
             HashSet<int> userIdsEnRango = new HashSet<int>();
             HashSet<int> userIdsVencidos = new HashSet<int>();
-            List<UsuarioReasignacion> registrosVencidos = new List<UsuarioReasignacion>(registrosSinDuplicados.Count); // Inicializar con la cantidad de registros para evitar redimensionamiento
-            foreach (var registro in registrosSinDuplicados)
+            HashSet<int> userIdsFuturos = new HashSet<int>();
+            HashSet<UsuarioReasignacion> registrosVencidos = new HashSet<UsuarioReasignacion>();
+            foreach (IGrouping<int, UsuarioReasignacion> registro in registrosAgrupados)
             {
-                if (registro.FechaHasta.Date >= DateTime.Today.Date)
+                var registroAProcesar = registro.OrderByDescending(r => r.Id).First();
+                if (registroAProcesar.FechaDesde.Date > DateTime.Today.Date)
                 {
-                    _ = userIdsEnRango.Add(registro.Usuario_Id);
+                    _ = userIdsFuturos.Add(registroAProcesar.Usuario_Id);
                 }
-
-                if (registro.FechaHasta.Date < DateTime.Today.Date)
+                else if (registroAProcesar.FechaHasta.Date >= DateTime.Today.Date)
                 {
-                    userIdsVencidos.Add(registro.Usuario_Id);
-                    registrosVencidos.Add(registro);
+                    _ = userIdsEnRango.Add(registroAProcesar.Usuario_Id);
+                }
+                else if (registroAProcesar.FechaHasta.Date < DateTime.Today.Date)
+                {
+                    _ = userIdsVencidos.Add(registroAProcesar.Usuario_Id);
+                    registrosVencidos.UnionWith(registro);
                 }
             }
 
             IEnumerable<Usuario> usuariosEnRango;
             IEnumerable<Usuario> usuariosVencidos;
+            IEnumerable<Usuario> usuariosFuturos;
             try
             {
                 usuariosEnRango = repositorio.Listar<Usuario>(x => userIdsEnRango.Contains(x.Id));
                 usuariosVencidos = repositorio.Listar<Usuario>(x => userIdsVencidos.Contains(x.Id));
+                usuariosFuturos = repositorio.Listar<Usuario>(x => userIdsFuturos.Contains(x.Id));
             }
             catch (Exception ex)
             {
-                Logger.Log.Info("Error en la obtención de usuarios(Tabla Usuarios) del proceso de reasignación: " + ex.Message);
+                Logger.Log.Error("Error en la obtención de usuarios(Tabla Usuarios) del proceso de reasignación: " + ex.Message, ex);
                 throw;
             }
+
             try
             {
                 // para los usuarios en rango, ejecutar la reasignación
@@ -129,9 +136,9 @@ namespace SustitucionMOAUtils.Services
                     Notificar(eSLocalesUsuarioEnRango);
                 }
 
-                // Para los usuarios vencidos, revertir la reasignación
+                // Para los usuarios vencidos o futuros, revertir la reasignación
                 HashSet<string> eSLocalesUsuariosVencidos = new HashSet<string>();
-                foreach (string mail in usuariosVencidos.Select(user => user.Mail))
+                foreach (string mail in usuariosVencidos.Union(usuariosFuturos).Distinct().Select(user => user.Mail))
                 {
                     if (!string.IsNullOrEmpty(mail) && mail.Contains("@"))
                     {
@@ -144,8 +151,14 @@ namespace SustitucionMOAUtils.Services
                             Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus fiscales por fecha de reasignación vencida");
                         }
 
-                        foreach (var ap in aprobacionesAsociadas)
+                        foreach (Aprobaciones ap in aprobacionesAsociadas)
                         {
+                            if (ap.Aprobador_CDS == mail)
+                            {
+                                // no se debe hacer el cambio.
+                                // se hace para evitar que se envíe la notificación de reasignación
+                                continue;
+                            }
                             ap.Aprobador_CDS = mail;
                             ap.Suplente = null;
                             if (!string.IsNullOrEmpty(ap.NRO_ES_LOCAL))
