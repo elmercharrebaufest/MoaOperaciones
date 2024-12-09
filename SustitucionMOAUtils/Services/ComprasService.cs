@@ -3705,6 +3705,7 @@ namespace SustitucionMOAUtils.Services
                     {
                         mensaje = "Propuesta técnica Rechazada";
                         verAdjudicar = false;
+                        usuarioPO.VerImportes = false;
                     }
                     if (!todasLasOfertas.EstaLiberado)
                     {
