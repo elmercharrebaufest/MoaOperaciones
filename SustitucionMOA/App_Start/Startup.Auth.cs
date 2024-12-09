@@ -1,25 +1,4 @@
-﻿using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Owin.Host.SystemWeb;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Cookies;
-using Microsoft.Owin.Security.Notifications;
-using Microsoft.Owin.Security.OpenIdConnect;
-using Owin;
-using SustitucionMOA.Utils;
-using SustitucionMOAModel.Models.WSMapMOA.Usuario.Permiso;
-using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web.Http;
-using System.Web.Mvc;
+﻿using SustitucionMOA.Utils;
 using Entidades = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA
@@ -46,7 +25,8 @@ namespace SustitucionMOA
             {
                 // ASP.NET web host compatible cookie manager
                 CookieManager = new SystemWebChunkingCookieManager(),
-                //ExpireTimeSpan = TimeSpan.FromDays(1)
+                ExpireTimeSpan = TimeSpan.FromMinutes(480),
+                SlidingExpiration = true // Esto asegura que las cookies se renueven con actividad del usuario.
             });
 
             var options = new OpenIdConnectAuthenticationOptions
@@ -97,6 +77,7 @@ namespace SustitucionMOA
         //Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
         private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
+            //var jwtToken = notification.ProtocolMessage.IdToken;
 
             ValidarLogin(notification.AuthenticationTicket.Identity);
 
@@ -109,6 +90,12 @@ namespace SustitucionMOA
 		 */
         private Task OnRedirectToIdentityProvider(RedirectToIdentityProviderNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
+            var cookies = notification.OwinContext.Response.Cookies;
+            foreach (var cookie in notification.OwinContext.Request.Cookies.Where(cookie => cookie.Key.StartsWith("OpenIdConnect.nonce")))
+            {
+                cookies.Delete(cookie.Key);
+            }
+
             var policy = notification.OwinContext.Get<string>("Policy");
 
             if (!string.IsNullOrEmpty(policy) && !policy.Equals(Globals.DefaultPolicy))
