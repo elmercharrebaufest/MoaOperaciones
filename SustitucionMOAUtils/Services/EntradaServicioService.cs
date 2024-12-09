@@ -794,7 +794,7 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
         /// </summary>
         /// <param name="ListaAp"></param>
-        public async Task NotificarReasignaciones(List<string> ListaAp)
+        public async Task NotificarReasignaciones(IEnumerable<string> ListaAp)
         {
             //Todos los registros con mismo NRO_ES_LOCAL
             foreach (string esLocal in ListaAp)
