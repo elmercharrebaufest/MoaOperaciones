@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: reasignación Inicializar redimensionamiento
+﻿// Ignore Spelling: reasignación reasignaciones Inicializar redimensionamiento
 
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -96,7 +96,8 @@ namespace SustitucionMOAUtils.Services
                 HashSet<string> eSLocalesUsuarioEnRango = new HashSet<string>();
                 foreach (Usuario user in usuariosEnRango)
                 {
-                    if ((!string.IsNullOrEmpty(user.Mail) && user.Mail.Contains("@")) && (!string.IsNullOrEmpty(user.Suplente)))
+                    if (!string.IsNullOrEmpty(user.Mail) && user.Mail.Contains("@")
+                        && !string.IsNullOrEmpty(user.Suplente))
                     {
                         //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
                         IEnumerable<Aprobaciones> aprobacionesAsociadas =
@@ -132,7 +133,7 @@ namespace SustitucionMOAUtils.Services
                 HashSet<string> eSLocalesUsuariosVencidos = new HashSet<string>();
                 foreach (string mail in usuariosVencidos.Select(user => user.Mail))
                 {
-                    if ((!string.IsNullOrEmpty(mail) && mail.Contains("@")))
+                    if (!string.IsNullOrEmpty(mail) && mail.Contains("@"))
                     {
                         IEnumerable<Aprobaciones> aprobacionesAsociadas =
                             repositorio
@@ -172,12 +173,11 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception ex)
             {
-                Logger.Log.Info("Error en el procesamiento de registros del proceso de reasignación: " + ex.Message);
-                throw ex;
+                Logger.Log.Error("Error en el procesamiento de registros del proceso de reasignación: " + ex.Message, ex);
+                throw;
             }
 
-            return "Exito";
-
+            return "Éxito";
         }
 
         private void Notificar(IEnumerable<string> eSLocalesInicio)
@@ -185,8 +185,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio)).Wait();
-                Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
-
+                Logger.Log.Info("Notificaciones de reasignación a suplente enviadas");
             }
             catch (Exception ex)
             {
@@ -197,20 +196,18 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Chequea si el usuario esta autorizado para correr el proceso.
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="mail"></param>
         /// <returns></returns>
-        public bool isUserAllowed(string email)
+        public bool isUserAllowed(string mail)
         {
-            bool allowed = false;
-
-            Usuario user = repositorio.Listar<Usuario>(x => x.Mail == email).ToList().FirstOrDefault();
+            Usuario user = repositorio.Listar<Usuario>(x => x.Mail == mail).FirstOrDefault();
 
             if (user != null)
             {
-                allowed = user.TieneRol(RolEnum.Administracion);
+                return user.TieneRol(RolEnum.Administracion);
             }
 
-            return allowed;
+            return false;
         }
     }
 }
