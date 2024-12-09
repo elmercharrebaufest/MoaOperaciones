@@ -1,4 +1,21 @@
-﻿using SustitucionMOA.Utils;
+﻿using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Owin.Host.SystemWeb;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Notifications;
+using Microsoft.Owin.Security.OpenIdConnect;
+using Owin;
+using SustitucionMOA.Utils;
+using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
+using System;
+using System.Linq;
+using System.Net;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using Entidades = SustitucionMOAModel.Entities;
 
 namespace SustitucionMOA
@@ -77,7 +94,6 @@ namespace SustitucionMOA
         //Agrego esta función del callback. Ya que esta es llamada desde el registro y desde el login. 
         private Task OnSecurityTokenValidated(SecurityTokenValidatedNotification<OpenIdConnectMessage, OpenIdConnectAuthenticationOptions> notification)
         {
-            //var jwtToken = notification.ProtocolMessage.IdToken;
 
             ValidarLogin(notification.AuthenticationTicket.Identity);
 
