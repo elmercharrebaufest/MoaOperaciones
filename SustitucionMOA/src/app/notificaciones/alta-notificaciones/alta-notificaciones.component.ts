@@ -45,9 +45,9 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     notificacionId: number = 0;
     imagenPrevisualizacion: { name: string, fileAttached: File }[] = [];
     imageList: { name: string, fileAttached: File }[] = [];
-    videoList: { name: string, fileAttached: File } [] = [];
+    videoList: { name: string, fileAttached: File }[] = [];
     pdfList: { name: string, fileAttached: File }[] = [];
-   
+
 
     notificacion: Notificacion = new Notificacion();
     adjuntos: Array<Adjuntos> = [];
@@ -68,8 +68,8 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     titulos: Array<string> = ["Externo", "Interno"];
     rolesSeleccionados: Array<Rol> = [];
-    
-    
+
+
     constructor(protected service: NotificacionesService,
         protected usuarioService: UsuarioService, protected navService: NavService,
         private route: ActivatedRoute,
@@ -90,7 +90,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
         //this.getRolesOptions();
 
-        
+
         this.getRolesOptions()
             .then((message) => {
                 // Aquí puedes ejecutar el código que necesitas después de obtener los roles
@@ -151,13 +151,13 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     guardarPrioridad() {
         if (this.selectedPrioridad === 'Alta') {
-          this.notificacion.Prioridad = 1;
+            this.notificacion.Prioridad = 1;
         } else if (this.selectedPrioridad === 'Media') {
-          this.notificacion.Prioridad = 2;
+            this.notificacion.Prioridad = 2;
         } else if (this.selectedPrioridad === 'Baja') {
-          this.notificacion.Prioridad = 3;
+            this.notificacion.Prioridad = 3;
         }
-      }
+    }
 
 
     eliminarBotonesExtra() {
@@ -193,10 +193,10 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             divToolBar.removeChild(toolBar11);
             divToolBar.removeChild(toolBar13);
         }
-        
+
         $("#subscript-").hide();
         $("#superscript-").hide();
- 
+
         $(".angular-editor-textarea").css("font-size", "large");
         $(".angular-editor-button").css("font-size", "large");
     }
@@ -263,21 +263,21 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         });
     }
 
-   
+
     focusSection(sectionId) {
         var section = document.getElementById(sectionId);
         section.focus();
     }
-   
+
 
     validar() {
         //this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El Campo nombre debe tener al menos 3 caracteres.' });
 
 
         if (this.notificacion.Nombre === undefined || this.notificacion.Nombre.length < 3) {
-          
+
             this.mensajeError = "El campo nombre debe tener al menos 3 caracteres.";
-          
+
             //this.errorInput.nativeElement.focus();
             //this.enfocarInput();
 
@@ -296,7 +296,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         }
 
         if (this.fecha_inicio.length != 0 && this.fecha_fin.length != 0) {
-            
+
             const fechaInicio = new Date(this.fecha_inicio);
             const fechaFin = new Date(this.fecha_fin);
             if (fechaInicio.getFullYear() > fechaFin.getFullYear() ||
@@ -358,12 +358,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     }
 
     validarURL() {
-        var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
         return !!pattern.test(this.notificacion.LinkAdjunto);
     }
 
@@ -397,7 +397,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         try {
             this.blockUI.start('Cargando...');
             this.subscriptionDropDowns = this.service.getNotificacion(this.notificacionId).subscribe(
-                (result:any) => {
+                (result: any) => {
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -407,12 +407,16 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                     } else {
                         this.notificacion = result.data;
                         this.notificacion.FiltroRoles.forEach(element => {
-                            this.roles.find(x => x.Id == element.toString()).checked = true;
+                            if (this.roles.find(x => x.Id == element.toString())) {
+                                this.roles.find(x => x.Id == element.toString()).checked = true;
+                            } else {
+                                console.log("no se pudo encontrar el elemento" + element.toString());
+                            }
                         });
 
                         this.allRoles = this.roles.filter(x => x.checked).length == this.roles.length;
-                        this.getCheckboxInternalRoles().checked = this.roles.filter(x => x.Code=='Interno' && !x.checked).length == 0;
-                        this.getCheckboxExternalRoles().checked = this.roles.filter(x => x.Code=='Externo' && !x.checked).length == 0;
+                        this.getCheckboxInternalRoles().checked = this.roles.filter(x => x.Code == 'Interno' && !x.checked).length == 0;
+                        this.getCheckboxExternalRoles().checked = this.roles.filter(x => x.Code == 'Externo' && !x.checked).length == 0;
 
                         this.fecha_inicio = this.notificacion.FechaInicio.toString();
                         this.horaInicio = this.notificacion.HoraInicio;
@@ -421,11 +425,11 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
                         if (this.notificacion.Prioridad === 1) {
                             this.selectedPrioridad = 'Alta';
-                          } else if (this.notificacion.Prioridad === 2) {
+                        } else if (this.notificacion.Prioridad === 2) {
                             this.selectedPrioridad = 'Media';
-                          } else if (this.notificacion.Prioridad === 3) {
+                        } else if (this.notificacion.Prioridad === 3) {
                             this.selectedPrioridad = 'Baja';
-                        }            
+                        }
 
                         result.data.ArchivosAdjuntos.forEach(adjunto => {
                             const byteCharacters = atob(adjunto.AdjuntoContenido);
@@ -436,19 +440,19 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
                         this.notificacion.ArchivosAdjuntos.forEach(adjunto => {
 
-                          
-                            
+
+
                             /// el archivo me llega en base64 para poder guardarlo nuevamente lo convierto a file.
                             const fileAttached = this.convertBase64ToFile(adjunto)
 
-                             
+
                             if (adjunto.AdjuntoTipo == 'previsualizacion') {
                                 this.imagenPrevisualizacion.push({ name: adjunto.AdjuntoNombre, fileAttached: fileAttached });
                             }
-                              if (adjunto.AdjuntoTipo.startsWith('image/')) {
-                                  
-                                  
-                                  this.imageList.push({ name: adjunto.AdjuntoNombre, fileAttached: fileAttached });
+                            if (adjunto.AdjuntoTipo.startsWith('image/')) {
+
+
+                                this.imageList.push({ name: adjunto.AdjuntoNombre, fileAttached: fileAttached });
                             }
                             if (adjunto.AdjuntoTipo.startsWith('video/')) {
                                 this.videoList.push({ name: adjunto.AdjuntoNombre, fileAttached: fileAttached });
@@ -457,7 +461,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
                                 this.pdfList.push({ name: adjunto.AdjuntoNombre, fileAttached: fileAttached });
                             }
 
-                          });
+                        });
                     }
                     this.blockUI.stop();
                 },
@@ -483,12 +487,12 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     //                } else if (result.info != undefined) {
     //                    this.mensajeComponent.setInfoMsg(result.info);
     //                } else {
-                      
+
     //                    this.roles = result.data.roles.filter((rol) => rol.Code === "Externo" || rol.Code === "Interno");
     //                    //this.roles = result.data.roles;
     //                }
 
-                  
+
     //            },
     //            error => {
     //                this.mensajeComponent.setErrorMsg(error.message);
@@ -543,7 +547,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     getCheckboxInternalRoles(): HTMLInputElement {
         return document.getElementById('checkInternalRoles') as HTMLInputElement;
     }
-    
+
     checkAllRoles() {
         setTimeout(() => {
             this.roles.forEach(element => {
@@ -594,24 +598,24 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         this.unsubscribe();
 
         this.notificacion.FiltroRoles = this.roles.filter(x => x.checked);
-        
+
         var dateParts = this.fecha_inicio.split("/");
 
         const startDateString = (<HTMLInputElement>document.querySelectorAll('[fechaInicioInput]')[0]).value;
         const endDateString = (<HTMLInputElement>document.querySelectorAll('[fechaFinInput]')[0]).value;
-        
+
         const startDateParts = startDateString.split('/');
         const endDateParts = endDateString.split('/');
-        
+
         const startDateFormatted = startDateParts[1] + '/' + startDateParts[0] + '/' + startDateParts[2];
         const endDateFormatted = endDateParts[1] + '/' + endDateParts[0] + '/' + endDateParts[2];
-        
+
         const startDate = new Date(startDateFormatted);
         const endDate = new Date(endDateFormatted);
 
         startDate.setUTCHours(this.horaInicio, 0, 0, 0);
         endDate.setUTCHours(this.horaInicio, 0, 0, 0);
-        
+
         this.notificacion.FechaInicio = new Date(startDate.toISOString());
         this.notificacion.FechaFin = new Date(endDate.toISOString());
 
@@ -646,7 +650,7 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
             }),
             ...this.pdfList.map(pdf => {
                 return {
-                    AdjuntoTipo: 'pdf', 
+                    AdjuntoTipo: 'pdf',
                     AdjuntoNombre: pdf.name,
                     AdjuntoContenido: pdf.fileAttached
                 } as Adjuntos;
@@ -654,33 +658,33 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
         ];
 
         this.subscription = this.service
-        .grabar(this.notificacion, this.adjuntos)
-        .subscribe(
-            (result) => {
-                this.spinnerComponent.hideIt();
-                if (result.logout == true) {
-                    this.sessionDataService.logout();
-                } else if (
-                    result.error != undefined &&
-                    result.error != ""
-                ) {
-                    this.mensajeComponent.setErrorMsg(result.error);
-                } else if (result.info != undefined) {
-                    this.mensajeComponent.setInfoMsg(result.info);
-                } else {
-                    this.mensajeComponent.setMsgsEmpty();
-                    document
-                        .getElementById("openModalNotificacion")
-                        .click();
+            .grabar(this.notificacion, this.adjuntos)
+            .subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (
+                        result.error != undefined &&
+                        result.error != ""
+                    ) {
+                        this.mensajeComponent.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.mensajeComponent.setInfoMsg(result.info);
+                    } else {
+                        this.mensajeComponent.setMsgsEmpty();
+                        document
+                            .getElementById("openModalNotificacion")
+                            .click();
+                    }
+                    this.blockUI.stop();
+                },
+                (error) => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
                 }
-                this.blockUI.stop();
-            },
-            (error) => {
-                this.spinnerComponent.hideIt();
-                this.mensajeComponent.setErrorMsg(error.message);
-                this.blockUI.stop();
-            }
-        );
+            );
     }
 
 
@@ -696,58 +700,58 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
 
     cargarImagenPrevisualizacion(event: any): void {
         const files: FileList = event.target.files;
-      
+
         for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          if (file.type.startsWith('image/')) {
-            const imageUrl = URL.createObjectURL(file);
- 
-            const modifiedFile = new File([file], file.name, { type: 'previsualizacion' });
-      
-            if (this.imagenPrevisualizacion.length >= 1) {
-              this.imagenPrevisualizacion[0] = { name: file.name, fileAttached: modifiedFile };
-            } else {
-              this.imagenPrevisualizacion.push({ name: file.name, fileAttached: modifiedFile });
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                const imageUrl = URL.createObjectURL(file);
+
+                const modifiedFile = new File([file], file.name, { type: 'previsualizacion' });
+
+                if (this.imagenPrevisualizacion.length >= 1) {
+                    this.imagenPrevisualizacion[0] = { name: file.name, fileAttached: modifiedFile };
+                } else {
+                    this.imagenPrevisualizacion.push({ name: file.name, fileAttached: modifiedFile });
+                }
             }
-          }
         }
-      }
+    }
 
     cargarListaImagenes(event: any): void {
         const files: FileList = event.target.files;
 
         for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          if (file.type.startsWith('image/')) {
-              this.imageList.push({ name: file.name, fileAttached: file });
-          }
+            const file = files[i];
+            if (file.type.startsWith('image/')) {
+                this.imageList.push({ name: file.name, fileAttached: file });
+            }
         }
-      }
+    }
 
-      cargarVideo(event: any): void {
-      const files: FileList = event.target.files;
-  
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.type.startsWith('video/')) {
-            this.videoList.push({ name: file.name, fileAttached: file });
+    cargarVideo(event: any): void {
+        const files: FileList = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type.startsWith('video/')) {
+                this.videoList.push({ name: file.name, fileAttached: file });
+            }
         }
-      }
     }
 
     cargarPDF(event: any): void {
-      const files: FileList = event.target.files;
-  
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.type === 'application/pdf') {
-            this.pdfList.push({ name: file.name, fileAttached: file });
-          }
-      }
+        const files: FileList = event.target.files;
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            if (file.type === 'application/pdf') {
+                this.pdfList.push({ name: file.name, fileAttached: file });
+            }
+        }
     }
 
-    removerPrevisualizacion(index: number): void {        
-        this.imagenPrevisualizacion.splice(index, 1);        
+    removerPrevisualizacion(index: number): void {
+        this.imagenPrevisualizacion.splice(index, 1);
         (<HTMLInputElement>document.getElementById("previewImageFile")).value = "";
     }
 
@@ -764,5 +768,5 @@ export class AltaNotificacionesComponent extends BaseComponent implements OnInit
     removerPDFLista(index: number): void {
         this.pdfList.splice(index, 1);
         (<HTMLInputElement>document.getElementById("pdfFile")).value = "";
-      }
+    }
 }
