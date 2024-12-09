@@ -56,7 +56,7 @@ namespace SustitucionMOAUtils.Services
                     //En caso de registros con ID duplicados
                     registrosSinDuplicados = registrosReasignacion
                     .GroupBy(r => r.Usuario_Id)
-                    .Select(g => g.OrderByDescending(r => r.FechaHasta).First())
+                    .Select(g => g.OrderByDescending(r => r.Id).First())
                     .ToList();
                 }
                 catch (Exception ex)
