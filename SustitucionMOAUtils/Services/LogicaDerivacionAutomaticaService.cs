@@ -61,8 +61,8 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log.Info("Error en la obtención de registros(Tabla UsuarioReasignacion) del proceso de reasignación: " + ex.Message);
-                    throw ex;
+                    Logger.Log.Error("Error en la obtención de registros(Tabla UsuarioReasignacion) del proceso de reasignación: " + ex.Message, ex);
+                    throw;
                 }
 
 
