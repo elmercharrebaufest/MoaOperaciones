@@ -1,4 +1,6 @@
-﻿using Quartz.Util;
+﻿// Ignore Spelling: reasignaciones
+
+using Quartz.Util;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
@@ -794,33 +796,33 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
         /// </summary>
         /// <param name="ListaAp"></param>
-        public async Task NotificarReasignaciones(List<string> ListaAp, RepositorioEF Repositorio)
+        public async Task NotificarReasignaciones(IEnumerable<string> ListaAp)
         {
             //Todos los registros con mismo NRO_ES_LOCAL
             foreach (string esLocal in ListaAp)
             {
                 //Todos los registros con mismo NRO_ES_LOCAL
-                List<Aprobaciones> completeAp = Repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
+                List<Aprobaciones> completeAp = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
                 //Buscar Proveedor
-                OrderParamsDto orderParams = new OrderParamsDto();
-                orderParams.OrdenCompraId = completeAp[0].NRO_OC;
-                Proveedor prov = new Proveedor();
-                prov = orderService.BuscarProveedor(orderParams);
+                OrderParamsDto orderParams = new OrderParamsDto
+                {
+                    OrdenCompraId = completeAp[0].NRO_OC
+                };
+                Proveedor prov = orderService.BuscarProveedor(orderParams);
 
                 //MMSN-1030: Fix
                 string aprobador = completeAp[0].Aprobador_CDS;
-                var user = Repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                var user = repositorio.Listar<Usuario>(x => x.Mail == aprobador).FirstOrDefault();
                 int userId = 0;
                 if (user != null)
                 {
                     userId = user.Id;
                 }
-                List<ReporteDto> reporte = new List<ReporteDto>();
 
                 await NotifyCreation(completeAp, prov, userId, aprobador);
             }
-
         }
+
         private async Task<List<ReporteDto>> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";

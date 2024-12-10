@@ -3,8 +3,6 @@ using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services
@@ -47,7 +45,7 @@ namespace SustitucionMOAUtils.Services
                 try
                 {
                     var entradaServicio = entradaServicioService.Value;
-                    Task.Run(() => entradaServicio.NotificarReasignaciones(eSLocalesInicio, (RepositorioEF)repositorio)).Wait();
+                    Task.Run(() => entradaServicio.NotificarReasignaciones(eSLocalesInicio)).Wait();
                     Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
 
                 }
