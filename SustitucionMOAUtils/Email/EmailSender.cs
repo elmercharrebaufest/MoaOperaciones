@@ -283,6 +283,13 @@ namespace SustitucionMOAUtils.Email
                     {
                         oMensaje.To.Add(mail);
                     }
+#if DEBUG
+                    if (!EsCorreoValido(mail))
+                    {
+                        Logger.Log.Info($"Correo no válido: {mail}, no se intenta continuar por ser ambiente DEBUG");
+                        return;
+                    }
+#endif
                 }
                 if (emailSenderData.Mails == null || emailSenderData.Mails.Count() == 0)
                 {
@@ -297,6 +304,13 @@ namespace SustitucionMOAUtils.Email
                         {
                             oMensaje.CC.Add(copia);
                         }
+#if DEBUG
+                        if (!EsCorreoValido(copia))
+                        {
+                            Logger.Log.Info($"Correo no válido: {copia}, no se intenta continuar por ser ambiente DEBUG");
+                            return;
+                        }
+#endif
                     }
                 }
                 if (emailSenderData.VistaAlternativa != null)
