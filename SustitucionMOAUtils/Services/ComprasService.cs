@@ -6970,23 +6970,15 @@ namespace SustitucionMOAUtils.Services
                 GuardarArchivosCotizacion(cotizacion, adjuntos);
             }
 
+
+            if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
+            {
+                emailComprasService.EnviarMailCotizacionCreada(cotizacion);
+            }
+
             try
             {
-                if (cotizacion.CotizacionEstado_Id == (int)CotizacionEstadoEnum.Cotizado && enviarMail)
-                {
-                    emailComprasService.EnviarMailCotizacionCreada(cotizacion);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log.Error(new Exception($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id));
-                Logger.Log.Error(e);
-            }
-
-
-            if (ValidarCreacionDeRegistroInfo(cotizacion))
-            {
-                if (!cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null))
+                if (ValidarCreacionDeRegistroInfo(cotizacion) && !cotizacion.CotizacionPosiciones.All(x => x.NoDisponible == true && x.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp != null))
                 {
                     var registros = CrearRegistroInfoDto(cotizacion);
                     if (registros.Exists(x => !x.EsModificar))
@@ -6997,6 +6989,11 @@ namespace SustitucionMOAUtils.Services
                     CrearRegistroInfo(cotizacion, registros);
                 }
             }
+            catch (Exception e)
+            {
+                Logger.Log.Error($"Error al generar registro info en GrabarCotizacion para la cotizacion: " + cotizacion.Id, e);
+            }
+
 
             respuestaGuardarSOLP.IdEntidad = cotizacion.Id;
             repositorio.GuardarCambios();
