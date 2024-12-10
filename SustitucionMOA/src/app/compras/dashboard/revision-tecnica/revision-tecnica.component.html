@@ -3,7 +3,9 @@
           (onHide)="onCloseModal()" appendTo="body" positionTop="30"
           [height]="450" [max] [contentStyle]="{'max-height':'450px', 'min-height':'400px'}">
     <p-header class="headerModal" style="color: #067935;">
-        <b>Revisión Técnica </b> <span *ngIf="peticion != null">- Petici&oacute;n de oferta #{{peticion.Id}}</span>
+        <b>Revisión Técnica </b> 
+        <span *ngIf="!revisionSinFinalizar()"> Finalizada </span>
+        <span *ngIf="peticion != null">- Petici&oacute;n de oferta #{{peticion.Id}}</span>
     </p-header>
     <div class="container-fluid" style="height: 273.75px;">
         <section class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -203,6 +205,7 @@
         <button type="button" class="btn btn-danger botonesComprasColor" (click)="onCloseModal()">CANCELAR</button>
         <button type="button" class="btn btn-primary botonesComprasColor" *ngIf="revisionSinFinalizar()" (click)="guardarRT()">GUARDAR</button>
         <button type="button" class="btn btn-success botonesComprasColor" *ngIf="revisionSinFinalizar()" (click)="confirmarFinalizacion()">FINALIZAR</button>
+        <span *ngIf="!revisionSinFinalizar()" style="color: #067935; font-size: larger; font-weight: bold;"> Finalizada </span>
     </p-footer>
 </p-dialog>
 
