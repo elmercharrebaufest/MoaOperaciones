@@ -99,83 +99,42 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-                // para los usuarios en rango, ejecutar la reasignación
-                HashSet<string> eSLocalesUsuarioEnRango = new HashSet<string>();
-                foreach (Usuario user in usuariosEnRango)
+                string transformacionReasignar(Usuario user, Aprobaciones ap)
                 {
-                    if (!string.IsNullOrEmpty(user.Mail) && user.Mail.Contains("@")
-                        && !string.IsNullOrEmpty(user.Suplente))
+                    if (ap.Aprobador_CDS == user.Suplente)
                     {
-                        //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
-                        IEnumerable<Aprobaciones> aprobacionesAsociadas =
-                            repositorio
-                            .Listar<Aprobaciones>(x => x.Fiscal_SOLPED == user.Mail && x.Estado_certificacion == "Pendiente Aprobación");
-
-                        if (aprobacionesAsociadas.Any())
-                        {
-                            Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
-                        }
-
-                        foreach (var ap in aprobacionesAsociadas)
-                        {
-                            ap.Aprobador_CDS = user.Suplente;
-                            ap.Suplente = user.Mail;
-                            if (!string.IsNullOrEmpty(ap.NRO_ES_LOCAL))
-                            {
-                                _ = eSLocalesUsuarioEnRango.Add(ap.NRO_ES_LOCAL);
-                            }
-                        }
+                        // no se debe hacer el cambio.
+                        // se hace para evitar que se envíe la notificación de reasignación
+                        return null;
                     }
+                    ap.Aprobador_CDS = user.Suplente;
+                    ap.Suplente = user.Mail;
+                    return ap.NRO_ES_LOCAL;
                 }
 
-                //Si hubo cambios, guardar y notificar
-                if (eSLocalesUsuarioEnRango.Count > 0)
+                string transformacionRevertirAsignacion(Usuario user, Aprobaciones ap)
                 {
-                    repositorio.GuardarCambios();
-
-                    Notificar(eSLocalesUsuarioEnRango);
-                }
-
-                // Para los usuarios vencidos o futuros, revertir la reasignación
-                HashSet<string> eSLocalesUsuariosVencidos = new HashSet<string>();
-                foreach (string mail in usuariosVencidos.Union(usuariosFuturos).Distinct().Select(user => user.Mail))
-                {
-                    if (!string.IsNullOrEmpty(mail) && mail.Contains("@"))
+                    if (string.IsNullOrWhiteSpace(user.Suplente))
                     {
-                        IEnumerable<Aprobaciones> aprobacionesAsociadas =
-                            repositorio
-                            .Listar<Aprobaciones>(x => x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación");
-
-                        if (aprobacionesAsociadas.Any())
-                        {
-                            Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus fiscales por fecha de reasignación vencida");
-                        }
-
-                        foreach (Aprobaciones ap in aprobacionesAsociadas)
-                        {
-                            if (ap.Aprobador_CDS == mail)
-                            {
-                                // no se debe hacer el cambio.
-                                // se hace para evitar que se envíe la notificación de reasignación
-                                continue;
-                            }
-                            ap.Aprobador_CDS = mail;
-                            ap.Suplente = null;
-                            if (!string.IsNullOrEmpty(ap.NRO_ES_LOCAL))
-                            {
-                                _ = eSLocalesUsuariosVencidos.Add(ap.NRO_ES_LOCAL);
-                            }
-                        }
+                        //no es posible hacer el cambio
+                        return null;
                     }
+                    if (ap.Aprobador_CDS == user.Mail)
+                    {
+                        // no se debe hacer el cambio.
+                        // se hace para evitar que se envíe la notificación de reasignación
+                        return null;
+                    }
+                    ap.Aprobador_CDS = user.Mail;
+                    ap.Suplente = null;
+                    return ap.NRO_ES_LOCAL;
                 }
 
-                //Si hubo cambios, guardar y notificar
-                if (eSLocalesUsuariosVencidos.Count > 0)
-                {
-                    repositorio.GuardarCambios();
+                // Reasignar aprobaciones a los suplentes correspondientes
+                ReasignarAprobaciones(usuariosEnRango, transformacionReasignar);
 
-                    Notificar(eSLocalesUsuariosVencidos);
-                }
+                // Revertir aprobaciones a los aprobadores originales
+                ReasignarAprobaciones(usuariosVencidos.Union(usuariosFuturos), transformacionRevertirAsignacion);
 
                 // Adicionalmente, remover los registros vencidos
                 foreach (var registro in registrosVencidos)
@@ -191,6 +150,45 @@ namespace SustitucionMOAUtils.Services
             }
 
             return "Éxito";
+        }
+
+        /// <summary>
+        /// Método encargado de reasignar las aprobaciones a los suplentes correspondientes.
+        /// </summary>
+        /// <param name="usuarios">Usuarios para los cuales hay que encontrar Aprobaciones a reasignar</param>
+        /// <param name="transformacion">Instrucciones de reasignación. Debe retornar el número de ES (NRO_ES_LOCAL)</param>
+        private void ReasignarAprobaciones(IEnumerable<Usuario> usuarios, Func<Usuario, Aprobaciones, string> transformacion)
+        {
+            HashSet<string> esLocalModificada = new HashSet<string>();
+            foreach (Usuario user in usuarios)
+            {
+                if (!string.IsNullOrEmpty(user.Mail) && user.Mail.Contains("@"))
+                {
+                    //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
+                    IEnumerable<Aprobaciones> aprobacionesAsociadas =
+                        repositorio
+                        .Listar<Aprobaciones>(x => x.Fiscal_SOLPED == user.Mail && x.Estado_certificacion == "Pendiente Aprobación");
+
+                    if (aprobacionesAsociadas.Any())
+                    {
+                        Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
+                    }
+
+                    foreach (var ap in aprobacionesAsociadas)
+                    {
+                        string esLocal = transformacion(user, ap);
+                        if (!string.IsNullOrEmpty(esLocal))
+                        {
+                            _ = esLocalModificada.Add(esLocal);
+                        }
+                    }
+                }
+            }
+            if (esLocalModificada.Count > 0)
+            {
+                repositorio.GuardarCambios();
+                Notificar(esLocalModificada);
+            }
         }
 
         private void Notificar(IEnumerable<string> eSLocalesInicio)
