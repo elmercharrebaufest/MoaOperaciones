@@ -1057,7 +1057,6 @@ export class DashboardComponent extends ListBaseComponent {
     mustShowRevisionTecnica(rowData, licitacion): boolean {
         let res: boolean = true;
 
-        res = res && (licitacion.RevisionFinalizada != true);
         res = res && (licitacion.TrabajoHecho != true);
 
         return res;
