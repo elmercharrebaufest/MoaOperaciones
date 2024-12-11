@@ -5654,7 +5654,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (cuentaSolpConPliego == 1)
                     {
-                        var posicion = peticion.Posiciones.Single().SolpPosicion;
+                        var posicion = solpConPliegoSinRepetir.Single().SolpPosicion;
                         var downloadLinkUrl = ConfigurationManager.AppSettings["ida:RedirectUri"] + "/api/compras/DescargarPliegoDesdeLink?solpId=" +
                             posicion.Solp.Id + "&token=" + posicion.Solp.EmailLinkToken;
 
