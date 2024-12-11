@@ -273,4 +273,8 @@ export class RevisionTecnicaComponent implements OnInit, OnChanges {
                 }
             )
     }
+
+    revisionSinFinalizar() {
+        return this.peticion.RevisionFinalizada != true;
+    }
 }

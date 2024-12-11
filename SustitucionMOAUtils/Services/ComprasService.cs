@@ -4960,7 +4960,7 @@ namespace SustitucionMOAUtils.Services
                 });
             }
 
-            // pdf peticion de oferta materiales
+            // pdf petición de oferta materiales
             if (peticion.Posiciones?.FirstOrDefault()?.SolpPosicion?.TipoPosicion?.Codigo == "MATERIALES")
             {
                 bool peticionesUsuario(PeticionDeOfertaUsuario u)
@@ -4968,7 +4968,7 @@ namespace SustitucionMOAUtils.Services
                     if (!esProveedor) { return true; }
                     if (idPeticionDeOfertaUsuario == null && usuarioDto == null) { return true; }
                     if (idPeticionDeOfertaUsuario == u.Id) { return true; }
-                    if (usuarioDto?.Id == u.Usuario_Id) { return true; }
+                    if (usuarioDto?.CUIT == u.Usuario.CUITRegistro) { return true; }
                     return false;
                 }
 
@@ -6120,7 +6120,7 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
-                    Deshabilitado = (esServicio && u.RealizoVisita == true) || (!esServicio)
+                    Deshabilitado = esServicio && u.RealizoVisita == true,
                 };
                 usuarios.Add(usuario);
             }
