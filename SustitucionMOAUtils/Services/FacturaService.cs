@@ -5,6 +5,7 @@ using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Email;
 using SustitucionMOAUtils.Interfaces;
+using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services.AnalisisDocumentoServiceValidation;
 using SustitucionMOAWS.Interfaces;
 using System;
@@ -13,6 +14,7 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using Usuario = SustitucionMOAModel.Entities.Usuario;
 
@@ -40,25 +42,29 @@ namespace SustitucionMOAUtils.Services
 
         public List<ValidationResult> SubirPDF(List<HttpPostedFileBase> files, string cuit, string codigo, string mail)
         {
+            Log.Info("files: " + files.Count);
             if (files == null || !files.Any())
                 throw new ValidationCustomException("No files provided.");
 
             List<ValidationResult> results = new List<ValidationResult>();
             List<ValidationResult> resultadoOcrs = new List<ValidationResult>();
-            files.ForEach(file =>
+            foreach (var file in files)
             {
-                var operacionOCRId = azureService.AnalizarImagenAsync(file).Result;
+                Log.Info("AnalizarImagenAsync: " + file.FileName);
+                var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(file)).Result;
                 Thread.Sleep(2000);
-                var elementosLeidos = azureService.ObtenerResultadoOCRAsync(operacionOCRId).Result;
+                Log.Info("ObtenerResultadoOCRAsync: " + file.FileName);
+                var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
                 resultadoOcrs.AddRange(elementosLeidos.Select(a => new ValidationResult { Input = a, FileName = file.FileName }));
-            });
+                Log.Info("Fin ObtenerResultadoOCRAsync: " + file.FileName);
+            }
 
             int usuarioId = repositorio.Obtener<Usuario>(u => u.Mail == mail).Id;
             foreach (var file in files)
             {
                 try
                 {
-                    Logger.Log.Info("Procesando el documento " + file.FileName);
+                    Log.Info("Procesando el documento " + file.FileName);
                     List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
                     List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
@@ -83,7 +89,7 @@ namespace SustitucionMOAUtils.Services
                     var error = new ValidationResult(false, "El documento no se envió a para su análisis.", "OCR", "", "");
                     error.FileName = file.FileName;
                     results.Add(error);
-                    Logger.Log.Error("Error al procesar el documento " + file.FileName, e);
+                    Log.Error("Error al procesar el documento " + file.FileName, e);
                 }
 
             }
@@ -121,7 +127,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Logger.Log.Error("Error al guardar los resultados para el documento " + ruta, e);
+                Log.Error("Error al guardar los resultados para el documento " + ruta, e);
             }
 
 
