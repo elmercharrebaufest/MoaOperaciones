@@ -6119,7 +6119,7 @@ namespace SustitucionMOAUtils.Services
                     EstaHabilitado = u.Usuario.Habilitado,
                     ValidacionCircularSolicitante = ValidacionCircularSolicitante(u, cotizacion),
                     ObservacionNoCumple = u.ObservacionNoCumple,
-                    Deshabilitado = (esServicio && u.RealizoVisita == true) || (!esServicio)
+                    Deshabilitado = esServicio && u.RealizoVisita == true,
                 };
                 usuarios.Add(usuario);
             }
