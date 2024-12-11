@@ -465,71 +465,82 @@ namespace SustitucionMOAUtils.Email
 
         public static async Task EnviarMailAsync(EmailSenderData emailSenderData)
         {
-            try
+            if (emailSenderData == null)
+                throw new ArgumentNullException(nameof(emailSenderData));
+
+            using (MailMessage oMensaje = new MailMessage())
             {
-                MailMessage oMensaje = new MailMessage
+                try
                 {
-                    From = new MailAddress(EmailConfig.getEmailAddFrom()),
-                    Body = emailSenderData.Cuerpo,
-                    IsBodyHtml = true,
-                };
+                    oMensaje.From = new MailAddress(EmailConfig.getEmailAddFrom());
+                    oMensaje.Body = emailSenderData.Cuerpo ?? "";
+                    oMensaje.IsBodyHtml = true;
+                    oMensaje.BodyEncoding = Encoding.UTF8;
+                    oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
 
-                foreach (string mail in emailSenderData.Mails)
-                {
-                    if (!string.IsNullOrEmpty(mail) && EsCorreoValido(mail))
+                    // Agregar destinatarios
+                    if (emailSenderData.Mails != null && emailSenderData.Mails.Any())
                     {
-                        oMensaje.To.Add(mail);
+                        foreach (string mail in emailSenderData.Mails.Where(EsCorreoValido))
+                        {
+                            oMensaje.To.Add(mail);
+                        }
                     }
-                }
-
-                if (emailSenderData.Mails == null || !emailSenderData.Mails.Any())
-                {
-                    oMensaje.To.Add(EmailConfig.getEmailAddFrom());
-                }
-
-                if (emailSenderData.Copias != null)
-                {
-                    foreach (string copia in emailSenderData.Copias)
+                    else
                     {
-                        if (!string.IsNullOrEmpty(copia) && EsCorreoValido(copia))
+                        oMensaje.To.Add(EmailConfig.getEmailAddFrom());
+                    }
+
+                    // Agregar copias
+                    if (emailSenderData.Copias != null)
+                    {
+                        foreach (string copia in emailSenderData.Copias.Where(EsCorreoValido))
                         {
                             oMensaje.CC.Add(copia);
                         }
                     }
-                }
 
-                if (emailSenderData.VistaAlternativa != null)
+                    // Agregar vista alternativa
+                    if (emailSenderData.VistaAlternativa != null)
+                    {
+                        oMensaje.AlternateViews.Add(emailSenderData.VistaAlternativa);
+                    }
+
+                    // Agregar adjuntos
+                    if (emailSenderData.Adjuntos != null)
+                    {
+                        foreach (EmailAttachment adjunto in emailSenderData.Adjuntos)
+                        {
+                            oMensaje.Attachments.Add(new Attachment(adjunto.Archivo, adjunto.Nombre));
+                        }
+                    }
+
+                    oMensaje.Subject = emailSenderData.Asunto ?? "";
+
+                    // Enviar correo
+                    using (SmtpClient oCliente = GetSmtpClient())
+                    {
+                        await SendMailAsync(oMensaje, oCliente);
+                    }
+                }
+                catch (Exception ex)
                 {
-                    oMensaje.AlternateViews.Add(emailSenderData.VistaAlternativa);
+                    Log.Error("Error al enviar mail", ex);
                 }
-
-                oMensaje.BodyEncoding = Encoding.UTF8;
-                oMensaje.Headers.Add("Content-class", "urn:content-classes:calendarmessage");
-
-                foreach (EmailAttachment adjunto in emailSenderData.Adjuntos)
+                finally
                 {
-                    Attachment data = new Attachment(adjunto.Archivo, adjunto.Nombre);
-                    oMensaje.Attachments.Add(data);
+                    // Liberar recursos de adjuntos
+                    if (emailSenderData.Adjuntos != null)
+                    {
+                        foreach (var attachment in emailSenderData.Adjuntos)
+                        {
+                            attachment.Archivo.Dispose();
+                        }
+                    }
                 }
-
-                oMensaje.Subject = emailSenderData.Asunto ?? "";
-
-                SmtpClient oCliente = GetSmtpClient();
-
-                // Enviar el correo de forma asíncrona
-                await SendMailAsync(oMensaje, oCliente);
-            }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null)
-                {
-                    Log.Error(ex.InnerException);
-                }
-                Log.Error("Stack: " + ex.StackTrace, ex);
-
-                throw;
             }
         }
+
 
         private static async Task SendMailAsync(MailMessage oMensaje, SmtpClient oCliente)
         {

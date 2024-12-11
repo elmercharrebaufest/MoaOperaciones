@@ -1,4 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
 using SustitucionMOARepositorio;
@@ -39,9 +40,12 @@ namespace SustitucionMOAUtils.Services
 
         public List<ValidationResult> SubirPDF(List<HttpPostedFileBase> files, string cuit, string codigo, string mail)
         {
+            if (files == null || !files.Any())
+                throw new ValidationCustomException("No files provided.");
+
             List<ValidationResult> results = new List<ValidationResult>();
             List<ValidationResult> resultadoOcrs = new List<ValidationResult>();
-            files.AsParallel().ForAll(file =>
+            files.ForEach(file =>
             {
                 var operacionOCRId = azureService.AnalizarImagenAsync(file).Result;
                 Thread.Sleep(2000);
@@ -50,7 +54,6 @@ namespace SustitucionMOAUtils.Services
             });
 
             int usuarioId = repositorio.Obtener<Usuario>(u => u.Mail == mail).Id;
-
             foreach (var file in files)
             {
                 try
@@ -153,21 +156,20 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarMail(HttpPostedFileBase file)
         {
-            using (var memoryStream = new MemoryStream())
-            {
-                file.InputStream.CopyTo(memoryStream);
-                memoryStream.Position = 0;
+            var clonedStream = new MemoryStream();
+            file.InputStream.CopyTo(clonedStream);
+            clonedStream.Position = 0;
 
-                emailService.EnviarMail(new EmailSenderData
-                {
-                    Asunto = "Envio Factura " + file.FileName,
-                    Mails = new List<string> { EmailFacturasES },
-                    Adjuntos = new List<EmailAttachment>
+            emailService.EnviarMail(new EmailSenderData
             {
-                new EmailAttachment(memoryStream, file.FileName)
-            }
-                });
-            }
+                Asunto = "Envio Factura " + file.FileName,
+                Mails = new List<string> { EmailFacturasES },
+                Adjuntos = new List<EmailAttachment>
+                {
+                    new EmailAttachment(clonedStream, file.FileName)
+                }
+            });
+
         }
 
         private List<ValidationResult> AnalizarResultados(List<ValidationResult> resultadoAnalisis, string codigoProveedor)
