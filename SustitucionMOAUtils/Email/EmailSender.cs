@@ -205,7 +205,7 @@ namespace SustitucionMOAUtils.Email
                         oMensaje.To.Add(mail);
                     }
                 }
-                if (enviarA == null || enviarA.Count() == 0)
+                if (enviarA == null || !enviarA.Any())
                 {
                     oMensaje.To.Add(EmailConfig.getEmailAddFrom());
                 }
@@ -261,9 +261,9 @@ namespace SustitucionMOAUtils.Email
                 SmtpClient client = GetSmtpClient();
                 SendMail(oMensaje, client);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw;
+                Log.Error(e);
             }
         }
         public static void EnviarMail(EmailSenderData emailSenderData)
@@ -441,9 +441,9 @@ namespace SustitucionMOAUtils.Email
                 SmtpClient oCliente = GetSmtpClient();
                 await SendMailAsync(oMensaje, oCliente);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw;
+                Log.Error(e);
             }
         }
 
@@ -482,7 +482,7 @@ namespace SustitucionMOAUtils.Email
                     }
                 }
 
-                if (emailSenderData.Mails == null || emailSenderData.Mails.Count() == 0)
+                if (emailSenderData.Mails == null || !emailSenderData.Mails.Any())
                 {
                     oMensaje.To.Add(EmailConfig.getEmailAddFrom());
                 }
@@ -521,13 +521,11 @@ namespace SustitucionMOAUtils.Email
             }
             catch (Exception ex)
             {
-                Logger.Log.Info(ex.Message);
                 if (ex.InnerException != null)
                 {
-                    Logger.Log.Info($"{ex.InnerException.Message}");
+                    Log.Error(ex.InnerException);
                 }
-                Logger.Log.Info("Stack: ");
-                Logger.Log.Info(ex.StackTrace);
+                Log.Error("Stack: " + ex.StackTrace, ex);
 
                 throw;
             }
@@ -560,8 +558,9 @@ namespace SustitucionMOAUtils.Email
                 Log.Info($"SendMail Attachments: {string.Join(",", mail.Attachments?.Select(a => a.Name).ToList())}");
 
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Log.Error(e);
             }
         }
 

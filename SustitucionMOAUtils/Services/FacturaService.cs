@@ -153,12 +153,21 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarMail(HttpPostedFileBase file)
         {
-            emailService.EnviarMail(new EmailSenderData
+            using (var memoryStream = new MemoryStream())
             {
-                Asunto = "Envio Factura" + file.FileName,
-                Mails = new List<string> { EmailFacturasES },
-                Adjuntos = new List<EmailAttachment> { new EmailAttachment(file.InputStream, file.FileName) }
-            });
+                file.InputStream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+
+                emailService.EnviarMail(new EmailSenderData
+                {
+                    Asunto = "Envio Factura " + file.FileName,
+                    Mails = new List<string> { EmailFacturasES },
+                    Adjuntos = new List<EmailAttachment>
+            {
+                new EmailAttachment(memoryStream, file.FileName)
+            }
+                });
+            }
         }
 
         private List<ValidationResult> AnalizarResultados(List<ValidationResult> resultadoAnalisis, string codigoProveedor)
