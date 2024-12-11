@@ -77,7 +77,7 @@ namespace SustitucionMOAUtils.Services
                 }
                 catch (Exception e)
                 {
-                    var error = new ValidationResult(false, "El documento se envió a para su análisis.", "OCR", "", "");
+                    var error = new ValidationResult(false, "El documento no se envió a para su análisis.", "OCR", "", "");
                     error.FileName = file.FileName;
                     results.Add(error);
                     Logger.Log.Error("Error al procesar el documento " + file.FileName, e);
@@ -91,31 +91,38 @@ namespace SustitucionMOAUtils.Services
 
         private void GuardarResultadosYArchivo(List<string> elementosLeidos, List<ValidationResult> resultadoAnalisis, string ruta, int usuarioId)
         {
-
-
-
-            var resultadosORC = elementosLeidos.Select(a => new ResultadoOcr
+            try
             {
-                Archivo_Id = resultadoAnalisis[0].Archivo_Id,
-                Texto = a,
-                Usuario_Id = usuarioId,
-                FechaAlta = DateTime.Now
-            }).ToList();
-            repositorio.AgregarTodos(resultadosORC);
+                var resultadosORC = elementosLeidos.Select(a => new ResultadoOcr
+                {
+                    Archivo_Id = resultadoAnalisis[0].Archivo_Id,
+                    Texto = a,
+                    Usuario_Id = usuarioId,
+                    FechaAlta = DateTime.Now
+                }).ToList();
+                repositorio.AgregarTodos(resultadosORC);
 
 
-            var resultadosAnalisisOcr = resultadoAnalisis.Select(item => new ResultadoAnalisisOcr
+                var resultadosAnalisisOcr = resultadoAnalisis.Select(item => new ResultadoAnalisisOcr
+                {
+                    Archivo_Id = item.Archivo_Id,
+                    Usuario_Id = usuarioId,
+                    FechaAlta = DateTime.Now,
+                    IsValid = item.IsValid,
+                    Message = item.Message,
+                    ValidataionType = item.ValidataionType,
+                    Value = item.Value,
+                    Input = item.Input
+                }).ToList();
+                repositorio.AgregarTodos(resultadosAnalisisOcr);
+            }
+            catch (Exception e)
             {
-                Archivo_Id = item.Archivo_Id,
-                Usuario_Id = usuarioId,
-                FechaAlta = DateTime.Now,
-                IsValid = item.IsValid,
-                Message = item.Message,
-                ValidataionType = item.ValidataionType,
-                Value = item.Value,
-                Input = item.Input
-            }).ToList();
-            repositorio.AgregarTodos(resultadosAnalisisOcr);
+                Logger.Log.Error("Error al guardar los resultados para el documento " + ruta, e);
+            }
+
+
+
 
         }
 

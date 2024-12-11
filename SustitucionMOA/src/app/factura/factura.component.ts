@@ -90,7 +90,7 @@ export class FacturaComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.resultados = [];
-            this.blockUI.start('Scanneandno documentos...');
+            this.blockUI.start('Analizando documentos...');
             this.subscription = this.service.subirPDF(this.file).subscribe(
                 (result: any) => {
                     this.spinnerSmallComponent.hideIt();
