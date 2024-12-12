@@ -9509,23 +9509,26 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var solps = peticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp);
-                foreach (var solp in solps)
+                IEnumerable<Solp> solps =
+                    peticionDeOferta.Posiciones
+                    .Select(x => x.SolpPosicion.Solp)
+                    .DistinctBy(x => x.Id);
+                foreach (Solp solp in solps)
                 {
-                    var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
-                    var proveedores = repositorio.Listar<Usuario>();
+                    RespuestaGuardarSOLP respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
+                    List<Usuario> proveedores = repositorio.Listar<Usuario>();
                     if (nroOrdenDeCompra.Count > 0)
                     {
-                        foreach (var nro in nroOrdenDeCompra)
+                        foreach (string nro in nroOrdenDeCompra)
                         {
-                            var ordenDeCompra = ObtenerOrdenDeCompra(nro);
+                            OrdenDeCompraSAPDto ordenDeCompra = ObtenerOrdenDeCompra(nro);
                             Log.Info("ActualizarDatosSolp ObtenerOrdenDeCompra" + ordenDeCompra.ToJson());
-                            var proveedor = ObtenerYCrearProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
-                            foreach (var posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
+                            ProveedorComprasDto proveedor = ObtenerYCrearProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
+                            foreach (OrdenDeCompraSAPPosicion posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
                             {
-                                var posicionSolp = solp.Posiciones.Where(x => x.Indice == Int32.Parse(posicionOCSap.IndiceSolp)).FirstOrDefault();
+                                SolpPosicion posicionSolp = solp.Posiciones.FirstOrDefault(x => x.Indice == int.Parse(posicionOCSap.IndiceSolp));
                                 posicionSolp.ProveedorAdjudicado_Id = proveedor.Usuario_Id;
-                                posicionSolp.ProveedorAdjudicado = proveedores.Where(x => x.Id == proveedor.Usuario_Id).FirstOrDefault();
+                                posicionSolp.ProveedorAdjudicado = proveedores.FirstOrDefault(x => x.Id == proveedor.Usuario_Id);
                                 posicionSolp.RegistroInfoNro = posicionOCSap.RegistroInfo;
                                 posicionSolp.OrganizacionDeComprasCodigo = ordenDeCompra.Cabecera.OrganizacionDeComprasCodigo;
                             }
