@@ -28,6 +28,7 @@ import { ActionResult } from '../../serviceHelpers/actionResult.Interface';
 import { SolpCrearPoMultipleDto } from '../modelos/Solp-CrearPoMultipleDto.model';
 import { POPosicionDto } from '../modelos/po-posicionDto';
 import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
+import { ProcesarPrecargaSolpResponse } from '../modelos/compras/solp/procesarPrecargaSolpResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -1624,5 +1625,17 @@ export class ComprasService extends BaseService {
                 params: params,
                 headers: this.headers,
             });
+    }
+
+    procesarPrecargaSolp(archivo: File, tipoSolpId: number): Observable<ApiResponse<ProcesarPrecargaSolpResponse>> {
+        let payload = new FormData();
+        payload.append('archivo', archivo);
+
+        let params: HttpParams = new HttpParams();
+        params = params.set('tipoSolpId', tipoSolpId.toString());
+
+        return this.http
+            .post('/api/compras/ProcesarPrecargaSolp', payload, { params: params, headers: this.headersPost })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }
