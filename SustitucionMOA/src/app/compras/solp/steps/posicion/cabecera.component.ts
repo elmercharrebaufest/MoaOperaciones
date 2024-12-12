@@ -117,7 +117,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     // Texto boton asociar
     textoAsociarBtn = 'ASOCIAR CONTRATO'
 
+    displayPrecargarDesdeArchivo: boolean = false;
+
     tipoPosicion: SelectItem[];
+    tipoSolpId: number;
     tipoImputacion: any[];
     imputacionSeleccionada: any;
 
@@ -1041,6 +1044,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     cambiarTipoSolp() {
+        this.tipoSolpId = this.model.selectTipoPosicion.Id;
         if (this.model.selectTipoPosicion) {
             this.model.posiciones.forEach(posicion => {
                 this.model.eliminarPosicion(posicion as SolpPosicion)
@@ -1355,5 +1359,54 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             element.setTabPosicion();
         });
     }
-   
+
+    cargarPosicionesDesdeArchivo(posiciones: SolpPosicion[]) {
+        this.displayPrecargarDesdeArchivo = false;
+
+        for (let i = 0; i < posiciones.length; i++) {
+            let pos = posiciones[i] as any;
+
+            this.model.posicionActual = pos;
+
+            let centroEnt = this.centroEntrega.find(x => x.value == pos.Centro.Codigo);
+            let moneda = this.combos.Moneda.find(x => x.Id == pos.MonedaId);
+            let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == pos.GrupoCompras.Id);
+            let tipoImputacion = this.tipoImputacion.find(x => x.Id == pos.TipoImputacion.Id);
+
+            pos.numeroPosicion = i + 1;
+            pos.tipoImputacion = tipoImputacion;
+            
+            // pos.selectCentroEntrega = centroEnt;
+            //pos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == pos.selectCentroEntrega.Id);
+
+            // this.setupAlmacenEntregaByCentro();
+            //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+
+            // let almacen = pos.selectComboAlmacenes.find(x => x.Id == pos.Almacen.Id);
+            // pos.selectAlmacenEntrega = almacen;
+
+            pos.monedaSeleccionada = moneda;
+            pos.GrupoCompras = grupoCompras;
+            
+            let servicioMaterialObj = {
+                Codigo: pos.CodigoMaterialSap,
+                CodigoSap: pos.CodigoMaterialSap,
+                Descripcion: pos.Tarea,
+                UnidadMedidaBase: pos.unidadMedida
+            };
+
+            pos.codigoServicio = servicioMaterialObj;
+            pos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+            pos.tareaSubcontratarObj = { ...servicioMaterialObj };
+        };
+        this.model.posiciones = posiciones;
+    }
+    
+    abrirPrecargaSolpDesdeArchivo() {
+        this.displayPrecargarDesdeArchivo = true;
+    }
+
+    cerrarPrecargaSolpDesdeArchivo() {
+        this.displayPrecargarDesdeArchivo = false;
+    }
 }

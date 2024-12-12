@@ -94,6 +94,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IEmailService emailService;
         private readonly IEmailComprasService emailComprasService;
         private readonly IComprasArchivosService comprasArchivosService;
+        private readonly IComprasArchivosImportService comprasArchivosImportService;
         //private static readonly string EMAIL_TEMPLATE_SOLP = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Template", "Solp.html");
 
         private readonly IComprasSapService comprasServiceSap;
@@ -125,6 +126,7 @@ namespace SustitucionMOAUtils.Services
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
             IComprasArchivosService comprasArchivosService,
+            IComprasArchivosImportService comprasArchivosImportService,
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
@@ -158,6 +160,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
             this.comprasArchivosService = comprasArchivosService;
+            this.comprasArchivosImportService = comprasArchivosImportService;
             this.comprasServiceSap = comprasServiceSap;
         }
 
@@ -1172,8 +1175,14 @@ namespace SustitucionMOAUtils.Services
             return repositorio.Listar<TablaGeneral>(x => x.Tabla == tabla).Select(x => new TablaGeneralDto(x)).ToList();
         }
 
-        public List<TablaGeneralDto> ObtenerImputaciones(string tabla)
+        public List<TablaGeneralDto> ObtenerTiposPosicionSolp()
         {
+            return ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp);
+        }
+
+        public List<TablaGeneralDto> ObtenerTiposImputaciones()
+        {
+            var tabla = TablasGenerales.TipoImputacionSolp;
             var imputaciones = repositorio.Listar<TablaGeneral, TablaGeneralDto>(x => new TablaGeneralDto
             {
                 Codigo = x.Codigo,
@@ -1184,7 +1193,36 @@ namespace SustitucionMOAUtils.Services
             }, x => x.Tabla == tabla).ToList();
 
             return imputaciones;
+        }
 
+        public List<TablaSapDto> ObtenerMonedas()
+        {
+            return ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList();
+        }
+
+        public List<TablaSapDto> ObtenerGrupoCompras()
+        {
+            return ObtenerTablaSap(TablasSap.GrupoCompras);
+        }
+
+        public List<TablaSapDto> ObtenerGrupoArticulos()
+        {
+            return ObtenerTablaSap(TablasSap.GrupoArticulo);
+        }
+
+        public List<TablaSapDto> ObtenerCentros()
+        {
+            return ObtenerTablaSap(TablasSap.Centro);
+        }
+
+        public List<TablaSapDto> ObtenerAlmacenes()
+        {
+            return ObtenerTablaSap(TablasSap.Almacen);
+        }
+
+        public List<TablaSapDto> ObtenerUnidades()
+        {
+            return ObtenerTablaSap(TablasSap.Unidad);
         }
 
         public List<CentroDireccionDto> ObtenerCentrosDireccion()
@@ -11270,6 +11308,23 @@ namespace SustitucionMOAUtils.Services
                 .Where(x => x != EstadoListarTratamientoSolp.None)
                 .Select(x => new KeyValuePair<EstadoListarTratamientoSolp, string>(x, x.GetDescription()))
                 .ToList();
+        }
+
+        public ProcesarPrecargaSolpResponse ProcesarArchivoPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId)
+        {
+            var tiposImputaciones = ObtenerTiposImputaciones();
+            var monedas = ObtenerMonedas();
+            var gruposCompras = ObtenerGrupoCompras();
+            var gruposArticulos = ObtenerGrupoArticulos();
+            var centros = ObtenerCentros();
+            var almacenes = ObtenerAlmacenes();
+            var unidades = ObtenerUnidades();
+            var tiposPosicion = ObtenerTiposPosicionSolp();
+            var tipoPosicion = tiposPosicion.Single(x => x.Id == tipoSolpId);
+
+            var cuentasMayor = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap).Select(x => new TablaSapDto(x)).ToList();
+
+            return comprasArchivosImportService.ProcesarArchivoPrecargaSolp(archivo, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, tipoPosicion);
         }
     }
 

@@ -197,6 +197,7 @@
     <Compile Include="Interfaces\IAnalisisDocumentoServiceValidationCommand.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAprobacionesService.cs" />
+    <Compile Include="Interfaces\IComprasArchivosImportService.cs" />
     <Compile Include="Interfaces\IDerivacionesAprobacionesService.cs" />
     <Compile Include="Interfaces\IEmailUbicacionGeograficaService.cs" />
     <Compile Include="Interfaces\ILogicaDerivacionAutomaticaService.cs" />
@@ -286,6 +287,7 @@
     <Compile Include="Services\AnalisisDocumentoServiceValidation\OrdenCompraValidationCommand.cs" />
     <Compile Include="Services\AplicacionCartaPorteApiService.cs" />
     <Compile Include="Services\AplicacionCartaPorteService.cs" />
+    <Compile Include="Services\ComprasArchivosImportService.cs" />
     <Compile Include="Services\ComprasArchivosService.cs" />
     <Compile Include="Services\ComprasSapService.cs" />
     <Compile Include="Services\Email\EmailUbicacionGeograficaService.cs" />

@@ -1108,6 +1108,7 @@
     <Content Include="Content\fonts\Roboto-Thin.ttf" />
     <Content Include="Content\fonts\Roboto-ThinItalic.ttf" />
     <Content Include="Documentacion\CodigoDeConductaParaProveedoresMOA.pdf" />
+    <Content Include="Documentacion\TemplatePrecargaSolp.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Properties\PublishProfiles\PublishFiles.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />

@@ -20,6 +20,13 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaSapDto> ListarTablaSap(List<string> tablas);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
+        List<TablaGeneralDto> ObtenerTiposPosicionSolp();
+        List<TablaSapDto> ObtenerMonedas();
+        List<TablaSapDto> ObtenerGrupoCompras();
+        List<TablaSapDto> ObtenerGrupoArticulos();
+        List<TablaSapDto> ObtenerCentros();
+        List<TablaSapDto> ObtenerAlmacenes();
+        List<TablaSapDto> ObtenerUnidades();
         List<CentroDireccionDto> ObtenerCentrosDireccion();
         ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         string BorrarSolp(int idSolp);
@@ -93,7 +100,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<LiberadorSapDto> ListarLiberadorSap();
         ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
-        List<TablaGeneralDto> ObtenerImputaciones(string tabla);
+        List<TablaGeneralDto> ObtenerTiposImputaciones();
         void ObtenerDatosReporteSolp();
 
         List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
@@ -187,5 +194,6 @@ namespace SustitucionMOAUtils.Interfaces
         string DescargarAdjuntosProveedores(int idPeticion, string path, int? idPeticionDeOfertaUsuario);
 
         List<KeyValuePair<EstadoListarTratamientoSolp, string>> ListarPendienteListComboOptions();
+        ProcesarPrecargaSolpResponse ProcesarArchivoPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId);
     }
 }

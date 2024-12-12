@@ -15,6 +15,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using HttpHelper = System.Web.Http;
 
@@ -64,22 +65,24 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Combos()
         {
+            var tiposPosicionSolp = service.ObtenerTiposPosicionSolp();
+
             return JsonCustom(new
             {
                 ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
-                Centro = service.ObtenerTablaSap(TablasSap.Centro),
+                Centro = service.ObtenerCentros(),
                 CentrosDireccion = service.ObtenerCentrosDireccion(),
-                Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
-                GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
-                GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
-                Moneda = service.ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList(),
-                Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
+                Almacen = service.ObtenerAlmacenes(),
+                GrupoCompras = service.ObtenerGrupoCompras(),
+                GrupoArticulo = service.ObtenerGrupoArticulos(),
+                Moneda = service.ObtenerMonedas(),
+                Unidades = service.ObtenerUnidades(),
                 EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
                 CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
                 EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
-                TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+                TipoPosicionSolp = tiposPosicionSolp,
+                TipoPosicion = tiposPosicionSolp,
+                TipoImputacion = service.ObtenerTiposImputaciones(),
 
                 Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                 Regiones = service.ListarRegionesSap(),
@@ -1127,5 +1130,15 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
         }
+
+        [HttpPost]
+        public ContentResult ProcesarPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId)
+        {
+            var response = new SustitucionMOAApiResponse<ProcesarPrecargaSolpResponse>
+            {
+                Data = service.ProcesarArchivoPrecargaSolp(archivo, tipoSolpId)
+            };
+            return ContentCustom(response);
+        }
     }
-}
+}   
