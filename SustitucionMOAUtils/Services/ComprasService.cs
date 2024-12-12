@@ -9509,8 +9509,11 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-                var solps = peticionDeOferta.Posiciones.Select(x => x.SolpPosicion.Solp);
-                foreach (var solp in solps)
+                IEnumerable<Solp> solps =
+                    peticionDeOferta.Posiciones
+                    .Select(x => x.SolpPosicion.Solp)
+                    .DistinctBy(x => x.Id);
+                foreach (Solp solp in solps)
                 {
                     var respuestaGuardarSOLP = new RespuestaGuardarSOLP { Solp = new SolpDto { NroSolp = solp.NroSolp } };
                     var proveedores = repositorio.Listar<Usuario>();
