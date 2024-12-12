@@ -60,17 +60,18 @@
         </div>
         <!-- TABLE 1 -->
         <p-table #tabla class="level1"
-            [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
-            dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
-            [columns]="columns"  [(globalFilter)]="globalFilterValue" responsiveLayout="scroll | stack"
-            rowExpandMode="single">
+                 [value]="estadoCertificacion.code === 'Aprobada' ? tablaPOSap : tablaPOAprobaciones"
+                 dataKey="EntradaServicio" [paginator]="true" [rows]="innerWidth && innerWidth < 1399 ? 6 : 10"
+                 [columns]="columns" [(globalFilter)]="globalFilterValue" responsiveLayout="scroll | stack"
+                 rowExpandMode="single" [customSort]="true" (sortFunction)="sortFunction($event, defaultTablesConfig[0].name)">
             <!-- TABLE 1 HEADERS -->
             <ng-template pTemplate="header" let-columns class="lista-header">
                 <tr>
                     <th></th>
                     <ng-container *ngFor="let col of defaultTablesConfig[0].columns">
-                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">{{
-                            col.header }}<p-sortIcon [field]="col.field"></p-sortIcon></th>
+                        <th [id]="col.id" *ngIf="col.sortable && col.visible" [pSortableColumn]="col.field">
+                            {{ col.header }}<p-sortIcon [field]="col.field"></p-sortIcon>
+                        </th>
                         <th [id]="col.id" *ngIf="!col.sortable && col.visible">{{ col.header }}</th>
                     </ng-container>
                 </tr>
@@ -81,7 +82,7 @@
                 <tr [id]="rowData.EntradaServicio" [pSelectableRow]="rowData">
                     <td>
                         <a *ngIf="rowData.entradaServicioDetalle?.length > 0" href="#" [pRowToggler]="rowData"
-                            (click)="toggleRow(rowData)">
+                           (click)="toggleRow(rowData)">
                             <i [ngClass]="
                                     expanded
                                         ? 'pi pi-chevron-down'
@@ -117,28 +118,29 @@
                         <div class="rechazada" *ngIf="rowData.Estado === 'Rechazado'"> <span>Rechazada</span></div>
                         <div class="anulada" *ngIf="rowData.Estado === 'Anulada'"> <span>Anulada</span></div>
                     </td>
-                    <td
-                        *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'SF')">
+                    <td *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'A' || userId === 'AI' || userId === 'FAI' || userId === 'FA' || userId === 'SF')">
                         <button type="button" pButton icon="pi pi-check" class="btn-action accept-btn"
-                            (click)="mostrarResumenDeAprobacion(rowData)"
-                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                                (click)="mostrarResumenDeAprobacion(rowData)"
+                                [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
                         <button type="button" pButton icon="pi pi-times" class="btn-action reject-btn"
-                            (click)="verMotivosRechazos(rowData)"
-                            [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
+                                (click)="verMotivosRechazos(rowData)"
+                                [disabled]="!equalsIgnoreCase(rowData.Aprobador,usuario)"></button>
                         <button *ngIf="rowData.Estado === 'Pendiente Aprobación' && (userId === 'F' || userId === 'FAI' || userId === 'FA' || userId === 'FI' || userId === 'SF')"
-                            type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
-                            (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)" [disabled]="!equalsIgnoreCase(rowData.Fiscal,usuario)"></button>
+                                type="button" pButton icon="pi pi-ellipsis-h" class="btn-action btn-secondary"
+                                (click)="verSuplentes(rowData.Suplente, rowData.EntradaServicio)" [disabled]="!equalsIgnoreCase(rowData.Fiscal,usuario)"></button>
                     </td>
-                    <td class="aprobador" *ngIf="rowData.Estado !== 'Rechazado'">{{
-                        rowData.Aprobador | defaultData}}</td>
+                    <td class="aprobador" *ngIf="rowData.Estado !== 'Rechazado'">
+                        {{
+                        rowData.Aprobador | defaultData}}
+                    </td>
                     <td class="anulador" *ngIf="rowData.Estado === 'Anulada'">{{ rowData.AnuladaPor }}</td>
                     <td *ngIf="rowData.Estado === 'Rechazado'">{{ rowData.MotivoRechazo | defaultData}}</td>
                     <td>
-                        <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                        <button *ngIf="!loadingRows[item]" class="fa fa-download" (click)="descargarArchivos(rowData, item)"></button>
                         <div *ngIf="loadingRows[item]" class="loader"></div>
                     </td>
                 </tr>
-                
+
             </ng-template>
 
             <ng-template pTemplate="footer" let-columns>
@@ -163,7 +165,7 @@
                     <td colspan="18">
                         <!-- TABLE 2 -->
                         <p-table class="level2" [value]="rowData.entradaServicioDetalle"
-                            responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
+                                 responsiveLayout="scroll | stack" dataKey="NumeroLinea" [columns]="columns">
                             <!-- TABLE 2 HEADERS -->
                             <ng-template pTemplate="header">
                                 <tr>
@@ -195,7 +197,7 @@
                                 <tr>
                                     <td>{{ rowDetalle.NroPosicion }}</td>
                                     <td>{{ rowDetalle.NumeroLinea }}</td>
-                                  
+
                                     <td>{{ rowDetalle.CodigoServicio }}</td>
                                     <td class="descripcion">{{ rowDetalle.Descripcion }}</td>
                                     <td>{{ rowDetalle.Cantidad | number: '1.0-2':'en-US' }}</td>

@@ -23,6 +23,7 @@ import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
 import { FileModalComponent } from '../file-modal/file-modal.component';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TableCustomSort } from '../tableCustomSort.helper';
 
 
 @Component({
@@ -211,38 +212,8 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     ];
 
 
-    ordenesSortFunction(event: SortEvent): void {
-        event.data.sort((data1, data2) => {
-            let value1 = data1[event.field];
-            let value2 = data2[event.field];
-            let result = null;
-            let colmnType: string | null | undefined =
-                this.defaultTablesConfig
-                    .find(x => x.name === "Ordenes")
-                    .columns
-                    .find(x => x.field === event.field)
-                    .type;
-
-            if (value1 == null && value2 != null) {
-                result = -1;
-            } else if (value1 != null && value2 == null) {
-                result = 1;
-            } else if (value1 == null && value2 == null) {
-                result = 0;
-            } else if (colmnType === 'date') {
-                const value1DateComponents: number[] = value1.split('/');
-                const value2DateComponents: number[] = value2.split('/');
-                const date1: Date = new Date(value1DateComponents[2], value1DateComponents[1], value1DateComponents[0])
-                const date2: Date = new Date(value2DateComponents[2], value2DateComponents[1], value2DateComponents[0])
-                result = (date1 < date2) ? -1 : (date1 > date2) ? 1 : 0;
-            } else if (typeof value1 === 'string' && typeof value2 === 'string') {
-                result = value1.localeCompare(value2);
-            } else {
-                result = (value1 < value2) ? -1 : (value1 > value2) ? 1 : 0;
-            }
-
-            return (event.order * result);
-        });
+    sortFunction(event: SortEvent, tableName: string): void {
+        TableCustomSort.sortFunction(event, tableName, this.userTablesConfig);
     }
 
     formularioResumenCertificacion: FormGroup = this.formBuilder.group({
