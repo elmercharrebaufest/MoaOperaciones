@@ -1,11 +1,5 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using iTextSharp.tool.xml;
-using iTextSharp.tool.xml.html;
-using iTextSharp.tool.xml.parser;
-using iTextSharp.tool.xml.pipeline.css;
-using iTextSharp.tool.xml.pipeline.end;
-using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
@@ -16,7 +10,6 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
-using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using SustitucionMOAUtils.Logger;
@@ -35,7 +28,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Xml.Linq;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -571,6 +563,23 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
+        public SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit)
+        {
+            SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
+
+            CampoCosecha campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa);
+            if (campoCosecha == null) { return result; }
+
+            result.RenspaExiste = true;
+
+            if (campoCosecha.Proveedores.Any(proveedor => proveedor.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
+            {
+                result.MismoCuit = true;
+            }
+
+            return result;
+        }
+
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
@@ -600,7 +609,7 @@ namespace SustitucionMOAUtils.Services
             };
             var content = JsonConvert.SerializeObject(datos);
 
-            Log.Info( $"CampoSustentableService, GenerarPDFDeclaracion, {content}");
+            Log.Info($"CampoSustentableService, GenerarPDFDeclaracion, {content}");
 
             var buffer = Encoding.UTF8.GetBytes(content);
             var byteContent = new ByteArrayContent(buffer);
