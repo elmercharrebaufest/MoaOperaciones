@@ -107,6 +107,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
     corredorDebeCargarCuit = false;
     ngOnInit() {
 
+        this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
+
         this.navService.setSeccionList([]);
         this.CUIT = "";
 
