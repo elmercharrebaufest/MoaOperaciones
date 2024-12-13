@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
 import { CampoProveedor, CampoProveedorDetalle } from './sustentable';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { RenspaExiste } from './renspa-existe.interface';
 
 @Injectable()
 export class VentaSustentableService extends BaseService {
@@ -151,6 +152,14 @@ export class VentaSustentableService extends BaseService {
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })
         // .pipe(map(this.extractData));
+    }
+
+    renspaExiste(renspa: string, cuit: string): Observable<RenspaExiste> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("renspa", renspa);
+        params = params.set("cuit", cuit);
+        return this.http
+            .get<RenspaExiste>('/api/CampoSustentable/RenspaExiste', { params: params, headers: this.headers });
     }
 
     private getCosechas(incluirInactivas: boolean) {
