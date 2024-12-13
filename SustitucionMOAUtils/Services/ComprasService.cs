@@ -4873,12 +4873,7 @@ namespace SustitucionMOAUtils.Services
                             SolpId = solp.Id,
                             Fecha = solp.FechaCreacion,
                             FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                            Usuario = new UsuarioDto
-                            {
-                                CUIT = solp.UsuarioCreacion.CUITRegistro,
-                                Mail = solp.UsuarioCreacion.Mail,
-                                Id = solp.UsuarioCreacion_Id.Value
-                            },
+                            Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
                             Tipo = TipoLegajo.Pliego
                         });
                     }
@@ -4908,7 +4903,7 @@ namespace SustitucionMOAUtils.Services
                                 SolpId = solp.Id,
                                 Fecha = solp.FechaCreacion,
                                 FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                                Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion.CUITRegistro, Mail = solp.UsuarioCreacion.Mail, Id = solp.UsuarioCreacion_Id.Value },
+                                Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
                                 Tipo = TipoLegajo.SolpArchivos
                             });
                         }
@@ -4926,7 +4921,7 @@ namespace SustitucionMOAUtils.Services
                         SolpId = solp.Id,
                         Fecha = solp.FechaCreacion,
                         FechaFormateado = solp.FechaCreacion.ToString("dd/MM/yyyy"),
-                        Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion.CUITRegistro, Mail = solp.UsuarioCreacion.Mail, Id = solp.UsuarioCreacion_Id.Value },
+                        Usuario = new UsuarioDto { CUIT = solp.UsuarioCreacion?.CUITRegistro ?? "", Mail = solp.UsuarioCreacion?.Mail ?? "", Id = solp.UsuarioCreacion_Id ?? 0 },
                         Tipo = TipoLegajo.Solp
                     });
                 }
@@ -10973,7 +10968,10 @@ namespace SustitucionMOAUtils.Services
 
         private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion, UsuarioDto usuarioDto)
         {
-            foreach (var cotizacion in GetCotizacionesDescargables(peticion, usuarioDto))
+            var cotizaciones = GetCotizacionesDescargables(peticion, usuarioDto)
+                .Where(cotizacion => PuedenVerseLosImportesDeCotizacion(cotizacion, usuarioDto));
+
+            foreach (var cotizacion in cotizaciones)
             {
                 var fechaCotizacion = cotizacion.FechaCreacion;
                 legajo.Add(new LegajoDto
@@ -11235,6 +11233,7 @@ namespace SustitucionMOAUtils.Services
             var esPeticionDeMateriales = peticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
             var respetaMateriales = cotizacion.RespetaMateriales ?? true;
             var revisionEstaFinalizada = peticionDeOferta.RevisionTecnica != null && peticionDeOferta.RevisionTecnica.Finalizada;
+            var revisionAprobada = peticionOfertaUsuario.PropuestaTecnicaAprobada == true;
 
             if (!estaLiberado)
             {
@@ -11255,7 +11254,7 @@ namespace SustitucionMOAUtils.Services
             {
                 puedenVerseImportes = false;
             }
-            if (!esPeticionDeMateriales && !revisionEstaFinalizada)
+            if (!esPeticionDeMateriales && (!revisionEstaFinalizada || !revisionAprobada))
             {
                 puedenVerseImportes = false;
             }
