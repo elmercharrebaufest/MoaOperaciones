@@ -154,10 +154,11 @@ export class VentaSustentableService extends BaseService {
         // .pipe(map(this.extractData));
     }
 
-    renspaExiste(renspa: string, cuit: string): Observable<RenspaExiste> {
+    renspaExiste(renspa: string, cuit: string, CosechaId): Observable<RenspaExiste> {
         let params: HttpParams = new HttpParams();
         params = params.set("renspa", renspa);
         params = params.set("cuit", cuit);
+        params = params.set("cosechaId", CosechaId);
         return this.http
             .get<RenspaExiste>('/api/CampoSustentable/RenspaExiste', { params: params, headers: this.headers });
     }

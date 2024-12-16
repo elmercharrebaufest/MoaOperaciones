@@ -129,12 +129,13 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpGet]
-        public JsonResult RenspaExiste(string renspa, string cuit)
+        public JsonResult RenspaExiste(string renspa, string cuit, int cosechaId)
         {
             if (string.IsNullOrWhiteSpace(renspa)) { throw new ArgumentNullException(nameof(renspa), "El RENSPA es requerido."); }
             if (string.IsNullOrWhiteSpace(cuit)) { throw new ArgumentNullException(nameof(cuit), "El CUIT es requerido."); }
 
-            return JsonCustom(campoSustentableService.RenspaExiste(renspa, cuit));
+            CampoCosecha discardUnderscoreIsNotAvailable;
+            return JsonCustom(campoSustentableService.RenspaExiste(renspa, cuit, cosechaId, out discardUnderscoreIsNotAvailable));
         }
     }
 }

@@ -276,6 +276,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             }
 
             this.validarModalDeclaracion();
+
+            this.renspaChanged();
         }
     }
 
@@ -572,7 +574,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     renspaChanged(): void {
-        this.service.renspaExiste(this.renspa, this.CUIT).subscribe((result: RenspaExiste) => {
+        this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
             this.renspaExiste = result;
         });
     }
