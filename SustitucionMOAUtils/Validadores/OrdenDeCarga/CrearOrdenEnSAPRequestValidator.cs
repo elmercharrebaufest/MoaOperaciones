@@ -5,22 +5,22 @@ using SustitucionMOAModel.Dto.OrdenDeCarga;
 
 namespace SustitucionMOAUtils.Validadores.OrdenDeCarga
 {
-    public class CrearOrdenEnSAPRequestValidator : AbstractValidator<CrearOrdenEnSAPRequest>
-    {
-        public CrearOrdenEnSAPRequestValidator()
-        {
-            RuleFor(dto => dto.IdOrdenDeCarga).GreaterThan(0).WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Id de Orden de Carga")));
+	public class CrearOrdenEnSAPRequestValidator : AbstractValidator<CrearOrdenEnSAPRequest>
+	{
+		public CrearOrdenEnSAPRequestValidator()
+		{
+			RuleFor(dto => dto.IdOrdenDeCarga).GreaterThan(0).OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Id de Orden de Carga")));
 
-            RuleFor(dto => dto.ClienteCodigo).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Cliente")));
-            RuleFor(dto => dto.ContratoSAP).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Contrato SAP")));
-            RuleFor(dto => dto.CorredorCodigo).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Corredor")));
+			RuleFor(dto => dto.ClienteCodigo).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Cliente")));
+			RuleFor(dto => dto.ContratoSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Contrato SAP")));
+			RuleFor(dto => dto.CorredorCodigo).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo de Corredor")));
 
-            RuleFor(dto => dto.Cantidad).GreaterThan(0).WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Cantidad")));
+			RuleFor(dto => dto.Cantidad).GreaterThan(0).OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Cantidad")));
 
-            RuleFor(dto => dto.MaterialCodigoSAP).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo SAP de Material")));
-            RuleFor(dto => dto.NumeroPedidoIngresado).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Numero de Pedido Ingresado")));
-            //RuleFor(dto => dto.ValidarKg).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Kilos ingresados")));
-            RuleFor(dto => dto.MailUsuarioSAP).NotNull().NotEmpty().WithMessage(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Usuario SAP")));
-        }
-    }
+			RuleFor(dto => dto.MaterialCodigoSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Codigo SAP de Material")));
+			RuleFor(dto => dto.NumeroPedidoIngresado).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Numero de Pedido Ingresado")));
+			//RuleFor(dto => dto.ValidarKg).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Kilos ingresados")));
+			RuleFor(dto => dto.MailUsuarioSAP).NotNull().NotEmpty().OnAnyFailure(error => throw new ValidationCustomException(string.Format(ErrorMsg.ErrorValorNuloVacio, "Usuario SAP")));
+		}
+	}
 }
