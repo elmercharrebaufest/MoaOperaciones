@@ -9,9 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SustitucionMOAWS</RootNamespace>
     <AssemblyName>SustitucionMOAWS</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -448,11 +447,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
     </Compile>
-    <Compile Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </Compile>
+    <Compile Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference.cs" />
     <Compile Include="Service References\ObtenerUnidadesDeMedidaAlternativasWebServiceMOA\Reference1.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
