@@ -21,6 +21,6 @@ namespace SustitucionMOAUtils.Interfaces
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
         string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
         Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
-        SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit);
+        SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
     }
 }

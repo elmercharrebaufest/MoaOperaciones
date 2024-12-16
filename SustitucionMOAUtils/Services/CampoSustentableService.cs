@@ -62,6 +62,24 @@ namespace SustitucionMOAUtils.Services
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
 
             ValidarUsuario(usuario, campoProveedor.Proveedor_Id);
+
+            SustentableRenspaExisteDto renspaExisteDto =
+                RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa,
+                             campoProveedor.CUIT,
+                             campoProveedor.CampoCosecha.Cosecha_Id,
+                             out CampoCosecha campoCosechaExistente);
+            if (renspaExisteDto.RenspaExiste)
+            {
+                if (renspaExisteDto.MismoCuit)
+                {
+                    throw new ValidationCustomException("Este campo ya fue presentado.");
+                }
+                Proveedor proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT.Equals(campoProveedor.CUIT, StringComparison.OrdinalIgnoreCase));
+                campoCosechaExistente.Proveedores.Add(proveedor);
+                repositorio.GuardarCambios();
+                return new Resultado { IdEntidad = campoCosechaExistente.Id, Mensaje = SuccessMsg.CampoSustentableAgregado };
+            }
+
             ValidarCampo(campoProveedor, archivoKmz);
 
             var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
@@ -563,11 +581,11 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
         }
 
-        public SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit)
+        public SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha)
         {
             SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
 
-            CampoCosecha campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa);
+            campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
             if (campoCosecha == null) { return result; }
 
             result.RenspaExiste = true;
