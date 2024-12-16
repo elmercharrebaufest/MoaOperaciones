@@ -49,7 +49,6 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
   @Input() localidadNombre: string;
   
   onChangeSearch(query: string) {
-    console.log("query:", query)
     if (query.length > 2) {
       this.unsubscribe();
       this.subscription = this.service.searchLocalidad(query).subscribe(
