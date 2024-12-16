@@ -1,10 +1,9 @@
-﻿using System;
+﻿using SustitucionMOAModel.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
 
 namespace SustitucionMOAModel.Entities
 {
@@ -86,6 +85,9 @@ namespace SustitucionMOAModel.Entities
 
         public bool EsRevendedor { get; set; }
         public bool EsClienteDeCorredorFason { get; set; }
+
+        [InverseProperty(nameof(CampoCosecha.Proveedores))]
+        public virtual ISet<CampoCosecha> CamposCosecha { get; set; }
 
         public bool EsNoGranos()
         {

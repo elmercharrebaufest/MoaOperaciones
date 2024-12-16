@@ -15,6 +15,7 @@ import { isUndefined } from 'util';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
 import { Message, MessageService } from 'primeng/api';
+import { RenspaExiste } from '../renspa-existe.interface';
 export interface DatosCopiar {
     NombreCampo: string;
     NombreCosecha: string;
@@ -63,6 +64,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     nombreEstablecimiento: string;
     renspa: string;
+    renspaExiste: RenspaExiste;
     pais: string;
     dataLocalidades = [];
     myLocalidades = <any>[];
@@ -104,6 +106,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
     proveedorTexto: string = "";
     corredorDebeCargarCuit = false;
     ngOnInit() {
+
+        this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
 
         this.navService.setSeccionList([]);
         this.CUIT = "";
@@ -272,6 +276,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
             }
 
             this.validarModalDeclaracion();
+
+            this.renspaChanged();
         }
     }
 
@@ -565,5 +571,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
             life: 10000
         }
         this.messageService.add(mensajeCuitsIguales);
+    }
+
+    renspaChanged(): void {
+        this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
+            this.renspaExiste = result;
+        });
     }
 }

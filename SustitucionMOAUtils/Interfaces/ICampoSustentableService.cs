@@ -1,9 +1,6 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -24,5 +21,6 @@ namespace SustitucionMOAUtils.Interfaces
         EstadoDeclaracionSustentableDto VerificarDeclaracion(int proveedorId, int cosechaId, string CUITDeclaracion);
         string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
         Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
+        SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
     }
 }
