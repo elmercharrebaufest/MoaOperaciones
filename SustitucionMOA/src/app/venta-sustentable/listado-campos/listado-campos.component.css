@@ -1,5 +1,5 @@
 ﻿.btn-borrar {
-    background-color: #009688
+    background-color: var(--brand-color-green);
 }
 
 .btn-sin-fondo {
@@ -7,11 +7,12 @@
     border: none;
 }
 
-.btn-descargar {
+.btn-descargar,
+.btn-borrar {
     font-size: 22px;
-    color: #009688;
+    color: var(--brand-color-green);
     margin-right: 5px;
-    height: 15px
+    height: 15px;
 }
 
 input:disabled,
