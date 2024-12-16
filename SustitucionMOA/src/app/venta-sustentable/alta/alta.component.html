@@ -42,6 +42,12 @@
                                 <input type="text" pInputText [(ngModel)]="renspa" (change)="renspaChanged()" class="fourRounded"
                                     aria-controls="tableModal" mask="00.000.0.00000/00">
                             </div>
+                            <div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
+                                Este campo ya fue presentado, la carga se vinculara a su CUIT.
+                            </div>
+                            <div class="alert alert-danger" *ngIf="renspaExiste.RenspaExiste && renspaExiste.MismoCuit">
+                                Este campo ya fue presentado.
+                            </div>
                         </div>
                     </div>
 
@@ -89,7 +95,7 @@
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                    maxlength="13" (change)="verificarCUITIngresado()" aria-controls="tableModal">
+                                    maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
                             </div>
                         </div>
 
