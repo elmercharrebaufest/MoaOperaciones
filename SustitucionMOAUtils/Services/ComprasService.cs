@@ -979,44 +979,6 @@ namespace SustitucionMOAUtils.Services
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
-
-            #region'NO BORRAR EL CODIGO COMENTADO EN ESTA REGION'
-            //TODO: Esto de crear pedido queda comentado por que todavia falta las definiciones del requerimiento.
-
-            //Esto estaria temporal ya que despues de haber desarrollado esta parte nos comentaron que el flujo en realidad no es tan directo, sino que 
-            //necesitamos que la solp tengo numero de solp y que el estado sea liberado
-            //if (crearPedidoConsumer) 
-            //{
-            //	//Aca obtenemos las posiciones que tienen en mismo proveedor
-            //	var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
-
-
-            //	//al obtener las posiciones agrupadas por proveedor definimos que vamos a tener un numero de pedido para todas las posiciones con el mismo proveedor y numeros de pedido 
-            //	//distintos si cambia el proveedor
-            //	if (proveedorPosiciones.Any())
-            //	{
-            //		proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
-            //		{
-            //			var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
-
-            //			respuestaGuardarSOLP.Errores = new List<string>();
-
-            //			foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
-            //			{
-            //				var mensaje = error.Mensaje.Trim();
-            //				respuestaGuardarSOLP.Errores.Add(mensaje);
-            //			}
-
-            //			if (respuestaGuardarSOLP.Errores.Count == 0)
-            //			{
-            //				proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
-
-            //				respuestaGuardarSOLP.Mensaje = "OK";
-            //				repositorio.GuardarCambios();
-            //			}
-            //		});
-            //	}		
-            #endregion
         }
 
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
