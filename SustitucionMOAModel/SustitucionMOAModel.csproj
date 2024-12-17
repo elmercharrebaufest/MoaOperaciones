@@ -683,6 +683,7 @@
     <Compile Include="Util\Constante.cs" />
     <Compile Include="Util\Permisos.cs" />
     <Compile Include="Util\PrefijoCondicionEspecial.cs" />
+    <Compile Include="Util\SolpTemplateKeys.cs" />
     <Compile Include="Util\Variance.cs" />
     <Compile Include="Util\Retry.cs" />
   </ItemGroup>
