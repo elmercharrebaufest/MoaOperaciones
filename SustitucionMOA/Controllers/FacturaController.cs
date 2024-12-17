@@ -1,7 +1,6 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -23,13 +22,10 @@ namespace SustitucionMOA.Controllers
         {
             if (files.Any())
             {
-                var inicio = DateTime.Now;
                 var cuit = SessionPersister.CUIT;
                 var codigo = SessionPersister.Proveedor;
                 var mail = SessionPersister.getUsername();
                 var data = facturaService.SubirPDF(files, cuit, codigo, mail);
-                var fin = DateTime.Now;
-                double diferenciaSegundos = (fin - inicio).TotalSeconds;
                 return JsonCustom(new { data = data });
             }
             else

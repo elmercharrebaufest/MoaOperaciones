@@ -359,14 +359,14 @@ namespace SustitucionMOAWS.WSConsumers
         private decimal CalcularSaldoDisponible(BAPIEKBE[] POHISTORY)
         {
             var registros = POHISTORY.ToList();
-            // Suma de registros con process_id = 9 y hist_type = 'd'
+            // Suma de registros con process_id = 9 y hist_type = 'D'
             var sumaProcess9HistD = registros
-                .Where(r => r.PROCESS_ID == "9" && r.HIST_TYPE == "d")
+                .Where(r => r.PROCESS_ID == "9" && r.HIST_TYPE == "D")
                 .Sum(r => r.VAL_LOCCUR);
 
-            // Suma de registros con process_id = 2 y (hist_type = 'q' o hist_type = 'r')
+            // Suma de registros con process_id = 2 y (hist_type = 'Q' o hist_type = 'R')
             var sumaProcess2HistQR = registros
-                .Where(r => r.PROCESS_ID == "2" && (r.HIST_TYPE == "q" || r.HIST_TYPE == "r"))
+                .Where(r => r.PROCESS_ID == "2" && (r.HIST_TYPE == "Q" || r.HIST_TYPE == "R"))
                 .Sum(r => r.VAL_LOCCUR);
             return sumaProcess9HistD - sumaProcess2HistQR;
         }
