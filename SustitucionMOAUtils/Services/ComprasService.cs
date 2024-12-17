@@ -1687,7 +1687,7 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count() == 1)
+                if (tieneHuecos || diasOrdenado.Count == 1)
                 {
                     diasJornada = string.Join(",", diasOrdenado.Select(a => a.GetDia().ToList()));
                 }
