@@ -2292,15 +2292,15 @@ namespace SustitucionMOAUtils.Services
             List<Servicio> servicios = comprasServiceSap.ObtenerServiciosSapRaw();
             if (servicios.Any())
             {
-                var listaBase = repositorio.Listar<ServicioSolp>();
+                List<ServicioSolp> listaBase = repositorio.Listar<ServicioSolp>();
                 int agregados = 0;
                 int actualizados = 0;
                 foreach (Servicio servicio in servicios)
                 {
                     int codigoNum = 0;
-                    if (Int32.TryParse(servicio.Codigo, out codigoNum))
+                    if (int.TryParse(servicio.Codigo, out codigoNum))
                     {
-                        var serv = listaBase.Where(x => x.CodigoSap == codigoNum).FirstOrDefault();
+                        var serv = listaBase.FirstOrDefault(x => x.CodigoSap == codigoNum);
                         if (serv == null)
                         {
                             repositorio.Agregar(new ServicioSolp
@@ -2308,24 +2308,25 @@ namespace SustitucionMOAUtils.Services
                                 Codigo = servicio.Codigo,
                                 CodigoSap = codigoNum,
                                 Descripcion = servicio.Descripcion,
-                                GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                                GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
                                 TipoServicio = servicio.Serv,
                                 AmbitoServicio = servicio.Ser,
-                                Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                                Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
                                 UnidadMedidaBase = servicio.Bas,
                                 SSCItem = servicio.SSCItem
                             });
-                            agregados += 1;
+                            agregados++;
                         }
                         else
                         {
                             serv.Descripcion = servicio.Descripcion;
-                            serv.GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
+                            serv.GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
                             serv.TipoServicio = servicio.Serv;
                             serv.AmbitoServicio = servicio.Ser;
-                            serv.Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
+                            serv.Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
                             serv.UnidadMedidaBase = servicio.Bas;
                             serv.SSCItem = servicio.SSCItem;
+                            actualizados++;
                         }
                     }
                 }
