@@ -1689,11 +1689,11 @@ namespace SustitucionMOAUtils.Services
 
                 if (tieneHuecos || diasOrdenado.Count() == 1)
                 {
-                    diasJornada = string.Join(",", diasOrdenado.Select(a => GetDia(a)).ToList());
+                    diasJornada = string.Join(",", diasOrdenado.Select(a => a.GetDia().ToList()));
                 }
                 else
                 {
-                    diasJornada = string.Format("{0} a {1}", GetDia(diasOrdenado.First()), GetDia(diasOrdenado.Last()));
+                    diasJornada = string.Format("{0} a {1}", diasOrdenado.First().GetDia(), diasOrdenado.Last().GetDia());
                 }
                 solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, diasJornada);
             }
@@ -1752,39 +1752,6 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
             templateString = CombineTemplateValues(templateString, solpValores);
             return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
-        }
-
-        private string GetDia(DayOfWeek dia)
-        {
-            var diaStr = string.Empty;
-
-            switch (dia)
-            {
-                case DayOfWeek.Sunday:
-                    diaStr = "Domingo";
-                    break;
-                case DayOfWeek.Monday:
-                    diaStr = "Lunes";
-                    break;
-                case DayOfWeek.Tuesday:
-                    diaStr = "Martes";
-                    break;
-                case DayOfWeek.Wednesday:
-                    diaStr = "Miércoles";
-                    break;
-                case DayOfWeek.Thursday:
-                    diaStr = "Jueves";
-                    break;
-                case DayOfWeek.Friday:
-                    diaStr = "Viernes";
-                    break;
-                case DayOfWeek.Saturday:
-                    diaStr = "Sábado";
-                    break;
-                default:
-                    break;
-            }
-            return diaStr;
         }
 
         private byte[] ConvertHtmlToPdf(string xHtml, string css, SolpDto solp)
