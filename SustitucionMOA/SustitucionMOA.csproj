@@ -502,6 +502,7 @@
     <Content Include="src\app\vendedor\vendedor_status.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.html" />
+    <Content Include="Content\images\icons\Kmz_file_format_symbol.svg" />
     <Content Include="Template\AplicacionesCartaPorteRechazadas.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
@@ -1602,6 +1603,7 @@
     <TypeScriptCompile Include="src\app\venta-sustentable\impresion-declaracion\impresion-declaracion.component.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.spec.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\listado-campos\listado-campos.component.ts" />
+    <TypeScriptCompile Include="src\app\venta-sustentable\renspa-existe.interface.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\sustentable.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable-routing.Module.ts" />
     <TypeScriptCompile Include="src\app\venta-sustentable\venta-sustentable.component.ts" />
