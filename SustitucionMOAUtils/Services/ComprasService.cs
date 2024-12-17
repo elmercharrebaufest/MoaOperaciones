@@ -60,7 +60,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
         private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
@@ -97,7 +96,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
             IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
             ICrearSolpConsumerMOA crearSolpConsumerMOA,
             IModificarSolpConsumerMOA modificarSolpConsumerMOA,
@@ -124,7 +122,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.crearSolpConsumerMOA = crearSolpConsumerMOA;
             this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
@@ -1874,20 +1871,6 @@ namespace SustitucionMOAUtils.Services
             return ret.ToString();
         }
 
-        public List<TablaSapDto> ObtenerServiciosSap()
-        {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Servicios.Select(s => new TablaSapDto()
-            {
-                Tabla = TablasSap.CodigoServicioSap,
-                Descripcion = s.Descripcion,
-                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
-                Codigo = s.Codigo
-            }).ToList();
-        }
-
         private List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
         {
             List<TablaSap> nuevosItems = new List<TablaSap>();
@@ -2306,13 +2289,13 @@ namespace SustitucionMOAUtils.Services
 
         public void ActualizarServiciosSolp()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-            if (resultSap.Servicios.Any())
+            List<Servicio> servicios = comprasServiceSap.ObtenerServiciosSapRaw();
+            if (servicios.Any())
             {
                 var listaBase = repositorio.Listar<ServicioSolp>();
                 int agregados = 0;
                 int actualizados = 0;
-                foreach (var servicio in resultSap.Servicios)
+                foreach (Servicio servicio in servicios)
                 {
                     int codigoNum = 0;
                     if (Int32.TryParse(servicio.Codigo, out codigoNum))

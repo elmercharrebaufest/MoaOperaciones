@@ -1,6 +1,7 @@
 ﻿// Ignore Spelling: Utils Sustitucion
 
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System.Collections.Generic;
 
@@ -24,5 +25,9 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(string numeroSolp);
 
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(IEnumerable<string> numerosSolp);
+
+        List<TablaSapDto> ObtenerServiciosSap();
+
+        List<Servicio> ObtenerServiciosSapRaw();
     }
 }

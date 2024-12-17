@@ -19,16 +19,19 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerCecoSolpConsumerMOA CentroDeCostoSolpConsumerMOA;
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
+        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
         public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA,
                                  IObtenerCuentasSolpConsumerMOA obtenerCuentasSolpConsumerMOA,
                                  IObtenerOrdenSolpConsumerMOA obtenerOrdenSolpConsumerMOA,
+                                 IObtenerServiciosSolpConsumerMOA obtenerServiciosSolpConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.CentroDeCostoSolpConsumerMOA = obtenerCentroDeCostoSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = obtenerCuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = obtenerOrdenSolpConsumerMOA;
+            this.serviciosSolpConsumerMOA = obtenerServiciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
@@ -144,6 +147,26 @@ namespace SustitucionMOAUtils.Services
                     )
                 );
             return result;
+        }
+
+        public List<TablaSapDto> ObtenerServiciosSap()
+        {
+            List<Servicio> servicios = ObtenerServiciosSapRaw();
+            var codigoNum = 0;
+
+            return servicios.ConvertAll(s => new TablaSapDto()
+            {
+                Tabla = TablasSap.CodigoServicioSap,
+                Descripcion = s.Descripcion,
+                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
+                Codigo = s.Codigo
+            });
+        }
+
+        public List<Servicio> ObtenerServiciosSapRaw()
+        {
+            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
+            return resultSap.Servicios;
         }
     }
 }

@@ -19,6 +19,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
         private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
+        private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> solpConsumerMock;
 
         [SetUp]
@@ -27,11 +28,13 @@ namespace SustitucionMOATest.Services
             cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
             cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
             ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
+            serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             solpConsumerMock = new Mock<IObtenerSolpConsumerMOA>();
 
             target = new ComprasSapService(cecoConsumerMock.Object,
                                            cuentasConsumerMock.Object,
                                            ordenesConsumerMock.Object,
+                                           serviciosConsumerMock.Object,
                                            solpConsumerMock.Object);
         }
 
@@ -100,6 +103,29 @@ namespace SustitucionMOATest.Services
             };
 
             var result = target.ObtenerOrdenesSap();
+
+            Assert.AreEqual(expected.Count, result.Count);
+        }
+
+        [Test()]
+        public void ObtenerServiciosSapTest()
+        {
+            var rfcResultMock = new ServicioWSMOAResponse()
+            {
+                Servicios = new List<Servicio>()
+                {
+                    new Servicio() { Descripcion = "MOA", Codigo = "MOA", Serv = "MOA"}
+                }
+            };
+
+            serviciosConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
+
+            List<TablaSapDto> expected = new List<TablaSapDto>
+            {
+                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap}
+            };
+
+            var result = target.ObtenerServiciosSap();
 
             Assert.AreEqual(expected.Count, result.Count);
         }

@@ -29,7 +29,6 @@ namespace SustitucionMOATest.Services
     {
         private ComprasService target;
         private Mock<IRepositorio> repositorioMock;
-        private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
         private Mock<IModificarSolpConsumerMOA> modificarSolpConsumerMOAMock;
@@ -716,7 +715,6 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
             modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
@@ -750,7 +748,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                serviciosConsumerMock.Object,
                 obtenerSolpConsumerMOAMock.Object,
                 crearSolpConsumerMOAMock.Object,
                 modificarSolpConsumerMOAMock.Object,
@@ -866,29 +863,6 @@ namespace SustitucionMOATest.Services
         }*/
 
         [Test()]
-        public void ObtenerServiciosSapTest()
-        {
-            var rfcResultMock = new ServicioWSMOAResponse()
-            {
-                Servicios = new List<Servicio>()
-                {
-                    new Servicio() { Descripcion = "MOA", Codigo = "MOA", Serv = "MOA"}
-                }
-            };
-
-            serviciosConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
-
-            List<TablaSapDto> expected = new List<TablaSapDto>
-            {
-                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap}
-            };
-
-            var result = target.ObtenerServiciosSap();
-
-            Assert.AreEqual(expected.Count, result.Count);
-        }
-
-        [Test()]
         public void AutocompleteServiciosSapTest()
         {
             List<TablaSapDto> ListaSap = new List<TablaSapDto>
@@ -942,9 +916,9 @@ namespace SustitucionMOATest.Services
                 },
             };
 
-            this.serviciosConsumerMock
-                .Setup(x => x.request())
-                .Returns(servicioWSMOAResponseTest);
+            this.comprasSapService
+                .Setup(x => x.ObtenerServiciosSapRaw())
+                .Returns(servicioWSMOAResponseTest.Servicios);
 
             List<ServicioSolp> listadoServiciosSolp = new List<ServicioSolp>
             {
@@ -989,7 +963,7 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(3, listadoServiciosSolp[4].CodigoSap);
 
-            this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
+            this.comprasSapService.Verify(x => x.ObtenerServiciosSapRaw(), Times.Once);
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
