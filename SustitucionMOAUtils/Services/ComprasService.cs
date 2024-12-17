@@ -60,7 +60,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
@@ -100,7 +99,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
             IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
             IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA,
             IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
@@ -130,7 +128,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
@@ -1988,20 +1985,6 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
             return nuevosItems;
-        }
-
-        public List<TablaSapDto> ObtenerCecoSap()
-        {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Cecos.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.CecoSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
-                Codigo = c.CostCenter
-            }).ToList();
         }
 
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)

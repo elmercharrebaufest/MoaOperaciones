@@ -1,16 +1,14 @@
-﻿using NUnit.Framework;
-using Moq;
+﻿using Moq;
+using NUnit.Framework;
 using SustitucionMOA.Jobs;
+using SustitucionMOAModel.Consultas;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
-using SustitucionMOAModel.Consultas;
 using System.Linq.Expressions;
-using SustitucionMOAModel.Models.WSMapMOA.Compras;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAWS.AgregarRegistroInfoServiceWebMOA;
 
 namespace SustitucionMOATest.Jobs
 {
@@ -19,14 +17,16 @@ namespace SustitucionMOATest.Jobs
     {
         private ActualizarBaseDeDatosSolpSapJob target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IRepositorio> repositorioMock;
 
         [SetUp]
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            comprasSapServiceMock = new Mock<IComprasSapService>();
             repositorioMock = new Mock<IRepositorio>();
-            target = new ActualizarBaseDeDatosSolpSapJob(comprasServiceMock.Object, repositorioMock.Object);
+            target = new ActualizarBaseDeDatosSolpSapJob(comprasServiceMock.Object, comprasSapServiceMock.Object, repositorioMock.Object);
         }
 
         [Test]
@@ -39,7 +39,8 @@ namespace SustitucionMOATest.Jobs
                 It.IsAny<DirOrden>(),
                 It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>())
                 ).Returns(new List<TablaSap>());
-            TablaSapDto tablaSapDto = new TablaSapDto {
+            TablaSapDto tablaSapDto = new TablaSapDto
+            {
                 Id = -1,
                 Codigo = "s",
                 CodigoSap = "s",
@@ -58,7 +59,7 @@ namespace SustitucionMOATest.Jobs
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<HabilitacionJob, bool>>>()))
                 .Returns(new HabilitacionJob { Habilitado = true });
-            comprasServiceMock.Setup(x => x.ObtenerCecoSap())
+            comprasSapServiceMock.Setup(x => x.ObtenerCecoSap())
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
             comprasServiceMock.Setup(x => x.ObtenerCuentasSap())
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
@@ -67,7 +68,7 @@ namespace SustitucionMOATest.Jobs
                 .Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
             target.Execute();
 
-            comprasServiceMock.Verify(x => x.ObtenerCecoSap(), Times.Once);
+            comprasSapServiceMock.Verify(x => x.ObtenerCecoSap(), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
         }
     }

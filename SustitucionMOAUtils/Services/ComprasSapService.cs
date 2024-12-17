@@ -1,5 +1,8 @@
 ﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion
 
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -13,11 +16,27 @@ namespace SustitucionMOAUtils.Services
 {
     public class ComprasSapService : IComprasSapService
     {
+        private readonly IObtenerCecoSolpConsumerMOA CentroDeCostoSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
-        public ComprasSapService(IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
+        public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA, IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
+            this.CentroDeCostoSolpConsumerMOA = obtenerCentroDeCostoSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+        }
+
+        public List<TablaSapDto> ObtenerCecoSap()
+        {
+            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CentroDeCostoSolpConsumerMOA.request();
+            var codigoNum = 0;
+
+            return resultSap.Cecos.Select(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.CecoSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
+                Codigo = c.CostCenter
+            }).ToList();
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)

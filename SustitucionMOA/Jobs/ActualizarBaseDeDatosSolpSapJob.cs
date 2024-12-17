@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOA.Jobs
 {
@@ -16,11 +15,15 @@ namespace SustitucionMOA.Jobs
     public class ActualizarBaseDeDatosSolpSapJob : IActualizarBaseDeDatosSolpSapJob
     {
         private readonly IComprasService _comprasService;
+        private readonly IComprasSapService _comprasSapService;
         private readonly IRepositorio repositorio;
 
-        public ActualizarBaseDeDatosSolpSapJob(IComprasService comprasService, IRepositorio repositorio)
+        public ActualizarBaseDeDatosSolpSapJob(IComprasService comprasService,
+                                               IComprasSapService comprasSapService,
+                                               IRepositorio repositorio)
         {
             _comprasService = comprasService;
+            _comprasSapService = comprasSapService;
             this.repositorio = repositorio;
         }
 
@@ -32,7 +35,7 @@ namespace SustitucionMOA.Jobs
                     return;
                 Log.Info("Inicio ActualizarBaseDeDatosSolpSapJob");
 
-                this.ActualizarTablaSap(_comprasService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
 
                 this.ActualizarTablaSap(_comprasService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
 

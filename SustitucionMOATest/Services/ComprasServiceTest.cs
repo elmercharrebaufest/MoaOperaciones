@@ -29,7 +29,6 @@ namespace SustitucionMOATest.Services
     {
         private ComprasService target;
         private Mock<IRepositorio> repositorioMock;
-        private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
         private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
@@ -719,7 +718,6 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
             cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
             ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
@@ -756,7 +754,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                cecoConsumerMock.Object,
                 cuentasConsumerMock.Object,
                 ordenesConsumerMock.Object,
                 serviciosConsumerMock.Object,
@@ -873,29 +870,6 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected, result);
         }*/
-
-        [Test()]
-        public void ObtenerCecoSapTest()
-        {
-            var rfcResultMock = new CecoWSMOAResponse()
-            {
-                Cecos = new List<Ceco>()
-                {
-                    new Ceco() { CostCenter = "MOA", CO_A = "MOA", Descripcion = "MOA"}
-                }
-            };
-
-            cecoConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
-
-            List<TablaSapDto> expected = new List<TablaSapDto>
-            {
-                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap}
-            };
-
-            var result = target.ObtenerCecoSap();
-
-            Assert.AreEqual(expected.Count, result.Count);
-        }
 
         [Test()]
         public void ObtenerCuentasSapTest()

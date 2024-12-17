@@ -132,6 +132,7 @@
     <Compile Include="Repositorio\RepositorioOrdenResiduosTest.cs" />
     <Compile Include="Services\AplicacionCartaPorteTest.cs" />
     <Compile Include="Services\ArchivoBoletoServiceTest.cs" />
+    <Compile Include="Services\ComprasSapServiceTest.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosServiceTest.cs" />
     <Compile Include="Services\OrdenDeCargaFasonServiceTest.cs" />
     <Compile Include="Services\ComprasServiceTest.cs" />
