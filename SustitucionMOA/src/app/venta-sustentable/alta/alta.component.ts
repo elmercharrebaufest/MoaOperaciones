@@ -370,9 +370,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 },
                 error => {
                     this.spinnerComponent.hideIt();
+                    this.blockUI.stop();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
@@ -380,9 +380,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-        this.blockUI.stop();
         return false; //<-- Prevent Refresh
-
     }
 
     verificarCUITIngresado() {
