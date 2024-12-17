@@ -29,7 +29,6 @@ namespace SustitucionMOATest.Services
     {
         private ComprasService target;
         private Mock<IRepositorio> repositorioMock;
-        private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
@@ -717,7 +716,6 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
@@ -752,7 +750,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                ordenesConsumerMock.Object,
                 serviciosConsumerMock.Object,
                 obtenerSolpConsumerMOAMock.Object,
                 crearSolpConsumerMOAMock.Object,
@@ -867,29 +864,6 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected, result);
         }*/
-
-        [Test()]
-        public void ObtenerOrdenesSapTest()
-        {
-            var rfcResultMock = new OrdenWSMOAResponse()
-            {
-                Ordenes = new List<Orden>()
-                {
-                    new Orden() { Descripcion = "MOA", Codigo = "MOA", CompCode = "MOA", Clase = "MOA", Tipo = "MOA"}
-                }
-            };
-
-            ordenesConsumerMock.Setup(x => x.request("")).Returns(rfcResultMock);
-
-            List<TablaSapDto> expected = new List<TablaSapDto>
-            {
-                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.OrdenSolpSap}
-            };
-
-            var result = target.ObtenerOrdenesSap();
-
-            Assert.AreEqual(expected.Count, result.Count);
-        }
 
         [Test()]
         public void ObtenerServiciosSapTest()

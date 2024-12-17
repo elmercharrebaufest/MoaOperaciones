@@ -44,7 +44,7 @@ namespace SustitucionMOA.Jobs
                 this._comprasService.ActualizarServiciosSolp();
                 Log.Info("Fin Actualizar ActualizarServiciosSolp");
 
-                this.ActualizarTablaSap(_comprasService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
                 Log.Info("Fin Actualizar OrdenSolpSap");
 
                 Log.Info("Fin ActualizarBaseDeDatosSolpSapJob");

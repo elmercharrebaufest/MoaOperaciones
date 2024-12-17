@@ -55,7 +55,7 @@ namespace SustitucionMOATest.Jobs
                 Descripcion = "s",
                 Tabla = "s",
             };
-            comprasServiceMock.Setup(x => x.ObtenerOrdenesSap(It.IsAny<string>()))
+            comprasSapServiceMock.Setup(x => x.ObtenerOrdenesSap(It.IsAny<string>()))
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
             repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<HabilitacionJob, bool>>>()))
                 .Returns(new HabilitacionJob { Habilitado = true });

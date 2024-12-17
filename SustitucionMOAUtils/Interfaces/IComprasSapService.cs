@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();
+        List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "");
 
         IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp);
 

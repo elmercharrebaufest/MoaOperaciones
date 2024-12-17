@@ -18,14 +18,17 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IObtenerCecoSolpConsumerMOA CentroDeCostoSolpConsumerMOA;
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
+        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
         public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA,
                                  IObtenerCuentasSolpConsumerMOA obtenerCuentasSolpConsumerMOA,
+                                 IObtenerOrdenSolpConsumerMOA obtenerOrdenSolpConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.CentroDeCostoSolpConsumerMOA = obtenerCentroDeCostoSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = obtenerCuentasSolpConsumerMOA;
+            this.ordenesSolpConsumerMOA = obtenerOrdenSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
@@ -51,6 +54,20 @@ namespace SustitucionMOAUtils.Services
             return resultSap.Cuentas.ConvertAll(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CuentasSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
+            });
+        }
+
+        public List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "")
+        {
+            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request(idOrder);
+            var codigoNum = 0;
+
+            return resultSap.Ordenes.ConvertAll(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.OrdenSolpSap,
                 Descripcion = c.Descripcion,
                 CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
                 Codigo = c.Codigo

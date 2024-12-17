@@ -60,7 +60,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
@@ -98,7 +97,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA,
             IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
             IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
             ICrearSolpConsumerMOA crearSolpConsumerMOA,
@@ -126,7 +124,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.crearSolpConsumerMOA = crearSolpConsumerMOA;
@@ -1929,20 +1926,6 @@ namespace SustitucionMOAUtils.Services
             }).ToList();
         }
 
-        public List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "")
-        {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request(idOrder);
-            var codigoNum = 0;
-
-            return resultSap.Ordenes.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.OrdenSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
-                Codigo = c.Codigo
-            }).ToList();
-        }
-
         private List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
         {
             List<TablaSap> nuevosItems = new List<TablaSap>();
@@ -2569,7 +2552,7 @@ namespace SustitucionMOAUtils.Services
                             var existeOrden = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.OrdenSolpSap && x.Codigo == impTemp.IdOrden).ToList();
                             if (existeOrden.Count == 0)
                             {
-                                listaSap.AddRange(ObtenerOrdenesSap(impTemp.IdOrden));
+                                listaSap.AddRange(comprasServiceSap.ObtenerOrdenesSap(impTemp.IdOrden));
                             }
                             else
                             {
