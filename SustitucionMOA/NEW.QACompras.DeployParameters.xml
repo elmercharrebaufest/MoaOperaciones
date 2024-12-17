@@ -1,183 +1,197 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <parameters>
-	<setParameter name="IIS Web Application Name" value="MOAOperacionesQaCompras" />
-  
+  <setParameter name="IIS Web Application Name" value="MOAOperacionesQaCompras" />
+
   <setParameter name="CONTEXTO-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;initial catalog=MoaOperacionesQACompras;Pooling=False" />
   <setParameter name="HfContexto-Web.config Connection String" value="data source=APPAGLQA.molinosagro.ad;User Id=MOAOPQAUSR;Password=Ymei3658Ledq3;Initial Catalog=MoaOperacionesHangfireQACompras;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"/>
 
-
-
   <setParameter name="RutaArchivosProveedores Config" value="C:/ArchivosProveedores" />
+  <setParameter name="UrlMisConsultas Config" value="https://qabaufest.moaoperaciones.com.ar/web/consulta/mis-consultas" />
 
-	<setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
+  <setParameter name="PasswordSapEnc Config" value="JJB4bZok9i28exDKsPlaTA==" />
 
-	<setParameter name="EsLocal Config" value="false" />
+  <setParameter name="EsLocal Config" value="false" />
 
-	<setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />
+  <setParameter name="DataAgroURL Config" value="http://test.dataagro.com.ar" />
 
-	<setParameter name="SpaUrl Config" value="https://qacompras.moaoperaciones.com.ar/web" />
+  <setParameter name="SpaUrl Config" value="https://qacompras.moaoperaciones.com.ar/web" />
   <setParameter name="Url Config" value="http://gslopidevqa00.molinosagro.ad:50000/" />
-	<setParameter name="ida:RedirectUri Config" value="https://qacompras.moaoperaciones.com.ar/" />
-	<setParameter name="ida:Tenant Config" value="moagroQA.onmicrosoft.com" />
-	<setParameter name="ida:TenantId Config" value="196fe16f-d755-45a8-a27d-47856a18d695" />
-	<setParameter name="ida:ClientId Config" value="331d5323-ba12-498c-956c-e001d44e3088" />
-	<setParameter name="ida:ClientSecret Config" value="JC78V31FOQ07MGmw4z_8F1BKfzd-~P.rAc" />
-	<setParameter name="ida:AadInstance Config" value="https://moagroqa.b2clogin.com/tfp/{0}/{1}" />
-	<setParameter name="ida:SignUpPolicyId Config" value="B2C_1_Registro" />
-	<setParameter name="ida:SignInPolicyId Config" value="B2C_1_IniciodeSesion" />
-	<setParameter name="defAmbiente Config" value="Ambiente de prueba" />
+  <setParameter name="ida:RedirectUri Config" value="https://qacompras.moaoperaciones.com.ar/" />
+  <setParameter name="ida:Tenant Config" value="moagroQA.onmicrosoft.com" />
+  <setParameter name="ida:TenantId Config" value="196fe16f-d755-45a8-a27d-47856a18d695" />
+  <setParameter name="ida:ClientId Config" value="331d5323-ba12-498c-956c-e001d44e3088" />
+  <setParameter name="ida:ClientSecret Config" value="JC78V31FOQ07MGmw4z_8F1BKfzd-~P.rAc" />
+  <setParameter name="ida:AadInstance Config" value="https://moagroqa.b2clogin.com/tfp/{0}/{1}" />
+  <setParameter name="ida:SignUpPolicyId Config" value="B2C_1_Registro" />
+  <setParameter name="ida:SignInPolicyId Config" value="B2C_1_IniciodeSesion" />
+  <setParameter name="defAmbiente Config" value="Ambiente de prueba" />
   <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
   <setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
   <setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
-  
-	<setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_RegistroConLogin" />
 
-	<setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
-	<setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
+  <setParameter name="ida:SignUpAndSignInPolicyId Config" value="B2C_1_RegistroConLogin" />
 
-	<setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,emartin@baufest.com" />
+  <setParameter name="ida:EditProfilePolicyId Config" value="B2C_1_EditProfile" />
+  <setParameter name="ida:ResetPasswordPolicyId Config" value="B2C_1_ResetPassword" />
 
-	<setParameter name="EmailToMesaENTSL Config" value="moaoperaciones@baufest.com;emartin@baufest.com;marian.rabellato@molinosagro.com.ar" />
-	<setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
-	<setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;emartin@baufest.com" />
-	<setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
-	<setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
-	<setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar"/>
-	<setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
-	<setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailToReporteCamposSustentables Config" value="moaoperaciones@baufest.com,emartin@baufest.com" />
+
+  <setParameter name="EmailToMesaENTSL Config" value="moaoperaciones@baufest.com;emartin@baufest.com;marian.rabellato@molinosagro.com.ar" />
+  <setParameter name="EmailToMesaVentaFas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+  <setParameter name="EmailToCobranzas Config" value="moaoperaciones@baufest.com;emartin@baufest.com" />
+  <setParameter name="EmailToComerciales Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+  <setParameter name="EmailToComercialesAlimAnimal Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar;sebastian.serighetti@molinosagro.com.ar" />
+  <setParameter name="EmailToAuditoriaOrdenesVencidas Config" value="moaoperaciones@baufest.com;marian.rabellato@molinosagro.com.ar"/>
+  <setParameter name="EmailToAuditoria Config" value="alejandra.duarte@molinosagro.com.ar,santiago.barbarotta@molinosagro.com.ar" />
+  <setParameter name="EmailToReporteLogins Config" value="moaoperaciones@baufest.com" />
   <setParameter name="EmailRegistroInfo Config" value="plataformacompras@baufest.com" />
-	<setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
-	<setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
-	<setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
   <setParameter name="EmailRerporteSolpTo Config" value="plataformacompras@baufest.com" />
+  <setParameter name="EmailToGestionAltaCuit Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
+  <setParameter name="CopiaEmailToGestionAltaCuit Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailAltaTempranaCuitFasonTo Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailAltaTempranaCuitFasonCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
+  <setParameter name="EmailAltaTransporteFasonTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
+  <setParameter name="EmailAltaTransporteFasonCC Config" value="moa.operaciones@molinosagro.com.ar" />
+  <setParameter name="EmailAltaTempranaCuitFasTo Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailAltaTempranaCuitFasCC Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;dhidalgo@baufest.com" />
+  <setParameter name="EmailAltaIntermediarioFleteTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar" />
+  <setParameter name="EmailAltaIntermediarioFleteCC Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailAsuntoPrefijo Config" value="[QA] " />
+  <setParameter name="EmailKgsMenos15TNFasTo Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@molinosagro.com.ar"/>
+  <setParameter name="EmailConsultaInternaCC Config" value="sebastian.serighetti@molinosagro.com.ar; noelia.caceres@molinosagro.com.ar; moaoperaciones@baufest.com"/>
+  <setParameter name="EmailAltaTransporteResiduosTo Config" value="sebastian.serighetti@molinosagro.com.ar;marian.rabellato@molinosagro.com.ar;noelia.caceres@molinosagro.com.ar" />
+  <setParameter name="EmailAltaTransporteResiduosCC Config" value="moa.operaciones@molinosagro.com.ar" />
+  <setParameter name="EmailAltaDistanciaFasonTo Config" value="moa.operaciones@molinosagro.com.ar;moaoperaciones@baufest.com" />
+  <setParameter name="EmailDistanciaNoEncontrada Config" value="moaoperaciones@baufest.com" />
   <setParameter name="EmailMantenimiento Config" value="plataformacompras@baufest.com" />
 
   <setParameter name="ComputerVisionApiKey Config" value="4ebc562f2be5457a96329ae69d84f192" />
-	<setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
-	<setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
+  <setParameter name="ComputerVisionEndpoint Config" value="https://moaopsocr.cognitiveservices.azure.com/" />
+  <setParameter name="BlobStorageEndpoint Config" value="DefaultEndpointsProtocol=https;AccountName=b2cmoagroqa;AccountKey=jlIsWR/WDunDWKXgcJQfqcwPJ8HDt0csfH92lvL9/6hWTsrKSB1hgyLlQV9767K3rdCK0Lk+nGHc+AStvFl9Qw==;EndpointSuffix=core.windows.net" />
 
-	<!--Google Drive Campo Sustentable -->
-	<setParameter name="DriveCampoSustentablesApplicationName Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesUsuario Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesInputFolderId Config" value="pendiente" />
-	<setParameter name="DriveCampoSustentablesOutputFolderId Config" value="pendiente" />
+  <!--Google Drive Campo Sustentable -->
+  <setParameter name="DriveCampoSustentablesApplicationName Config" value="cargaInfoCCSS" />
+  <setParameter name="DriveCampoSustentablesServiceAccountEmail Config" value="cargainfoccss@cargainfoccss.iam.gserviceaccount.com " />
+  <setParameter name="DriveCampoSustentablesServiceAccountKey Config" value="C:\MOAOperacionesKeys\cargainfoccss-69518a4e859f.json" />
+  <setParameter name="DriveCampoSustentablesUsuario Config" value="moaop.circuitosust@gmail.com" />
+  <setParameter name="DriveCampoSustentablesInputFolderId Config" value="1mSsU5ALH-jsH2BYH2Hg_oinRycokFBr1" />
+  <setParameter name="DriveCampoSustentablesOutputFolderId Config" value="1kKkKjL1bm3SrT2xIgRuPBb0NiVuHpHoY" />
 
-	<setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
+  <setParameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioRepositorio.svc" />
 
-	<setParameter name="SI_MPMF_MOAOP_APLICACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_APLICACIONES&amp;interfaceNamespace=urn%3AOPERACIONES"/>
-	<setParameter name="SI_MPMF_MOAOP_CONTRATOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTRATOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CREA_USER Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CREA_USER&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DET_FIJACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FIJACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DET_VINCULA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_VINCULA&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLE_CCPP Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLES_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLES_VENDEDOR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_FIJACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_FIJACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_HOME Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_HOME&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LIQUIDACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LIQUIDACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LIQUIDACIONES_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LIQUIDACIONES_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_IN Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_IN&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_CAMBIOPASS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_CAMBIOPASS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_DESBUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_DESBUSR&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_HABUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_HABUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_INHAUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_INHAUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_NVOUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_NVOUSR&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LOGIN_OLVPASS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_OLVPASS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PERFILES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERFILES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PERMISOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERMISOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_RECEPCIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_RECEPCIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_VENDEDORES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDEDORES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PAGOS_CTA_CTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PAGOS_CTA_CTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLE_PAGO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_PAGO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PAGOS_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_HOME_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_HOME_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PDF_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES"/>
-	<setParameter name="SI_MPMF_MOAOP_PDF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLES_NOTICIAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_NOTICIAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_USUARIOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_USUARIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CUENTA_CORRIENTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CUENTA_CORRIENTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DET_PAGOS_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES"  />
-	<setParameter name="SI_MPMF_MOAOP_VIAJES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VIAJES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DETALLE_CTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_VAL_IMPORTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VAL_IMPORTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_RELAC_PL Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_RELAC_PL&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_MAIL_CONTACTO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MAIL_CONTACTO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CATEG_CONTACTO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CATEG_CONTACTO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_VENDED_HABILIT Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDED_HABILIT&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CP_DESPLEGABLES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_BUSCA_CTG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_BUSCA_CTG&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FLETE_PROC&amp;interfaceNamespace=urn%3AOPERACIONES" />" />
-	<setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_PDF_PROFORMA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_PROFORMA&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_LISTAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LISTAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_APLICACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_APLICACIONES&amp;interfaceNamespace=urn%3AOPERACIONES"/>
+  <setParameter name="SI_MPMF_MOAOP_CONTRATOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTRATOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CREA_USER Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CREA_USER&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DET_FIJACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FIJACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DET_VINCULA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_VINCULA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLE_CCPP Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CCPP&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLES_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLES_VENDEDOR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_VENDEDOR&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_FIJACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_FIJACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_HOME Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_HOME&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LIQUIDACIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LIQUIDACIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LIQUIDACIONES_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LIQUIDACIONES_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_IN Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_IN&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_CAMBIOPASS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_CAMBIOPASS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_DESBUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_DESBUSR&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_HABUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_HABUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_INHAUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_INHAUSR&amp;interfaceNamespace=urn%3AOPERACIONES"  />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_NVOUSR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_NVOUSR&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LOGIN_OLVPASS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LOGIN_OLVPASS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PERFILES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERFILES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PERMISOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PERMISOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_RECEPCIONES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_RECEPCIONES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_VENDEDORES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDEDORES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PAGOS_CTA_CTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PAGOS_CTA_CTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLE_PAGO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_PAGO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PAGOS_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_HOME_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_HOME_NG&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PDF_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES"/>
+  <setParameter name="SI_MPMF_MOAOP_PDF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLES_NOTICIAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLES_NOTICIAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_USUARIOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_USUARIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CUENTA_CORRIENTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CUENTA_CORRIENTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DET_PAGOS_NG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_PAGOS_NG&amp;interfaceNamespace=urn%3AOPERACIONES"  />
+  <setParameter name="SI_MPMF_MOAOP_VIAJES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VIAJES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DETALLE_CTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DETALLE_CTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_VAL_IMPORTE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VAL_IMPORTE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_RELAC_PL Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_RELAC_PL&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOVIMIENTOS_BALANZA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_MAIL_CONTACTO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MAIL_CONTACTO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CATEG_CONTACTO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CATEG_CONTACTO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_VENDED_HABILIT Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VENDED_HABILIT&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CP_DESPLEGABLES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CP_DESPLEGABLES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_BUSCA_CTG Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_BUSCA_CTG&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_DET_FLETE_PROC Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_DET_FLETE_PROC&amp;interfaceNamespace=urn%3AOPERACIONES" />" />
+  <setParameter name="SI_MPMF_MOAOP_OBTENER_PEND_USD Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_OBTENER_PEND_USD&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_GUARDAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_GUARDAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_PDF_PROFORMA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PDF_PROFORMA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_LISTAR_PESIF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_LISTAR_PESIF&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CECO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_ORDEN&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MODIFICAR_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_CUENTAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CUENTAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_SERVICIOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SERVICIOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_CECO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CECO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_ORDEN Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_ORDEN&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_CREAR_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_MODIFICAR_SOLPED Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_MODIFICAR_SOLPED&amp;interfaceNamespace=urn%3AOPERACIONES" />
   <setParameter name="BAPI_PO_CHANGEPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_CHANGE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
   <setParameter name="BasicHttpBinding_IAuthService Service Endpoint Address" value="http://test.dataagro.com.ar/services/AuthService.svc" />
-	<setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
+  <setParameter name="BasicHttpBinding_IDataAgroServices Service Endpoint Address" value="http://test.dataagro.com.ar/services/DataAgroServices.svc" />
 
-	<setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
+  <setParameter name="BasicHttpBinding_IServicioComandos Service Endpoint Address" value="http://scatoqa.molinosagro.com.ar/Scato.serviciosWeb/ServicioComandos.svc" />
 
-	<setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_ESTADO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CREAR_ORDEN_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_CONTROL_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_COMP_NOGRANOSPDF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMP_NOGRANOSPDF&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_COMPROB_NOGRANOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMPROB_NOGRANOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_FUENTE_APROV&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPMF_MOAOP_VISUALIZAR_ZFAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VISUALIZAR_ZFAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_MATERIALES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_MATERIALES&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_OBTENER_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MMRFC_CREAR_PEDIDO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_ORDEN_CARGA_ENTRE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CONTROL_ESTADO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_ESTADO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CREAR_ORDEN_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CREAR_ORDEN_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_CONTROL_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_CONTROL_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_COMP_NOGRANOSPDF Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMP_NOGRANOSPDF&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_COMPROB_NOGRANOS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_COMPROB_NOGRANOS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_FUENTE_APROV Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_FUENTE_APROV&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_VISUALIZAR_ZFAS Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_VISUALIZAR_ZFAS&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_MATERIALES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_MATERIALES&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_CREAR_PEDIDO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_CREAR_PEDIDO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<!--  Echeq	 -->
-	<setParameter name="SI_MPRFC_MOAOP_MOD_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MOAOP_MOD_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_MOAOP_MOD_FIJACION Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MOAOP_MOD_FIJACION&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_VISU_PENDIENTE_PAGO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_VISU_PENDIENTE_PAGO&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_VISU_DISPONIBLE_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_VISU_DISPONIBLE_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_CARGA_APERTURA_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_CARGA_APERTURA_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_ANULAR_APERTURA_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="SI_MPRFC_MODI_DOC_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MODI_DOC_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <!--  Echeq	 -->
+  <setParameter name="SI_MPRFC_MOAOP_MOD_CONTRATO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MOAOP_MOD_CONTRATO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_MOAOP_MOD_FIJACION Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MOAOP_MOD_FIJACION&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_VISU_PENDIENTE_PAGO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_VISU_PENDIENTE_PAGO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_VISU_DISPONIBLE_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_VISU_DISPONIBLE_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_CARGA_APERTURA_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_CARGA_APERTURA_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_ANULAR_APERTURA_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_ANULAR_APERTURA_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPRFC_MODI_DOC_CHEQUE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPRFC_MODI_DOC_CHEQUE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="SI_MPMF_MOAOP_MOD_ENTREGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOD_ENTREGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_MOD_ENTREGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOD_ENTREGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOD_ORDEN_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MPMF_MOAOP_MOD_ORDEN_CARGA Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_MOD_ORDEN_CARGA&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
+  <setParameter name="SI_MMRFC_OBTENER_TIPO_CAMBIO Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_OBTENER_TIPO_CAMBIO&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" />
+  <setParameter name="BAPI_PO_GETDETAIL1PortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_PO_GETDETAIL1&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions" />
   <setParameter name="Z_MMRFC_OC_PARA_SOLPPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=Z_MMRFC_OC_PARA_SOLPPortType&amp;interfaceNamespace=urn%3AOPERACIONES" />
-	<setParameter name="ScatoRepositorioBaseAddress Config" value="http://gsloscatoapq01.molinosagro.ad/Scato.WebApiCore/" />
-	<setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
-	<setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
+  <setParameter name="ScatoRepositorioBaseAddress Config" value="http://scatoqa.molinosagro.com.ar/Scato.WebApiCore/" />
+  <setParameter name="ScatoRepositorioUsername Config" value="ScatoLogistica" />
+  <setParameter name="ScatoRepositorioPassword Config" value="ServicioExternoPass" />
 
-	<setParameter name="ConsultaOpenStreetMapHabilitada Config" value="true" />
-	<setParameter name="RuteoOSRMHabilitado Config" value="true" />
-	<setParameter name="OsrmApiBaseAddress Config" value="http://router.project-osrm.org/" />
-	<setParameter name="OpenStreetMapApiBaseAddress Config" value="https://nominatim.openstreetmap.org/" />
-	<setParameter name="CoordenadasPlantaMoaLatitud Config" value="-32,773465" />
-	<setParameter name="CoordenadasPlantaMoaLongitud Config" value="-60,728782" />
+  <setParameter name="ConsultaOpenStreetMapHabilitada Config" value="true" />
+  <setParameter name="RuteoOSRMHabilitado Config" value="true" />
+  <setParameter name="OsrmApiBaseAddress Config" value="http://router.project-osrm.org/" />
+  <setParameter name="OpenStreetMapApiBaseAddress Config" value="https://nominatim.openstreetmap.org/" />
+  <setParameter name="CoordenadasPlantaMoaLatitud Config" value="-32,773465" />
+  <setParameter name="CoordenadasPlantaMoaLongitud Config" value="-60,728782" />
 
-	<setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
-	<setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
-	<setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
+  <setParameter name="AzureADTenantId Config" value="moagroQA.onmicrosoft.com" />
+  <setParameter name="AzureADAppId Config" value="7c93e4a8-7eb3-4a72-9d32-0776b363013f" />
+  <setParameter name="AzureADAppSecret Config" value="slg8Q~uFRSH_1IMPekXmcZzix3bwXX62Tpqf8dyM" />
 
   <setParameter name="BAPI_INFORECORD_GETLISTPortType Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=BAPI_INFORECORD_GETLIST&amp;interfaceNamespace=urn%3Asap-com%3Adocument%3Asap%3Arfc%3Afunctions"  />
 
+  <setParameter name="SI_MPMF_MOAOP_PENDIENTE_APLICAR Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MPMF_MOAOP_PENDIENTE_APLICAR&amp;interfaceNamespace=urn%3AOPERACIONES" />
 
-	<setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
-	<setParameter name="DestinatariosEmailOrdenResiduosIntentoAnulacionActiva Config" value="moaoperaciones@baufest.com" />
+  <setParameter name="EmailOrdenesResiduosVencidas Config" value="moaoperaciones@molinosagro.com.ar" />
+  <setParameter name="DestinatariosEmailOrdenResiduosIntentoAnulacionActiva Config" value="moaoperaciones@baufest.com" />
 
   <!--Servicios SAP que se necesitan consumir con HttpClient-->
   <setParameter name="ServicioSAPEntradasServicioCabecera Config" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn%3AOPERACIONES" />
@@ -194,8 +208,8 @@
   <setParameter name="SI_MMRFC_BORRAR_HES Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BORRAR_HES&amp;interfaceNamespace=urn:OPERACIONES" />
   <setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address" value="http://gslopidevqa00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn:OPERACIONES" />
 
-	<setParameter name="MailsDisconformidadCalidades Config" value="moaoperaciones@molinosagro.com.ar" />
+  <setParameter name="MailsDisconformidadCalidades Config" value="moaoperaciones@molinosagro.com.ar" />
 
-	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />
+  <setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />
   <setParameter name="EmailFacturasES Config" value="moaoperaciones@baufest.com" />
 </parameters>
