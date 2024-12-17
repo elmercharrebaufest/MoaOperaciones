@@ -60,7 +60,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
@@ -99,7 +98,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
             IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA,
             IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
             IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
@@ -128,7 +126,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
@@ -1929,20 +1926,6 @@ namespace SustitucionMOAUtils.Services
                 Descripcion = s.Descripcion,
                 CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
                 Codigo = s.Codigo
-            }).ToList();
-        }
-
-        public List<TablaSapDto> ObtenerCuentasSap()
-        {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Cuentas.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.CuentasSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
-                Codigo = c.Codigo
             }).ToList();
         }
 

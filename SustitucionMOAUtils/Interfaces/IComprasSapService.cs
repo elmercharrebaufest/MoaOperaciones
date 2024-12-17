@@ -10,6 +10,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<TablaSapDto> ObtenerCecoSap();
 
+        List<TablaSapDto> ObtenerCuentasSap();
+
         IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp);
 
         IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(IEnumerable<string> numerosSolp);

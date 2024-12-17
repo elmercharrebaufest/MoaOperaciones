@@ -15,15 +15,18 @@ namespace SustitucionMOATest.Services
     {
         private ComprasSapService target;
         private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
+        private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> solpConsumerMock;
 
         [SetUp]
         public void Setup()
         {
             cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
+            cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
             solpConsumerMock = new Mock<IObtenerSolpConsumerMOA>();
 
             target = new ComprasSapService(cecoConsumerMock.Object,
+                                           cuentasConsumerMock.Object,
                                            solpConsumerMock.Object);
         }
 
@@ -46,6 +49,29 @@ namespace SustitucionMOATest.Services
             };
 
             var result = target.ObtenerCecoSap();
+
+            Assert.AreEqual(expected.Count, result.Count);
+        }
+
+        [Test()]
+        public void ObtenerCuentasSapTest()
+        {
+            var rfcResultMock = new CuentaWSMOAResponse()
+            {
+                Cuentas = new List<SustitucionMOAModel.Models.WSMapMOA.Compras.Cuenta>()
+                {
+                    new SustitucionMOAModel.Models.WSMapMOA.Compras.Cuenta() { Descripcion = "MOA", Codigo = "MOA", Comp = "MOA"}
+                }
+            };
+
+            cuentasConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
+
+            List<TablaSapDto> expected = new List<TablaSapDto>
+            {
+                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CuentasSolpSap}
+            };
+
+            var result = target.ObtenerCuentasSap();
 
             Assert.AreEqual(expected.Count, result.Count);
         }

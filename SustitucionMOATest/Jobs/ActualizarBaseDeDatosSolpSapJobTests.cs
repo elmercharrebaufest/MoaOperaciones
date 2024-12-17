@@ -61,7 +61,7 @@ namespace SustitucionMOATest.Jobs
                 .Returns(new HabilitacionJob { Habilitado = true });
             comprasSapServiceMock.Setup(x => x.ObtenerCecoSap())
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
-            comprasServiceMock.Setup(x => x.ObtenerCuentasSap())
+            comprasSapServiceMock.Setup(x => x.ObtenerCuentasSap())
                 .Returns(new List<TablaSapDto> { tablaSapDto, tablaSapDto2 });
 
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))

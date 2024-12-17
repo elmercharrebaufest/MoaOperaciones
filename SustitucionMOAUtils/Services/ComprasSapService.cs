@@ -17,11 +17,15 @@ namespace SustitucionMOAUtils.Services
     public class ComprasSapService : IComprasSapService
     {
         private readonly IObtenerCecoSolpConsumerMOA CentroDeCostoSolpConsumerMOA;
+        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
-        public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA, IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
+        public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA,
+                                 IObtenerCuentasSolpConsumerMOA obtenerCuentasSolpConsumerMOA,
+                                 IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.CentroDeCostoSolpConsumerMOA = obtenerCentroDeCostoSolpConsumerMOA;
+            this.cuentasSolpConsumerMOA = obtenerCuentasSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
@@ -37,6 +41,20 @@ namespace SustitucionMOAUtils.Services
                 CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
                 Codigo = c.CostCenter
             }).ToList();
+        }
+
+        public List<TablaSapDto> ObtenerCuentasSap()
+        {
+            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
+            var codigoNum = 0;
+
+            return resultSap.Cuentas.ConvertAll(c => new TablaSapDto()
+            {
+                Tabla = TablasSap.CuentasSolpSap,
+                Descripcion = c.Descripcion,
+                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
+                Codigo = c.Codigo
+            });
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)

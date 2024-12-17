@@ -29,7 +29,6 @@ namespace SustitucionMOATest.Services
     {
         private ComprasService target;
         private Mock<IRepositorio> repositorioMock;
-        private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
@@ -718,7 +717,6 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
-            cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
             ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
@@ -754,7 +752,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                cuentasConsumerMock.Object,
                 ordenesConsumerMock.Object,
                 serviciosConsumerMock.Object,
                 obtenerSolpConsumerMOAMock.Object,
@@ -870,29 +867,6 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(expected, result);
         }*/
-
-        [Test()]
-        public void ObtenerCuentasSapTest()
-        {
-            var rfcResultMock = new CuentaWSMOAResponse()
-            {
-                Cuentas = new List<SustitucionMOAModel.Models.WSMapMOA.Compras.Cuenta>()
-                {
-                    new SustitucionMOAModel.Models.WSMapMOA.Compras.Cuenta() { Descripcion = "MOA", Codigo = "MOA", Comp = "MOA"}
-                }
-            };
-
-            cuentasConsumerMock.Setup(x => x.request()).Returns(rfcResultMock);
-
-            List<TablaSapDto> expected = new List<TablaSapDto>
-            {
-                new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CuentasSolpSap}
-            };
-
-            var result = target.ObtenerCuentasSap();
-
-            Assert.AreEqual(expected.Count, result.Count);
-        }
 
         [Test()]
         public void ObtenerOrdenesSapTest()
