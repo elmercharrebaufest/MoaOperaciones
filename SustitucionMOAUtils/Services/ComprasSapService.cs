@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion
+﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion numeros
 
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Enums;
@@ -29,18 +29,18 @@ namespace SustitucionMOAUtils.Services
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
         }
 
-        public List<TablaSapDto> ObtenerCecoSap()
+        public List<TablaSapDto> ObtenerCentrosDeCostoSap()
         {
             CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CentroDeCostoSolpConsumerMOA.request();
             var codigoNum = 0;
 
-            return resultSap.Cecos.Select(c => new TablaSapDto()
+            return resultSap.Cecos.ConvertAll(c => new TablaSapDto()
             {
                 Tabla = TablasSap.CecoSolpSap,
                 Descripcion = c.Descripcion,
                 CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
                 Codigo = c.CostCenter
-            }).ToList();
+            });
         }
 
         public List<TablaSapDto> ObtenerCuentasSap()

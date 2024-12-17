@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿// Ignore Spelling: Sustitucion
+
+using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using SustitucionMOAModel.Dto;
@@ -31,7 +33,7 @@ namespace SustitucionMOATest.Services
         }
 
         [Test()]
-        public void ObtenerCecoSapTest()
+        public void ObtenerCentroDeCostoSapTest()
         {
             var rfcResultMock = new CecoWSMOAResponse()
             {
@@ -48,7 +50,7 @@ namespace SustitucionMOATest.Services
                 new TablaSapDto {Id=0, Descripcion = "MOA", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap}
             };
 
-            var result = target.ObtenerCecoSap();
+            var result = target.ObtenerCentrosDeCostoSap();
 
             Assert.AreEqual(expected.Count, result.Count);
         }

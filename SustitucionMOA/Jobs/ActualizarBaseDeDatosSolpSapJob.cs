@@ -35,7 +35,7 @@ namespace SustitucionMOA.Jobs
                     return;
                 Log.Info("Inicio ActualizarBaseDeDatosSolpSapJob");
 
-                this.ActualizarTablaSap(_comprasSapService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerCentrosDeCostoSap(), TablasSap.CecoSolpSap);
 
                 this.ActualizarTablaSap(_comprasSapService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
 

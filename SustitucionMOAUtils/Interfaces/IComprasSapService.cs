@@ -8,7 +8,7 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasSapService
     {
-        List<TablaSapDto> ObtenerCecoSap();
+        List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();
 
