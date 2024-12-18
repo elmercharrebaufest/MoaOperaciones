@@ -226,6 +226,7 @@
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\ICentroDireccionService.cs" />
     <Compile Include="Interfaces\ITablaSapService.cs" />
+    <Compile Include="Interfaces\IMaterialService.cs" />
     <Compile Include="Interfaces\IUnidadMedidaService.cs" />
     <Compile Include="Interfaces\IAnalisisDocumentoServiceValidationCommand.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
@@ -391,6 +392,7 @@
     <Compile Include="Services\UbicacionGeograficaService.cs" />
     <Compile Include="Services\CentroDireccionService.cs" />
     <Compile Include="Services\TablaSapService.cs" />
+    <Compile Include="Services\MaterialService.cs" />
     <Compile Include="Services\UnidadMedidaService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
