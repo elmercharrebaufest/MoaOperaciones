@@ -18,6 +18,7 @@ namespace SustitucionMOATest.Jobs
         private ActualizarBaseDeDatosSolpSapJob target;
         private Mock<IComprasService> comprasServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
+        private Mock<IMaterialService> materialServiceMock;
         private Mock<IRepositorio> repositorioMock;
 
         [SetUp]
@@ -26,7 +27,11 @@ namespace SustitucionMOATest.Jobs
             comprasServiceMock = new Mock<IComprasService>();
             comprasSapServiceMock = new Mock<IComprasSapService>();
             repositorioMock = new Mock<IRepositorio>();
-            target = new ActualizarBaseDeDatosSolpSapJob(comprasServiceMock.Object, comprasSapServiceMock.Object, repositorioMock.Object);
+            materialServiceMock = new Mock<IMaterialService>();
+            target = new ActualizarBaseDeDatosSolpSapJob(comprasServiceMock.Object,
+                                                         comprasSapServiceMock.Object,
+                                                         materialServiceMock.Object,
+                                                         repositorioMock.Object);
         }
 
         [Test]

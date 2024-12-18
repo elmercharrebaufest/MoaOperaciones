@@ -37,7 +37,6 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
         private Mock<IModificarSolpConsumerMOA> modificarSolpConsumerMOAMock;
-        private Mock<IObtenerMaterialesSolpConsumerMOA> obtenerMaterialesSolpConsumerMOAMock;
         private Mock<ICrearPedidoConsumerMOA> crearPedidoConsumerMOAMock;
         private Mock<IObtenerFuenteAprovisionamientoConsumerMOA> obtenerFuenteAprovisionamientoConsumerMOAMock;
         private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
@@ -730,7 +729,6 @@ namespace SustitucionMOATest.Services
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
             modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
-            obtenerMaterialesSolpConsumerMOAMock = new Mock<IObtenerMaterialesSolpConsumerMOA>();
             crearPedidoConsumerMOAMock = new Mock<ICrearPedidoConsumerMOA>();
             obtenerFuenteAprovisionamientoConsumerMOAMock = new Mock<IObtenerFuenteAprovisionamientoConsumerMOA>();
             obtenerContratoSolpConsumerMOAMock = new Mock<IObtenerContratoSolpConsumerMOA>();
@@ -776,7 +774,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                obtenerMaterialesSolpConsumerMOAMock.Object,
                 crearPedidoConsumerMOAMock.Object,
                 obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
                 obtenerContratoSolpConsumerMOAMock.Object,
@@ -2346,26 +2343,6 @@ namespace SustitucionMOATest.Services
             var result = target.TraerSolpId(1);
 
             Assert.AreEqual(result.GetType(), solpLocalDto.GetType());
-        }
-
-        [Test]
-        public void ActualizarMaterialesSolpOk()
-        {
-            var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "Centro", CodigoSap = "05", Descripcion = "Liberación concluida" } };
-            obtenerMaterialesSolpConsumerMOAMock.Setup(y => y.request(It.IsAny<List<string>>(), It.IsAny<string>())).Returns(new MaterialWSMOAResponse
-            {
-                Materiales = new List<SustitucionMOAModel.Models.WSMapMOA.Compras.Material> { new SustitucionMOAModel.Models.WSMapMOA.Compras.Material {
-                NroMaterial = "", NombreDeMaterial = "", TipoMaterial = "", TipoValoracion = "", GrupoCompras = "", PrecioDelMaterial = 500, CuentaDeMayor = "", TextoAmpliado = ""} }
-            });
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<MaterialSolp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                .Returns(new List<MaterialSolp> { new MaterialSolp { CodigoSap = "", Centro_Id = 1 } });
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UnidadMedidaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
-                .Returns(new List<UnidadMedidaSap> { new UnidadMedidaSap { UM = "05", Comercial = "05", Tecnica = "05", Id = 1, TextoUM = "", TextoUM2 = "" } });
-            target.ActualizarMaterialesSolp();
-
-            repositorioMock.Verify(x => x.Agregar(It.IsAny<MaterialSolp>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
         }
 
         [Test]

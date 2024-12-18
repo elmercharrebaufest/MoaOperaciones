@@ -38,7 +38,6 @@ namespace SustitucionMOAUtils.Interfaces
         string GenerarZipPliego(int idSolp, string pathBase);
         List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
-        void ActualizarMaterialesSolp();
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();
         List<ServicioSolpDto> ObtenerDatosPorCodigosSapServicioSolp(List<string> codigos);

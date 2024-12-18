@@ -134,6 +134,7 @@
     <Compile Include="Services\ArchivoBoletoServiceTest.cs" />
     <Compile Include="Services\ComprasSapServiceTest.cs" />
     <Compile Include="Services\ExternalApiOrdenesResiduosServiceTest.cs" />
+    <Compile Include="Services\MaterialServiceTest.cs" />
     <Compile Include="Services\OrdenDeCargaFasonServiceTest.cs" />
     <Compile Include="Services\ComprasServiceTest.cs" />
     <Compile Include="Services\ConsultaServiceTest.cs" />
