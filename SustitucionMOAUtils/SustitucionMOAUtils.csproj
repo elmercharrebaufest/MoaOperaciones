@@ -210,6 +210,7 @@
     <Compile Include="Export\ExcelValidator.cs" />
     <Compile Include="Export\PDFExport.cs" />
     <Compile Include="Export\PdfFromHtmlGenerator.cs" />
+    <Compile Include="Extensions\DayOfWeekExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
@@ -223,6 +224,9 @@
     <Compile Include="Helpers\ImageResizer.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\ICentroDireccionService.cs" />
+    <Compile Include="Interfaces\ITablaSapService.cs" />
+    <Compile Include="Interfaces\IUnidadMedidaService.cs" />
     <Compile Include="Interfaces\IAnalisisDocumentoServiceValidationCommand.cs" />
     <Compile Include="Interfaces\IAdjuntosCertificacionesService.cs" />
     <Compile Include="Interfaces\IAprobacionesService.cs" />
@@ -385,6 +389,9 @@
     <Compile Include="Services\LogPesificacionService.cs" />
     <Compile Include="Services\ExternalApiService.cs" />
     <Compile Include="Services\UbicacionGeograficaService.cs" />
+    <Compile Include="Services\CentroDireccionService.cs" />
+    <Compile Include="Services\TablaSapService.cs" />
+    <Compile Include="Services\UnidadMedidaService.cs" />
     <Compile Include="Services\UsuarioService.cs" />
     <Compile Include="Services\VendedorService.cs" />
     <Compile Include="Validadores\OrdenDeCarga\CrearOrdenEnSAPRequestValidator.cs" />

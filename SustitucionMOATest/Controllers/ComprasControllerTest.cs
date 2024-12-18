@@ -24,6 +24,7 @@ namespace SustitucionMOATest.Controllers
     {
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IRepositorio> repositorioMock;
         private string mailUsuario = "mail@mail.com";
@@ -37,6 +38,7 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            comprasSapServiceMock = new Mock<IComprasSapService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
 
@@ -55,7 +57,7 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new ComprasController(comprasServiceMock.Object, usuarioServiceMock.Object);
+            target = new ComprasController(comprasServiceMock.Object, comprasSapServiceMock.Object, usuarioServiceMock.Object);
 
         }
 
@@ -97,7 +99,7 @@ namespace SustitucionMOATest.Controllers
                 new TablaSapDto { Id = 2, Tabla = "Tabla2", Codigo = "3213213", CodigoSap = "3213213", Descripcion = "Balde", IdPadre = 2},
             };
 
-            comprasServiceMock.Setup(servicio => servicio.ObtenerServiciosSap()).Returns(tablaSapDtoList);
+            comprasSapServiceMock.Setup(servicio => servicio.ObtenerServiciosSap()).Returns(tablaSapDtoList);
 
             // Act
             var result = target.ObtenerServiciosSap();

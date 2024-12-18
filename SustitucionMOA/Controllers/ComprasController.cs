@@ -24,11 +24,15 @@ namespace SustitucionMOA.Controllers
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;
+        private readonly IComprasSapService comprasSapService;
         private readonly IUsuarioService usuarioService;
 
-        public ComprasController(IComprasService comprasService, IUsuarioService usuarioService)
+        public ComprasController(IComprasService comprasService,
+                                 IComprasSapService comprasSapService,
+                                 IUsuarioService usuarioService)
         {
             this.service = comprasService;
+            this.comprasSapService = comprasSapService;
             this.usuarioService = usuarioService;
         }
 
@@ -236,7 +240,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult ObtenerServiciosSap()
         {
 
-            return JsonCustom(new { data = service.ObtenerServiciosSap() });
+            return JsonCustom(new { data = comprasSapService.ObtenerServiciosSap() });
 
         }
 
@@ -1141,4 +1145,4 @@ namespace SustitucionMOA.Controllers
             return ContentCustom(response);
         }
     }
-}   
+}

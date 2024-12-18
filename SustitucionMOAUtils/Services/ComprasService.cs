@@ -11,12 +11,10 @@ using iTextSharp.tool.xml.pipeline.css;
 using iTextSharp.tool.xml.pipeline.end;
 using iTextSharp.tool.xml.pipeline.html;
 using Newtonsoft.Json;
-using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
-using SustitucionMOAModel.Dto.sap;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
@@ -31,7 +29,6 @@ using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.CrearSolpWebServiceMOA;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ModificarOCWebServiceMOA;
 using SustitucionMOAWS.WSConsumers;
@@ -60,13 +57,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA;
-        private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
-        private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
-        private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
-        private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
-        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
-        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
         private readonly IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA;
         private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
@@ -100,13 +90,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerCecoSolpConsumerMOA CecoSolpConsumerMOA,
-            IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA,
-            IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA,
-            IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA,
-            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
-            ICrearSolpConsumerMOA crearSolpConsumerMOA,
-            IModificarSolpConsumerMOA modificarSolpConsumerMOA,
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
@@ -130,13 +113,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.CecoSolpConsumerMOA = CecoSolpConsumerMOA;
-            this.cuentasSolpConsumerMOA = cuentasSolpConsumerMOA;
-            this.ordenesSolpConsumerMOA = ordenesSolpConsumerMOA;
-            this.serviciosSolpConsumerMOA = serviciosSolpConsumerMOA;
-            this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
-            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
-            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
             this.obtenerMaterialesSolpConsumerMOA = obtenerMaterialesSolpConsumerMOA;
             this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
@@ -860,16 +836,16 @@ namespace SustitucionMOAUtils.Services
 
         private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
-            var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
+            CrearSolpConsumerMOAResponse resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
             resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
             respuestaGuardarSOLP.Errores = new List<string>();
             if (string.IsNullOrEmpty(solpEntity.NroSolp))
             {
-                var solpSAP = ConvertirSOLPSAP(solpEntity);
+                SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
 
                 try
                 {
-                    resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                    resultadoCrearSolp = comprasServiceSap.CrearSolpSap(solpSAP);
                 }
                 catch (Exception e)
                 {
@@ -918,14 +894,14 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
+                ModificarSolpConsumerMOAResponse resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
                 resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
                 if (solpEntity.TipoSolpSap != 2)
                 {
                     try
                     {
-                        var solpSAP = ConvertirSOLPSAP(solpEntity);
-                        resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                        SolpSAPDto solpSAP = comprasServiceSap.ConvertirSOLPSAP(solpEntity);
+                        resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
                     }
                     catch (Exception e)
                     {
@@ -988,44 +964,6 @@ namespace SustitucionMOAUtils.Services
             respuestaGuardarSOLP.IdEntidad = solpEntity.Id;
             ValidarSolpAnulada(solpEntity.NroSolp);
             return respuestaGuardarSOLP;
-
-            #region'NO BORRAR EL CODIGO COMENTADO EN ESTA REGION'
-            //TODO: Esto de crear pedido queda comentado por que todavia falta las definiciones del requerimiento.
-
-            //Esto estaria temporal ya que despues de haber desarrollado esta parte nos comentaron que el flujo en realidad no es tan directo, sino que 
-            //necesitamos que la solp tengo numero de solp y que el estado sea liberado
-            //if (crearPedidoConsumer) 
-            //{
-            //	//Aca obtenemos las posiciones que tienen en mismo proveedor
-            //	var proveedorPosiciones = getPosicionesByProveedor(solpEntity);
-
-
-            //	//al obtener las posiciones agrupadas por proveedor definimos que vamos a tener un numero de pedido para todas las posiciones con el mismo proveedor y numeros de pedido 
-            //	//distintos si cambia el proveedor
-            //	if (proveedorPosiciones.Any())
-            //	{
-            //		proveedorPosiciones.AsEnumerable().ToList().ForEach(proveedorConPosiciones =>
-            //		{
-            //			var resultadoCrearPedido = crearPedidoConsumerMOA.Request(solpEntity, postEntitySubPosicionesEliminadas, proveedorConPosiciones.Value);
-
-            //			respuestaGuardarSOLP.Errores = new List<string>();
-
-            //			foreach (var error in resultadoCrearPedido.Errores.Where(x => x.Tipo == "E"))
-            //			{
-            //				var mensaje = error.Mensaje.Trim();
-            //				respuestaGuardarSOLP.Errores.Add(mensaje);
-            //			}
-
-            //			if (respuestaGuardarSOLP.Errores.Count == 0)
-            //			{
-            //				proveedorConPosiciones.Value.ForEach(posicion => posicion.NumeroPedido = resultadoCrearPedido.NumeroPedido);
-
-            //				respuestaGuardarSOLP.Mensaje = "OK";
-            //				repositorio.GuardarCambios();
-            //			}
-            //		});
-            //	}		
-            #endregion
         }
 
         private void ActualizarOfertasAlEditarSolpLiberada(Solp solpEntity)
@@ -1687,13 +1625,13 @@ namespace SustitucionMOAUtils.Services
 
                 var diasJornada = string.Empty;
 
-                if (tieneHuecos || diasOrdenado.Count() == 1)
+                if (tieneHuecos || diasOrdenado.Count == 1)
                 {
-                    diasJornada = string.Join(",", diasOrdenado.Select(a => GetDia(a)).ToList());
+                    diasJornada = string.Join(",", diasOrdenado.Select(a => a.GetDia().ToList()));
                 }
                 else
                 {
-                    diasJornada = string.Format("{0} a {1}", GetDia(diasOrdenado.First()), GetDia(diasOrdenado.Last()));
+                    diasJornada = string.Format("{0} a {1}", diasOrdenado.First().GetDia(), diasOrdenado.Last().GetDia());
                 }
                 solpValores.Add(SolpTemplateKeys.DIAS_JORNADA_LABORAL, diasJornada);
             }
@@ -1752,39 +1690,6 @@ namespace SustitucionMOAUtils.Services
             solpValores.Add(SolpTemplateKeys.LISTADO_ADJUNTOS, "");
             templateString = CombineTemplateValues(templateString, solpValores);
             return ConvertHtmlToPdf(templateString, templateCssString, solp); //agregar solp
-        }
-
-        private string GetDia(DayOfWeek dia)
-        {
-            var diaStr = string.Empty;
-
-            switch (dia)
-            {
-                case DayOfWeek.Sunday:
-                    diaStr = "Domingo";
-                    break;
-                case DayOfWeek.Monday:
-                    diaStr = "Lunes";
-                    break;
-                case DayOfWeek.Tuesday:
-                    diaStr = "Martes";
-                    break;
-                case DayOfWeek.Wednesday:
-                    diaStr = "Miércoles";
-                    break;
-                case DayOfWeek.Thursday:
-                    diaStr = "Jueves";
-                    break;
-                case DayOfWeek.Friday:
-                    diaStr = "Viernes";
-                    break;
-                case DayOfWeek.Saturday:
-                    diaStr = "Sábado";
-                    break;
-                default:
-                    break;
-            }
-            return diaStr;
         }
 
         private byte[] ConvertHtmlToPdf(string xHtml, string css, SolpDto solp)
@@ -1954,48 +1859,6 @@ namespace SustitucionMOAUtils.Services
             return ret.ToString();
         }
 
-        public List<TablaSapDto> ObtenerServiciosSap()
-        {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Servicios.Select(s => new TablaSapDto()
-            {
-                Tabla = TablasSap.CodigoServicioSap,
-                Descripcion = s.Descripcion,
-                CodigoSap = int.TryParse(s.Codigo, out codigoNum) ? codigoNum.ToString() : s.Codigo,
-                Codigo = s.Codigo
-            }).ToList();
-        }
-
-        public List<TablaSapDto> ObtenerCuentasSap()
-        {
-            CuentaWSMOAResponse resultSap = (CuentaWSMOAResponse)cuentasSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Cuentas.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.CuentasSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
-                Codigo = c.Codigo
-            }).ToList();
-        }
-
-        public List<TablaSapDto> ObtenerOrdenesSap(string idOrder = "")
-        {
-            OrdenWSMOAResponse resultSap = (OrdenWSMOAResponse)ordenesSolpConsumerMOA.request(idOrder);
-            var codigoNum = 0;
-
-            return resultSap.Ordenes.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.OrdenSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
-                Codigo = c.Codigo
-            }).ToList();
-        }
-
         private List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
         {
             List<TablaSap> nuevosItems = new List<TablaSap>();
@@ -2021,20 +1884,6 @@ namespace SustitucionMOAUtils.Services
                 repositorio.GuardarCambios();
             }
             return nuevosItems;
-        }
-
-        public List<TablaSapDto> ObtenerCecoSap()
-        {
-            CecoWSMOAResponse resultSap = (CecoWSMOAResponse)CecoSolpConsumerMOA.request();
-            var codigoNum = 0;
-
-            return resultSap.Cecos.Select(c => new TablaSapDto()
-            {
-                Tabla = TablasSap.CecoSolpSap,
-                Descripcion = c.Descripcion,
-                CodigoSap = int.TryParse(c.CostCenter, out codigoNum) ? codigoNum.ToString() : c.CostCenter,
-                Codigo = c.CostCenter
-            }).ToList();
         }
 
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
@@ -2428,18 +2277,18 @@ namespace SustitucionMOAUtils.Services
 
         public void ActualizarServiciosSolp()
         {
-            ServicioWSMOAResponse resultSap = (ServicioWSMOAResponse)serviciosSolpConsumerMOA.request();
-            if (resultSap.Servicios.Any())
+            List<Servicio> servicios = comprasServiceSap.ObtenerServiciosSapRaw();
+            if (servicios.Any())
             {
-                var listaBase = repositorio.Listar<ServicioSolp>();
+                List<ServicioSolp> listaBase = repositorio.Listar<ServicioSolp>();
                 int agregados = 0;
                 int actualizados = 0;
-                foreach (var servicio in resultSap.Servicios)
+                foreach (Servicio servicio in servicios)
                 {
                     int codigoNum = 0;
-                    if (Int32.TryParse(servicio.Codigo, out codigoNum))
+                    if (int.TryParse(servicio.Codigo, out codigoNum))
                     {
-                        var serv = listaBase.Where(x => x.CodigoSap == codigoNum).FirstOrDefault();
+                        var serv = listaBase.FirstOrDefault(x => x.CodigoSap == codigoNum);
                         if (serv == null)
                         {
                             repositorio.Agregar(new ServicioSolp
@@ -2447,24 +2296,25 @@ namespace SustitucionMOAUtils.Services
                                 Codigo = servicio.Codigo,
                                 CodigoSap = codigoNum,
                                 Descripcion = servicio.Descripcion,
-                                GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
+                                GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null,
                                 TipoServicio = servicio.Serv,
                                 AmbitoServicio = servicio.Ser,
-                                Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
+                                Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0,
                                 UnidadMedidaBase = servicio.Bas,
                                 SSCItem = servicio.SSCItem
                             });
-                            agregados += 1;
+                            agregados++;
                         }
                         else
                         {
                             serv.Descripcion = servicio.Descripcion;
-                            serv.GrupoArticulos = Int32.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
+                            serv.GrupoArticulos = int.TryParse(servicio.NroGrupo, out int grupoArticulos) ? grupoArticulos : (int?)null;
                             serv.TipoServicio = servicio.Serv;
                             serv.AmbitoServicio = servicio.Ser;
-                            serv.Edicion = Int32.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
+                            serv.Edicion = int.TryParse(servicio.Edit, out int edicion) ? edicion : 0;
                             serv.UnidadMedidaBase = servicio.Bas;
                             serv.SSCItem = servicio.SSCItem;
+                            actualizados++;
                         }
                     }
                 }
@@ -2602,7 +2452,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
 
                 if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
-                ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+                ObtenerSolpSAPResponse result = comprasServiceSap.ObtenerSolpSap(obtenerSolpRequest);
                 Log.Info(JsonConvert.SerializeObject(result));
 
                 List<TablaSap> ordenes = new List<TablaSap>();
@@ -2636,7 +2486,7 @@ namespace SustitucionMOAUtils.Services
                             var existeOrden = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.OrdenSolpSap && x.Codigo == impTemp.IdOrden).ToList();
                             if (existeOrden.Count == 0)
                             {
-                                listaSap.AddRange(ObtenerOrdenesSap(impTemp.IdOrden));
+                                listaSap.AddRange(comprasServiceSap.ObtenerOrdenesSap(impTemp.IdOrden));
                             }
                             else
                             {
@@ -3391,10 +3241,10 @@ namespace SustitucionMOAUtils.Services
                 FechaHasta = fechaHasta,
                 NumeroSolp = nroSolp,
             };
-            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            var solp = comprasServiceSap.ObtenerSolpSap(filtros);
             if (solp.Posiciones.Any())
             {
-                var codigoSap = listaTablaSap.Where(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap).FirstOrDefault();
+                var codigoSap = listaTablaSap.FirstOrDefault(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap);
                 if (codigoSap != null)
                 {
                     ActualizarEstadoSolp(nroSolp, codigoSap.Id);
@@ -4010,468 +3860,6 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                 }
             };
-        }
-
-        private SolpSAPDto ConvertirSOLPSAP(Solp solpActual)
-        {
-            SolpSAPDto solpSAP = new SolpSAPDto();
-            solpSAP.Id = solpActual.Id;
-            if (!string.IsNullOrEmpty(solpActual.NroSolp))
-            {
-                solpSAP.NroSolp = solpActual.NroSolp;
-            }
-            #region posiciones y servicios
-
-            //•	el problema está en que siempre debes poner en el campo OUT_LINE= "000000001", sino debieras llenar otra tabla de SAP que no la estamos cargando. Para quitarle complejidad se saco dicha tabla.
-            const string OUTLINE_NUMBER = "000000001";
-            const string SERVICE_ACCOUNT_SERIAL_NUMBER = "01";
-
-            const string TEXT_ID = "B03";
-            const string FORMAT_TEXT = "*";
-
-            solpSAP.IM_PR_TYPE = solpActual.ClaseDocumento.CodigoSap;
-
-            var unidadesCodigoSap = solpActual.Posiciones.SelectMany(p => new[] { p.Unidad?.CodigoSap }.Concat(p.Subposiciones.Select(sp => sp.Unidad.CodigoSap))).Distinct();
-
-            var unidadesMedidaSap = repositorio.Listar<UnidadMedidaSap, dynamic>(x => new { x.Comercial, x.UM },
-              x => unidadesCodigoSap.Contains(x.Comercial))?.Select(x => System.Tuple.Create(x.Comercial, x.UM)).ToList();
-
-            foreach (var posicion in solpActual.Posiciones.OrderBy(x => x.Id))
-            {
-                bool eliminarPosicion = false;
-                bool eliminarSubPosicion = false;
-                if (posicion.TipoPosicion.Codigo.ToLower() == "servicios")
-                {
-                    eliminarPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
-                    eliminarSubPosicion = posicion.Subposiciones.Where(item => !Convert.ToBoolean(item.Estado)).Count() == posicion.Subposiciones.Count;
-                }
-
-                eliminarPosicion = eliminarPosicion || !posicion.Estado;
-
-                NumeroPosicion numeroPosicion = posicion.Indice;
-
-                var IM_PRITEM = new ZMPES7090();
-
-                //Nombre: ZBAPIMEREQITEMIMP Denominación: Posición de SOLPED
-                IM_PRITEM.PREQ_ITEM = numeroPosicion.AsPreqItem(); //PREQ_ITEM BNFPO Número de posición de la solicitud de pedido
-                IM_PRITEM.PUR_GROUP = posicion.GrupoCompras.CodigoSap.ToString(); //PUR_GROUP EKGRP Grupo de compras
-                IM_PRITEM.CREATED_BY = solpActual.UsuarioCreacion != null ? solpActual.UsuarioCreacion.UsuarioSap : repositorio.Obtener<Usuario>(solpActual.UsuarioCreacion_Id).UsuarioSap; //CREATED_BY ERNAM Nombre del responsable que ha añadido el objeto
-                IM_PRITEM.PREQ_NAME = posicion.Solicitante; //PREQ_NAME AFNAM Nombre del solicitante
-                IM_PRITEM.SHORT_TEXT = posicion.Tarea; //SHORT_TEXT TXZ01 Texto breve
-                IM_PRITEM.PLANT = posicion.Centro.CodigoSap.ToString(); //PLANT EWERK   Centro
-                IM_PRITEM.STORE_LOC = solpActual.TipoSolpSap == (int?)TipoSolpSap.Mantenimiento ? "" : posicion.Almacen.CodigoSap.ToString(); //STORE_LOC   LGORT_D Almacén
-                IM_PRITEM.TRACKINGNO = posicion.NroNecesidad; //TRACKINGNO BEDNR   Número de necesidad
-                IM_PRITEM.MATL_GROUP = posicion.GrupoArticulo.CodigoSap.ToString(); //MATL_GROUP  MATKL Grupo de artículos
-                IM_PRITEM.PREQ_DATE = SAPFormatter.PrepararFecha(solpActual.FechaCreacion); //PREQ_DATE   BADAT Fecha de solicitud
-                IM_PRITEM.DELIV_DATE = SAPFormatter.PrepararFecha(posicion.FechaEntregaServicio ?? DateTime.Now); //DELIV_DATE EINDT   Fecha de entrega de posición
-                IM_PRITEM.REL_DATE = null;
-
-                //Estos datos se envian si la posición es de materiales
-                if (posicion.TipoPosicion.Codigo.ToLower() == "materiales")
-                {
-                    IM_PRITEM.MATERIAL = posicion.MaterialSolp != null && posicion.TipoPosicion.Codigo == "MATERIALES" ? posicion.MaterialSolp.CodigoSap.ToString() : ""; //MATERIAL MATNR18 Número de material(18 caracteres)
-                    IM_PRITEM.QUANTITY = (Decimal)posicion.Cantidad; //QUANTITY BAMNG   Cantidad solicitud de pedido
-                    IM_PRITEM.QUANTITYSpecified = true;
-                    IM_PRITEM.UNIT = unidadesMedidaSap?.Find(u => u.Item1 == posicion.Unidad.CodigoSap).Item2; //UNIT BAMEI - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
-                    //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-                    IM_PRITEM.PREQ_PRICE = (Decimal)posicion.PrecioBruto; //PREQ_PRICE  BAPICUREXT Importe de moneda para BAPIs(con 9 decimales)
-                    IM_PRITEM.PREQ_PRICESpecified = true;
-                    //IM_PRITEM.PRICE_UNIT = null; //PRICE_UNIT EPEIN Cantidad base  
-                    //IM_PRITEM.PRICE_UNITSpecified = true;
-
-                    //Estos datos de imputacion se envian solo para materiales por que en servicio van a nivel de subposicion
-                    BAPIMEREQACCOUNT imputacionPosicionMateriales = solpSAP.IM_PRACCOUNTList.FirstOrDefault(x =>
-                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.SERIAL_NO == SERVICE_ACCOUNT_SERIAL_NUMBER && //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            x.GL_ACCOUNT == getCodigoTablaSap(posicion.CuentaMayorSap) &&//GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(posicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(posicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(posicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                    );
-
-                    if (imputacionPosicionMateriales is null)
-                    {
-                        imputacionPosicionMateriales = new BAPIMEREQACCOUNT
-                        {
-                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER, //SERIAL_NO	DZEKKN	Número actual de la imputación
-                            GL_ACCOUNT = getCodigoTablaSap(posicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(posicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(posicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(posicion.TipoImputacionSap), //PROFIT_CTR	PRCTR	Centro de beneficio
-                            BUS_AREA = "GENE",
-                            CO_AREA = "MOA"
-                        };
-
-                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicionMateriales);
-
-                        solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
-                        {
-                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                            SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
-                            PREQ_ITEMX = "X",
-                            SERIAL_NOX = "X",
-                            GL_ACCOUNT = "X",
-                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : "",
-                            BUS_AREA = "X",
-                            CO_AREA = "X"
-                        });
-                    }
-                    //Este metodo lo usamos para enviar el texto de suministro. Solo se pueden enviar 132 caracteres por linea
-                    var linesTextoSuministro = getLinesFromTextoSuministro(posicion.TextoSuministro);
-
-                    linesTextoSuministro.ForEach(texto =>
-                    {
-                        solpSAP.IM_PRITEMTEXTList.Add(new BAPIMEREQITEMTEXT
-                        {
-                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                            TEXT_ID = TEXT_ID,
-                            TEXT_FORM = FORMAT_TEXT,
-                            TEXT_LINE = texto
-                        });
-                    });
-
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
-                    {
-                        DOC_ITEM = numeroPosicion.AsDocItem(),
-                        OUTLINE = OUTLINE_NUMBER,
-                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
-                        SERIAL_NO_ITEM = numeroPosicion.AsSerialNumber(),
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = 100
-                    });
-
-                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
-                    {
-                        DOC_ITEM = numeroPosicion.AsDocItem(),
-                        OUTLINE = OUTLINE_NUMBER,
-                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
-                        SERIAL_NO_ITEM = "X",
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = "X"
-                    });
-                }
-
-                //IM_PRITEM.UNIT = null; //UNIT BAMEI   Unidad de medida de solicitud pedido
-                //IM_PRITEM.PREQ_UNIT_ISO = null; //PREQ_UNIT_ISO BAMEI_ISO   Código ISO p.la unidad de medida en la solicitud de pedido
-
-                //Indica el tipo de posicion de la solp
-                switch (posicion.TipoPosicion.Codigo.ToLower())
-                //ITEM_CAT PSTYP   Tipo de posición del documento de compras
-                {
-                    case "servicio":
-                        IM_PRITEM.ITEM_CAT = "9";
-                        break;
-
-                    case "materiales":
-                    default:
-                        IM_PRITEM.ITEM_CAT = "0";
-                        break;
-                }
-
-                //Indica el tipo de imputacion de la solp
-                if (posicion.TipoImputacion != null)
-                {
-                    switch (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower())
-                    //ACCTASSCAT  KNTTP Tipo de imputación
-                    {
-                        case "centrodecosto":
-                            IM_PRITEM.ACCTASSCAT = "K";
-                            break;
-                        case "ordendeot":
-                            IM_PRITEM.ACCTASSCAT = "F";
-                            break;
-                        case "ordendeinversion":
-                            IM_PRITEM.ACCTASSCAT = "F";
-                            break;
-                        case "siniestrobeneficio":
-                            IM_PRITEM.ACCTASSCAT = "Y";
-                            break;
-                    }
-                }
-                else
-                {
-                    IM_PRITEM.ACCTASSCAT = "";
-                }
-
-                //IM_PRITEM.DES_VENDOR = null; //DES_VENDOR WLIEF   Proveedor deseado
-                //Contrato marco          
-                IM_PRITEM.FIXED_VEND = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp != null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : ""; //FIXED_VEND FLIEF   Proveedor fijo
-                IM_PRITEM.DES_VENDOR = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp == null ? posicion.ProveedorAdjudicado.ObtenerCodigoProveedor() : "";
-                IM_PRITEM.PURCH_ORG = posicion.OrganizacionDeComprasCodigo; //PURCH_ORG EKORG   Organización de compras
-                IM_PRITEM.AGREEMENT = posicion.NumeroContratoSuperior; //AGREEMENT   KONNR Número del contrato superior
-                IM_PRITEM.AGMT_ITEM = posicion.NumeroPosicionContratoSuperior; //AGMT_ITEM   KTPNR Número de posición del contrato superior
-                IM_PRITEM.INFO_REC = posicion.RegistroInfoNro; //INFO_REC    INFNR Número del registro info de compras
-                IM_PRITEM.CLOSED = null; //Contrato marco? No está en este MVP //CLOSED  EBAKZ Solicitud de pedido concluida
-                IM_PRITEM.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY    WAERS Clave de moneda
-                IM_PRITEM.CURRENCY_ISO = null; //CURRENCY_ISO BAPIISOCD   Código ISO para moneda
-                                               //IM_PRITEM.INFO_REC = null; //INFO_REC    INFNR Número del registro info de compras                            
-                IM_PRITEM.PLND_DELRY = (decimal)posicion.PlazoEntrega; //PLND_DELRY PLIFZ   Plazo de entrega previsto en días
-                IM_PRITEM.PLND_DELRYSpecified = true;
-                IM_PRITEM.PCKG_NO = numeroPosicion.AsNumeroPaquete(); //PCKG_NO PACKNO  Nº paquete
-
-                //Indica si esta borrada la posicion 
-                if (!string.IsNullOrEmpty(solpActual.NroSolp))
-                {
-                    IM_PRITEM.DELETE_IND = SAPFormatter.FormatearBooleano(eliminarPosicion);
-                }
-
-                //Agregamos todos los items a la estructura de posicion
-                solpSAP.IM_PRITEMList.Add(IM_PRITEM);
-
-                //Esta es una lista de campos que SAP nos pide que enviemos una "X" con los datos.
-                solpSAP.IM_PRITEMXList.Add(new ZMPES8000
-                {
-                    PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                    PREQ_ITEMX = "X",
-                    PUR_GROUP = "X",
-                    CREATED_BY = "X",
-                    PREQ_NAME = "X",
-                    SHORT_TEXT = "X",
-                    MATERIAL = (IM_PRITEM.MATL_GROUP != null) ? "X" : "",
-                    PLANT = "X",
-                    STORE_LOC = "X",
-                    TRACKINGNO = "X",
-                    MATL_GROUP = "X",
-                    QUANTITY = (IM_PRITEM.QUANTITY == 0) ? "" : "X",
-                    UNIT = "X",
-                    //PREQ_UNIT_ISO = "X",
-                    PREQ_DATE = "X",
-                    DELIV_DATE = "X",
-                    //REL_DATE = "X",
-                    //GR_PR_TIME = "X",
-                    PREQ_PRICE = (IM_PRITEM.PREQ_PRICE == 0) ? "" : "X",
-                    //PRICE_UNIT = "X"
-                    ITEM_CAT = "X",
-                    ACCTASSCAT = "X",
-                    DES_VENDOR = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp == null ? "X" : "",
-                    FIXED_VEND = posicion.ProveedorAdjudicado_Id != null && posicion.MaterialSolp != null ? "X" : "",
-                    PURCH_ORG = !string.IsNullOrEmpty(posicion.OrganizacionDeComprasCodigo) ? "X" : "",
-                    AGREEMENT = !string.IsNullOrEmpty(posicion.NumeroContratoSuperior) ? "X" : "",
-                    AGMT_ITEM = !string.IsNullOrEmpty(posicion.NumeroPosicionContratoSuperior) ? "X" : "",
-                    INFO_REC = !string.IsNullOrEmpty(posicion.RegistroInfoNro) ? "X" : "",
-                    //CLOSED = "X",
-                    CURRENCY = "X",
-                    //CURRENCY_ISO = "X",
-                    PLND_DELRY = "X",
-                    PCKG_NO = "X",
-                    DELETE_IND = string.IsNullOrEmpty(solpActual.NroSolp) ? "" : "X",
-                });
-
-
-                //---Desde aca empiezan las subposiciones---
-
-                var numeroSerialNumberItem = 0;
-
-                foreach (var subPosicion in posicion.Subposiciones.OrderBy(x => x.Id))
-                {
-                    NumeroSubPosicion numeroSubPosicion = subPosicion.Numero;
-
-                    //SUBPOSICION
-                    var IM_SERVICELINE = new BAPI_SRV_SERVICE_LINE();
-
-                    IM_SERVICELINE.DOC_ITEM = numeroPosicion.AsDocItem(); //DOC_ITEM EBELP   Número de posición de la solicitud de pedido = PREQ_ITEM
-                    IM_SERVICELINE.OUTLINE = OUTLINE_NUMBER; //OUTLINE OUTLINE_NO  Número de estructuración
-                    IM_SERVICELINE.SRV_LINE = numeroSubPosicion.AsServiceLineNumber(); //SRV_LINE    EXTROW Número de línea
-                    IM_SERVICELINE.DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)); //DEL_IND DEL Indicador de borrado
-
-                    if (subPosicion.ServicioSolp != null)
-                        IM_SERVICELINE.SERVICE = subPosicion.ServicioSolp.Codigo.ToString(); //SERVICE ASNUM Número de servicio
-                    else
-                        IM_SERVICELINE.SHORT_TEXT = subPosicion.Tarea; //SHORT_TEXT SH_TEXT1 Texto breve
-
-                    IM_SERVICELINE.QUANTITY = subPosicion.Cantidad.Value; //QUANTITY MENGEV  Cantidad con signo +/ -
-                    IM_SERVICELINE.QUANTITYSpecified = true;
-                    IM_SERVICELINE.UOM = unidadesMedidaSap?.Find(u => u.Item1 == subPosicion.Unidad.CodigoSap).Item2; //UOM MEINS - Cambia el código de la unidad solicitada por su equivalente 'UM' de la tabla UnidadMedidaSap
-                    //IM_SERVICELINE.UOM_ISO = null; //UOM_ISO MEINS_ISO   Unidad medida base en código ISO
-                    IM_SERVICELINE.GROSS_PRICE = subPosicion.PrecioBruto.Value; //GROSS_PRICE SBRTWR Precio bruto Unitario
-                    IM_SERVICELINE.GROSS_PRICESpecified = true;
-                    IM_SERVICELINE.CURRENCY = posicion.Moneda.CodigoSap; //CURRENCY WAERS   Clave de moneda
-
-                    solpSAP.IM_SERVICELINESList.Add(IM_SERVICELINE);
-
-                    solpSAP.IM_SERVICELINESXList.Add(new BAPI_SRV_SERVICE_LINEX
-                    {
-                        DOC_ITEM = numeroPosicion.AsDocItem(),
-                        OUTLINE = OUTLINE_NUMBER,
-                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
-                        DEL_IND = eliminarSubPosicion ? "" : SAPFormatter.FormatearBooleano(!Convert.ToBoolean(subPosicion.Estado)),
-                        SERVICE = "X",
-                        SHORT_TEXT = (subPosicion.ServicioSolp == null) ? "X" : "",
-                        QUANTITY = "X",
-                        UOM = "X",
-                        //UOM_ISO = "X",
-                        GROSS_PRICE = "X",
-                        CURRENCY = "X"
-                    });
-
-                    BAPIMEREQACCOUNT imputacionPosicion = solpSAP.IM_PRACCOUNTList.Find(x =>
-                            x.PREQ_ITEM == numeroPosicion.AsPreqItem() && //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            x.GL_ACCOUNT == getCodigoTablaSap(subPosicion.CuentaMayorSap) && //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            x.COSTCENTER == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //COSTCENTER	KOSTL	Centro de coste
-                            x.ORDERID == getCodigoTablaSap(subPosicion.TipoImputacionSap) && //ORDERID	AUFNR	Número de orden
-                            x.PROFIT_CTR == getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        );
-
-                    if (imputacionPosicion is null)
-                    {
-                        numeroSerialNumberItem++;
-
-                        imputacionPosicion = new BAPIMEREQACCOUNT
-                        {
-                            PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM	BNFPO	Número de posición de la solicitud de pedido
-                            SERIAL_NO = $"{numeroSerialNumberItem:00}",//indiceImputacion, //SERIAL_NO    DZEKKN  Número actual de la imputación
-                            QUANTITY = subPosicion.Cantidad.Value, //QUANTITY	MENGE_D	Cantidad
-                            GL_ACCOUNT = getCodigoTablaSap(subPosicion.CuentaMayorSap), //GL_ACCOUNT	SAKNR	Número de la cuenta de mayor
-                            COSTCENTER = getCodigoTablaSap(subPosicion.TipoImputacionSap), //COSTCENTER	KOSTL	Centro de coste
-                            ORDERID = getCodigoTablaSap(subPosicion.TipoImputacionSap), //ORDERID	AUFNR	Número de orden
-                            PROFIT_CTR = getCodigoTablaSap(subPosicion.TipoImputacionSap) //PROFIT_CTR	PRCTR	Centro de beneficio
-                        };
-
-                        solpSAP.IM_PRACCOUNTList.Add(imputacionPosicion);
-
-                        solpSAP.IM_PRACCOUNTXList.Add(new BAPIMEREQACCOUNTX
-                        {
-                            PREQ_ITEM = numeroPosicion.AsPreqItem(),
-                            SERIAL_NO = imputacionPosicion.SERIAL_NO,
-                            PREQ_ITEMX = "X",
-                            SERIAL_NOX = "X",
-                            QUANTITY = "X",
-                            GL_ACCOUNT = "X",
-                            COSTCENTER = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "centrodecosto") ? "X" : "",
-                            ORDERID = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeot" || getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "ordendeinversion") ? "X" : "",
-                            PROFIT_CTR = (getCodigoTablaGeneral(posicion.TipoImputacion).ToLower() == "siniestrobeneficio") ? "X" : ""
-                        });
-                    }
-
-                    //IMPUTACION SUBPOSICION
-                    solpSAP.IM_SERVICEACCOUNTList.Add(new BAPI_SRV_ACC_DATA
-                    {
-                        DOC_ITEM = numeroPosicion.AsDocItem(),
-                        OUTLINE = OUTLINE_NUMBER,
-                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(),
-                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
-                        SERIAL_NO_ITEM = imputacionPosicion.SERIAL_NO,
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = 100
-                    });
-
-                    solpSAP.IM_SERVICEACCOUNTXList.Add(new BAPI_SRV_ACC_DATAX
-                    {
-                        DOC_ITEM = numeroPosicion.AsDocItem(),
-                        OUTLINE = OUTLINE_NUMBER, //Preguntar a Ulises
-                        SRV_LINE = numeroSubPosicion.AsServiceLineNumber(), //Preguntar a Ulises
-                        SERIAL_NO = SERVICE_ACCOUNT_SERIAL_NUMBER,
-                        SERIAL_NO_ITEM = "X",
-                        //Siempre mandar esto en 100. Lo autocalcula SAP
-                        PERCENT = "X"
-                    });
-                }
-
-                //Estos son los metodos con los que nos fijamos si se editó algun campo de la direccion de entrega. Si no editó ninguno no 
-                //hace falta enviar a SAP, pero si se editó por lo menos uno tenemos que enviar todos los campos 
-                CentroDireccion centroPorDefecto = repositorio.Obtener<CentroDireccion>(x => x.CodigoSap == posicion.Centro.CodigoSap);
-                TablaSap centroPorDefecto2 = repositorio.Obtener<TablaSap>(x => x.Id == posicion.Centro_Id);
-
-                if (centroPorDefecto2.Descripcion != posicion.NombreEntrega ||
-                    centroPorDefecto.Cp != posicion.CpEntrega ||
-                    centroPorDefecto2.Descripcion != posicion.Centro.Descripcion ||
-                    centroPorDefecto.Direccion != posicion.CalleEntrega ||
-                    centroPorDefecto.Numero != posicion.NumeroEntrega)
-                {
-                    solpSAP.IM_PRADDRDELIVERYList.Add(
-                    new ZMPES7110
-                    {
-                        PREQ_NO = numeroPosicion.AsPreqItem(), //PREQ_NO BANFN   Numero de SOLPED
-                        PREQ_ITEM = numeroPosicion.AsPreqItem(), //PREQ_ITEM   BNFPO Número de posición de la solicitud de pedido
-                        NAME = posicion.NombreEntrega, //NAME    AD_NAME1 Nombre 1
-                        POSTL_COD1 = posicion.CpEntrega, //POSTL_COD1 AD_PSTCD1   Código postal de la población
-                        CITY = posicion.Centro.Descripcion, //CITY    AD_CITY1 Población
-                        STREET = posicion.CalleEntrega, //STREET AD_STREET   Calle
-                        TEL1_NUMBR = posicion.NumeroEntrega, //TEL1_NUMBR  AD_TLNMBR1 Primer número teléfono: Prefijo + número
-                    });
-                }
-            }
-
-            //Este metodo lo usamos para enviar el texto de observaciones. Solo se pueden enviar 132 caracteres por linea
-
-            var textosObservacion = "";
-
-            //Enviar observaciones del paso 2 o las observaciones de las condiciones especiales segun prioridad
-            if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesGeneracion))
-            {
-                // Si ObservacionesGeneracion tiene algún valor, se envía este.
-                textosObservacion = solpActual.Pliego.ObservacionesGeneracion;
-            }
-            else if (!string.IsNullOrEmpty(solpActual.Pliego.ObservacionesCotizacionCondEsp))
-            {
-                // Si ObservacionesGeneracion está vacío y ObservacionesCotizacionCondEsp tiene algún valor, se envía este.
-                textosObservacion = solpActual.Pliego.ObservacionesCotizacionCondEsp;
-            }
-
-            var linesObservacion = getLinesFromTextoSuministro(textosObservacion);
-
-            linesObservacion.ForEach(texto =>
-            {
-                solpSAP.IM_PRHEADERTEXTList.Add(new BAPIMEREQHEADTEXT
-                {
-                    PREQ_ITEM = "00000",
-                    TEXT_ID = "B01",
-                    TEXT_FORM = "*",
-                    TEXT_LINE = texto,
-                });
-            });
-            #endregion
-
-            return solpSAP;
-        }
-
-        private string getCodigoTablaSap(TablaSap imputacion)
-        {
-            var result = "";
-
-            if (imputacion != null)
-            {
-                result = imputacion.Codigo;
-            }
-            return result;
-        }
-
-        private string getCodigoTablaGeneral(TablaGeneral imputacion)
-        {
-            var result = "";
-
-            if (imputacion != null)
-            {
-                result = imputacion.Codigo;
-            }
-            return result;
-        }
-
-        private List<string> getLinesFromTextoSuministro(string texto)
-        {
-            const int maxLengthPerLine = 132;
-            var result = new List<string>();
-
-            if (!string.IsNullOrEmpty(texto))
-            {
-                var line = string.Empty;
-
-                while (texto.Length > maxLengthPerLine)
-                {
-                    line = texto.Substring(0, maxLengthPerLine - 1);
-                    result.Add(line);
-                    texto = texto.Substring(maxLengthPerLine - 1, texto.Length - (maxLengthPerLine - 1));
-                }
-
-                if (!string.IsNullOrEmpty(texto))
-                {
-                    result.Add(texto);
-                }
-            }
-            return result;
         }
 
         public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
@@ -10288,7 +9676,7 @@ namespace SustitucionMOAUtils.Services
                                         FechaHasta = fechaHasta,
                                         NumeroSolp = posicion.NroSolp,
                                     };
-                                    var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                                    var solpSAPResponse = comprasServiceSap.ObtenerSolpSap(filtros);
 
                                     var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
                                     if (solpSAPPosicion != null)
@@ -11328,29 +10716,5 @@ namespace SustitucionMOAUtils.Services
 
             return comprasArchivosImportService.ProcesarArchivoPrecargaSolp(archivo, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, tipoPosicion);
         }
-    }
-
-    public static class SolpTemplateKeys
-    {
-        public const string FECHA_LIBERACION = "FECHA_LIBERACION";
-        public const string FECHA_CREACION = "FECHA_CREACION";
-        public const string NOMBRE_OBRA = "NOMBRE_OBRA";
-        public const string NRO_SOLP = "NRO_SOLP";
-        public const string NRO_PEDIDO = "NRO_PEDIDO";
-        public const string FISCAL_CONTRATO = "FISCAL_CONTRATO";
-        public const string TELEFONO = "TELEFONO";
-        public const string FECHA_PRESENTACION = "FECHA_PRESENTACION";
-        public const string USUARIO_COMPRAS = "USUARIO_COMPRAS";
-        public const string ESPECIFICACION_TECNICA = "ESPECIFICACION_TECNICA";
-        public const string PLAZO_EJECUCION = "PLAZO_EJECUCION";
-        public const string DIAS_JORNADA_LABORAL = "DIAS_JORNADA_LABORAL";
-        public const string INICIO_FINAL_HS_JORNADA_LABORAL = "INICIO_FINAL_HS_JORNADA_LABORAL";
-        public const string TABLA_POSICIONES_SUBPOSICIONES = "TABLA_POSICIONES_SUBPOSICIONES";
-        public const string LISTADO_ADJUNTOS = "LISTADO_ADJUNTOS";
-        public const string TEXTO_GENERICO = "TEXTO_GENERICO";
-        public const string REVISADO_POR = "REVISADO_POR";
-        public const string PLAZO_ENTREGA = "PLAZO_ENTREGA";
-        public const string PAGINAS = "PAGINAS";
-        public const string FECHA_OBRA = "FECHA_OBRA";
     }
 }
