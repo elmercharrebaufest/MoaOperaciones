@@ -37,7 +37,7 @@ namespace SustitucionMOAUtils.Services
 
             if (Materiales.Any())
             {
-                var listaBase = repositorio.Listar<MaterialSolp>();
+                List<MaterialSolp> listaBase = repositorio.Listar<MaterialSolp>();
 
                 List<string> tablasSapAConsultar = new List<string>
                 {
@@ -48,7 +48,7 @@ namespace SustitucionMOAUtils.Services
                     TablasSap.CuentasSolpSap
                 };
 
-                var tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
+                List<TablaSap> tablaSap = repositorio.Listar<TablaSap>(x => tablasSapAConsultar.Contains(x.Tabla));
                 List<int> idsActualizados = new List<int>();
                 List<TablaSap> centro = tablaSap.Where(x => x.Tabla == TablasSap.Centro).ToList();
                 List<TablaSap> grupoArticulo = tablaSap.Where(x => x.Tabla == TablasSap.GrupoArticulo).ToList();
@@ -57,14 +57,14 @@ namespace SustitucionMOAUtils.Services
                 List<TablaSap> cuentas = tablaSap.Where(x => x.Tabla == TablasSap.CuentasSolpSap).ToList();
                 List<UnidadMedidaSap> unidadMedidasSap = repositorio.Listar<UnidadMedidaSap>();
 
-                var contador = 0;
+                int contador = 0;
                 int agregados = 0;
                 foreach (var material in Materiales)
                 {
                     try
                     {
-                        var centroId = centro.Find(x => x.CodigoSap == material.CentroLogistico)?.Id;
-                        var item = listaBase.Find(x => x.CodigoSap == material.NroMaterial && x.Centro_Id == centroId);
+                        int? centroId = centro.Find(x => x.CodigoSap == material.CentroLogistico)?.Id;
+                        MaterialSolp item = listaBase.Find(x => x.CodigoSap == material.NroMaterial && x.Centro_Id == centroId);
 
                         contador++;
                         if (item == null)
@@ -117,8 +117,8 @@ namespace SustitucionMOAUtils.Services
                     }
                     catch (Exception e)
                     {
-                        Logger.Log.Error(new Exception($"Error al grabar el material {material.ToJson()}"));
-                        Logger.Log.Error(e);
+                        Log.Error(new Exception($"Error al grabar el material {material.ToJson()}"));
+                        Log.Error(e);
                     }
                 }
                 Log.Info($"items agregados: {agregados}");
