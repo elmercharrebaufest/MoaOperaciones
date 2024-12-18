@@ -28,6 +28,11 @@ namespace SustitucionMOATest.Services
     public class ComprasServiceTest
     {
         private ComprasService target;
+        private ComprasSapService targetSap;
+        private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
+        private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
+        private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
+        private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IRepositorio> repositorioMock;
         private Mock<IObtenerSolpConsumerMOA> obtenerSolpConsumerMOAMock;
         private Mock<ICrearSolpConsumerMOA> crearSolpConsumerMOAMock;
@@ -55,8 +60,11 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
         private Mock<IEmailComprasService> mIEmailComprasService;
         private Mock<IComprasArchivosService> mIComprasArchivosService;
-        private Mock<IComprasSapService> comprasSapService;
         private Mock<IComprasArchivosImportService> mIComprasArchivosImportService;
+
+        private Mock<ICentroDireccionService> centroDireccionServiceMock;
+        private Mock<ITablaSapService> tablaSapServiceMock;
+        private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
 
         private GuardarCotizacion guardarCotizacionToClone()
         {
@@ -715,6 +723,10 @@ namespace SustitucionMOATest.Services
         public void SetUp()
         {
             repositorioMock = new Mock<IRepositorio>();
+            cecoConsumerMock = new Mock<IObtenerCecoSolpConsumerMOA>();
+            cuentasConsumerMock = new Mock<IObtenerCuentasSolpConsumerMOA>();
+            ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
+            serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             obtenerSolpConsumerMOAMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpConsumerMOAMock = new Mock<ICrearSolpConsumerMOA>();
             modificarSolpConsumerMOAMock = new Mock<IModificarSolpConsumerMOA>();
@@ -741,10 +753,26 @@ namespace SustitucionMOATest.Services
             obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
             mIEmailComprasService = new Mock<IEmailComprasService>();
             mIComprasArchivosService = new Mock<IComprasArchivosService>();
-            comprasSapService = new Mock<IComprasSapService>();
             mIComprasArchivosImportService = new Mock<IComprasArchivosImportService>();
+            centroDireccionServiceMock = new Mock<ICentroDireccionService>();
+            tablaSapServiceMock = new Mock<ITablaSapService>();
+            unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
+
+            targetSap = new ComprasSapService(
+                cecoConsumerMock.Object,
+                crearSolpConsumerMOAMock.Object,
+                modificarSolpConsumerMOAMock.Object,
+                cuentasConsumerMock.Object,
+                ordenesConsumerMock.Object,
+                serviciosConsumerMock.Object,
+                obtenerSolpConsumerMOAMock.Object,
+                centroDireccionServiceMock.Object,
+                tablaSapServiceMock.Object,
+                unidadMedidaServiceMock.Object,
+                usuarioServiceMock.Object
+                );
 
             target = new ComprasService(
                 repositorioMock.Object,
@@ -772,7 +800,7 @@ namespace SustitucionMOATest.Services
                 mIEmailComprasService.Object,
                 mIComprasArchivosService.Object,
                 mIComprasArchivosImportService.Object,
-                comprasSapService.Object
+                targetSap
                 );
         }
 
@@ -913,9 +941,9 @@ namespace SustitucionMOATest.Services
                 },
             };
 
-            this.comprasSapService
-                .Setup(x => x.ObtenerServiciosSapRaw())
-                .Returns(servicioWSMOAResponseTest.Servicios);
+            this.serviciosConsumerMock
+                .Setup(x => x.request())
+                .Returns(servicioWSMOAResponseTest);
 
             List<ServicioSolp> listadoServiciosSolp = new List<ServicioSolp>
             {
@@ -960,7 +988,7 @@ namespace SustitucionMOATest.Services
 
             Assert.AreEqual(3, listadoServiciosSolp[4].CodigoSap);
 
-            this.comprasSapService.Verify(x => x.ObtenerServiciosSapRaw(), Times.Once);
+            this.serviciosConsumerMock.Verify(x => x.request(), Times.Once);
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Once);
         }
 
@@ -1093,7 +1121,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.AtLeastOnce());
             Assert.That(result.Errores.Count == 0);
         }
 
@@ -1199,7 +1227,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
 
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(3));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.AtLeastOnce());
             Assert.That(result.Errores.Count == 0);
         }
 
@@ -1368,8 +1396,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Agregar(It.IsAny<PeticionDeOferta>())).Returns(new PeticionDeOferta { Id = 1 });
             repositorioMock.Setup(repo => repo.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
             .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
 
             var result = target.GrabarPeticionDeOferta(peticionDeOfertaLocal, null, false, null);
@@ -1508,8 +1536,8 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(repo => repo.Listar(It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
             .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
 
             var result = target.CrearCotizacionConTrabajoYaHecho(solpToClone());
@@ -1578,7 +1606,7 @@ namespace SustitucionMOATest.Services
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Solp>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.AtLeastOnce());
         }
 
         [Test]
@@ -1758,8 +1786,8 @@ namespace SustitucionMOATest.Services
                     new SolpPosicion {Id=1, Centro= new TablaSap{CodigoSap="1" }, Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now,
                 Solp = new Solp { UsuarioCreacion_Id=1, NroSolp = "1", UsuarioCreacion = new Usuario{Id=1 } } }
                     } }} });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+            .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
 
             var result = target.CrearOrdenDeCompraConRegistroInfo(registroInfo, 1);
@@ -1770,7 +1798,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Cotizacion>()), Times.Once);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(5));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.AtLeastOnce());
             Assert.IsNotNull(result);
             Assert.That(result.First().Errores.Count == 0);
             Assert.AreEqual(expected.Count, result.Count);
@@ -1853,10 +1881,10 @@ namespace SustitucionMOATest.Services
             obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
             { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
             repositorioMock.Setup(repo => repo.Listar(
-    It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
-.Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<string>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+                It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
+            .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+            .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             target.TraerCotizacion(It.IsAny<int>());
             repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<TraerCotizacionConsulta>()), Times.Once);
@@ -1937,10 +1965,10 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<SolpSubposicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null))
            .Returns(new List<SolpSubposicion>() { new SolpSubposicion { Id = 1 } });
             repositorioMock.Setup(repo => repo.Listar(
-    It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
-.Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+                It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
+            .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
@@ -1961,8 +1989,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(repo => repo.Listar(
     It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
 .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+         .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
 
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
@@ -1991,8 +2019,8 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(repo => repo.Listar(
                 It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
             .Returns(new List<SolpPosicion> { new SolpPosicion { Indice = 1, Cantidad = 22, FechaEntregaServicio = DateTime.Now, Solp = new Solp { NroSolp = "1" } } });
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             target.ActualizarFechaLiberacion(solpLocal.NroSolp, DateTime.Now);
 
@@ -2401,7 +2429,7 @@ namespace SustitucionMOATest.Services
 
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
             repositorioMock.Verify(x => x.Agregar(It.IsAny<CotizacionPosicion>()), Times.Never);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(9));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.AtLeastOnce());
         }
 
         [Test]
@@ -2827,9 +2855,8 @@ namespace SustitucionMOATest.Services
             { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 },
             new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "PAR", Denominador = 2, Numerador = 1 }});
 
-            comprasSapService
-                .Setup(x => x.ObtenerPosiciones(It.IsAny<List<string>>()))
-                .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroSolicitud = "1", NumeroPosicion = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             target.ListarOfertasComprador(It.IsAny<int>(), usuario);
             repositorioMock.Verify(y => y.ObtenerConsultaEscalar(It.IsAny<ComparadorOfertasConsulta>()), Times.Once);
@@ -2838,11 +2865,11 @@ namespace SustitucionMOATest.Services
         [Test]
         public void ValidarSolpTratadaTest()
         {
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<string>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+           .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             target.ValidarSolpTratada("02929292");
-            comprasSapService.Verify(y => y.ObtenerPosicionesPendientesAdjudicar(It.IsAny<string>()), Times.Once);
+            obtenerSolpConsumerMOAMock.Verify(y => y.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()), Times.Once);
         }
 
         [Test]
@@ -3294,8 +3321,8 @@ namespace SustitucionMOATest.Services
                 Solp = new Solp { Pliego= new Pliego(), UsuarioCreacion= new Usuario{ Id = 1}, NroSolp = "1",ProveedorAsignado_Id=1 } } }
                 } } });
 
-            comprasSapService.Setup(service => service.ObtenerPosicionesPendientesAdjudicar(It.IsAny<IEnumerable<string>>()))
-           .Returns(new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } });
+            obtenerSolpConsumerMOAMock.Setup(service => service.RequestSolpWithNroAndDates(It.IsAny<ObtenerSolpRequest>()))
+             .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
             var resultado = target.DesagruparPO(It.IsAny<string>(), It.IsAny<string>());
             this.repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(7));

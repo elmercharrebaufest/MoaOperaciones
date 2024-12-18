@@ -1,6 +1,7 @@
 ﻿// Ignore Spelling: Utils Sustitucion
 
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System.Collections.Generic;
@@ -9,6 +10,8 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasSapService
     {
+        SolpSAPDto ConvertirSOLPSAP(Solp solpActual);
+
         CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap);
         ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
         ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);

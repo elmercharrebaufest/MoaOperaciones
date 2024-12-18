@@ -6,6 +6,7 @@ using NUnit.Framework.Internal;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
@@ -25,6 +26,11 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> solpConsumerMock;
 
+        private Mock<ICentroDireccionService> centroDireccionServiceMock;
+        private Mock<ITablaSapService> tablaSapServiceMock;
+        private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
+        private Mock<IUsuarioService> usuarioServiceMock;
+
         [SetUp]
         public void Setup()
         {
@@ -36,13 +42,22 @@ namespace SustitucionMOATest.Services
             crearSolpMock = new Mock<ICrearSolpConsumerMOA>();
             modificarSolpMock = new Mock<IModificarSolpConsumerMOA>();
 
+            centroDireccionServiceMock = new Mock<ICentroDireccionService>();
+            tablaSapServiceMock = new Mock<ITablaSapService>();
+            unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
+            usuarioServiceMock = new Mock<IUsuarioService>();
+
             target = new ComprasSapService(cecoConsumerMock.Object,
                                            crearSolpMock.Object,
                                            modificarSolpMock.Object,
                                            cuentasConsumerMock.Object,
                                            ordenesConsumerMock.Object,
                                            serviciosConsumerMock.Object,
-                                           solpConsumerMock.Object);
+                                           solpConsumerMock.Object,
+                                           centroDireccionServiceMock.Object,
+                                           tablaSapServiceMock.Object,
+                                           unidadMedidaServiceMock.Object,
+                                           usuarioServiceMock.Object);
         }
 
         [Test()]
