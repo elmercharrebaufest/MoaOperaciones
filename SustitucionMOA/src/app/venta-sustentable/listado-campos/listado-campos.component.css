@@ -1,5 +1,5 @@
 ﻿.btn-borrar {
-    background-color: #009688
+    background-color: var(--brand-color-green);
 }
 
 .btn-sin-fondo {
@@ -7,11 +7,20 @@
     border: none;
 }
 
-.btn-descargar {
+.btn-descargar,
+.btn-borrar {
     font-size: 22px;
-    color: #009688;
+    color: var(--brand-color-green);
     margin-right: 5px;
-    height: 15px
+    height: 15px;
+}
+
+.btn-descargar {
+    background-color: var(--brand-color-green);
+    -webkit-mask: url('/Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    mask: url('/Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    width: 25px;
+    height: 30px;
 }
 
 input:disabled,
@@ -22,14 +31,14 @@ input:disabled,
     color: #333232 !important;
 }
 
-::ng-deep .ui-autocomplete-input {    
+::ng-deep .ui-autocomplete-input {
     top: 0px;
 }
 
 ::ng-deep .ui-autocomplete {
     top: 0 !important;
-    }
-    
- ::ng-deep .ui-autocomplete-input {
+}
+
+::ng-deep .ui-autocomplete-input {
     width: calc(99% - 33px) !important;
-    }
+}

@@ -1,11 +1,11 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
+using System;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -125,6 +125,17 @@ namespace SustitucionMOA.Controllers
             byte[] fileBytes = fileWrapper.ReadAllBytes(rutaArchivo);
             string fileName = Path.GetFileName(rutaArchivo);
             return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+        }
+
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public JsonResult RenspaExiste(string renspa, string cuit, int cosechaId)
+        {
+            if (string.IsNullOrWhiteSpace(renspa)) { throw new ArgumentNullException(nameof(renspa), "El RENSPA es requerido."); }
+            if (string.IsNullOrWhiteSpace(cuit)) { throw new ArgumentNullException(nameof(cuit), "El CUIT es requerido."); }
+
+            CampoCosecha discardUnderscoreIsNotAvailable;
+            return JsonCustom(campoSustentableService.RenspaExiste(renspa, cuit, cosechaId, out discardUnderscoreIsNotAvailable));
         }
     }
 }

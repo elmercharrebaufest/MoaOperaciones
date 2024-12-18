@@ -138,6 +138,7 @@
     <Compile Include="Dto\sap\NumeroPosicion.cs" />
     <Compile Include="Dto\Scato\DestinoScato.cs" />
     <Compile Include="Dto\SolicitantesSolpedDto.cs" />
+    <Compile Include="Dto\SustentableRenspaExisteDto.cs" />
     <Compile Include="Dto\UnidadMedidaSapDto.cs" />
     <Compile Include="Dto\UsuarioReasignacionDto.cs" />
     <Compile Include="Entities\AdjuntosEntradasDeServicio.cs" />

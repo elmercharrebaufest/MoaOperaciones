@@ -8,6 +8,7 @@
 :root {
     --availableSpaceAfterHeader: calc(100vh - 178px);
     --availableSpaceAfterHeaderAndTitle: calc(var(--availableSpaceAfterHeader) - 150px);
+    --brand-color-green: #009688;
 }
 
 
@@ -4224,7 +4225,7 @@ div.panel-body a.active {
 }
 
 .btn-guardar {
-    background: #009688;
+    background: var(--brand-color-green);
 }
 
 .titleExtraData {
@@ -4416,7 +4417,7 @@ div.panel-body a.active {
 .btn-enviar {
     width: 120px;
     height: 36px;
-    background: #009688 0% 0% no-repeat padding-box;
+    background: var(--brand-color-green) 0% 0% no-repeat padding-box;
     box-shadow: 0px 2px 2px #0000003D;
     border-radius: 2px;
     opacity: 1;
@@ -4482,7 +4483,7 @@ div.panel-body a.active {
     right: 10px;
     width: 85px;
     height: 36px;
-    background: #009688 0% 0% no-repeat padding-box !important;
+    background: var(--brand-color-green) 0% 0% no-repeat padding-box !important;
     box-shadow: 0px 2px 2px #0000003D;
     border-radius: 2px;
     opacity: 1;
@@ -4491,7 +4492,7 @@ div.panel-body a.active {
 .btn-seleccionar-elemento {
     width: 70px;
     height: 30px;
-    background: #009688 0% 0% no-repeat padding-box;
+    background: var(--brand-color-green) 0% 0% no-repeat padding-box;
     box-shadow: 0px 2px 2px #0000003D;
     border-radius: 2px;
     opacity: 1;
@@ -4538,7 +4539,7 @@ div.panel-body a.active {
 }
 
 .comentarioPropio {
-    background: #009688 0% 0% no-repeat padding-box;
+    background: var(--brand-color-green) 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 4px;
     opacity: 1;
@@ -4630,7 +4631,7 @@ div.panel-body a.active {
     text-align: left;
     /*font: normal normal normal 16px/18px Roboto Regular;*/
     color: white;
-    background: #009688 0% 0% no-repeat padding-box;
+    background: var(--brand-color-green) 0% 0% no-repeat padding-box;
     box-shadow: 0px 3px 6px #00000029;
     border-radius: 4px;
     opacity: 1;
@@ -4737,7 +4738,7 @@ textarea:focus::placeholder {
 }
 
 .estadoAprobado {
-    color: #009688;
+    color: var(--brand-color-green);
 }
 
 .estadoRechazado {
@@ -4954,7 +4955,7 @@ input[type=number]::-webkit-inner-spin-button {
 .pillVerdeMenu > .nav-pills > li.active > a,
 .pillVerdeMenu > .nav-pills > li.active > a:focus,
 .pillVerdeMenu > .nav-pills > li.active > a:hover {
-    background-color: #009688;
+    background-color: var(--brand-color-green);
 }
 
 .subtitulo {
@@ -4982,7 +4983,7 @@ input[type=number]::-webkit-inner-spin-button {
     height: 36px;
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 2px 2px #0000003D;
-    border: 1px solid #009688;
+    border: 1px solid var(--brand-color-green);
     border-radius: 2px;
     opacity: 1;
 }

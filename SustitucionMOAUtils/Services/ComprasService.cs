@@ -11250,7 +11250,7 @@ namespace SustitucionMOAUtils.Services
             {
                 puedenVerseImportes = false;
             }
-            if (esPeticionDeMateriales && !respetaMateriales && !revisionEstaFinalizada)
+            if (esPeticionDeMateriales && !respetaMateriales && (!revisionEstaFinalizada || !revisionAprobada))
             {
                 puedenVerseImportes = false;
             }

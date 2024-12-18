@@ -39,8 +39,14 @@
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">RENSPA <span class="requerido">*</span></p>
                             <div class="styled-select">
-                                <input type="text" pInputText [(ngModel)]="renspa" class="fourRounded"
+                                <input type="text" pInputText [(ngModel)]="renspa" (change)="renspaChanged()" class="fourRounded"
                                     aria-controls="tableModal" mask="00.000.0.00000/00">
+                            </div>
+                            <div class="alert alert-warning" *ngIf="renspaExiste.RenspaExiste && !renspaExiste.MismoCuit">
+                                Este campo ya fue presentado, la carga se vinculara a su CUIT.
+                            </div>
+                            <div class="alert alert-danger" *ngIf="renspaExiste.RenspaExiste && renspaExiste.MismoCuit">
+                                Este campo ya fue presentado.
                             </div>
                         </div>
                     </div>
@@ -89,7 +95,7 @@
                             </p>
                             <div class="styled-select" style="overflow: initial;">
                                 <input type="search" [(ngModel)]="CUIT" class="fourRounded" mask="00-00000000-0"
-                                    maxlength="13" (change)="verificarCUITIngresado()" aria-controls="tableModal">
+                                    maxlength="13" (change)="verificarCUITIngresado(); renspaChanged();" aria-controls="tableModal">
                             </div>
                         </div>
 
@@ -183,7 +189,8 @@
                         </div>
 
                         <div class="col-xs-0 col-md-3">
-                            <button class="btn-custom btn-guardar btn-grande" (click)="campoProveedorAgregar()">
+                            <button class="btn-custom btn-guardar btn-grande" (click)="campoProveedorAgregar()"
+                                    (disabled)="renspaExiste.RenspaExiste && renspaExiste.MismoCuit">
                                 Guardar
                             </button>
 
