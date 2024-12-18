@@ -748,9 +748,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                obtenerSolpConsumerMOAMock.Object,
-                crearSolpConsumerMOAMock.Object,
-                modificarSolpConsumerMOAMock.Object,
                 obtenerMaterialesSolpConsumerMOAMock.Object,
                 crearPedidoConsumerMOAMock.Object,
                 obtenerFuenteAprovisionamientoConsumerMOAMock.Object,

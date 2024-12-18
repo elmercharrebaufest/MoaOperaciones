@@ -60,9 +60,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
-        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
-        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
         private readonly IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA;
         private readonly ICrearPedidoConsumerMOA crearPedidoConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
@@ -96,9 +93,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
-            ICrearSolpConsumerMOA crearSolpConsumerMOA,
-            IModificarSolpConsumerMOA modificarSolpConsumerMOA,
             IObtenerMaterialesSolpConsumerMOA obtenerMaterialesSolpConsumerMOA,
             ICrearPedidoConsumerMOA crearPedidoConsumerMOA,
             IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
@@ -122,9 +116,6 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap)
         {
             this.repositorio = repositorio;
-            this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
-            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
-            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
             this.obtenerMaterialesSolpConsumerMOA = obtenerMaterialesSolpConsumerMOA;
             this.crearPedidoConsumerMOA = crearPedidoConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
@@ -848,16 +839,16 @@ namespace SustitucionMOAUtils.Services
 
         private RespuestaGuardarSOLP FinalizarSolp(Solp solpEntity, RespuestaGuardarSOLP respuestaGuardarSOLP, bool enviarMailUrgencia)
         {
-            var resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
+            CrearSolpConsumerMOAResponse resultadoCrearSolp = new CrearSolpConsumerMOAResponse();
             resultadoCrearSolp.Errores = new List<CrearSolpConsumerMOAError>();
             respuestaGuardarSOLP.Errores = new List<string>();
             if (string.IsNullOrEmpty(solpEntity.NroSolp))
             {
-                var solpSAP = ConvertirSOLPSAP(solpEntity);
+                SolpSAPDto solpSAP = ConvertirSOLPSAP(solpEntity);
 
                 try
                 {
-                    resultadoCrearSolp = crearSolpConsumerMOA.Request(solpSAP);
+                    resultadoCrearSolp = comprasServiceSap.CrearSolpSap(solpSAP);
                 }
                 catch (Exception e)
                 {
@@ -906,14 +897,14 @@ namespace SustitucionMOAUtils.Services
             }
             else
             {
-                var resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
+                ModificarSolpConsumerMOAResponse resultadoEditarSolp = new ModificarSolpConsumerMOAResponse();
                 resultadoEditarSolp.Errores = new List<ModificarSolpConsumerMOAError>();
                 if (solpEntity.TipoSolpSap != 2)
                 {
                     try
                     {
-                        var solpSAP = ConvertirSOLPSAP(solpEntity);
-                        resultadoEditarSolp = modificarSolpConsumerMOA.Request(solpSAP);
+                        SolpSAPDto solpSAP = ConvertirSOLPSAP(solpEntity);
+                        resultadoEditarSolp = comprasServiceSap.ModificarSolpSap(solpSAP);
                     }
                     catch (Exception e)
                     {
@@ -2464,7 +2455,7 @@ namespace SustitucionMOAUtils.Services
                 Log.Info($"ObtenerSolpesDesdeSAPJob INICIO - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
 
                 if (string.IsNullOrEmpty(obtenerSolpRequest.NumeroSolp)) throw new Exception("NumeroSolp no puede ser vacio");
-                ObtenerSolpSAPResponse result = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
+                ObtenerSolpSAPResponse result = comprasServiceSap.ObtenerSolpSap(obtenerSolpRequest);
                 Log.Info(JsonConvert.SerializeObject(result));
 
                 List<TablaSap> ordenes = new List<TablaSap>();
@@ -3253,10 +3244,10 @@ namespace SustitucionMOAUtils.Services
                 FechaHasta = fechaHasta,
                 NumeroSolp = nroSolp,
             };
-            var solp = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+            var solp = comprasServiceSap.ObtenerSolpSap(filtros);
             if (solp.Posiciones.Any())
             {
-                var codigoSap = listaTablaSap.Where(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap).FirstOrDefault();
+                var codigoSap = listaTablaSap.FirstOrDefault(x => x.CodigoSap == solp.Posiciones[0].EstadoSolpSap);
                 if (codigoSap != null)
                 {
                     ActualizarEstadoSolp(nroSolp, codigoSap.Id);
@@ -10150,7 +10141,7 @@ namespace SustitucionMOAUtils.Services
                                         FechaHasta = fechaHasta,
                                         NumeroSolp = posicion.NroSolp,
                                     };
-                                    var solpSAPResponse = obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(filtros);
+                                    var solpSAPResponse = comprasServiceSap.ObtenerSolpSap(filtros);
 
                                     var solpSAPPosicion = solpSAPResponse?.Posiciones.FirstOrDefault(x => Int32.Parse(x.NumeroPosicion) == posicion.Indice);
                                     if (solpSAPPosicion != null)

@@ -17,22 +17,43 @@ namespace SustitucionMOAUtils.Services
     public class ComprasSapService : IComprasSapService
     {
         private readonly IObtenerCecoSolpConsumerMOA CentroDeCostoSolpConsumerMOA;
+        private readonly ICrearSolpConsumerMOA crearSolpConsumerMOA;
+        private readonly IModificarSolpConsumerMOA modificarSolpConsumerMOA;
         private readonly IObtenerCuentasSolpConsumerMOA cuentasSolpConsumerMOA;
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
 
         public ComprasSapService(IObtenerCecoSolpConsumerMOA obtenerCentroDeCostoSolpConsumerMOA,
+                                 ICrearSolpConsumerMOA crearSolpConsumerMOA,
+                                 IModificarSolpConsumerMOA modificarSolpConsumerMOA,
                                  IObtenerCuentasSolpConsumerMOA obtenerCuentasSolpConsumerMOA,
                                  IObtenerOrdenSolpConsumerMOA obtenerOrdenSolpConsumerMOA,
                                  IObtenerServiciosSolpConsumerMOA obtenerServiciosSolpConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA)
         {
             this.CentroDeCostoSolpConsumerMOA = obtenerCentroDeCostoSolpConsumerMOA;
+            this.crearSolpConsumerMOA = crearSolpConsumerMOA;
+            this.modificarSolpConsumerMOA = modificarSolpConsumerMOA;
             this.cuentasSolpConsumerMOA = obtenerCuentasSolpConsumerMOA;
             this.ordenesSolpConsumerMOA = obtenerOrdenSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = obtenerServiciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+        }
+
+        public CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap)
+        {
+            return crearSolpConsumerMOA.Request(solpSap);
+        }
+
+        public ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap)
+        {
+            return modificarSolpConsumerMOA.Request(solpSap);
+        }
+
+        public ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest)
+        {
+            return obtenerSolpConsumerMOA.RequestSolpWithNroAndDates(obtenerSolpRequest);
         }
 
         public List<TablaSapDto> ObtenerCentrosDeCostoSap()

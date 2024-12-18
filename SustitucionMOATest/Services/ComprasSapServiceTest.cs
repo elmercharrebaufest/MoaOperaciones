@@ -8,6 +8,7 @@ using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System.Collections.Generic;
 
 namespace SustitucionMOATest.Services
@@ -18,6 +19,8 @@ namespace SustitucionMOATest.Services
         private ComprasSapService target;
         private Mock<IObtenerCecoSolpConsumerMOA> cecoConsumerMock;
         private Mock<IObtenerCuentasSolpConsumerMOA> cuentasConsumerMock;
+        private Mock<ICrearSolpConsumerMOA> crearSolpMock;
+        private Mock<IModificarSolpConsumerMOA> modificarSolpMock;
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> solpConsumerMock;
@@ -30,8 +33,12 @@ namespace SustitucionMOATest.Services
             ordenesConsumerMock = new Mock<IObtenerOrdenSolpConsumerMOA>();
             serviciosConsumerMock = new Mock<IObtenerServiciosSolpConsumerMOA>();
             solpConsumerMock = new Mock<IObtenerSolpConsumerMOA>();
+            crearSolpMock = new Mock<ICrearSolpConsumerMOA>();
+            modificarSolpMock = new Mock<IModificarSolpConsumerMOA>();
 
             target = new ComprasSapService(cecoConsumerMock.Object,
+                                           crearSolpMock.Object,
+                                           modificarSolpMock.Object,
                                            cuentasConsumerMock.Object,
                                            ordenesConsumerMock.Object,
                                            serviciosConsumerMock.Object,

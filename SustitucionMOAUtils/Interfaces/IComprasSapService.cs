@@ -9,6 +9,10 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasSapService
     {
+        CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap);
+        ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
+        ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);
+
         List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();
