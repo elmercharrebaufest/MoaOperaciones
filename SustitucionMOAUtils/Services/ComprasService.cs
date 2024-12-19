@@ -56,7 +56,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
-        private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
         private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
@@ -78,7 +77,7 @@ namespace SustitucionMOAUtils.Services
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
-            IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
+            IEmailService emailService,
             IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
@@ -94,7 +93,6 @@ namespace SustitucionMOAUtils.Services
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
             this.emailService = emailService;
-            this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
@@ -7303,21 +7301,6 @@ namespace SustitucionMOAUtils.Services
             AlternateView alternateView = AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
             alternateView.LinkedResources.Add(res);
             return alternateView;
-        }
-
-        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor)
-        {
-            var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
-
-            var fechaHastaDate = string.IsNullOrEmpty(fechasHasta) ? DateTime.Now : DateTime.Parse(fechasHasta);
-
-            result = result.OrderByDescending(x => x.Cabecera.FechaCreacion).ToList();
-
-            result = result
-              .Where(x => x.Cabecera == null || (x.Cabecera.FechaCreacion <= fechaHastaDate))
-              .ToList();
-
-            return result;
         }
 
         public Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos)

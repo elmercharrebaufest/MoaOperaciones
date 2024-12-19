@@ -409,7 +409,7 @@ namespace SustitucionMOATest.Controllers
             var fechaHasta = "2023-02-01";
             var codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Returns(new List<OrdenDeCompraSAPDto>
                 {
                 new OrdenDeCompraSAPDto
@@ -441,12 +441,12 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerReporteOrdenDeCompra_InfoCustomException()
         {
             // Arrange
-            var nroOC = "12345";
-            var fechaDesde = "2023-01-01";
-            var fechaHasta = "2023-02-01";
-            var codigoProveedor = "PROV123";
+            const string nroOC = "12345";
+            const string fechaDesde = "2023-01-01";
+            const string fechaHasta = "2023-02-01";
+            const string codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Throws(new InfoCustomException("Información personalizada"));
 
             try

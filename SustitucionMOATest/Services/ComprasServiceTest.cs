@@ -764,6 +764,7 @@ namespace SustitucionMOATest.Services
                 obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
                 obtenerContratoSolpConsumerMOAMock.Object,
                 listarSolpPendientesConsumerMOAMock.Object,
+                reporteOrdenDeCompraConsumerMOAMock.Object,
                 centroDireccionServiceMock.Object,
                 tablaSapServiceMock.Object,
                 unidadMedidaServiceMock.Object,
@@ -777,7 +778,6 @@ namespace SustitucionMOATest.Services
                 httpContextServiceMock.Object,
                 usuarioServiceMock.Object,
                 emailServiceMock.Object,
-                reporteOrdenDeCompraConsumerMOAMock.Object,
                 obtenerPDFOrdenCompraConsumerMOAMock.Object,
                 obtenerAdjuntosSOLPEDConsumerMOAMock.Object,
                 mIEmailComprasService.Object,
@@ -2468,7 +2468,7 @@ namespace SustitucionMOATest.Services
                 }
                 });
 
-            var result = target.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
+            var result = targetSap.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);

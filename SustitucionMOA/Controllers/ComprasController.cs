@@ -680,7 +680,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
         {
-            return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
+            return JsonCustom(comprasSapService.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
         }
 
         [HttpGet]

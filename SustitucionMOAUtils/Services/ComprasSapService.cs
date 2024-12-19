@@ -37,6 +37,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
+        private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -57,6 +58,7 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
                                  IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
                                  IListarSolpPendientesConsumerMOA listarSolpPendientesConsumerMOA,
+                                 IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -76,6 +78,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.listarSolpPendienteConsumeMOA = listarSolpPendientesConsumerMOA;
+            this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
             this.centroDireccionService = centroDireccionService;
             this.tablaSapService = tablaSapService;
             this.unidadMedidaService = unidadMedidaService;
@@ -1055,6 +1058,21 @@ namespace SustitucionMOAUtils.Services
                 CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
                 Codigo = c.Codigo
             });
+        }
+
+        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor)
+        {
+            var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
+
+            var fechaHastaDate = string.IsNullOrEmpty(fechasHasta) ? DateTime.Now : DateTime.Parse(fechasHasta);
+
+            result = result.OrderByDescending(x => x.Cabecera.FechaCreacion).ToList();
+
+            result = result
+              .Where(x => x.Cabecera == null || (x.Cabecera.FechaCreacion <= fechaHastaDate))
+              .ToList();
+
+            return result;
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)
