@@ -1,6 +1,9 @@
 ﻿using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -16,6 +19,16 @@ namespace SustitucionMOAUtils.Services
         public TablaSap GetById(int id)
         {
             return repositorio.Obtener<TablaSap>(x => x.Id == id);
+        }
+
+        public TablaSap Obtener(Expression<Func<TablaSap, bool>> filtro)
+        {
+            return repositorio.Obtener(filtro);
+        }
+
+        public List<TablaSap> Listar(Expression<Func<TablaSap, bool>> filtros)
+        {
+            return repositorio.Listar(filtros);
         }
     }
 }

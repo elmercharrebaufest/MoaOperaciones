@@ -17,7 +17,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
-        List<TablaSapDto> ObtenerTablaSap(string tabla);
         List<TablaSapDto> ListarTablaSap(List<string> tablas);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<TablaGeneralDto> ObtenerTiposPosicionSolp();
@@ -75,7 +74,6 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId, string mensaje);
         List<AdjudicacionDto> ListarAdjudicaciones(int solpId);
         AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
-        AdjudicacionDto ObtenerAdjudicacion(string nroOC);
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
@@ -93,7 +91,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
-        ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerTiposImputaciones();
         void ObtenerDatosReporteSolp();

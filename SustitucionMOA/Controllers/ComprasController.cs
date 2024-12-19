@@ -73,7 +73,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new
             {
-                ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
+                ClaseDocumento = comprasSapService.ObtenerTablaSap(TablasSap.ClaseDocumento),
                 Centro = service.ObtenerCentros(),
                 CentrosDireccion = service.ObtenerCentrosDireccion(),
                 Almacen = service.ObtenerAlmacenes(),
@@ -81,8 +81,8 @@ namespace SustitucionMOA.Controllers
                 GrupoArticulo = service.ObtenerGrupoArticulos(),
                 Moneda = service.ObtenerMonedas(),
                 Unidades = service.ObtenerUnidades(),
-                EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
-                CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
+                EstadosSolpSap = comprasSapService.ObtenerTablaSap(TablasSap.EstadoSolpSap),
+                CentroBeneficio = comprasSapService.ObtenerTablaSap(TablasSap.CentroBeneficio),
                 EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
                 TipoPosicionSolp = tiposPosicionSolp,
                 TipoPosicion = tiposPosicionSolp,
@@ -90,8 +90,8 @@ namespace SustitucionMOA.Controllers
 
                 Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                 Regiones = service.ListarRegionesSap(),
-                CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
-                CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
+                CondicionesDeImportacion = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
+                CondicionesDePago = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDePago),
                 CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                 {
                     ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -590,7 +590,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerAdjudicacion(string nroOC)
         {
 
-            var result = service.ObtenerAdjudicacion(nroOC);
+            var result = comprasSapService.ObtenerAdjudicacion(nroOC);
             return JsonCustom(new { data = result });
 
         }
@@ -776,7 +776,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ModificarOrdenDeCompra(string json)
         {
             var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-            var result = service.EditarOrdenDeCompra(adjudicacion);
+            var result = comprasSapService.EditarOrdenDeCompra(adjudicacion);
             return JsonCustom(result);
         }
 

@@ -25,11 +25,15 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerOrdenSolpConsumerMOA> ordenesConsumerMock;
         private Mock<IObtenerServiciosSolpConsumerMOA> serviciosConsumerMock;
         private Mock<IObtenerSolpConsumerMOA> solpConsumerMock;
+        private Mock<ICrearPedidoConsumerMOA> crearPedidoMock;
+        private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMock;
+        private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMock;
 
         private Mock<ICentroDireccionService> centroDireccionServiceMock;
         private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
+        private Mock<ITipoCambioService> cambioServiceMock;
 
         [SetUp]
         public void Setup()
@@ -41,23 +45,32 @@ namespace SustitucionMOATest.Services
             solpConsumerMock = new Mock<IObtenerSolpConsumerMOA>();
             crearSolpMock = new Mock<ICrearSolpConsumerMOA>();
             modificarSolpMock = new Mock<IModificarSolpConsumerMOA>();
+            crearPedidoMock = new Mock<ICrearPedidoConsumerMOA>();
+            modificarOrdenDeCompraConsumerMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
+            obtenerOrdenDeCompraConsumerMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
 
             centroDireccionServiceMock = new Mock<ICentroDireccionService>();
             tablaSapServiceMock = new Mock<ITablaSapService>();
             unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
+            cambioServiceMock = new Mock<ITipoCambioService>();
+
 
             target = new ComprasSapService(cecoConsumerMock.Object,
+                crearPedidoMock.Object,
                                            crearSolpMock.Object,
+                                             modificarOrdenDeCompraConsumerMock.Object,
                                            modificarSolpMock.Object,
                                            cuentasConsumerMock.Object,
                                            ordenesConsumerMock.Object,
                                            serviciosConsumerMock.Object,
+                                           obtenerOrdenDeCompraConsumerMock.Object,
                                            solpConsumerMock.Object,
                                            centroDireccionServiceMock.Object,
                                            tablaSapServiceMock.Object,
                                            unidadMedidaServiceMock.Object,
-                                           usuarioServiceMock.Object);
+                                           usuarioServiceMock.Object,
+                                           cambioServiceMock.Object);
         }
 
         [Test()]
