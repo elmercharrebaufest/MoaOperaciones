@@ -78,6 +78,9 @@ export class DeclaracionConformidadComponent extends BaseComponent implements On
 
             this.abrirModalFirmaDeclaracion()
           }
+          else {
+            this.resultadoDeclaracion.emit(true);
+          }
         }
       },
       error => {

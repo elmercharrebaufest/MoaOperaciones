@@ -66,6 +66,7 @@
     <Compile Include="Dto\ArchivoBoleto\ArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\CrearReqArchivoBoletoDto.cs" />
     <Compile Include="Dto\ArchivoBoleto\ListarReqArchivoBoletoDto.cs" />
+    <Compile Include="Dto\CampoSustentable\SugerenciaCampoDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionDtoCopia.cs" />
     <Compile Include="Dto\Compras\AdjudicacionEditarDto.cs" />
     <Compile Include="Dto\Compras\AdjudicacionPosicionDtoCopia.cs" />

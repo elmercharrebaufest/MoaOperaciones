@@ -5,8 +5,10 @@ using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
@@ -598,6 +600,76 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
+        public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+        }
+
+        public void AgregarCampos(List<CampoProveedorDto> camposProveedorDto, string mailUsuario)
+        {
+            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            foreach (var proveedorId in camposProveedorDto.Select(x => x.Proveedor_Id).Distinct())
+            {
+                ValidarUsuario(usuario, proveedorId);
+            }
+
+            var campos = camposProveedorDto.Select(x => new CampoProveedor
+            {
+                HectareasTotales = x.HectareasTotales,
+                HectareasSoja = x.HectareasSoja,
+                CUIT = x.CUIT,
+                Latitud = x.Latitud,
+                Longitud = x.Longitud,
+                Proveedor_Id = x.Proveedor_Id,
+                CampoCosecha = new CampoCosecha
+                {
+                    Cosecha_Id = x.CosechaId,
+                    ToneladasAprobadas = -1,
+                    Campo = new CampoSustentable
+                    {
+                        Nombre = x.NombreCampo,
+                        Localidad_Id = x.Localidad_Id,
+                        Renspa = x.Renspa
+                    }
+                },
+                Archivo_Id = x.Archivo_Id,
+                FechaCreacion = DateTime.Now,
+                Borrado = false
+            });
+
+            foreach (var campoProveedor in campos)
+            {
+                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
+                if (renspaExisteDto.RenspaExiste)
+                {
+                    if (!renspaExisteDto.MismoCuit)
+                    {
+                        var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == campoProveedor.CUIT);
+                        campoCosechaExistente.Proveedores.Add(proveedor);
+                        repositorio.GuardarCambios();
+                    }
+                }
+                else
+                {
+                    ValidarCampo(campoProveedor, null);
+                    var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
+                    campoProveedor.RazonSocial = declaracion.RazonSocial;
+                    
+                    campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+                    
+                    repositorio.Agregar(campoProveedor);
+                    repositorio.GuardarCambios();
+
+                    var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
+                    var rutaArchivo = archivoCampo.Ruta;
+                    EnviarCampoACertificadorDeSustentables(rutaArchivo, campoProveedor);
+
+                    var archivo = Convert.ToBase64String(File.ReadAllBytes(rutaArchivo));
+                    InformarCampoSustentable(campoProveedor, archivo);
+                }
+            }
+        }
+
         private void ValidarUsuario(Usuario usuario, int proveedorId)
         {
             var proveedor = repositorio.Obtener<Proveedor>(proveedorId);
@@ -607,7 +679,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
                 {
-                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
+                    throw new ValidationCustomException($"Su usuario no tiene habilitado el proveedor con el que intenta operar ({proveedor.CUIT}).");
                 }
             }
         }

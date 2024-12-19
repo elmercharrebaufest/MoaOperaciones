@@ -9,13 +9,15 @@ import { FloatMsgService } from './../../common/services/FloatMsgService';
 import { ModalService } from './../../common/services/ModalService';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { SpinnerComponent } from './../../common/view-child/spinner/spinner.component';
-import { CampoProveedor, CampoSustentable, CampoCosecha } from './../sustentable'
+import { CampoProveedor, CampoSustentable, CampoCosecha, CampoProveedorDetalle, SugerenciaCampo } from './../sustentable'
 import { DeclaracionConformidadComponent } from '../declaracion-conformidad/declaracion-conformidad.component';
 import { isUndefined } from 'util';
 import { VendedorProveedor } from '../../common/models/vendedorProveedor';
 import { finalize } from 'rxjs/operators';
 import { Message, MessageService } from 'primeng/api';
 import { RenspaExiste } from '../renspa-existe.interface';
+import { ApiResponse } from '../../common/models/response';
+
 export interface DatosCopiar {
     NombreCampo: string;
     NombreCosecha: string;
@@ -38,10 +40,12 @@ export interface DatosCopiar {
     info?: string;
     logout?: boolean;
 }
+
 @Component({
     selector: 'app-alta',
     templateUrl: './alta.component.html',
-    providers: [VentaSustentableService, MessageService]
+    providers: [VentaSustentableService, MessageService],
+    styleUrls: ['./alta.component.css']
 })
 export class AltaComponent extends BaseComponent implements OnInit {
 
@@ -105,8 +109,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
     sePreseleccionoProveedor = false;
     proveedorTexto: string = "";
     corredorDebeCargarCuit = false;
-    ngOnInit() {
 
+    mostrarSugerenciasCamposNuevos: boolean = false;
+    camposNuevosSugeridos: SugerenciaCampo[] = [];
+    camposSugeridosSeleccionaTodos: boolean = false;
+
+    ngOnInit() {
         this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
 
         this.navService.setSeccionList([]);
@@ -126,8 +134,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.declaracionComformidad.operarComo = 1;
         this.getParams();
         this.getCosechas();
-
     }
+    
     getParams() {
         try {
             const queryString = window.location.href;
@@ -177,9 +185,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
                                 this.CUIT = result.CUIT;
                             }
                             this.proveedorId = result.Proveedor_Id;
-
                         }
-
                         this.mensajeComponent.setInfoMsg("Si el contorno del lote presentado este año es diferente al del año anterior adjuntar nuevo KMZ");
                     }
                 },
@@ -187,14 +193,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     this.spinnerComponent.hideIt();
                     this.mensajeComponent.setErrorMsg(error.message);
                 }
-
             );
         } catch (e) {
             this.spinnerComponent.hideIt();
             this.mensajeComponent.setErrorMsg(e);
             return false; //<-- Prevent Refresh
         }
-
         return false; //<-- Prevent Refresh
     }
 
@@ -262,7 +266,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     onChangeCosecha() {
-
         if (this.cosechaId > 0) {
             if (!this.esCorredor || (this.esCorredor && (this.operarComo == 2 || !this.sePreseleccionoProveedor))) {
                 this.mensajeComponent.setMsgsEmpty();
@@ -318,7 +321,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
         let campoSustentable: CampoSustentable;
         let campoCosecha: CampoCosecha;
 
-
         if (this.validar()) {
             this.blockUI.stop();
             return;
@@ -343,7 +345,6 @@ export class AltaComponent extends BaseComponent implements OnInit {
             CampoCosecha: campoCosecha,
             Archivo_Id: this.UsarArchivo_Id ? this.Archivo_Id : 0
         }
-
 
         this.mensajeComponent.setMsgsEmpty();
         this.spinnerComponent.showIt();
@@ -512,8 +513,12 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     onResultadoDeclaracion(result: boolean) {
-        if (!result)
+        if (!result) {
             this.cosechaId = 0;
+        }
+        else {
+            this.consultarCamposAnterioresParaSugerir();
+        }
     }
 
     cambiarModoOperacion() {
@@ -561,6 +566,37 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.proveedorSeleccionado = null;
     }
 
+    consultarCamposAnterioresParaSugerir() {
+        let proveedorId: number = this.proveedorId;
+        let cosechaId: number = this.cosechaId;
+        let cuitTitularCP: string = this.CUIT;
+
+        if (proveedorId && cosechaId && cuitTitularCP) {
+            this.spinnerComponent.showIt();
+            this.subscription = this.service.obtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP).subscribe(
+                (result) => {
+                    this.spinnerComponent.hideIt();
+                    let camposSugeridos = this.manejarErroresApiResponse(result);
+                    if (camposSugeridos && camposSugeridos.some(x => !x.CampoYaPresentado)) {
+                        this.camposNuevosSugeridos = camposSugeridos.map(x => {
+                            x.CosechaId = cosechaId;
+                            return x;
+                        });
+                        this.mostrarSugerenciasCamposNuevos = true;
+                    }
+                },
+                error => {
+                    this.spinnerComponent.hideIt();
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    console.error("Error al obtener sugerencia de campos de campaña previa", error);
+                }
+            );
+        }
+        else {
+            console.error(`Parámetro faltante. ProveedorId: ${proveedorId}. CosechaId: ${cosechaId}. CUIT: ${cuitTitularCP}.`);
+        }
+    }
+
     mostrarWarningCuitsIguales() {
         const mensajeCuitsIguales: Message = {
             severity: 'warn',
@@ -575,5 +611,104 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
             this.renspaExiste = result;
         });
+    }
+
+    cancelarSugerenciaCamposNuevos() {
+        this.mostrarSugerenciasCamposNuevos = false;
+        this.camposNuevosSugeridos = [];
+    }
+
+    grabarSugerenciaCamposNuevos() {
+        this.blockUI.start();
+        this.mostrarSugerenciasCamposNuevos = false;
+        this.mensajeComponent.setMsgsEmpty();
+
+        let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado).map(x => x as CampoProveedorDetalle);
+        this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar).subscribe(
+            (result) => {
+                this.blockUI.stop();
+                this.mensajeComponent.setSuccessMsg("Los campos se han guardado correctamente");
+                setTimeout(() => {
+                    this.redirigirAListado();
+                }, 3000);
+            },
+            error => {
+                this.blockUI.stop();
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        );
+    }
+    
+    onSugeridosSeleccionarTodosChange() {
+        let seleccionar = this.camposSugeridosSeleccionaTodos;
+        this.camposNuevosSugeridos
+            .filter(x => !x.CampoYaPresentado)
+            .forEach(x => { x.Seleccionado = seleccionar });
+    }
+
+    onSugerenciaSeleccionadaChange(sugerencia: SugerenciaCampo) {
+        if (sugerencia.Seleccionado) {
+            this.camposSugeridosSeleccionaTodos = this.camposNuevosSugeridos.every(x => x.CampoYaPresentado || x.Seleccionado);
+        }
+        else {
+            this.camposSugeridosSeleccionaTodos = false;
+        }
+    }
+
+    haySugerenciaSeleccionada(): boolean {
+        return this.camposNuevosSugeridos.some(x => !x.CampoYaPresentado && x.Seleccionado);
+    }
+
+    descargarKmz(campoCosechaId: number, proveedorId: number) {
+        this.service.descargarArchivoKMZ(campoCosechaId, proveedorId).subscribe(
+            (result) => {
+                if (result.logout) {
+                    this.sessionDataService.logout();
+                }
+                else {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], { type: "application/octet-stream" });
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(blob, result.FileDownloadName);
+                    }
+                    else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        return false;
+                    }
+                }
+            },
+            (error) => {
+                this.mensajeComponent.setErrorMsg(error.message);
+            }
+        )
+    }
+
+    getNombreCosecha(): string {
+        return (this.cosechaId) ? this.cosechas.find(x => x.Id == this.cosechaId).Nombre : "";
+    }
+
+    manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
+        this.mensajeComponent.setMsgsEmpty();
+        if (response.logout) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (response.error) {
+            this.mensajeComponent.setErrorMsg(response.error);
+            return undefined;
+        }
+        if (response.info) {
+            this.mensajeComponent.setInfoMsg(response.info);
+        }
+        return response.data;
     }
 }

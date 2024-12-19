@@ -1,5 +1,9 @@
-﻿using SustitucionMOAModel.Dto;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WebApiMap.ScatoRepositorio;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
@@ -22,5 +26,7 @@ namespace SustitucionMOAUtils.Interfaces
         string ObtenerRutaArchivoKMZ(int campoCosechaId, int proveedorId);
         Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
         SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
+        List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP);
+        void AgregarCampos(List<CampoProveedorDto> camposProveedorDto, string mailUsuario);
     }
 }

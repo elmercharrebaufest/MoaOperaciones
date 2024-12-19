@@ -1,4 +1,7 @@
 ﻿using Newtonsoft.Json;
+using SustitucionMOAAssets;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Models.WSMapMOA;
 using SustitucionMOAModel.Models.WSMapMOA.PDF;
@@ -6,6 +9,7 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Wrappers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -136,6 +140,25 @@ namespace SustitucionMOA.Controllers
 
             CampoCosecha discardUnderscoreIsNotAvailable;
             return JsonCustom(campoSustentableService.RenspaExiste(renspa, cuit, cosechaId, out discardUnderscoreIsNotAvailable));
+        }
+
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public ActionResult ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            var response = new SustitucionMOAApiResponse<List<SugerenciaCampoDto>>();
+            response.Data = campoSustentableService.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+            return ContentCustom(response);
+        }
+
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpPost]
+        public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson)
+        {
+            var campos = JsonConvert.DeserializeObject<List<CampoProveedorDto>>(camposJson);
+            var mailUsuario = SessionPersister.User.username;
+            campoSustentableService.AgregarCampos(campos, mailUsuario);
+            return ContentCustom(null);
         }
     }
 }

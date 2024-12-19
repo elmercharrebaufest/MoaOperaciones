@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using System;
@@ -55,6 +56,64 @@ namespace SustitucionMOARepositorio.Repositorios
         public Archivo ObtenerArchivo(int idArchivo)
         {
             return Obtener<Archivo>(a => a.Id == idArchivo);
+        }
+
+        public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int nuevaCosechaId, string cuitTitularCP)
+        {
+            var cosechaAnteriorId = (
+                from cosechaNueva in Set<Cosecha>()
+                join cosechaAnterior in Set<Cosecha>() on true equals true
+                where
+                    cosechaNueva.Id == nuevaCosechaId &&
+                    cosechaAnterior.Inicio < cosechaNueva.Inicio
+                 select new
+                 {
+                     cosechaAnterior.Id,
+                     cosechaAnterior.Inicio
+                 })
+                .OrderByDescending(x => x.Inicio)
+                .Select(x => x.Id)
+                .FirstOrDefault();
+
+            var camposSugerencia = (
+                from campoProveedor in Set<CampoProveedor>()
+                join campoProvPresentado in Set<CampoProveedor>() on
+                    new { campoProveedor.CampoCosecha.Campo.Renspa, cosechaId = nuevaCosechaId } equals
+                    new { campoProvPresentado.CampoCosecha.Campo.Renspa, cosechaId = campoProvPresentado.CampoCosecha.Cosecha_Id } into campoPresentadoGroup
+                //join campoSustentableDuplicado in Set<CampoSustentable>() on
+                //    campoProveedor.CampoCosecha.Campo.Renspa equals campoSustentableDuplicado.Renspa &&
+                //    campoSustentableDuplicado.co into sustentableDuplicadoGroup
+                from campoPresentado in campoPresentadoGroup.DefaultIfEmpty()
+                where
+                    campoProveedor.Proveedor_Id == proveedorId &&
+                    campoProveedor.CUIT == cuitTitularCP &&
+                    campoProveedor.CampoCosecha.Cosecha_Id == cosechaAnteriorId &&
+                    campoProveedor.CampoCosecha.ToneladasAprobadas > 0
+                select new SugerenciaCampoDto
+                {
+                    NombreCosecha = campoProveedor.CampoCosecha.Cosecha.Nombre,
+                    HectareasSoja = campoProveedor.HectareasSoja,
+                    HectareasTotales = campoProveedor.HectareasTotales,
+                    NombreCampo = campoProveedor.CampoCosecha.Campo.Nombre,
+                    Renspa = campoProveedor.CampoCosecha.Campo.Renspa,
+                    Localidad_Id = campoProveedor.CampoCosecha.Campo.Localidad_Id,
+                    ToneladasAprobadas = campoProveedor.CampoCosecha.ToneladasAprobadas,
+                    Latitud = campoProveedor.Latitud,
+                    Longitud = campoProveedor.Longitud,
+                    CampoCosechaId = campoProveedor.CampoCosecha_Id,
+                    ProveedorNombre = campoProveedor.RazonSocial,
+                    LocalidadNombre = campoProveedor.CampoCosecha.Campo.Localidad.Nombre,
+                    CampoSustentableId = campoProveedor.CampoCosecha.CampoSustentable_Id,
+                    CosechaId = campoProveedor.CampoCosecha.Cosecha_Id,
+                    CUIT = campoProveedor.CUIT,
+                    Archivo_Id = campoProveedor.Archivo_Id,
+                    Proveedor_Id = campoProveedor.Proveedor_Id,
+                    CodigoProveedor = campoProveedor.Proveedor.CodigoProveedor,
+                    CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP)
+                })
+                .ToList();
+
+            return camposSugerencia;
         }
     }
 }
