@@ -56,8 +56,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
-        private readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
-        private readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
         private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
@@ -81,8 +79,7 @@ namespace SustitucionMOAUtils.Services
         public ComprasService(IRepositorio repositorio,
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
-            IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
-            IVendedoresConsumerMOA vendedoresConsumerMOA,
+            IUsuarioService usuarioService,
             IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
             IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
             IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA,
@@ -100,8 +97,6 @@ namespace SustitucionMOAUtils.Services
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
-            this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
-            this.vendedoresConsumerMOA = vendedoresConsumerMOA;
             this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
@@ -2831,7 +2826,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (solp.Adicional != true)
                 {
-                    var proveedor = ObtenerYCrearProveedorCompras(posicion.ProveedorDeseado);
+                    var proveedor = usuarioService.ObtenerYCrearProveedorCompras(posicion.ProveedorDeseado);
                     solp.ProveedorAsignado_Id = proveedor.Usuario_Id;
                 }
                 else
@@ -3484,7 +3479,7 @@ namespace SustitucionMOAUtils.Services
                     if (verAdjudicar) // Lo siguiente se hace unicamente en caso que todavía esté habilitada la adjudicación, ya que es una consulta costosa.
                     {
                         List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
-                        var vendedoresMoa = vendedoresConsumerMOA.Request(usuarioPO.CodigoProveedor, fechas);
+                        var vendedoresMoa = usuarioService.ObtenerVendedorSap(usuarioPO.CodigoProveedor, fechas);
                         if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
                         {
                             mensaje = "No existe un proveedor con ese codigo.";
@@ -3832,7 +3827,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     try
                     {
-                        ObtenerYCrearProveedorCompras(codigo);
+                        usuarioService.ObtenerYCrearProveedorCompras(codigo);
                     }
                     catch (Exception e)
                     {
@@ -6929,7 +6924,7 @@ namespace SustitucionMOAUtils.Services
             {
                 try
                 {
-                    ProveedorComprasDto proveedor = ObtenerYCrearProveedorCompras(result.Cabecera.CodigoProveedor);
+                    ProveedorComprasDto proveedor = usuarioService.ObtenerYCrearProveedorCompras(result.Cabecera.CodigoProveedor);
                     Log.Info("ObtenerOrdenDeCompra ObtenerProveedorCompras" + proveedor.ToJson());
 
                     result.Cabecera.RazonSocialProveedor = proveedor.RazonSocial;
@@ -6954,60 +6949,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
             return result;
-        }
-
-        private ProveedorComprasDto ObtenerYCrearProveedorCompras(string codigoProveedor)
-        {
-            var proveedorMoa = obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
-            if (proveedorMoa == null)
-            {
-                throw new WSCustomException("No existe un proveedor con ese codigo");
-            }
-            List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
-            var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
-            if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
-                throw new WSCustomException("No existe un proveedor con ese codigo.");
-            var cuit = vendedoresMoa.vendedores.First().cuit;
-
-            var usuarioDb = repositorio.Obtener<Usuario>(a => a.Mail == proveedorMoa.MAIL);
-            if (usuarioDb == null)
-            {
-                var proveedor = new ProveedorDto
-                {
-                    Mail = proveedorMoa.MAIL,
-                    CUIT = cuit,
-                    RazonSocial = proveedorMoa.NAME
-                };
-
-                var resultado = usuarioService.GrabarProveedor(proveedor, EstadoAprobacion.Aprobado);
-                return new ProveedorComprasDto
-                {
-                    RazonSocial = proveedorMoa.NAME,
-                    CodigoProveedor = codigoProveedor,
-                    CUIT = cuit,
-                    Usuario_Id = resultado.ProveedorDto.Id,
-                    Mail = resultado.ProveedorDto.Mail
-                };
-            }
-            else
-            {
-                if (usuarioDb.CUITRegistro != cuit)
-                    throw new WSCustomException("El mail está registrado con otro CUIT.");
-                if (usuarioDb.TipoUsuario.Id != (int)TipoUsuarioEnum.NoGranos)
-                    throw new WSCustomException("El mail no está registrado con el tipo de usuario ''No Granos''.");
-
-                var proveedor = usuarioDb.ObtenerProveedorAsignado();
-
-                return new ProveedorComprasDto
-                {
-                    RazonSocial = proveedor.RazonSocial,
-                    CodigoProveedor = codigoProveedor,
-                    CUIT = cuit,
-                    Usuario_Id = usuarioDb.Id,
-                    Proveedor_Id = proveedor.Id,
-                    Mail = proveedor.Mail
-                };
-            }
         }
 
         public List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId)
@@ -7729,7 +7670,7 @@ namespace SustitucionMOAUtils.Services
 
         public ProveedorComprasDto DevolverMonedaProveedor(string codigoProveedor)
         {
-            var proveedorMoa = obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
+            var proveedorMoa = usuarioService.ObtenerProveedorSap(codigoProveedor);
             var proveedorDto = new ProveedorComprasDto();
             if (proveedorMoa == null)
             {
@@ -7793,7 +7734,7 @@ namespace SustitucionMOAUtils.Services
                         {
                             OrdenDeCompraSAPDto ordenDeCompra = ObtenerOrdenDeCompra(nro);
                             Log.Info("ActualizarDatosSolp ObtenerOrdenDeCompra" + ordenDeCompra.ToJson());
-                            ProveedorComprasDto proveedor = ObtenerYCrearProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
+                            ProveedorComprasDto proveedor = usuarioService.ObtenerYCrearProveedorCompras(ordenDeCompra.Cabecera.CodigoProveedor);
                             foreach (OrdenDeCompraSAPPosicion posicionOCSap in ordenDeCompra.Posiciones.Where(x => x.NroSolp == solp.NroSolp))
                             {
                                 SolpPosicion posicionSolp = solp.Posiciones.FirstOrDefault(x => x.Indice == int.Parse(posicionOCSap.IndiceSolp));
@@ -9138,7 +9079,7 @@ namespace SustitucionMOAUtils.Services
         }
         private bool ProveedorExisteEnSAP(string codigoProveedor)
         {
-            return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor) != null;
+            return usuarioService.ObtenerProveedorSap(codigoProveedor) != null;
         }
 
         public Resultado GuardarEnvioCircularProveedor(int id, EnviarCircularEnum envioCircularA, DateTime? fechaLimite)

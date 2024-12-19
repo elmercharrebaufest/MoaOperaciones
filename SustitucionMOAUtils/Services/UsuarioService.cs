@@ -1,10 +1,12 @@
-﻿// Ignore Spelling: Aprobacion
+﻿// Ignore Spelling: Aprobacion codigo
 
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -17,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
+using Models = SustitucionMOAModel.Models;
 using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
 
@@ -28,13 +31,22 @@ namespace SustitucionMOAUtils.Services
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
         protected readonly IDerivacionesAprobacionesService derivacionesAprobacionesService;
+        protected readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
+        protected readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
 
-        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer, IDerivacionesAprobacionesService derivacionesAprobacionesService)
+        public UsuarioService(IRepositorioUsuario repositorio,
+                              IVendedorService vendedorService,
+                              IAzureADConsumer azureADConsumer,
+                              IDerivacionesAprobacionesService derivacionesAprobacionesService,
+                              IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
+                              IVendedoresConsumerMOA vendedoresConsumerMOA)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
             this.azureADConsumer = azureADConsumer;
             this.derivacionesAprobacionesService = derivacionesAprobacionesService;
+            this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
+            this.vendedoresConsumerMOA = vendedoresConsumerMOA;
         }
 
         public void SeccionVisitada(string mailUsuario, string seccion)
@@ -1098,6 +1110,70 @@ namespace SustitucionMOAUtils.Services
             }
 
             return configuracion.Valor;
+        }
+
+        public ProveedorComprasDto ObtenerYCrearProveedorCompras(string codigoProveedor)
+        {
+            var proveedorMoa = obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
+            if (proveedorMoa == null)
+            {
+                throw new WSCustomException("No existe un proveedor con ese codigo");
+            }
+            List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
+            var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
+            if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+                throw new WSCustomException("No existe un proveedor con ese codigo.");
+            var cuit = vendedoresMoa.vendedores.First().cuit;
+
+            var usuarioDb = repositorio.Obtener<Usuario>(a => a.Mail == proveedorMoa.MAIL);
+            if (usuarioDb == null)
+            {
+                var proveedor = new ProveedorDto
+                {
+                    Mail = proveedorMoa.MAIL,
+                    CUIT = cuit,
+                    RazonSocial = proveedorMoa.NAME
+                };
+
+                var resultado = GrabarProveedor(proveedor, EstadoAprobacion.Aprobado);
+                return new ProveedorComprasDto
+                {
+                    RazonSocial = proveedorMoa.NAME,
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = cuit,
+                    Usuario_Id = resultado.ProveedorDto.Id,
+                    Mail = resultado.ProveedorDto.Mail
+                };
+            }
+            else
+            {
+                if (usuarioDb.CUITRegistro != cuit)
+                    throw new WSCustomException("El mail está registrado con otro CUIT.");
+                if (usuarioDb.TipoUsuario.Id != (int)TipoUsuarioEnum.NoGranos)
+                    throw new WSCustomException("El mail no está registrado con el tipo de usuario ''No Granos''.");
+
+                var proveedor = usuarioDb.ObtenerProveedorAsignado();
+
+                return new ProveedorComprasDto
+                {
+                    RazonSocial = proveedor.RazonSocial,
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = cuit,
+                    Usuario_Id = usuarioDb.Id,
+                    Proveedor_Id = proveedor.Id,
+                    Mail = proveedor.Mail
+                };
+            }
+        }
+
+        public ObtenerProveedorWSMOAResponse ObtenerProveedorSap(string codigoProveedor)
+        {
+            return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
+        }
+
+        public VendedoresWSMOAResponse ObtenerVendedorSap(string codigoProveedor, List<Models.FechaWS> fechas)
+        {
+            return vendedoresConsumerMOA.Request(codigoProveedor, fechas);
         }
     }
 }

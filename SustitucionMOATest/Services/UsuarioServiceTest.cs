@@ -8,6 +8,7 @@ using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +24,8 @@ namespace SustitucionMOATest.Services
         private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IAzureADConsumer> azureADConsumerMock;
         private Mock<IDerivacionesAprobacionesService> derivacionesAprobacionesServiceMock;
+        private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMock;
+        private Mock<IVendedoresConsumerMOA> vendedoresConsumerMock;
 
 
         [SetUp]
@@ -32,7 +35,14 @@ namespace SustitucionMOATest.Services
             vendedorServiceMock = new Mock<IVendedorService>();
             azureADConsumerMock = new Mock<IAzureADConsumer>();
             derivacionesAprobacionesServiceMock = new Mock<IDerivacionesAprobacionesService>();
-            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object, derivacionesAprobacionesServiceMock.Object);
+            obtenerProveedorConsumerMock = new Mock<IObtenerProveedorConsumerMOA>();
+            vendedoresConsumerMock = new Mock<IVendedoresConsumerMOA>();
+            target = new UsuarioService(repositorioUsuarioMock.Object,
+                                        vendedorServiceMock.Object,
+                                        azureADConsumerMock.Object,
+                                        derivacionesAprobacionesServiceMock.Object,
+                                        obtenerProveedorConsumerMock.Object,
+                                        vendedoresConsumerMock.Object);
         }
 
         [Test]
