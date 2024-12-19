@@ -1,6 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,10 +10,18 @@ namespace SustitucionMOAUtils.Services
     public class RegistroInfoService : IRegistroInfoService
     {
         private readonly IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA;
+        private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
 
-        public RegistroInfoService(IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA)
+        public RegistroInfoService(IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA,
+                                   IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA)
         {
             this.obtenerRegistroInfoConsumerMOA = obtenerRegistroInfoConsumerMOA;
+            this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
+        }
+
+        public CrearSolpConsumerMOAResponse CrearOActualizarRegistrosInfoEnSap(List<RegistroInfoDto> registros)
+        {
+            return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
         }
 
         public List<RegistroInfoDto> ObtenerRegistroInfoConsumer(string material, string centro, string organizacionDeCompras, string proveedor)

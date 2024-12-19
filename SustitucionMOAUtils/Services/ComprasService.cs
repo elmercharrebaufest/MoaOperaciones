@@ -56,7 +56,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
-        private readonly IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
@@ -80,7 +79,6 @@ namespace SustitucionMOAUtils.Services
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
-            IAgregarRegistroInfoConsumerMOA agregarRegistroInfoConsumerMOA,
             IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
             IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA,
             IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
@@ -97,7 +95,6 @@ namespace SustitucionMOAUtils.Services
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
-            this.agregarRegistroInfoConsumerMOA = agregarRegistroInfoConsumerMOA;
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
             this.listarSolpPendienteConsumeMOA = listarSolpPendienteConsumeMOA;
@@ -5969,7 +5966,7 @@ namespace SustitucionMOAUtils.Services
             {
                 return;
             }
-            var respuesta = CrearOActualizarRegistrosInfoEnSap(registros);
+            var respuesta = registroInfoService.CrearOActualizarRegistrosInfoEnSap(registros);
             if (respuesta.Errores != null && respuesta.Errores.Any(x => x.Tipo == "E"))
             {
                 try
@@ -9145,11 +9142,11 @@ namespace SustitucionMOAUtils.Services
             }
             if (registros.Any(x => !x.EsModificar))
             {
-                CrearOActualizarRegistrosInfoEnSap(registros.Where(x => !x.EsModificar).ToList());
+                registroInfoService.CrearOActualizarRegistrosInfoEnSap(registros.Where(x => !x.EsModificar).ToList());
             }
             registros.ForEach(x => x.EsModificar = true);
 
-            var respuesta = CrearOActualizarRegistrosInfoEnSap(registros);
+            var respuesta = registroInfoService.CrearOActualizarRegistrosInfoEnSap(registros);
             var errores = respuesta.Errores != null ? respuesta.Errores.Where(x => x.Tipo == "E") : null;
 
             if (errores != null && errores.Any())
@@ -9160,11 +9157,6 @@ namespace SustitucionMOAUtils.Services
         private SolpPosicion ObtenerSolpPosicion(IEnumerable<SolpPosicion> solpPosiciones, CotizacionPosicion cotizacionPosicion)
         {
             return solpPosiciones.FirstOrDefault(p => p.MaterialSolp.Codigo == cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo);
-        }
-
-        private CrearSolpConsumerMOAResponse CrearOActualizarRegistrosInfoEnSap(List<RegistroInfoDto> registros)
-        {
-            return agregarRegistroInfoConsumerMOA.AgregarRegistroInfo(registros);
         }
 
         private void AgregarALegajoDescargaHistorialDeCotizaciones(List<LegajoDto> legajo, PeticionDeOferta peticion, UsuarioDto usuarioDto)

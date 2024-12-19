@@ -47,7 +47,6 @@ namespace SustitucionMOATest.Services
         private Mock<IHttpContextService> httpContextServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMOAMock;
-        private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
@@ -733,7 +732,6 @@ namespace SustitucionMOATest.Services
             vendedorServiceMock = new Mock<IVendedorService>();
             httpContextServiceMock = new Mock<IHttpContextService>();
             modificarOrdenDeCompraConsumerMOAMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
-            agregarRegistroInfoConsumerMOAMock = new Mock<IAgregarRegistroInfoConsumerMOA>();
             obtenerOrdenDeCompraConsumerMOAMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             emailServiceMock = new Mock<IEmailService>();
@@ -777,7 +775,6 @@ namespace SustitucionMOATest.Services
                 vendedorServiceMock.Object,
                 httpContextServiceMock.Object,
                 usuarioServiceMock.Object,
-                agregarRegistroInfoConsumerMOAMock.Object,
                 emailServiceMock.Object,
                 reporteOrdenDeCompraConsumerMOAMock.Object,
                 listarSolpPendientesConsumerMOAMock.Object,

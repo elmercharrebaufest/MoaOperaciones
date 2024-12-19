@@ -6,6 +6,7 @@ using NUnit.Framework.Internal;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System.Collections.Generic;
 
 namespace SustitucionMOATest.Services
@@ -15,13 +16,16 @@ namespace SustitucionMOATest.Services
     {
         private RegistroInfoService target;
         private Mock<IObtenerRegistroInfoConsumerMOA> obtenerRegistroInfoConsumerMOAMock;
+        private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
 
         [SetUp]
         public void Setup()
         {
             obtenerRegistroInfoConsumerMOAMock = new Mock<IObtenerRegistroInfoConsumerMOA>();
+            agregarRegistroInfoConsumerMOAMock = new Mock<IAgregarRegistroInfoConsumerMOA>();
 
-            target = new RegistroInfoService(obtenerRegistroInfoConsumerMOAMock.Object);
+            target = new RegistroInfoService(obtenerRegistroInfoConsumerMOAMock.Object,
+                                             agregarRegistroInfoConsumerMOAMock.Object);
         }
 
         [Test]
