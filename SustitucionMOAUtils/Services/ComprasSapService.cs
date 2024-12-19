@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion numeros
+﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion numeros Direccion
 
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
@@ -34,6 +34,12 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
+        private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
+        private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
+        private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
+        private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
+        private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
+        private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -51,6 +57,12 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerServiciosSolpConsumerMOA obtenerServiciosSolpConsumerMOA,
                                  IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
+                                 IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
+                                 IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
+                                 IListarSolpPendientesConsumerMOA listarSolpPendientesConsumerMOA,
+                                 IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
+                                 IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
+                                 IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -67,11 +79,17 @@ namespace SustitucionMOAUtils.Services
             this.ordenesSolpConsumerMOA = obtenerOrdenSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = obtenerServiciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+            this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
+            this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
+            this.listarSolpPendienteConsumeMOA = listarSolpPendientesConsumerMOA;
+            this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
             this.centroDireccionService = centroDireccionService;
             this.tablaSapService = tablaSapService;
             this.unidadMedidaService = unidadMedidaService;
             this.usuarioService = usuarioService;
             this.tipoCambioService = tipoCambioService;
+            this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
+            this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
         }
 
         public SolpSAPDto ConvertirSOLPSAP(Solp solpActual)
@@ -931,6 +949,37 @@ namespace SustitucionMOAUtils.Services
             return obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOc);
         }
 
+
+
+        //Fuente de aprovisionamiento es donde consultamos cuando ponemos un numero de material y asociamos un contrato
+        public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
+        {
+            var result = obtenerFuenteAprovisionamientoConsumerMOA.request(fechaEntregaPosicion, numeroMaterial, centro);
+            return result.ContratosAprovisionamiento.ConvertAll(item => new FuenteAprovisionamientoDto
+            {
+                ProveedorFijo = item.ProveedorFijo,
+                NombreProveedor = item.NombreProveedor,
+
+                CentroAprovisionamiento = item.CentroAprovisionamiento,
+                NumeroContratoSuperior = item.NumeroContratoSuperior,
+                NumeroPosicionContratoSuperior = item.NumeroPosicionContratoSuperior,
+                NumeroRegistroInfoCompras = item.NumeroRegistroInfoCompras,
+                TipoDocumentoCompras = item.TipoDocumentoCompras,
+                OrganizacionCompras = item.OrganizacionCompras,
+                UnidadMedida = item.UnidadMedida,
+                TipoPosicionDocumento = item.TipoPosicionDocumento,
+                NumeroMaterial = item.NumeroMaterial,
+                TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
+            });
+        }
+
+        //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
+        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+        {
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            return result.ContratosSolp;
+        }
+
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)
         {
             AdjudicacionDto ordenDeCompraSAP = ObtenerOrdenDeCompraAdjudicacion(nroOC);
@@ -1015,6 +1064,21 @@ namespace SustitucionMOAUtils.Services
                 CodigoSap = int.TryParse(c.Codigo, out codigoNum) ? codigoNum.ToString() : c.Codigo,
                 Codigo = c.Codigo
             });
+        }
+
+        public List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechasHasta, string codigoProveedor)
+        {
+            var result = reporteOrdenDeCompraConsumerMOA.Request(nroOC, fechaDesde, codigoProveedor);
+
+            var fechaHastaDate = string.IsNullOrEmpty(fechasHasta) ? DateTime.Now : DateTime.Parse(fechasHasta);
+
+            result = result.OrderByDescending(x => x.Cabecera.FechaCreacion).ToList();
+
+            result = result
+              .Where(x => x.Cabecera == null || (x.Cabecera.FechaCreacion <= fechaHastaDate))
+              .ToList();
+
+            return result;
         }
 
         public IEnumerable<PosicionSolpSAP> ObtenerPosicionesPendientesAdjudicar(string numeroSolp)
@@ -1117,6 +1181,26 @@ namespace SustitucionMOAUtils.Services
                 tablaSap.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });
             }
             return tablaSap;
+        }
+
+        public List<PosicionPendienteDto> ListarSolpPendientes()
+        {
+            return listarSolpPendienteConsumeMOA.ListarSolpPendientes();
+        }
+
+        public IEnumerable<string> ListarNumeroSolpPendientes()
+        {
+            return ListarSolpPendientes().Select(solp => solp.NroSolp);
+        }
+
+        public byte[] ObtenerPDFOrdenCompra(string nroOc)
+        {
+            return obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
+        }
+
+        public byte[] TraerArchivosDeSAP(string docId)
+        {
+            return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)

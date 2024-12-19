@@ -224,7 +224,10 @@
     <Compile Include="Helpers\ImageResizer.cs" />
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
+    <Compile Include="Interfaces\IAdjudicacionesService.cs" />
     <Compile Include="Interfaces\ICentroDireccionService.cs" />
+    <Compile Include="Interfaces\IRegistroInfoService.cs" />
+    <Compile Include="Interfaces\ISolpService.cs" />
     <Compile Include="Interfaces\ITablaSapService.cs" />
     <Compile Include="Interfaces\IMaterialService.cs" />
     <Compile Include="Interfaces\ITipoCambioService.cs" />
@@ -310,6 +313,7 @@
     <Compile Include="Interfaces\Wrappers\IExcelExportWrapper.cs" />
     <Compile Include="Logger\Log.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\AdjudicacionesService.cs" />
     <Compile Include="Services\AdjuntosCertificacionesService.cs" />
     <Compile Include="Services\AduanaService.cs" />
     <Compile Include="Services\AnalisisDocumentoService.cs" />
@@ -382,11 +386,13 @@
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
+    <Compile Include="Services\RegistroInfoService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
     <Compile Include="Services\ReporteESService.cs" />
     <Compile Include="Services\ReportesService.cs" />
     <Compile Include="Services\RYDMantenimientoService.cs" />
     <Compile Include="Services\RYDService.cs" />
+    <Compile Include="Services\SolpService.cs" />
     <Compile Include="Services\TicketPesadaService.cs" />
     <Compile Include="Services\LogPesificacionService.cs" />
     <Compile Include="Services\ExternalApiService.cs" />

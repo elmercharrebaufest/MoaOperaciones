@@ -26,6 +26,8 @@ namespace SustitucionMOATest.Controllers
         private Mock<IComprasService> comprasServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
+        private Mock<IAdjudicacionesService> adjudicacionesServiceMock;
+        private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IRepositorio> repositorioMock;
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
@@ -41,6 +43,8 @@ namespace SustitucionMOATest.Controllers
             comprasSapServiceMock = new Mock<IComprasSapService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
+            adjudicacionesServiceMock = new Mock<IAdjudicacionesService>();
+            tablaSapServiceMock = new Mock<ITablaSapService>();
 
             this.serializer = new JavaScriptSerializer();
 
@@ -57,8 +61,11 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new ComprasController(comprasServiceMock.Object, comprasSapServiceMock.Object, usuarioServiceMock.Object);
-
+            target = new ComprasController(comprasServiceMock.Object,
+                                           comprasSapServiceMock.Object,
+                                           usuarioServiceMock.Object,
+                                           adjudicacionesServiceMock.Object,
+                                           tablaSapServiceMock.Object);
         }
 
         //[Test()]
@@ -177,7 +184,7 @@ namespace SustitucionMOATest.Controllers
                 new AdjudicacionDto{ Id = 1}
             };
 
-            comprasServiceMock.Setup(s => s.ListarAdjudicaciones(It.IsAny<int>())).Returns(expected);
+            adjudicacionesServiceMock.Setup(s => s.ListarAdjudicaciones(It.IsAny<int>())).Returns(expected);
 
             var result = target.ListarAdjudicaciones(1);
 
@@ -185,7 +192,7 @@ namespace SustitucionMOATest.Controllers
             var data = (dynamic)((JsonResult)result).Data;
             var propiedad = data.GetType().GetProperties()[0];
             var valor = (List<AdjudicacionDto>)propiedad.GetValue(data);
-            Assert.AreEqual(valor.Count, 1);
+            Assert.AreEqual(1, valor.Count);
         }
 
         [Test]
@@ -405,7 +412,7 @@ namespace SustitucionMOATest.Controllers
             var fechaHasta = "2023-02-01";
             var codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Returns(new List<OrdenDeCompraSAPDto>
                 {
                 new OrdenDeCompraSAPDto
@@ -437,12 +444,12 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerReporteOrdenDeCompra_InfoCustomException()
         {
             // Arrange
-            var nroOC = "12345";
-            var fechaDesde = "2023-01-01";
-            var fechaHasta = "2023-02-01";
-            var codigoProveedor = "PROV123";
+            const string nroOC = "12345";
+            const string fechaDesde = "2023-01-01";
+            const string fechaHasta = "2023-02-01";
+            const string codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Throws(new InfoCustomException("Información personalizada"));
 
             try
@@ -497,7 +504,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarTablaSapOK()
         {
-            comprasServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
+            tablaSapServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
 
             var result = target.ListarTablaSap(It.IsAny<string>()) as JsonResult;
 

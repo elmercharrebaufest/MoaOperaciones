@@ -19,6 +19,10 @@ namespace SustitucionMOAUtils.Interfaces
         ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
         ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);
 
+        List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
+
+        List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
+
         List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();
@@ -42,10 +46,20 @@ namespace SustitucionMOAUtils.Interfaces
 
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(IEnumerable<string> numerosSolp);
 
+        List<OrdenDeCompraSAPDto> ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor);
+
         List<TablaSapDto> ObtenerTablaSap(string tabla);
 
         List<TablaSapDto> ObtenerServiciosSap();
 
         List<Servicio> ObtenerServiciosSapRaw();
+
+        List<PosicionPendienteDto> ListarSolpPendientes();
+
+        IEnumerable<string> ListarNumeroSolpPendientes();
+
+        byte[] ObtenerPDFOrdenCompra(string nroOc);
+
+        byte[] TraerArchivosDeSAP(string docId);
     }
 }

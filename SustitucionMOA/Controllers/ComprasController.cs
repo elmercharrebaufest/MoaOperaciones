@@ -26,14 +26,20 @@ namespace SustitucionMOA.Controllers
         private readonly IComprasService service;
         private readonly IComprasSapService comprasSapService;
         private readonly IUsuarioService usuarioService;
+        private readonly IAdjudicacionesService adjudicacionesService;
+        private readonly ITablaSapService tablaSapService;
 
         public ComprasController(IComprasService comprasService,
                                  IComprasSapService comprasSapService,
-                                 IUsuarioService usuarioService)
+                                 IUsuarioService usuarioService,
+                                 IAdjudicacionesService adjudicacionesService,
+                                 ITablaSapService tablaSapService)
         {
             this.service = comprasService;
             this.comprasSapService = comprasSapService;
             this.usuarioService = usuarioService;
+            this.adjudicacionesService = adjudicacionesService;
+            this.tablaSapService = tablaSapService;
         }
 
         [ValidateInput(false)]
@@ -202,7 +208,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
         {
-            return JsonCustom(new { data = service.ListarUsuarioCompras() });
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCompras() });
         }
 
         [HttpGet]
@@ -378,7 +384,7 @@ namespace SustitucionMOA.Controllers
             if (string.IsNullOrEmpty(fechaEntregaPosicion)) return Json(new { info = "Fecha entrega posición inválido" }, JsonRequestBehavior.AllowGet);
             if (string.IsNullOrEmpty(numeroMaterial)) return Json(new { info = "Número material inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
+            return JsonCustom(new { data = comprasSapService.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
 
         }
 
@@ -388,7 +394,7 @@ namespace SustitucionMOA.Controllers
 
             if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+            return JsonCustom(new { data = comprasSapService.ObtenerContratoMarco(numeroContrato, centro) });
 
         }
 
@@ -598,8 +604,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarAdjudicaciones(int solpId)
         {
-
-            var result = service.ListarAdjudicaciones(solpId);
+            var result = adjudicacionesService.ListarAdjudicaciones(solpId);
             return JsonCustom(new { data = result });
         }
 
@@ -678,7 +683,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
         {
-            return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
+            return JsonCustom(comprasSapService.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
         }
 
         [HttpGet]
@@ -769,7 +774,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ListarTablaSap(string codigos)
         {
             List<string> tablas = !string.IsNullOrEmpty(codigos) ? codigos.Split(',').ToList() : new List<string>();
-            return JsonCustom(new { data = service.ListarTablaSap(tablas) });
+            return JsonCustom(new { data = tablaSapService.ListarTablaSap(tablas) });
         }
 
         [HttpPost]
