@@ -38,6 +38,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
+        private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -59,6 +60,7 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
                                  IListarSolpPendientesConsumerMOA listarSolpPendientesConsumerMOA,
                                  IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
+                                 IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -84,6 +86,7 @@ namespace SustitucionMOAUtils.Services
             this.unidadMedidaService = unidadMedidaService;
             this.usuarioService = usuarioService;
             this.tipoCambioService = tipoCambioService;
+            this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
         }
 
         public SolpSAPDto ConvertirSOLPSAP(Solp solpActual)
@@ -1185,6 +1188,11 @@ namespace SustitucionMOAUtils.Services
         public IEnumerable<string> ListarNumeroSolpPendientes()
         {
             return ListarSolpPendientes().Select(solp => solp.NroSolp);
+        }
+
+        public byte[] ObtenerPDFOrdenCompra(string nroOc)
+        {
+            return obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)

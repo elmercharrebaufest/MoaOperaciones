@@ -57,5 +57,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<PosicionPendienteDto> ListarSolpPendientes();
 
         IEnumerable<string> ListarNumeroSolpPendientes();
+
+        byte[] ObtenerPDFOrdenCompra(string nroOc);
     }
 }

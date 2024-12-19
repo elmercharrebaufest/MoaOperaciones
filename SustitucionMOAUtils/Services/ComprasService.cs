@@ -56,7 +56,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
-        private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
         private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
@@ -78,7 +77,6 @@ namespace SustitucionMOAUtils.Services
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
             IEmailService emailService,
-            IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
             IComprasArchivosService comprasArchivosService,
@@ -93,7 +91,6 @@ namespace SustitucionMOAUtils.Services
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
             this.emailService = emailService;
-            this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
             this.comprasArchivosService = comprasArchivosService;
@@ -2197,7 +2194,7 @@ namespace SustitucionMOAUtils.Services
         {
             var adjudicacionMail = ObtenerDatosParaEnviarMailOrdenCompraSAP(nroOc);
             var asunto = $"Nueva OC creada - {nroOc} - {adjudicacionMail.RazonSocial}";
-            var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
+            var pdf = comprasServiceSap.ObtenerPDFOrdenCompra(nroOc);
             emailService.EnviarMail(adjudicacionMail.EnviarA, asunto, "", adjudicacionMail.Copia, CuerpoMailOrdenCompra(nroOc, ""), pdf, $"Orden de Compra {nroOc}.pdf");
         }
 
@@ -5009,7 +5006,7 @@ namespace SustitucionMOAUtils.Services
                 var adicionales = adjudicacion.Cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.UsuariosAdicionales;
                 enviarA.AddRange(adicionales.Where(a => a.Usuario.CUITRegistro == adjudicacion.Cotizacion.PeticionDeOfertaUsuario.Usuario.CUITRegistro).Select(a => a.Usuario.Mail).ToList());
 
-                var pdf = obtenerPDFOrdenCompraConsumerMOA.Request(adjudicacion.NumeroOrdenDeCompra);
+                var pdf = comprasServiceSap.ObtenerPDFOrdenCompra(adjudicacion.NumeroOrdenDeCompra);
 
                 emailService.EnviarMail(enviarA, asunto, "", copia.Distinct().ToList(), CuerpoMailOrdenCompra(adjudicacion.NumeroOrdenDeCompra, mensaje), pdf, $"Orden de Compra {adjudicacion.NumeroOrdenDeCompra}.pdf");
             }
