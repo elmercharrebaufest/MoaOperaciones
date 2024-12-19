@@ -786,7 +786,8 @@ namespace SustitucionMOATest.Services
                 targetSap,
                 tipoCambioServiceMock.Object,
                 unidadMedidaServiceMock.Object,
-                registroInfoServiceMock.Object
+                registroInfoServiceMock.Object,
+                tablaSapServiceMock.Object
                 );
         }
 

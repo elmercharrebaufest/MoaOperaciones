@@ -69,6 +69,7 @@ namespace SustitucionMOAUtils.Services
         private readonly ITipoCambioService tipoCambioService;
         private readonly IUnidadMedidaService unidadMedidaService;
         private readonly IRegistroInfoService registroInfoService;
+        private readonly ITablaSapService tablaSapService;
 
         public ComprasService(IRepositorio repositorio,
             IVendedorService vendedorService,
@@ -81,7 +82,8 @@ namespace SustitucionMOAUtils.Services
             IComprasSapService comprasServiceSap,
             ITipoCambioService tipoCambioService,
             IUnidadMedidaService unidadMedidaService,
-            IRegistroInfoService registroInfoService)
+            IRegistroInfoService registroInfoService,
+            ITablaSapService tablaSapService)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
@@ -95,6 +97,7 @@ namespace SustitucionMOAUtils.Services
             this.tipoCambioService = tipoCambioService;
             this.unidadMedidaService = unidadMedidaService;
             this.registroInfoService = registroInfoService;
+            this.tablaSapService = tablaSapService;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -1806,33 +1809,6 @@ namespace SustitucionMOAUtils.Services
             return ret.ToString();
         }
 
-        private List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap)
-        {
-            List<TablaSap> nuevosItems = new List<TablaSap>();
-            if (listaSap.Count > 0)
-            {
-                var listaBaseCodigoSAP = repositorio.Listar<TablaSap>(c => c.Tabla == tablaSap).Select(a => a.CodigoSap).ToList();
-
-                nuevosItems = listaSap.Where(x => !listaBaseCodigoSAP.Contains(x.CodigoSap)).Select(item => new TablaSap()
-                {
-                    Codigo = item.Codigo,
-                    CodigoSap = item.CodigoSap,
-                    Descripcion = item.Descripcion,
-                    Tabla = item.Tabla,
-                    Padre_id = null,
-                }).ToList();
-
-                foreach (var item in nuevosItems)
-                {
-                    // uso un Agregar en lugar de AgregarTodos para que me devuelva el id de la entidad generar ya que necesito usarlo mas adelante.
-                    //el AgregarTodos no devuelve el id de las entidades agregadas.
-                    repositorio.Agregar(item);
-                }
-                repositorio.GuardarCambios();
-            }
-            return nuevosItems;
-        }
-
         public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
         {
             var lista = repositorio.Listar<TablaSap, TablaSapDto>(s => new TablaSapDto
@@ -2324,7 +2300,7 @@ namespace SustitucionMOAUtils.Services
                         }
                     }
                     // agrego el resultado a la lista de ordenes de ot para usar
-                    ordenes.AddRange(this.ActualizarTablaSap(listaSap, TablasSap.OrdenSolpSap));
+                    ordenes.AddRange(tablaSapService.ActualizarTablaSap(listaSap, TablasSap.OrdenSolpSap));
                 }
 
                 IList<Solp> solpsFinales = new List<Solp>();
