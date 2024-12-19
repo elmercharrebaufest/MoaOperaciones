@@ -41,7 +41,6 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerFuenteAprovisionamientoConsumerMOA> obtenerFuenteAprovisionamientoConsumerMOAMock;
         private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
         private Mock<IVendedorService> vendedorServiceMock;
-        private Mock<IObtenerTipoCambioConsumerMOA> obtenerTipoCambioConsumerMOAMock;
         private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> obtenerOrdenesDeCompraParaSOLPConsumerMOAMock;
         private Mock<IHttpContextService> httpContextServiceMock;
@@ -53,7 +52,6 @@ namespace SustitucionMOATest.Services
         private Mock<IAgregarRegistroInfoConsumerMOA> agregarRegistroInfoConsumerMOAMock;
         private Mock<IEmailService> emailServiceMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
-        private Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA> obtenerUnidadesDeMedidaAlternativasConsumerMOAMock;
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
         private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
         private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
@@ -64,6 +62,7 @@ namespace SustitucionMOATest.Services
         private Mock<ICentroDireccionService> centroDireccionServiceMock;
         private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
+        private Mock<ITipoCambioService> tipoCambioServiceMock;
 
         private GuardarCotizacion guardarCotizacionToClone()
         {
@@ -733,7 +732,6 @@ namespace SustitucionMOATest.Services
             obtenerFuenteAprovisionamientoConsumerMOAMock = new Mock<IObtenerFuenteAprovisionamientoConsumerMOA>();
             obtenerContratoSolpConsumerMOAMock = new Mock<IObtenerContratoSolpConsumerMOA>();
             vendedorServiceMock = new Mock<IVendedorService>();
-            obtenerTipoCambioConsumerMOAMock = new Mock<IObtenerTipoCambioConsumerMOA>();
             httpContextServiceMock = new Mock<IHttpContextService>();
             obtenerRegistroInfoConsumerMOAMock = new Mock<IObtenerRegistroInfoConsumerMOA>();
             modificarOrdenDeCompraConsumerMOAMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
@@ -745,7 +743,6 @@ namespace SustitucionMOATest.Services
             vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
             emailServiceMock = new Mock<IEmailService>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
-            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock = new Mock<IObtenerUnidadesDeMedidaAlternativasConsumerMOA>();
             listarSolpPendientesConsumerMOAMock = new Mock<IListarSolpPendientesConsumerMOA>();
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
             obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
@@ -755,49 +752,51 @@ namespace SustitucionMOATest.Services
             centroDireccionServiceMock = new Mock<ICentroDireccionService>();
             tablaSapServiceMock = new Mock<ITablaSapService>();
             unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
+            tipoCambioServiceMock = new Mock<ITipoCambioService>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
             targetSap = new ComprasSapService(
                 cecoConsumerMock.Object,
+                crearPedidoConsumerMOAMock.Object,
                 crearSolpConsumerMOAMock.Object,
+                modificarOrdenDeCompraConsumerMOAMock.Object,
                 modificarSolpConsumerMOAMock.Object,
                 cuentasConsumerMock.Object,
                 ordenesConsumerMock.Object,
                 serviciosConsumerMock.Object,
+                obtenerOrdenDeCompraConsumerMOAMock.Object,
                 obtenerSolpConsumerMOAMock.Object,
                 centroDireccionServiceMock.Object,
                 tablaSapServiceMock.Object,
                 unidadMedidaServiceMock.Object,
-                usuarioServiceMock.Object
+                usuarioServiceMock.Object,
+                tipoCambioServiceMock.Object
                 );
 
             target = new ComprasService(
                 repositorioMock.Object,
-                crearPedidoConsumerMOAMock.Object,
                 obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
                 obtenerContratoSolpConsumerMOAMock.Object,
                 vendedorServiceMock.Object,
-                obtenerTipoCambioConsumerMOAMock.Object,
                 httpContextServiceMock.Object,
                 obtenerRegistroInfoConsumerMOAMock.Object,
-                obtenerOrdenDeCompraConsumerMOAMock.Object,
                 obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
                 usuarioServiceMock.Object,
                 obtenerProveedorConsumerMOA.Object,
-                modificarOrdenDeCompraConsumerMOAMock.Object,
                 vendedoresConsumerMOAMock.Object,
                 agregarRegistroInfoConsumerMOAMock.Object,
                 emailServiceMock.Object,
                 reporteOrdenDeCompraConsumerMOAMock.Object,
-                obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Object,
                 listarSolpPendientesConsumerMOAMock.Object,
                 obtenerPDFOrdenCompraConsumerMOAMock.Object,
                 obtenerAdjuntosSOLPEDConsumerMOAMock.Object,
                 mIEmailComprasService.Object,
                 mIComprasArchivosService.Object,
                 mIComprasArchivosImportService.Object,
-                targetSap
+                targetSap,
+                tipoCambioServiceMock.Object,
+                unidadMedidaServiceMock.Object
                 );
         }
 
@@ -838,8 +837,12 @@ namespace SustitucionMOATest.Services
                 Proveedores = new List<Proveedor> { new Proveedor { Id = 1, RazonSocial = "Proveedor", CUIT = "000050", TipoProveedor = new TipoUsuario { Id = 1 } } }
             });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>())).Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()))
+                .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
+
             crearPedidoConsumerMOAMock.Setup(y => y.Request(It.IsAny<Adjudicacion>(), It.IsAny<bool>())).Returns(new CrearPedidoConsumerMOAResponse
             {
                 NumeroPedido = "383383932",
@@ -1057,7 +1060,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
                 .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse
                 {
                     MonedaDestino = "ARP",
@@ -1166,7 +1169,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
                 .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse
                 {
                     MonedaDestino = "ARP",
@@ -1271,7 +1274,7 @@ namespace SustitucionMOATest.Services
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<int>()))
                 .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse
                 {
                     MonedaDestino = "ARP",
@@ -1683,7 +1686,7 @@ namespace SustitucionMOATest.Services
               .Returns(new TablaSap { CodigoSap = "ARP", Id = 1 });
             repositorioMock.Setup(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>()))
           .Returns(new TablaSap { Id = 1, Codigo = "23234" });
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<DateTime>()))
                 .Returns(new ObtenerTipoCambioConsumerMOAResponse
                 {
                     MonedaDestino = "ARP",
@@ -1692,7 +1695,7 @@ namespace SustitucionMOATest.Services
                 });
 
             target.ObtenerPrecioTotalPosicionProveedor(guardarCotizacionLocal);
-            repositorioMock.Verify(y => y.Obtener<TablaSap>(It.IsAny<int>()), Times.Exactly(2));
+            repositorioMock.Verify(y => y.Obtener<TablaSap>(It.IsAny<Expression<Func<TablaSap, bool>>>()), Times.Once);
         }
 
         [Test]
@@ -1874,8 +1877,8 @@ namespace SustitucionMOATest.Services
             var tablaSapDto = new List<TablaSapDto> { new TablaSapDto { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" },
             new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" }};
             var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
-            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            tablaSapServiceMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(tablaSap);
+            unidadMedidaServiceMock.Setup(y => y.ObtenerUnidadesDesdeServicioSap(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
             { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 }});
             repositorioMock.Setup(repo => repo.Listar(
                 It.IsAny<Expression<Func<SolpPosicion, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<DirOrden>(), It.IsAny<IEnumerable<Expression<Func<SolpPosicion, object>>>>()))
@@ -2193,8 +2196,8 @@ namespace SustitucionMOATest.Services
             var tablaSapDto = new List<TablaSapDto> { new TablaSapDto { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" },
             new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" }};
             var tablaSap = new List<TablaSap> { new TablaSap { Codigo = "FINALIZADA", Tabla = "EstadoSolpSap", CodigoSap = "05", Descripcion = "Liberación concluida" } };
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(tablaSap);
-            var result = target.ObtenerTablaSap("EstadoSolpSap");
+            tablaSapServiceMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>())).Returns(tablaSap);
+            var result = targetSap.ObtenerTablaSap("EstadoSolpSap");
 
             Assert.That(result, Is.Not.Null);
             Assert.AreEqual(result.GetType(), tablaSapDto.GetType());
@@ -2828,7 +2831,7 @@ namespace SustitucionMOATest.Services
             {
                 Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { EstadoSolpSap = "05", NumeroPosicion = "1" } }
             });
-            obtenerUnidadesDeMedidaAlternativasConsumerMOAMock.Setup(y => y.Request(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
+            unidadMedidaServiceMock.Setup(y => y.ObtenerUnidadesDesdeServicioSap(It.IsAny<List<string>>())).Returns(new List<UnidadesDeMedida>
             { new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "UNI", Denominador = 1, Numerador = 1 },
             new UnidadesDeMedida { CodigoMaterial = "000000000050224373", UnidadDeMedida = "PAR", Denominador = 2, Numerador = 1 }});
 
@@ -3135,7 +3138,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionPosicion, bool>>>(),
            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionPosicion);
 
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             cotizacionLocal.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo = "SERVICIOS";
 
@@ -3190,7 +3193,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<CotizacionPosicion, bool>>>(),
            It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(cotizacionPosicion);
 
-            obtenerTipoCambioConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            tipoCambioServiceMock.Setup(y => y.ObtenerTipoCambio(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
             .Returns(new ObtenerTipoCambioConsumerMOAResponse { MonedaDestino = "ARP", MonedaOrigen = "USD", TipoCambio = 450 });
             cotizacionLocal.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo = "SERVICIOS";
             repositorioMock.Setup(y => y.Obtener<Cotizacion>(It.IsAny<int>()))

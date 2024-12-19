@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -10,5 +11,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<UnidadMedidaSap> GetUnidadesMedidaSap(Expression<Func<UnidadMedidaSap, bool>> filtro);
 
         List<TResult> GetUnidadesMedidaSap<TResult>(Expression<Func<UnidadMedidaSap, bool>> filtro, Expression<Func<UnidadMedidaSap, TResult>> projection);
+
+        List<UnidadesDeMedida> ObtenerUnidadesDesdeServicioSap(List<string> codigosMaterialSap);
+
+        List<UnidadesDeMedida> ObtenerUnidadesDesdeServicioSap(string codigoMaterial);
     }
 }

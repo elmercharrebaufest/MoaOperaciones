@@ -12,6 +12,9 @@ namespace SustitucionMOAUtils.Interfaces
     {
         SolpSAPDto ConvertirSOLPSAP(Solp solpActual);
 
+        RespuestaCrearOrdenDeCompra CrearOrdenDeCompra(Adjudicacion AdjudicacionEntity, bool creadoAutomatico = false);
+        ResultadoGenerico EditarOrdenDeCompra(AdjudicacionDto adjudicacion);
+
         CrearSolpConsumerMOAResponse CrearSolpSap(SolpSAPDto solpSap);
         ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
         ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);
@@ -29,9 +32,17 @@ namespace SustitucionMOAUtils.Interfaces
 
         bool PosicionPendienteSap(PosicionSolpSAP position);
 
+        OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
+
+        AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOc);
+
+        AdjudicacionDto ObtenerAdjudicacion(string nroOC);
+
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(string numeroSolp);
 
         IEnumerable<PosicionSolpSAP> ObtenerPosiciones(IEnumerable<string> numerosSolp);
+
+        List<TablaSapDto> ObtenerTablaSap(string tabla);
 
         List<TablaSapDto> ObtenerServiciosSap();
 
