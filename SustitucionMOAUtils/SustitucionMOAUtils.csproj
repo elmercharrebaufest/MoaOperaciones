@@ -197,6 +197,7 @@
     <Compile Include="Helpers\TwoColumnHeaderFooter.cs" />
     <Compile Include="Helpers\CurrentTimeProvider.cs" />
     <Compile Include="Interfaces\ICentroDireccionService.cs" />
+    <Compile Include="Interfaces\IRegistroInfoService.cs" />
     <Compile Include="Interfaces\ITablaSapService.cs" />
     <Compile Include="Interfaces\IMaterialService.cs" />
     <Compile Include="Interfaces\ITipoCambioService.cs" />
@@ -354,6 +355,7 @@
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
+    <Compile Include="Services\RegistroInfoService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
     <Compile Include="Services\ReporteESService.cs" />
     <Compile Include="Services\ReportesService.cs" />

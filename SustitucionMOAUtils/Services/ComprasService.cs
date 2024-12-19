@@ -55,7 +55,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IRepositorio repositorio;
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
-        private readonly IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA;
         private readonly IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA;
         private readonly IUsuarioService usuarioService;
         private readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
@@ -78,11 +77,11 @@ namespace SustitucionMOAUtils.Services
         private readonly IComprasSapService comprasServiceSap;
         private readonly ITipoCambioService tipoCambioService;
         private readonly IUnidadMedidaService unidadMedidaService;
+        private readonly IRegistroInfoService registroInfoService;
 
         public ComprasService(IRepositorio repositorio,
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
-            IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA,
             IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA,
             IUsuarioService usuarioService, IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
             IVendedoresConsumerMOA vendedoresConsumerMOA,
@@ -96,12 +95,12 @@ namespace SustitucionMOAUtils.Services
             IComprasArchivosImportService comprasArchivosImportService,
             IComprasSapService comprasServiceSap,
             ITipoCambioService tipoCambioService,
-            IUnidadMedidaService unidadMedidaService)
+            IUnidadMedidaService unidadMedidaService,
+            IRegistroInfoService registroInfoService)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
-            this.obtenerRegistroInfoConsumerMOA = obtenerRegistroInfoConsumerMOA;
             this.obtenerOrdenesDeCompraParaSOLPConsumerMOA = obtenerOrdenesDeCompraParaSOLPConsumerMOA;
             this.usuarioService = usuarioService;
             this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
@@ -118,6 +117,7 @@ namespace SustitucionMOAUtils.Services
             this.comprasServiceSap = comprasServiceSap;
             this.tipoCambioService = tipoCambioService;
             this.unidadMedidaService = unidadMedidaService;
+            this.registroInfoService = registroInfoService;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -3754,7 +3754,7 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
-                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
+                    var registros = registroInfoService.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
                         CrearProveedor(registros.ConvertAll(x => x.Vendedor));
@@ -7133,7 +7133,7 @@ namespace SustitucionMOAUtils.Services
             Cotizacion cotizacion = null
             )
         {
-            RegistroInfoDto ultimoRegistroInfoSap = ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
+            RegistroInfoDto ultimoRegistroInfoSap = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.MaterialSolp.Codigo,
                     cotizacionPosicion.PeticionDeOfertaSolpPosicion.SolpPosicion.Centro.Codigo, "2029", cotizacionPosicion.Cotizacion.UsuarioCreador.ObtenerCodigoProveedor());
 
             var registro = new RegistroInfoDto
@@ -7276,27 +7276,9 @@ namespace SustitucionMOAUtils.Services
             return result;
         }
 
-        /// <summary>Busca en la RFC de registros info el último cargado para un determinado material.</summary>
-        /// <param name="material">El código del material</param>
-        /// <param name="centro">El código del centro</param>
-        /// <param name="grupoDeCompras">El código del grupo de compras</param>
-        /// <returns>El último registro info disponible para el material elegido.</returns>
-        public RegistroInfoDto ObtenerUltimoRegistroMaterial(string material, string centro, string grupoDeCompras)
-        {
-            RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
-            ultimoRegistro.EsModificar = false;
-            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, "")
-                               /*.Where(x => x.NumeroOrdenDeCompra != null).OrderByDescending(x => x.FechaUltimaCompra)*/;
-            if (registros.Any())
-            {
-                ultimoRegistro = registros.First();
-                ultimoRegistro.EsModificar = true;
-            }
-            return ultimoRegistro;
-        }
         public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)
         {
-            RegistroInfoDto ultimoRegistro = ObtenerUltimoRegistroMaterial(material, centro, grupoDeCompras);
+            RegistroInfoDto ultimoRegistro = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(material, centro, grupoDeCompras);
             MaterialSolpDto materialSolp = repositorio.Obtener<MaterialSolp, MaterialSolpDto>(
                 a => a.CodigoSap == material && a.CentroLogistico.CodigoSap == centro && a.GrupoCompras.Codigo == grupoDeCompras,
                 a => new MaterialSolpDto
@@ -7323,20 +7305,6 @@ namespace SustitucionMOAUtils.Services
                 var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
                 var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
                 AdjustUnitPriceAndQuantity(ultimoRegistro, ultimoRegistro.Cantidad, ultimoRegistro.Precio, unidadRegistroInfo, unidadBaseMaterial);
-            }
-            return ultimoRegistro;
-        }
-
-        private RegistroInfoDto ObtenerUltimoRegistroPorMaterialYProveedor(string material, string centro, string grupoDeCompras, string proveedor)
-        {
-            RegistroInfoDto ultimoRegistro = new RegistroInfoDto();
-            ultimoRegistro.EsModificar = false;
-            var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(material, centro, grupoDeCompras, proveedor)
-                               /*.Where(x => x.NumeroOrdenDeCompra != null)*/.OrderByDescending(x => x.FechaUltimaCompra);
-            if (registros.Any())
-            {
-                ultimoRegistro = registros.First();
-                ultimoRegistro.EsModificar = true;
             }
             return ultimoRegistro;
         }
@@ -8646,7 +8614,7 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var posicionAgrupada in consultaRegistro)
                 {
-                    var registros = obtenerRegistroInfoConsumerMOA.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
+                    var registros = registroInfoService.ObtenerRegistroInfoConsumer(posicionAgrupada.Key.Material, posicionAgrupada.Key.Centro, posicionAgrupada.Key.GrupoDeCompras, "");
                     if (registros != null)
                     {
                         CrearProveedor(registros.Select(x => x.Vendedor).ToList());
@@ -9276,7 +9244,7 @@ namespace SustitucionMOAUtils.Services
             {
                 throw new ValidationCustomException("La posicion seleccionada no fue cotizada.");
             }
-            var ultimoRegistroInfo = ObtenerUltimoRegistroPorMaterialYProveedor(
+            var ultimoRegistroInfo = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(
                 request.MaterialCodigoSap, request.CentroCodigoSap, request.GrupoComprasCodigoSap,
                 cotizacionPosicion.Cotizacion.PeticionDeOfertaUsuario.Usuario.ObtenerCodigoProveedor()
                 );

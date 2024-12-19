@@ -46,7 +46,6 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> obtenerOrdenesDeCompraParaSOLPConsumerMOAMock;
         private Mock<IHttpContextService> httpContextServiceMock;
-        private Mock<IObtenerRegistroInfoConsumerMOA> obtenerRegistroInfoConsumerMOAMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMOA;
         private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMOAMock;
@@ -65,6 +64,7 @@ namespace SustitucionMOATest.Services
         private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
         private Mock<ITipoCambioService> tipoCambioServiceMock;
+        private Mock<IRegistroInfoService> registroInfoServiceMock;
 
         private GuardarCotizacion GuardarCotizacionToClone()
         {
@@ -735,7 +735,6 @@ namespace SustitucionMOATest.Services
             obtenerContratoSolpConsumerMOAMock = new Mock<IObtenerContratoSolpConsumerMOA>();
             vendedorServiceMock = new Mock<IVendedorService>();
             httpContextServiceMock = new Mock<IHttpContextService>();
-            obtenerRegistroInfoConsumerMOAMock = new Mock<IObtenerRegistroInfoConsumerMOA>();
             modificarOrdenDeCompraConsumerMOAMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
             agregarRegistroInfoConsumerMOAMock = new Mock<IAgregarRegistroInfoConsumerMOA>();
             obtenerOrdenDeCompraConsumerMOAMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
@@ -755,6 +754,7 @@ namespace SustitucionMOATest.Services
             tablaSapServiceMock = new Mock<ITablaSapService>();
             unidadMedidaServiceMock = new Mock<IUnidadMedidaService>();
             tipoCambioServiceMock = new Mock<ITipoCambioService>();
+            registroInfoServiceMock = new Mock<IRegistroInfoService>();
 
             httpContextServiceMock.Setup(x => x.ObtenerPathLogoMail()).Returns(TestContext.CurrentContext.TestDirectory + "\\Util\\LogoBaufest.png");
 
@@ -782,7 +782,6 @@ namespace SustitucionMOATest.Services
                 repositorioMock.Object,
                 vendedorServiceMock.Object,
                 httpContextServiceMock.Object,
-                obtenerRegistroInfoConsumerMOAMock.Object,
                 obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
                 usuarioServiceMock.Object,
                 obtenerProveedorConsumerMOA.Object,
@@ -798,7 +797,8 @@ namespace SustitucionMOATest.Services
                 mIComprasArchivosImportService.Object,
                 targetSap,
                 tipoCambioServiceMock.Object,
-                unidadMedidaServiceMock.Object
+                unidadMedidaServiceMock.Object,
+                registroInfoServiceMock.Object
                 );
         }
 
@@ -2028,17 +2028,6 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Verify(x => x.Agregar(It.IsAny<PeticionDeOferta>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
-        }
-
-        [Test]
-        public void AutocompleteMaterialRFCOk()
-        {
-            RegistroInfoDto registroInfo = new RegistroInfoDto { Cantidad = 5, Moneda = "USDM", Centro = "1029", GrupoDeCompras = "" };
-            obtenerRegistroInfoConsumerMOAMock.Setup(y => y.ObtenerRegistroInfoConsumer(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new List<RegistroInfoDto> { registroInfo });
-            var result = target.ObtenerUltimoRegistroMaterial("codigoMaterial", "codigoCentro", "codigoGrupoDeCompras");
-            Assert.That(result, Is.Not.Null);
-            Assert.AreEqual(registroInfo.GetType(), result.GetType());
         }
 
         [Test]
