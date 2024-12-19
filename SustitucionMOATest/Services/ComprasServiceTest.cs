@@ -769,6 +769,7 @@ namespace SustitucionMOATest.Services
                 serviciosConsumerMock.Object,
                 obtenerOrdenDeCompraConsumerMOAMock.Object,
                 obtenerSolpConsumerMOAMock.Object,
+                obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
                 centroDireccionServiceMock.Object,
                 tablaSapServiceMock.Object,
                 unidadMedidaServiceMock.Object,
@@ -778,7 +779,6 @@ namespace SustitucionMOATest.Services
 
             target = new ComprasService(
                 repositorioMock.Object,
-                obtenerFuenteAprovisionamientoConsumerMOAMock.Object,
                 obtenerContratoSolpConsumerMOAMock.Object,
                 vendedorServiceMock.Object,
                 httpContextServiceMock.Object,

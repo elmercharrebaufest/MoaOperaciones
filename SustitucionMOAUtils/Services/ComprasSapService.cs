@@ -34,6 +34,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerOrdenSolpConsumerMOA ordenesSolpConsumerMOA;
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
+        private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -51,6 +52,7 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerServiciosSolpConsumerMOA obtenerServiciosSolpConsumerMOA,
                                  IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
+                                 IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -67,6 +69,7 @@ namespace SustitucionMOAUtils.Services
             this.ordenesSolpConsumerMOA = obtenerOrdenSolpConsumerMOA;
             this.serviciosSolpConsumerMOA = obtenerServiciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
+            this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.centroDireccionService = centroDireccionService;
             this.tablaSapService = tablaSapService;
             this.unidadMedidaService = unidadMedidaService;
@@ -929,6 +932,30 @@ namespace SustitucionMOAUtils.Services
         public AdjudicacionDto ObtenerOrdenDeCompraAdjudicacion(string nroOc)
         {
             return obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompraAdjudicacion(nroOc);
+        }
+
+
+
+        //Fuente de aprovisionamiento es donde consultamos cuando ponemos un numero de material y asociamos un contrato
+        public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
+        {
+            var result = obtenerFuenteAprovisionamientoConsumerMOA.request(fechaEntregaPosicion, numeroMaterial, centro);
+            return result.ContratosAprovisionamiento.ConvertAll(item => new FuenteAprovisionamientoDto
+            {
+                ProveedorFijo = item.ProveedorFijo,
+                NombreProveedor = item.NombreProveedor,
+
+                CentroAprovisionamiento = item.CentroAprovisionamiento,
+                NumeroContratoSuperior = item.NumeroContratoSuperior,
+                NumeroPosicionContratoSuperior = item.NumeroPosicionContratoSuperior,
+                NumeroRegistroInfoCompras = item.NumeroRegistroInfoCompras,
+                TipoDocumentoCompras = item.TipoDocumentoCompras,
+                OrganizacionCompras = item.OrganizacionCompras,
+                UnidadMedida = item.UnidadMedida,
+                TipoPosicionDocumento = item.TipoPosicionDocumento,
+                NumeroMaterial = item.NumeroMaterial,
+                TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
+            });
         }
 
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)

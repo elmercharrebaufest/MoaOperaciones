@@ -19,6 +19,8 @@ namespace SustitucionMOAUtils.Interfaces
         ModificarSolpConsumerMOAResponse ModificarSolpSap(SolpSAPDto solpSap);
         ObtenerSolpSAPResponse ObtenerSolpSap(ObtenerSolpRequest obtenerSolpRequest);
 
+        List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
+
         List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();

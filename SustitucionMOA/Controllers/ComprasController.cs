@@ -378,7 +378,7 @@ namespace SustitucionMOA.Controllers
             if (string.IsNullOrEmpty(fechaEntregaPosicion)) return Json(new { info = "Fecha entrega posición inválido" }, JsonRequestBehavior.AllowGet);
             if (string.IsNullOrEmpty(numeroMaterial)) return Json(new { info = "Número material inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
+            return JsonCustom(new { data = comprasSapService.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
 
         }
 

@@ -53,7 +53,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
@@ -82,7 +81,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IUnidadMedidaService unidadMedidaService;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
             IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
@@ -103,7 +101,6 @@ namespace SustitucionMOAUtils.Services
             IUnidadMedidaService unidadMedidaService)
         {
             this.repositorio = repositorio;
-            this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
@@ -3222,28 +3219,6 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        //Fuente de aprovisionamiento es donde consultamos cuando ponemos un numero de material y asociamos un contrato
-        public List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro)
-        {
-            var result = obtenerFuenteAprovisionamientoConsumerMOA.request(fechaEntregaPosicion, numeroMaterial, centro);
-            return result.ContratosAprovisionamiento.Select(item => new FuenteAprovisionamientoDto
-            {
-                ProveedorFijo = item.ProveedorFijo,
-                NombreProveedor = item.NombreProveedor,
-
-                CentroAprovisionamiento = item.CentroAprovisionamiento,
-                NumeroContratoSuperior = item.NumeroContratoSuperior,
-                NumeroPosicionContratoSuperior = item.NumeroPosicionContratoSuperior,
-                NumeroRegistroInfoCompras = item.NumeroRegistroInfoCompras,
-                TipoDocumentoCompras = item.TipoDocumentoCompras,
-                OrganizacionCompras = item.OrganizacionCompras,
-                UnidadMedida = item.UnidadMedida,
-                TipoPosicionDocumento = item.TipoPosicionDocumento,
-                NumeroMaterial = item.NumeroMaterial,
-                TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
-            }).ToList();
-        }
-
         //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
         public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
         {
@@ -3728,7 +3703,7 @@ namespace SustitucionMOAUtils.Services
                 if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
                 {
                     var datosPosicion = AutocompleteCodigoMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
-                    var contratos = ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
+                    var contratos = comprasServiceSap.ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
                     var asociado = new AsociarContratoDto
                     {
                         Indice = p.Indice,

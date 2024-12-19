@@ -28,6 +28,7 @@ namespace SustitucionMOATest.Services
         private Mock<ICrearPedidoConsumerMOA> crearPedidoMock;
         private Mock<IModificarOrdenDeCompraConsumerMOA> modificarOrdenDeCompraConsumerMock;
         private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMock;
+        private Mock<IObtenerFuenteAprovisionamientoConsumerMOA> obtenerFuenteAprovisionamientoConsumerMock;
 
         private Mock<ICentroDireccionService> centroDireccionServiceMock;
         private Mock<ITablaSapService> tablaSapServiceMock;
@@ -48,6 +49,7 @@ namespace SustitucionMOATest.Services
             crearPedidoMock = new Mock<ICrearPedidoConsumerMOA>();
             modificarOrdenDeCompraConsumerMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
             obtenerOrdenDeCompraConsumerMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
+            obtenerFuenteAprovisionamientoConsumerMock = new Mock<IObtenerFuenteAprovisionamientoConsumerMOA>();
 
             centroDireccionServiceMock = new Mock<ICentroDireccionService>();
             tablaSapServiceMock = new Mock<ITablaSapService>();
@@ -55,17 +57,17 @@ namespace SustitucionMOATest.Services
             usuarioServiceMock = new Mock<IUsuarioService>();
             cambioServiceMock = new Mock<ITipoCambioService>();
 
-
             target = new ComprasSapService(cecoConsumerMock.Object,
-                crearPedidoMock.Object,
+                                           crearPedidoMock.Object,
                                            crearSolpMock.Object,
-                                             modificarOrdenDeCompraConsumerMock.Object,
+                                           modificarOrdenDeCompraConsumerMock.Object,
                                            modificarSolpMock.Object,
                                            cuentasConsumerMock.Object,
                                            ordenesConsumerMock.Object,
                                            serviciosConsumerMock.Object,
                                            obtenerOrdenDeCompraConsumerMock.Object,
                                            solpConsumerMock.Object,
+                                           obtenerFuenteAprovisionamientoConsumerMock.Object,
                                            centroDireccionServiceMock.Object,
                                            tablaSapServiceMock.Object,
                                            unidadMedidaServiceMock.Object,
