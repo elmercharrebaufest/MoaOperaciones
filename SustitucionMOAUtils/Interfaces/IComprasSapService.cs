@@ -59,5 +59,7 @@ namespace SustitucionMOAUtils.Interfaces
         IEnumerable<string> ListarNumeroSolpPendientes();
 
         byte[] ObtenerPDFOrdenCompra(string nroOc);
+
+        byte[] TraerArchivosDeSAP(string docId);
     }
 }

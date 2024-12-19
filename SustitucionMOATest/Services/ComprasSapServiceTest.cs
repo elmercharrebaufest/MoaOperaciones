@@ -33,6 +33,7 @@ namespace SustitucionMOATest.Services
         private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
         private Mock<IReporteOrdenDeCompraConsumerMOA> reporteOrdenDeCompraConsumerMOAMock;
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
+        private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
 
         private Mock<ICentroDireccionService> centroDireccionServiceMock;
         private Mock<ITablaSapService> tablaSapServiceMock;
@@ -58,6 +59,7 @@ namespace SustitucionMOATest.Services
             listarSolpPendientesConsumerMOAMock = new Mock<IListarSolpPendientesConsumerMOA>();
             reporteOrdenDeCompraConsumerMOAMock = new Mock<IReporteOrdenDeCompraConsumerMOA>();
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
+            obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
 
             centroDireccionServiceMock = new Mock<ICentroDireccionService>();
             tablaSapServiceMock = new Mock<ITablaSapService>();
@@ -80,6 +82,7 @@ namespace SustitucionMOATest.Services
                                            listarSolpPendientesConsumerMOAMock.Object,
                                            reporteOrdenDeCompraConsumerMOAMock.Object,
                                            obtenerPDFOrdenCompraConsumerMOAMock.Object,
+                                           obtenerAdjuntosSOLPEDConsumerMOAMock.Object,
                                            centroDireccionServiceMock.Object,
                                            tablaSapServiceMock.Object,
                                            unidadMedidaServiceMock.Object,

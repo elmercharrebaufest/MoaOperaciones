@@ -28,7 +28,6 @@ using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
-using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -56,7 +55,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
-        private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly string rutaArchivosCompras = ConfigurationManager.AppSettings["RutaArchivosCompras"];
         private readonly string EmailEnvioErrores = ConfigurationManager.AppSettings["EmailEnvioErrores"];
@@ -77,7 +75,6 @@ namespace SustitucionMOAUtils.Services
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
             IEmailService emailService,
-            IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
             IComprasArchivosService comprasArchivosService,
             IComprasArchivosImportService comprasArchivosImportService,
@@ -91,7 +88,6 @@ namespace SustitucionMOAUtils.Services
             this.httpContextService = httpContextService;
             this.usuarioService = usuarioService;
             this.emailService = emailService;
-            this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
             this.comprasArchivosService = comprasArchivosService;
             this.comprasArchivosImportService = comprasArchivosImportService;
@@ -2869,11 +2865,6 @@ namespace SustitucionMOAUtils.Services
             return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true;
         }
 
-        private byte[] TraerArchivosDeSAP(string docId)
-        {
-            return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
-        }
-
         private void GrabarArchivosSapEnPliego(Solp solp, List<ArchivoSolpDto> archivos)
         {
             try
@@ -2893,7 +2884,7 @@ namespace SustitucionMOAUtils.Services
 
                 foreach (var item in archivos)
                 {
-                    byte[] archivoSAP = TraerArchivosDeSAP(item.DocId);
+                    byte[] archivoSAP = comprasServiceSap.TraerArchivosDeSAP(item.DocId);
                     string nombreArchivo = $"Solp_{solp.Id}/{item.Nombre}.{item.Tipo}";
                     string rutaArchivoGuardado = GuardarArchivoEnSistemaDeAlmacenamiento(archivoSAP, nombreArchivo, solp.Id);
 

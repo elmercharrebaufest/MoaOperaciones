@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion numeros
+﻿// Ignore Spelling: Solp Sustitucion Utils Solpe Posicion numeros Direccion
 
 using SustitucionMOAFotmatter;
 using SustitucionMOAModel.Dto;
@@ -39,6 +39,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
+        private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -61,6 +62,7 @@ namespace SustitucionMOAUtils.Services
                                  IListarSolpPendientesConsumerMOA listarSolpPendientesConsumerMOA,
                                  IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
                                  IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
+                                 IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -87,6 +89,7 @@ namespace SustitucionMOAUtils.Services
             this.usuarioService = usuarioService;
             this.tipoCambioService = tipoCambioService;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
+            this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
         }
 
         public SolpSAPDto ConvertirSOLPSAP(Solp solpActual)
@@ -1193,6 +1196,11 @@ namespace SustitucionMOAUtils.Services
         public byte[] ObtenerPDFOrdenCompra(string nroOc)
         {
             return obtenerPDFOrdenCompraConsumerMOA.Request(nroOc);
+        }
+
+        public byte[] TraerArchivosDeSAP(string docId)
+        {
+            return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
