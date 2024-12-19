@@ -1,4 +1,6 @@
-﻿using Moq;
+﻿// Ignore Spelling: Sustitucion Util
+
+using Moq;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using SustitucionMOAModel.Consultas;
@@ -64,7 +66,7 @@ namespace SustitucionMOATest.Services
         private Mock<IUnidadMedidaService> unidadMedidaServiceMock;
         private Mock<ITipoCambioService> tipoCambioServiceMock;
 
-        private GuardarCotizacion guardarCotizacionToClone()
+        private GuardarCotizacion GuardarCotizacionToClone()
         {
             return new GuardarCotizacion
             {
@@ -1432,7 +1434,7 @@ namespace SustitucionMOATest.Services
 
             repositorioMock.Setup(y => y.Agregar(It.IsAny<Cotizacion>())).Returns(new Cotizacion { Id = 1, CotizacionEstado_Id = 1 });
 
-            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, false);
+            var result = target.GrabarCotizacion(GuardarCotizacionToClone(), null, false, false);
 
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
@@ -1466,7 +1468,7 @@ namespace SustitucionMOATest.Services
             repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
                 It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "ARP", Id = 1 } });
 
-            var result = target.GrabarCotizacion(guardarCotizacionToClone(), null, false, false);
+            var result = target.GrabarCotizacion(GuardarCotizacionToClone(), null, false, false);
 
             repositorioMock.Verify(y => y.Obtener<PeticionDeOfertaUsuario>(It.IsAny<int>()), Times.Once);
             repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null), Times.Once);
