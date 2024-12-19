@@ -44,7 +44,6 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerContratoSolpConsumerMOA> obtenerContratoSolpConsumerMOAMock;
         private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IObtenerOrdenDeCompraConsumerMOA> obtenerOrdenDeCompraConsumerMOAMock;
-        private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> obtenerOrdenesDeCompraParaSOLPConsumerMOAMock;
         private Mock<IHttpContextService> httpContextServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMOA;
@@ -738,7 +737,6 @@ namespace SustitucionMOATest.Services
             modificarOrdenDeCompraConsumerMOAMock = new Mock<IModificarOrdenDeCompraConsumerMOA>();
             agregarRegistroInfoConsumerMOAMock = new Mock<IAgregarRegistroInfoConsumerMOA>();
             obtenerOrdenDeCompraConsumerMOAMock = new Mock<IObtenerOrdenDeCompraConsumerMOA>();
-            obtenerOrdenesDeCompraParaSOLPConsumerMOAMock = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             obtenerProveedorConsumerMOA = new Mock<IObtenerProveedorConsumerMOA>();
             vendedoresConsumerMOAMock = new Mock<IVendedoresConsumerMOA>();
@@ -782,7 +780,6 @@ namespace SustitucionMOATest.Services
                 repositorioMock.Object,
                 vendedorServiceMock.Object,
                 httpContextServiceMock.Object,
-                obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Object,
                 usuarioServiceMock.Object,
                 obtenerProveedorConsumerMOA.Object,
                 vendedoresConsumerMOAMock.Object,
@@ -1328,32 +1325,6 @@ namespace SustitucionMOATest.Services
             repositorioMock.Verify(x => x.Agregar(It.IsAny<Adjudicacion>()), Times.Once);
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(2));
             Assert.That(result.Errores.Count == 1);
-        }
-
-        [Test]
-        public void ListarAdjudicaciones()
-        {
-            var adjudicacionId = 1;
-            var nroSolp = "0212303121";
-            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()))
-            .Returns(nroSolp);
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<TablaSap, bool>>>(),
-                It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(new List<TablaSap>() { new TablaSap { CodigoSap = "1", Id = 1 } });
-            obtenerOrdenesDeCompraParaSOLPConsumerMOAMock.Setup(y => y.Request(It.IsAny<string>(), It.IsAny<string>())).Returns(new List<OrdenDeCompraSAPDto> {
-                new OrdenDeCompraSAPDto { Cabecera = new OrdenDeCompraSAPCabecera { Tipo = "", OrdenDeCompra = "", FechaCreacion = new DateTime(), RazonSocialProveedor = "Proveedor", Moneda = "ARP", MontoTotal = 1500 } }
-            });
-            var result = target.ListarAdjudicaciones(adjudicacionId);
-            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<Expression<Func<Solp, string>>>()), Times.Once);
-        }
-
-        [Test]
-        public void ObtenerAdjudicacion()
-        {
-            var adjudicacionId = 1;
-            repositorioMock.Setup(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>()))
-            .Returns(new AdjudicacionDto { });
-            var result = target.ObtenerAdjudicacion(adjudicacionId);
-            repositorioMock.Verify(y => y.Obtener(It.IsAny<Expression<Func<Adjudicacion, bool>>>(), It.IsAny<Expression<Func<Adjudicacion, AdjudicacionDto>>>()), Times.Once);
         }
 
         [Test]

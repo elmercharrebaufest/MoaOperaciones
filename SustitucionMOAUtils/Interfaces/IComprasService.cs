@@ -69,8 +69,6 @@ namespace SustitucionMOAUtils.Interfaces
         RespuestaGuardarSOLP GrabarCotizacion(GuardarCotizacion cotizacionDto, HttpFileCollectionBase adjuntos, bool esFinalizado, bool enviarMail);
         GuardarCotizacion ObtenerPrecioTotalPosicionProveedor(GuardarCotizacion cotizacionDto);
         RespuestaCrearOrdenDeCompra GrabarAdjudicacion(AdjudicacionDto adjudicacionDto, int usuarioActualId, string mensaje);
-        List<AdjudicacionDto> ListarAdjudicaciones(int solpId);
-        AdjudicacionDto ObtenerAdjudicacion(int adjudicacionId);
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);

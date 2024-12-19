@@ -130,6 +130,7 @@
     <Compile Include="Jobs\NotificacionErroresJobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositorio\RepositorioOrdenResiduosTest.cs" />
+    <Compile Include="Services\AdjudicacionesServiceTest.cs" />
     <Compile Include="Services\AplicacionCartaPorteTest.cs" />
     <Compile Include="Services\ArchivoBoletoServiceTest.cs" />
     <Compile Include="Services\RegistroInfoServiceTest.cs" />

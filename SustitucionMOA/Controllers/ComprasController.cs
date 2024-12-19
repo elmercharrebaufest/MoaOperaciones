@@ -26,14 +26,17 @@ namespace SustitucionMOA.Controllers
         private readonly IComprasService service;
         private readonly IComprasSapService comprasSapService;
         private readonly IUsuarioService usuarioService;
+        private readonly IAdjudicacionesService adjudicacionesService;
 
         public ComprasController(IComprasService comprasService,
                                  IComprasSapService comprasSapService,
-                                 IUsuarioService usuarioService)
+                                 IUsuarioService usuarioService,
+                                 IAdjudicacionesService adjudicacionesService)
         {
             this.service = comprasService;
             this.comprasSapService = comprasSapService;
             this.usuarioService = usuarioService;
+            this.adjudicacionesService = adjudicacionesService;
         }
 
         [ValidateInput(false)]
@@ -598,8 +601,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarAdjudicaciones(int solpId)
         {
-
-            var result = service.ListarAdjudicaciones(solpId);
+            var result = adjudicacionesService.ListarAdjudicaciones(solpId);
             return JsonCustom(new { data = result });
         }
 
