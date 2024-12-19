@@ -1043,21 +1043,6 @@ namespace SustitucionMOAUtils.Services
             return archivo?.Ruta;
         }
 
-        public List<TablaSapDto> ListarTablaSap(List<string> tablas)
-        {
-            List<TablaSapDto> tablaSap;
-            if (tablas.Contains("OrdenSolpSap") || tablas.Contains("CecoSolpSap") || tablas.Contains("CentroBeneficio"))
-            {
-                var tipoImputacionEnPosYSubpos = repositorio.Listar<SolpPosicion>().Select(x => x.ValorTipoImputacion_Id).Where(id => id != null).Distinct().ToList();
-                tipoImputacionEnPosYSubpos.AddRange(repositorio.Listar<SolpSubposicion>().Select(x => x.TipoImputacion_Id).Where(id => id != null).Distinct().ToList());
-                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla) && tipoImputacionEnPosYSubpos.Contains(x.Id)).Select(x => new TablaSapDto(x)).ToList();
-            }
-            else
-                tablaSap = repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla)).Select(x => new TablaSapDto(x)).ToList();
-
-            return tablaSap;
-        }
-
         public List<TablaGeneralDto> ObtenerTablaGeneral(string tabla)
         {
             return repositorio.Listar<TablaGeneral>(x => x.Tabla == tabla).Select(x => new TablaGeneralDto(x)).ToList();
@@ -2197,7 +2182,6 @@ namespace SustitucionMOAUtils.Services
             return adjudicacionMail;
         }
 
-
         public void ActualizarServiciosSolp()
         {
             List<Servicio> servicios = comprasServiceSap.ObtenerServiciosSapRaw();
@@ -2930,8 +2914,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-
-
         private AlternateView CuerpoEnviarMailErrorCondicionEspecial(Solp solp, string mensaje)
         {
             var filePath = httpContextService.ObtenerPathLogoMail();
@@ -2986,7 +2968,6 @@ namespace SustitucionMOAUtils.Services
                 }
             }
         }
-
 
         private void ActualizarTieneModificaciones(Solp solp)
         {

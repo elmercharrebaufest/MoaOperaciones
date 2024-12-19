@@ -61,5 +61,19 @@ namespace SustitucionMOAUtils.Services
         {
             return repositorio.Listar(filtros);
         }
+
+        public List<TablaSapDto> ListarTablaSap(List<string> tablas)
+        {
+            if (tablas.Contains("OrdenSolpSap") || tablas.Contains("CecoSolpSap") || tablas.Contains("CentroBeneficio"))
+            {
+                var tipoImputacionEnPosYSubpos = repositorio.Listar<SolpPosicion>().Select(x => x.ValorTipoImputacion_Id).Where(id => id != null).Distinct().ToList();
+                tipoImputacionEnPosYSubpos.AddRange(repositorio.Listar<SolpSubposicion>().Select(x => x.TipoImputacion_Id).Where(id => id != null).Distinct().ToList());
+                return repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla) && tipoImputacionEnPosYSubpos.Contains(x.Id)).ConvertAll(x => new TablaSapDto(x));
+            }
+            else
+            {
+                return repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla)).ConvertAll(x => new TablaSapDto(x));
+            }
+        }
     }
 }

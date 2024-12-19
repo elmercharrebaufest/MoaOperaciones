@@ -27,6 +27,7 @@ namespace SustitucionMOATest.Controllers
         private Mock<IComprasSapService> comprasSapServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IAdjudicacionesService> adjudicacionesServiceMock;
+        private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IRepositorio> repositorioMock;
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
@@ -43,6 +44,7 @@ namespace SustitucionMOATest.Controllers
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
             adjudicacionesServiceMock = new Mock<IAdjudicacionesService>();
+            tablaSapServiceMock = new Mock<ITablaSapService>();
 
             this.serializer = new JavaScriptSerializer();
 
@@ -62,7 +64,8 @@ namespace SustitucionMOATest.Controllers
             target = new ComprasController(comprasServiceMock.Object,
                                            comprasSapServiceMock.Object,
                                            usuarioServiceMock.Object,
-                                           adjudicacionesServiceMock.Object);
+                                           adjudicacionesServiceMock.Object,
+                                           tablaSapServiceMock.Object);
         }
 
         //[Test()]
@@ -501,7 +504,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarTablaSapOK()
         {
-            comprasServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
+            tablaSapServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
 
             var result = target.ListarTablaSap(It.IsAny<string>()) as JsonResult;
 

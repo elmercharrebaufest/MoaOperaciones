@@ -27,16 +27,19 @@ namespace SustitucionMOA.Controllers
         private readonly IComprasSapService comprasSapService;
         private readonly IUsuarioService usuarioService;
         private readonly IAdjudicacionesService adjudicacionesService;
+        private readonly ITablaSapService tablaSapService;
 
         public ComprasController(IComprasService comprasService,
                                  IComprasSapService comprasSapService,
                                  IUsuarioService usuarioService,
-                                 IAdjudicacionesService adjudicacionesService)
+                                 IAdjudicacionesService adjudicacionesService,
+                                 ITablaSapService tablaSapService)
         {
             this.service = comprasService;
             this.comprasSapService = comprasSapService;
             this.usuarioService = usuarioService;
             this.adjudicacionesService = adjudicacionesService;
+            this.tablaSapService = tablaSapService;
         }
 
         [ValidateInput(false)]
@@ -771,7 +774,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ListarTablaSap(string codigos)
         {
             List<string> tablas = !string.IsNullOrEmpty(codigos) ? codigos.Split(',').ToList() : new List<string>();
-            return JsonCustom(new { data = service.ListarTablaSap(tablas) });
+            return JsonCustom(new { data = tablaSapService.ListarTablaSap(tablas) });
         }
 
         [HttpPost]

@@ -16,7 +16,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
-        List<TablaSapDto> ListarTablaSap(List<string> tablas);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
         List<TablaGeneralDto> ObtenerTiposPosicionSolp();
         List<TablaSapDto> ObtenerMonedas();
