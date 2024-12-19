@@ -1496,7 +1496,7 @@ namespace SustitucionMOAUtils.Services
         public byte[] GenerarSolpPdf(int idSolp)
         {
             var solp = TraerSolpId(idSolp);
-            var usuarioCompras = ListarUsuarioCompras();
+            var usuarioCompras = usuarioService.ListarUsuarioCompras();
             var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
             //, "Templates/PliegoSolpSinCondicionesTemplate.html"
@@ -3042,14 +3042,6 @@ namespace SustitucionMOAUtils.Services
                 solp.EstadoSolpSap_Id = idEstado;
                 repositorio.GuardarCambios();
             }
-        }
-
-        public List<UsuarioComprasDto> ListarUsuarioCompras()
-        {
-            var usuariosCompras = repositorio.Listar<UsuarioCompras>()
-                .Select(x => new UsuarioComprasDto(x));
-
-            return usuariosCompras.ToList();
         }
 
         public List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId)

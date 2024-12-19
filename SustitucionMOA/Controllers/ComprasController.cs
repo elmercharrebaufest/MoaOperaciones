@@ -208,7 +208,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
         {
-            return JsonCustom(new { data = service.ListarUsuarioCompras() });
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCompras() });
         }
 
         [HttpGet]

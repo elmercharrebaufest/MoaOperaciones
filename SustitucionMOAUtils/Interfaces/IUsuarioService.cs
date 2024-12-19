@@ -51,5 +51,7 @@ namespace SustitucionMOAUtils.Interfaces
         ProveedorComprasDto ObtenerYCrearProveedorCompras(string codigoProveedor);
         ObtenerProveedorWSMOAResponse ObtenerProveedorSap(string codigoProveedor);
         VendedoresWSMOAResponse ObtenerVendedorSap(string codigoProveedor, List<Models.FechaWS> fechas);
+
+        List<UsuarioComprasDto> ListarUsuarioCompras();
     }
 }

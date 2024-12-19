@@ -1175,5 +1175,13 @@ namespace SustitucionMOAUtils.Services
         {
             return vendedoresConsumerMOA.Request(codigoProveedor, fechas);
         }
+
+        public List<UsuarioComprasDto> ListarUsuarioCompras()
+        {
+            var usuariosCompras = repositorio.Listar<UsuarioCompras>()
+                .Select(x => new UsuarioComprasDto(x));
+
+            return usuariosCompras.ToList();
+        }
     }
 }

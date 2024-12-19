@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -373,6 +374,25 @@ namespace SustitucionMOATest.Services
             var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Assert.AreEqual(expected, resultUser.SeccionesVisitadas);
+        }
+
+        [Test]
+        public void ListarUsuarioCompras_DebeRetornarListaDeUsuarioComprasDto()
+        {
+            // Arrange
+            var usuariosComprasMockData = new List<UsuarioCompras>
+            {
+                new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+            };
+
+            repositorioUsuarioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+
+            // Act
+            var resultado = target.ListarUsuarioCompras();
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.AreEqual(usuariosComprasMockData.Count, resultado.Count);
         }
     }
 }
