@@ -36,6 +36,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
         private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
+        private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -55,6 +56,7 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
                                  IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
                                  IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
+                                 IListarSolpPendientesConsumerMOA listarSolpPendientesConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -73,6 +75,7 @@ namespace SustitucionMOAUtils.Services
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
             this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
+            this.listarSolpPendienteConsumeMOA = listarSolpPendientesConsumerMOA;
             this.centroDireccionService = centroDireccionService;
             this.tablaSapService = tablaSapService;
             this.unidadMedidaService = unidadMedidaService;
@@ -1154,6 +1157,16 @@ namespace SustitucionMOAUtils.Services
                 tablaSap.Add(new TablaSapDto { Id = -1, Descripcion = "Borrado en SAP" });
             }
             return tablaSap;
+        }
+
+        public List<PosicionPendienteDto> ListarSolpPendientes()
+        {
+            return listarSolpPendienteConsumeMOA.ListarSolpPendientes();
+        }
+
+        public IEnumerable<string> ListarNumeroSolpPendientes()
+        {
+            return ListarSolpPendientes().Select(solp => solp.NroSolp);
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)

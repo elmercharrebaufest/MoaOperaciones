@@ -57,7 +57,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IHttpContextService httpContextService;
         private readonly IUsuarioService usuarioService;
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
-        private readonly IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
         private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
 
@@ -80,7 +79,6 @@ namespace SustitucionMOAUtils.Services
             IHttpContextService httpContextService,
             IUsuarioService usuarioService,
             IEmailService emailService, IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
-            IListarSolpPendientesConsumerMOA listarSolpPendienteConsumeMOA,
             IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
             IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
             IEmailComprasService emailComprasService,
@@ -97,7 +95,6 @@ namespace SustitucionMOAUtils.Services
             this.usuarioService = usuarioService;
             this.emailService = emailService;
             this.reporteOrdenDeCompraConsumerMOA = reporteOrdenDeCompraConsumerMOA;
-            this.listarSolpPendienteConsumeMOA = listarSolpPendienteConsumeMOA;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
             this.emailComprasService = emailComprasService;
@@ -3234,7 +3231,7 @@ namespace SustitucionMOAUtils.Services
             List<string> solpPendientesSap = new List<string>();
             if (listarPendiente != EstadoListarTratamientoSolp.Todas)
             {
-                solpPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes().Select(a => a.NroSolp).ToList());
+                solpPendientesSap.AddRange(comprasServiceSap.ListarNumeroSolpPendientes());
             }
 
             if (!string.IsNullOrEmpty(nroSolp))
@@ -8168,7 +8165,7 @@ namespace SustitucionMOAUtils.Services
 
                 var posicionPendientesSap = new List<PosicionPendienteDto>();
 
-                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                posicionPendientesSap.AddRange(comprasServiceSap.ListarSolpPendientes());
                 List<string> solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
                 var sinSolps = !solps.Any();
 
@@ -8260,7 +8257,7 @@ namespace SustitucionMOAUtils.Services
 
                 var posicionPendientesSap = new List<PosicionPendienteDto>();
 
-                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                posicionPendientesSap.AddRange(comprasServiceSap.ListarSolpPendientes());
                 List<string> solps = posicionPendientesSap.Select(a => a.NroSolp).Distinct().ToList();
                 var sinSolps = !solps.Any();
 
@@ -8318,7 +8315,7 @@ namespace SustitucionMOAUtils.Services
             try
             {
                 var posicionPendientesSap = new List<PosicionPendienteDto>();
-                posicionPendientesSap.AddRange(listarSolpPendienteConsumeMOA.ListarSolpPendientes());
+                posicionPendientesSap.AddRange(comprasServiceSap.ListarSolpPendientes());
 
                 List<PosicionCrearPoMultipleDto> posiciones = repositorio.Listar<SolpPosicion, PosicionCrearPoMultipleDto>(
                     posicion => new PosicionCrearPoMultipleDto

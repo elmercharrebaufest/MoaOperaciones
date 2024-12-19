@@ -51,5 +51,9 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerServiciosSap();
 
         List<Servicio> ObtenerServiciosSapRaw();
+
+        List<PosicionPendienteDto> ListarSolpPendientes();
+
+        IEnumerable<string> ListarNumeroSolpPendientes();
     }
 }
