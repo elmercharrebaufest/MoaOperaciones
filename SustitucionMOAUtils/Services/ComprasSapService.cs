@@ -35,6 +35,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IObtenerServiciosSolpConsumerMOA serviciosSolpConsumerMOA;
         private readonly IObtenerSolpConsumerMOA obtenerSolpConsumerMOA;
         private readonly IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA;
+        private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -53,6 +54,7 @@ namespace SustitucionMOAUtils.Services
                                  IObtenerOrdenDeCompraConsumerMOA obtenerOrdenDeCompraConsumerMOA,
                                  IObtenerSolpConsumerMOA obtenerSolpConsumerMOA,
                                  IObtenerFuenteAprovisionamientoConsumerMOA obtenerFuenteAprovisionamientoConsumerMOA,
+                                 IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -70,6 +72,7 @@ namespace SustitucionMOAUtils.Services
             this.serviciosSolpConsumerMOA = obtenerServiciosSolpConsumerMOA;
             this.obtenerSolpConsumerMOA = obtenerSolpConsumerMOA;
             this.obtenerFuenteAprovisionamientoConsumerMOA = obtenerFuenteAprovisionamientoConsumerMOA;
+            this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.centroDireccionService = centroDireccionService;
             this.tablaSapService = tablaSapService;
             this.unidadMedidaService = unidadMedidaService;
@@ -956,6 +959,13 @@ namespace SustitucionMOAUtils.Services
                 NumeroMaterial = item.NumeroMaterial,
                 TipoPosicionDocumentoCompras = item.TipoPosicionDocumentoCompras
             });
+        }
+
+        //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
+        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
+        {
+            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
+            return result.ContratosSolp;
         }
 
         public AdjudicacionDto ObtenerAdjudicacion(string nroOC)

@@ -53,7 +53,6 @@ namespace SustitucionMOAUtils.Services
     public class ComprasService : IComprasService
     {
         private readonly IRepositorio repositorio;
-        private readonly IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA;
         private readonly IVendedorService vendedorService;
         private readonly IHttpContextService httpContextService;
         private readonly IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA;
@@ -81,7 +80,6 @@ namespace SustitucionMOAUtils.Services
         private readonly IUnidadMedidaService unidadMedidaService;
 
         public ComprasService(IRepositorio repositorio,
-            IObtenerContratoSolpConsumerMOA obtenerContratoSolpConsumerMOA,
             IVendedorService vendedorService,
             IHttpContextService httpContextService,
             IObtenerRegistroInfoConsumerMOA obtenerRegistroInfoConsumerMOA,
@@ -101,7 +99,6 @@ namespace SustitucionMOAUtils.Services
             IUnidadMedidaService unidadMedidaService)
         {
             this.repositorio = repositorio;
-            this.obtenerContratoSolpConsumerMOA = obtenerContratoSolpConsumerMOA;
             this.vendedorService = vendedorService;
             this.httpContextService = httpContextService;
             this.obtenerRegistroInfoConsumerMOA = obtenerRegistroInfoConsumerMOA;
@@ -2502,7 +2499,7 @@ namespace SustitucionMOAUtils.Services
 
                         if (!string.IsNullOrEmpty(posicion.NumeroContratoMarco)) //Contrato Marco
                         {
-                            var datosContratoMarco = ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
+                            var datosContratoMarco = comprasServiceSap.ObtenerContratoMarco(posicion.NumeroContratoMarco, posicion.CentroLogistico);
                             posicionEntity.NumeroContratoSuperior = posicion.NumeroContratoMarco;
                             posicionEntity.NumeroPosicionContratoSuperior = posicion.PosicionContratoMarco;
                             posicionEntity.ProveedorFijo = posicion.ProveedorFijo;
@@ -3217,13 +3214,6 @@ namespace SustitucionMOAUtils.Services
             List<ProvinciaDto> lista = repositorio.Listar<Provincia>()
                   .Select(s => new ProvinciaDto(s)).ToList();
             return lista;
-        }
-
-        //Obtener contrato es lo que consultamos cuando vamos a crear una posicion desde contrato marco
-        public List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro)
-        {
-            var result = obtenerContratoSolpConsumerMOA.Request(numeroContrato, centro);
-            return result.ContratosSolp;
         }
 
         public ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id,

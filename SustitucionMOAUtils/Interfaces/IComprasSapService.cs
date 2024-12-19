@@ -21,6 +21,8 @@ namespace SustitucionMOAUtils.Interfaces
 
         List<FuenteAprovisionamientoDto> ListarFuenteAprovisionamiento(string fechaEntregaPosicion, string numeroMaterial, string centro);
 
+        List<ContratoSolp> ObtenerContratoMarco(string numeroContrato, string centro);
+
         List<TablaSapDto> ObtenerCentrosDeCostoSap();
 
         List<TablaSapDto> ObtenerCuentasSap();

@@ -388,7 +388,7 @@ namespace SustitucionMOA.Controllers
 
             if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+            return JsonCustom(new { data = comprasSapService.ObtenerContratoMarco(numeroContrato, centro) });
 
         }
 
