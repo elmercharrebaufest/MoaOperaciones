@@ -1559,6 +1559,9 @@
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\liquidacion-no-granos.module.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.ts" />
     <TypeScriptCompile Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.module.spec.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.module.ts" />
+    <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades-routing.module.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.service.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.spec.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.ts" />
