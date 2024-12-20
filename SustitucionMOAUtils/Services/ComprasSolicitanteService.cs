@@ -15,10 +15,22 @@ namespace SustitucionMOAUtils.Services
     public class ComprasSolicitanteService : IComprasSolicitanteService
     {
         private readonly IRepositorio repositorio;
+        private readonly IComprasService comprasService;
+        private readonly IComprasSapService comprasServiceSap;
+        private readonly IRegistroInfoService registroInfoService;
+        private readonly IUnidadMedidaService unidadMedidaService;
 
-        public ComprasSolicitanteService(IRepositorio repositorio)
+        public ComprasSolicitanteService(IRepositorio repositorio,
+                                         IComprasService comprasService,
+                                         IComprasSapService comprasServiceSap,
+                                         IRegistroInfoService registroInfoService,
+                                         IUnidadMedidaService unidadMedidaService)
         {
             this.repositorio = repositorio;
+            this.comprasService = comprasService;
+            this.comprasServiceSap = comprasServiceSap;
+            this.registroInfoService = registroInfoService;
+            this.unidadMedidaService = unidadMedidaService;
         }
 
         public ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null)
@@ -235,6 +247,74 @@ namespace SustitucionMOAUtils.Services
             };
 
             return info;
+        }
+
+        public List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId)
+        {
+            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
+                (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
+                .ConvertAll(s => new MaterialSolpDto(s));
+
+            return lista;
+        }
+
+        public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)
+        {
+            RegistroInfoDto ultimoRegistro = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(material, centro, grupoDeCompras);
+            MaterialSolpDto materialSolp = repositorio.Obtener<MaterialSolp, MaterialSolpDto>(
+                a => a.CodigoSap == material && a.CentroLogistico.CodigoSap == centro && a.GrupoCompras.Codigo == grupoDeCompras,
+                a => new MaterialSolpDto
+                {
+                    Id = a.Id,
+                    UnidadMedidaBase = new TablaSapDto
+                    {
+                        CodigoSap = a.UnidadMedidaBase.CodigoSap,
+                        Descripcion = a.UnidadMedidaBase.Descripcion
+                    }
+                });
+
+            if (ultimoRegistro.Unidad == null)
+            {
+                ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
+                return ultimoRegistro;
+            }
+
+
+
+            if (materialSolp.UnidadMedidaBase.CodigoSap != ultimoRegistro.Unidad)
+            {
+                var unidadesDelMaterial = unidadMedidaService.ObtenerUnidadesDesdeServicioSap(material);
+                var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
+                var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
+                comprasService.AdjustUnitPriceAndQuantity(ultimoRegistro, ultimoRegistro.Cantidad, ultimoRegistro.Precio, unidadRegistroInfo, unidadBaseMaterial);
+            }
+            return ultimoRegistro;
+        }
+
+        public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
+        {
+            var contratosParaAsociar = new List<AsociarContratoDto>();
+            foreach (var p in posiciones)
+            {
+                if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
+                {
+                    var datosPosicion = AutocompleteCodigoMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
+                    var contratos = comprasServiceSap.ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
+                    var asociado = new AsociarContratoDto
+                    {
+                        Indice = p.Indice,
+                        Tarea = datosPosicion != null && datosPosicion.Count > 0 ?
+                        datosPosicion[0].Descripcion : p.Tarea,
+                        Codigo = p.CodigoMaterialSap.Codigo,
+                        Centro = p.Centro.Codigo,
+                        ContratoMarco = p.NumeroContratoSuperior,
+                        Proveedor = p.ProveedorFijo,
+                        ContratosAsociados = contratos,
+                    };
+                    contratosParaAsociar.Add(asociado);
+                }
+            }
+            return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
     }
 }

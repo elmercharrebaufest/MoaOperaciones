@@ -14,5 +14,11 @@ namespace SustitucionMOAUtils.Interfaces
         List<UsuarioDto> ListarUsuarioSolicitante();
 
         InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
+
+        List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
+
+        RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras);
+
+        List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
     }
 }

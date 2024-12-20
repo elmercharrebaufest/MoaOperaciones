@@ -2978,15 +2978,6 @@ namespace SustitucionMOAUtils.Services
             return lista;
         }
 
-        public List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId)
-        {
-            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
-                (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
-                .Select(s => new MaterialSolpDto(s)).ToList();
-
-            return lista;
-        }
-
         public void EnviarEmailSolp(EmailComposeDto emailCompose)
         {
             Handlebars.RegisterHelper("isTrue", (ctx, args) =>
@@ -3527,32 +3518,6 @@ namespace SustitucionMOAUtils.Services
                     cotizacionPosicion.Precio = Math.Round((cotizacionPosicion.Precio / (unidadCotizada.Numerador / unidadCotizada.Denominador)) * (unidadSolicitada.Numerador / unidadSolicitada.Denominador), 2);
                 }
             };
-        }
-
-        public List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones)
-        {
-            var contratosParaAsociar = new List<AsociarContratoDto>();
-            foreach (var p in posiciones)
-            {
-                if (p.FechaEntregaServicio.HasValue && p.CodigoMaterialSap != null && !string.IsNullOrEmpty(p.CodigoMaterialSap.Codigo))
-                {
-                    var datosPosicion = AutocompleteCodigoMaterialSolp(p.CodigoMaterialSap.Codigo, p.Centro.Id);
-                    var contratos = comprasServiceSap.ListarFuenteAprovisionamiento(p.FechaEntregaServicio.Value.ToString("yyyy-MM-dd"), p.CodigoMaterialSap.Codigo.Remove(0, 10), p.Centro.Codigo);
-                    var asociado = new AsociarContratoDto
-                    {
-                        Indice = p.Indice,
-                        Tarea = datosPosicion != null && datosPosicion.Count > 0 ?
-                        datosPosicion[0].Descripcion : p.Tarea,
-                        Codigo = p.CodigoMaterialSap.Codigo,
-                        Centro = p.Centro.Codigo,
-                        ContratoMarco = p.NumeroContratoSuperior,
-                        Proveedor = p.ProveedorFijo,
-                        ContratosAsociados = contratos,
-                    };
-                    contratosParaAsociar.Add(asociado);
-                }
-            }
-            return contratosParaAsociar.Where(x => x.ContratosAsociados != null && x.ContratosAsociados.Count > 0).ToList();
         }
 
         public SolpCompraDto ObtenerSolpCompras(int id)
@@ -6893,7 +6858,6 @@ namespace SustitucionMOAUtils.Services
 
         private static void AdjustUnitPriceAndQuantity(RegistroInfoDto registro, decimal cantidad, decimal precio, UnidadesDeMedida unidadActual, UnidadesDeMedida unidadObjetivo)
         {
-
             // Convertir la cantidad a la unidad base (UNI)
             decimal cantidadEnUnidadBase = cantidad * unidadActual.Numerador / unidadActual.Denominador;
 
@@ -6909,38 +6873,8 @@ namespace SustitucionMOAUtils.Services
             registro.Precio = Math.Round(nuevoPrecio, 2);
         }
 
-        public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)
-        {
-            RegistroInfoDto ultimoRegistro = registroInfoService.ObtenerUltimoRegistroPorMaterialYProveedor(material, centro, grupoDeCompras);
-            MaterialSolpDto materialSolp = repositorio.Obtener<MaterialSolp, MaterialSolpDto>(
-                a => a.CodigoSap == material && a.CentroLogistico.CodigoSap == centro && a.GrupoCompras.Codigo == grupoDeCompras,
-                a => new MaterialSolpDto
-                {
-                    Id = a.Id,
-                    UnidadMedidaBase = new TablaSapDto
-                    {
-                        CodigoSap = a.UnidadMedidaBase.CodigoSap,
-                        Descripcion = a.UnidadMedidaBase.Descripcion
-                    }
-                });
-
-            if (ultimoRegistro.Unidad == null)
-            {
-                ultimoRegistro.Unidad = materialSolp.UnidadMedidaBase.CodigoSap;
-                return ultimoRegistro;
-            }
-
-
-
-            if (materialSolp.UnidadMedidaBase.CodigoSap != ultimoRegistro.Unidad)
-            {
-                var unidadesDelMaterial = unidadMedidaService.ObtenerUnidadesDesdeServicioSap(material);
-                var unidadBaseMaterial = unidadesDelMaterial.First(x => x.UnidadDeMedida == materialSolp.UnidadMedidaBase.CodigoSap);
-                var unidadRegistroInfo = unidadesDelMaterial.First(x => x.UnidadDeMedida == ultimoRegistro.Unidad);
-                AdjustUnitPriceAndQuantity(ultimoRegistro, ultimoRegistro.Cantidad, ultimoRegistro.Precio, unidadRegistroInfo, unidadBaseMaterial);
-            }
-            return ultimoRegistro;
-        }
+        void IComprasService.AdjustUnitPriceAndQuantity(RegistroInfoDto registro, decimal cantidad, decimal precio, UnidadesDeMedida unidadActual, UnidadesDeMedida unidadObjetivo)
+            => AdjustUnitPriceAndQuantity(registro, cantidad, precio, unidadActual, unidadObjetivo);
 
         private void EnviarMailResultadoAdjudicacion(List<string> mails, PeticionDeOferta peticion)
         {

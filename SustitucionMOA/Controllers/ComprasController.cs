@@ -368,7 +368,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult AutocompleteCodigoMaterialSolp(string valor, int centroId)
         {
 
-            return JsonCustom(service.AutocompleteCodigoMaterialSolp(valor, centroId));
+            return JsonCustom(comprasSolicitanteService.AutocompleteCodigoMaterialSolp(valor, centroId));
 
         }
 
@@ -432,7 +432,7 @@ namespace SustitucionMOA.Controllers
         {
 
             var posiciones = JsonConvert.DeserializeObject<List<SolpPosicionDto>>(solpJson);
-            return JsonCustom(new { data = service.DevolverContratosAsociados(posiciones) });
+            return JsonCustom(new { data = comprasSolicitanteService.DevolverContratosAsociados(posiciones) });
 
         }
 
@@ -662,7 +662,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult AutocompleteMaterialRFC(string material, string centro, string grupoDeCompras)
         {
-            return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
+            return JsonCustom(comprasSolicitanteService.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
         }
 
         [AllowAnonymous]
