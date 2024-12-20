@@ -1717,21 +1717,6 @@ namespace SustitucionMOAUtils.Services
             return ret.ToString();
         }
 
-        public List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor)
-        {
-            var lista = repositorio.Listar<TablaSap, TablaSapDto>(s => new TablaSapDto
-            {
-                Id = s.Id,
-                Descripcion = s.Descripcion,
-                CodigoSap = s.CodigoSap,
-                Codigo = s.Codigo,
-                Tabla = s.Tabla
-            }, x => x.Tabla == tabla && (
-            x.Descripcion.Contains(valor) || x.CodigoSap.Contains(valor)
-            ), 10000);
-            return lista;
-        }
-
         public List<ServicioSolpDto> AutocompleteServicioSolp(string valor)
         {
             string[] palabras = valor.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);

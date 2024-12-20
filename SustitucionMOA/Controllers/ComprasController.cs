@@ -257,7 +257,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult AutocompleteTablaSap(string tabla, string valor)
         {
 
-            return JsonCustom(service.AutocompleteTablaSap(tabla, valor));
+            return JsonCustom(tablaSapService.AutocompleteTablaSap(tabla, valor));
 
         }
 

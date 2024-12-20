@@ -251,11 +251,9 @@ namespace SustitucionMOAUtils.Services
 
         public List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId)
         {
-            List<MaterialSolpDto> lista = repositorio.Listar<MaterialSolp>(e =>
-                (e.Descripcion.Contains(valor) || e.CodigoSap.ToString().Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
+            return repositorio.Listar<MaterialSolp>(e =>
+                (e.Descripcion.Contains(valor) || e.CodigoSap.Contains(valor)) && e.Centro_Id == centroId && e.Estado, 0, null, DirOrden.Asc)
                 .ConvertAll(s => new MaterialSolpDto(s));
-
-            return lista;
         }
 
         public RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras)
