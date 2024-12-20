@@ -7509,57 +7509,6 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas)
-        {
-            var fechas = visitas.Select(x => x.FechaHora.Date).ToList();
-
-            var detalleVisitas = repositorio.Listar<PliegoVisita, DetalleVisitaDto>(pliegoVisita => new DetalleVisitaDto
-            {
-                FechaHora = pliegoVisita.FechaHora,
-                PliegoId = pliegoVisita.Pliego_Id,
-            })
-              .AsEnumerable()
-              .Where(vis => vis.FechaHora.HasValue && fechas.Any(f => vis.FechaHora.Value.Date == f))
-              .ToList();
-
-            var listaIdPliego = detalleVisitas.Select(x => x.PliegoId).ToList();
-
-            var solpDB = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
-            {
-                NroSolp = x.NroSolp,
-                Pliego_Id = x.Pliego_Id,
-                Id = x.Id
-            }, so => so.Pliego_Id.HasValue && listaIdPliego.Contains(so.Pliego_Id.Value)).ToList();
-
-            var solpIds = solpDB.Select(x => x.Id).ToList();
-
-            var po = repositorio.Listar<PeticionDeOferta>(peticion => solpIds.Contains(peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id)).ToList();
-
-            foreach (var detalle in detalleVisitas)
-            {
-                detalle.NroSolp = solpDB.Where(solp => solp.Pliego_Id == detalle.PliegoId).FirstOrDefault() != null ? solpDB.Where(solp => solp.Pliego_Id == detalle.PliegoId).FirstOrDefault().NroSolp : "";
-                detalle.Proveedores = po.Where(pou => pou.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == solpDB.Where(solp => solp.Pliego_Id == detalle.PliegoId).FirstOrDefault().Id) != null ?
-                 po.Where(pou => pou.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == solpDB.Where(solp => solp.Pliego_Id == detalle.PliegoId).FirstOrDefault().Id)
-                    .SelectMany(pro => pro.Usuarios).Select(peticionUsuario => new ProveedorDto
-                    {
-                        RazonSocial = peticionUsuario.Usuario.ObtenerRazonSocial(),
-                        Mail = peticionUsuario.Usuario.Mail
-                    }).Distinct().ToList() : null;
-            }
-
-            var detalleVisitasConSolp = detalleVisitas.Where(detalle => !string.IsNullOrEmpty(detalle.NroSolp)).ToList();
-
-
-            var info = new InfoVisitasDeObraDto()
-            {
-                CantidadVisitas = detalleVisitasConSolp.Count(),
-                DetalleVisitas = detalleVisitasConSolp
-            };
-
-
-            return info;
-        }
-
         private void SetNombreDePedido(Solp solp)
         {
             if (solp is null) { throw new ArgumentNullException(nameof(solp)); }

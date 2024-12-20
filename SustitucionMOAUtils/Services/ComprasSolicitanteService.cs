@@ -188,5 +188,53 @@ namespace SustitucionMOAUtils.Services
             }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
             return usuarios;
         }
+
+        public InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas)
+        {
+            List<DateTime> fechas = visitas.ConvertAll(x => x.FechaHora.Date);
+
+            IEnumerable<DetalleVisitaDto> detalleVisitas = repositorio.Listar<PliegoVisita, DetalleVisitaDto>(pliegoVisita => new DetalleVisitaDto
+            {
+                FechaHora = pliegoVisita.FechaHora,
+                PliegoId = pliegoVisita.Pliego_Id,
+            })
+              .AsEnumerable()
+              .Where(vis => vis.FechaHora.HasValue && fechas.Any(f => vis.FechaHora.Value.Date == f));
+
+            IEnumerable<int> listaIdPliego = detalleVisitas.Select(x => x.PliegoId);
+
+            List<SolpDto> solpDB = repositorio.Listar<Solp, SolpDto>(x => new SolpDto
+            {
+                NroSolp = x.NroSolp,
+                Pliego_Id = x.Pliego_Id,
+                Id = x.Id
+            }, so => so.Pliego_Id.HasValue && listaIdPliego.Contains(so.Pliego_Id.Value)).ToList();
+
+            List<int?> solpIds = solpDB.ConvertAll(x => x.Id);
+
+            var po = repositorio.Listar<PeticionDeOferta>(peticion => solpIds.Contains(peticion.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id)).ToList();
+
+            foreach (DetalleVisitaDto detalle in detalleVisitas)
+            {
+                detalle.NroSolp = solpDB.FirstOrDefault(solp => solp.Pliego_Id == detalle.PliegoId)?.NroSolp ?? "";
+
+                detalle.Proveedores = po.Where(pou => pou.Posiciones.FirstOrDefault().SolpPosicion.Solp_Id == solpDB.FirstOrDefault(solp => solp.Pliego_Id == detalle.PliegoId).Id)?
+                    .SelectMany(pro => pro.Usuarios).Select(peticionUsuario => new ProveedorDto
+                    {
+                        RazonSocial = peticionUsuario.Usuario.ObtenerRazonSocial(),
+                        Mail = peticionUsuario.Usuario.Mail
+                    }).Distinct().ToList();
+            }
+
+            var detalleVisitasConSolp = detalleVisitas.Where(detalle => !string.IsNullOrEmpty(detalle.NroSolp)).ToList();
+
+            var info = new InfoVisitasDeObraDto()
+            {
+                CantidadVisitas = detalleVisitasConSolp.Count,
+                DetalleVisitas = detalleVisitasConSolp
+            };
+
+            return info;
+        }
     }
 }

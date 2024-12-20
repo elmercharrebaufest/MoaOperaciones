@@ -769,7 +769,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
-            var result = service.ListarVisitasDeObra(visitas);
+            var result = comprasSolicitanteService.ListarVisitasDeObra(visitas);
             return JsonCustom(new { data = result });
         }
 

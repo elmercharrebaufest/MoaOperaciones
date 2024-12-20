@@ -80,7 +80,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
-        InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerTiposImputaciones();
         void ObtenerDatosReporteSolp();
 
