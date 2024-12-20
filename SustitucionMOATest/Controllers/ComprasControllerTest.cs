@@ -25,6 +25,7 @@ namespace SustitucionMOATest.Controllers
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
         private Mock<IComprasSapService> comprasSapServiceMock;
+        private Mock<IComprasSolicitanteService> comprasSolicitanteServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
         private Mock<IAdjudicacionesService> adjudicacionesServiceMock;
         private Mock<ITablaSapService> tablaSapServiceMock;
@@ -41,6 +42,7 @@ namespace SustitucionMOATest.Controllers
         {
             comprasServiceMock = new Mock<IComprasService>();
             comprasSapServiceMock = new Mock<IComprasSapService>();
+            comprasSolicitanteServiceMock = new Mock<IComprasSolicitanteService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
             adjudicacionesServiceMock = new Mock<IAdjudicacionesService>();
@@ -63,6 +65,7 @@ namespace SustitucionMOATest.Controllers
 
             target = new ComprasController(comprasServiceMock.Object,
                                            comprasSapServiceMock.Object,
+                                           comprasSolicitanteServiceMock.Object,
                                            usuarioServiceMock.Object,
                                            adjudicacionesServiceMock.Object,
                                            tablaSapServiceMock.Object);
@@ -389,7 +392,7 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerUltimaSolpTest()
         {
             usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto());
-            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
+            comprasSolicitanteServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
 
             var result = target.ObtenerUltimaSolp() as JsonResult;
 
@@ -583,7 +586,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarUsuarioSolicitanteOk()
         {
-            comprasServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
+            comprasSolicitanteServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
             { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
 
             var result = target.ListarUsuarioSolicitante();

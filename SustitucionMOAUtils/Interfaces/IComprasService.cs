@@ -25,7 +25,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerAlmacenes();
         List<TablaSapDto> ObtenerUnidades();
         List<CentroDireccionDto> ObtenerCentrosDireccion();
-        ListaPaginada<SolpDto> ListarSolp(UsuarioDto usuarioActual, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
         string BorrarSolp(int idSolp);
         SolpDto TraerSolpId(int idSolp);
         SolpESDto TraerSolpPorNumero(string nroSolp);
@@ -70,7 +69,6 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
-        DatosUltimaSolpDto ObtenerUltimaSolp(int usuarioId);
         RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario);
@@ -89,7 +87,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
         List<int> ListarClaseDocumento(int usuarioId);
         Resultado ActualizarProveedorVisibleEnSolicitante(int peticionDeOfertaUsuarioId, bool esVisible);
-        List<UsuarioDto> ListarUsuarioSolicitante();
         List<CotizacionHistorialDto> ObtenerHistorial(int id);
         List<POPosicionDto> ListarPosicionesPOMultiple(DateTime? desde,
                                                        DateTime? hasta,
