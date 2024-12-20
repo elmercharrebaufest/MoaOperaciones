@@ -25,18 +25,21 @@ namespace SustitucionMOA.Controllers
     {
         private readonly IComprasService service;
         private readonly IComprasSapService comprasSapService;
+        private readonly IComprasSolicitanteService comprasSolicitanteService;
         private readonly IUsuarioService usuarioService;
         private readonly IAdjudicacionesService adjudicacionesService;
         private readonly ITablaSapService tablaSapService;
 
         public ComprasController(IComprasService comprasService,
                                  IComprasSapService comprasSapService,
+                                 IComprasSolicitanteService comprasSolicitanteService,
                                  IUsuarioService usuarioService,
                                  IAdjudicacionesService adjudicacionesService,
                                  ITablaSapService tablaSapService)
         {
             this.service = comprasService;
             this.comprasSapService = comprasSapService;
+            this.comprasSolicitanteService = comprasSolicitanteService;
             this.usuarioService = usuarioService;
             this.adjudicacionesService = adjudicacionesService;
             this.tablaSapService = tablaSapService;
@@ -135,7 +138,7 @@ namespace SustitucionMOA.Controllers
             var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
             return JsonCustom(new
             {
-                data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                data = comprasSolicitanteService.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
             });
