@@ -811,7 +811,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
-            var result = service.ListarUsuarioSolicitante();
+            var result = comprasSolicitanteService.ListarUsuarioSolicitante();
             return JsonCustom(result);
         }
 

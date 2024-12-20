@@ -214,5 +214,16 @@ namespace SustitucionMOATest.Services
                 DirOrden.Asc, null), Times.Once);
             Assert.That(result, Is.Not.Null);
         }
+
+        [Test]
+        public void ListarUsuarioSolicitanteOk()
+        {
+            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Usuario, UsuarioDto>>>(),
+                It.IsAny<Expression<Func<Usuario, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc))
+               .Returns(new List<UsuarioDto>() { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
+
+            var result = target.ListarUsuarioSolicitante();
+            Assert.That(result, Is.Not.Null);
+        }
     }
 }

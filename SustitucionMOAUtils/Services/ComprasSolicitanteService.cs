@@ -178,5 +178,15 @@ namespace SustitucionMOAUtils.Services
 
             return result;
         }
+
+        public List<UsuarioDto> ListarUsuarioSolicitante()
+        {
+            var usuarios = repositorio.Listar<Usuario, UsuarioDto>(usuario => new UsuarioDto
+            {
+                Mail = usuario.Mail,
+                UsuarioSap = usuario.UsuarioSap
+            }, usuario => usuario.Roles.Any(r => r.PermisosAsociados.Select(x => x.Permiso).Contains("ABM SOLP")));
+            return usuarios;
+        }
     }
 }
