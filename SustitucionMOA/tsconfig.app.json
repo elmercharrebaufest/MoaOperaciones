@@ -37,7 +37,11 @@
     "src/app/ordenes-residuos/ordenes-residuos.module.ts",
     "src/app/aplicacion-ccpp/aplicacion-ccpp.module.ts",
     "src/app/notificaciones/notificaciones.module.ts",
-    "src/app/listado-novedades/listado-novedades.module.ts"
+    "src/app/listado-novedades/listado-novedades.module.ts",
+    "src/app/log-viewer/log-viewer.module.ts",
+    "src/app/log-viewer/log-viewer.module.ts",
+    "src/app/apikey/apikey.module.ts"
+
   ],
   "include": [
     "src/**/*.d.ts"

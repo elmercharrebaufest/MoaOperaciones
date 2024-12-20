@@ -426,6 +426,8 @@
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.css" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.html" />
+    <TypeScriptCompile Include="src\app\apikey\apikey-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\apikey\apikey.module.ts" />
     <TypeScriptCompile Include="src\app\common\models\adjuntos.ts" />
     <TypeScriptCompile Include="src\app\common\models\almacen.ts" />
     <TypeScriptCompile Include="src\app\common\models\common\localidadDto.ts" />
@@ -1546,6 +1548,8 @@
     <TypeScriptCompile Include="src\app\error.interceptor.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.component.ts" />
     <TypeScriptCompile Include="src\app\faq\faq.service.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\faq\faq.module.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05-routing.module.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.module.ts" />
     <TypeScriptCompile Include="src\app\gestionCM05\gestionCM05.ts" />
@@ -1562,6 +1566,8 @@
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.module.spec.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades.module.ts" />
     <TypeScriptCompile Include="src\app\listado-novedades\listado-novedades-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\log-viewer\log-viewer-routing.module.ts" />
+    <TypeScriptCompile Include="src\app\log-viewer\log-viewer.module.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.service.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.spec.ts" />
     <TypeScriptCompile Include="src\app\log-viewer\log-viewer.component.ts" />

@@ -51,7 +51,6 @@ import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { UsuarioService } from "./usuario/usuario.service";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
 import { VendedorStatusService } from "./vendedor/vendedor_status.service";
-import { FaqComponent } from './faq/faq.component'
 import { TicketPesadaComponent } from './ticket-pesada/ticket-pesada.component'
 import { TicketPesadaService } from "./ticket-pesada/ticket-pesada.service";
 import { ConsultaBaseComponent } from "./consulta/consulta.component";
@@ -59,8 +58,6 @@ import { ConsultaService } from "./consulta/consulta.service";
 import { VentaSustentableBaseComponent } from './venta-sustentable/venta-sustentable.component';
 import { LogPesificacionModule } from './log-pesificacion/log-pesificacion.module';
 import { ComprasModule } from "./compras/compras.module";
-import { ApikeyComponent } from "./apikey/apikey.component";
-import { ApikeyService } from "./apikey/apikey.service";
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { PesificacionesGuardadasComponent } from './pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component';
@@ -89,7 +86,6 @@ import { TooltipModule } from "primeng/tooltip";
 import { MessageSpinnerComponent } from "./common/message-spinner/message-spinner.component";
 import { CalendarModule } from 'primeng/calendar';
 import { ErrorInterceptor } from "./error.interceptor";
-import { LogViewerComponent } from './log-viewer/log-viewer.component';
 import { ZoomControlComponent } from './zoom-control/zoom-control.component';
 
 @NgModule({
@@ -145,11 +141,9 @@ import { ZoomControlComponent } from './zoom-control/zoom-control.component';
     EstadoSolicitudComponent,
     CarouselNotificacionesComponent,
     VentaSustentableBaseComponent,
-    FaqComponent,
     TicketPesadaComponent,
     ConsultaBaseComponent,
     VentaSustentableBaseComponent,
-    ApikeyComponent,
     PesificacionesGuardadasComponent,
     PesificacionBaseComponent,
     ModificarDatosComponent,
@@ -160,8 +154,6 @@ import { ZoomControlComponent } from './zoom-control/zoom-control.component';
     ComunicacionesComponent,
     AprobacionExternaComponent,
     MessageSpinnerComponent,
-    LogViewerComponent
-,
     ZoomControlComponent
     ],
     providers: [
@@ -184,7 +176,6 @@ import { ZoomControlComponent } from './zoom-control/zoom-control.component';
         TicketPesadaService,
         ConsultaService,
         ConfirmationService,
-        ApikeyService,
         { provide: ErrorHandler, useClass: GlobalErrorHandler },
         { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true } 
     ],

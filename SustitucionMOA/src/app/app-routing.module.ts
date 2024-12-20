@@ -16,16 +16,13 @@ import { PesificacionComponent } from "./pesificacion/pesificacion.component";
 import { UsuarioCambioVendedorComponent } from "./usuario/cambio-vendedor/usuario.cambio-vendedor.component";
 import { UsuarioListComponent } from "./usuario/list/usuario.list.component";
 import { VendedorStatusComponent } from "./vendedor/vendedor_status.component";
-import { FaqComponent } from "./faq/faq.component"
 import { UsuarioAltaEmpresaNoGranosComponent } from "./usuario/alta-empresa-no-granos/usuario.alta-empresa-no-granos.component";
 import { TicketPesadaComponent } from "./ticket-pesada/ticket-pesada.component";
-import { ApikeyComponent } from "./apikey/apikey.component";
 import { PesificacionesGuardadasComponent } from "./pesificacion/pesificaciones-guardadas/pesificaciones-guardadas.component";
 import { LegajoExternoComponent } from './compras/legajo-externo/legajo-externo.component';
 import { ConfirmDeactivated } from "./common/security/canDeactive-guard";
 import { ComunicacionesComponent } from "./comunicaciones/comunicaciones.component";
 import { AprobacionExternaComponent } from "./aprobacion-externa/aprobacion-externa.component";
-import { LogViewerComponent } from "./log-viewer/log-viewer.component";
 
 
 const appRoutes: Routes = [
@@ -103,16 +100,16 @@ const appRoutes: Routes = [
             { path: "novedades/alta/:id", component: AltaNotificacionesComponent },
             { path: "gestionCM05", loadChildren: "./gestionCM05/gestionCM05.module#GestionCM05Module" },
             { path: "notificaciones", loadChildren: "./notificaciones/notificaciones.module#NotificacionesModule" },
-            { path: "faq", component: FaqComponent },
+            { path: "faq", loadChildren: "./faq/faq.module#FaqModule" },
             { path: "consulta", loadChildren: "./consulta/consulta.module#ConsultaModule" },
             { path: "logPesificacion", loadChildren: "./log-pesificacion/log-pesificacion.module#LogPesificacionModule" },
             { path: "compras", loadChildren: "./compras/compras.module#ComprasModule" },
-            { path: "apikey", component: ApikeyComponent },
+            { path: "apikey", loadChildren: "./apikey/apikey.module#ApikeyModule" },
             { path: "echeq", loadChildren: "./echeq/echeq.module#EcheqModule" },
             { path: "aplicaciones-ccpp", loadChildren: "./aplicacion-ccpp/aplicacion-ccpp.module#AplicacionCcppModule" },
             { path: "archivos-boleto", loadChildren: "./archivo-boleto/archivo-boleto.module#ArchivoBoletoModule" },
             { path: "mis-novedades", loadChildren:"./listado-novedades/listado-novedades.module#ListadoNovedadesModule" },
-            { path: "log-viewer", component: LogViewerComponent },
+            { path: "log-viewer", loadChildren: "./log-viewer/log-viewer.module#LogViewerModule" },
 
 
         ],
