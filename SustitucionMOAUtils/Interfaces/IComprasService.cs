@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models.WSMapMOA;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
@@ -44,12 +45,10 @@ namespace SustitucionMOAUtils.Interfaces
         void ActualizarEstadoSolpBulk();
         void ObtenerSolpesDesdeSAPJob(ObtenerSolpRequest obtenerSolpRequest);
         List<MaterialSolpDto> AutocompleteMaterialSolp(string valor, int centroId);
-        List<MaterialSolpDto> AutocompleteCodigoMaterialSolp(string valor, int centroId);
         List<ProvinciaDto> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
         ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, EstadoListarTratamientoSolp listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
-        List<AsociarContratoDto> DevolverContratosAsociados(List<SolpPosicionDto> posiciones);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
         ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, string mailUsuario, bool esSolicitante);
@@ -69,8 +68,10 @@ namespace SustitucionMOAUtils.Interfaces
         OrdenDeCompraSAPDto ObtenerOrdenDeCompra(string nroOC);
         List<RespuestaCrearOrdenDeCompra> CrearOrdenDeCompraConRegistroInfo(List<RegistroInfoDto> registros, int usuarioActualId);
         RespuestaGuardarSOLP CerrarCotizacion(int peticionId, int usuarioActualId, string observaciones);
-        RegistroInfoDto ObtenerUltimoRegistroMaterialConPrecioBase(string material, string centro, string grupoDeCompras);
         void ActualizarFechaLiberacionOC(string nroOc, DateTime fechaLiberacion);
+
+        void AdjustUnitPriceAndQuantity(RegistroInfoDto registro, decimal cantidad, decimal precio, UnidadesDeMedida unidadActual, UnidadesDeMedida unidadObjetivo);
+
         LegajoExternoDto ObtenerLegajoParaExternos(int adjudicacionId, string token, string mailUsuario);
         Resultado GrabarPeticionDeOfertaVisualizacionPrecio(PeticionDeOfertaVisualizacionPrecioDto peticionDeOfertaVisualizacionPrecioDto, HttpFileCollectionBase adjuntos);
         ChatsDto ObtenerChat(int solpId, int usuarioActualId);
@@ -80,7 +81,6 @@ namespace SustitucionMOAUtils.Interfaces
         List<RegionSap> ListarRegionesSap();
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
-        InfoVisitasDeObraDto ListarVisitasDeObra(List<VisitaObraDto> visitas);
         List<TablaGeneralDto> ObtenerTiposImputaciones();
         void ObtenerDatosReporteSolp();
 

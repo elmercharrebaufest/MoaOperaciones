@@ -372,7 +372,7 @@ namespace SustitucionMOATest.Controllers
                 OrganizacionDeCompra = "Organización de Compra B",
             };
 
-            comprasServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras))
+            comprasSolicitanteServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras))
                             .Returns(expected);
 
 
@@ -385,7 +385,7 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedjson, resultJson);
             // Verificar que el resultado sea un JsonResult
             Assert.IsNotNull(result);
-            Assert.IsTrue(result is JsonResult);
+            Assert.IsInstanceOf<JsonResult>(result);
         }
 
         [Test]
