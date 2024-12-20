@@ -11,7 +11,7 @@ import { FaqService } from './faq.service';
         CommonModule,
         SharedModule,
         FaqRoutingModule,
-        NgxPaginationModule        
+                
     ],
     declarations: [
         FaqComponent,
