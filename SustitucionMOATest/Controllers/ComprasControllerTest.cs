@@ -392,7 +392,7 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerUltimaSolpTest()
         {
             usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto());
-            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
+            comprasSolicitanteServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
 
             var result = target.ObtenerUltimaSolp() as JsonResult;
 

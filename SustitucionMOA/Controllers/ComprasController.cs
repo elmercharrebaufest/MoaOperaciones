@@ -655,7 +655,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new
             {
-                data = service.ObtenerUltimaSolp(usuarioId)
+                data = comprasSolicitanteService.ObtenerUltimaSolp(usuarioId)
             });
         }
 

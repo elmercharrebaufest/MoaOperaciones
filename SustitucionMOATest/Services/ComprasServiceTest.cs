@@ -2043,18 +2043,6 @@ namespace SustitucionMOATest.Services
         }
 
         [Test]
-        public void ObtenerUltimaSolpOk()
-        {
-            repositorioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(),
-                DirOrden.Asc, null)).Returns(new List<Solp>() { SolpToClone() });
-
-            var result = target.ObtenerUltimaSolp(It.IsAny<int>());
-            repositorioMock.Verify(y => y.Listar(It.IsAny<Expression<Func<Solp, bool>>>(), It.IsAny<int>(), It.IsAny<string>(),
-                DirOrden.Asc, null), Times.Once);
-            Assert.That(result, Is.Not.Null);
-        }
-
-        [Test]
         public void CerrarCotizacionOk()
         {
             var peticionCierre = new PeticionDeOfertaCierre
