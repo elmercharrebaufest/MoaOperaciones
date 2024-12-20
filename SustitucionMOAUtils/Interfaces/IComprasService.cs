@@ -33,7 +33,6 @@ namespace SustitucionMOAUtils.Interfaces
         byte[] GenerarSolpPdf(int idSolp);
         Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
         string GenerarZipPliego(int idSolp, string pathBase);
-        List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();

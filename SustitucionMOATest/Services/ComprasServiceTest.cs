@@ -878,45 +878,6 @@ namespace SustitucionMOATest.Services
             Assert.AreEqual(expected, result);
         }*/
 
-        [Test()]
-        public void AutocompleteServiciosSapTest()
-        {
-            List<TablaSapDto> ListaSap = new List<TablaSapDto>
-            {
-                new TablaSapDto {Id=1, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSapDto {Id=2, Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSapDto {Id=3, Descripcion = "Prueba 3", CodigoSap="MOA", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSapDto {Id=4, Descripcion = "Prueba 1", CodigoSap="MOA Operaciones", Tabla = TablasSap.CodigoServicioSap},
-                new TablaSapDto {Id=5, Descripcion = "Prueba 1", CodigoSap="MOA", Tabla = TablasSap.CecoSolpSap},
-            };
-
-            repositorioMock.Setup(x => x.Listar(
-                It.IsAny<Expression<Func<TablaSap, TablaSapDto>>>(),
-                It.IsAny<Expression<Func<TablaSap, bool>>>(),
-                It.IsAny<int>(),
-                It.IsAny<string>(),
-                It.IsAny<DirOrden>()))
-                .Returns(ListaSap);
-
-            //repositorioMock
-            //    .Setup(x => x.Listar(It.IsAny<Expression<Func<TablaSap, TablaSap>>>(),
-            //                    It.IsAny<int>(),
-            //                    It.IsAny<string>(),
-            //                    It.IsAny<DirOrden>(),
-            //                    It.IsAny<IEnumerable<Expression<Func<TablaSap, object>>>>()))
-            //    .Returns(ListaSap);
-
-
-            var expected = new List<TablaSapDto>
-            {
-                new TablaSapDto { Id = 1,  Descripcion = "Prueba 2", CodigoSap="Otro", Tabla = TablasSap.CodigoServicioSap }
-            };
-
-            var result = target.AutocompleteTablaSap(TablasSap.CodigoServicioSap, "ot");
-
-            Assert.AreEqual(expected[0].Id, result[0].Id);
-        }
-
         [Test]
         public void ActualizarServiciosSolpOk()
         {

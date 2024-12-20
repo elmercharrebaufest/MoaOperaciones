@@ -10,6 +10,8 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<TablaSap> ActualizarTablaSap(List<TablaSapDto> listaSap, string tablaSap);
 
+        List<TablaSapDto> AutocompleteTablaSap(string tabla, string valor);
+
         TablaSap GetById(int id);
 
         TablaSap Obtener(Expression<Func<TablaSap, bool>> filtro);
