@@ -22,6 +22,7 @@
             "assets": [
               "src/favicon.ico",
               "src/web.config",
+              "src/assets",
               {
                 "glob": "**/*",
                 "input": "Content",
