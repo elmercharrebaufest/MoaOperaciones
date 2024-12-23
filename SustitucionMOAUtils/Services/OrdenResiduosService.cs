@@ -12,6 +12,7 @@ using SustitucionMOAUtils.Logger;
 using SustitucionMOAWS.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 
 namespace SustitucionMOAUtils.Services
@@ -150,7 +151,7 @@ namespace SustitucionMOAUtils.Services
             };
 
             CompletarDatosDestino(ordenDto);
-            
+
             for (int i = 0; i < ordenDto.CantidadDeViajes; i++)
             {
                 var ordenEntity = ordenDto.ToEntity();
@@ -259,27 +260,17 @@ namespace SustitucionMOAUtils.Services
 
         public void VerificarVencimientoOrdenesResiduos()
         {
-            var fechaActual = DateTime.Now;
-            var dayOfWeek = fechaActual.DayOfWeek;
-            if ((dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday))
-            {
-                return;
-            }
-            var feriados = feriadoService.ObtenerFeriados();
-            if (feriados.Any(feriado => feriado.Date == fechaActual.Date))
-            {
-                return;
-            }
-
             var habilitacion = repositorioResiduos.Obtener<SustitucionMOAModel.Entities.HabilitacionJob>(a => a.Nombre == "VencimientoOrdenesResiduosJob");
             if (!habilitacion.Habilitado)
             {
                 return;
             }
 
+            var tresDiasAtras = DateTime.Today.AddDays(-3);
+
             var ordenes =
-                repositorioResiduos.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada)
-                .Where(orden => orden.FechaVencimiento(feriados) < fechaActual);
+                repositorioResiduos.Listar<SustitucionMOAModel.Entities.OrdenResiduos>(o => o.EstadoId == (int)EstadoOrdenResiduosEnum.OrdenGenerada
+                && DbFunctions.TruncateTime(o.FechaCreacion) <= tresDiasAtras);
 
             foreach (var orden in ordenes)
             {
