@@ -579,7 +579,7 @@
     <Content Include="src\app\vendedor\vendedor_status.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.html" />
-    <Content Include="Content\images\icons\Kmz_file_format_symbol.svg" />
+    <Content Include="src\assets\icons\Kmz_file_format_symbol.svg" />
     <Content Include="Template\AplicacionesCartaPorteRechazadas.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacion-Proveedor.html" />
     <Content Include="Template\CertificacionesPendientesDeAprobacionRechazada.html" />
