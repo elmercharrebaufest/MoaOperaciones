@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -33,11 +32,11 @@ namespace SustitucionMOAModel.Entities
         public string Observacion { get; set; }
 
         public int? LocalidadId { get; set; }
-        
+
         public string LocalidadDescripcion { get; set; }
-        
+
         public int? ProvinciaId { get; set; }
-        
+
         public string ProvinciaDescripcion { get; set; }
 
         public DateTime? FechaIngreso { get; set; }
@@ -58,26 +57,5 @@ namespace SustitucionMOAModel.Entities
         public int AlmacenId { get; set; }
         [ForeignKey(nameof(AlmacenId))]
         public virtual Almacen Almacen { get; set; }
-
-        public DateTime FechaVencimiento (List<DateTime> feriados)
-        {
-                var dayOfWeek = FechaCreacion.DayOfWeek;
-                var cantidadDiasDeMargen = (dayOfWeek == DayOfWeek.Friday || dayOfWeek == DayOfWeek.Thursday) ? 5 : 3;
-
-                var fechaFinal = FechaCreacion.AddDays(cantidadDiasDeMargen);
-
-                foreach (var fechaFeriado in feriados)
-                {
-                    if (fechaFeriado.DayOfWeek != DayOfWeek.Saturday &&
-                        fechaFeriado.DayOfWeek != DayOfWeek.Sunday &&
-                        fechaFeriado.Date >= FechaCreacion &&
-                        fechaFeriado.Date <= fechaFinal)
-                    {
-                        cantidadDiasDeMargen++;
-                    }
-                }
-
-                return FechaCreacion.AddDays(cantidadDiasDeMargen);
-        } 
     }
 }
