@@ -17,8 +17,8 @@
 
 .btn-descargar {
     background-color: var(--brand-color-green);
-    -webkit-mask: url('/Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
-    mask: url('/Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    -webkit-mask: url('Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    mask: url('Content/images/icons/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
     width: 25px;
     height: 30px;
 }
