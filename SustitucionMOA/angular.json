@@ -22,9 +22,6 @@
             "assets": [
               "src/favicon.ico",
               "src/web.config",
-              "src/assets",
-              "src/assets/icons",
-              "src/assets/icons/Kmz_file_format_symbol.svg",
               {
                 "glob": "**/*",
                 "input": "Content",
