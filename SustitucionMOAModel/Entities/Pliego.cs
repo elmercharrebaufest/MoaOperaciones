@@ -39,7 +39,7 @@ namespace SustitucionMOAModel.Entities
 
         public bool Multiple { get; set; }
 
-        public DateTime FechaAlta { get; set; }
+        public DateTime FechaAlta { get; set; } = DateTime.Now;
         public DateTime? FechaModificacion { get; set; }
 
         public int? Usuario_Id { get; set; }

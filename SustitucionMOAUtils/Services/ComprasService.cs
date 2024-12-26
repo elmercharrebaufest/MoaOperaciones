@@ -197,6 +197,7 @@ namespace SustitucionMOAUtils.Services
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
             pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
+            pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
 
             if (solpEntity != null)
             {
