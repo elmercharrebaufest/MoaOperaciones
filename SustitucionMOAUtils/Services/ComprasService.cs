@@ -2248,7 +2248,20 @@ namespace SustitucionMOAUtils.Services
                         bool nuevaSolp = solp == null;
                         if (nuevaSolp)
                         {
-                            solp = solpdsDB.Where(s => s.NroSolp == posicion.NumeroSolicitud).SingleOrDefault() ??
+                            TipoSolpSap getTipoSolpSap()
+                            {
+                                if (tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F")
+                                {
+                                    return TipoSolpSap.Mantenimiento;
+                                }
+                                if (posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U")
+                                {
+                                    return TipoSolpSap.ReposicionAutomatica;
+                                }
+                                return TipoSolpSap.Sap;
+                            }
+
+                            solp = solpdsDB.SingleOrDefault(s => s.NroSolp == posicion.NumeroSolicitud) ??
                                     new Solp
                                     {
                                         FechaCreacion = DateTime.Now,
@@ -2256,10 +2269,7 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1",
-                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F"
-                                        ? (int?)TipoSolpSap.Mantenimiento :
-                                        posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U" ?
-                                        (int?)TipoSolpSap.ReposicionAutomatica : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = (int)getTipoSolpSap(),
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
