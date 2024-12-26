@@ -196,6 +196,8 @@ namespace SustitucionMOAUtils.Services
             }
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
+            pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
+
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
