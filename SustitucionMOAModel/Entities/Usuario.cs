@@ -44,6 +44,9 @@ namespace SustitucionMOAModel.Entities
         [InverseProperty("Alumno")]
         public virtual ICollection<ProgresoCurso> ProgresoCursosAsignados { get; set; }
 
+        [InverseProperty(nameof(Pliego.Usuario))]
+        public virtual ICollection<Pliego> Pliegos { get; set; }
+
         public Rol ObtenerRolPrincipal()
         {
             return Roles.FirstOrDefault();

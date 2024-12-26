@@ -37,6 +37,15 @@ namespace SustitucionMOAModel.Entities
         public bool? TieneCondicionesGenerales { get; set; }
         public string RevisadoPor { get; set; }
 
+        public bool Multiple { get; set; }
+
+        public DateTime FechaAlta { get; set; }
+        public DateTime FechaModificacion { get; set; }
+
+        public int Usuario_Id { get; set; }
+        [ForeignKey(nameof(Usuario_Id))]
+        public virtual Usuario Usuario { get; set; }
+
         public virtual ICollection<PliegoVisita> VisitasMasivas { get; set; }
 
         [InverseProperty("Pliegos")]
