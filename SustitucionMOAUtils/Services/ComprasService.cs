@@ -2289,14 +2289,14 @@ namespace SustitucionMOAUtils.Services
                         {
                             if (solp.UsuarioCreacion_Id == 0 || solp.UsuarioCreacion_Id == null)
                             {
-                                var usuario = usuarios.Where(a => a.UsuarioSap == posicion.UsuarioCreado).FirstOrDefault();
+                                var usuario = usuarios.FirstOrDefault(a => a.UsuarioSap == posicion.UsuarioCreado);
                                 if (usuario != null)
                                 {
                                     solp.UsuarioCreacion_Id = usuario.Id;
                                 }
                             }
                         }
-                        var estadoSolpSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
+                        var estadoSolpSap = listaEstadosSolpSap.FirstOrDefault(x => x.CodigoSap == posicion.EstadoSolpSap);
                         if (estadoSolpSap != null)
                         {
                             solp.EstadoSolpSap_Id = estadoSolpSap.Id;
