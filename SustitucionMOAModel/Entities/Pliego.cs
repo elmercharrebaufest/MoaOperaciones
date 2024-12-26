@@ -42,7 +42,7 @@ namespace SustitucionMOAModel.Entities
         public DateTime FechaAlta { get; set; }
         public DateTime FechaModificacion { get; set; }
 
-        public int Usuario_Id { get; set; }
+        public int? Usuario_Id { get; set; }
         [ForeignKey(nameof(Usuario_Id))]
         public virtual Usuario Usuario { get; set; }
 
