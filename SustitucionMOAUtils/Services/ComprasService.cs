@@ -2265,6 +2265,7 @@ namespace SustitucionMOAUtils.Services
                                             SupervisorSector = string.Empty,
                                             SupervisorTrabajo = string.Empty,
                                             JornadaLaboralDias = string.Empty,
+                                            Usuario_Id = usuarios.FirstOrDefault(u => u.UsuarioSap == posicion.UsuarioCreado)?.Id,
                                         },
                                         Posiciones = new List<SolpPosicion>(),
                                         UsuarioCreacion_Id = 0,
