@@ -196,6 +196,9 @@ namespace SustitucionMOAUtils.Services
             }
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
+            pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
+            pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
+
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
@@ -2246,7 +2249,20 @@ namespace SustitucionMOAUtils.Services
                         bool nuevaSolp = solp == null;
                         if (nuevaSolp)
                         {
-                            solp = solpdsDB.Where(s => s.NroSolp == posicion.NumeroSolicitud).SingleOrDefault() ??
+                            TipoSolpSap getTipoSolpSap()
+                            {
+                                if (tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F")
+                                {
+                                    return TipoSolpSap.Mantenimiento;
+                                }
+                                if (posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U")
+                                {
+                                    return TipoSolpSap.ReposicionAutomatica;
+                                }
+                                return TipoSolpSap.Sap;
+                            }
+
+                            solp = solpdsDB.SingleOrDefault(s => s.NroSolp == posicion.NumeroSolicitud) ??
                                     new Solp
                                     {
                                         FechaCreacion = DateTime.Now,
@@ -2254,15 +2270,13 @@ namespace SustitucionMOAUtils.Services
                                         NroSolp = posicion.NumeroSolicitud,
                                         ClaseDocumento_Id = clasesDeDocumento.SingleOrDefault(cd => cd.Codigo == posicion.TipoDocumento)?.Id,
                                         EstadoPasos = "0,0,0,0,1",
-                                        TipoSolpSap = tipoImputacion != null && !string.IsNullOrEmpty(tipoImputacion.IdOrden) && posicion.OrigenCreacion == "F"
-                                        ? (int?)TipoSolpSap.Mantenimiento :
-                                        posicion.OrigenCreacion == "B" || posicion.OrigenCreacion == "U" ?
-                                        (int?)TipoSolpSap.ReposicionAutomatica : (int?)TipoSolpSap.Sap,
+                                        TipoSolpSap = (int)getTipoSolpSap(),
                                         Pliego = new Pliego
                                         {
                                             SupervisorSector = string.Empty,
                                             SupervisorTrabajo = string.Empty,
                                             JornadaLaboralDias = string.Empty,
+                                            Usuario_Id = usuarios.FirstOrDefault(u => u.UsuarioSap == posicion.UsuarioCreado)?.Id,
                                         },
                                         Posiciones = new List<SolpPosicion>(),
                                         UsuarioCreacion_Id = 0,
@@ -2276,14 +2290,14 @@ namespace SustitucionMOAUtils.Services
                         {
                             if (solp.UsuarioCreacion_Id == 0 || solp.UsuarioCreacion_Id == null)
                             {
-                                var usuario = usuarios.Where(a => a.UsuarioSap == posicion.UsuarioCreado).FirstOrDefault();
+                                var usuario = usuarios.FirstOrDefault(a => a.UsuarioSap == posicion.UsuarioCreado);
                                 if (usuario != null)
                                 {
                                     solp.UsuarioCreacion_Id = usuario.Id;
                                 }
                             }
                         }
-                        var estadoSolpSap = listaEstadosSolpSap.Where(x => x.CodigoSap == posicion.EstadoSolpSap).FirstOrDefault();
+                        var estadoSolpSap = listaEstadosSolpSap.FirstOrDefault(x => x.CodigoSap == posicion.EstadoSolpSap);
                         if (estadoSolpSap != null)
                         {
                             solp.EstadoSolpSap_Id = estadoSolpSap.Id;

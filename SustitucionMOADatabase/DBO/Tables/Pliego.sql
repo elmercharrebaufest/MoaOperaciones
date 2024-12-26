@@ -28,7 +28,11 @@
 	[RevisadoPor] NVARCHAR(MAX) NULL, 
 	[TieneCondicionesGenerales] BIT NULL,
 	[RequisitoCiberseguridad] BIT NULL, 
-	[ObservacionesCotizacionCondEsp] NVARCHAR(MAX) NULL, 
+	[ObservacionesCotizacionCondEsp] NVARCHAR(MAX) NULL,
+	[Multiple] BIT NOT NULL CONSTRAINT DF_Pliego_Multiple DEFAULT 0,
+	[FechaAlta] DATETIME2 NOT NULL CONSTRAINT DF_Pliego_FechaAlta DEFAULT GETDATE(),
+	[FechaModificacion] DATETIME2 NULL,
+	[Usuario_Id] INT NULL,
 	CONSTRAINT [PK_dbo.Pliego] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC
