@@ -731,6 +731,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             campoEditado.Latitud = this.campoSugeridoEnEdicion.Latitud;
             campoEditado.Longitud = this.campoSugeridoEnEdicion.Longitud;
             campoEditado.NombreNuevoKmz = this.campoSugeridoEnEdicion.NombreNuevoKmz;
+            campoEditado.Archivo_Id = this.campoSugeridoEnEdicion.Archivo_Id;
         }
     }
 

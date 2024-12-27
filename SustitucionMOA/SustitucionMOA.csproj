@@ -577,6 +577,7 @@
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.css" />
     <Content Include="src\app\usuario\ver-vendedores\ver-vendedores.component.html" />
     <Content Include="src\app\vendedor\vendedor_status.component.css" />
+    <Content Include="src\app\venta-sustentable\alta\alta.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.css" />
     <Content Include="src\app\zoom-control\zoom-control.component.html" />
     <Content Include="src\app\venta-sustentable\listado-campos\content\Kmz_file_format_symbol.svg" />
