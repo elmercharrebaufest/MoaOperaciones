@@ -80,9 +80,6 @@ namespace SustitucionMOARepositorio.Repositorios
                 join campoProvPresentado in Set<CampoProveedor>() on
                     new { campoProveedor.CampoCosecha.Campo.Renspa, cosechaId = nuevaCosechaId } equals
                     new { campoProvPresentado.CampoCosecha.Campo.Renspa, cosechaId = campoProvPresentado.CampoCosecha.Cosecha_Id } into campoPresentadoGroup
-                //join campoSustentableDuplicado in Set<CampoSustentable>() on
-                //    campoProveedor.CampoCosecha.Campo.Renspa equals campoSustentableDuplicado.Renspa &&
-                //    campoSustentableDuplicado.co into sustentableDuplicadoGroup
                 from campoPresentado in campoPresentadoGroup.DefaultIfEmpty()
                 where
                     campoProveedor.Proveedor_Id == proveedorId &&

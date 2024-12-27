@@ -200,6 +200,102 @@
     <!--End CONTENT-->
 </div>
 
+<p-dialog [header]="'Editar campo para campaña ' + getNombreCosecha()"
+    [(visible)]="mostrarEdicionSugerencia" [modal]="true" [responsive]="true" [closable]="false"
+    [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
+    <div class="content-wraper">
+        <div class="row myRow firstSection mySearch cargaDeDatos">
+            <!-- <div class="rounded shadow col-xs-12 col-sm-6 col-md-12"> -->
+                <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Nombre del establecimiento <span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.NombreCampo" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Localidad
+                            </p>
+                            <app-autocomplete-localidad
+                                (onLocalidadSeleccionada)="campoSugeridoEnEdicion.Localidad_Id = $event"
+                                [localidad_Id]="campoSugeridoEnEdicion.Localidad_Id"
+                                [localidadPreseleccionada]="localidadCampoSugeridoEnEdicion"
+                                (nombreLocalidadSeleccionada)="campoSugeridoEnEdicion.LocalidadNombre = $event">
+                            </app-autocomplete-localidad>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                RENSPA
+                            </p>
+                            <div class="styled-select">
+                                <input type="text" [(ngModel)]="campoSugeridoEnEdicion.Renspa" class="fourRounded" aria-controls="tableModal" mask="00.000.0.00000/00" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Hectáreas totales <span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasTotales"
+                                    [(ngModel)]="campoSugeridoEnEdicion.HectareasTotales" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Hectáreas de soja <span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input min="1" [type]="'number'" name="campoSugeridoEnEdicion.HectareasSoja"
+                                    [(ngModel)]="campoSugeridoEnEdicion.HectareasSoja" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Latitud <span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Latitud" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-12 col-md-6">
+                            <p class="crearConsultaTitulos">
+                                Longitud <span class="requerido">*</span>
+                            </p>
+                            <div class="styled-select">
+                                <input type="search" [(ngModel)]="campoSugeridoEnEdicion.Longitud" class="fourRounded" aria-controls="tableModal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row myRow cargaDeDatosFields">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <p class="crearConsultaTitulos">
+                                Usar nuevo KMZ
+                            </p>
+                            <div class="styled-select">
+                                <input #fileInputSugerencia type="file" (change)="cargarArchivoEnSugerencia($event)" placeholder="Cargar nuevo archivo">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+        </div>
+    </div>
+    <p-footer>
+        <button type="button" pButton icon="pi pi-check" (click)="guardarEdicionSugerencia()" label="Guardar"></button>
+        <button type="button" pButton icon="pi pi-close" (click)="cancelarEdicionSugerencia()" label="Cancelar" class="ui-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
 <p-dialog [header]="'Campos sugeridos para la campaña ' + getNombreCosecha()"
     [(visible)]="mostrarSugerenciasCamposNuevos" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
@@ -252,6 +348,12 @@
                                 <span>
                                     <button type="button" class="btn-sin-fondo btn-descargar" title="Descargar KMZ"
                                         (click)="descargarKmz(campo.CampoCosechaId, campo.Proveedor_Id)">
+                                    </button>
+                                </span>
+                                <span *ngIf="!campo.CampoYaPresentado">
+                                    <button type="button" class="btn-sin-fondo fa fa-edit" title="Editar"
+                                        style="font-size: 22px; color: #009688; margin-right: 5px;"
+                                        (click)="abrirEdicionCampoSugerido(campo)">
                                     </button>
                                 </span>
                             </div>

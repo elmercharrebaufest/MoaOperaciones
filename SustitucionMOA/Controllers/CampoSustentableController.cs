@@ -153,11 +153,11 @@ namespace SustitucionMOA.Controllers
 
         [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
-        public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson)
+        public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson, List<HttpPostedFileBase> archivosKmz)
         {
-            var campos = JsonConvert.DeserializeObject<List<CampoProveedorDto>>(camposJson);
+            var campos = JsonConvert.DeserializeObject<List<SugerenciaCampoDto>>(camposJson);
             var mailUsuario = SessionPersister.User.username;
-            campoSustentableService.AgregarCampos(campos, mailUsuario);
+            campoSustentableService.AgregarCamposSugeridos(campos, archivosKmz, mailUsuario);
             return ContentCustom(null);
         }
     }

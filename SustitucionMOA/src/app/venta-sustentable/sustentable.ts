@@ -40,4 +40,5 @@ export interface CampoProveedorDetalle extends DetallesCampo {
 export interface SugerenciaCampo extends CampoProveedorDetalle {
     CampoYaPresentado: boolean;
     Seleccionado: boolean;
+    NombreNuevoKmz: string;
 }

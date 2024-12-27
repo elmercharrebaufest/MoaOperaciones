@@ -605,40 +605,40 @@ namespace SustitucionMOAUtils.Services
             return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
         }
 
-        public void AgregarCampos(List<CampoProveedorDto> camposProveedorDto, string mailUsuario)
+        public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario)
         {
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
-            foreach (var proveedorId in camposProveedorDto.Select(x => x.Proveedor_Id).Distinct())
+            foreach (var proveedorId in camposSugeridosDto.Select(x => x.Proveedor_Id).Distinct())
             {
                 ValidarUsuario(usuario, proveedorId);
             }
 
-            var campos = camposProveedorDto.Select(x => new CampoProveedor
+            foreach (var campoSugeridoDto in camposSugeridosDto)
             {
-                HectareasTotales = x.HectareasTotales,
-                HectareasSoja = x.HectareasSoja,
-                CUIT = x.CUIT,
-                Latitud = x.Latitud,
-                Longitud = x.Longitud,
-                Proveedor_Id = x.Proveedor_Id,
-                CampoCosecha = new CampoCosecha
+                var campoProveedor = new CampoProveedor
                 {
-                    Cosecha_Id = x.CosechaId,
-                    ToneladasAprobadas = -1,
-                    Campo = new CampoSustentable
+                    HectareasTotales = campoSugeridoDto.HectareasTotales,
+                    HectareasSoja = campoSugeridoDto.HectareasSoja,
+                    CUIT = campoSugeridoDto.CUIT,
+                    Latitud = campoSugeridoDto.Latitud,
+                    Longitud = campoSugeridoDto.Longitud,
+                    Proveedor_Id = campoSugeridoDto.Proveedor_Id,
+                    CampoCosecha = new CampoCosecha
                     {
-                        Nombre = x.NombreCampo,
-                        Localidad_Id = x.Localidad_Id,
-                        Renspa = x.Renspa
-                    }
-                },
-                Archivo_Id = x.Archivo_Id,
-                FechaCreacion = DateTime.Now,
-                Borrado = false
-            });
+                        Cosecha_Id = campoSugeridoDto.CosechaId,
+                        ToneladasAprobadas = -1,
+                        Campo = new CampoSustentable
+                        {
+                            Nombre = campoSugeridoDto.NombreCampo,
+                            Localidad_Id = campoSugeridoDto.Localidad_Id,
+                            Renspa = campoSugeridoDto.Renspa
+                        }
+                    },
+                    Archivo_Id = campoSugeridoDto.Archivo_Id,
+                    FechaCreacion = DateTime.Now,
+                    Borrado = false
+                };
 
-            foreach (var campoProveedor in campos)
-            {
                 var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
                 if (renspaExisteDto.RenspaExiste)
                 {
@@ -652,16 +652,33 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     ValidarCampo(campoProveedor, null);
-                    var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
-                    campoProveedor.RazonSocial = declaracion.RazonSocial;
-                    
-                    campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
-                    
-                    repositorio.Agregar(campoProveedor);
-                    repositorio.GuardarCambios();
 
-                    var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
-                    var rutaArchivo = archivoCampo.Ruta;
+                    var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
+                    
+                    campoProveedor.RazonSocial = declaracion.RazonSocial;
+                    campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+
+                    var rutaArchivo = "";
+                    HttpPostedFileBase archivoNuevoKmz = null;
+                    if (string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) && campoProveedor.Archivo_Id != 0)
+                    {
+                        var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
+                        rutaArchivo = archivoCampo.Ruta;
+                        repositorio.Agregar(campoProveedor);
+                        repositorio.GuardarCambios();
+                    }
+                    else
+                    {
+                        campoProveedor.Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
+                        archivoNuevoKmz = archivosKmz.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevoKmz);
+                        if (archivoNuevoKmz != null)
+                        {
+                            rutaArchivo = GuardarArchivoKMZ(campoProveedor, archivoNuevoKmz);
+                        }
+                        repositorio.Agregar(campoProveedor);
+                        repositorio.GuardarCambios();
+                    }
+
                     EnviarCampoACertificadorDeSustentables(rutaArchivo, campoProveedor);
 
                     var archivo = Convert.ToBase64String(File.ReadAllBytes(rutaArchivo));

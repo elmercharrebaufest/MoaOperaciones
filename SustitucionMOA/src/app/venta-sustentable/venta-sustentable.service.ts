@@ -176,10 +176,14 @@ export class VentaSustentableService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
-    guardarSugerenciasCamposNuevaCosecha(campos: CampoProveedorDetalle[]) {
+    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[]) {
         let camposJson = JSON.stringify(campos);
         let payload = new FormData();
         payload.append('camposJson', camposJson);
+
+        archivosKmz.forEach((file, index) => {
+            payload.append('archivosKmz', file);
+        });
 
         return this.http
             .post('/api/CampoSustentable/GuardarSugerenciasCamposNuevaCosecha', payload, { headers: this.headersPost });

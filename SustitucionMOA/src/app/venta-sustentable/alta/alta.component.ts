@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { VentaSustentableService } from './../venta-sustentable.service'
 import { BaseComponent } from './../../common/base-components/base-component';
 import { NavService } from './../../common/services/NavService';
@@ -58,6 +58,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
     @ViewChild(DeclaracionConformidadComponent)
     protected declaracionComformidad: DeclaracionConformidadComponent;
 
+    @ViewChild('fileInputSugerencia')
+    fileInputSugerencia: ElementRef;
+
     @BlockUI() blockUI: NgBlockUI;
 
     constructor(protected service: VentaSustentableService, protected navService: NavService, protected securityService: SecurityService, protected sessionDataService: SessionDataService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, private messageService: MessageService) {
@@ -114,6 +117,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
     camposNuevosSugeridos: SugerenciaCampo[] = [];
     camposSugeridosSeleccionaTodos: boolean = false;
 
+    mostrarEdicionSugerencia: boolean = false;
+    campoSugeridoEnEdicion: SugerenciaCampo = {} as SugerenciaCampo;
+    localidadCampoSugeridoEnEdicion: { IdLocalidad: number, NombreLocalidad: string };
+    archivosNuevosSugerencias: File[] = [];
+
     ngOnInit() {
         this.renspaExiste = { RenspaExiste: false, MismoCuit: false };
 
@@ -135,7 +143,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.getParams();
         this.getCosechas();
     }
-    
+
     getParams() {
         try {
             const queryString = window.location.href;
@@ -488,7 +496,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             return true;
         }
         if (this.hectareasSoja > this.hectareasTotales) {
-            this.mensajeComponent.setErrorMsg("Usted declaro mayor cantidad de hectareas de soja que hectareas totales.");
+            this.mensajeComponent.setErrorMsg("Usted declaró mayor cantidad de hectáreas de soja que hectáreas totales.");
             return true;
         }
         if (!this.latitud || this.latitud == "") {
@@ -542,7 +550,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             this.revisarDeclaracionJurada();
         }
     }
-    
+
     revisarDeclaracionJurada() {
         if ((this.CUIT == "" || this.CUIT.length == 11) && this.cosechaId > 0) {
             if (this.esCorredor && this.operarComo == 1
@@ -623,8 +631,8 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.mostrarSugerenciasCamposNuevos = false;
         this.mensajeComponent.setMsgsEmpty();
 
-        let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado).map(x => x as CampoProveedorDetalle);
-        this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar).subscribe(
+        let camposAGuardar = this.camposNuevosSugeridos.filter(x => x.Seleccionado);
+        this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias).subscribe(
             (result) => {
                 this.blockUI.stop();
                 this.mensajeComponent.setSuccessMsg("Los campos se han guardado correctamente");
@@ -638,7 +646,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
             }
         );
     }
-    
+
     onSugeridosSeleccionarTodosChange() {
         let seleccionar = this.camposSugeridosSeleccionaTodos;
         this.camposNuevosSugeridos
@@ -694,6 +702,53 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     getNombreCosecha(): string {
         return (this.cosechaId) ? this.cosechas.find(x => x.Id == this.cosechaId).Nombre : "";
+    }
+
+    abrirEdicionCampoSugerido(campo: SugerenciaCampo) {
+        this.campoSugeridoEnEdicion = {...campo};
+        this.setLocalidadCampoSugeridoEnEdicion(campo.Localidad_Id, campo.LocalidadNombre);
+        this.fileInputSugerencia.nativeElement.value = '';
+        this.mostrarEdicionSugerencia = true;
+    }
+
+    setLocalidadCampoSugeridoEnEdicion(idLocalidad: number, nombreLocalidad: string) {
+        this.localidadCampoSugeridoEnEdicion = { IdLocalidad: idLocalidad, NombreLocalidad: nombreLocalidad };
+    }
+
+    cancelarEdicionSugerencia() {
+        this.mostrarEdicionSugerencia = false;
+    }
+
+    guardarEdicionSugerencia() {
+        this.mostrarEdicionSugerencia = false;
+        let campoEditado = this.camposNuevosSugeridos.find(x => x.Renspa == this.campoSugeridoEnEdicion.Renspa);
+        if (campoEditado) {
+            campoEditado.NombreCampo = this.campoSugeridoEnEdicion.NombreCampo;
+            campoEditado.Localidad_Id = this.campoSugeridoEnEdicion.Localidad_Id;
+            campoEditado.LocalidadNombre = this.campoSugeridoEnEdicion.LocalidadNombre;
+            campoEditado.HectareasTotales = this.campoSugeridoEnEdicion.HectareasTotales;
+            campoEditado.HectareasSoja = this.campoSugeridoEnEdicion.HectareasSoja;
+            campoEditado.Latitud = this.campoSugeridoEnEdicion.Latitud;
+            campoEditado.Longitud = this.campoSugeridoEnEdicion.Longitud;
+            campoEditado.NombreNuevoKmz = this.campoSugeridoEnEdicion.NombreNuevoKmz;
+        }
+    }
+
+    cargarArchivoEnSugerencia(event: any) {
+        let fileList: FileList = event.target.files;
+        if (fileList.length > 0) {
+            let archivo = fileList[0];
+            if (this.archivosNuevosSugerencias.some(x => x.name == archivo.name)) {
+                const msj: Message = { severity: 'warn', summary: 'Error', detail: 'Archivo ya cargado para otro campo', life: 5000 };
+                this.messageService.add(msj);
+                event.target.value = '';
+            }
+            else {
+                this.campoSugeridoEnEdicion.NombreNuevoKmz = archivo.name;
+                this.archivosNuevosSugerencias.push(archivo);
+                this.campoSugeridoEnEdicion.Archivo_Id = 0;
+            }
+        }
     }
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {

@@ -27,6 +27,6 @@ namespace SustitucionMOAUtils.Interfaces
         Task DescargarArchivosDeGoogleDrive(ArchivoCampoSustentable archivoSinDescargar);
         SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
         List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP);
-        void AgregarCampos(List<CampoProveedorDto> camposProveedorDto, string mailUsuario);
+        void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposProveedorDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario);
     }
 }
