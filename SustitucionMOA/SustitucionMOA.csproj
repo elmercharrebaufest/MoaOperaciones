@@ -1253,6 +1253,7 @@
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AdjuntosCertificacionesController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\PliegoMultipleController.cs" />
     <Compile Include="Controllers\DerivacionController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
