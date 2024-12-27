@@ -1,8 +1,10 @@
-﻿using SustitucionMOAUtils.Interfaces;
+﻿using SustitucionMOASecurity;
+using SustitucionMOAUtils.Interfaces;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
     public class PliegoMultipleController : BaseController
     {
         private readonly IPliegoMultipleService pliegoMultipleService;
