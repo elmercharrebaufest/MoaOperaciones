@@ -489,6 +489,8 @@
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio-proveedor\modal-alta-entrada-de-servicio-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.css" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.html" />
+    <Content Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.css" />
+    <Content Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
@@ -1454,6 +1456,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\tableCustomSort.helper.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />

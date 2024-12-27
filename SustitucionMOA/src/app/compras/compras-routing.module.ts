@@ -17,6 +17,7 @@ import { AgruparPoThComponent } from './agrupar-po-th/agrupar-po-th.component';
 import { ListadoDashboardCertificacionDeServiciosComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios/listado-dashboard-certificacion-de-servicios.component';
 import { ListadoDashboardCertificacionDeServiciosProveedoresComponent } from './dashboard-entrada-de-servicio/listado-dashboard-certificacion-de-servicios-proveedor/listado-dashboard-certificacion-de-servicios-proveedor.component';
 import { ListadoEstadoCertificacionesProveedorComponent } from './dashboard-entrada-de-servicio/listado-estado-certificaciones-proveedor/listado-estado-certificaciones-proveedor.component';
+import { DashboardPliegoMultipleComponent } from './dashboard-pliego-multiple/dashboard-pliego-multiple.component';
 
 const routes: Routes = [
     { path: '', component: DashboardComponent },
@@ -37,7 +38,8 @@ const routes: Routes = [
     { path: "ver-ofertas/:id", component: VerOfertasComponent },
     { path: "reporte-oc", component: ReporteOcComponent },
     { path: "crear-po-multiple", component: CrearPoMultipleComponent },
-    { path: "agrupar-po-th", component: AgruparPoThComponent }
+    { path: "agrupar-po-th", component: AgruparPoThComponent },
+    { path: "dashboardPliegoMultiple", component: DashboardPliegoMultipleComponent },
 ];
 
 @NgModule({
