@@ -1,0 +1,56 @@
+<div class="row titleSection" style="margin-bottom: 10px;">
+    <div class="col-xs-12 col-sm-10 ">
+        <strong>Pliegos Múltiples Generados</strong>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <input class="inputAltura"
+               pInputText
+               [(ngModel)]="nombrePliego"
+               placeholder="Buscar Pliego por Nombre"
+               style="-webkit-appearance: textfield; -moz-appearance: textfield; width:100%"
+               (keyup)="onSearchkeyPress()" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12 col-sm-6 col-md-3">
+        <button pButton
+                type="button"
+                label="Crear Nuevo Pliego">
+        </button>
+    </div>
+</div>
+
+<div class="content-wraper rounded shadow">
+    <section class="container-fluid clearfix">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="columna">Compras</th>
+                    <th class="columna">Nombre Pliego</th>
+                    <th class="columna">Fecha Creación</th>
+                    <th class="columna">Fecha Última Modificación</th>
+                    <th class="columna">SOLPs Asociadas</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-pliego>
+                <tr>
+                    <td>
+                        <span class="rowButtons fa fa-copy" pTooltip="Copiar Pliego"></span>
+                        <span class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego"></span>
+                        <span class="rowButtons fa fa-edit" pTooltip="Modificar Pliego"></span>
+                        <span class="rowButtons fa fa-download" pTooltip="Descargar Pliego"></span>
+                    </td>
+                    <td>{{ pliego.NombreObra }}</td>
+                    <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ pliego.FechaModificacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ pliego.Solps | join:', ' }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+</div>
