@@ -152,6 +152,14 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
+        [HttpGet]
+        public ActionResult ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            var response = new SustitucionMOAApiResponse<string> { Data = campoSustentableService.ExportarCamposSugeridos(proveedorId, cosechaId, cuitTitularCP) };
+            return ContentCustom(response);
+        }
+
+        [CustomPermisoAuthorize(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
         [HttpPost]
         public ActionResult GuardarSugerenciasCamposNuevaCosecha(string camposJson, List<HttpPostedFileBase> archivosKmz)
         {

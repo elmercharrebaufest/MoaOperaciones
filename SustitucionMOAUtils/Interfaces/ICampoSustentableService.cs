@@ -28,5 +28,6 @@ namespace SustitucionMOAUtils.Interfaces
         SustentableRenspaExisteDto RenspaExiste(string renspa, string cuit, int cosechaId, out CampoCosecha campoCosecha);
         List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP);
         void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposProveedorDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario);
+        string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP);
     }
 }

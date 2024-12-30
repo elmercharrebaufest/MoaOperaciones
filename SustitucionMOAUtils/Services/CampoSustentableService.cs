@@ -605,6 +605,24 @@ namespace SustitucionMOAUtils.Services
             return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
         }
 
+        public string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            var camposSugeridos = repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+            var headers = new string[] { "Cosecha", "Nombre campo", "Localidad", "RENSPA", "Hectáreas totales", "Hectáreas soja", "Toneladas aprobadas", "Presentado en nueva cosecha" };
+            var listadoExport = camposSugeridos.Select(x => new SugerenciaCampoExportDto
+            {
+                CampoNombre = x.NombreCampo,
+                Cosecha = x.NombreCosecha,
+                HectareasSoja = x.HectareasSoja,
+                HectareasTotales = x.HectareasTotales,
+                LocalidadNombre = x.LocalidadNombre,
+                Presentado = x.CampoYaPresentado ? "SI" : "NO",
+                Renspa = x.Renspa.ToFormatoRenspa(),
+                ToneladasAprobadas = x.ToneladasAprobadas
+            });
+            return excelExport.ToExcel(listadoExport, headers, "Sugerencias campos nueva cosecha");
+        }
+
         public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario)
         {
             var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);

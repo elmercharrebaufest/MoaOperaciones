@@ -17,6 +17,7 @@ import { finalize } from 'rxjs/operators';
 import { Message, MessageService } from 'primeng/api';
 import { RenspaExiste } from '../renspa-existe.interface';
 import { ApiResponse } from '../../common/models/response';
+import { SpinnerSmallComponent } from '../../common/view-child/spinner-small/spinner-small.component';
 
 export interface DatosCopiar {
     NombreCampo: string;
@@ -57,6 +58,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @ViewChild(DeclaracionConformidadComponent)
     protected declaracionComformidad: DeclaracionConformidadComponent;
+
+    @ViewChild(SpinnerSmallComponent)
+    protected spinnerExportarSugerencias: SpinnerSmallComponent;
 
     @ViewChild('fileInputSugerencia')
     fileInputSugerencia: ElementRef;
@@ -750,6 +754,44 @@ export class AltaComponent extends BaseComponent implements OnInit {
                 this.campoSugeridoEnEdicion.Archivo_Id = 0;
             }
         }
+    }
+
+    exportarSugerencias() {
+        let proveedorId: number = this.proveedorId;
+        let cosechaId: number = this.cosechaId;
+        let cuitTitularCP: string = this.CUIT;
+        let nombreArchivo = "Sugerencia campos nueva cosecha.xls";
+        
+        if (proveedorId && cosechaId && cuitTitularCP) {
+            this.spinnerExportarSugerencias.showIt();
+            this.subscription = this.service.exportarSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP).subscribe(
+                (result) => {
+                    this.spinnerExportarSugerencias.hideIt();
+                    let camposExportados = this.manejarErroresApiResponse(result);
+                    if (camposExportados) {
+                        var blob = new Blob([camposExportados], { type: 'application/octet-stream' });
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            //IE11
+                            window.navigator.msSaveOrOpenBlob(blob, nombreArchivo);
+                        }
+                        else {
+                            let url = window.URL.createObjectURL(blob);
+                            let link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = nombreArchivo;
+                            link.click();
+                            setTimeout(() => { window.URL.revokeObjectURL(url); }, 0);
+                        }
+                    }
+                },
+                error => {
+                    this.spinnerExportarSugerencias.hideIt();
+                    console.error(error);
+                }
+            );
+        }
+        return false;
     }
 
     manejarErroresApiResponse<T>(response: ApiResponse<T>): T | undefined {
