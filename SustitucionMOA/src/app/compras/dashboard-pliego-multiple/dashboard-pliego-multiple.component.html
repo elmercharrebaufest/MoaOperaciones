@@ -48,7 +48,7 @@
                     <td>{{ pliego.NombreObra }}</td>
                     <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>
                     <td>{{ pliego.FechaModificacion | customDateFormat | date :'d/M/yyyy' }}</td>
-                    <td>solps asoc.</td>
+                    <td>{{ pliego.Solps | join:', ' }}</td>
                 </tr>
             </ng-template>
         </p-table>
