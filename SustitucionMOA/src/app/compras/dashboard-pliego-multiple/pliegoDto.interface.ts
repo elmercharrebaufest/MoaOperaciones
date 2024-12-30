@@ -3,5 +3,5 @@ export interface PliegoDto {
     NombreObra: string;
     FechaAlta: Date;
     FechaModificacion: Date;
-    solps: string[];
+    Solps: string[];
 }
