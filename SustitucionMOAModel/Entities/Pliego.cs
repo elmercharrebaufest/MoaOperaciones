@@ -52,5 +52,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<Archivo> Archivos { get; set; }
         public bool? RequisitoCiberseguridad { get; set; }
 
+        [InverseProperty(nameof(Solp.Pliego))]
+        public virtual ICollection<Solp> Solps { get; set; }
     }
 }
