@@ -27,7 +27,7 @@
 
 <div class="content-wraper rounded shadow">
     <section class="container-fluid clearfix">
-        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th class="columna">Compras</th>
@@ -39,7 +39,12 @@
             </ng-template>
             <ng-template pTemplate="body" let-pliego>
                 <tr>
-                    <td>botones</td>
+                    <td>
+                        <span class="rowButtons fa fa-copy" pTooltip="Copiar Pliego"></span>
+                        <span class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego"></span>
+                        <span class="rowButtons fa fa-edit" pTooltip="Modificar Pliego"></span>
+                        <span class="rowButtons fa fa-download" pTooltip="Descargar Pliego"></span>
+                    </td>
                     <td>{{ pliego.NombreObra }}</td>
                     <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>
                     <td>{{ pliego.FechaModificacion | customDateFormat | date :'d/M/yyyy' }}</td>

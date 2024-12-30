@@ -1,3 +1,11 @@
-div.row{
+div.row {
     margin-bottom: 0.5rem;
 }
+
+.rowButtons {
+    font-size: 2rem;
+}
+
+    .rowButtons + .rowButtons {
+        margin-left: 10px;
+    }
