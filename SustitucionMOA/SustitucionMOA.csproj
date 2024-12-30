@@ -1457,6 +1457,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\tableCustomSort.helper.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-pliego-multiple\pliegoDto.interface.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
@@ -1476,6 +1477,7 @@
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\pliegoMultiple.service.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
