@@ -106,7 +106,7 @@ namespace SustitucionMOARepositorio.Repositorios
                     Archivo_Id = campoProveedor.Archivo_Id,
                     Proveedor_Id = campoProveedor.Proveedor_Id,
                     CodigoProveedor = campoProveedor.Proveedor.CodigoProveedor,
-                    CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP)
+                    CampoYaPresentado = (campoPresentado != null && campoPresentado.CUIT == cuitTitularCP && !campoPresentado.Borrado)
                 })
                 .ToList();
 

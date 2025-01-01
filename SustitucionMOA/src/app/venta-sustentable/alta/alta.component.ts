@@ -50,7 +50,7 @@ export interface DatosCopiar {
 })
 export class AltaComponent extends BaseComponent implements OnInit {
 
-    @ViewChild(MensajeComponent)
+    @ViewChild('mensajeGeneral')
     protected mensajeComponent: MensajeComponent;
 
     @ViewChild(SpinnerComponent)
@@ -64,6 +64,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
 
     @ViewChild('fileInputSugerencia')
     fileInputSugerencia: ElementRef;
+
+    @ViewChild('mensajeEdicionSugerencia')
+    mensajeEdicionSugerencia: MensajeComponent;
 
     @BlockUI() blockUI: NgBlockUI;
 
@@ -709,6 +712,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     abrirEdicionCampoSugerido(campo: SugerenciaCampo) {
+        this.mensajeEdicionSugerencia.setMsgsEmpty();
         this.campoSugeridoEnEdicion = {...campo};
         this.setLocalidadCampoSugeridoEnEdicion(campo.Localidad_Id, campo.LocalidadNombre);
         this.fileInputSugerencia.nativeElement.value = '';
@@ -724,6 +728,9 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     guardarEdicionSugerencia() {
+        if (!this.validarEdicionSugerencia()) {
+            return;
+        }
         this.mostrarEdicionSugerencia = false;
         let campoEditado = this.camposNuevosSugeridos.find(x => x.Renspa == this.campoSugeridoEnEdicion.Renspa);
         if (campoEditado) {
@@ -737,6 +744,43 @@ export class AltaComponent extends BaseComponent implements OnInit {
             campoEditado.NombreNuevoKmz = this.campoSugeridoEnEdicion.NombreNuevoKmz;
             campoEditado.Archivo_Id = this.campoSugeridoEnEdicion.Archivo_Id;
         }
+    }
+
+    validarEdicionSugerencia() {
+        this.mensajeEdicionSugerencia.setMsgsEmpty();
+
+        if (this.campoSugeridoEnEdicion.NombreCampo == "" || !this.campoSugeridoEnEdicion.NombreCampo) {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta completar nombre del establecimiento.");
+            return false;
+        }
+
+        if (!this.campoSugeridoEnEdicion.Localidad_Id || this.campoSugeridoEnEdicion.Localidad_Id <= 0) {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta seleccionar la localidad.");
+            return false;
+        }
+        
+        if (!this.campoSugeridoEnEdicion.HectareasTotales || this.campoSugeridoEnEdicion.HectareasTotales <= 0) {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta completar hectáreas totales.");
+            return false;
+        }
+        if (!this.campoSugeridoEnEdicion.HectareasSoja || this.campoSugeridoEnEdicion.HectareasSoja <= 0) {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta completar hectáreas de soja.");
+            return false;
+        }
+        if (this.campoSugeridoEnEdicion.HectareasSoja > this.campoSugeridoEnEdicion.HectareasTotales) {
+            this.mensajeEdicionSugerencia.setErrorMsg("Se declaró mayor cantidad de hectáreas de soja que hectáreas totales.");
+            return false;
+        }
+
+        if (!this.campoSugeridoEnEdicion.Latitud || this.campoSugeridoEnEdicion.Latitud == "") {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta completar Latitud.");
+            return false;
+        }
+        if (!this.campoSugeridoEnEdicion.Longitud || this.campoSugeridoEnEdicion.Longitud == "") {
+            this.mensajeEdicionSugerencia.setErrorMsg("Falta completar Longitud.");
+            return false;
+        }
+        return true;
     }
 
     cargarArchivoEnSugerencia(event: any) {

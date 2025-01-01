@@ -5,7 +5,7 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Nuevo campo sustentable</div>
         </div>
-        <mensaje></mensaje>
+        <mensaje #mensajeGeneral></mensaje>
         <spinner></spinner>
         <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
             (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
@@ -204,6 +204,7 @@
     [(visible)]="mostrarEdicionSugerencia" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
     <div class="content-wraper">
+        <mensaje #mensajeEdicionSugerencia></mensaje>
         <div class="row myRow firstSection mySearch cargaDeDatos">
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="row myRow cargaDeDatosFields">

@@ -590,7 +590,7 @@ namespace SustitucionMOAUtils.Services
             campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
             if (campoCosecha == null) { return result; }
 
-            result.RenspaExiste = true;
+            result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
 
             if (campoCosecha.Proveedores.Any(proveedor => proveedor.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
             {
