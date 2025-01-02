@@ -20,6 +20,7 @@ export class Solp extends CommonResponse {
     public nroSolp: number;
     public NroSolp: string;
     public Adjuntos?: { Id: number, Nombre: string }[];
+    public EsPliegoMultiple: boolean = false;
 
     //paso 1
     public nombreDePedido: string;
@@ -173,6 +174,8 @@ export class Solp extends CommonResponse {
         this.archivosCotizacionesCondEsp = new Array<ArchivoModel>();
 
         if (solp != null) {
+            this.EsPliegoMultiple = solp.EsPliegoMultiple;
+
             // Paso 1
             this.id = solp.Id;
             this.tipoSolp = solp.TipoSolp && solp.TipoSolp.Codigo || '';
