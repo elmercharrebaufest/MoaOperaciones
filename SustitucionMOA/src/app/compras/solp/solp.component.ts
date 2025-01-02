@@ -309,6 +309,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 break;
             default:
         }
+
+        // una vez configurados los pasos posibles, se aplican las restricciones para "pliego múltiple"
+        if (this.solpActual.EsPliegoMultiple) {
+            this.pasos[0].Deshabilitado = true;
+            this.pasos[1].Deshabilitado = true;
+            this.pasos[2].Deshabilitado = true;
+            this.pasos[3].Deshabilitado = true;
+            this.pasos[0].Completo = true;
+            this.pasos[1].Completo = true;
+            this.pasos[2].Completo = true;
+            this.pasos[3].Completo = true;
+            this.pasoActual = this.pasos[4];
+        }
     }
 
     sumarDias(fecha, dias) {
