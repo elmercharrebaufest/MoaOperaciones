@@ -590,7 +590,7 @@ namespace SustitucionMOAUtils.Services
             campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
             if (campoCosecha == null) { return result; }
 
-            result.RenspaExiste = true;
+            result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
 
             if (campoCosecha.Proveedores.Any(proveedor => proveedor.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
             {
@@ -603,6 +603,24 @@ namespace SustitucionMOAUtils.Services
         public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
         {
             return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+        }
+
+        public string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            var camposSugeridos = repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+            var headers = new string[] { "Cosecha", "Nombre campo", "Localidad", "RENSPA", "Hectáreas totales", "Hectáreas soja", "Toneladas aprobadas", "Presentado en nueva cosecha" };
+            var listadoExport = camposSugeridos.Select(x => new SugerenciaCampoExportDto
+            {
+                CampoNombre = x.NombreCampo,
+                Cosecha = x.NombreCosecha,
+                HectareasSoja = x.HectareasSoja,
+                HectareasTotales = x.HectareasTotales,
+                LocalidadNombre = x.LocalidadNombre,
+                Presentado = x.CampoYaPresentado ? "SI" : "NO",
+                Renspa = x.Renspa.ToFormatoRenspa(),
+                ToneladasAprobadas = x.ToneladasAprobadas
+            });
+            return excelExport.ToExcel(listadoExport, headers, "Sugerencias campos nueva cosecha");
         }
 
         public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario)

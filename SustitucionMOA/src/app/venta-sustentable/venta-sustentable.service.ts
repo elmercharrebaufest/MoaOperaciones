@@ -176,6 +176,19 @@ export class VentaSustentableService extends BaseService {
             .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 
+    exportarSugerenciaCamposNuevaCosecha(proveedorId: number, cosechaId: number, cuitTitularCP: string): Observable<ApiResponse<string>> {
+        let params: HttpParams = new HttpParams()
+            .append('proveedorId', proveedorId.toString())
+            .append('cosechaId', cosechaId.toString())
+            .append('cuitTitularCP', cuitTitularCP);
+
+        return this.http
+            .get<ApiResponse<string>>(
+                '/api/CampoSustentable/ExportarCamposSugeridos',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
     guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[]) {
         let camposJson = JSON.stringify(campos);
         let payload = new FormData();

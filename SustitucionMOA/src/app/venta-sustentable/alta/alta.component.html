@@ -5,7 +5,7 @@
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10" style="font-weight: bold;">Nuevo campo sustentable</div>
         </div>
-        <mensaje></mensaje>
+        <mensaje #mensajeGeneral></mensaje>
         <spinner></spinner>
         <app-declaracion-conformidad [proveedorId]="proveedorId" [cosechaId]="cosechaId"
             (resultadoDeclaracion)="onResultadoDeclaracion($event)" [nombreCosecha]="nombreCosecha">
@@ -204,13 +204,13 @@
     [(visible)]="mostrarEdicionSugerencia" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
     <div class="content-wraper">
+        <mensaje #mensajeEdicionSugerencia></mensaje>
         <div class="row myRow firstSection mySearch cargaDeDatos">
-            <!-- <div class="rounded shadow col-xs-12 col-sm-6 col-md-12"> -->
                 <div class="row myRow cargaDeDatosFields cargaDeDatosForm" style="padding: 20px;">
                     <div class="row myRow cargaDeDatosFields">
                         <div class="col-xs-12 col-sm-12 col-md-6">
                             <p class="crearConsultaTitulos">
-                                Nombre del establecimiento <span class="requerido">*</span>
+                                Nombre establecimiento <span class="requerido">*</span>
                             </p>
                             <div class="styled-select">
                                 <input type="search" [(ngModel)]="campoSugeridoEnEdicion.NombreCampo" class="fourRounded" aria-controls="tableModal">
@@ -287,7 +287,6 @@
                         </div>
                     </div>
                 </div>
-            <!-- </div> -->
         </div>
     </div>
     <p-footer>
@@ -299,6 +298,21 @@
 <p-dialog [header]="'Campos sugeridos para la campaña ' + getNombreCosecha()"
     [(visible)]="mostrarSugerenciasCamposNuevos" [modal]="true" [responsive]="true" [closable]="false"
     [style]="{width: '800px', minWidth: '700px', maxWidth:'800px'}" [minY]="70" [draggable]="false" appendTo="body">
+    <div class="row titleSection">
+        <div class="col-xs-12 col-sm-6"></div>
+        <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+            <div class="row">
+                <div class="col-xs-12 col-sm-6" style="display: flex; justify-content: flex-end;">
+                    <spinner-small></spinner-small>
+                    <a (click)="exportarSugerencias()" href="#" style="text-decoration:none!important" *ngIf="!this.spinnerExportarSugerencias.visible">
+                        <div class="btnSection animate align-right">
+                            Exportar <img src="Content/images/buttons/EXPORT.svg" />
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
     <div>
         <table id="tablaCamposSugeridos" *ngIf="camposNuevosSugeridos && camposNuevosSugeridos.length > 0"
             class="display nowrap dataTable no-footer dtr-inline rounded shadow animate usuarios-list-table"

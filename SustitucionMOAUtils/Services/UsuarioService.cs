@@ -548,7 +548,7 @@ namespace SustitucionMOAUtils.Services
             if (resultado.HayError) { return resultado; }
 
             var setCodigoProveedor = proveedorDto.EsProveedorExterior
-                ? proveedorDto.CUIT.Substring(1)
+                ? proveedorDto.CUIT.Remove(0, 1)
                 : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
 
             Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
