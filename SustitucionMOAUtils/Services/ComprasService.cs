@@ -1224,7 +1224,9 @@ namespace SustitucionMOAUtils.Services
                 TieneModificaciones = solp.TieneModificaciones,
                 TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
                 EnvioCircularA = solp.EnvioCircularA,
+                EsPliegoMultiple = solp.Pliego.Multiple,
             };
+
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
             {
                 if (solpDevuelta.JornadaLaboral == null || solpDevuelta.JornadaLaboral.Count() == 0)
