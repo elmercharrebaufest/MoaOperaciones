@@ -15,6 +15,12 @@
                 <stepper [(pasos)]="pasos" (change)="cambioPaso($event)" [(paso)]="pasoActual"></stepper>
             </div>
         </div>
+
+        <div class="alert alert-warning mt-0 mb-0" *ngIf="solpActual.EsPliegoMultiple">
+            <strong>Advertencia</strong> La solp está asociada a un pliego múltiple.
+            Para editar el pliego, puede hacerlo desde la edición de pliegos múltiples.
+        </div>
+
         <spinner></spinner>
         <p-toast [style]="{marginTop: '105px'}"></p-toast>
         <div class="row myRow mySearch" style="margin-bottom: 4em;">
