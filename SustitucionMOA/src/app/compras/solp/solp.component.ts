@@ -128,6 +128,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     pasos: Paso[];
+    pasosMaster: { solp: Paso[], pliegoMultiple: Paso[] };
 
 
     titulo: string = "";
@@ -151,7 +152,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         private confirmationService: ConfirmationService,
         private emailComposeService: EmailComposeService) {
         super(navService, securytiService, floatMsgService, modalService);
-        this.pasos = setupSolpPasos();
+        this.pasosMaster = setupSolpPasos();
+        this.pasos = this.pasosMaster.solp;
         this.solpActual = new Solp();
 
         this.locale = {
@@ -179,8 +181,17 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
                     // if (params["id"] > 0) this.solpId = params["id"];
-                    if (parseInt(params["id"].split(',')[0]) > 0) this.solpId = parseInt(params["id"].split(',')[0]);
-                    if (params["tipoSolp"]) this.solpActual.tipoSolp = params["tipoSolp"];
+
+                    if (params["tipoSolp"]) {
+                        if (params["tipoSolp"] === "PLIEGO_MULTIPLE") {
+                            //circuito de pliego múltiple
+                            this.solpActual.EsPliegoMultiple = true;
+                            this.pasos = this.pasosMaster.pliegoMultiple;
+                        }
+                        this.solpActual.tipoSolp = params["tipoSolp"];
+                    }
+
+                    if (parseInt(params["id"].split(',')[0]) > 0) { this.solpId = parseInt(params["id"].split(',')[0]); }
                     if (params["id"].split(',')[1] == undefined) {
                         numeroSolp = "";
                     } else {
@@ -231,6 +242,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public get esEdicionSolp(): boolean {
         return this.getComponentMode() === ComponentMode.Edition;
+    }
+
+    public get mostrarAdvertenciaPliegoMultiple(): boolean {
+        return this.solpActual.EsPliegoMultiple && this.solpActual.tipoSolp !== 'PLIEGO_MULTIPLE';
+    }
+
+    public get esCreacionPliegoMultiple() {
+        return this.getComponentMode() === ComponentMode.Creation
+            && this.solpActual.EsPliegoMultiple
+            && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
+    }
+
+    public get esEdicionPliegoMultiple() {
+        return this.getComponentMode() === ComponentMode.Edition
+            && this.solpActual.EsPliegoMultiple
+            && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
     }
 
     private setupCentroPorDefecto(): void {
@@ -294,6 +321,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     setearPasos() {
         switch (this.solpActual.tipoSolp) {
             case "CON_PLIEGO":
+            case "PLIEGO_MULTIPLE":
                 break;
             case "SIN_PLIEGO":
                 this.pasos[0].Deshabilitado = true;
@@ -311,7 +339,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         }
 
         // una vez configurados los pasos posibles, se aplican las restricciones para "pliego múltiple"
-        if (this.solpActual.EsPliegoMultiple) {
+        if (this.solpActual.EsPliegoMultiple
+            && !(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple)) {
             this.pasos[0].Deshabilitado = true;
             this.pasos[1].Deshabilitado = true;
             this.pasos[2].Deshabilitado = true;
