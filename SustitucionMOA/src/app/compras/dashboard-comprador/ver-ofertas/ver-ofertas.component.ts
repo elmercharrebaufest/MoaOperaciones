@@ -222,8 +222,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                     this.sessionDataService.logout();
                 }
                 else {
-                    var byteArray = new Uint8Array(result.FileContents);
-                    var blob = new Blob([byteArray], {
+                    let byteArray = new Uint8Array(result.FileContents);
+                    let blob = new Blob([byteArray], {
                         type: "application/octet-stream",
                     });
 
@@ -234,8 +234,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                             result.FileDownloadName
                         );
                     } else {
-                        var url = window.URL.createObjectURL(blob);
-                        var link = document.createElement("a");
+                        let url = window.URL.createObjectURL(blob);
+                        let link = document.createElement("a");
                         document.body.appendChild(link);
                         link.href = url;
                         link.download = result.FileDownloadName;
@@ -335,18 +335,18 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
     public parsearFecha() {
         if (this.lista != undefined) {
-            for (let index = 0; index < this.lista.length; index++) {
-                if (this.lista[index].PlazoDeEntrega != null) {
-                    let date = new Date(this.lista[index].PlazoDeEntrega);
-                    this.lista[index].PlazoDeEntrega = date
+            for (const element of this.lista) {
+                if (element.PlazoDeEntrega != null) {
+                    let date = new Date(element.PlazoDeEntrega);
+                    element.PlazoDeEntrega = date
                 }
             }
         }
     }
 
     validarAdjudicacion(lista): string {
-        var self = this;
-        var breakFor = false;
+        let self = this;
+        let breakFor = false;
         this.error = "";
         lista.forEach(element => {
             if (!breakFor) {
@@ -395,11 +395,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
 
         const primeraMoneda = posiciones[0].Moneda_Id; // Tomamos la moneda de la primera posición
         const todasLasSubposiciones = [];
-        for (let i = 0; i < posiciones.length; i++) {
-            if (posiciones[i].Moneda_Id !== primeraMoneda) {
+        for (const element of posiciones) {
+            if (element.Moneda_Id !== primeraMoneda) {
                 return true; // Si encontramos una moneda diferente, devolvemos true
             }
-            todasLasSubposiciones.push(...posiciones[i].CotizacionSubPosiciones);
+            todasLasSubposiciones.push(...element.CotizacionSubPosiciones);
         }
 
         for (let i = 1; i < todasLasSubposiciones.length; i++) {
@@ -430,6 +430,8 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         if (this.adjudicacion != undefined) {
             this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
+            this.adjudicacion.TextoDeCabecera = this.sanitizeInput(this.adjudicacion.TextoDeCabecera);
+
             this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
                 (result) => {
                     if (result.logout == true) {
@@ -453,6 +455,12 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         }
     }
 
+    sanitizeInput(input?: string): string {
+        if (input == null) { return ''; }
+        // Regex que incluye más caracteres potencialmente peligrosos
+        const dangerousCharacters = /[<>"'&\\\{\}\$\`\%]/g;
+        return input.replace(dangerousCharacters, '');
+    }
     onCerrarValidacionMoneda() {
         this.displayValidacionMoneda = false;
     }
@@ -908,7 +916,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     mostrarModalRegionSap(usuario) {
-        var posRegion = this.lista[0].CentroPosicion.CodigoSap;
+        let posRegion = this.lista[0].CentroPosicion.CodigoSap;
 
         if (posRegion) {
             this.centroDire = this.centroDireLista.find(c => c.label == posRegion);
