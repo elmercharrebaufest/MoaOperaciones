@@ -1311,6 +1311,7 @@
     <Compile Include="Jobs\ActualizarLocalidadesPartidosJob.cs" />
     <Compile Include="Jobs\ActualizarSISAJob.cs" />
     <Compile Include="Jobs\CcSsObtenerArchivosUcropJob.cs" />
+    <Compile Include="Jobs\EliminarFacturasAntiguasJob.cs" />
     <Compile Include="Jobs\NotificacionErroresJob.cs" />
     <Compile Include="Jobs\DerivacionesAutomaticasJob.cs" />
     <Compile Include="Jobs\EnviarCamposUcropitJob.cs" />

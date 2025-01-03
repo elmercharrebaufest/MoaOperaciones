@@ -30,6 +30,7 @@ const routes: Routes = [
     { path: "listadoEstadoCertificacionesProveedor", component: ListadoEstadoCertificacionesProveedorComponent },
     { path: "dashboardCertificacionDeServicios", component: ListadoDashboardCertificacionDeServiciosComponent },
     { path: "dashboardCertificacionDeServiciosProveedores", component: ListadoDashboardCertificacionDeServiciosProveedoresComponent },
+    { path: "dashboardCertificacionDeServiciosProveedores/:ordenCompraId", component: ListadoDashboardCertificacionDeServiciosProveedoresComponent },
     { path: "peticion-de-oferta-formulario", component: PeticionDeOfertaFormularioComponent },
     { path: "peticion-de-oferta-formulario/:id", component: PeticionDeOfertaFormularioComponent },
     { path: "dashboard-proveedor/cotizacion", component: CotizacionFormularioComponent },

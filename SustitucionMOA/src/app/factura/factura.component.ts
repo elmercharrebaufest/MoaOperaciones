@@ -16,6 +16,7 @@ import { DropdownComponent, DropdownOption } from './../common/view-child/dropdo
 import { ReCaptchaComponent } from 'angular2-recaptcha';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ValidationResult } from '../common/models/validationResult';
+import { FileUpload } from 'primeng/fileupload';
 
 
 declare var $: any;
@@ -38,13 +39,11 @@ export class FacturaComponent extends ListBaseComponent {
     @ViewChild(SpinnerComponent)
     protected spinnerComponent: SpinnerComponent;
 
-    @ViewChild('fileInput')
-    protected fileInput: ElementRef;
-
     @ViewChild('recaptchaComponent')
     protected captcha: ReCaptchaComponent;
     resultados: ValidationResult[];
 
+    @ViewChild('fileUpload') fileUpload: FileUpload;
     constructor(protected service: FacturaService, protected navService: NavService, protected sessionDataService: SessionDataService, protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService, protected route: ActivatedRoute, protected router: Router) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
         this.spinnerSmallComponent = new SpinnerSmallComponent();
@@ -53,9 +52,8 @@ export class FacturaComponent extends ListBaseComponent {
     checkPermisos() { this.securityService.tienePermisoRedirect("CARGAR FACT PROV"); }
 
     modalServiceSusbcription: any;
-    file: FileList;
     captchaOk: any = null;
-
+    archivos = new Array<File>()
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -64,7 +62,7 @@ export class FacturaComponent extends ListBaseComponent {
     ngOnInit() {
         this.setTabs();
         this.checkPermisos();
-        var secciones = [];
+        let secciones = [];
         secciones.push(new Seccion('/factura', 'factura', 'Factura'));
         this.navService.setSeccionList(secciones);
     }
@@ -75,23 +73,17 @@ export class FacturaComponent extends ListBaseComponent {
         this.spinnerSmallComponent.showIt();
 
 
-        if (this.file == null) {
+        if (this.archivos == null) {
             this.spinnerSmallComponent.hideIt();
             this.floatMsgService.setErrorMsg("Ingrese un Archivo");
             return false;
         }
 
-        //if (this.captchaOk == null) {
-        //    this.spinnerSmallComponent.hideIt();
-        //    this.floatMsgService.setErrorMsg("Debe completar el Captcha");
-        //    return false;
-        //}
-
         this.unsubscribe();
         try {
             this.resultados = [];
             this.blockUI.start('Analizando documentos...');
-            this.subscription = this.service.subirPDF(this.file).subscribe(
+            this.subscription = this.service.subirPDF(this.archivos).subscribe(
                 (result: any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
@@ -109,7 +101,7 @@ export class FacturaComponent extends ListBaseComponent {
                     return false;
                 },
                 error => {
-                    var errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
+                    let errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
                     if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; }
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
@@ -125,10 +117,13 @@ export class FacturaComponent extends ListBaseComponent {
         }
         return false; //<-- Prevent Refresh
     }
+    mensajeIrAOC(mensaje: ValidationResult) {
+        return !mensaje.IsValid && mensaje.ValidataionType == "OrdenCompraValidationCommand" && mensaje.Value != "" && mensaje.Value.length > 0;        
+    }
 
-    cargarArchivo(event: any) {
-        let fileList: FileList = event.target.files;
-        this.file = fileList;
+    irACertificaciones(nroOC: string) {
+        this.navService.navegarSeccionParam('/compras/dashboardCertificacionDeServiciosProveedores', nroOC);
+        return false; 
     }
 
     handleCorrectCaptcha(event: any) {
@@ -136,9 +131,8 @@ export class FacturaComponent extends ListBaseComponent {
     }
 
     vaciarCampos() {
-
-        this.file = null;
-        this.fileInput.nativeElement.value = "";
+        this.fileUpload.clear();
+        this.archivos = new Array<File>();
     }
 
     public ngOnDestroy() {
@@ -147,5 +141,37 @@ export class FacturaComponent extends ListBaseComponent {
         if (this.modalServiceSusbcription != undefined) {
             this.modalServiceSusbcription.unsubscribe();
         }
+    }
+
+    uploadHandler(filesUpload: any): boolean {
+
+        for (let file of this.archivos) {
+            if (!this.isValidFileType(file)) {
+                this.floatMsgService.setErrorMsg(`El archivo ${file.name} no es válido. Solo se permiten archivos PDF, JPG, JPEG y PNG.`);
+                this.eliminarAdjuntoNuevo(file); 
+                return true;
+            }
+        }
+
+        let archivoWeb = filesUpload["files"].reduce((sum, file) => sum + file.size, 0);
+        this.archivos = filesUpload["files"];
+        if (archivoWeb > 10000000) {
+            this.floatMsgService.setErrorMsg("El archivo adjuntado no debe superar los 10Mb");
+            if (this.archivos.length > 0) {
+                this.eliminarAdjuntoNuevo(this.archivos[this.archivos.length - 1])
+            }
+            return true;
+        }
+    }
+
+    isValidFileType(file: File): boolean {
+        const validTypes = ['.pdf', '.jpg', '.jpeg', '.png'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        return validTypes.includes(`.${fileExtension}`);
+    }
+
+    eliminarAdjuntoNuevo(archivo): void {
+        let indice = this.archivos.indexOf(archivo)
+        this.archivos.splice(indice, 1)
     }
 }
