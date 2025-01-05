@@ -23,6 +23,7 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-co
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 import * as uuid from 'uuid';
 import _ from 'lodash';
+import { SolpPosicionPrecargada } from '../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada';
 
 declare var $: any;
 
@@ -1360,46 +1361,71 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         });
     }
 
-    cargarPosicionesDesdeArchivo(posiciones: SolpPosicion[]) {
+    cargarPosicionesDesdeArchivo(posicionesPrecargadas: SolpPosicionPrecargada[]) {
         this.displayPrecargarDesdeArchivo = false;
+        let posicionesACargar: SolpPosicion[] = [];
 
-        for (let i = 0; i < posiciones.length; i++) {
-            let pos = posiciones[i] as any;
+        for (let i = 0; i < posicionesPrecargadas.length; i++) {
+            let posArchivo = posicionesPrecargadas[i];
+            let newPos = new SolpPosicion();
 
-            this.model.posicionActual = pos;
+            this.model.posicionActual = newPos;
 
-            let centroEnt = this.centroEntrega.find(x => x.value == pos.Centro.Codigo);
-            let moneda = this.combos.Moneda.find(x => x.Id == pos.MonedaId);
-            let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == pos.GrupoCompras.Id);
-            let tipoImputacion = this.tipoImputacion.find(x => x.Id == pos.TipoImputacion.Id);
+            // let centroEnt = this.centroEntrega.find(x => x.value == pos.Centro.Codigo);
+            let centroEnt = this.centroEntrega.find(x => x.value == posArchivo.CentroId);
+            // let moneda = this.combos.Moneda.find(x => x.Id == pos.MonedaId);
+            let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
+            // let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == pos.GrupoCompras.Id);
+            let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == posArchivo.GrupoComprasId);
+            // let tipoImputacion = this.tipoImputacion.find(x => x.Id == (pos as any).TipoImputacionId);
+            let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
-            pos.numeroPosicion = i + 1;
-            pos.tipoImputacion = tipoImputacion;
+            newPos.numeroPosicion = i + 1;
+            newPos.tipoImputacion = tipoImputacion;
             
             // pos.selectCentroEntrega = centroEnt;
+            newPos.selectCentroEntrega = centroEnt;
             //pos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == pos.selectCentroEntrega.Id);
+            newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posArchivo.CentroId);
 
             // this.setupAlmacenEntregaByCentro();
             //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
 
             // let almacen = pos.selectComboAlmacenes.find(x => x.Id == pos.Almacen.Id);
+            let almacen = newPos.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
             // pos.selectAlmacenEntrega = almacen;
+            newPos.selectAlmacenEntrega = almacen;
 
-            pos.monedaSeleccionada = moneda;
-            pos.GrupoCompras = grupoCompras;
+            newPos.monedaSeleccionada = moneda;
+            newPos.GrupoCompras = grupoCompras;
             
             let servicioMaterialObj = {
-                Codigo: pos.CodigoMaterialSap,
-                CodigoSap: pos.CodigoMaterialSap,
-                Descripcion: pos.Tarea,
-                UnidadMedidaBase: pos.unidadMedida
+                Codigo: posArchivo.Codigo,
+                CodigoSap: posArchivo.Codigo,
+                Descripcion: posArchivo.Tarea,
+                UnidadMedidaBase: posArchivo.Unidad.Codigo
             };
 
-            pos.codigoServicio = servicioMaterialObj;
-            pos.tareaSubcontratar = servicioMaterialObj.Descripcion;
-            pos.tareaSubcontratarObj = { ...servicioMaterialObj };
+            newPos.codigoServicio = servicioMaterialObj;
+            newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+            newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+
+            newPos.tipoPosicion = posArchivo.TipoPosicion;
+            newPos.indice = posArchivo.Indice;
+            newPos.fechaEntregaServicio = posArchivo.FechaEntregaServicio;
+            newPos.Cantidad = posArchivo.Cantidad;
+            newPos.cuentaMayor = posArchivo.CuentaMayor;
+
+            posArchivo.Subposiciones.forEach(subposArch => {
+                let newSubpos = newPos.crearSubPosicion();
+                newSubpos.subPosicion = subposArch.Numero;
+                newSubpos.codigoServicio = subposArch.Codigo;
+                newSubpos.tareaSubcontratar = subposArch.Tarea;
+            });
+
+            posicionesACargar.push(newPos);
         };
-        this.model.posiciones = posiciones;
+        this.model.posiciones = posicionesACargar;
     }
     
     abrirPrecargaSolpDesdeArchivo() {

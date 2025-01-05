@@ -21,14 +21,13 @@ import { SolpDto } from './agrupar-po-th/agrupar-po-th-model';
 import { CreateEntradaServicioDto } from '../modelos/EntradaServicios/CreateEntradaServicioDto';
 import { AdjuntosSolpDto } from './agrupar-po-th/adjuntos-solp-model';
 import { ApiResponse } from '../common/models/response';
-import { LegajoDto } from '../modelos/compras/legajoDto';
 import { ObtenerLegajoResponse } from '../modelos/compras/obtenerLegajoResponse';
 import { PosicionCrearPoMultipleDto } from '../modelos/Posicion-CrearPoMultipleDto.model';
 import { ActionResult } from '../../serviceHelpers/actionResult.Interface';
 import { SolpCrearPoMultipleDto } from '../modelos/Solp-CrearPoMultipleDto.model';
 import { POPosicionDto } from '../modelos/po-posicionDto';
 import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
-import { ProcesarPrecargaSolpResponse } from '../modelos/compras/solp/procesarPrecargaSolpResponse';
+import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/procesarPrecargaSolpResponse';
 
 @Injectable({
     providedIn: 'root'
@@ -1635,7 +1634,7 @@ export class ComprasService extends BaseService {
         params = params.set('tipoSolpId', tipoSolpId.toString());
 
         return this.http
-            .post('/api/compras/ProcesarPrecargaSolp', payload, { params: params, headers: this.headersPost })
+            .post<ApiResponse<ProcesarPrecargaSolpResponse>>('/api/compras/ProcesarPrecargaSolp', payload, { params: params, headers: this.headersPost })
             .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
     }
 }

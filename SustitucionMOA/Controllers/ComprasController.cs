@@ -3,6 +3,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Helpers;
