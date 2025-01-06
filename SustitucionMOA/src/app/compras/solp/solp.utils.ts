@@ -77,6 +77,7 @@ export function setupSolpPasos(): { solp: Paso[], pliegoMultiple: Paso[] } {
     // para pliego múltiple, el paso 5 tiene otro nombre. El resto es igual.
     const pliegoMultiple = _.cloneDeep(solpregular);
     pliegoMultiple[4].Nombre = 'Vincular Solp';
+    pliegoMultiple[4].Codigo = EnumPasoSolp.PliegoMultipleVincularSolp;
 
     return { solp: solpregular, pliegoMultiple: pliegoMultiple };
 }

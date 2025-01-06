@@ -48,6 +48,9 @@
                     <div *ngSwitchCase="enumSolp.SolpCabecera" [@fadeInOut]>
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></cabecera>
                     </div>
+                    <div *ngSwitchCase="enumSolp.PliegoMultipleVincularSolp" [@fadeInOut]>
+                        <vincular-solp-pliego-multiple [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></vincular-solp-pliego-multiple>
+                    </div>
                     <div *ngSwitchDefault [@fadeInOut]>
                         Paso en construccion
                     </div>
