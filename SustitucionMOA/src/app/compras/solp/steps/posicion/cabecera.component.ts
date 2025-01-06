@@ -1371,29 +1371,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             this.model.posicionActual = newPos;
 
-            // let centroEnt = this.centroEntrega.find(x => x.value == pos.Centro.Codigo);
             let centroEnt = this.centroEntrega.find(x => x.value == posArchivo.CentroId);
-            // let moneda = this.combos.Moneda.find(x => x.Id == pos.MonedaId);
             let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
-            // let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == pos.GrupoCompras.Id);
             let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == posArchivo.GrupoComprasId);
-            // let tipoImputacion = this.tipoImputacion.find(x => x.Id == (pos as any).TipoImputacionId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
             newPos.numeroPosicion = i + 1;
             newPos.tipoImputacion = tipoImputacion;
             
-            // pos.selectCentroEntrega = centroEnt;
             newPos.selectCentroEntrega = centroEnt;
-            //pos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == pos.selectCentroEntrega.Id);
             newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posArchivo.CentroId);
 
             // this.setupAlmacenEntregaByCentro();
             //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
 
-            // let almacen = pos.selectComboAlmacenes.find(x => x.Id == pos.Almacen.Id);
             let almacen = newPos.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
-            // pos.selectAlmacenEntrega = almacen;
             newPos.selectAlmacenEntrega = almacen;
 
             newPos.monedaSeleccionada = moneda;
