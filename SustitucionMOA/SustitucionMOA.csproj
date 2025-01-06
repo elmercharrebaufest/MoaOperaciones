@@ -464,6 +464,8 @@
     <TypeScriptCompile Include="src\app\common\enums\TipoPerfil.ts" />
     <TypeScriptCompile Include="src\app\common\enums\TipoPeriodo.ts" />
     <TypeScriptCompile Include="src\app\common\message-spinner\message-spinner.component.ts" />
+    <TypeScriptCompile Include="src\app\chatbot\chatbot.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\chatbot\chatbot.component.ts" />
     <TypeScriptCompile Include="src\app\common\models\adjuntos.ts" />
     <TypeScriptCompile Include="src\app\common\models\almacen.ts" />
     <TypeScriptCompile Include="src\app\common\models\archivoDescarga.ts" />
@@ -484,6 +486,8 @@
     <Content Include="src\app\common\email-compose\email-compose.component.html" />
     <Content Include="src\app\common\message-spinner\message-spinner.component.css" />
     <Content Include="src\app\common\message-spinner\message-spinner.component.html" />
+    <Content Include="src\app\chatbot\chatbot.component.css" />
+    <Content Include="src\app\chatbot\chatbot.component.html" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.html" />
     <Content Include="src\app\common\shared-components\dropdown-input\dropdown-input.component.css" />
@@ -637,6 +641,7 @@
     <Content Include="src\app\echeq\mis-echeq\mis-echeq.grilla\mis-echeq-grilla.component.html" />
     <Content Include="src\app\liquidacion\informada\liquidacion.informada.component.html" />
     <Content Include="src\app\liquidacion\informar\liquidacion.informar.component.html" />
+    <Content Include="src\app\layout\layout.component.css" />
     <Content Include="src\app\liquidacion\no-granos\pendiente-registro\liquidacion.no-granos.pendiente-registro.component.html" />
     <Content Include="src\app\liquidacion\no-granos\registrada\liquidacion.no-granos.registrado.component.html" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
