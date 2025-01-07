@@ -2,34 +2,36 @@
     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
         <p> &nbsp; <!-- dummy spacer --> </p>
         <span class="ui-float-label">
-            <input id="buscarSolpNumero" type="text" pInputText style="width:100%">
+            <input id="buscarSolpNumero" type="text" pInputText style="width:100%" [(ngModel)]="numeroSolp" (keyup)="searchParametersChanged()">
             <label for="buscarSolpNumero" class="fa fa-search">Buscar N° SOLP</label>
         </span>
     </div>
 
     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
         <p>Ver:</p>
-        <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
+        <filtro-fecha key="periodo-certificaciones" (ClickEvent)="searchParametersChanged()"></filtro-fecha>
     </div>
 
     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
         <p>Creador</p>
-        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
-                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="creador" defaultLabel="Buscar por usuario"
+                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"
+                       (onChange)="searchParametersChanged()"></p-multiSelect>
     </div>
 
     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
         <p>Fiscal Contrato</p>
-        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
-                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="fiscal" defaultLabel="Buscar por usuario"
+                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"
+                       (onChange)="searchParametersChanged()"></p-multiSelect>
     </div>
 
     <div class="col-xs-4 col-sm-2 col-md-1 mb-5">
-        <p-checkbox binary="true" label="Sap" [(ngModel)]="sap"></p-checkbox>
+        <p-checkbox binary="true" label="Sap" [(ngModel)]="sap" (onChange)="searchParametersChanged()"></p-checkbox>
     </div>
 
     <div class="col-xs-8 col-sm-4 col-md-2 mb-5">
-        <p-checkbox binary="true" label="Mantenimiento" [(ngModel)]="mantenimiento"></p-checkbox>
+        <p-checkbox binary="true" label="Mantenimiento" [(ngModel)]="mantenimiento" (onChange)="searchParametersChanged()"></p-checkbox>
     </div>
 </div>
 

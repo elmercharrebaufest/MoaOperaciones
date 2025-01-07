@@ -1,15 +1,55 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
 
 @Component({
-  selector: 'vincular-solp-pliego-multiple',
-  templateUrl: './vincular-solp-pliego-multiple.component.html',
-  styleUrls: ['./vincular-solp-pliego-multiple.component.css']
+    selector: 'vincular-solp-pliego-multiple',
+    templateUrl: './vincular-solp-pliego-multiple.component.html',
+    styleUrls: ['./vincular-solp-pliego-multiple.component.css']
 })
-export class VincularSolpPliegoMultipleComponent implements OnInit {
+export class VincularSolpPliegoMultipleComponent
+    implements OnInit, OnDestroy {
 
-  constructor() { }
+    public numeroSolp: string;
 
-  ngOnInit() {
-  }
+    @ViewChild(FiltroFechaComponent)
+    protected filtroFechaComponent: FiltroFechaComponent;
+
+    public creador: string[];
+
+    public fiscal: string[];
+
+    public sap: boolean;
+
+    public mantenimiento: boolean;
+
+    private debouncer: Subject<void> = new Subject<void>();
+    private debouncerSubscription?: Subscription;
+
+    constructor() { }
+
+    ngOnInit() {
+        this.debouncerSubscription = this.debouncer
+            .pipe(
+                debounceTime(500)
+            )
+            .subscribe(value => {
+                this.getSolps();
+            });
+        this.getSolps();
+    }
+
+    ngOnDestroy() {
+        if (this.debouncerSubscription) { this.debouncerSubscription.unsubscribe(); }
+    }
+
+    public searchParametersChanged() {
+        this.debouncer.next();
+    }
+
+    public getSolps() {
+        console.log({act: "search here", nroSolp:this.numeroSolp, fecha:this.filtroFechaComponent});
+    }
 
 }
