@@ -111,6 +111,7 @@ import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/co
 import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/file-modal.component';
 import { PrecargaSolpArchivoComponent } from './solp/steps/posicion/precarga-solp-archivo/precarga-solp-archivo.component';
 import { DashboardPliegoMultipleComponent } from './dashboard-pliego-multiple/dashboard-pliego-multiple.component';
+import { VincularSolpPliegoMultipleComponent } from './solp/steps/vincular-solp-pliego-multiple/vincular-solp-pliego-multiple.component';
 
 @NgModule({
     imports: [
@@ -218,7 +219,8 @@ import { DashboardPliegoMultipleComponent } from './dashboard-pliego-multiple/da
         AdjuntosSolpComponent,
         ActualizarFechaVigenciaComponent,
         PrecargaSolpArchivoComponent,
-        DashboardPliegoMultipleComponent
+        DashboardPliegoMultipleComponent,
+        VincularSolpPliegoMultipleComponent
     ],
     providers: [
         { provide: LOCALE_ID, useValue: "es-419" },

@@ -1,0 +1,73 @@
+<div class="row mt-2">
+    <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+        <p> &nbsp; <!-- dummy spacer --> </p>
+        <span class="ui-float-label">
+            <input id="buscarSolpNumero" type="text" pInputText style="width:100%">
+            <label for="buscarSolpNumero" class="fa fa-search">Buscar N° SOLP</label>
+        </span>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+        <p>Ver:</p>
+        <filtro-fecha key="periodo-certificaciones"></filtro-fecha>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+        <p>Creador</p>
+        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
+                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+        <p>Fiscal Contrato</p>
+        <p-multiSelect [options]="usuarioFiltro" [(ngModel)]="selectUsuario" defaultLabel="Buscar por usuario"
+                       [maxSelectedLabels]="1" selectedItemsLabel="{0} usuarios elegidos"></p-multiSelect>
+    </div>
+
+    <div class="col-xs-4 col-sm-2 col-md-1 mb-5">
+        <p-checkbox binary="true" label="Sap" [(ngModel)]="sap"></p-checkbox>
+    </div>
+
+    <div class="col-xs-8 col-sm-4 col-md-2 mb-5">
+        <p-checkbox binary="true" label="Mantenimiento" [(ngModel)]="mantenimiento"></p-checkbox>
+    </div>
+</div>
+
+<div class="content-wraper rounded shadow">
+    <section class="container-fluid clearfix">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="columna">Vincular</th>
+                    <th class="columna">N° SOLP</th>
+                    <th class="columna">Nombre SOLP</th>
+                    <th class="columna">Fecha Creación</th>
+                    <th class="columna">Creador</th>
+                    <th class="columna">Fiscal Contrato</th>
+                    <th class="columna">Estado SOLP</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-solp>
+                <tr>
+                    <td>
+                        <p-checkbox binary="true" [(ngModel)]="solp.selected"></p-checkbox>
+                        <span *ngIf="solp.TipoSolpSap == 2">
+                            <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
+                                 style="height:25px; cursor:default" />
+                        </span>
+                        <span *ngIf="solp.TipoSolpSap == 3">
+                            <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
+                                 style="width: 30px; height: 30px; cursor:default" />
+                        </span>
+                    </td>
+                    <td>{{ solp.NroSolp }}</td>
+                    <td>{{ solp.NombreSolp }}</td>
+                    <td>{{ solp.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ solp.Creador }}</td>
+                    <td>{{ solp.Fiscal }}</td>
+                    <td>{{ solp.Estado }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+</div>
