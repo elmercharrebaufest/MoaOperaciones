@@ -4,6 +4,7 @@ import { debounceTime } from 'rxjs/operators';
 import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
 import { PliegoMultipleService } from '../../../pliegoMultiple.service';
 import { SolpDto } from './solpDto.interface';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
     selector: 'vincular-solp-pliego-multiple',
@@ -28,6 +29,8 @@ export class VincularSolpPliegoMultipleComponent
 
     private debouncer: Subject<void> = new Subject<void>();
     private debouncerSubscription?: Subscription;
+
+    @BlockUI() blockUI: NgBlockUI;
 
     public solps: SolpDto[];
 
@@ -54,10 +57,19 @@ export class VincularSolpPliegoMultipleComponent
 
     public getSolps() {
         console.log({ act: "search here", nroSolp: this.numeroSolp, fecha: this.filtroFechaComponent });
+
+        this.blockUI.start("Cargando");
+
         this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento)
-            .subscribe((solps: SolpDto[]) => {
-                this.solps = solps;
-            });
+            .subscribe(
+                (solps: SolpDto[]) => {
+                    this.solps = solps;
+                    this.blockUI.stop();
+                },
+                () => {
+                    this.blockUI.stop();
+                }
+            );
     }
 
 }
