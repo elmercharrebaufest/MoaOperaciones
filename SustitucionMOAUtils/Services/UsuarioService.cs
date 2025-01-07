@@ -547,10 +547,12 @@ namespace SustitucionMOAUtils.Services
 
             if (resultado.HayError) { return resultado; }
 
-            var setCodigoProveedor = proveedorDto.EsProveedorExterior
-                ? proveedorDto.CUIT.Remove(0, 1)
-                : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
-
+            var setCodigoProveedor = "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+            if (proveedorDto.EsProveedorExterior)
+            {
+                setCodigoProveedor = proveedorDto.CUIT.TrimStart('0').PadLeft(10, '0');
+                proveedorDto.CUIT = proveedorDto.CUIT.TrimStart('0').PadLeft(11, '0');
+            }
             Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
             usuario.Roles.Add(nuevoNoGranos);
 
