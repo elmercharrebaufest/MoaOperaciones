@@ -137,6 +137,7 @@
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
+    <Compile Include="Dto\PliegoMultiple\SolpDto.cs" />
     <Compile Include="Dto\PliegoMultiple\PliegoDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
     <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
