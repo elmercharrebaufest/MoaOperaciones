@@ -32,3 +32,42 @@
         <p-checkbox binary="true" label="Mantenimiento" [(ngModel)]="mantenimiento"></p-checkbox>
     </div>
 </div>
+
+<div class="content-wraper rounded shadow">
+    <section class="container-fluid clearfix">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th class="columna">Vincular</th>
+                    <th class="columna">N° SOLP</th>
+                    <th class="columna">Nombre SOLP</th>
+                    <th class="columna">Fecha Creación</th>
+                    <th class="columna">Creador</th>
+                    <th class="columna">Fiscal Contrato</th>
+                    <th class="columna">Estado SOLP</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-solp>
+                <tr>
+                    <td>
+                        <p-checkbox binary="true" [(ngModel)]="solp.selected"></p-checkbox>
+                        <span *ngIf="solp.TipoSolpSap == 2">
+                            <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
+                                 style="height:25px; cursor:default" />
+                        </span>
+                        <span *ngIf="solp.TipoSolpSap == 3">
+                            <img class="pointer" src="./Content/images/icons/SAP.svg" alt="SAP"
+                                 style="width: 30px; height: 30px; cursor:default" />
+                        </span>
+                    </td>
+                    <td>{{ solp.NroSolp }}</td>
+                    <td>{{ solp.NombreSolp }}</td>
+                    <td>{{ solp.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
+                    <td>{{ solp.Creador }}</td>
+                    <td>{{ solp.Fiscal }}</td>
+                    <td>{{ solp.Estado }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </section>
+</div>
