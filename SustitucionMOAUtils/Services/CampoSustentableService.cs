@@ -675,7 +675,9 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     Log.Info($"Se guarda para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa}");
-                    ValidarCampo(campoProveedor, null);
+                    
+                    var archivoNuevoKmz = !string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) ? archivosKmz.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevoKmz) : null;
+                    ValidarCampo(campoProveedor, archivoNuevoKmz);
 
                     var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
                     
@@ -683,7 +685,6 @@ namespace SustitucionMOAUtils.Services
                     campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
 
                     var rutaArchivo = "";
-                    HttpPostedFileBase archivoNuevoKmz = null;
                     if (string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) && campoProveedor.Archivo_Id != 0)
                     {
                         var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
@@ -694,7 +695,6 @@ namespace SustitucionMOAUtils.Services
                     else
                     {
                         campoProveedor.Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
-                        archivoNuevoKmz = archivosKmz.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevoKmz);
                         if (archivoNuevoKmz != null)
                         {
                             rutaArchivo = GuardarArchivoKMZ(campoProveedor, archivoNuevoKmz);
