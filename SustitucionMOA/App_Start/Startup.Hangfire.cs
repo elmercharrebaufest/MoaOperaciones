@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Hangfire;
+using Hangfire.Dashboard;
+using Owin;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Hangfire;
-using Owin;
-using Hangfire.Dashboard;
 
 namespace SustitucionMOA
 {
@@ -133,6 +133,11 @@ namespace SustitucionMOA
                 "NotificarAprobacionesPendientesJob",
                 j => j.Execute(),
                 "0 9 * * *", tz);
+
+            RecurringJob.AddOrUpdate<Jobs.IEliminarFacturasAntiguasJob>(
+                "EliminarFacturasAntiguasJob",
+                j => j.Execute(),
+                "0 2 * * *", tz);
         }
     }
 

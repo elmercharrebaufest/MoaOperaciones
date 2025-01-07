@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, Output, EventEmitter } from "@angular/core";
 import { ComprasService } from "../../../../compras.service";
-import { SolpPosicion } from "../../../solp-posicion";
 import { SessionDataService } from "../../../../../common/services/SessionDataService";
+import { SolpPosicionPrecargada } from "../../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada";
 
 @Component({
     selector: 'app-precarga-solp-archivo',
@@ -16,14 +16,14 @@ export class PrecargaSolpArchivoComponent implements OnInit {
     tipoSolpId: number;
 
     @Output()
-    guardarPrecargaEmitter = new EventEmitter<SolpPosicion[]>();
+    guardarPrecargaEmitter = new EventEmitter<SolpPosicionPrecargada[]>();
 
     @Output()
     cerrarPrecargaEmitter = new EventEmitter();
 
     estaProcesando: boolean = false;
     listaErrores: string[] = [];
-    posicionesCargadas: SolpPosicion[] = [];
+    posicionesCargadas: SolpPosicionPrecargada[] = [];
 
     constructor(private service: ComprasService, protected sessionDataService: SessionDataService) {
     }

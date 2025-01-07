@@ -1,6 +1,7 @@
 ﻿using Excel;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,13 +52,13 @@ namespace SustitucionMOAUtils.Services
                 return response;
             }
 
-            var posiciones = new List<SolpPosicionDto>();
+            var posiciones = new List<SolpPosicionPrecargadaDto>();
 
             foreach (var reg in registrosPrecarga)
             {
                 var indice = int.Parse(reg.NroPosicion);
                 var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
-                var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.Codigo == reg.CuentaMayor);
+                var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
 
                 if (esMateriales || !posiciones.Any(x => x.Indice == indice))
                 {
@@ -68,7 +69,7 @@ namespace SustitucionMOAUtils.Services
                     var centro = centros.FirstOrDefault(x => x.Codigo == reg.CentroId);
                     var almacen = almacenes.FirstOrDefault(x => x.Codigo == reg.AlmacenId);
 
-                    var posicion = new SolpPosicionDto
+                    var posicion = new SolpPosicionPrecargadaDto
                     {
                         Indice = int.Parse(reg.NroPosicion),
                         TipoPosicionId = tipoPosicion.Id,
@@ -91,14 +92,15 @@ namespace SustitucionMOAUtils.Services
                         Cantidad = decimal.Parse(reg.Cantidad),
                         UnidadId = unidad?.Id,
                         Unidad = unidad,
-                        Subposiciones = new List<SolpSubposicionDto>()
+                        CuentaMayor = cuentaMayor,
+                        Subposiciones = new List<SolpSubposicionPrecargadaDto>()
                     };
                     posiciones.Add(posicion);
                 }
                 if (!esMateriales)
                 {
                     var posicion = posiciones.First(x => x.Indice == indice);
-                    var subposicion = new SolpSubposicionDto
+                    var subposicion = new SolpSubposicionPrecargadaDto
                     {
                         Numero = int.Parse(reg.NroSubpos),
                         Tarea = reg.NombreServicio,
@@ -245,7 +247,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     errores.Add($"Orden: {ordenFila}. La unidad no es válida");
                 }
-                if (!string.IsNullOrWhiteSpace(reg.CuentaMayor) && !cuentasMayor.Any(x => x.Codigo == reg.CuentaMayor))
+                if (!string.IsNullOrWhiteSpace(reg.CuentaMayor) && !cuentasMayor.Any(x => x.CodigoSap == reg.CuentaMayor))
                 {
                     errores.Add($"Orden: {ordenFila}. La cuenta de mayor no es válida");
                 }

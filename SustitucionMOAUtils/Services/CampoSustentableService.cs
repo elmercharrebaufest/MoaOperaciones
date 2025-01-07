@@ -588,7 +588,7 @@ namespace SustitucionMOAUtils.Services
             SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
 
             campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
-            if (campoCosecha == null) { return result; }
+            if (campoCosecha == null || campoCosecha.CamposProveedor == null) { return result; }
 
             result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
 
@@ -662,13 +662,19 @@ namespace SustitucionMOAUtils.Services
                 {
                     if (!renspaExisteDto.MismoCuit)
                     {
+                        Log.Info($"Se agrega para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} al proveedor CUIT {campoProveedor.CUIT}");
                         var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == campoProveedor.CUIT);
                         campoCosechaExistente.Proveedores.Add(proveedor);
                         repositorio.GuardarCambios();
                     }
+                    else
+                    {
+                        Log.Info($"No se guarda el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} porque ya existe para el mismo CUIT");
+                    }
                 }
                 else
                 {
+                    Log.Info($"Se guarda para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa}");
                     ValidarCampo(campoProveedor, null);
 
                     var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
@@ -805,6 +811,7 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarCampoACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
         {
+            Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
             var archivoCampoSustentable = new ArchivoCampoSustentable
             {
                 CampoCosechaId = campoProveedor.CampoCosecha_Id,

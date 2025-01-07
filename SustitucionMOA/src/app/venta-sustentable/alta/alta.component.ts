@@ -37,6 +37,7 @@ export interface DatosCopiar {
     Archivo_Id: number;
     Proveedor_Id: number;
     CodigoProveedor: string;
+    Renspa: string;
     error?: string;
     info?: string;
     logout?: boolean;
@@ -113,6 +114,7 @@ export class AltaComponent extends BaseComponent implements OnInit {
     campoCosechaId: any;
     CodigoProveedorEdit: string = "";
     campoProveedorE: any;
+    localidadPreseleccionada: { IdLocalidad: number, NombreLocalidad: string };
 
     proveedores: VendedorProveedor[] = [];
     proveedorSeleccionado: VendedorProveedor;
@@ -178,9 +180,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
                     } else {
                         this.campoProveedorE = result;
                         this.nombreEstablecimiento = result.NombreCampo;
+                        this.localidadId = result.Localidad_Id;
+                        this.localidadPreseleccionada = { IdLocalidad: result.Localidad_Id, NombreLocalidad: result.LocalidadNombre };
+                        this.renspa = result.Renspa;
                         this.hectareasTotales = result.HectareasTotales;
                         this.hectareasSoja = result.HectareasSoja;
-                        this.localidadId = result.Localidad_Id;
 
                         this.latitud = result.Latitud;
                         this.longitud = result.Longitud;
@@ -642,10 +646,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias).subscribe(
             (result) => {
                 this.blockUI.stop();
-                this.mensajeComponent.setSuccessMsg("Los campos se han guardado correctamente");
-                setTimeout(() => {
-                    this.redirigirAListado();
-                }, 3000);
+                let mensajeOk = this.manejarErroresApiResponse(result);
+                if (mensajeOk) {
+                    this.mensajeComponent.setSuccessMsg(mensajeOk);
+                    setTimeout(() => {
+                        this.redirigirAListado();
+                    }, 3000);
+                }
             },
             error => {
                 this.blockUI.stop();

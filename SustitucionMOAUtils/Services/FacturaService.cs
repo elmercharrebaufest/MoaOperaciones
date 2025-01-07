@@ -44,7 +44,7 @@ namespace SustitucionMOAUtils.Services
         {
             Log.Info("files: " + files.Count);
             if (files == null || !files.Any())
-                throw new ValidationCustomException("No files provided.");
+                throw new ValidationCustomException("No se adjunto ningun archivo.");
 
             List<ValidationResult> results = new List<ValidationResult>();
             List<ValidationResult> resultadoOcrs = new List<ValidationResult>();
@@ -213,7 +213,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
                 {
-                    result.Add(new ValidationResult(false, "La orden de compra no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    result.Add(new ValidationResult(false, $"La orden de compra {OrdenDeCompraEncontrada.Value} no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value));
                     return result;
                 }
 
@@ -222,6 +222,36 @@ namespace SustitucionMOAUtils.Services
             result.Add(new ValidationResult(true, "El documento se envió a para su análisis.", "OCR", "", ""));
 
             return result;
+        }
+
+        public void EliminarFacturasAntiguas()
+        {
+            try
+            {
+                DateTime fechaLimite = DateTime.Now.AddDays(-60);
+                var resultadosOcr = repositorio.Listar<ResultadoOcr>(a => a.FechaAlta <= fechaLimite);
+                var resultadosAnalisisOcr = repositorio.Listar<ResultadoAnalisisOcr>(r => r.FechaAlta <= fechaLimite);
+                var archivosAntiguosIds = resultadosOcr.Select(a => a.Archivo_Id).ToList();
+                archivosAntiguosIds.AddRange(resultadosAnalisisOcr.Select(a => a.Archivo_Id).ToList());
+                archivosAntiguosIds = archivosAntiguosIds.Distinct().ToList();
+                var archivosAntiguos = repositorio.Listar<Archivo>(a => archivosAntiguosIds.Contains(a.Id));
+
+                foreach (var archivo in archivosAntiguos)
+                {
+                    if (File.Exists(archivo.Ruta))
+                    {
+                        File.Delete(archivo.Ruta);
+                    }
+                }
+                repositorio.RemoverTodos(resultadosOcr);
+                repositorio.RemoverTodos(resultadosAnalisisOcr);
+                repositorio.RemoverTodos(archivosAntiguos);
+                repositorio.GuardarCambios();
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error al eliminar facturas antiguas", e);
+            }
         }
     }
 }

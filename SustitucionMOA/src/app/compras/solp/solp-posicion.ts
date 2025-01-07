@@ -14,6 +14,8 @@ export class SolpPosicion {
     public tipoPosicion: any;
     public concluido: boolean;
 
+    // public TipoImputacion: { Id: number, Codigo: string, Descripcion: string };
+
     public valorTotal: number;
     public valorNeto: number;
 

@@ -78,14 +78,15 @@ namespace SustitucionMOARepositorio.Repositorios
             var camposSugerencia = (
                 from campoProveedor in Set<CampoProveedor>()
                 join campoProvPresentado in Set<CampoProveedor>() on
-                    new { campoProveedor.CampoCosecha.Campo.Renspa, cosechaId = nuevaCosechaId } equals
-                    new { campoProvPresentado.CampoCosecha.Campo.Renspa, cosechaId = campoProvPresentado.CampoCosecha.Cosecha_Id } into campoPresentadoGroup
+                    new { campoProveedor.CampoCosecha.Campo.Renspa, CosechaId = nuevaCosechaId, Borrado = false } equals
+                    new { campoProvPresentado.CampoCosecha.Campo.Renspa, CosechaId = campoProvPresentado.CampoCosecha.Cosecha_Id, campoProvPresentado.Borrado } into campoPresentadoGroup
                 from campoPresentado in campoPresentadoGroup.DefaultIfEmpty()
                 where
                     campoProveedor.Proveedor_Id == proveedorId &&
                     campoProveedor.CUIT == cuitTitularCP &&
                     campoProveedor.CampoCosecha.Cosecha_Id == cosechaAnteriorId &&
-                    campoProveedor.CampoCosecha.ToneladasAprobadas > 0
+                    campoProveedor.CampoCosecha.ToneladasAprobadas > 0 &&
+                    !campoProveedor.Borrado
                 select new SugerenciaCampoDto
                 {
                     NombreCosecha = campoProveedor.CampoCosecha.Cosecha.Nombre,

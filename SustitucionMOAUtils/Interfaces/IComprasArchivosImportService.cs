@@ -1,8 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using System.Collections.Generic;
 using System.Web;
-using System.Windows.Documents;
 
 namespace SustitucionMOAUtils.Interfaces
 {
