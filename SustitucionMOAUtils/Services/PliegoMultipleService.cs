@@ -35,7 +35,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<SolpDto> GetSolpDisponiblesPliegosMultiple()
+        public List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp)
         {
             IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
@@ -52,9 +52,15 @@ namespace SustitucionMOAUtils.Services
                     )
                 ;
 
+            if (!string.IsNullOrWhiteSpace(numeroSolp))
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.NroSolp.Contains(numeroSolp));
+            }
+
             return consultaSolp
-                .ToList()
-                .ConvertAll(solp => (SolpDto)solp);
+            .ToList()
+            .ConvertAll(solp => (SolpDto)solp);
         }
     }
 }

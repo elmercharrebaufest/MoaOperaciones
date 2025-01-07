@@ -7,6 +7,6 @@ namespace SustitucionMOAUtils.Interfaces
     {
         List<PliegoDto> GetPliegosMultiples(string nombrePliego);
 
-        List<SolpDto> GetSolpDisponiblesPliegosMultiple();
+        List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp);
     }
 }

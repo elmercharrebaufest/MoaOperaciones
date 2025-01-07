@@ -22,6 +22,9 @@ export class PliegoMultipleService extends BaseService {
 
     public getSolpDisponiblesPliegosMultiple(numeroSolp: string, fechaInicio: string, fechaFin: string, creador: string, fiscal: string, sap: boolean, mantenimiento: boolean): Observable<SolpDto[]> {
         let params: HttpParams = new HttpParams();
+        if (numeroSolp) {
+            params = params.set('numeroSolp', numeroSolp);
+        }
 
         return this.http
             .get<SolpDto[]>('/api/PliegoMultiple/GetSolpDisponiblesPliegosMultiple', { params: params, headers: this.headers });

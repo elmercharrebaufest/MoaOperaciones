@@ -21,9 +21,9 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetSolpDisponiblesPliegosMultiple()
+        public JsonResult GetSolpDisponiblesPliegosMultiple(string numeroSolp)
         {
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple());
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp));
         }
     }
 }
