@@ -239,7 +239,7 @@ namespace SustitucionMOAWS.WSConsumers
                 IM_POITEM.QUANTITY = esPosicionDeMateriales ? nuevaCantidad : 0;
                 IM_POITEM.QUANTITYSpecified = esPosicionDeMateriales;
                 IM_POITEM.PO_UNIT = unidadDeMedida;
-                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : CalcularPrecioBrutoServicio(adjudicacionPosicion, adjudicacion);
+                IM_POITEM.NET_PRICE = esPosicionDeMateriales ? precioConvertido : adjudicacionPosicion.Monto.Value;
                 IM_POITEM.NET_PRICESpecified = true;
                 IM_POITEM.PRICE_UNIT = 1;
                 IM_POITEM.PRICE_UNITSpecified = true;
@@ -430,7 +430,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Comercial == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).UM;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
+                        subposicionSap.GR_PRICE = subposicion.PrecioBruto.Value;
                         subposicionSap.GR_PRICESpecified = true;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
@@ -628,27 +628,6 @@ namespace SustitucionMOAWS.WSConsumers
         {
             return esPosicionDeMateriales ? (posicion.CuentaMayorSap?.Codigo ?? "") : posicion.Subposiciones.FirstOrDefault()?.CuentaMayorSap?.Codigo ?? "";
         }
-
-        private decimal CalcularPrecioBrutoServicio(AdjudicacionPosicion adjudicacionPosicion, Adjudicacion adjudicacion)
-        {
-            decimal total = 0;
-            var fecha = DateTime.Now;
-            decimal tipoDeCambio = 1;
-            var moneda = adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones.First().Moneda.Codigo;
-
-            if (moneda != adjudicacion.Moneda.Codigo)
-            {
-                tipoDeCambio = obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, moneda).TipoCambio;
-            }
-
-            foreach (var item in adjudicacionPosicion.CotizacionPosicion.CotizacionSubPosiciones)
-            {
-                total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
-            }
-
-            return total;
-        }
-
     }
 
     public class CrearPedidoConsumerMOAResponse
