@@ -34,5 +34,27 @@ namespace SustitucionMOAUtils.Services
                     .ConvertAll(pliego => (PliegoDto)pliego);
             }
         }
+
+        public List<SolpDto> GetSolpDisponiblesPliegosMultiple()
+        {
+            IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
+            IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
+            IEnumerable<string> tiposPosicionSolpValidos = new HashSet<string> { "SERVICIO", "MATERIALES" };
+
+            IQueryable<Solp> consultaSolp = repositorio
+                .ListarConsultable<Solp>(solpQuery =>
+                    codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
+                    && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
+                    && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
+                    && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true)
+                    && !solpQuery.Pliego.Multiple
+                    && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
+                    )
+                ;
+
+            return consultaSolp
+                .ToList()
+                .ConvertAll(solp => (SolpDto)solp);
+        }
     }
 }
