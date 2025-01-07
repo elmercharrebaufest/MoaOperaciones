@@ -646,10 +646,13 @@ export class AltaComponent extends BaseComponent implements OnInit {
         this.service.guardarSugerenciasCamposNuevaCosecha(camposAGuardar, this.archivosNuevosSugerencias).subscribe(
             (result) => {
                 this.blockUI.stop();
-                this.mensajeComponent.setSuccessMsg("Los campos se han guardado correctamente");
-                setTimeout(() => {
-                    this.redirigirAListado();
-                }, 3000);
+                let mensajeOk = this.manejarErroresApiResponse(result);
+                if (mensajeOk) {
+                    this.mensajeComponent.setSuccessMsg(mensajeOk);
+                    setTimeout(() => {
+                        this.redirigirAListado();
+                    }, 3000);
+                }
             },
             error => {
                 this.blockUI.stop();

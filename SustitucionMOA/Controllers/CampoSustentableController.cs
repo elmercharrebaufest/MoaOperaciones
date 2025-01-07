@@ -166,7 +166,7 @@ namespace SustitucionMOA.Controllers
             var campos = JsonConvert.DeserializeObject<List<SugerenciaCampoDto>>(camposJson);
             var mailUsuario = SessionPersister.User.username;
             campoSustentableService.AgregarCamposSugeridos(campos, archivosKmz, mailUsuario);
-            return ContentCustom(null);
+            return ContentCustom(new SustitucionMOAApiResponse<string> { Data = "Los campos se han guardado correctamente" });
         }
     }
 }
