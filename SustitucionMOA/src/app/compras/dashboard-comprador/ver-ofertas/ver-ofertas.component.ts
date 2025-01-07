@@ -431,6 +431,9 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.adjudicacion.PeticionDeOferta_Id = this.tablaOfertas.Id;
             this.adjudicacion.EsMonedaProveedor = this.generarOC;
             this.adjudicacion.TextoDeCabecera = this.sanitizeInput(this.adjudicacion.TextoDeCabecera);
+            this.adjudicacion.Garantias = this.sanitizeInput(this.adjudicacion.Garantias);
+            this.adjudicacion.CondicionesDeEntrega = this.sanitizeInput(this.adjudicacion.CondicionesDeEntrega);
+            this.adjudicacion.CondicionesDePago = this.sanitizeInput(this.adjudicacion.CondicionesDePago);
 
             this.service.ValidarPrecioCotizado(this.adjudicacion).subscribe(
                 (result) => {
