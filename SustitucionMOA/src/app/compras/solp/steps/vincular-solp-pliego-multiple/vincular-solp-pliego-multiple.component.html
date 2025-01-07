@@ -37,7 +37,7 @@
 
 <div class="content-wraper rounded shadow">
     <section class="container-fluid clearfix">
-        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
+        <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solps" dataKey="Id" [autoLayout]="true">
             <ng-template pTemplate="header" let-columns>
                 <tr>
                     <th class="columna">Vincular</th>
@@ -62,7 +62,7 @@
                                  style="width: 30px; height: 30px; cursor:default" />
                         </span>
                     </td>
-                    <td>{{ solp.NroSolp }}</td>
+                    <td>{{ solp.NumeroSolp }}</td>
                     <td>{{ solp.NombreSolp }}</td>
                     <td>{{ solp.FechaCreacion | customDateFormat | date :'d/M/yyyy' }}</td>
                     <td>{{ solp.Creador }}</td>
