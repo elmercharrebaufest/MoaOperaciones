@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { PliegoMultipleService } from '../../../pliegoMultiple.service';
+import { SolpDto } from './solpDto.interface';
 
 @Component({
     selector: 'vincular-solp-pliego-multiple',
@@ -16,9 +18,9 @@ export class VincularSolpPliegoMultipleComponent
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;
 
-    public creador: string[];
+    public creador: string;
 
-    public fiscal: string[];
+    public fiscal: string;
 
     public sap: boolean;
 
@@ -27,7 +29,9 @@ export class VincularSolpPliegoMultipleComponent
     private debouncer: Subject<void> = new Subject<void>();
     private debouncerSubscription?: Subscription;
 
-    constructor() { }
+    public solps: SolpDto[];
+
+    constructor(protected service: PliegoMultipleService) { }
 
     ngOnInit() {
         this.debouncerSubscription = this.debouncer
@@ -49,7 +53,11 @@ export class VincularSolpPliegoMultipleComponent
     }
 
     public getSolps() {
-        console.log({act: "search here", nroSolp:this.numeroSolp, fecha:this.filtroFechaComponent});
+        console.log({ act: "search here", nroSolp: this.numeroSolp, fecha: this.filtroFechaComponent });
+        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento)
+            .subscribe((solps: SolpDto[]) => {
+                this.solps = solps;
+            });
     }
 
 }
