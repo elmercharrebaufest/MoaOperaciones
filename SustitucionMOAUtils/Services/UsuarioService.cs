@@ -664,6 +664,12 @@ namespace SustitucionMOAUtils.Services
             }).GroupBy(x => x.Id);
         }
 
+        public IEnumerable<string> ListarFiscalesSolp()
+        {
+            return repositorio.Listar<Pliego, string>(x => x.Email, _ => true)
+                .Distinct();
+        }
+
         public List<DestinatarioDto> ObtenerDestinatariosConsulta(int proveedorId)
         {
             var proveedor = this.repositorio.Obtener<Proveedor>(p => p.Id == proveedorId);
