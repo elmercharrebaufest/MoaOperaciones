@@ -1,6 +1,8 @@
 ﻿using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -30,7 +32,15 @@ namespace SustitucionMOA.Controllers
                                                             bool sap = false,
                                                             bool mantenimiento = false)
         {
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creador, fiscal, sap, mantenimiento));
+            IEnumerable<int> creadorList = string.IsNullOrWhiteSpace(creador)
+                ? Enumerable.Empty<int>()
+                : creador.Split(',').Select(x => int.Parse(x));
+
+            IEnumerable<int> fiscalList = string.IsNullOrWhiteSpace(fiscal)
+                ? Enumerable.Empty<int>()
+                : fiscal.Split(',').Select(x => int.Parse(x));
+
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento));
         }
     }
 }
