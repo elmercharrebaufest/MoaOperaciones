@@ -41,7 +41,7 @@ namespace SustitucionMOAUtils.Services
                                                                DateTime? fechaInicio,
                                                                DateTime? fechaFin,
                                                                IEnumerable<int> creador,
-                                                               IEnumerable<int> fiscal,
+                                                               IEnumerable<string> fiscal,
                                                                bool sap,
                                                                bool mantenimiento)
         {
@@ -84,11 +84,11 @@ namespace SustitucionMOAUtils.Services
                     .Where(solp => solp.UsuarioCreacion_Id != null && creador.Contains(solp.UsuarioCreacion_Id.Value));
             }
 
-            //if (fiscal.Any())
-            //{
-            //    consultaSolp = consultaSolp
-            //        .Where(solp => solp.Pliego != null && solp.Pliego.FiscalContrato != null &&   fiscal.Contains(solp.Pliego.FiscalContrato));
-            //}
+            if (fiscal.Any())
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.Pliego != null && solp.Pliego.Email != null && fiscal.Contains(solp.Pliego.Email));
+            }
 
             if (sap && mantenimiento)
             {

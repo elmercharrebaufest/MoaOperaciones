@@ -12,7 +12,7 @@ namespace SustitucionMOAUtils.Interfaces
                                                         DateTime? fechaInicio,
                                                         DateTime? fechaFin,
                                                         IEnumerable<int> creador,
-                                                        IEnumerable<int> fiscal,
+                                                        IEnumerable<string> fiscal,
                                                         bool sap,
                                                         bool mantenimiento);
     }
