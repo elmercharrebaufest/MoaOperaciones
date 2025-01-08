@@ -30,8 +30,8 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
                 NumeroSolp = solp.NroSolp,
                 NombreSolp = solp.Pliego?.NombreObra,
                 FechaCreacion = solp.FechaCreacion,
-                Creador = solp.UsuarioCreacion?.ObtenerRazonSocial(),
-                Fiscal = solp.Pliego?.FiscalContrato,
+                Creador = solp.UsuarioCreacion.Mail,
+                Fiscal = solp.Pliego?.Email,
                 Estado = solp.EstadoSolpSap?.Descripcion,
             };
         }
