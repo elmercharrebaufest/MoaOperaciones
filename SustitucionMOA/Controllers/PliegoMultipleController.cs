@@ -36,9 +36,9 @@ namespace SustitucionMOA.Controllers
                 ? Enumerable.Empty<int>()
                 : creador.Split(',').Select(x => int.Parse(x));
 
-            IEnumerable<int> fiscalList = string.IsNullOrWhiteSpace(fiscal)
-                ? Enumerable.Empty<int>()
-                : fiscal.Split(',').Select(x => int.Parse(x));
+            IEnumerable<string> fiscalList = string.IsNullOrWhiteSpace(fiscal)
+                ? Enumerable.Empty<string>()
+                : fiscal.Split(',');
 
             return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento));
         }
