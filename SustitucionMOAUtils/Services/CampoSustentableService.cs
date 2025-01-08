@@ -587,12 +587,15 @@ namespace SustitucionMOAUtils.Services
         {
             SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
 
-            campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
+            campoCosecha = repositorio.Obtener<CampoCosecha>(
+                new List<Expression<Func<CampoCosecha, object>>> { c => c.CamposProveedor },
+                c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
+            
             if (campoCosecha == null || campoCosecha.CamposProveedor == null) { return result; }
 
             result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
 
-            if (campoCosecha.Proveedores.Any(proveedor => proveedor.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
+            if (campoCosecha.CamposProveedor.Any(campoProv => campoProv.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
             {
                 result.MismoCuit = true;
             }
