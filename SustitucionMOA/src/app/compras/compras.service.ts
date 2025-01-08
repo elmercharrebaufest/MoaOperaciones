@@ -1254,6 +1254,12 @@ export class ComprasService extends BaseService {
         });
     }
 
+    public listarFiscalesSolp(): Observable<any> {
+        return this.http.get("/api/compras/ListarFiscalesSolp", {
+            headers: this.headers,
+        });
+    }
+
     public ModificarAdjudicacion(adjudicacion: AdjudicacionEdicionDto) {
         let json = JSON.stringify(adjudicacion);
         var payload = new FormData();
