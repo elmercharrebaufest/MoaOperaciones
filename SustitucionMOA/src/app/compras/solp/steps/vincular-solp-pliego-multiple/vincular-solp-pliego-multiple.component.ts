@@ -5,6 +5,8 @@ import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha
 import { PliegoMultipleService } from '../../../pliegoMultiple.service';
 import { SolpDto } from './solpDto.interface';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ComprasService } from '../../../compras.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'vincular-solp-pliego-multiple',
@@ -20,6 +22,7 @@ export class VincularSolpPliegoMultipleComponent
     protected filtroFechaComponent: FiltroFechaComponent;
 
     public creador: string;
+    public creadores: SelectItem[] = [];
 
     public fiscal: string;
 
@@ -34,9 +37,26 @@ export class VincularSolpPliegoMultipleComponent
 
     public solps: SolpDto[];
 
-    constructor(protected service: PliegoMultipleService) { }
+    constructor(protected service: PliegoMultipleService, protected comprasService: ComprasService) { }
 
     ngOnInit() {
+        this.comprasService.listarUsuarioCreadorSolp().subscribe((result: any) => {
+            result.data.forEach(x =>
+                x.filter((d: { Id: number; }) => d.Id !== 0)
+                    .forEach((d: { Id: number; Mail: string; }) => this.creadores.push({
+                        label: d.Id === 0 ? "" : d.Mail, value: d.Id
+                    }))
+            );
+            //result.data.forEach(x => x.forEach(d => this.creadores.push({
+            //    label: d.Id === 0 ? "" : d.Mail, value: d.Id
+            //})));
+        })
+
+
+        this.createDebouncerAndSubscribe();
+    }
+
+    private createDebouncerAndSubscribe() {
         this.debouncerSubscription = this.debouncer
             .pipe(
                 debounceTime(500)
