@@ -113,8 +113,9 @@ namespace SustitucionMOAUtils.Services
             }
 
             return consultaSolp
-            .ToList()
-            .ConvertAll(solp => (SolpDto)solp);
+                .OrderByDescending(solp => solp.FechaCreacion)
+                .ToList()
+                .ConvertAll(solp => (SolpDto)solp);
         }
     }
 }
