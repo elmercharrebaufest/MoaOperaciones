@@ -74,8 +74,10 @@ namespace SustitucionMOAUtils.Services
 
             if (!(fechaFin is null))
             {
+                DateTime ff = new DateTime(fechaFin.Value.Year, fechaFin.Value.Month, fechaFin.Value.Day, 23, 59, 59, 999, fechaFin.Value.Kind);
+
                 consultaSolp = consultaSolp
-                    .Where(solp => solp.FechaCreacion <= fechaFin);
+                    .Where(solp => solp.FechaCreacion <= ff);
             }
 
             if (creador?.Any() == true)
