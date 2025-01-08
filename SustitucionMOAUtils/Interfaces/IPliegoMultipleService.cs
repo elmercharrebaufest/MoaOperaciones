@@ -11,8 +11,8 @@ namespace SustitucionMOAUtils.Interfaces
         List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
                                                         DateTime? fechaInicio,
                                                         DateTime? fechaFin,
-                                                        string creador,
-                                                        string fiscal,
+                                                        IEnumerable<int> creador,
+                                                        IEnumerable<int> fiscal,
                                                         bool sap,
                                                         bool mantenimiento);
     }

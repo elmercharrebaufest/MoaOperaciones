@@ -40,8 +40,8 @@ namespace SustitucionMOAUtils.Services
         public List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
                                                                DateTime? fechaInicio,
                                                                DateTime? fechaFin,
-                                                               string creador,
-                                                               string fiscal,
+                                                               IEnumerable<int> creador,
+                                                               IEnumerable<int> fiscal,
                                                                bool sap,
                                                                bool mantenimiento)
         {
@@ -78,18 +78,17 @@ namespace SustitucionMOAUtils.Services
                     .Where(solp => solp.FechaCreacion <= fechaFin);
             }
 
-            if (!string.IsNullOrWhiteSpace(creador))
+            if (creador?.Any() == true)
             {
                 consultaSolp = consultaSolp
-                    .Where(solp => solp.UsuarioCreacion.ObtenerRazonSocial().Contains(creador));
+                    .Where(solp => solp.UsuarioCreacion_Id != null && creador.Contains(solp.UsuarioCreacion_Id.Value));
             }
 
-            if (!string.IsNullOrWhiteSpace(fiscal))
-            {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.Pliego.FiscalContrato.Contains(fiscal));
-            }
-
+            //if (fiscal.Any())
+            //{
+            //    consultaSolp = consultaSolp
+            //        .Where(solp => solp.Pliego != null && solp.Pliego.FiscalContrato != null &&   fiscal.Contains(solp.Pliego.FiscalContrato));
+            //}
 
             if (sap && mantenimiento)
             {
