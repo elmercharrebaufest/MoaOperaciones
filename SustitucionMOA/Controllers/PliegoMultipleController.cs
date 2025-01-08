@@ -1,5 +1,6 @@
 ﻿using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
@@ -21,9 +22,15 @@ namespace SustitucionMOA.Controllers
         }
 
         [HttpGet]
-        public JsonResult GetSolpDisponiblesPliegosMultiple(string numeroSolp)
+        public JsonResult GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                            DateTime? fechaInicio,
+                                                            DateTime? fechaFin,
+                                                            string creador,
+                                                            string fiscal,
+                                                            bool sap = false,
+                                                            bool mantenimiento = false)
         {
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp));
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creador, fiscal, sap, mantenimiento));
         }
     }
 }
