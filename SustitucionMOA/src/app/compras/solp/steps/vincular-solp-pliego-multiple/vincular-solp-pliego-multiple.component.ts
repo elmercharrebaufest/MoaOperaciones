@@ -25,6 +25,7 @@ export class VincularSolpPliegoMultipleComponent
     public creadores: SelectItem[] = [];
 
     public fiscal: string;
+    public fiscales: SelectItem[] = [];
 
     public sap: boolean;
 
@@ -40,18 +41,7 @@ export class VincularSolpPliegoMultipleComponent
     constructor(protected service: PliegoMultipleService, protected comprasService: ComprasService) { }
 
     ngOnInit() {
-        this.comprasService.listarUsuarioCreadorSolp().subscribe((result: any) => {
-            result.data.forEach(x =>
-                x.filter((d: { Id: number; }) => d.Id !== 0)
-                    .forEach((d: { Id: number; Mail: string; }) => this.creadores.push({
-                        label: d.Id === 0 ? "" : d.Mail, value: d.Id
-                    }))
-            );
-            //result.data.forEach(x => x.forEach(d => this.creadores.push({
-            //    label: d.Id === 0 ? "" : d.Mail, value: d.Id
-            //})));
-        })
-
+        this.cargarFiltrosUsuario();
 
         this.createDebouncerAndSubscribe();
     }
@@ -65,6 +55,23 @@ export class VincularSolpPliegoMultipleComponent
                 this.getSolps();
             });
         this.debouncer.next(); // launch first search
+    }
+
+    private cargarFiltrosUsuario() {
+        this.comprasService.listarUsuarioCreadorSolp().subscribe((result: any) => {
+            result.data.forEach(x =>
+                x.filter((d: { Id: number; }) => d.Id !== 0)
+                    .forEach((d: { Id: number; Mail: string; }) => this.creadores.push({
+                        label: d.Mail, value: d.Id
+                    }))
+            );
+        });
+
+        this.comprasService.listarFiscalesSolp().subscribe((result: any) => {
+            result.data.forEach((x: string) => this.fiscales.push({
+                label: x, value: x
+            }));
+        });
     }
 
     ngOnDestroy() {
