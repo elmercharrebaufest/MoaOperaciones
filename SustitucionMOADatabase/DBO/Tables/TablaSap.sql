@@ -2,8 +2,8 @@
 (
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[Tabla] [nvarchar](400) NOT NULL, -- se limita el tamaño para permitir la creación de índice (https://learn.microsoft.com/en-us/sql/sql-server/maximum-capacity-specifications-for-sql-server)
-	[Codigo] [nvarchar](max) NULL,
-	[CodigoSap] [nvarchar](max) NULL,
+	[Codigo] [nvarchar](400) NULL,
+	[CodigoSap] [nvarchar](400) NULL,
 	[Descripcion] [nvarchar](max) NULL,
 	[Padre_id] [int] NULL,
 	[FiltroComprador] BIT NULL, 
@@ -18,5 +18,13 @@
 GO
 
 CREATE NONCLUSTERED INDEX [IX_TablaSap_Tabla] ON [dbo].[TablaSap](Tabla)
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_TablaSap_Codigo] ON [dbo].[TablaSap](Codigo) INCLUDE ([id])
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_TablaSap_CodigoSap] ON [dbo].[TablaSap](CodigoSap) INCLUDE ([id])
 
 GO

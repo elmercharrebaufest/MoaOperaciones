@@ -1,15 +1,102 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { PliegoMultipleService } from '../../../pliegoMultiple.service';
+import { SolpDto } from './solpDto.interface';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ComprasService } from '../../../compras.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'vincular-solp-pliego-multiple',
-  templateUrl: './vincular-solp-pliego-multiple.component.html',
-  styleUrls: ['./vincular-solp-pliego-multiple.component.css']
+    selector: 'vincular-solp-pliego-multiple',
+    templateUrl: './vincular-solp-pliego-multiple.component.html',
+    styleUrls: ['./vincular-solp-pliego-multiple.component.css']
 })
-export class VincularSolpPliegoMultipleComponent implements OnInit {
+export class VincularSolpPliegoMultipleComponent
+    implements OnInit, OnDestroy {
 
-  constructor() { }
+    public numeroSolp: string;
 
-  ngOnInit() {
-  }
+    @ViewChild(FiltroFechaComponent)
+    protected filtroFechaComponent: FiltroFechaComponent;
+
+    public creador: string;
+    public creadores: SelectItem[] = [];
+
+    public fiscal: string;
+    public fiscales: SelectItem[] = [];
+
+    public sap: boolean;
+
+    public mantenimiento: boolean;
+
+    private debouncer: Subject<void> = new Subject<void>();
+    private debouncerSubscription?: Subscription;
+
+    @BlockUI() blockUI: NgBlockUI;
+
+    public solps: SolpDto[];
+
+    constructor(protected service: PliegoMultipleService, protected comprasService: ComprasService) { }
+
+    ngOnInit() {
+        this.cargarFiltrosUsuario();
+
+        this.createDebouncerAndSubscribe();
+    }
+
+    private createDebouncerAndSubscribe() {
+        this.debouncerSubscription = this.debouncer
+            .pipe(
+                debounceTime(500)
+            )
+            .subscribe(value => {
+                this.getSolps();
+            });
+        this.debouncer.next(); // launch first search
+    }
+
+    private cargarFiltrosUsuario() {
+        this.comprasService.listarUsuarioCreadorSolp().subscribe((result: any) => {
+            result.data.forEach(x =>
+                x.filter((d: { Id: number; }) => d.Id !== 0)
+                    .forEach((d: { Id: number; Mail: string; }) => this.creadores.push({
+                        label: d.Mail, value: d.Id
+                    }))
+            );
+        });
+
+        this.comprasService.listarFiscalesSolp().subscribe((result: any) => {
+            result.data.forEach((x: string) => this.fiscales.push({
+                label: x, value: x
+            }));
+        });
+    }
+
+    ngOnDestroy() {
+        if (this.debouncerSubscription) { this.debouncerSubscription.unsubscribe(); }
+    }
+
+    public searchParametersChanged() {
+        this.debouncer.next();
+    }
+
+    public getSolps() {
+        console.log({ act: "search here", nroSolp: this.numeroSolp, fecha: this.filtroFechaComponent });
+
+        this.blockUI.start("Cargando");
+
+        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento)
+            .subscribe(
+                (solps: SolpDto[]) => {
+                    this.solps = solps;
+                    this.blockUI.stop();
+                },
+                () => {
+                    this.blockUI.stop();
+                }
+            );
+    }
 
 }

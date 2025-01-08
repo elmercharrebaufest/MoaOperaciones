@@ -1516,6 +1516,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\sub-posicion-view-model.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\solpDto.interface.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\vincular-solp-pliego-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
     <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.spec.ts" />

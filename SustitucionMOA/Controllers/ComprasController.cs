@@ -767,6 +767,12 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
         }
 
+        [HttpGet]
+        public ActionResult ListarFiscalesSolp()
+        {
+            return JsonCustom(new { data = usuarioService.ListarFiscalesSolp() });
+        }
+
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
