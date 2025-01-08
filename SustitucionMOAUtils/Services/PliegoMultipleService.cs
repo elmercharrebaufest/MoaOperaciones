@@ -1,7 +1,9 @@
 ﻿using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,7 +37,13 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp)
+        public List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                               DateTime? fechaInicio,
+                                                               DateTime? fechaFin,
+                                                               string creador,
+                                                               string fiscal,
+                                                               bool sap,
+                                                               bool mantenimiento)
         {
             IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
@@ -56,6 +64,51 @@ namespace SustitucionMOAUtils.Services
             {
                 consultaSolp = consultaSolp
                     .Where(solp => solp.NroSolp.Contains(numeroSolp));
+            }
+
+            if (!(fechaInicio is null))
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.FechaCreacion >= fechaInicio);
+            }
+
+            if (!(fechaFin is null))
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.FechaCreacion <= fechaFin);
+            }
+
+            if (!string.IsNullOrWhiteSpace(creador))
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.UsuarioCreacion.ObtenerRazonSocial().Contains(creador));
+            }
+
+            if (!string.IsNullOrWhiteSpace(fiscal))
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.Pliego.FiscalContrato.Contains(fiscal));
+            }
+
+
+            if (sap && mantenimiento)
+            {
+                consultaSolp = consultaSolp
+                    .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento);
+            }
+            else
+            {
+                if (sap)
+                {
+                    consultaSolp = consultaSolp
+                        .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Sap);
+                }
+
+                if (mantenimiento)
+                {
+                    consultaSolp = consultaSolp
+                        .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento);
+                }
             }
 
             return consultaSolp
