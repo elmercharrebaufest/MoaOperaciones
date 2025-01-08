@@ -6398,19 +6398,16 @@ namespace SustitucionMOAUtils.Services
         {
             decimal total = 0;
             var fecha = DateTime.Now;
-            decimal tipoDeCambio = 1;
-            var moneda = cotizacionSubposiciones.FirstOrDefault().Moneda.Codigo;
-
-            if (moneda != monedaCodigo)
-            {
-                tipoDeCambio = tipoCambioService.ObtenerTipoCambio(moneda, monedaCodigo, fecha.ToString("yyyy-MM-dd")).TipoCambio;
-            }
 
             foreach (var item in cotizacionSubposiciones)
             {
+                decimal tipoDeCambio = 1;
+                if (item.Moneda.Codigo != monedaCodigo)
+                {
+                    tipoDeCambio = tipoCambioService.ObtenerTipoCambio(item.Moneda.Codigo, monedaCodigo, fecha.ToString("yyyy-MM-dd")).TipoCambio;
+                }
                 total += item.Cantidad.Value * item.Precio.Value * tipoDeCambio;
             }
-
 
             return total;
         }

@@ -627,9 +627,11 @@ export class AltaComponent extends BaseComponent implements OnInit {
     }
 
     renspaChanged(): void {
-        this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
-            this.renspaExiste = result;
-        });
+        if (this.renspa && this.cosechaId) {
+            this.service.renspaExiste(this.renspa, this.CUIT, this.cosechaId).subscribe((result: RenspaExiste) => {
+                this.renspaExiste = result;
+            });
+        }
     }
 
     cancelarSugerenciaCamposNuevos() {
