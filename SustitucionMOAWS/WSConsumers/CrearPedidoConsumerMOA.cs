@@ -430,7 +430,7 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Comercial == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).UM;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = subposicion.PrecioBruto.Value;
+                        subposicionSap.GR_PRICE = adjudicacionPosicion.Monto.Value;
                         subposicionSap.GR_PRICESpecified = true;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
