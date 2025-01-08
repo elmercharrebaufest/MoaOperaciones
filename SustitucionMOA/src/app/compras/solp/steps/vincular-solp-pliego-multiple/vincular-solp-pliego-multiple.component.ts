@@ -44,7 +44,7 @@ export class VincularSolpPliegoMultipleComponent
             .subscribe(value => {
                 this.getSolps();
             });
-        this.getSolps();
+        this.debouncer.next(); // launch first search
     }
 
     ngOnDestroy() {

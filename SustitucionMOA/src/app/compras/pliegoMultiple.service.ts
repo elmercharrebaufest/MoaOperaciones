@@ -26,6 +26,30 @@ export class PliegoMultipleService extends BaseService {
             params = params.set('numeroSolp', numeroSolp);
         }
 
+        if (fechaInicio) {
+            params = params.set('fechaInicio', fechaInicio);
+        }
+
+        if (fechaFin) {
+            params = params.set('fechaFin', fechaFin);
+        }
+
+        if (creador) {
+            params = params.set('creador', creador);
+        }
+
+        if (fiscal) {
+            params = params.set('fiscal', fiscal);
+        }
+
+        if (sap) {
+            params = params.set('sap', sap.toString());
+        }
+
+        if (mantenimiento) {
+            params = params.set('mantenimiento', mantenimiento.toString());
+        }
+
         return this.http
             .get<SolpDto[]>('/api/PliegoMultiple/GetSolpDisponiblesPliegosMultiple', { params: params, headers: this.headers });
     }
