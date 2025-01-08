@@ -666,7 +666,7 @@ namespace SustitucionMOAUtils.Services
 
         public IEnumerable<string> ListarFiscalesSolp()
         {
-            return repositorio.Listar<Pliego, string>(x => x.Email, _ => true)
+            return repositorio.Listar<Pliego, string>(x => x.Email, x => !string.IsNullOrEmpty(x.Email))
                 .Distinct();
         }
 
