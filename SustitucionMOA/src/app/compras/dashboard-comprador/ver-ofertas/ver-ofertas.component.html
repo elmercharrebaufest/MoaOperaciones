@@ -226,10 +226,13 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="7" class="columna border2-left" style="width: 660px !important;">
-                                <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
+                                <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos && proveedor.VerImportes">
                                     <span><img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarAdjuntosCotizacion(proveedor.Cotizacion.Id)" /></span>
                                 </div>
-                                {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                                </ng-container>
+                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">
@@ -555,10 +558,13 @@
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container *ngIf="proveedor.Cotizacion != null">
                             <td colspan="9" style="width: 540px !important;" class="columna border2-left">
-                                <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos">
+                                <div class="col-md-2" *ngIf="proveedor.Cotizacion.TieneAdjuntos && proveedor.VerImportes">
                                     <span><img style="cursor:pointer;" src="./Content/images/icons/descargar.svg" alt="descargar" (click)="descargarAdjuntosCotizacion(proveedor.Cotizacion.Id)" /></span>
                                 </div>
-                                {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                                <ng-container *ngIf="proveedor.VerImportes">
+                                    {{proveedor.Cotizacion.ObservacionEconomica == null ? '' : proveedor.Cotizacion.ObservacionEconomica}}
+                                </ng-container>
+                                <i *ngIf="!proveedor.VerImportes" class="fa fa-eye-slash noVisible"></i>
                             </td>
                         </ng-container>
                         <ng-container *ngIf="proveedor.Cotizacion == null">

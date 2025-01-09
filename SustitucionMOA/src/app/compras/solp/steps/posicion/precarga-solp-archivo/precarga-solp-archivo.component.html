@@ -1,0 +1,65 @@
+<p-dialog [(visible)]="displayPrecargaSolp"
+        [responsive]="true"
+        [draggable]="false"
+        [modal]="true"
+        appendTo="body"
+        [width]="600"
+        [height]="400"
+        positionTop="30"
+        [contentStyle]="{ 'max-height':'400px', 'min-height':'300px' }">
+    <p-header class="headerModal">
+        <span class="blue" aria-hidden="true">Precargar SOLP desde archivo</span>
+    </p-header>
+    <p-body>
+        <section class="container-fluid">
+            <div class="row myRow" style="padding-top: 2px;">
+                <div class="row" style="margin-bottom: 5px;">
+                    <b>Atención: </b>Si elige cargar las posiciones de un archivo, se eliminarán las posiciones cargadas anteriormente.
+                </div>
+                <!-- <div class="row" style="display:flex; align-items: end;">
+                    
+                </div> -->
+                <div class="row" style="margin: 10px;">
+                    <div class="col-xs-12 col-md-9 ui-fluid">
+                        <label class="m-label">
+                            <b>Cargar archivo</b>
+                        </label>
+                        <input type="file" accept=".xlsx" (change)="onArchivoCargado($event)" placeholder="Cargar archivo">
+                    </div>
+                    <div class="col-xs-12 col-md-3 ui-fluid">
+                        <a href="../../../../../../../Documentacion/TemplatePrecargaSolp.xlsx" target="_blank">
+                            <button class="btn btn-secondary botonesComprasColor">
+                                Descargar template
+                            </button>
+                        </a>
+                    </div>
+                </div>
+                <div *ngIf="listaErrores && listaErrores.length > 0">
+                    <b>Se encontraron errores en el archivo:</b>
+                    <ul>
+                        <li *ngFor="let msjError of listaErrores">
+                            <span style="color: red;">{{msjError}}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div *ngIf="posicionesCargadas && posicionesCargadas.length > 0">
+                    <b>Archivo procesado. {{posicionesCargadas.length == 1 ? 'Se encontró 1 posición para cargar' : 'Se encontraron ' + posicionesCargadas.length + ' posiciones para cargar'}}</b>
+                </div>
+            </div>
+        </section>
+        <div *ngIf="estaProcesando" style="text-align: center; margin-top: 4em;">
+            <i class="pi pi-spin pi-spinner" style="font-size: 3em;"></i>
+        </div>
+    </p-body>
+    <p-footer class="e-footer">
+        <div class="row">
+            <div class="col-md-12 flex-end">
+                <button class="btn btn-danger" (click)="onCancelar()">CANCELAR</button>
+                <button class="btn btn-primary btn-custom-primary" (click)="onGuardarPrecarga()"
+                    [disabled]="(!posicionesCargadas || posicionesCargadas.length == 0) || (listaErrores && listaErrores.length > 0)">
+                PRECARGAR SOLP</button>
+            </div>
+        </div>
+    </p-footer>
+</p-dialog>
+

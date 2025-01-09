@@ -33,7 +33,6 @@ export class FiltroFechaComponent implements OnInit {
 
     ngOnInit() {
         let periodoGeneral = sessionStorage.getItem("periodoGeneral");
-        console.log("periodoGeneral", periodoGeneral);
         this.setPeriodoInitial(periodoGeneral || this.periodoDefault || this.obtenerPeriodo());
         this.dropdownComponent.setSelectItem(this.obtenerPeriodo());
     }

@@ -23,6 +23,7 @@ import { ObtenerContratoMarcoService } from './obtener-contrato-marco/obtener-co
 import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from './obtener-contrato-marco/contrato-marco.model';
 import * as uuid from 'uuid';
 import _ from 'lodash';
+import { SolpPosicionPrecargada } from '../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada';
 
 declare var $: any;
 
@@ -117,7 +118,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     // Texto boton asociar
     textoAsociarBtn = 'ASOCIAR CONTRATO'
 
+    displayPrecargarDesdeArchivo: boolean = false;
+
     tipoPosicion: SelectItem[];
+    tipoSolpId: number;
     tipoImputacion: any[];
     imputacionSeleccionada: any;
 
@@ -1041,6 +1045,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     }
 
     cambiarTipoSolp() {
+        this.tipoSolpId = this.model.selectTipoPosicion.Id;
         if (this.model.selectTipoPosicion) {
             this.model.posiciones.forEach(posicion => {
                 this.model.eliminarPosicion(posicion as SolpPosicion)
@@ -1355,5 +1360,71 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             element.setTabPosicion();
         });
     }
-   
+
+    cargarPosicionesDesdeArchivo(posicionesPrecargadas: SolpPosicionPrecargada[]) {
+        this.displayPrecargarDesdeArchivo = false;
+        let posicionesACargar: SolpPosicion[] = [];
+
+        for (let i = 0; i < posicionesPrecargadas.length; i++) {
+            let posArchivo = posicionesPrecargadas[i];
+            let newPos = new SolpPosicion();
+
+            this.model.posicionActual = newPos;
+
+            let centroEnt = this.centroEntrega.find(x => x.value == posArchivo.CentroId);
+            let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
+            let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == posArchivo.GrupoComprasId);
+            let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
+
+            newPos.numeroPosicion = i + 1;
+            newPos.tipoImputacion = tipoImputacion;
+            
+            newPos.selectCentroEntrega = centroEnt;
+            newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posArchivo.CentroId);
+
+            // this.setupAlmacenEntregaByCentro();
+            //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
+
+            let almacen = newPos.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
+            newPos.selectAlmacenEntrega = almacen;
+
+            newPos.monedaSeleccionada = moneda;
+            newPos.GrupoCompras = grupoCompras;
+            
+            let servicioMaterialObj = {
+                Codigo: posArchivo.Codigo,
+                CodigoSap: posArchivo.Codigo,
+                Descripcion: posArchivo.Tarea,
+                UnidadMedidaBase: posArchivo.Unidad.Codigo
+            };
+
+            newPos.codigoServicio = servicioMaterialObj;
+            newPos.tareaSubcontratar = servicioMaterialObj.Descripcion;
+            newPos.tareaSubcontratarObj = { ...servicioMaterialObj };
+
+            newPos.tipoPosicion = posArchivo.TipoPosicion;
+            newPos.indice = posArchivo.Indice;
+            newPos.fechaEntregaServicio = posArchivo.FechaEntregaServicio;
+            newPos.Cantidad = posArchivo.Cantidad;
+            newPos.cuentaMayor = posArchivo.CuentaMayor;
+
+            posArchivo.Subposiciones.forEach(subposArch => {
+                let newSubpos = newPos.crearSubPosicion();
+                newSubpos.subPosicion = subposArch.Numero;
+                newSubpos.codigoServicio = subposArch.Codigo;
+                newSubpos.tareaSubcontratar = subposArch.Tarea;
+            });
+
+            posicionesACargar.push(newPos);
+        };
+        this.model.posiciones = posicionesACargar;
+    }
+    
+    abrirPrecargaSolpDesdeArchivo() {
+        this.displayPrecargarDesdeArchivo = true;
+    }
+
+    cerrarPrecargaSolpDesdeArchivo() {
+        this.displayPrecargarDesdeArchivo = false;
+    }
 }

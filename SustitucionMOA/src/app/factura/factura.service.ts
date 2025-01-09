@@ -9,10 +9,12 @@ import { BaseService } from './../common/services/BaseService';
 export class FacturaService extends BaseService {
 
     public subirPDF(
-        archivo: any): Observable<any> {
-        var payload = new FormData();
+        archivos: Array<File>): Observable<any> {
+        let payload = new FormData();
         payload.append("factura", "");
-        payload.append("file", archivo);
+        for (const element of archivos) {
+            payload.append("files", element);
+        }
         return this.http
             .post('/api/factura/subirPDF', payload, {headers: this.headersPost});
     }   

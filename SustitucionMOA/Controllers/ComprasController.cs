@@ -3,6 +3,7 @@ using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
+using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOAModel.Enums;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Helpers;
@@ -15,6 +16,7 @@ using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using HttpHelper = System.Web.Http;
 
@@ -23,12 +25,25 @@ namespace SustitucionMOA.Controllers
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;
+        private readonly IComprasSapService comprasSapService;
+        private readonly IComprasSolicitanteService comprasSolicitanteService;
         private readonly IUsuarioService usuarioService;
+        private readonly IAdjudicacionesService adjudicacionesService;
+        private readonly ITablaSapService tablaSapService;
 
-        public ComprasController(IComprasService comprasService, IUsuarioService usuarioService)
+        public ComprasController(IComprasService comprasService,
+                                 IComprasSapService comprasSapService,
+                                 IComprasSolicitanteService comprasSolicitanteService,
+                                 IUsuarioService usuarioService,
+                                 IAdjudicacionesService adjudicacionesService,
+                                 ITablaSapService tablaSapService)
         {
             this.service = comprasService;
+            this.comprasSapService = comprasSapService;
+            this.comprasSolicitanteService = comprasSolicitanteService;
             this.usuarioService = usuarioService;
+            this.adjudicacionesService = adjudicacionesService;
+            this.tablaSapService = tablaSapService;
         }
 
         [ValidateInput(false)]
@@ -64,27 +79,29 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult Combos()
         {
+            var tiposPosicionSolp = service.ObtenerTiposPosicionSolp();
+
             return JsonCustom(new
             {
-                ClaseDocumento = service.ObtenerTablaSap(TablasSap.ClaseDocumento),
-                Centro = service.ObtenerTablaSap(TablasSap.Centro),
+                ClaseDocumento = comprasSapService.ObtenerTablaSap(TablasSap.ClaseDocumento),
+                Centro = service.ObtenerCentros(),
                 CentrosDireccion = service.ObtenerCentrosDireccion(),
-                Almacen = service.ObtenerTablaSap(TablasSap.Almacen),
-                GrupoCompras = service.ObtenerTablaSap(TablasSap.GrupoCompras),
-                GrupoArticulo = service.ObtenerTablaSap(TablasSap.GrupoArticulo),
-                Moneda = service.ObtenerTablaSap(TablasSap.Moneda).Where(a => a.Codigo != "USDM" && a.Codigo != "CLP").ToList(),
-                Unidades = service.ObtenerTablaSap(TablasSap.Unidad),
-                EstadosSolpSap = service.ObtenerTablaSap(TablasSap.EstadoSolpSap),
-                CentroBeneficio = service.ObtenerTablaSap(TablasSap.CentroBeneficio),
+                Almacen = service.ObtenerAlmacenes(),
+                GrupoCompras = service.ObtenerGrupoCompras(),
+                GrupoArticulo = service.ObtenerGrupoArticulos(),
+                Moneda = service.ObtenerMonedas(),
+                Unidades = service.ObtenerUnidades(),
+                EstadosSolpSap = comprasSapService.ObtenerTablaSap(TablasSap.EstadoSolpSap),
+                CentroBeneficio = comprasSapService.ObtenerTablaSap(TablasSap.CentroBeneficio),
                 EstadoDocumento = service.ObtenerTablaEstado(TablasEstado.EstadoDocumento),
-                TipoPosicionSolp = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                TipoPosicion = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp),
-                TipoImputacion = service.ObtenerImputaciones(TablasGenerales.TipoImputacionSolp),
+                TipoPosicionSolp = tiposPosicionSolp,
+                TipoPosicion = tiposPosicionSolp,
+                TipoImputacion = service.ObtenerTiposImputaciones(),
 
                 Usuarios = usuarioService.ListarUsuarioCreadorSolp(),
                 Regiones = service.ListarRegionesSap(),
-                CondicionesDeImportacion = service.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
-                CondicionesDePago = service.ObtenerTablaSap(TablasSap.CondicionesDePago),
+                CondicionesDeImportacion = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDeImportacion),
+                CondicionesDePago = comprasSapService.ObtenerTablaSap(TablasSap.CondicionesDePago),
                 CamposObligatoriosCabeceraSolp = service.ObtenerTablaGeneral(TablasGenerales.CamposObligatoriosCabeceraSolp).Where(x => x.IdPadre.HasValue).Select(x => new
                 {
                     ClaseDocumentoCodigo = x.Padre.Codigo,
@@ -122,7 +139,7 @@ namespace SustitucionMOA.Controllers
             var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : null), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
             return JsonCustom(new
             {
-                data = service.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                data = comprasSolicitanteService.ListarSolp(ObtenerUsuarioActual(), paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
             });
@@ -195,7 +212,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarUsuarioCompras()
         {
-            return JsonCustom(new { data = service.ListarUsuarioCompras() });
+            return JsonCustom(new { data = usuarioService.ListarUsuarioCompras() });
         }
 
         [HttpGet]
@@ -233,7 +250,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult ObtenerServiciosSap()
         {
 
-            return JsonCustom(new { data = service.ObtenerServiciosSap() });
+            return JsonCustom(new { data = comprasSapService.ObtenerServiciosSap() });
 
         }
 
@@ -241,7 +258,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult AutocompleteTablaSap(string tabla, string valor)
         {
 
-            return JsonCustom(service.AutocompleteTablaSap(tabla, valor));
+            return JsonCustom(tablaSapService.AutocompleteTablaSap(tabla, valor));
 
         }
 
@@ -352,7 +369,7 @@ namespace SustitucionMOA.Controllers
         public JsonResult AutocompleteCodigoMaterialSolp(string valor, int centroId)
         {
 
-            return JsonCustom(service.AutocompleteCodigoMaterialSolp(valor, centroId));
+            return JsonCustom(comprasSolicitanteService.AutocompleteCodigoMaterialSolp(valor, centroId));
 
         }
 
@@ -371,7 +388,7 @@ namespace SustitucionMOA.Controllers
             if (string.IsNullOrEmpty(fechaEntregaPosicion)) return Json(new { info = "Fecha entrega posición inválido" }, JsonRequestBehavior.AllowGet);
             if (string.IsNullOrEmpty(numeroMaterial)) return Json(new { info = "Número material inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
+            return JsonCustom(new { data = comprasSapService.ListarFuenteAprovisionamiento(fechaEntregaPosicion, numeroMaterial, centro) });
 
         }
 
@@ -381,7 +398,7 @@ namespace SustitucionMOA.Controllers
 
             if (string.IsNullOrEmpty(numeroContrato)) return Json(new { info = "Número de contrato inválido" }, JsonRequestBehavior.AllowGet);
 
-            return JsonCustom(new { data = service.ObtenerContratoMarco(numeroContrato, centro) });
+            return JsonCustom(new { data = comprasSapService.ObtenerContratoMarco(numeroContrato, centro) });
 
         }
 
@@ -416,7 +433,7 @@ namespace SustitucionMOA.Controllers
         {
 
             var posiciones = JsonConvert.DeserializeObject<List<SolpPosicionDto>>(solpJson);
-            return JsonCustom(new { data = service.DevolverContratosAsociados(posiciones) });
+            return JsonCustom(new { data = comprasSolicitanteService.DevolverContratosAsociados(posiciones) });
 
         }
 
@@ -583,7 +600,7 @@ namespace SustitucionMOA.Controllers
         public ActionResult ObtenerAdjudicacion(string nroOC)
         {
 
-            var result = service.ObtenerAdjudicacion(nroOC);
+            var result = comprasSapService.ObtenerAdjudicacion(nroOC);
             return JsonCustom(new { data = result });
 
         }
@@ -591,8 +608,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ListarAdjudicaciones(int solpId)
         {
-
-            var result = service.ListarAdjudicaciones(solpId);
+            var result = adjudicacionesService.ListarAdjudicaciones(solpId);
             return JsonCustom(new { data = result });
         }
 
@@ -640,14 +656,14 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new
             {
-                data = service.ObtenerUltimaSolp(usuarioId)
+                data = comprasSolicitanteService.ObtenerUltimaSolp(usuarioId)
             });
         }
 
         [HttpGet]
         public JsonResult AutocompleteMaterialRFC(string material, string centro, string grupoDeCompras)
         {
-            return JsonCustom(service.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
+            return JsonCustom(comprasSolicitanteService.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras));
         }
 
         [AllowAnonymous]
@@ -671,7 +687,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ObtenerReporteOrdenDeCompra(string nroOC, string fechaDesde, string fechaHasta, string codigoProveedor)
         {
-            return JsonCustom(service.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
+            return JsonCustom(comprasSapService.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor));
         }
 
         [HttpGet]
@@ -754,7 +770,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
-            var result = service.ListarVisitasDeObra(visitas);
+            var result = comprasSolicitanteService.ListarVisitasDeObra(visitas);
             return JsonCustom(new { data = result });
         }
 
@@ -762,14 +778,14 @@ namespace SustitucionMOA.Controllers
         public ActionResult ListarTablaSap(string codigos)
         {
             List<string> tablas = !string.IsNullOrEmpty(codigos) ? codigos.Split(',').ToList() : new List<string>();
-            return JsonCustom(new { data = service.ListarTablaSap(tablas) });
+            return JsonCustom(new { data = tablaSapService.ListarTablaSap(tablas) });
         }
 
         [HttpPost]
         public ActionResult ModificarOrdenDeCompra(string json)
         {
             var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
-            var result = service.EditarOrdenDeCompra(adjudicacion);
+            var result = comprasSapService.EditarOrdenDeCompra(adjudicacion);
             return JsonCustom(result);
         }
 
@@ -796,7 +812,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public JsonResult ListarUsuarioSolicitante()
         {
-            var result = service.ListarUsuarioSolicitante();
+            var result = comprasSolicitanteService.ListarUsuarioSolicitante();
             return JsonCustom(result);
         }
 
@@ -1126,6 +1142,16 @@ namespace SustitucionMOA.Controllers
             Directory.Delete(path, true);
 
             return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+        }
+
+        [HttpPost]
+        public ContentResult ProcesarPrecargaSolp(HttpPostedFileBase archivo, int tipoSolpId)
+        {
+            var response = new SustitucionMOAApiResponse<ProcesarPrecargaSolpResponse>
+            {
+                Data = service.ProcesarArchivoPrecargaSolp(archivo, tipoSolpId)
+            };
+            return ContentCustom(response);
         }
     }
 }

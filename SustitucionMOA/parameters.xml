@@ -396,6 +396,11 @@
 						match="/configuration/appSettings/add[@key='DriveCampoSustentablesOutputFolderId']
                            /@value" />
 	</parameter>
+  <parameter name="EmailFacturasES Config">
+    <parameterEntry kind="XmlFile" scope="Web.config"
+          match="/configuration/appSettings/add[@key='EmailFacturasES']
+                           /@value" />
+  </parameter>
 	<!--Service Enpoint-->
 	<parameter name="BasicHttpBinding_IServicioRepositorio Service Endpoint Address">
 		<parameterEntry kind="XmlFile" scope="Web.config"

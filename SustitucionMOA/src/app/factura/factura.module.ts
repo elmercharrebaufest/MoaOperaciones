@@ -5,13 +5,15 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { FacturaService } from './factura.service';
 import { FacturaRoutingModule } from './factura-routing.module';
 import { FacturaComponent } from './factura.component';
+import { FileUploadModule } from 'primeng/fileupload';
 
 @NgModule({
   imports: [
     CommonModule,
     FacturaRoutingModule,
     SharedModule,
-    NgxPaginationModule
+        NgxPaginationModule,
+        FileUploadModule
   ],
     declarations: [
       FacturaComponent

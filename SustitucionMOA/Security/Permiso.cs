@@ -15,7 +15,7 @@
         public const string DESCARGAR_CARTA_PORTE = "DESCARGAR CARTAS PORTE";
         public const string DESCARGAR_CARTA_PORTE_DETALLE = "DESCARGAR CARTAS PORTE DETALLE";
         public const string CREAR_FORMULARIO_CCPP = "CREAR FORMULARIO CCPP";
-        
+
 
         /* PERMISOS COMPROBANTES */
         public const string CONSULTAR_COMPROBANTE = "CONSULTAR COMPROBANTES";
@@ -68,6 +68,7 @@
         public const string CAMBIAR_CONTRASENIA = "CAMBIAR CONTRASENIA";
         public const string SELECCIONAR_VENDEDOR = "SELECCIONAR VENDEDOR";
         public const string ELEGIR_TODOS_VENDEDORES = "ELEGIR TODOS VENDEDORES";
+        public const string EDITAR_SUPLENTE = "EDITAR SUPLENTE";
 
         /* PERMISOS VENDEDOR */
         public const string CONSULTAR_DOCUMENTACION = "CONSULTAR DOCUMENTACION";
@@ -75,7 +76,7 @@
         public const string CONSULTAR_VENDEDORES = "CONSULTAR VENDEDORES";
         public const string CONSULTAR_VENDEDOR_STATUS = "CONSULTAR VENDEDOR STATUS";
         public const string CONSULTAR_VENDEDOR_PENDIENTES = "CONSULTAR VENDEDOR PENDIENTES";
-        
+
 
         /* PERMISOS DESCARGA DOCUMENTOS */
         public const string DESCARGAR_DOCUMENTO = "DESCARGAR DOCUMENTO";

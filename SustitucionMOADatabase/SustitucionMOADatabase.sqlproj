@@ -260,6 +260,8 @@
     <Build Include="DBO\Tables\DistanciaDomicilioReemplazos.sql" />
     <PreDeploy Include="scripts\PreDeployment\_ScriptBasePreDeployment.sql" />
     <None Include="scripts\PreDeployment\ARMOA003-3423_TieneVisitaObra_cambiaA_TieneVisitaObraMasiva.sql" />
+    <Build Include="DBO\Tables\ResultadoAnalisisOcr.sql" />
+    <Build Include="DBO\Tables\ResultadoOcr.sql" />
     <Build Include="DBO\Tables\CampoCosechaProveedor.sql" />
   </ItemGroup>
   <ItemGroup>

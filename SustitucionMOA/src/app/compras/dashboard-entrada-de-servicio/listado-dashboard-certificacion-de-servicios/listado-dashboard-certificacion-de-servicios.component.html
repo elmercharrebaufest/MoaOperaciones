@@ -106,6 +106,8 @@
                  [responsive]="true"
                  dataKey="NumeroOrdenDeCompra"
                  [columns]="columns"
+                 [customSort]="true"
+                 (sortFunction)="sortFunction($event, 'Ordenes')"
                  [paginator]="true"
                  [alwaysShowPaginator]="false"
                  [loading]="loading"
@@ -153,7 +155,7 @@
                         <div *ngIf="loading" class="spinner"></div>
 
                         <p-table #tablaPosiciones
-                                *ngIf="!loading"
+                                 *ngIf="!loading"
                                  id="posiciones"
                                  class="level2"
                                  [value]="rowData.Posiciones"
@@ -182,12 +184,12 @@
 
                                         <!-- SE AGREGA CHECKBOX PARA SELECCIOANR N POSICIONES -->
                                         <td>
-                                            <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)" 
+                                            <input *ngIf="mostrarCheckboxDeSeleccionarPosicion(rowData)"
                                                    #seleccionarPosicionCheckbox
-                                                   type="checkbox" 
+                                                   type="checkbox"
                                                    [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true"
                                                    [(ngModel)]="rowData.isSelected"
-                                                   (change)="seleccionarPosicion($event, rowData)"/>
+                                                   (change)="seleccionarPosicion($event, rowData)" />
                                             <a href="#" [pRowToggler]="rowData" (click)="calcularValoresACertificar(rowData)">
                                                 <i [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
                                             </a>
@@ -234,11 +236,11 @@
                                             <ng-template pTemplate="header" *ngIf="rowData.Items && rowData.Items.length > 0">
                                                 <tr>
                                                     <th>
-                                                        <input *ngIf="mostrarCheckboxDeSeleccionarTodosItems(rowData)" 
+                                                        <input *ngIf="mostrarCheckboxDeSeleccionarTodosItems(rowData)"
                                                                #seleccionarTodosItemsCheckbox
-                                                               type="checkbox" 
+                                                               type="checkbox"
                                                                [attr.disabled]="tieneItemsACertificarTodosValidos(rowData) ? null: true"
-                                                               [(ngModel)]="rowData.isSelected" 
+                                                               [(ngModel)]="rowData.isSelected"
                                                                (change)="selectAllItems($event, rowData)">
                                                     </th>
                                                     <ng-container *ngFor="let col of userTablesConfig[2].columns">
@@ -248,8 +250,8 @@
                                                         <th *ngIf="col.id === 'iAcciones'">
                                                             {{ col.header }}
                                                             <button class="btn btn-primary"
-                                                            (click)="habilitarTodosCampoDeValorACertificar(i)"
-                                                            [disabled]="!hayElementosParaCertificar()">
+                                                                    (click)="habilitarTodosCampoDeValorACertificar(i)"
+                                                                    [disabled]="!hayElementosParaCertificar()">
                                                                 <i class="fa fa-refresh"></i>
                                                             </button>
                                                         </th>
@@ -356,43 +358,37 @@
                                                                         <td *ngIf="col.type === 'date' && col.visible">{{ rowData[col.field] | date: 'dd/MM/yyyy' }}</td>
                                                                         <td *ngIf="col.type === 'string' && col.visible && col.id !== esNro">
                                                                             {{ col.id === 'esImporte' ? formatESImport(col.id, rowData) : rowData[col.field] | defaultData }}
-                                                                        </td>                                                                        
+                                                                        </td>
 
                                                                         <td *ngIf="col.type === 'custom' && col.visible" [style.max-width]="(col.field === 'Referencia' || col.field === 'TextoBreve' || col.field === 'FechaDocumentoString') && rowData.Ingresante === usuario ? 'max-content' : '8em'">
                                                                             <ng-container *ngIf="col.id === 'esFechaDoc'">
-                                                                                <compras-celda-editable-ingresante 
-                                                                                    *ngIf="rowData.Ingresante === usuario"
-                                                                                    [columnaEditar]="'FechaDocumento'"
-                                                                                    [value]="rowData.FechaDocumentoString"
-                                                                                    [procesando]="procesandoCelda['FechaDocumento'][rowData.IdES]"
-                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'FechaDocumento', rowData.IdES, rowItem.NroOrdenCompra)"
-                                                                                >
+                                                                                <compras-celda-editable-ingresante *ngIf="rowData.Ingresante === usuario"
+                                                                                                                   [columnaEditar]="'FechaDocumento'"
+                                                                                                                   [value]="rowData.FechaDocumentoString"
+                                                                                                                   [procesando]="procesandoCelda['FechaDocumento'][rowData.IdES]"
+                                                                                                                   (infoEmitter)="enviarInformacionIngresante($event, 'FechaDocumento', rowData.IdES, rowItem.NroOrdenCompra)">
                                                                                 </compras-celda-editable-ingresante>
                                                                                 <ng-container *ngIf="rowData.Ingresante !== usuario">
                                                                                     {{ rowData.FechaDocumentoString }}
                                                                                 </ng-container>
                                                                             </ng-container>
                                                                             <ng-container *ngIf="col.id === 'esDescripcion'">
-                                                                                <compras-celda-editable-ingresante 
-                                                                                    *ngIf="rowData.Ingresante === usuario"
-                                                                                    [columnaEditar]="'DescripcionES'"
-                                                                                    [value]="rowData.TextoBreve"
-                                                                                    [procesando]="procesandoCelda['DescripcionES'][rowData.IdES]"
-                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'DescripcionES', rowData.IdES, rowItem.NroOrdenCompra)"
-                                                                                >
+                                                                                <compras-celda-editable-ingresante *ngIf="rowData.Ingresante === usuario"
+                                                                                                                   [columnaEditar]="'DescripcionES'"
+                                                                                                                   [value]="rowData.TextoBreve"
+                                                                                                                   [procesando]="procesandoCelda['DescripcionES'][rowData.IdES]"
+                                                                                                                   (infoEmitter)="enviarInformacionIngresante($event, 'DescripcionES', rowData.IdES, rowItem.NroOrdenCompra)">
                                                                                 </compras-celda-editable-ingresante>
                                                                                 <ng-container *ngIf="rowData.Ingresante !== usuario">
                                                                                     {{ rowData.TextoBreve }}
                                                                                 </ng-container>
                                                                             </ng-container>
                                                                             <ng-container *ngIf="col.id === 'esReferencia'">
-                                                                                <compras-celda-editable-ingresante 
-                                                                                    *ngIf="rowData.Ingresante === usuario"
-                                                                                    [columnaEditar]="'Remito'"
-                                                                                    [value]="rowData.Referencia"
-                                                                                    [procesando]="procesandoCelda['Remito'][rowData.IdES]"
-                                                                                    (infoEmitter)="enviarInformacionIngresante($event, 'Remito', rowData.IdES, rowItem.NroOrdenCompra)"
-                                                                                >
+                                                                                <compras-celda-editable-ingresante *ngIf="rowData.Ingresante === usuario"
+                                                                                                                   [columnaEditar]="'Remito'"
+                                                                                                                   [value]="rowData.Referencia"
+                                                                                                                   [procesando]="procesandoCelda['Remito'][rowData.IdES]"
+                                                                                                                   (infoEmitter)="enviarInformacionIngresante($event, 'Remito', rowData.IdES, rowItem.NroOrdenCompra)">
                                                                                 </compras-celda-editable-ingresante>
                                                                                 <ng-container *ngIf="rowData.Ingresante !== usuario">
                                                                                     {{ rowData.Referencia }}
@@ -413,8 +409,8 @@
                                                                                     </i>
                                                                                 </ng-template>
                                                                             </ng-container>
-                                                                            <ng-container *ngIf="col.id==='esAdjuntos'">                                                                                
-                                                                                <button *ngIf="!loadingRows[item]" class="fa fa-download"  (click)="descargarArchivos(rowData, item)" ></button>
+                                                                            <ng-container *ngIf="col.id==='esAdjuntos'">
+                                                                                <button *ngIf="!loadingRows[item]" class="fa fa-download" (click)="descargarArchivos(rowData, item)"></button>
                                                                                 <div *ngIf="loadingRows[item]" class="loader"></div>
                                                                             </ng-container>
                                                                         </td>

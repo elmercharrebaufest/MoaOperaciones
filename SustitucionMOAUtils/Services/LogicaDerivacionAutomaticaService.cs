@@ -1,10 +1,11 @@
-﻿using SustitucionMOAModel.Entities;
+﻿// Ignore Spelling: reasignación reasignaciones Inicializar redimensionamiento
+
+using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,7 +13,6 @@ namespace SustitucionMOAUtils.Services
 {
     public class LogicaDerivacionAutomaticaService : ILogicaDerivacionAutomaticaService
     {
-        private readonly Func<DbContext> _dbContextFactory;
         protected IRepositorio repositorio;
         protected IEntradaServicioService entradaServicioService;
 
@@ -20,10 +20,9 @@ namespace SustitucionMOAUtils.Services
         /// Initial Delay:momento de la primer ejecución
         /// _interval: cada cuanto se corre luego
         /// </summary>
-        public LogicaDerivacionAutomaticaService(IRepositorio repositorio, Func<DbContext> context, IEntradaServicioService entradaServicioService)
+        public LogicaDerivacionAutomaticaService(IRepositorio repositorio, IEntradaServicioService entradaServicioService)
         {
             this.repositorio = repositorio;
-            this._dbContextFactory = context;
             this.entradaServicioService = entradaServicioService;
         }
 
@@ -33,181 +32,171 @@ namespace SustitucionMOAUtils.Services
         /// </summary>
         public string CorrerProcesoReasignacion()
         {
-            using (var dbContext = _dbContextFactory())
+            Logger.Log.Info("Corriendo proceso de reasignación automática");
+
+            List<IGrouping<int, UsuarioReasignacion>> registrosAgrupados;
+            IEnumerable<UsuarioReasignacion> registrosReasignacion;
+
+            try
             {
-                Logger.Log.Info("Corriendo proceso de reasignación automática");
+                registrosReasignacion =
+                    repositorio
+                    .ListarTodos<UsuarioReasignacion>();
 
-                dbContext.Database.CreateIfNotExists();
-
-                var repositorio = new RepositorioEF(dbContext);
-
-                List<UsuarioReasignacion> registrosSinDuplicados = new List<UsuarioReasignacion>();
-
-                try
+                if (!registrosReasignacion.Any())
                 {
-                    List<UsuarioReasignacion> registrosReasignacion = repositorio.ListarTodos<UsuarioReasignacion>().ToList();
-
-                    if (registrosReasignacion.Count == 0)
-                    {
-                        Logger.Log.Info("No hay registros en la tabla UsuarioReasignacion para procesar.");
-                        return "SinRegistros";
-                    }
-
-                    //En caso de registros con ID duplicados
-                    registrosSinDuplicados = registrosReasignacion
-                    .GroupBy(r => r.Usuario_Id)
-                    .Select(g => g.OrderByDescending(r => r.FechaHasta).First())
-                    .ToList();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log.Info("Error en la obtención de registros(Tabla UsuarioReasignacion) del proceso de reasignación: " + ex.Message);
-                    throw ex;
+                    Logger.Log.Info("No hay registros en la tabla UsuarioReasignacion para procesar.");
+                    return "SinRegistros";
                 }
 
+                //En caso de registros con ID duplicados
+                registrosAgrupados = registrosReasignacion
+                .GroupBy(r => r.Usuario_Id)
+                .ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error en la obtención de registros(Tabla UsuarioReasignacion) del proceso de reasignación: " + ex.Message, ex);
+                throw;
+            }
 
-                var today = DateTime.Today;
-                var ayer = DateTime.Today.AddDays(-1);
-                List<int> userIdsInicio = new List<int>();
-                List<int> userIdsFin = new List<int>();
-                foreach (var registro in registrosSinDuplicados)
+            HashSet<int> userIdsEnRango = new HashSet<int>();
+            HashSet<int> userIdsVencidos = new HashSet<int>();
+            HashSet<int> userIdsFuturos = new HashSet<int>();
+            HashSet<UsuarioReasignacion> registrosVencidos = new HashSet<UsuarioReasignacion>();
+            foreach (IGrouping<int, UsuarioReasignacion> registro in registrosAgrupados)
+            {
+                var registroAProcesar = registro.OrderByDescending(r => r.Id).First();
+                if (registroAProcesar.FechaDesde.Date > DateTime.Today.Date)
                 {
-                    // 1 - Ver si el periodo debe procesarse  - Inicio / primer día luego del inicio del periodo
-                    //18/09/2024 -> fechaInicio
-                    //18/09/2024 -> fechaFin
-                    //18/09/2024 -> fechaHoy
-                    //17/09/2024 -> fechaAyer
-                    if (registro.FechaDesde.Date == today.Date)
-                    {
-                        userIdsInicio.Add(registro.Usuario_Id);
-                    }
+                    _ = userIdsFuturos.Add(registroAProcesar.Usuario_Id);
+                }
+                else if (registroAProcesar.FechaHasta.Date >= DateTime.Today.Date)
+                {
+                    _ = userIdsEnRango.Add(registroAProcesar.Usuario_Id);
+                }
+                else if (registroAProcesar.FechaHasta.Date < DateTime.Today.Date)
+                {
+                    _ = userIdsVencidos.Add(registroAProcesar.Usuario_Id);
+                    registrosVencidos.UnionWith(registro);
+                }
+            }
 
-                    //Registros fin del periodo - Dia siguiente al final de reasignación
+            IEnumerable<Usuario> usuariosEnRango;
+            IEnumerable<Usuario> usuariosVencidos;
+            IEnumerable<Usuario> usuariosFuturos;
+            try
+            {
+                usuariosEnRango = repositorio.Listar<Usuario>(x => userIdsEnRango.Contains(x.Id));
+                usuariosVencidos = repositorio.Listar<Usuario>(x => userIdsVencidos.Contains(x.Id));
+                usuariosFuturos = repositorio.Listar<Usuario>(x => userIdsFuturos.Contains(x.Id));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error en la obtención de usuarios(Tabla Usuarios) del proceso de reasignación: " + ex.Message, ex);
+                throw;
+            }
 
-                    if ((today.Date - registro.FechaHasta.Date).TotalDays == 1)
+            try
+            {
+                string transformacionReasignar(Usuario user, Aprobaciones ap)
+                {
+                    if (ap.Aprobador_CDS == user.Suplente)
                     {
-                        userIdsFin.Add(registro.Usuario_Id);
+                        // no se debe hacer el cambio.
+                        // se hace para evitar que se envíe la notificación de reasignación
+                        return null;
                     }
+                    ap.Aprobador_CDS = user.Suplente;
+                    ap.Suplente = user.Mail;
+                    return ap.NRO_ES_LOCAL;
                 }
 
-                List<Usuario> usuarios = new List<Usuario>();
-                List<Usuario> usuariosFin = new List<Usuario>();
-                try
+                string transformacionRevertirAsignacion(Usuario user, Aprobaciones ap)
                 {
-                    foreach (int id in userIdsInicio)
+                    if (string.IsNullOrWhiteSpace(user.Suplente))
                     {
-                        Usuario user = repositorio.Listar<Usuario>(x => x.Id == id).ToList().FirstOrDefault();
-                        usuarios.Add(user);
+                        //no es posible hacer el cambio
+                        return null;
+                    }
+                    if (ap.Aprobador_CDS == user.Mail)
+                    {
+                        // no se debe hacer el cambio.
+                        // se hace para evitar que se envíe la notificación de reasignación
+                        return null;
+                    }
+                    ap.Aprobador_CDS = user.Mail;
+                    ap.Suplente = null;
+                    return ap.NRO_ES_LOCAL;
+                }
+
+                // Reasignar aprobaciones a los suplentes correspondientes
+                ReasignarAprobaciones(usuariosEnRango, transformacionReasignar);
+
+                // Revertir aprobaciones a los aprobadores originales
+                ReasignarAprobaciones(usuariosVencidos.Union(usuariosFuturos), transformacionRevertirAsignacion);
+
+                // Adicionalmente, remover los registros vencidos
+                foreach (var registro in registrosVencidos)
+                {
+                    repositorio.Remover(registro);
+                }
+                repositorio.GuardarCambios();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log.Error("Error en el procesamiento de registros del proceso de reasignación: " + ex.Message, ex);
+                throw;
+            }
+
+            return "Éxito";
+        }
+
+        /// <summary>
+        /// Método encargado de reasignar las aprobaciones a los suplentes correspondientes.
+        /// </summary>
+        /// <param name="usuarios">Usuarios para los cuales hay que encontrar Aprobaciones a reasignar</param>
+        /// <param name="transformacion">Instrucciones de reasignación. Debe retornar el número de ES (NRO_ES_LOCAL)</param>
+        private void ReasignarAprobaciones(IEnumerable<Usuario> usuarios, Func<Usuario, Aprobaciones, string> transformacion)
+        {
+            HashSet<string> esLocalModificada = new HashSet<string>();
+            foreach (Usuario user in usuarios)
+            {
+                if (!string.IsNullOrEmpty(user.Mail) && user.Mail.Contains("@"))
+                {
+                    //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
+                    IEnumerable<Aprobaciones> aprobacionesAsociadas =
+                        repositorio
+                        .Listar<Aprobaciones>(x => x.Fiscal_SOLPED == user.Mail && x.Estado_certificacion == "Pendiente Aprobación");
+
+                    if (aprobacionesAsociadas.Any())
+                    {
+                        Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
                     }
 
-
-                    foreach (int id in userIdsFin)
+                    foreach (var ap in aprobacionesAsociadas)
                     {
-                        Usuario user = repositorio.Listar<Usuario>(x => x.Id == id).ToList().FirstOrDefault();
-                        usuariosFin.Add(user);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log.Info("Error en la obtención de usuarios(Tabla Usuarios) del proceso de reasignación: " + ex.Message);
-                    throw ex;
-
-                }
-                try
-                {
-                    List<string> eSLocalesInicio = new List<string>();
-                    foreach (Usuario user in usuarios)
-                    {
-                        string mail = user.Mail;
-                        string suplente = user.Suplente;
-
-                        if ((mail != null && mail != "" && mail.Contains("@")) && (suplente != null && suplente != ""))
+                        string esLocal = transformacion(user, ap);
+                        if (!string.IsNullOrEmpty(esLocal))
                         {
-                            //Obtener aprobaciones donde el usuario sea aprobador Y fiscal.
-                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
-
-                            if (aprobacionesAsociadas.Count > 0)
-                                Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus suplentes por fecha de reasignación vigente");
-
-                            foreach (var ap in aprobacionesAsociadas)
-                            {
-                                ap.Aprobador_CDS = suplente;
-                                ap.Suplente = mail;
-                                if (!string.IsNullOrEmpty(ap.NRO_ES_LOCAL) && !eSLocalesInicio.Contains(ap.NRO_ES_LOCAL))
-                                {
-                                    eSLocalesInicio.Add(ap.NRO_ES_LOCAL);
-                                }
-                            }
+                            _ = esLocalModificada.Add(esLocal);
                         }
                     }
-
-                    //Si hubo cambios, guardar y notificar
-                    if (eSLocalesInicio.Count > 0)
-                    {
-                        repositorio.GuardarCambios();
-
-                        Notificar(repositorio, eSLocalesInicio);
-                    }
-
-
-
-                    //Para el día siguiente al fin del periodo de reasignación, reasignar las ordenes que tengan como Aprobador al suplente, y fiscal al mail original
-                    List<string> eSLocalesFin = new List<string>();
-                    foreach (Usuario user in usuariosFin)
-                    {
-                        string mail = user.Mail;
-                        string suplente = user.Suplente;
-
-                        if ((!string.IsNullOrEmpty(mail) && mail.Contains("@")) && (!string.IsNullOrEmpty(suplente)))
-                        {
-                            List<Aprobaciones> aprobacionesAsociadas = repositorio.Listar<Aprobaciones>(x => x.Fiscal_SOLPED == mail && x.Estado_certificacion == "Pendiente Aprobación").ToList();
-
-                            if (aprobacionesAsociadas.Count > 0)
-                                Logger.Log.Info("ES pendientes de aprobación han sido derivadas a sus fiscales por fecha de reasignación vencida");
-
-                            foreach (var ap in aprobacionesAsociadas)
-                            {
-                                ap.Aprobador_CDS = mail;
-                                ap.Suplente = suplente;
-                                //No repetir en la lista de emails el mismo NroESLocal
-                                if (!string.IsNullOrEmpty(ap.NRO_ES_LOCAL) && !eSLocalesFin.Contains(ap.NRO_ES_LOCAL))
-                                {
-                                    eSLocalesFin.Add(ap.NRO_ES_LOCAL);
-                                }
-                            }
-
-                            UsuarioReasignacion registroReasignacion = repositorio.Obtener<UsuarioReasignacion>(x => x.Usuario_Id == user.Id);
-                            if (registroReasignacion != null)
-                                repositorio.Remover(registroReasignacion);
-                        }
-                    }
-
-                    //Si hubo cambios, guardar y notificar
-                    if (eSLocalesFin.Count > 0)
-                    {
-                        repositorio.GuardarCambios();
-
-                        Notificar(repositorio, eSLocalesFin);
-                    }
-
                 }
-                catch (Exception ex)
-                {
-                    Logger.Log.Info("Error en el procesamiento de registros del proceso de reasignación: " + ex.Message);
-                    throw ex;
-                }
-
-                return "Exito";
+            }
+            if (esLocalModificada.Count > 0)
+            {
+                repositorio.GuardarCambios();
+                Notificar(esLocalModificada);
             }
         }
 
-        private void Notificar(RepositorioEF repositorio, List<string> eSLocalesInicio)
+        private void Notificar(IEnumerable<string> eSLocalesInicio)
         {
             try
             {
-                Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio, repositorio)).Wait();
-                Logger.Log.Info("Notificaciones de reasignacion a suplente enviadas");
-
+                Task.Run(() => entradaServicioService.NotificarReasignaciones(eSLocalesInicio)).Wait();
+                Logger.Log.Info("Notificaciones de reasignación a suplente enviadas");
             }
             catch (Exception ex)
             {
@@ -218,20 +207,18 @@ namespace SustitucionMOAUtils.Services
         /// <summary>
         /// Chequea si el usuario esta autorizado para correr el proceso.
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="mail"></param>
         /// <returns></returns>
-        public bool isUserAllowed(string email)
+        public bool isUserAllowed(string mail)
         {
-            bool allowed = false;
-
-            Usuario user = repositorio.Listar<Usuario>(x => x.Mail == email).ToList().FirstOrDefault();
+            Usuario user = repositorio.Listar<Usuario>(x => x.Mail == mail).FirstOrDefault();
 
             if (user != null)
             {
-                allowed = user.TieneRol(RolEnum.Administracion);
+                return user.TieneRol(RolEnum.Administracion);
             }
 
-            return allowed;
+            return false;
         }
     }
 }

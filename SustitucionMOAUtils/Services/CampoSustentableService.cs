@@ -5,8 +5,10 @@ using Newtonsoft.Json.Linq;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
@@ -585,17 +587,131 @@ namespace SustitucionMOAUtils.Services
         {
             SustentableRenspaExisteDto result = new SustentableRenspaExisteDto();
 
-            campoCosecha = repositorio.Obtener<CampoCosecha>(c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
-            if (campoCosecha == null) { return result; }
+            campoCosecha = repositorio.Obtener<CampoCosecha>(
+                new List<Expression<Func<CampoCosecha, object>>> { c => c.CamposProveedor },
+                c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
+            
+            if (campoCosecha == null || campoCosecha.CamposProveedor == null) { return result; }
 
-            result.RenspaExiste = true;
+            result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
 
-            if (campoCosecha.Proveedores.Any(proveedor => proveedor.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
+            if (campoCosecha.CamposProveedor.Any(campoProv => campoProv.CUIT.Equals(cuit, StringComparison.OrdinalIgnoreCase)))
             {
                 result.MismoCuit = true;
             }
 
             return result;
+        }
+
+        public List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            return repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+        }
+
+        public string ExportarCamposSugeridos(int proveedorId, int cosechaId, string cuitTitularCP)
+        {
+            var camposSugeridos = repositorio.ObtenerSugerenciaCamposNuevaCosecha(proveedorId, cosechaId, cuitTitularCP);
+            var headers = new string[] { "Cosecha", "Nombre campo", "Localidad", "RENSPA", "Hectáreas totales", "Hectáreas soja", "Toneladas aprobadas", "Presentado en nueva cosecha" };
+            var listadoExport = camposSugeridos.Select(x => new SugerenciaCampoExportDto
+            {
+                CampoNombre = x.NombreCampo,
+                Cosecha = x.NombreCosecha,
+                HectareasSoja = x.HectareasSoja,
+                HectareasTotales = x.HectareasTotales,
+                LocalidadNombre = x.LocalidadNombre,
+                Presentado = x.CampoYaPresentado ? "SI" : "NO",
+                Renspa = x.Renspa.ToFormatoRenspa(),
+                ToneladasAprobadas = x.ToneladasAprobadas
+            });
+            return excelExport.ToExcel(listadoExport, headers, "Sugerencias campos nueva cosecha");
+        }
+
+        public void AgregarCamposSugeridos(List<SugerenciaCampoDto> camposSugeridosDto, List<HttpPostedFileBase> archivosKmz, string mailUsuario)
+        {
+            var usuario = repositorio.ObtenerUsuarioPorMail(mailUsuario);
+            foreach (var proveedorId in camposSugeridosDto.Select(x => x.Proveedor_Id).Distinct())
+            {
+                ValidarUsuario(usuario, proveedorId);
+            }
+
+            foreach (var campoSugeridoDto in camposSugeridosDto)
+            {
+                var campoProveedor = new CampoProveedor
+                {
+                    HectareasTotales = campoSugeridoDto.HectareasTotales,
+                    HectareasSoja = campoSugeridoDto.HectareasSoja,
+                    CUIT = campoSugeridoDto.CUIT,
+                    Latitud = campoSugeridoDto.Latitud,
+                    Longitud = campoSugeridoDto.Longitud,
+                    Proveedor_Id = campoSugeridoDto.Proveedor_Id,
+                    CampoCosecha = new CampoCosecha
+                    {
+                        Cosecha_Id = campoSugeridoDto.CosechaId,
+                        ToneladasAprobadas = -1,
+                        Campo = new CampoSustentable
+                        {
+                            Nombre = campoSugeridoDto.NombreCampo,
+                            Localidad_Id = campoSugeridoDto.Localidad_Id,
+                            Renspa = campoSugeridoDto.Renspa
+                        }
+                    },
+                    Archivo_Id = campoSugeridoDto.Archivo_Id,
+                    FechaCreacion = DateTime.Now,
+                    Borrado = false
+                };
+
+                var renspaExisteDto = RenspaExiste(campoProveedor.CampoCosecha.Campo.Renspa, campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id, out CampoCosecha campoCosechaExistente);
+                if (renspaExisteDto.RenspaExiste)
+                {
+                    if (!renspaExisteDto.MismoCuit)
+                    {
+                        Log.Info($"Se agrega para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} al proveedor CUIT {campoProveedor.CUIT}");
+                        var proveedor = repositorio.Obtener<Proveedor>(p => p.CUIT == campoProveedor.CUIT);
+                        campoCosechaExistente.Proveedores.Add(proveedor);
+                        repositorio.GuardarCambios();
+                    }
+                    else
+                    {
+                        Log.Info($"No se guarda el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa} porque ya existe para el mismo CUIT");
+                    }
+                }
+                else
+                {
+                    Log.Info($"Se guarda para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa}");
+                    
+                    var archivoNuevoKmz = !string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) ? archivosKmz.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevoKmz) : null;
+                    ValidarCampo(campoProveedor, archivoNuevoKmz);
+
+                    var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
+                    
+                    campoProveedor.RazonSocial = declaracion.RazonSocial;
+                    campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
+
+                    var rutaArchivo = "";
+                    if (string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) && campoProveedor.Archivo_Id != 0)
+                    {
+                        var archivoCampo = repositorio.ObtenerArchivo(campoProveedor.Archivo_Id);
+                        rutaArchivo = archivoCampo.Ruta;
+                        repositorio.Agregar(campoProveedor);
+                        repositorio.GuardarCambios();
+                    }
+                    else
+                    {
+                        campoProveedor.Archivo = new Archivo { FileKey = FileKeys.CampoSustentableKMZ, Ruta = "" };
+                        if (archivoNuevoKmz != null)
+                        {
+                            rutaArchivo = GuardarArchivoKMZ(campoProveedor, archivoNuevoKmz);
+                        }
+                        repositorio.Agregar(campoProveedor);
+                        repositorio.GuardarCambios();
+                    }
+
+                    EnviarCampoACertificadorDeSustentables(rutaArchivo, campoProveedor);
+
+                    var archivo = Convert.ToBase64String(File.ReadAllBytes(rutaArchivo));
+                    InformarCampoSustentable(campoProveedor, archivo);
+                }
+            }
         }
 
         private void ValidarUsuario(Usuario usuario, int proveedorId)
@@ -607,7 +723,7 @@ namespace SustitucionMOAUtils.Services
             {
                 if (!usuario.Proveedores.Any(p => p.CUIT == proveedor.CUIT))
                 {
-                    throw new ValidationCustomException("Su usuario no tiene habilitado el proveedor con el que intenta operar.");
+                    throw new ValidationCustomException($"Su usuario no tiene habilitado el proveedor con el que intenta operar ({proveedor.CUIT}).");
                 }
             }
         }
@@ -698,6 +814,7 @@ namespace SustitucionMOAUtils.Services
 
         private void EnviarCampoACertificadorDeSustentables(string rutaArchivo, CampoProveedor campoProveedor)
         {
+            Log.Info($"EnviarCampoACertificadorDeSustentables archivo {rutaArchivo} proveedor id {campoProveedor.Proveedor_Id}");
             var archivoCampoSustentable = new ArchivoCampoSustentable
             {
                 CampoCosechaId = campoProveedor.CampoCosecha_Id,

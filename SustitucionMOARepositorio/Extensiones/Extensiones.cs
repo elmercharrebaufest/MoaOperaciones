@@ -1,6 +1,10 @@
 ﻿using SustitucionMOAModel.Consultas;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data;
+using System.Data.Entity;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 
@@ -116,7 +120,21 @@ namespace SustitucionMOARepositorio.Extensiones
         }
 
 
+        public static void SqlBulkInsert(this DbContext session, DataTable dataTable, string tableName)
+        {
+            var conn = ConfigurationManager.ConnectionStrings["CONTEXTO"].ConnectionString;//session.Database.Connection.ConnectionString;
+            using (var copy = new SqlBulkCopy(conn))
+            {
+                copy.BulkCopyTimeout = 10000;
+                copy.DestinationTableName = tableName;
+                foreach (DataColumn column in dataTable.Columns)
+                {
+                    copy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                }
 
+                copy.WriteToServer(dataTable);
+            }
+        }
 
     }
 }

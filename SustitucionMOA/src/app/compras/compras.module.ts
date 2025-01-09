@@ -109,6 +109,7 @@ import { AuxPannelComponent } from './dashboard-entrada-de-servicio/components/a
 import { ModalAprobacionComponent } from './dashboard-entrada-de-servicio/components/modal-aprobacion/modal-aprobacion.component';
 import { RecalculandoSpinnerComponent } from './dashboard-entrada-de-servicio/components/recalculando-spinner/recalculando-spinner.component';
 import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/file-modal.component';
+import { PrecargaSolpArchivoComponent } from './solp/steps/posicion/precarga-solp-archivo/precarga-solp-archivo.component';
 
 @NgModule({
     imports: [
@@ -214,7 +215,8 @@ import { FileModalComponent } from './dashboard-entrada-de-servicio/file-modal/f
         RecalculandoSpinnerComponent,
         FileModalComponent,
         AdjuntosSolpComponent,
-        ActualizarFechaVigenciaComponent
+        ActualizarFechaVigenciaComponent,
+        PrecargaSolpArchivoComponent
     ],
     providers: [
         { provide: LOCALE_ID, useValue: "es-419" },

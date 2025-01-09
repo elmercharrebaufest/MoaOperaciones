@@ -24,7 +24,11 @@ namespace SustitucionMOATest.Controllers
     {
         private ComprasController target;
         private Mock<IComprasService> comprasServiceMock;
+        private Mock<IComprasSapService> comprasSapServiceMock;
+        private Mock<IComprasSolicitanteService> comprasSolicitanteServiceMock;
         private Mock<IUsuarioService> usuarioServiceMock;
+        private Mock<IAdjudicacionesService> adjudicacionesServiceMock;
+        private Mock<ITablaSapService> tablaSapServiceMock;
         private Mock<IRepositorio> repositorioMock;
         private string mailUsuario = "mail@mail.com";
         private JavaScriptSerializer serializer;
@@ -37,8 +41,12 @@ namespace SustitucionMOATest.Controllers
         public void SetUp()
         {
             comprasServiceMock = new Mock<IComprasService>();
+            comprasSapServiceMock = new Mock<IComprasSapService>();
+            comprasSolicitanteServiceMock = new Mock<IComprasSolicitanteService>();
             usuarioServiceMock = new Mock<IUsuarioService>();
             repositorioMock = new Mock<IRepositorio>();
+            adjudicacionesServiceMock = new Mock<IAdjudicacionesService>();
+            tablaSapServiceMock = new Mock<ITablaSapService>();
 
             this.serializer = new JavaScriptSerializer();
 
@@ -55,8 +63,12 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new ComprasController(comprasServiceMock.Object, usuarioServiceMock.Object);
-
+            target = new ComprasController(comprasServiceMock.Object,
+                                           comprasSapServiceMock.Object,
+                                           comprasSolicitanteServiceMock.Object,
+                                           usuarioServiceMock.Object,
+                                           adjudicacionesServiceMock.Object,
+                                           tablaSapServiceMock.Object);
         }
 
         //[Test()]
@@ -97,7 +109,7 @@ namespace SustitucionMOATest.Controllers
                 new TablaSapDto { Id = 2, Tabla = "Tabla2", Codigo = "3213213", CodigoSap = "3213213", Descripcion = "Balde", IdPadre = 2},
             };
 
-            comprasServiceMock.Setup(servicio => servicio.ObtenerServiciosSap()).Returns(tablaSapDtoList);
+            comprasSapServiceMock.Setup(servicio => servicio.ObtenerServiciosSap()).Returns(tablaSapDtoList);
 
             // Act
             var result = target.ObtenerServiciosSap();
@@ -156,7 +168,7 @@ namespace SustitucionMOATest.Controllers
         {
             var expected = new AdjudicacionDto();
 
-            comprasServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<string>())).Returns(expected);
+            comprasSapServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<string>())).Returns(expected);
 
             var result = target.ObtenerAdjudicacion("");
 
@@ -175,7 +187,7 @@ namespace SustitucionMOATest.Controllers
                 new AdjudicacionDto{ Id = 1}
             };
 
-            comprasServiceMock.Setup(s => s.ListarAdjudicaciones(It.IsAny<int>())).Returns(expected);
+            adjudicacionesServiceMock.Setup(s => s.ListarAdjudicaciones(It.IsAny<int>())).Returns(expected);
 
             var result = target.ListarAdjudicaciones(1);
 
@@ -183,7 +195,7 @@ namespace SustitucionMOATest.Controllers
             var data = (dynamic)((JsonResult)result).Data;
             var propiedad = data.GetType().GetProperties()[0];
             var valor = (List<AdjudicacionDto>)propiedad.GetValue(data);
-            Assert.AreEqual(valor.Count, 1);
+            Assert.AreEqual(1, valor.Count);
         }
 
         [Test]
@@ -360,7 +372,7 @@ namespace SustitucionMOATest.Controllers
                 OrganizacionDeCompra = "Organización de Compra B",
             };
 
-            comprasServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras))
+            comprasSolicitanteServiceMock.Setup(s => s.ObtenerUltimoRegistroMaterialConPrecioBase(material, centro, grupoDeCompras))
                             .Returns(expected);
 
 
@@ -373,14 +385,14 @@ namespace SustitucionMOATest.Controllers
             Assert.AreEqual(expectedjson, resultJson);
             // Verificar que el resultado sea un JsonResult
             Assert.IsNotNull(result);
-            Assert.IsTrue(result is JsonResult);
+            Assert.IsInstanceOf<JsonResult>(result);
         }
 
         [Test]
         public void ObtenerUltimaSolpTest()
         {
             usuarioServiceMock.Setup(s => s.GetUsuario(It.IsAny<string>())).Returns(new UsuarioDto());
-            comprasServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
+            comprasSolicitanteServiceMock.Setup(s => s.ObtenerUltimaSolp(It.IsAny<int>())).Returns(new DatosUltimaSolpDto());
 
             var result = target.ObtenerUltimaSolp() as JsonResult;
 
@@ -403,7 +415,7 @@ namespace SustitucionMOATest.Controllers
             var fechaHasta = "2023-02-01";
             var codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Returns(new List<OrdenDeCompraSAPDto>
                 {
                 new OrdenDeCompraSAPDto
@@ -435,12 +447,12 @@ namespace SustitucionMOATest.Controllers
         public void ObtenerReporteOrdenDeCompra_InfoCustomException()
         {
             // Arrange
-            var nroOC = "12345";
-            var fechaDesde = "2023-01-01";
-            var fechaHasta = "2023-02-01";
-            var codigoProveedor = "PROV123";
+            const string nroOC = "12345";
+            const string fechaDesde = "2023-01-01";
+            const string fechaHasta = "2023-02-01";
+            const string codigoProveedor = "PROV123";
 
-            comprasServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
+            comprasSapServiceMock.Setup(x => x.ObtenerReporteOrdenDeCompra(nroOC, fechaDesde, fechaHasta, codigoProveedor))
                 .Throws(new InfoCustomException("Información personalizada"));
 
             try
@@ -495,7 +507,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarTablaSapOK()
         {
-            comprasServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
+            tablaSapServiceMock.Setup(x => x.ListarTablaSap(It.IsAny<List<string>>())).Returns(new List<TablaSapDto> { new TablaSapDto() });
 
             var result = target.ListarTablaSap(It.IsAny<string>()) as JsonResult;
 
@@ -508,7 +520,7 @@ namespace SustitucionMOATest.Controllers
         {
             var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
-            comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Returns(new ResultadoGenerico() { Descripcion = "Ok" });
+            comprasSapServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Returns(new ResultadoGenerico() { Descripcion = "Ok" });
 
             var result = target.ModificarOrdenDeCompra(json) as JsonResult;
 
@@ -520,7 +532,7 @@ namespace SustitucionMOATest.Controllers
         {
             var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
-            comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new InfoCustomException("Mensaje de información"));
+            comprasSapServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new InfoCustomException("Mensaje de información"));
 
             try
             {
@@ -537,7 +549,7 @@ namespace SustitucionMOATest.Controllers
         {
             var json = "{\"Id\":0,\"Cotizacion_Id\":0,\"Solp_Id\":31745,\"NumeroOrdenDeCompra\":\"4123002078\",\"FechaCreacion\":\"/Date(1705028400000)/\",\"UsuarioCreador_Id\":0,\"UsuarioCreador\":null,\"Moneda_Id\":225,\"MonedaDescripcion\":\"Franco suizo\",\"MontoTotal\":0,\"AdjudicacionPosiciones\":[{\"Id\":0,\"Adjudicacion_Id\":0,\"CotizacionPosicion_Id\":0,\"Cantidad\":1,\"SolpPosicion_Id\":0,\"SubposicionesCompras\":null,\"MaterialComprasCodigo\":\"000000000050224392\",\"Indice\":1,\"Tarea\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"CentroComprasDescripcion\":null,\"TextoSuministro\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"Modelo\":\"\",\"UnidadDescripcion\":\"UNI\",\"MonedaDescripcion\":\"CHF\",\"PrecioUnidad\":0.6,\"MonedaId\":225,\"PrecioTotal\":0.6,\"FechaEntregaServicio\":\"2024-01-29T03:00:00.000Z\",\"PlazoDeOferta\":18,\"MaterialComprasDescripcion\":\"BULON CAB.HEXAG.8.8 RW 5/8\",\"MonedaCodigo\":\"CHF\",\"CentroComprasCodigo\":\"1029\",\"MaterialTextoAmpliado\":\"BULON CABEZA HEXAGONAL RW 5/8\",\"FechaEntregaServicioFormateado\":\"29.01.2024\",\"PlazoDeEntrega\":null,\"Eliminado\":false,\"UnidadId\":214,\"UnidadesDeMedida\":[{\"Id\":43,\"Tabla\":\"Unidad\",\"Codigo\":\"CEN\",\"CodigoSap\":\"CEN\",\"Descripcion\":\"CEN\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"CEN - CEN\"},{\"Id\":51,\"Tabla\":\"Unidad\",\"Codigo\":\"DOC\",\"CodigoSap\":\"DOC\",\"Descripcion\":\"DOC\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"DOC - DOC\"},{\"Id\":66,\"Tabla\":\"Unidad\",\"Codigo\":\"GRU\",\"CodigoSap\":\"GRU\",\"Descripcion\":\"GRU\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"GRU - GRU\"},{\"Id\":147,\"Tabla\":\"Unidad\",\"Codigo\":\"MIL\",\"CodigoSap\":\"MIL\",\"Descripcion\":\"MIL\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"MIL - MIL\"},{\"Id\":185,\"Tabla\":\"Unidad\",\"Codigo\":\"PAR\",\"CodigoSap\":\"PAR\",\"Descripcion\":\"PAR\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"PAR - PAR\"},{\"Id\":214,\"Tabla\":\"Unidad\",\"Codigo\":\"UNI\",\"CodigoSap\":\"UNI\",\"Descripcion\":\"UNI\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"UNI - UNI\"}],\"UnidadCodigo\":\"UNI\",\"UnidadMedida\":{\"Id\":214,\"Tabla\":null,\"Codigo\":\"UNI\",\"CodigoSap\":null,\"Descripcion\":null,\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  \"},\"DireccionDeEntrega\":{\"RegionSap\":\"04\",\"Id\":12,\"CodigoSap\":\"04\",\"Descripcion\":\"\",\"PaisSap\":\"\"},\"EntregaFinal\":false,\"Moneda\":{\"Id\":0,\"Tabla\":null,\"Codigo\":\"CHF\",\"CodigoSap\":null,\"Descripcion\":\"Franco suizo\",\"IdPadre\":null,\"FiltroComprador\":null,\"CodigoDescripcion\":\"  Franco suizo\"},\"RegionCodigo\":\"04\",\"RegionId\":12,\"PaisSap\":\"\"}],\"PrecioFinal\":574.115136,\"Proveedor\":\"0057984261\",\"TipoPosicionCodigo\":\"MATERIALES\",\"TextoDeCabecera\":\"\",\"CondicionesDeEntrega\":\"\",\"CondicionesDePago\":\"\",\"Garantias\":\"22\",\"Centro\":\"Planta San Lorenzo\",\"CalleEntrega\":\"Benielli 398\",\"CodigoPostal\":\"2200\",\"PrecioBruto\":0,\"EstadoLiberacionCodigo\":null,\"EstadoLiberacionDetalle\":null,\"EsMonedaProveedor\":false,\"RegionSap\":0,\"CreadoAutomatico\":false,\"MonedaCodigo\":null,\"CondicionDePago\":{\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionComplemento\":null,\"Codigo\":\"0030\",\"Descripcion\":\"Pagadero dentro de los 30 días sin DPP\",\"Id\":121554,\"CodigoDescripcion\":\"0030 - Pagadero dentro de los 30 días sin DPP\"},\"CondicionDeImportacion\":{\"Codigo\":\"\",\"Descripcion\":\"\",\"Id\":null,\"CodigoDescripcion\":null},\"CondicionDePagoCodigo\":null,\"CondicionDePagoId\":null,\"CondicionDeImportacionCodigo\":null,\"CondicionDeImportacionId\":null,\"CondicionDeImportacionDescripcion\":\"\",\"PagoEn1\":30,\"PagoEn2\":0,\"PagoEn3\":0,\"PagoEn1Porcentaje\":0,\"PagoEn2Porcentaje\":0}";
 
-            comprasServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new ValidationCustomException("Mensaje de validación"));
+            comprasSapServiceMock.Setup(s => s.EditarOrdenDeCompra(It.IsAny<AdjudicacionDto>())).Throws(new ValidationCustomException("Mensaje de validación"));
 
             try
             {
@@ -574,7 +586,7 @@ namespace SustitucionMOATest.Controllers
         [Test]
         public void ListarUsuarioSolicitanteOk()
         {
-            comprasServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
+            comprasSolicitanteServiceMock.Setup(x => x.ListarUsuarioSolicitante()).Returns(new List<UsuarioDto>
             { new UsuarioDto { Mail = "bmelgarejo@prueba.com", UsuarioSap = "BRISAM" } });
 
             var result = target.ListarUsuarioSolicitante();
