@@ -80,7 +80,7 @@
                                 Responsable del trabajo *
                                 <div>
                                     <p-dropdown [options]="model.usuarioSolicitanteList"
-                                                [disabled]="model.tipoSolp != 'SIN_PLIEGO'" (onChange)="onCompletarResponsable()"
+                                                [disabled]="responsableTrabajoDisabled" (onChange)="onCompletarResponsable()"
                                                 formControlName="supervisorTrabajo" [(ngModel)]="model.selectResponsableTrabajo"
                                                 dataKey="Id" optionLabel="CodigoDescripcion"
                                                 [filter]="true">
