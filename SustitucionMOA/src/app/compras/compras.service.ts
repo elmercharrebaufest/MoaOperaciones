@@ -28,6 +28,7 @@ import { SolpCrearPoMultipleDto } from '../modelos/Solp-CrearPoMultipleDto.model
 import { POPosicionDto } from '../modelos/po-posicionDto';
 import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
 import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/procesarPrecargaSolpResponse';
+import { MaterialSolp } from '../modelos/compras/materialSolp';
 
 @Injectable({
     providedIn: 'root'
@@ -583,13 +584,13 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteMaterialSolp", { params: params })
     }
 
-    autocompleteCodigoMaterialSolp(valor: string, centroId: number) {
+    autocompleteCodigoMaterialSolp(valor: string, centroId: number): Observable<MaterialSolp[]> {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)
             .append('centroId', centroId.toString());
 
         return this.http
-            .get<any[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
+            .get<MaterialSolp[]>("/api/compras/AutocompleteCodigoMaterialSolp", { params: params })
     }
 
     autocompleteMaterialRFC(posicion: SolpPosicion) {

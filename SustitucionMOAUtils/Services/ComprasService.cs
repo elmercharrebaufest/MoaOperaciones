@@ -9144,8 +9144,9 @@ namespace SustitucionMOAUtils.Services
             var tipoPosicion = tiposPosicion.Single(x => x.Id == tipoSolpId);
 
             var cuentasMayor = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.CuentasSolpSap).Select(x => new TablaSapDto(x)).ToList();
+            var imputaciones = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.CecoSolpSap).Select(x => new TablaSapDto(x)).ToList();
 
-            return comprasArchivosImportService.ProcesarArchivoPrecargaSolp(archivo, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, tipoPosicion);
+            return comprasArchivosImportService.ProcesarArchivoPrecargaSolp(archivo, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, imputaciones, tipoPosicion);
         }
     }
 }

@@ -24,6 +24,7 @@ import { ContratoMarco, ContratoMarcoSubposicion, ObtenerContratoMarco } from '.
 import * as uuid from 'uuid';
 import _ from 'lodash';
 import { SolpPosicionPrecargada } from '../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada';
+import { MaterialSolp } from '../../../../modelos/compras/materialSolp';
 
 declare var $: any;
 
@@ -92,7 +93,8 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     //Autocompletes
     tablaAFiltrar: any;
     autocomplete: any[];
-    autocompleteServiciosSolp: any[];
+    // autocompleteServiciosSolp: any[];
+    autocompleteServiciosSolp: MaterialSolp[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
     autocompleteServiciosSolpPaste: string[] = [];
     autocompletePosicionRFC: any;
@@ -932,16 +934,24 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         try {
             this.subscription = this.service.autocompleteCodigoMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.autocompleteServiciosSolp = result;
+                // (resultado) => {
+                //     let result = resultado as any;
+                //     if (result.logout == true) {
+                //         this.sessionDataService.logout();
+                //     } else if (result.error != undefined && result.error != "") {
+                //         this.floatMsgService.setErrorMsg(result.error);
+                //     } else if (result.info != undefined) {
+                //         this.floatMsgService.setInfoMsg(result.info);
+                //     } else {
+                //         this.autocompleteServiciosSolp = result;
+                //     }
+                // },
+                (result) => {
+                    let materiales = this.manejarErroresApiResponse(result);
+                    if (materiales) {
+                        this.autocompleteServiciosSolp = materiales;
                     }
+                    this.spinnerComponent.hideIt();
                 },
                 error => {
                     this.floatMsgService.setErrorMsg(error.message);
@@ -957,14 +967,17 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     //Funciones de la tabla
     onSelectServicio(posicion: SolpPosicion, dt) {
+        this.servicioSeleccionado(posicion);
+        this.endEditCell(dt);
+    }
+
+    servicioSeleccionado(posicion: SolpPosicion) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.textoSuministro = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
         posicion.unidadesAlternativas = this.combos.Unidades;
 
         this.autocompletarCamposMaterial(posicion);
-
-        this.endEditCell(dt);
     }
 
     onSelectTarea(posicion: SolpPosicion, dt) {
@@ -1371,7 +1384,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             this.model.posicionActual = newPos;
 
-            let centroEnt = this.centroEntrega.find(x => x.value == posArchivo.CentroId);
+            let centroEnt = (this.centroEntrega as any[]).find(x => x.Codigo == (posArchivo.Centro ? posArchivo.Centro.Codigo : ''));
             let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
             let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == posArchivo.GrupoComprasId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
@@ -1380,7 +1393,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             newPos.tipoImputacion = tipoImputacion;
             
             newPos.selectCentroEntrega = centroEnt;
-            newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == posArchivo.CentroId);
+            newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == (posArchivo.Centro ? posArchivo.Centro.Id : ''));
 
             // this.setupAlmacenEntregaByCentro();
             //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
@@ -1407,6 +1420,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             newPos.fechaEntregaServicio = posArchivo.FechaEntregaServicio;
             newPos.Cantidad = posArchivo.Cantidad;
             newPos.cuentaMayor = posArchivo.CuentaMayor;
+            newPos.valorImputacion = posArchivo.Imputacion;
+
+            if (posArchivo.MaterialCatalogado) {
+                newPos.codigoServicio = posArchivo.MaterialCatalogado;
+                this.servicioSeleccionado(newPos);
+            }
 
             posArchivo.Subposiciones.forEach(subposArch => {
                 let newSubpos = newPos.crearSubPosicion();
@@ -1426,5 +1445,21 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
     cerrarPrecargaSolpDesdeArchivo() {
         this.displayPrecargarDesdeArchivo = false;
+    }
+
+    manejarErroresApiResponse<T>(response: T): T | undefined {
+        let resObj = response as any;
+        if (resObj.logout == true) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (resObj.error) {
+            this.floatMsgService.setErrorMsg(resObj.error);
+            return undefined;
+        }
+        if (resObj.info) {
+            this.floatMsgService.setInfoMsg(resObj.info);
+        }
+        return response;
     }
 }
