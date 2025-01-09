@@ -430,7 +430,12 @@ namespace SustitucionMOAWS.WSConsumers
                         subposicionSap.UOM_ISO = unidadesMedidaSap.Find(u => u.Comercial == cotizacionSubPosicion.UnidadDeMedida.CodigoSap).UM;
                         subposicionSap.PRICE_UNIT = 1;
                         subposicionSap.PRICE_UNITSpecified = true;
-                        subposicionSap.GR_PRICE = adjudicacionPosicion.Monto.Value;
+                        subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value;
+                        if (adjudicacion.Moneda.Codigo != cotizacionSubPosicion.Moneda.Codigo)
+                        {
+                            subposicionSap.GR_PRICE = cotizacionSubPosicion.Precio.Value * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, cotizacionSubPosicion.Moneda.Codigo).TipoCambio;
+                        }
+
                         subposicionSap.GR_PRICESpecified = true;
 
                         solpPedidoSAP.IM_SERVICESList.Add(subposicionSap);
