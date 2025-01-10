@@ -1303,6 +1303,7 @@
     <Compile Include="Controllers\VendedorController.cs" />
     <Compile Include="Filter\GZipOrDeflateAttribute.cs" />
     <Compile Include="Filter\HandleErrorAttribute.cs" />
+    <Compile Include="Filter\LoggingActionFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
