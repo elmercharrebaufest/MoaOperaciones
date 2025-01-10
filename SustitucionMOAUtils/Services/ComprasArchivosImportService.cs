@@ -2,6 +2,7 @@
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,13 @@ namespace SustitucionMOAUtils.Services
 {
     public class ComprasArchivosImportService : IComprasArchivosImportService
     {
+        private readonly IRepositorioCompras repositorioCompras;
+
+        public ComprasArchivosImportService(IRepositorioCompras repositorioCompras)
+        {
+            this.repositorioCompras = repositorioCompras;
+        }
+
         public ProcesarPrecargaSolpResponse ProcesarArchivoPrecargaSolp(
             HttpPostedFileBase archivo,
             List<TablaGeneralDto>
@@ -27,6 +35,7 @@ namespace SustitucionMOAUtils.Services
             List<TablaSapDto> almacenes,
             List<TablaSapDto> unidades,
             List<TablaSapDto> cuentasMayor,
+            List<TablaSapDto> imputaciones,
             TablaGeneralDto tipoPosicion)
         {
             var response = new ProcesarPrecargaSolpResponse();
@@ -45,7 +54,7 @@ namespace SustitucionMOAUtils.Services
             var registrosPrecarga = filas.Select(f => LeerRegistroPrecargaSolp(f)).ToList();
 
             var esMateriales = tipoPosicion.Codigo == "MATERIALES";
-            response.ErroresValidacion = ValidarRegistrosPrecargaSolp(registrosPrecarga, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, esMateriales);
+            response.ErroresValidacion = ValidarRegistrosPrecargaSolp(registrosPrecarga, tiposImputaciones, monedas, gruposCompras, gruposArticulos, centros, almacenes, unidades, cuentasMayor, imputaciones, esMateriales);
 
             if (response.ErroresValidacion.Count() > 0)
             {
@@ -59,6 +68,7 @@ namespace SustitucionMOAUtils.Services
                 var indice = int.Parse(reg.NroPosicion);
                 var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
                 var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
+                var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion);
 
                 if (esMateriales || !posiciones.Any(x => x.Indice == indice))
                 {
@@ -66,17 +76,22 @@ namespace SustitucionMOAUtils.Services
                     var moneda = monedas.FirstOrDefault(x => x.Codigo == reg.Moneda);
                     var grupoCompras = gruposCompras.FirstOrDefault(x => x.Codigo == reg.GrupoCompras);
                     var grupoArticulo = gruposArticulos.FirstOrDefault(x => x.Codigo == reg.GrupoArticulo);
-                    var centro = centros.FirstOrDefault(x => x.Codigo == reg.CentroId);
+                    var centro = centros.FirstOrDefault(x => x.Codigo == reg.CentroCodigo);
                     var almacen = almacenes.FirstOrDefault(x => x.Codigo == reg.AlmacenId);
+
+                    var materialCatalogado = ObtenerMaterialCatalogado(esMateriales, reg.CodigoMaterial, centro);
 
                     var posicion = new SolpPosicionPrecargadaDto
                     {
                         Indice = int.Parse(reg.NroPosicion),
                         TipoPosicionId = tipoPosicion.Id,
                         TipoPosicion = tipoPosicion,
-                        Codigo = esMateriales ? reg.CodigoMaterial : string.Empty,
                         TipoImputacionId = tipoImputacion?.Id,
                         TipoImputacion = tipoImputacion,
+                        CentroId = centro?.Id,
+                        Centro = centro,
+                        Codigo = esMateriales ? reg.CodigoMaterial : string.Empty,
+                        MaterialCatalogado = materialCatalogado,
                         Tarea = reg.DescripcionItem,
                         MonedaId = moneda?.Id,
                         Moneda = moneda,
@@ -85,14 +100,13 @@ namespace SustitucionMOAUtils.Services
                         GrupoCompras = grupoCompras,
                         GrupoArticuloId = grupoArticulo?.Id,
                         GrupoArticulo = grupoArticulo,
-                        CentroId = centro?.Id,
-                        Centro = centro,
                         AlmacenId = almacen?.Id,
                         Almacen = almacen,
                         Cantidad = decimal.Parse(reg.Cantidad),
                         UnidadId = unidad?.Id,
                         Unidad = unidad,
                         CuentaMayor = cuentaMayor,
+                        Imputacion = imputacion,
                         Subposiciones = new List<SolpSubposicionPrecargadaDto>()
                     };
                     posiciones.Add(posicion);
@@ -178,7 +192,7 @@ namespace SustitucionMOAUtils.Services
                 FechaEntrega = (fila[IndicePrecargaSolp.FechaEntrega] is DBNull || fila[IndicePrecargaSolp.FechaEntrega] == null) ? null : fila[IndicePrecargaSolp.FechaEntrega].ToString(),
                 GrupoCompras = (fila[IndicePrecargaSolp.GrupoCompras] is DBNull || fila[IndicePrecargaSolp.GrupoCompras] == null) ? null : fila[IndicePrecargaSolp.GrupoCompras].ToString(),
                 GrupoArticulo = (fila[IndicePrecargaSolp.GrupoArticulo] is DBNull || fila[IndicePrecargaSolp.GrupoArticulo] == null) ? null : fila[IndicePrecargaSolp.GrupoArticulo].ToString(),
-                CentroId = (fila[IndicePrecargaSolp.CentroId] is DBNull || fila[IndicePrecargaSolp.CentroId] == null) ? null : fila[IndicePrecargaSolp.CentroId].ToString(),
+                CentroCodigo = (fila[IndicePrecargaSolp.CentroId] is DBNull || fila[IndicePrecargaSolp.CentroId] == null) ? null : fila[IndicePrecargaSolp.CentroId].ToString(),
                 AlmacenId = (fila[IndicePrecargaSolp.AlmacenId] is DBNull || fila[IndicePrecargaSolp.AlmacenId] == null) ? null : fila[IndicePrecargaSolp.AlmacenId].ToString(),
                 NroSubpos = (fila[IndicePrecargaSolp.NroSubpos] is DBNull || fila[IndicePrecargaSolp.NroSubpos] == null) ? null : fila[IndicePrecargaSolp.NroSubpos].ToString(),
                 CodigoServicio = (fila[IndicePrecargaSolp.CodigoServicio] is DBNull || fila[IndicePrecargaSolp.CodigoServicio] == null) ? null : fila[IndicePrecargaSolp.CodigoServicio].ToString(),
@@ -200,6 +214,7 @@ namespace SustitucionMOAUtils.Services
             List<TablaSapDto> almacenes,
             List<TablaSapDto> unidades,
             List<TablaSapDto> cuentasMayor,
+            List<TablaSapDto> imputaciones,
             bool esMateriales)
         {
             var errores = new List<string>();
@@ -231,7 +246,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     errores.Add($"Orden: {ordenFila}. El grupo de artículo no es válido");
                 }
-                if (!centros.Any(x => x.Codigo == reg.CentroId))
+                if (!centros.Any(x => x.Codigo == reg.CentroCodigo))
                 {
                     errores.Add($"Orden: {ordenFila}. El centro no es válido");
                 }
@@ -275,6 +290,15 @@ namespace SustitucionMOAUtils.Services
 
             return errores;
         }
+
+        private MaterialSolpDto ObtenerMaterialCatalogado(bool esMateriales, string codigoMaterial, TablaSapDto centro)
+        {
+            if (!esMateriales || centro == null || string.IsNullOrWhiteSpace(codigoMaterial)) { return null; }
+
+            var materialesCatalogados = repositorioCompras.BuscarMaterialesCatalogadosPorCodigoSap(codigoMaterial, centro.Id);
+
+            return materialesCatalogados.FirstOrDefault();
+        }
     }
 
     internal class RegistroPrecargaSolp
@@ -287,7 +311,7 @@ namespace SustitucionMOAUtils.Services
         public string FechaEntrega { get; set; }
         public string GrupoCompras { get; set; }
         public string GrupoArticulo { get; set; }
-        public string CentroId { get; set; }
+        public string CentroCodigo { get; set; }
         public string AlmacenId { get; set; }
         public string NroSubpos { get; set; }
         public string CodigoServicio { get; set; }

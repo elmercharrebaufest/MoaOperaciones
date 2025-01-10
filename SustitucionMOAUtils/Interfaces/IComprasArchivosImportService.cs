@@ -17,6 +17,7 @@ namespace SustitucionMOAUtils.Interfaces
             List<TablaSapDto> almacenes,
             List<TablaSapDto> unidades,
             List<TablaSapDto> cuentasMayor,
+            List<TablaSapDto> imputaciones,
             TablaGeneralDto tipoPosicion);
     }
 }
