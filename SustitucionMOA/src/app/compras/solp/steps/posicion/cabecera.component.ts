@@ -25,6 +25,7 @@ import * as uuid from 'uuid';
 import _ from 'lodash';
 import { SolpPosicionPrecargada } from '../../../../modelos/compras/PrecargaSolp/solpPosicionPrecargada';
 import { MaterialSolp } from '../../../../modelos/compras/materialSolp';
+import { MaterialServicioSolp } from '../../../../modelos/compras/materialServicioSolp';
 
 declare var $: any;
 
@@ -94,7 +95,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     tablaAFiltrar: any;
     autocomplete: any[];
     // autocompleteServiciosSolp: any[];
-    autocompleteServiciosSolp: MaterialSolp[];
+    autocompleteServiciosSolp: MaterialServicioSolp[]; //MaterialSolp[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
     autocompleteServiciosSolpPaste: string[] = [];
     autocompletePosicionRFC: any;
@@ -874,15 +875,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
     autocompleteCodigoServicioSolp(event) {
         try {
             this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
-                        this.autocompleteServiciosSolp = result;
+                (result) => {
+                    let servicios = this.manejarErroresApiResponse(result);
+                    if (servicios) {
+                        this.autocompleteServiciosSolp = servicios;
                     }
                 },
                 error => {
@@ -934,18 +930,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         }
         try {
             this.subscription = this.service.autocompleteCodigoMaterialSolp(event.query.toLowerCase(), idCentro).subscribe(
-                // (resultado) => {
-                //     let result = resultado as any;
-                //     if (result.logout == true) {
-                //         this.sessionDataService.logout();
-                //     } else if (result.error != undefined && result.error != "") {
-                //         this.floatMsgService.setErrorMsg(result.error);
-                //     } else if (result.info != undefined) {
-                //         this.floatMsgService.setInfoMsg(result.info);
-                //     } else {
-                //         this.autocompleteServiciosSolp = result;
-                //     }
-                // },
                 (result) => {
                     let materiales = this.manejarErroresApiResponse(result);
                     if (materiales) {
@@ -1381,6 +1365,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
         for (let i = 0; i < posicionesPrecargadas.length; i++) {
             let posArchivo = posicionesPrecargadas[i];
             let newPos = new SolpPosicion();
+            newPos.listadoSubPosiciones = new Array<SubPosicionViewModel>();
 
             this.model.posicionActual = newPos;
 
@@ -1394,9 +1379,6 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             
             newPos.selectCentroEntrega = centroEnt;
             newPos.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == (posArchivo.Centro ? posArchivo.Centro.Id : ''));
-
-            // this.setupAlmacenEntregaByCentro();
-            //this.model.posicionActual.selectComboAlmacenes = this.combos.Almacen.filter(x => x.IdPadre == this.model.posicionActual.selectCentroEntrega.Id);
 
             let almacen = newPos.selectComboAlmacenes.find(x => x.Id == posArchivo.AlmacenId);
             newPos.selectAlmacenEntrega = almacen;
@@ -1428,15 +1410,50 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             }
 
             posArchivo.Subposiciones.forEach(subposArch => {
-                let newSubpos = newPos.crearSubPosicion();
-                newSubpos.subPosicion = subposArch.Numero;
-                newSubpos.codigoServicio = subposArch.Codigo;
+                let newSubpos = new SubPosicionViewModel(subposArch.Numero);
+
+                let codigoServicioObj = {
+                    Codigo: subposArch.Numero,
+                    Descripcion: subposArch.Tarea,
+                    UnidadMedidaBase: subposArch.Unidad
+                };
+                newSubpos.codigoServicio = { ...codigoServicioObj };
                 newSubpos.tareaSubcontratar = subposArch.Tarea;
+                newSubpos.tareaSubcontratarObj = { ...codigoServicioObj };
+
+                var unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == (subposArch.Unidad ? subposArch.Unidad.Descripcion : ''));
+                if (unidadSeleccionadaObj) {
+                    newSubpos.unidadSeleccionada = unidadSeleccionadaObj;
+                    newSubpos.unidadMedida = unidadSeleccionadaObj.Descripcion;
+                }
+
+                newSubpos.cuentaTd = subposArch.Cantidad;
+                
+                if (subposArch.ServicioCatalogado) {
+                    newSubpos.codigoServicio = subposArch.ServicioCatalogado;
+                    this.servicioSubposSeleccionado(newSubpos);
+                }
+                
+                newSubpos.calcularValorNeto();
+                newPos.agregarSubPosicion(newSubpos);
+                newPos.calcularValorTotal();
             });
 
             posicionesACargar.push(newPos);
         };
         this.model.posiciones = posicionesACargar;
+    }
+
+    servicioSubposSeleccionado(subposicion: SubPosicionViewModel) {
+        subposicion.tareaSubcontratar = subposicion.codigoServicio.Descripcion;
+        subposicion.tareaSubcontratarObj = { ...subposicion.codigoServicio };
+
+        var unidadSeleccionadaAux = this.combos.Unidades.find(x => x.Descripcion == subposicion.codigoServicio.UnidadMedidaBase);
+
+        if (unidadSeleccionadaAux) {
+            subposicion.unidadSeleccionada = unidadSeleccionadaAux;
+            subposicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
+        }
     }
     
     abrirPrecargaSolpDesdeArchivo() {

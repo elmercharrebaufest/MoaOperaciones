@@ -1,10 +1,11 @@
 import { TablaSap } from "../Common/tablaSap";
+import { MaterialServicioSolp } from "./materialServicioSolp";
 
-export interface MaterialSolp {
-    Id: number;
-    Codigo: string;
+export interface MaterialSolp extends MaterialServicioSolp {
+    // Id: number;
+    // Codigo: string;
     CodigoSap: string;
-    Descripcion: string;
+    // Descripcion: string;
     TipoMaterial: string;
     TipoValoracion: string;
     PrecioMaterial: number | null;

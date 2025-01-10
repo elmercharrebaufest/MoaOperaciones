@@ -65,66 +65,75 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var reg in registrosPrecarga)
             {
-                var indice = int.Parse(reg.NroPosicion);
-                var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
-                var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
-                var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion);
-
-                if (esMateriales || !posiciones.Any(x => x.Indice == indice))
+                try
                 {
-                    var tipoImputacion = tiposImputaciones.FirstOrDefault(x => x.Descripcion == reg.TipoImputacion);
-                    var moneda = monedas.FirstOrDefault(x => x.Codigo == reg.Moneda);
-                    var grupoCompras = gruposCompras.FirstOrDefault(x => x.Codigo == reg.GrupoCompras);
-                    var grupoArticulo = gruposArticulos.FirstOrDefault(x => x.Codigo == reg.GrupoArticulo);
-                    var centro = centros.FirstOrDefault(x => x.Codigo == reg.CentroCodigo);
-                    var almacen = almacenes.FirstOrDefault(x => x.Codigo == reg.AlmacenId);
+                    var indice = int.Parse(reg.NroPosicion);
+                    var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
+                    var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
+                    var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion);
 
-                    var materialCatalogado = ObtenerMaterialCatalogado(esMateriales, reg.CodigoMaterial, centro);
-
-                    var posicion = new SolpPosicionPrecargadaDto
+                    if (esMateriales || !posiciones.Any(x => x.Indice == indice))
                     {
-                        Indice = int.Parse(reg.NroPosicion),
-                        TipoPosicionId = tipoPosicion.Id,
-                        TipoPosicion = tipoPosicion,
-                        TipoImputacionId = tipoImputacion?.Id,
-                        TipoImputacion = tipoImputacion,
-                        CentroId = centro?.Id,
-                        Centro = centro,
-                        Codigo = esMateriales ? reg.CodigoMaterial : string.Empty,
-                        MaterialCatalogado = materialCatalogado,
-                        Tarea = reg.DescripcionItem,
-                        MonedaId = moneda?.Id,
-                        Moneda = moneda,
-                        FechaEntregaServicio = DateTime.Parse(reg.FechaEntrega),
-                        GrupoComprasId = grupoCompras?.Id,
-                        GrupoCompras = grupoCompras,
-                        GrupoArticuloId = grupoArticulo?.Id,
-                        GrupoArticulo = grupoArticulo,
-                        AlmacenId = almacen?.Id,
-                        Almacen = almacen,
-                        Cantidad = decimal.Parse(reg.Cantidad),
-                        UnidadId = unidad?.Id,
-                        Unidad = unidad,
-                        CuentaMayor = cuentaMayor,
-                        Imputacion = imputacion,
-                        Subposiciones = new List<SolpSubposicionPrecargadaDto>()
-                    };
-                    posiciones.Add(posicion);
+                        var tipoImputacion = tiposImputaciones.FirstOrDefault(x => x.Descripcion == reg.TipoImputacion);
+                        var moneda = monedas.FirstOrDefault(x => x.Codigo == reg.Moneda);
+                        var grupoCompras = gruposCompras.FirstOrDefault(x => x.Codigo == reg.GrupoCompras);
+                        var grupoArticulo = gruposArticulos.FirstOrDefault(x => x.Codigo == reg.GrupoArticulo);
+                        var centro = centros.FirstOrDefault(x => x.Codigo == reg.CentroCodigo);
+                        var almacen = almacenes.FirstOrDefault(x => x.Codigo == reg.AlmacenId);
+
+                        var materialCatalogado = ObtenerMaterialCatalogado(esMateriales, reg.CodigoMaterial, centro);
+
+                        var posicion = new SolpPosicionPrecargadaDto
+                        {
+                            Indice = int.Parse(reg.NroPosicion),
+                            TipoPosicionId = tipoPosicion.Id,
+                            TipoPosicion = tipoPosicion,
+                            TipoImputacionId = tipoImputacion?.Id,
+                            TipoImputacion = tipoImputacion,
+                            CentroId = centro?.Id,
+                            Centro = centro,
+                            Codigo = esMateriales ? reg.CodigoMaterial : string.Empty,
+                            MaterialCatalogado = materialCatalogado,
+                            Tarea = reg.DescripcionItem,
+                            MonedaId = moneda?.Id,
+                            Moneda = moneda,
+                            FechaEntregaServicio = DateTime.Parse(reg.FechaEntrega),
+                            GrupoComprasId = grupoCompras?.Id,
+                            GrupoCompras = grupoCompras,
+                            GrupoArticuloId = grupoArticulo?.Id,
+                            GrupoArticulo = grupoArticulo,
+                            AlmacenId = almacen?.Id,
+                            Almacen = almacen,
+                            Cantidad = decimal.Parse(reg.Cantidad),
+                            UnidadId = unidad?.Id,
+                            Unidad = unidad,
+                            CuentaMayor = cuentaMayor,
+                            Imputacion = imputacion,
+                            Subposiciones = new List<SolpSubposicionPrecargadaDto>()
+                        };
+                        posiciones.Add(posicion);
+                    }
+                    if (!esMateriales)
+                    {
+                        var posicion = posiciones.First(x => x.Indice == indice);
+                        var servicioCatalogado = ObtenerServicioCatalogado(esMateriales, reg.CodigoServicio);
+                        var subposicion = new SolpSubposicionPrecargadaDto
+                        {
+                            Numero = int.Parse(reg.NroSubpos),
+                            Tarea = reg.NombreServicio,
+                            Codigo = reg.CodigoServicio,
+                            Cantidad = decimal.Parse(reg.Cantidad),
+                            UnidadId = unidad?.Id,
+                            Unidad = unidad,
+                            CuentaMayor = cuentaMayor,
+                            ServicioCatalogado = servicioCatalogado
+                        };
+                        posicion.Subposiciones.Add(subposicion);
+                    }
                 }
-                if (!esMateriales)
+                catch (Exception ex)
                 {
-                    var posicion = posiciones.First(x => x.Indice == indice);
-                    var subposicion = new SolpSubposicionPrecargadaDto
-                    {
-                        Numero = int.Parse(reg.NroSubpos),
-                        Tarea = reg.NombreServicio,
-                        Codigo = reg.CodigoServicio,
-                        Cantidad = decimal.Parse(reg.Cantidad),
-                        UnidadId = unidad?.Id,
-                        Unidad = unidad,
-                        CuentaMayor = cuentaMayor
-                    };
-                    posicion.Subposiciones.Add(subposicion);
+                    response.ErroresValidacion.Add($"Nro posición: {reg.NroPosicion}. {ex.Message}");
                 }
             }
             response.Posiciones = posiciones;
@@ -297,7 +306,24 @@ namespace SustitucionMOAUtils.Services
 
             var materialesCatalogados = repositorioCompras.BuscarMaterialesCatalogadosPorCodigoSap(codigoMaterial, centro.Id);
 
+            if (materialesCatalogados.Count() > 1)
+            {
+                throw new Exception("Existe más de un material con el código " + codigoMaterial);
+            }
             return materialesCatalogados.FirstOrDefault();
+        }
+
+        private ServicioSolpDto ObtenerServicioCatalogado(bool esMateriales, string codigoServicio)
+        {
+            if (esMateriales || string.IsNullOrWhiteSpace(codigoServicio)) { return null; }
+
+            var serviciosCatalogados = repositorioCompras.BuscarServiciosCatalogadosPorCodigoSap(codigoServicio);
+
+            if (serviciosCatalogados.Count() > 1)
+            {
+                throw new Exception("Existe más de un servicio con el código " + codigoServicio);
+            }
+            return serviciosCatalogados.FirstOrDefault();
         }
     }
 
