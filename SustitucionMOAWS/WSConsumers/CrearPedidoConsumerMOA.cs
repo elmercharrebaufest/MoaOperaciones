@@ -167,6 +167,10 @@ namespace SustitucionMOAWS.WSConsumers
 
                             nuevaCantidad = adjudicacionPosicion.Cantidad * unidadRegistroInfo.Denominador / unidadRegistroInfo.Numerador;
                         }
+                        if (adjudicacion.Moneda.Codigo != ultimoRegistroInfo.Moneda)
+                        {
+                            precioConvertido = precioConvertido * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, ultimoRegistroInfo.Moneda).TipoCambio;
+                        }
                     }
                     else
                     {
@@ -176,6 +180,10 @@ namespace SustitucionMOAWS.WSConsumers
                             var unidadCotizacion = unidadesDelMaterial.First(x => x.UnidadDeMedida == adjudicacionPosicion.CotizacionPosicion.UnidadDeMedida.CodigoSap);
 
                             precioConvertido = precioConvertido * unidadCotizacion.Denominador / unidadCotizacion.Numerador;
+                        }
+                        if (adjudicacion.Moneda.Codigo != adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo)
+                        {
+                            precioConvertido = precioConvertido * obtenerTipoCambioConsumerMOA.Request(fecha.ToString("yyyy-MM-dd"), adjudicacion.Moneda.Codigo, adjudicacionPosicion.CotizacionPosicion.Moneda.Codigo).TipoCambio;
                         }
 
                     }
