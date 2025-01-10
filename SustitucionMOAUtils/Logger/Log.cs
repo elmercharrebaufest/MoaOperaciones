@@ -260,7 +260,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                RequestLogger.Info(mensaje);
+                DefaultLogger.Info(mensaje);
             }
             catch (Exception e)
             {
