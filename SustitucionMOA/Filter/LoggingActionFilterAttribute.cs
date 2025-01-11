@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Filter
 {
-    [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.All, Inherited = true, AllowMultiple = false)]
     public class LoggingActionFilterAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -33,8 +33,10 @@ namespace SustitucionMOA.Filter
                 logInfo.Stopwatch.Stop();
                 logInfo.EndTime = DateTime.UtcNow;
                 logInfo.DurationMilliseconds = logInfo.Stopwatch.ElapsedMilliseconds;
-
-                SustitucionMOAWS.Logger.Log.LogRequest(logInfo.ToJson());
+                if (logInfo.Method != "VerificarEstadoSesion")
+                {
+                    SustitucionMOAWS.Logger.Log.LogRequest(logInfo.ToJson());
+                }
             }
 
             base.OnActionExecuted(filterContext);

@@ -158,7 +158,7 @@ namespace SustitucionMOAWS.Logger
         {
             try
             {
-                DefaultLogger.Info(mensaje);
+                RequestLogger.Info(mensaje);
             }
             catch (Exception e)
             {

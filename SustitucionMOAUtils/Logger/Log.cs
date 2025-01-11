@@ -29,6 +29,11 @@ namespace SustitucionMOAUtils.Logger
 
             // Aplicar la nueva configuración
             LogManager.ReconfigExistingLoggers();
+#if DEBUG
+            LogManager.ThrowConfigExceptions = true; // Para excepciones de configuración
+            LogManager.ThrowExceptions = true;      // Para errores en targets
+#endif
+
 
         }
     }
@@ -260,7 +265,7 @@ namespace SustitucionMOAUtils.Logger
         {
             try
             {
-                DefaultLogger.Info(mensaje);
+                RequestLogger.Info(mensaje);
             }
             catch (Exception e)
             {
