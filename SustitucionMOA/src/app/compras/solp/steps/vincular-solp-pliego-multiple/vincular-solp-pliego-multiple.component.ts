@@ -78,7 +78,9 @@ export class VincularSolpPliegoMultipleComponent
     }
 
     ngOnDestroy() {
+        if (this.debouncer) { this.debouncer.complete(); }
         if (this.debouncerSubscription) { this.debouncerSubscription.unsubscribe(); }
+        this.solpSeleccionadaListChanged.complete();
     }
 
     public searchParametersChanged() {
