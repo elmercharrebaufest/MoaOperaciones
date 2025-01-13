@@ -37,6 +37,8 @@ import { CotizacionComponent } from './steps/cotizacion/cotizacion.component';
 import { OrdenDeCompraSap } from '../../modelos/ordenDeCompraSap';
 import { CondicionesEspecialesOriginales } from './steps/cotizacion/condiciones-especiales-originales';
 import { EnumEnvioCircularA } from '../enum-envio-circular';
+import { PliegoMultipleService } from '../pliegoMultiple.service';
+import { SolpDto } from './steps/vincular-solp-pliego-multiple/solpDto.interface';
 
 @Component({
     selector: 'app-solp',
@@ -117,6 +119,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     fechaLimiteDocumentacionRequerida: boolean;
     usuarioSolicitanteListCache: any[];
 
+    pliegoMultipleIdSolpsSeleccionadas: number[] = [];
+
 
     set pasoActual(value: Paso) {
         this.actualizarPasoCompleto(this._pasoActual);
@@ -142,6 +146,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     protected locale: any;
 
     constructor(protected service: ComprasService,
+        protected pliegoMultipleService: PliegoMultipleService,
         protected navService: NavService,
         protected sessionDataService: SessionDataService,
         protected securytiService: SecurityService,
@@ -502,9 +507,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
 
-        if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
-            this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
-            return;
+        if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple)) {
+            //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
+            if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
+                this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
+                return;
+            }
         }
 
         this.messageService.clear();
@@ -599,117 +607,15 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if (this.solpActual.especificacionesViewModel.observaciones == null)
                 this.solpActual.especificacionesViewModel.observaciones = "";
 
-            this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                    } else if (result.error != undefined && result.error != "") {
-                        this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la SOLP', detail: result.error });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                    } else if (result.info != undefined) {
-                        this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
-                    } else {
 
-                        if (guardarPorPaso == false) {
-                            this.blockUI.stop();
-                        }
+            if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) {
+                // no hacer nada entre pasos.
+                // al finalizar, llamar desde el método finalizar la grabación de pliego múltiple.
+                this.disabledSave = false;
+            } else {
+                this.guardarSolp(guardarPorPaso, mostrarPreview, enviarSap);
+            }
 
-                        if (!mostrarPreview && !guardarPorPaso) {
-                            this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
-                        }
-                        this.solpActual.id = result.Solp.Id;
-                        this.solpActual.NroSolp = result.Solp.NroSolp;
-                        this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
-                        this.solpActual.especificacionesViewModel.archivosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoSolp' || x.FileKey == 'especificacionesTecnicasPliego').map(x => {
-                            return {
-                                id: x.Id,
-                                nombreArchivo: x.Nombre,
-                                rutaDeAcceso: ''
-                            }
-                        });
-                        this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
-                        this.solpActual.archivosCotizaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
-                            return {
-                                id: x.Id,
-                                nombreArchivo: x.Nombre,
-                                rutaDeAcceso: ''
-                            }
-                        });
-
-                        this.solpActual.archivosCotizacionesNuevosCondEsp.splice(0, this.solpActual.archivosCotizacionesNuevosCondEsp.length);
-                        this.solpActual.archivosCotizacionesCondEsp = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolpCondEsp').map(x => {
-                            return {
-                                id: x.Id,
-                                nombreArchivo: x.Nombre,
-                                rutaDeAcceso: ''
-                            }
-                        });
-
-                        this.cambiosGuardados = true;
-
-                        if (mostrarPreview) {
-                            if (result.Solp.Pdf) {
-                                this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
-
-                                const base64Pdf = result.Solp.Pdf;
-                                const blob = this.base64ToBlob(base64Pdf, 'application/pdf');
-                                const urlTemporal = URL.createObjectURL(blob);
-                                this.pdfPreview = urlTemporal;
-
-                                this.mostrarPreview = true;
-                            } else {
-                                this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
-                            }
-                        }
-
-                        if (enviarSap) {
-                            this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
-                            this.solpActual.tieneModificaciones = result.Solp.TieneModificaciones;
-                            if (result.Mensaje == "OK") {
-                                this.finalizarOk = true;
-
-                                if (this.solpActual.vincularAPliego) {
-                                    this.displaySAPVincularPliego = true;
-                                }
-
-                                // Esto sirve para la mejora de no enviarCirculares automáticas
-                                if (this.solpActual.tieneModificaciones) {
-                                    this.enviarCircularProveedores();
-                                } else {
-                                    this.displaySAP = true;
-                                }
-                            }
-                            else {
-                                if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
-                                    this.solpActual = new Solp(result.Solp)
-                                    let esto = this;
-                                    setTimeout(function () {
-                                        esto.cambioPaso(esto.pasos[5]);
-                                    }, 500);
-                                }
-                                this.listadoErrores = result.Errores;
-                                this.displayErrorSAP = true;
-                            }
-                        }
-                    }
-                    this.disabledSave = false;
-                },
-                error => {
-                    this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: error.message });
-                    if (guardarPorPaso == false) {
-                        this.blockUI.stop();
-                    }
-                    this.disabledSave = false;
-                }
-            );
         } catch (e) {
             this.disabledSave = false;
             this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: e });
@@ -718,6 +624,134 @@ export class SolpComponent extends BaseComponent implements OnInit {
             }
             return false; //<-- Prevent Refresh
         }
+    }
+
+    private guardarSolp(_guardarPorPaso: boolean, _mostrarPreview: boolean, _enviarSap: boolean): void {
+        const guardarPorPaso = _guardarPorPaso;
+        const mostrarPreview = _mostrarPreview;
+        const enviarSap = _enviarSap;
+
+        this.subscription = this.service.GuardarSolp(this.solpActual).subscribe(
+            (result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                } else if (result.error != undefined && result.error != "") {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la SOLP', detail: result.error });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                } else if (result.info != undefined) {
+                    this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+                } else {
+
+                    if (guardarPorPaso == false) {
+                        this.blockUI.stop();
+                    }
+
+                    if (!mostrarPreview && !guardarPorPaso) {
+                        this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
+                    }
+                    this.solpActual.id = result.Solp.Id;
+                    this.solpActual.NroSolp = result.Solp.NroSolp;
+                    this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.splice(0, this.solpActual.especificacionesViewModel.archivosEspecificacionesNuevos.length);
+                    this.solpActual.especificacionesViewModel.archivosEspecificaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoSolp' || x.FileKey == 'especificacionesTecnicasPliego').map(x => {
+                        return {
+                            id: x.Id,
+                            nombreArchivo: x.Nombre,
+                            rutaDeAcceso: ''
+                        }
+                    });
+                    this.solpActual.archivosCotizacionesNuevos.splice(0, this.solpActual.archivosCotizacionesNuevos.length);
+                    this.solpActual.archivosCotizaciones = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolp').map(x => {
+                        return {
+                            id: x.Id,
+                            nombreArchivo: x.Nombre,
+                            rutaDeAcceso: ''
+                        }
+                    });
+
+                    this.solpActual.archivosCotizacionesNuevosCondEsp.splice(0, this.solpActual.archivosCotizacionesNuevosCondEsp.length);
+                    this.solpActual.archivosCotizacionesCondEsp = result.Solp.Adjuntos.filter(x => x.FileKey == 'adjuntoCotizacionesSolpCondEsp').map(x => {
+                        return {
+                            id: x.Id,
+                            nombreArchivo: x.Nombre,
+                            rutaDeAcceso: ''
+                        }
+                    });
+
+                    this.cambiosGuardados = true;
+
+                    if (mostrarPreview) {
+                        if (result.Solp.Pdf) {
+                            this.pdfPreview = "data:application/pdf;base64," + result.Solp.Pdf;
+
+                            const base64Pdf = result.Solp.Pdf;
+                            const blob = this.base64ToBlob(base64Pdf, 'application/pdf');
+                            const urlTemporal = URL.createObjectURL(blob);
+                            this.pdfPreview = urlTemporal;
+
+                            this.mostrarPreview = true;
+                        } else {
+                            this.messageService.add({ severity: 'error', detail: 'Hubo un error al generar el preview. Por favor, contacte al administrador de sistemas.' });
+                        }
+                    }
+
+                    if (enviarSap) {
+                        this.solpActual.emailLinkToken = result.Solp.EmailLinkToken;
+                        this.solpActual.tieneModificaciones = result.Solp.TieneModificaciones;
+                        if (result.Mensaje == "OK") {
+                            this.finalizarOk = true;
+
+                            if (this.solpActual.vincularAPliego) {
+                                this.displaySAPVincularPliego = true;
+                            }
+
+                            // Esto sirve para la mejora de no enviarCirculares automáticas
+                            if (this.solpActual.tieneModificaciones) {
+                                this.enviarCircularProveedores();
+                            } else {
+                                this.displaySAP = true;
+                            }
+                        }
+                        else {
+                            if (result.Solp.NroSolp != "" && result.Solp.NroSolp != null) {
+                                this.solpActual = new Solp(result.Solp)
+                                let esto = this;
+                                setTimeout(function () {
+                                    esto.cambioPaso(esto.pasos[5]);
+                                }, 500);
+                            }
+                            this.listadoErrores = result.Errores;
+                            this.displayErrorSAP = true;
+                        }
+                    }
+                }
+                this.disabledSave = false;
+            },
+            error => {
+                this.messageService.add({ severity: 'error', summary: 'Error al intentar guardar la SOLP.', detail: error.message });
+                if (guardarPorPaso == false) {
+                    this.blockUI.stop();
+                }
+                this.disabledSave = false;
+            }
+        );
+    }
+
+    private guardarPliegoMultiple(): void {
+        const p = this.solpActual;
+        const s = this.pliegoMultipleIdSolpsSeleccionadas;
+        debugger;
+    }
+
+    public onSolpSeleccionadaListChanged(data: number[]): void {
+        this.pliegoMultipleIdSolpsSeleccionadas = data;
     }
 
     base64ToBlob(base64Data, contentType) {
@@ -1186,10 +1220,18 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
+        debugger;
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
-        this.cabecera.validarTabCompleto();
-        this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
+
+        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) {
+            this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false }); //TODO: change
+            this.guardarPliegoMultiple();
+        } else {
+            this.cabecera.validarTabCompleto();
+            this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
+        }
+
         this.displayFinalizar = false;
         this.mostrarMensajeCampos();
         this.mostrarMensajeCotizacion();
