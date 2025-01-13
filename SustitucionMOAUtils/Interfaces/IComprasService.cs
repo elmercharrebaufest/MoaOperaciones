@@ -16,6 +16,12 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasService
     {
+        void GuardarPliego(SolpDto solp,
+                           HttpFileCollectionBase adjuntos,
+                           bool condEsp,
+                           string rutaArchivos,
+                           Pliego pliegoEntity = null);
+
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
