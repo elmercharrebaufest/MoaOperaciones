@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -15,6 +15,9 @@ import { SelectItem } from 'primeng/api';
 })
 export class VincularSolpPliegoMultipleComponent
     implements OnInit, OnDestroy {
+
+    @Output()
+    public solpSeleccionadaListChanged = new EventEmitter<number[]>();
 
     public numeroSolp: string;
 
@@ -82,9 +85,11 @@ export class VincularSolpPliegoMultipleComponent
         this.debouncer.next();
     }
 
-    public getSolps() {
-        console.log({ act: "search here", nroSolp: this.numeroSolp, fecha: this.filtroFechaComponent });
+    public notifyChange() {
+        this.solpSeleccionadaListChanged.emit(this.solps.filter(x => x.Selected).map(x => x.Id));
+    }
 
+    public getSolps() {
         this.blockUI.start("Cargando");
 
         this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento)

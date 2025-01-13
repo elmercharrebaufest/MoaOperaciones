@@ -1,5 +1,6 @@
 export interface SolpDto {
     Id: number;
+    Selected: boolean;
     TipoSolpSap: string;
     NumeroSolp: string;
     NombreSolp: string;
