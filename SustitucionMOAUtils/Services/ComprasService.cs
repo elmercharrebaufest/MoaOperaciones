@@ -236,10 +236,15 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            if (esPliegoMultiple && string.IsNullOrWhiteSpace(rutaArchivos))
+            if (esPliegoMultiple)
             {
-                //override filename
-                rutaArchivos = ObtenerRutaArchivos(pliegoEntity.Id, "PliegoMultiple");
+                if (string.IsNullOrWhiteSpace(rutaArchivos))
+                {
+                    //override filename
+                    rutaArchivos = ObtenerRutaArchivos(pliegoEntity.Id, "PliegoMultiple");
+                }
+
+                pliegoEntity.Multiple = true;
             }
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
