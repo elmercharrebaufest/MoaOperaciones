@@ -1,9 +1,12 @@
-﻿using SustitucionMOASecurity;
+﻿using Newtonsoft.Json;
+using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using ComprasDto = SustitucionMOAModel.Dto;
 
 namespace SustitucionMOA.Controllers
 {
@@ -41,6 +44,16 @@ namespace SustitucionMOA.Controllers
                 : fiscal.Split(',');
 
             return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento));
+        }
+
+        [HttpGet]
+        public ActionResult CrearPliegoMultiple(string pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar)
+        {
+            ComprasDto.SolpDto pliegoDataDto = JsonConvert.DeserializeObject<ComprasDto.SolpDto>(pliegoData);
+
+            pliegoMultipleService.CrearPliegoMultiple(pliegoDataDto, adjuntos, solpsAsociar);
+
+            return JsonCustom(new { });
         }
     }
 }

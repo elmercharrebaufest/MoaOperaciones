@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion Condicion
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -104,8 +104,9 @@ namespace SustitucionMOAUtils.Services
         public void GuardarPliego(SolpDto solp,
                                      HttpFileCollectionBase adjuntos,
                                      bool condEsp,
-                                     string rutaArchivos,
-                                     Pliego pliegoEntity = null)
+                                     string rutaArchivos = null,
+                                     Pliego pliegoEntity = null,
+                                     bool esPliegoMultiple = false)
         {
             if (pliegoEntity is null) { pliegoEntity = new Pliego(); }
 
@@ -233,6 +234,12 @@ namespace SustitucionMOAUtils.Services
                 {
                     repositorio.RemoverTodos(pliegoEntity.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).ToList());
                 }
+            }
+
+            if (esPliegoMultiple && string.IsNullOrWhiteSpace(rutaArchivos))
+            {
+                //override filename
+                rutaArchivos = ObtenerRutaArchivos(pliegoEntity.Id, "PliegoMultiple");
             }
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
@@ -731,7 +738,7 @@ namespace SustitucionMOAUtils.Services
             return solpEntity;
         }
 
-        private string ObtenerRutaArchivos(int id, string path)
+        public string ObtenerRutaArchivos(int id, string path)
         {
             return $"{rutaArchivosCompras}/{path}_{id}";
         }
@@ -7501,13 +7508,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool TieneCondicionEspecial(Solp solp)
+        public bool TieneCondicionEspecial(Solp solp)
         {
-            if (solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true)
-            {
-                return true;
-            }
-            return false;
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
+        }
+
+        public bool TieneCondicionEspecial(SolpDto solp)
+        {
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
         }
 
         public void ObtenerDatosReporteSolp()
