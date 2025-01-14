@@ -46,6 +46,7 @@ namespace SustitucionMOAModel.Entities
 
         public DateTime? FechaLimiteReenvioDocumentacionPorCambioCondiciones { get; set; }
 
+        public int PliegoMultiplePliegoOriginal_Id { get; set; }
 
         [ForeignKey("ProveedorAsignado_Id")]
         public virtual Usuario ProveedorAsignado { get; set; }
