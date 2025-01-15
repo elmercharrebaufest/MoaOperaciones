@@ -101,14 +101,18 @@ namespace SustitucionMOAUtils.Services
             this.tablaSapService = tablaSapService;
         }
 
-        public void GuardarPliego(SolpDto solp,
+        public Pliego GuardarPliego(SolpDto solp,
                                      HttpFileCollectionBase adjuntos,
                                      bool condEsp,
                                      string rutaArchivos = null,
                                      Pliego pliegoEntity = null,
                                      bool esPliegoMultiple = false)
         {
-            if (pliegoEntity is null) { pliegoEntity = new Pliego(); }
+            if (pliegoEntity is null)
+            {
+                pliegoEntity = new Pliego();
+                pliegoEntity = repositorio.Agregar(pliegoEntity);
+            }
 
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
 
@@ -236,6 +240,8 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
+            repositorio.GuardarCambios();
+
             if (esPliegoMultiple)
             {
                 if (string.IsNullOrWhiteSpace(rutaArchivos))
@@ -248,10 +254,13 @@ namespace SustitucionMOAUtils.Services
             }
 
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
-
-            solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
+            if (!esPliegoMultiple)
+            {
+                solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
+            }
 
             repositorio.GuardarCambios();
+            return pliegoEntity;
         }
 
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
@@ -417,7 +426,7 @@ namespace SustitucionMOAUtils.Services
             repositorio.GuardarCambios();
             solp.Id = solpEntity.Id;
 
-            GuardarPliego(solp, adjuntos, condEsp, ObtenerRutaArchivos(solpEntity.Id, "Solp"), solpEntity.Pliego);
+            solpEntity.Pliego = GuardarPliego(solp, adjuntos, condEsp, ObtenerRutaArchivos(solpEntity.Id, "Solp"), solpEntity.Pliego);
 
             solp.EmailLinkToken = solpEntity.EmailLinkToken;
             var respuestaGuardarSOLP = new RespuestaGuardarSOLP

@@ -130,9 +130,7 @@ namespace SustitucionMOAUtils.Services
         {
             bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
 
-            Pliego pliego = null;
-
-            comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, pliegoEntity: pliego, esPliegomultiple: true);
+            Pliego pliego = comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, esPliegoMultiple: true);
 
             List<Solp> solps = repositorio.Listar<Solp>(solp => solpsAsociar.Contains(solp.Id));
 
