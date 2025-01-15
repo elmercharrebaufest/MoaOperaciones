@@ -315,8 +315,10 @@ export class ComprasService extends BaseService {
     }
 
 
-    public GuardarSolp(solp: Solp) {
-        let solpJson = JSON.stringify({
+    public armarSolpString(solp: Solp, incluirPosiciones: boolean = true): string {
+
+        let solpObject =
+        {
             Id: solp.id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             TipoSolpSap: solp.tipoSolpSap,
@@ -372,8 +374,11 @@ export class ComprasService extends BaseService {
             THProveedorDirecto: solp.thProveedorDirecto,
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
-            Posiciones: solp.posiciones.map(x => {
+            Posiciones: null,
+        };
 
+        if (incluirPosiciones) {
+            solpObject.Posiciones = solp.posiciones.map(x => {
                 return {
                     Codigo: x.id,
                     PlazoEntrega: x.plazoDeEntrega,
@@ -443,8 +448,15 @@ export class ComprasService extends BaseService {
                         ...this.getProveedores(x.proveedoresInvalidos, 'INVALIDO')
                     ]
                 }
-            })
-        });
+            });
+        }
+
+        return JSON.stringify(solpObject);
+    }
+
+
+    public GuardarSolp(solp: Solp) {
+        let solpJson = this.armarSolpString(solp);
 
         var payload = new FormData();
 

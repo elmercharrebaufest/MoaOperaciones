@@ -745,9 +745,22 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private guardarPliegoMultiple(): void {
-        const p = this.solpActual;
-        const s = this.pliegoMultipleIdSolpsSeleccionadas;
-        debugger;
+        this.pliegoMultipleService
+            .vincularSolpPliegoMultiple(this.solpActual, this.pliegoMultipleIdSolpsSeleccionadas)
+            .subscribe((result: any) => {
+                if (result.logout == true) {
+                    this.sessionDataService.logout();
+                } else if (result.error != undefined && result.error != "") {
+                    this.messageService.add({ severity: 'error', summary: 'No se pudo guardar la SOLP', detail: result.error });
+                    this.blockUI.stop();
+                } else if (result.info != undefined) {
+                    this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
+                    this.blockUI.stop();
+                } else {
+
+                    this.blockUI.stop();
+                }
+            });
     }
 
     public onSolpSeleccionadaListChanged(data: number[]): void {
@@ -1220,7 +1233,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
-        debugger;
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
