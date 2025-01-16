@@ -142,12 +142,15 @@ namespace SustitucionMOAUtils.Services
                     porcentajeAcumulado.ToString("P0", CultureInfo.GetCultureInfo("en-US"))
                     : porcentajeAcumulado.ToString("P2", CultureInfo.GetCultureInfo("en-US"));
 
+                string descripcionFormateado = HttpUtility.HtmlEncode(report.Descripcion ?? "N/A");
+                string UMFormateado = HttpUtility.HtmlEncode(report.UM ?? "N/A");
+
                 sb.Append("<tr>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.NumeroLinea.ToString()}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.ServicioNumero.ToString() ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>{report.Descripcion ?? "N/A"}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{descripcionFormateado}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{report.Cantidad.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
-                    $"<td style='padding: 10px; border: 1px solid #333;'>{report.UM ?? "N/A"}</td>" +
+                    $"<td style='padding: 10px; border: 1px solid #333;'>{UMFormateado}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + report.Importe.ToString("N2", CultureInfo.GetCultureInfo("en-US")) ?? "N/A"}</td>" +
                     $"<td style='padding: 10px; border: 1px solid #333;'>{(report.Moneda == "ARP" ? "$ " : report.Moneda + " ") + (Convert.ToDecimal(report.Cantidad, CultureInfo.InvariantCulture) * report.Importe).ToString("N2", CultureInfo.GetCultureInfo("en-US"))}</td>" +
                     // Anteriores
