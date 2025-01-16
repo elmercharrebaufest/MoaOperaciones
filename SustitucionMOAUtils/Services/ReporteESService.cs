@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.IO;
-using iTextSharp.text;
-using iTextSharp.text.html.simpleparser;
-using iTextSharp.text.pdf;
+﻿using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAUtils.Logger;
-using System.Text;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAUtils.Interfaces;
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 
 
 namespace SustitucionMOAUtils.Services
@@ -38,9 +34,9 @@ namespace SustitucionMOAUtils.Services
 
             try
             {
-               
+
                 var groupedReportsForPosition = report.GroupBy(r => r.PosicionId);
-                
+
                 using (StreamReader reader = new StreamReader(TEMPLATE_REPORTE_ALTA_ES))
                 {
                     templateContent = reader.ReadToEnd();
@@ -54,14 +50,14 @@ namespace SustitucionMOAUtils.Services
                     htmlTable += data.Table;
                     generalAmount += data.TotalAmount;
                 }
-                
+
                 string fullHtml = templateContent.Replace("{table}", htmlTable);
                 fullHtml = fullHtml.Replace("{oc}", report[0].NroOrdenCompra);
                 fullHtml = fullHtml.Replace("{generalAmount}", (report[0].Moneda == "ARP" ? "$ " : report[0].Moneda + " ") + generalAmount.ToString("N2"));
 
-                
+
                 var pdfDoc = new iTextSharp.text.Document(iTextSharp.text.PageSize.A3.Rotate(), 10f, 10f, 10f, 0f);
-                
+
                 PdfWriter writer = PdfWriter.GetInstance(pdfDoc, ms);
                 writer.CloseStream = false;
 
@@ -71,7 +67,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     XMLWorkerHelper.GetInstance().ParseXHtml(writer, pdfDoc, stringReader);
                 }
-                
+
                 pdfDoc.Close();
 
                 ms.Position = 0;
@@ -87,7 +83,7 @@ namespace SustitucionMOAUtils.Services
             {
                 ms.Close();
             }
-           
+
         }
 
         private HtmlTableResult BuildHtmlTable(List<ReporteDto> reports)
@@ -181,7 +177,8 @@ namespace SustitucionMOAUtils.Services
             sb.AppendLine("</tfoot>");
             sb.AppendLine("</table>");
 
-            return new HtmlTableResult {
+            return new HtmlTableResult
+            {
                 Table = sb.ToString(),
                 TotalAmount = montoTotal,
             };
