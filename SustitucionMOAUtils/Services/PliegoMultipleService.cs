@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: solps
+﻿// Ignore Spelling: solps Roslynator
 
 using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
