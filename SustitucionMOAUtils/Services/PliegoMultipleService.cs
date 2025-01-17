@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: solps
+﻿// Ignore Spelling: solps Roslynator
 
 using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
@@ -126,6 +126,7 @@ namespace SustitucionMOAUtils.Services
                 .ConvertAll(solp => (SolpDto)solp);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "EF does not support StringComparison")]
         public void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar)
         {
             bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
@@ -138,6 +139,12 @@ namespace SustitucionMOAUtils.Services
             {
                 solp.PliegoMultiplePliegoOriginal_Id = solp.Pliego_Id;
                 solp.Pliego = pliego;
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                {
+                    solp.EstadoDocumento_Id = (int)EstadoDocumentoSolp.Creado;
+                }
+                solp.TipoSolp = repositorio
+                    .Obtener<TablaGeneral>(x => x.Tabla.ToLower() == "TipoSolp".ToLower() && x.Codigo.ToLower() == "CON_PLIEGO".ToLower());
             }
 
             repositorio.GuardarCambios();
