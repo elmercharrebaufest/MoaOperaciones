@@ -1187,7 +1187,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     salir() {
-        this.navService.navegarSeccion('/compras');
+        if (this.esEdicionPliegoMultiple || this.esCreacionPliegoMultiple) {
+            this.navService.navegarSeccion('/compras/dashboardPliegoMultiple');
+        } else {
+            this.navService.navegarSeccion('/compras');
+        }
     }
 
     generarZipPliego(idSolp) {
