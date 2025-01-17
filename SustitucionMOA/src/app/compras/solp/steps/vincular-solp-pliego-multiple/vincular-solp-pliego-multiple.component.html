@@ -52,7 +52,7 @@
             <ng-template pTemplate="body" let-solp>
                 <tr>
                     <td>
-                        <p-checkbox binary="true" [(ngModel)]="solp.selected"></p-checkbox>
+                        <p-checkbox binary="true" [(ngModel)]="solp.Selected" (onChange)="notifyChange()"></p-checkbox>
                         <span *ngIf="solp.TipoSolpSap == 2">
                             <img class="pointer" src="./Content/images/icons/worker.svg" alt="Mantenimiento"
                                  style="height:25px; cursor:default" />

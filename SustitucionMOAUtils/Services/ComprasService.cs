@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion
+﻿// Ignore Spelling: Solp href noopener noreferrer pdf img ciberseguridad Posicion Imputacion Descripcion Almacen paginacion nro username Licitacion Cotizacion Condicion
 
 using DocumentFormat.OpenXml;
 using HandlebarsDotNet;
@@ -101,10 +101,172 @@ namespace SustitucionMOAUtils.Services
             this.tablaSapService = tablaSapService;
         }
 
+        public Pliego GuardarPliego(SolpDto solp,
+                                     HttpFileCollectionBase adjuntos,
+                                     bool condEsp,
+                                     string rutaArchivos = null,
+                                     Pliego pliegoEntity = null,
+                                     bool esPliegoMultiple = false)
+        {
+            if (pliegoEntity is null)
+            {
+                pliegoEntity = new Pliego();
+                pliegoEntity = repositorio.Agregar(pliegoEntity);
+            }
+
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
+
+            pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
+            pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
+
+            pliegoEntity.NombreObra = solp.NombreDeObra;
+
+            pliegoEntity.FiscalContrato = solp.FiscalContrato;
+            pliegoEntity.Telefono = solp.Telefono;
+            pliegoEntity.Email = solp.Email;
+            pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
+            pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
+            pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
+            pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
+            pliegoEntity.TieneObradores = solp.TieneObradores;
+            pliegoEntity.TieneMedioElevacion = solp.TieneMedioElevacion;
+            pliegoEntity.TieneAndamio = solp.TieneAndamio;
+            pliegoEntity.TieneGrillaPersonal = solp.TieneGrillaPersonal;
+            pliegoEntity.TieneFabricacionTallerExterno = solp.TieneFabricacionTallerExterno;
+            pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
+            pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
+            pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
+            pliegoEntity.RequisitoCiberseguridad = solp.RequisitoCiberseguridad;
+            pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
+            pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
+            pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
+            pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
+            pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
+            pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
+            pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
+            pliegoEntity.ObservacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
+            pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales ?? true;
+            pliegoEntity.RevisadoPor = solp.RevisadoPor;
+
+            if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
+            {
+                if (pliegoEntity.VisitasMasivas == null)
+                {
+                    pliegoEntity.VisitasMasivas = new List<PliegoVisita>();
+                }
+                var idVisita = -1;
+
+                var visitasBorrar = pliegoEntity.VisitasMasivas
+                    .Where(x => !solp.VisitasObraMasiva.Select(y => y.Codigo).Contains(x.Codigo))
+                    .ToList();
+
+                foreach (PliegoVisita visita in visitasBorrar)
+                {
+                    repositorio.Remover(visita);
+                }
+
+                foreach (var visita in solp.VisitasObraMasiva)
+                {
+                    var visitaExistente = pliegoEntity.VisitasMasivas.FirstOrDefault(x => x.Codigo == visita.Codigo);
+
+                    if (visitaExistente != null)
+                    {
+                        visitaExistente.FechaHora = visita.FechaHora.ToLocalTime();
+                    }
+                    else
+                    {
+                        pliegoEntity.VisitasMasivas.Add(new PliegoVisita()
+                        {
+                            Codigo = visita.Codigo,
+                            Id = idVisita--,
+                            FechaHora = visita.FechaHora.ToLocalTime()
+                        });
+                    }
+                }
+            }
+
+            // Identifica los que ya no están en la base de datos y los borra
+            if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
+            {
+                var archivosParaBorrar = pliegoEntity.Archivos
+                    .Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id))
+                    .ToList();
+
+                foreach (Archivo archivo in archivosParaBorrar)
+                {
+                    repositorio.Remover(archivo);
+                }
+            }
+            if (pliegoEntity.Archivos == null)
+            {
+                pliegoEntity.Archivos = new List<Archivo>();
+            }
+
+            if (condEsp)
+            {
+                string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
+
+                if (!string.IsNullOrEmpty(pliegoEntity.ObservacionesGeneracion))
+                {
+                    int index = pliegoEntity.ObservacionesGeneracion.IndexOf("Justificación de condición especial:");
+                    if (index != -1)
+                    {
+                        pliegoEntity.ObservacionesGeneracion = pliegoEntity.ObservacionesGeneracion.Substring(0, index).TrimEnd();
+                    }
+
+                    pliegoEntity.ObservacionesGeneracion += "\n\n" + justificacionTexto;
+                }
+                else
+                {
+                    pliegoEntity.ObservacionesGeneracion = justificacionTexto;
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(pliegoEntity.ObservacionesGeneracion))
+                {
+                    const string fraseABuscar = "Justificación de condición especial:";
+
+                    int indice = pliegoEntity.ObservacionesGeneracion.IndexOf(fraseABuscar);
+                    if (indice != -1)
+                    {
+                        pliegoEntity.ObservacionesGeneracion = pliegoEntity.ObservacionesGeneracion.Substring(0, indice);
+                    }
+                    pliegoEntity.ObservacionesCotizacionCondEsp = null;
+                }
+                if (pliegoEntity.Archivos.Any(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                {
+                    repositorio.RemoverTodos(pliegoEntity.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).ToList());
+                }
+            }
+
+            repositorio.GuardarCambios();
+
+            if (esPliegoMultiple)
+            {
+                if (string.IsNullOrWhiteSpace(rutaArchivos))
+                {
+                    //override filename
+                    rutaArchivos = ObtenerRutaArchivos(pliegoEntity.Id, "PliegoMultiple");
+                }
+
+                pliegoEntity.Multiple = true;
+            }
+
+            pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
+            if (!esPliegoMultiple)
+            {
+                solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
+            }
+
+            repositorio.GuardarCambios();
+            return pliegoEntity;
+        }
+
         public RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos)
         {
             Solp solpEntity = null;
-            Pliego pliegoEntity = null;
+
             bool enviarMailUrgencia = solp.Urgencia == true && solp.Finalizar && solp.TrabajoYaHecho != true;
 
             if (solp.Id.HasValue)
@@ -128,7 +290,6 @@ namespace SustitucionMOAUtils.Services
                     //{
                     //    solpEntity.UsuarioCreacion_Id = solp.UsuarioActual.Id;
                     //}
-                    pliegoEntity = solpEntity.Pliego;
 
                     if (enviarMailUrgencia && !string.IsNullOrEmpty(solpEntity.NroSolp))
                     {
@@ -186,7 +347,6 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.Urgencia = solp.Urgencia;
                 solpEntity.NroOrdenDeCompraAdicional = solp.NroOrdenDeCompraAdicional;
                 solpEntity.ProveedorAsignado_Id = solp.ProveedorAsignado_Id;
-                pliegoEntity = solpEntity.Pliego;
 
                 solpEntity.NroSolp = solp.NroSolp;
                 solpEntity.THAjustePolinomica = solp.THAjustePolinomica;
@@ -195,23 +355,22 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Agregar(solpEntity);
             }
-            pliegoEntity.RevisadoPor = solp.RevisadoPor;
-
-            pliegoEntity.Usuario_Id = solp.UsuarioActual.Id;
-            pliegoEntity.FechaModificacion = DateTime.Now; //FechaAlta es valor predeterminado en clase Pliego
 
             if (solpEntity != null)
             {
                 if (solp.ClaseDocumento != null)
+                {
                     solpEntity.ClaseDocumento = repositorio.Obtener<TablaSap>(x => x.Tabla == TablasSap.ClaseDocumento && x.Codigo == solp.ClaseDocumento.Codigo);
+                }
 
                 if (solp.TipoSolp != null)
+                {
                     solpEntity.TipoSolp = repositorio.Obtener<TablaGeneral>(x => x.Tabla == TablasGenerales.TipoSolp && x.Codigo == solp.TipoSolp.Codigo);
+                }
                 solpEntity.PasoCompletado = solp.PasoCompletado;
                 solpEntity.UsuarioCompras_Id = solp.UsuarioCompras.Id;
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
-                pliegoEntity.NombreObra = solp.NombreDeObra;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
                 solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.Adicional = solp.Adicional;
@@ -226,85 +385,6 @@ namespace SustitucionMOAUtils.Services
                                                                                * (llamar desde el front)
                                                                                */
 
-                pliegoEntity.FiscalContrato = solp.FiscalContrato;
-                pliegoEntity.Telefono = solp.Telefono;
-                pliegoEntity.Email = solp.Email;
-                pliegoEntity.FechaHoraEntrega = solp.FechaHoraEntrega?.ToLocalTime();
-                pliegoEntity.SupervisorSector = solp.SupervisorSector != null ? string.Join(",", solp.SupervisorSector.Select(x => x)) : string.Empty;
-                pliegoEntity.SupervisorTrabajo = solp.SupervisorTrabajo;
-                pliegoEntity.TieneVisitaObraMasiva = solp.TieneVisitaObraMasiva;
-                pliegoEntity.TieneObradores = solp.TieneObradores;
-                pliegoEntity.TieneMedioElevacion = solp.TieneMedioElevacion;
-                pliegoEntity.TieneAndamio = solp.TieneAndamio;
-                pliegoEntity.TieneGrillaPersonal = solp.TieneGrillaPersonal;
-                pliegoEntity.TieneFabricacionTallerExterno = solp.TieneFabricacionTallerExterno;
-                pliegoEntity.TieneTecnicoSeguridad = solp.TieneTecnicoSeguridad;
-                pliegoEntity.TieneDescripcionTecnica = solp.TieneDescripcionTecnica;
-                pliegoEntity.TieneDocumentacionTecnica = solp.TieneDocumentacionTecnica;
-                pliegoEntity.RequisitoCiberseguridad = solp.RequisitoCiberseguridad;
-                pliegoEntity.FechaHoraLimiteConsulta = solp.FechaHoraLimiteConsulta?.ToLocalTime();
-                pliegoEntity.ObservacionesGeneracion = solp.ObservacionesGeneracion;
-                pliegoEntity.DiasEjecucion = solp.DiasEjecucion;
-                pliegoEntity.JornadaLaboralDias = solp.JornadaLaboral != null ? string.Join(",", solp.JornadaLaboral.Select(x => (int)x)) : string.Empty;
-                pliegoEntity.JornadaLaboralHorasDesde = solp.JornadaLaboralDesde?.ToLocalTime();
-                pliegoEntity.JornadaLaboralHorasHasta = solp.JornadaLaboralHasta?.ToLocalTime();
-                pliegoEntity.ObservacionesCotizacion = solp.ObservacionesCotizacion;
-                pliegoEntity.ObservacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
-                pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales.HasValue ? solp.TieneCondicionesGenerales : true;
-                pliegoEntity.RevisadoPor = solp.RevisadoPor;
-                if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
-                {
-                    if (pliegoEntity.VisitasMasivas == null)
-                    {
-                        pliegoEntity.VisitasMasivas = new List<PliegoVisita>();
-                    }
-                    var idVisita = -1;
-
-                    var visitasBorrar = pliegoEntity.VisitasMasivas
-                        .Where(x => !solp.VisitasObraMasiva.Select(y => y.Codigo).Contains(x.Codigo))
-                        .ToList();
-
-                    foreach (var visita in visitasBorrar)
-                    {
-                        repositorio.Remover<PliegoVisita>(visita);
-                    }
-
-                    foreach (var visita in solp.VisitasObraMasiva)
-                    {
-                        var visitaExistente = pliegoEntity.VisitasMasivas.FirstOrDefault(x => x.Codigo == visita.Codigo);
-
-                        if (visitaExistente != null)
-                        {
-                            visitaExistente.FechaHora = visita.FechaHora.ToLocalTime();
-                        }
-                        else
-                        {
-                            pliegoEntity.VisitasMasivas.Add(new PliegoVisita()
-                            {
-                                Codigo = visita.Codigo,
-                                Id = idVisita--,
-                                FechaHora = visita.FechaHora.ToLocalTime()
-                            });
-                        }
-                    }
-                }
-                // Identifica los que ya no estan en la base de datos y los borra
-                if (solp.Adjuntos != null && pliegoEntity.Archivos != null)
-                {
-                    var archivosParaBorrar = pliegoEntity.Archivos
-                        .Where(x => !solp.Adjuntos.Select(y => y.Id).Contains(x.Id))
-                        .ToList();
-
-                    foreach (var archivo in archivosParaBorrar)
-                    {
-                        repositorio.Remover<Archivo>(archivo);
-                    }
-                }
-                if (pliegoEntity.Archivos == null)
-                {
-                    pliegoEntity.Archivos = new List<Archivo>();
-                }
-
                 solpEntity = PosicionesEliminar(solpEntity, solp);
                 var codigos = solpEntity.Posiciones.Select(x => x.Codigo).ToList();
 
@@ -317,18 +397,18 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-
             if (solpEntity.LiberadoresSapSolp.Any())
                 repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp.ToList());
             if (solp.TrabajoYaHecho != true && solp.LiberadoresSapSolp.Any())
             {
-                solpEntity.LiberadoresSapSolp = solp.LiberadoresSapSolp.Select(dto => new LiberadorSapSolp
+                solpEntity.LiberadoresSapSolp = solp.LiberadoresSapSolp.ConvertAll(dto => new LiberadorSapSolp
                 {
                     LiberadorSap_Id = dto.LiberadorSap_Id
-                }).ToList();
+                });
             }
 
             bool condEsp = TieneCondicionEspecial(solpEntity);
+
             if (condEsp)
             {
                 bool esServicio = solpEntity.Posiciones.Any() && solpEntity.Posiciones.FirstOrDefault()?.TipoPosicion != null && solpEntity.Posiciones.FirstOrDefault()?.TipoPosicion.Codigo == "SERVICIO";
@@ -336,49 +416,18 @@ namespace SustitucionMOAUtils.Services
                 {
                     CompletarPrefijoCondicionEspecial(solpEntity);
                 }
-
-                string justificacionTexto = "Justificación de condición especial: " + pliegoEntity.ObservacionesCotizacionCondEsp;
-
-                if (!string.IsNullOrEmpty(pliegoEntity.ObservacionesGeneracion))
-                {
-                    int index = pliegoEntity.ObservacionesGeneracion.IndexOf("Justificación de condición especial:");
-                    if (index != -1)
-                    {
-                        pliegoEntity.ObservacionesGeneracion = pliegoEntity.ObservacionesGeneracion.Substring(0, index).TrimEnd();
-                    }
-
-                    pliegoEntity.ObservacionesGeneracion += "\n\n" + justificacionTexto;
-                }
-                else
-                {
-                    pliegoEntity.ObservacionesGeneracion = justificacionTexto;
-                }
-
-
-
             }
             else
             {
                 solpEntity.ProveedorAsignado_Id = null;
-                if (!string.IsNullOrEmpty(solpEntity.Pliego.ObservacionesGeneracion))
-                {
-                    string fraseABuscar = "Justificación de condición especial:";
-
-                    int indice = solpEntity.Pliego.ObservacionesGeneracion.IndexOf(fraseABuscar);
-                    if (indice != -1)
-                        solpEntity.Pliego.ObservacionesGeneracion = solpEntity.Pliego.ObservacionesGeneracion.Substring(0, indice);
-                    solpEntity.Pliego.ObservacionesCotizacionCondEsp = null;
-                }
-                if (solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).Any())
-                    repositorio.RemoverTodos(solpEntity.Pliego.Archivos.Where(a => a.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp).ToList());
             }
             SetNombreDePedido(solpEntity);
             ExistenPosicionesNuevas(solp, solpEntity);
             repositorio.GuardarCambios();
             solp.Id = solpEntity.Id;
 
-            pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, solpEntity, pliegoEntity);
-            solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
+            solpEntity.Pliego = GuardarPliego(solp, adjuntos, condEsp, ObtenerRutaArchivos(solpEntity.Id, "Solp"), solpEntity.Pliego);
+
             solp.EmailLinkToken = solpEntity.EmailLinkToken;
             var respuestaGuardarSOLP = new RespuestaGuardarSOLP
             {
@@ -388,7 +437,6 @@ namespace SustitucionMOAUtils.Services
             respuestaGuardarSOLP.Solp.TieneModificaciones = solpEntity.TieneModificaciones;
             respuestaGuardarSOLP.Solp.TienePeticionDeOferta = solpEntity.Posiciones != null && solpEntity.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any());
 
-
             if (solp.Finalizar)
             {
                 try
@@ -396,7 +444,6 @@ namespace SustitucionMOAUtils.Services
                     respuestaGuardarSOLP = FinalizarSolp(solpEntity, respuestaGuardarSOLP, enviarMailUrgencia);
                     solpEntity.UsuarioModificacion_Id = solp.UsuarioActual.Id;
                     solpEntity.FechaModificacion = DateTime.Now;
-
                 }
                 catch (Exception e)
                 {
@@ -705,17 +752,23 @@ namespace SustitucionMOAUtils.Services
             return solpEntity;
         }
 
-        private string ObtenerRutaArchivos(int id, string path)
+        public string ObtenerRutaArchivos(int id, string path)
         {
             return $"{rutaArchivosCompras}/{path}_{id}";
         }
 
+
         private Pliego GuardarEspecificacionesTecnicasPliego(SolpDto solp, Solp solpEntity, Pliego pliegoEntity)
         {
-            var rutaArchivo = string.Concat(ObtenerRutaArchivos(solpEntity.Id, "Solp"), "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
+            return GuardarEspecificacionesTecnicasPliego(solp, ObtenerRutaArchivos(solpEntity.Id, "Solp"), pliegoEntity);
+        }
+
+        private Pliego GuardarEspecificacionesTecnicasPliego(SolpDto solp, string rutaArchivos, Pliego pliegoEntity)
+        {
+            var rutaArchivo = string.Concat(rutaArchivos, "/", FileKeys.EspecificacionesTecnicasPliego, ".txt");
             solp.EspecificacionesTecnicas = ImageResizer.AjustarImagenesEnHtml(solp.EspecificacionesTecnicas);
 
-            Directory.CreateDirectory(ObtenerRutaArchivos(solpEntity.Id, "Solp"));
+            Directory.CreateDirectory(rutaArchivos);
             File.WriteAllText(rutaArchivo, solp.EspecificacionesTecnicas);
 
             var archivosEspecificacionesTecnicasPliego = pliegoEntity.Archivos.FirstOrDefault(x => x.FileKey == FileKeys.EspecificacionesTecnicasPliego);
@@ -7469,13 +7522,14 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private bool TieneCondicionEspecial(Solp solp)
+        public bool TieneCondicionEspecial(Solp solp)
         {
-            if (solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true)
-            {
-                return true;
-            }
-            return false;
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
+        }
+
+        public bool TieneCondicionEspecial(SolpDto solp)
+        {
+            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
         }
 
         public void ObtenerDatosReporteSolp()

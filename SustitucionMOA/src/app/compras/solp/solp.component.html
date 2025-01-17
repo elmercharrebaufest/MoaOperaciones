@@ -49,7 +49,8 @@
                         <cabecera #cabecera [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></cabecera>
                     </div>
                     <div *ngSwitchCase="enumSolp.PliegoMultipleVincularSolp" [@fadeInOut]>
-                        <vincular-solp-pliego-multiple [(model)]="solpActual" [(locale)]="es" [(combos)]="combos" [(esCreacionSolp)]="esCreacionSolp" [(getDatosUltimaSolp)]="getDatosUltimaSolp"></vincular-solp-pliego-multiple>
+                        <vincular-solp-pliego-multiple [(locale)]="es"
+                                                       (solpSeleccionadaListChanged)="onSolpSeleccionadaListChanged($event)"></vincular-solp-pliego-multiple>
                     </div>
                     <div *ngSwitchDefault [@fadeInOut]>
                         Paso en construccion
@@ -59,11 +60,10 @@
         </div>
 
         <stepper-actions [(disabledSave)]="disabledSave"
+                         [saveButtonAvailable]="steppeerSaveButtonAvailable"
                          [(pasos)]="pasos"
                          [(pasoActual)]="pasoActual"
                          [(tipoSolp)]="solpActual.tipoSolp"
-                         [(nroSolp)]="solpActual.nroSolp"
-                         [(tipoSolpSap)]="solpActual.tipoSolpSap"
                          (cancelarSolpEmitter)="cancelarSolp()"
                          (navegarEmitter)="navegar($event)"
                          (guardarCambiosEmitter)="guardarCambios($event)"
@@ -114,6 +114,18 @@
     <p-footer>
         <button class="btn btn-success botonesComprasColor" (click)="showEmailPopup(displaySAP, false)">Enviar Email</button>
         <button *ngIf="solpActual.tipoSolp == 'CON_PLIEGO' || tieneAdjuntos" class="btn btn-secondary botonesCompras" (click)="generarZipPliego(solpActual.id)">Descargar SOLP</button>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayPliegoMultipleOk" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Vinculación de pliego múltiple realizada con éxito
+    <br>
+    <br>
+    <p-footer>
         <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
     </p-footer>
 </p-dialog>

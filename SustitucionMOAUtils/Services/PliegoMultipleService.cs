@@ -1,4 +1,6 @@
-﻿using SustitucionMOAModel.Dto.PliegoMultiple;
+﻿// Ignore Spelling: solps
+
+using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
@@ -6,6 +8,8 @@ using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
+using ComprasDto = SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAUtils.Services
 {
@@ -13,9 +17,13 @@ namespace SustitucionMOAUtils.Services
     {
         private readonly IRepositorio repositorio;
 
-        public PliegoMultipleService(IRepositorio repositorio)
+        private readonly IComprasService comprasService;
+
+        public PliegoMultipleService(IRepositorio repositorio,
+                                     IComprasService comprasService)
         {
             this.repositorio = repositorio;
+            this.comprasService = comprasService;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
@@ -116,6 +124,23 @@ namespace SustitucionMOAUtils.Services
                 .OrderByDescending(solp => solp.FechaCreacion)
                 .ToList()
                 .ConvertAll(solp => (SolpDto)solp);
+        }
+
+        public void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar)
+        {
+            bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
+
+            Pliego pliego = comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, esPliegoMultiple: true);
+
+            List<Solp> solps = repositorio.Listar<Solp>(solp => solpsAsociar.Contains(solp.Id));
+
+            foreach (Solp solp in solps)
+            {
+                solp.PliegoMultiplePliegoOriginal_Id = solp.Pliego_Id;
+                solp.Pliego = pliego;
+            }
+
+            repositorio.GuardarCambios();
         }
     }
 }

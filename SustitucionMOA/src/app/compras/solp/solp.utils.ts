@@ -78,6 +78,7 @@ export function setupSolpPasos(): { solp: Paso[], pliegoMultiple: Paso[] } {
     const pliegoMultiple = _.cloneDeep(solpregular);
     pliegoMultiple[4].Nombre = 'Vincular Solp';
     pliegoMultiple[4].Codigo = EnumPasoSolp.PliegoMultipleVincularSolp;
+    pliegoMultiple.forEach((step: { Preview: boolean; }) => step.Preview = false);
 
     return { solp: solpregular, pliegoMultiple: pliegoMultiple };
 }
