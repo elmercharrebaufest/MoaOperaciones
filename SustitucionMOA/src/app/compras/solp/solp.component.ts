@@ -178,10 +178,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.getCombos();
             this.es = setupDaysAndMonths();
 
-            this.pasos[0].Activo = true;
-            this.pasos[0].Iniciado = true;
-            this.pasoActual = this.pasos[0];
-
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
@@ -195,6 +191,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
                         this.solpActual.tipoSolp = params["tipoSolp"];
                     }
+                    this.pasos[0].Activo = true;
+                    this.pasos[0].Iniciado = true;
+                    this.pasoActual = this.pasos[0];
 
                     if (parseInt(params["id"].split(',')[0]) > 0) { this.solpId = parseInt(params["id"].split(',')[0]); }
                     if (params["id"].split(',')[1] == undefined) {
@@ -757,6 +756,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.messageService.add({ severity: 'info', summary: 'No se pudo guardar la SOLP', detail: result.info });
                     this.blockUI.stop();
                 } else {
+
+                    this.cambiosGuardados = true;
 
                     this.blockUI.stop();
                 }
