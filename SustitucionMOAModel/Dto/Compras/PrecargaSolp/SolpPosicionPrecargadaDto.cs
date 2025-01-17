@@ -14,10 +14,15 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public int TipoPosicionId { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
         
-        public string Codigo { get; set; }
-        
         public int? TipoImputacionId { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
+        
+        public int? CentroId { get; set; }
+        public TablaSapDto Centro { get; set; }
+
+        public string Codigo { get; set; }
+
+        public MaterialSolpDto MaterialCatalogado { get; set; }
 
         public string Tarea { get; set; }
 
@@ -32,9 +37,6 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public int? GrupoArticuloId { get; set; }
         public TablaSapDto GrupoArticulo { get; set; }
 
-        public int? CentroId { get; set; }
-        public TablaSapDto Centro { get; set; }
-
         public int? AlmacenId { get; set; }
         public TablaSapDto Almacen { get; set; }
 
@@ -44,6 +46,8 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public TablaSapDto Unidad { get; set; }
 
         public TablaSapDto CuentaMayor { get; set; }
+
+        public TablaSapDto Imputacion { get; set; }
 
         public List<SolpSubposicionPrecargadaDto> Subposiciones { get; set; }
     }

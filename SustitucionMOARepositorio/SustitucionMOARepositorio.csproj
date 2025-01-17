@@ -101,6 +101,7 @@
     <Compile Include="MOAOperacionesDbContext.cs" />
     <Compile Include="RepositorioEF.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioCompras.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioConsultas.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCargaFason.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="Repositorios\Interfaces\IRepositorioUbicacionGeografica.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioUsuario.cs" />
     <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
+    <Compile Include="Repositorios\RepositorioCompras.cs" />
     <Compile Include="Repositorios\RepositorioConsultas.cs" />
     <Compile Include="Repositorios\RepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\RepositorioOrdenDeCargaFason.cs" />

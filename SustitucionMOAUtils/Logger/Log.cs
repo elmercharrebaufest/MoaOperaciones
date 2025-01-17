@@ -1,17 +1,12 @@
-﻿using NLog.Config;
+﻿using NLog;
+using NLog.Config;
 using NLog.Targets;
 using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAWS.Logger;
 using System;
+using System.Configuration;
 using System.IO;
 using System.Web.Hosting;
-using System.ServiceModel.Channels;
-using System.Configuration;
-using NLog;
-using DocumentFormat.OpenXml.VariantTypes;
-using System.Linq;
-using System.Collections;
 
 namespace SustitucionMOAUtils.Logger
 {
@@ -34,6 +29,11 @@ namespace SustitucionMOAUtils.Logger
 
             // Aplicar la nueva configuración
             LogManager.ReconfigExistingLoggers();
+#if DEBUG
+            LogManager.ThrowConfigExceptions = true; // Para excepciones de configuración
+            LogManager.ThrowExceptions = true;      // Para errores en targets
+#endif
+
 
         }
     }
@@ -44,6 +44,7 @@ namespace SustitucionMOAUtils.Logger
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
         private static readonly NLog.Logger FrontLogger = NLog.LogManager.GetLogger("frontLogger");
         private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
+        private static readonly NLog.Logger RequestLogger = NLog.LogManager.GetLogger("requestLogger");
 
         public Log()
         {
@@ -109,7 +110,7 @@ namespace SustitucionMOAUtils.Logger
             return null;
         }
 
-        
+
         public static void Error(string ip, string usuario, string controller, string method, Exception exception)
         {
             try
@@ -258,6 +259,17 @@ namespace SustitucionMOAUtils.Logger
             {
                 Log.Error(e);
                 Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
+            }
+        }
+        public static void LogRequest(string mensaje)
+        {
+            try
+            {
+                RequestLogger.Info(mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
     }

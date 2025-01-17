@@ -234,7 +234,7 @@ export class OrdenesDeCargaAlta extends BaseComponent implements OnInit, IOrdene
     cambioProducto() {
         let productoActual = this.listaMateriales.find(x => x.MaterialId == this.ordenDeCarga.Producto_Id).CodigoSap;
         if (productoActual == "99709") {
-            this.ordenDeCarga.Cantidad = 20000;
+            this.ordenDeCarga.Cantidad = 25000;
         } else {
             this.ordenDeCarga.Cantidad = 30000;
         }
