@@ -505,7 +505,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
-
         if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple)) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
             if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
@@ -611,6 +610,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 // no hacer nada entre pasos.
                 // al finalizar, llamar desde el método finalizar la grabación de pliego múltiple.
                 this.disabledSave = false;
+                this.blockUI.stop();
             } else {
                 this.guardarSolp(guardarPorPaso, mostrarPreview, enviarSap);
             }
