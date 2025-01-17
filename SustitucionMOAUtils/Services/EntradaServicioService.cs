@@ -17,6 +17,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
@@ -730,6 +731,25 @@ namespace SustitucionMOAUtils.Services
                     }
 
                 }
+            }
+            catch (AggregateException ae)
+            {
+                result.Type = "E";
+                StringBuilder messageBuilder = new StringBuilder();
+
+                messageBuilder
+                    .Append(ae.Message)
+                    .AppendLine(":");
+
+                Logger.Log.Error(ae);
+
+                foreach (Exception e in ae.InnerExceptions)
+                {
+                    messageBuilder.AppendLine(e.Message);
+                    Logger.Log.Error(e);
+                }
+
+                result.Message = messageBuilder.ToString();
             }
             catch (Exception e)
             {
