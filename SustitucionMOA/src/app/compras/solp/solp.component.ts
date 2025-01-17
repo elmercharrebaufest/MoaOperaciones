@@ -134,6 +134,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
     pasos: Paso[];
     pasosMaster: { solp: Paso[], pliegoMultiple: Paso[] };
 
+    get steppeerSaveButtonAvailable(): boolean {
+        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) { return false; }
+
+        return this.solpActual.nroSolp == null || this.solpActual.nroSolp == 0 || this.solpActual.tipoSolpSap == 2
+    }
+
 
     titulo: string = "";
     tituloNroSolp: string = "";

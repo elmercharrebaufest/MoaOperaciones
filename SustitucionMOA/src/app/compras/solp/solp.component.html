@@ -60,11 +60,10 @@
         </div>
 
         <stepper-actions [(disabledSave)]="disabledSave"
+                         [saveButtonAvailable]="steppeerSaveButtonAvailable"
                          [(pasos)]="pasos"
                          [(pasoActual)]="pasoActual"
                          [(tipoSolp)]="solpActual.tipoSolp"
-                         [(nroSolp)]="solpActual.nroSolp"
-                         [(tipoSolpSap)]="solpActual.tipoSolpSap"
                          (cancelarSolpEmitter)="cancelarSolp()"
                          (navegarEmitter)="navegar($event)"
                          (guardarCambiosEmitter)="guardarCambios($event)"

@@ -15,7 +15,7 @@
                     {{pasoAnterior().descripcion}}
                 </button>&nbsp;
             </div>
-            <div *ngIf="nroSolp == null || nroSolp == 0 || tipoSolpSap == 2" class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
+            <div *ngIf="saveButtonAvailable" class="col-xs-2 col-md-2" style="margin: 0; padding: 0; text-align: center;">
                 <button class="btn btn-primary botonesComprasColor" [disabled]="disabledSave" (click)="onGuardar()">GUARDAR</button>&nbsp;
             </div>
             <div class="col-xs-2 col-md-2" style="margin: 0; padding: 0;">
