@@ -138,6 +138,12 @@ namespace SustitucionMOAUtils.Services
             {
                 solp.PliegoMultiplePliegoOriginal_Id = solp.Pliego_Id;
                 solp.Pliego = pliego;
+                if (solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                {
+                    solp.EstadoDocumento_Id = (int)EstadoDocumentoSolp.Creado;
+                }
+                solp.TipoSolp = repositorio
+                    .Obtener<TablaGeneral>(x => x.Tabla.ToLower() == "TipoSolp".ToLower() && x.Codigo.ToLower() == "CON_PLIEGO".ToLower());
             }
 
             repositorio.GuardarCambios();
