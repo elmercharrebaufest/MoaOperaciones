@@ -126,6 +126,7 @@ namespace SustitucionMOAUtils.Services
                 .ConvertAll(solp => (SolpDto)solp);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "EF does not support StringComparison")]
         public void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar)
         {
             bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
