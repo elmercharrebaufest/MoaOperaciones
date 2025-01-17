@@ -118,6 +118,18 @@
     </p-footer>
 </p-dialog>
 
+<p-dialog [(visible)]="displayPliegoMultipleOk" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal">
+        ¡Felicitaciones!
+    </p-header>
+    <br> Vinculación de pliego múltiple realizada con éxito
+    <br>
+    <br>
+    <p-footer>
+        <button class="btn btn-primary botonesComprasColor botonModal" (click)="solpFinalizadaVolverHome()">Volver a la home</button>
+    </p-footer>
+</p-dialog>
+
 <p-dialog [(visible)]="displaySAPEditar" [width]="460" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'overflow':'visible', 'max-height':'100px', 'min-height':'100px'}" [closable]="false">
     <p-header class="headerModal">
         ¡Felicitaciones!

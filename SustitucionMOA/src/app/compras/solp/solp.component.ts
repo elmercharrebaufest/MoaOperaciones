@@ -118,6 +118,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     displayEnvioCircular: boolean;
     fechaLimiteDocumentacionRequerida: boolean;
     usuarioSolicitanteListCache: any[];
+    displayPliegoMultipleOk: boolean;
 
     pliegoMultipleIdSolpsSeleccionadas: number[] = [];
 
@@ -766,6 +767,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     this.cambiosGuardados = true;
 
                     this.blockUI.stop();
+
+                    this.messageService.add({ severity: 'success', detail: 'Los datos se guardaron correctamente' });
+
+                    this.displayPliegoMultipleOk = true;
                 }
             });
     }
