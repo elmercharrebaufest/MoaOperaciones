@@ -96,4 +96,11 @@ export class PliegoMultipleService extends BaseService {
         return this.http
             .post<Solp>('/api/PliegoMultiple/CrearPliegoMultiple', payload, { headers: this.headers });
     }
+
+    public eliminarPliegoMultiple(idPliego: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idPliego', idPliego.toString());
+        return this.http
+            .delete<any>('/api/PliegoMultiple/EliminarPliegoMultiple', { params: params, headers: this.headers });
+    }
 }
