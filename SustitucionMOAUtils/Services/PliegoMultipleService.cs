@@ -137,7 +137,16 @@ namespace SustitucionMOAUtils.Services
 
             foreach (Solp solp in solps)
             {
-                solp.PliegoMultiplePliegoOriginal_Id = solp.Pliego_Id;
+                SolpDatosPreviosPliegoMultiple solpDatosPrevios = new SolpDatosPreviosPliegoMultiple
+                {
+                    Solp_Id = solp.Id,
+                    Pliego_Id = solp.Pliego_Id,
+                    EstadoDocumento_Id = solp.EstadoDocumento_Id,
+                    TipoSolp_Id = solp.TipoSolp_Id
+                };
+
+                repositorio.Agregar(solpDatosPrevios);
+
                 solp.Pliego = pliego;
                 if (solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
                 {
@@ -146,6 +155,29 @@ namespace SustitucionMOAUtils.Services
                 solp.TipoSolp = repositorio
                     .Obtener<TablaGeneral>(x => x.Tabla.ToLower() == "TipoSolp".ToLower() && x.Codigo.ToLower() == "CON_PLIEGO".ToLower());
             }
+
+            repositorio.GuardarCambios();
+        }
+
+        public void EliminarPliegoMultiple(int idPliego)
+        {
+            Pliego pliego = repositorio.Obtener<Pliego>(idPliego)
+                ?? throw new InvalidOperationException($"No se encuentra Pliego con id = {idPliego}");
+
+            foreach (Solp solp in pliego.Solps)
+            {
+                SolpDatosPreviosPliegoMultiple backUp = repositorio.Obtener<SolpDatosPreviosPliegoMultiple>(x => x.Solp_Id == solp.Id)
+                    ?? throw new NotImplementedException("En caso de no encontrar el back-up...");
+
+                solp.Pliego_Id = backUp.Pliego_Id;
+                solp.EstadoDocumento_Id = backUp.EstadoDocumento_Id;
+                solp.TipoSolp_Id = backUp.TipoSolp_Id;
+
+                repositorio.Remover(backUp);
+            }
+
+            repositorio.RemoverTodos(pliego.Archivos.ToList());
+            repositorio.Remover(pliego);
 
             repositorio.GuardarCambios();
         }

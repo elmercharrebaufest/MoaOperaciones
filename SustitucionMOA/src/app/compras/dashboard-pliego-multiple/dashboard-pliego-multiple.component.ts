@@ -56,4 +56,19 @@ export class DashboardPliegoMultipleComponent
             this.pliegos = pliegos;
         });
     }
+
+    public eliminarPliego(id: number) {
+        this.service.eliminarPliegoMultiple(id).subscribe((result: any) => {
+            console.log(result);
+            if (result.logout == true) {
+                this.sessionDataService.logout();
+            } else if (result.error != undefined && result.error != "") {
+                this.floatMsgService.setErrorMsg(result.error);
+            } else if (result.info != undefined) {
+                this.floatMsgService.setInfoMsg(result.info);
+            } else {
+                this.getPliegos();
+            }
+        });
+    }
 }
