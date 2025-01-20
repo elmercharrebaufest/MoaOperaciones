@@ -137,7 +137,16 @@ namespace SustitucionMOAUtils.Services
 
             foreach (Solp solp in solps)
             {
-                solp.PliegoMultiplePliegoOriginal_Id = solp.Pliego_Id;
+                SolpDatosPreviosPliegoMultiple solpDatosPrevios = new SolpDatosPreviosPliegoMultiple
+                {
+                    Solp_Id = solp.Id,
+                    Pliego_Id = solp.Pliego_Id,
+                    EstadoDocumento_Id = solp.EstadoDocumento_Id,
+                    TipoSolp_Id = solp.TipoSolp_Id
+                };
+
+                repositorio.Agregar(solpDatosPrevios);
+
                 solp.Pliego = pliego;
                 if (solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
                 {

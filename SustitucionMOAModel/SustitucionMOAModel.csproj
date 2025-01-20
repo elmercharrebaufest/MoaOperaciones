@@ -168,6 +168,7 @@
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
+    <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
