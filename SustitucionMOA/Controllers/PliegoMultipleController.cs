@@ -65,6 +65,13 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { });
         }
 
+        [HttpDelete]
+        public JsonResult EliminarPliegoMultiple(int idPliego)
+        {
+            pliegoMultipleService.EliminarPliegoMultiple(idPliego);
+            return JsonCustom(new { });
+        }
+
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()
         {
             string userMail = SessionPersister.getUsername();
