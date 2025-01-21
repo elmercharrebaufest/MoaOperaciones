@@ -1,10 +1,12 @@
-﻿// Ignore Spelling: Aprobacion
+﻿// Ignore Spelling: Aprobacion codigo
 
 using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -17,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Entidades = SustitucionMOAModel.Entities;
+using Models = SustitucionMOAModel.Models;
 using Proveedor = SustitucionMOAModel.Entities.Proveedor;
 
 
@@ -28,13 +31,22 @@ namespace SustitucionMOAUtils.Services
         protected readonly IVendedorService vendedorService;
         protected readonly IAzureADConsumer azureADConsumer;
         protected readonly IDerivacionesAprobacionesService derivacionesAprobacionesService;
+        protected readonly IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA;
+        protected readonly IVendedoresConsumerMOA vendedoresConsumerMOA;
 
-        public UsuarioService(IRepositorioUsuario repositorio, IVendedorService vendedorService, IAzureADConsumer azureADConsumer, IDerivacionesAprobacionesService derivacionesAprobacionesService)
+        public UsuarioService(IRepositorioUsuario repositorio,
+                              IVendedorService vendedorService,
+                              IAzureADConsumer azureADConsumer,
+                              IDerivacionesAprobacionesService derivacionesAprobacionesService,
+                              IObtenerProveedorConsumerMOA obtenerProveedorConsumerMOA,
+                              IVendedoresConsumerMOA vendedoresConsumerMOA)
         {
             this.repositorio = repositorio;
             this.vendedorService = vendedorService;
             this.azureADConsumer = azureADConsumer;
             this.derivacionesAprobacionesService = derivacionesAprobacionesService;
+            this.obtenerProveedorConsumerMOA = obtenerProveedorConsumerMOA;
+            this.vendedoresConsumerMOA = vendedoresConsumerMOA;
         }
 
         public void SeccionVisitada(string mailUsuario, string seccion)
@@ -169,13 +181,20 @@ namespace SustitucionMOAUtils.Services
             return roles;
         }
 
+        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente)
 
-        public string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno)
         {
-            Entidades.Usuario currentUsuario = repositorio.ObtenerNoTracking<Entidades.Usuario>(u => u.Id == idUsuario);
+            Usuario currentUsuario = repositorio.ObtenerNoTracking<Usuario>(u => u.Id == idUsuario);
 
-            Entidades.Usuario usuario = repositorio.Obtener<Entidades.Usuario>(u => u.Id == idUsuario);
+            Usuario usuario = repositorio.Obtener<Usuario>(u => u.Id == idUsuario);
 
+            bool suplenteCambia =
+                (usuario.Suplente is null && (suplente != "null" && suplente != ""))
+                || (!(usuario.Suplente is null) && usuario.Suplente != suplente);
+            if (suplenteCambia && !puedeEditarSuplente)
+            {
+                throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+            }
 
             usuario.Suplente = suplente == "null" || suplente == "" ? null : suplente.Trim();
 
@@ -187,22 +206,18 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrEmpty(fDesde) && !string.IsNullOrEmpty(fHasta))
             {
-                string dateTimeFormat = "yyyy-MM-dd";
+                const string dateTimeFormat = "yyyy-MM-dd";
                 DateTime fechaDesdeDT = new DateTime();
                 DateTime fechaHastaDT = new DateTime();
-                DateTime auxFDesde;
-                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFDesde))
+                if (DateTime.TryParseExact(fDesde, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime auxFDesde))
                 {
                     fechaDesdeDT = auxFDesde;
                 };
-                DateTime auxFHasta;
-                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out auxFHasta))
+                if (DateTime.TryParseExact(fHasta, dateTimeFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime auxFHasta))
                 {
                     fechaHastaDT = auxFHasta;
                 };
                 //Parsing failsafe
-                //if (fechaDesdeDT != fechaHastaDT)
-                //{
                 UsuarioReasignacion periodo = new UsuarioReasignacion
                 {
                     Usuario_Id = idUsuario,
@@ -210,20 +225,19 @@ namespace SustitucionMOAUtils.Services
                     FechaHasta = fechaHastaDT
                 };
 
-                //Evitar duplicacion de periodos
-                var per = GetPeriodoReasignacion(idUsuario);
+                //Evitar duplicación de periodos
+                UsuarioReasignacionDto per = GetPeriodoReasignacion(idUsuario);
+                bool noExistePeriodoAnterior = per == null || per.Id == 0;
+                bool deboActualizarPeriodo = per?.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde);
 
-                if (per.Id == 0)
+                if (noExistePeriodoAnterior || deboActualizarPeriodo)
                 {
+                    if (!puedeEditarSuplente)
+                    {
+                        throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+                    }
                     repositorio.Agregar<UsuarioReasignacion>(periodo);
                 }
-                else if (per.Usuario_Id == idUsuario && (per.FechaHasta != periodo.FechaHasta || per.FechaDesde != periodo.FechaDesde))
-                {
-                    repositorio.Agregar<UsuarioReasignacion>(periodo);
-                }
-
-                //}
-
             }
             else if ((string.IsNullOrEmpty(fDesde) && string.IsNullOrEmpty(fHasta)) || (string.IsNullOrEmpty(suplente) && !string.IsNullOrEmpty(currentUsuario.Suplente)))
             {
@@ -241,12 +255,15 @@ namespace SustitucionMOAUtils.Services
 
                     foreach (int id in periodosIds)
                     {
-                        UsuarioReasignacion per = periodos.Where(x => x.Id == id).LastOrDefault();
+                        UsuarioReasignacion per = periodos.LastOrDefault(x => x.Id == id);
+                        if (!puedeEditarSuplente)
+                        {
+                            throw new UnauthorizedAccessException("No tiene permisos para editar el suplente");
+                        }
                         repositorio.Remover<UsuarioReasignacion>(per);
                     }
 
                     derivacionesAprobacionesService.ReturnAprobaciones(usuario.Mail, currentUsuario.Suplente);
-
                 }
             }
 
@@ -530,10 +547,12 @@ namespace SustitucionMOAUtils.Services
 
             if (resultado.HayError) { return resultado; }
 
-            var setCodigoProveedor = proveedorDto.EsProveedorExterior
-                ? proveedorDto.CUIT.Substring(1)
-                : "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
-
+            var setCodigoProveedor = "00" + proveedorDto.CUIT.Remove(proveedorDto.CUIT.Length - 1).Remove(0, 2);
+            if (proveedorDto.EsProveedorExterior)
+            {
+                setCodigoProveedor = proveedorDto.CUIT.TrimStart('0').PadLeft(10, '0');
+                proveedorDto.CUIT = proveedorDto.CUIT.TrimStart('0').PadLeft(11, '0');
+            }
             Rol nuevoNoGranos = ObtenerRolPorCodigo("NUENOGRAN");
             usuario.Roles.Add(nuevoNoGranos);
 
@@ -1093,6 +1112,78 @@ namespace SustitucionMOAUtils.Services
             }
 
             return configuracion.Valor;
+        }
+
+        public ProveedorComprasDto ObtenerYCrearProveedorCompras(string codigoProveedor)
+        {
+            var proveedorMoa = obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
+            if (proveedorMoa == null)
+            {
+                throw new WSCustomException("No existe un proveedor con ese codigo");
+            }
+            List<SustitucionMOAModel.Models.FechaWS> fechas = CommonUtil.toDateList(DateTime.Now.AddYears(-5).ToShortDateString(), DateTime.Now.ToShortDateString());
+            var vendedoresMoa = vendedoresConsumerMOA.Request(codigoProveedor, fechas);
+            if (vendedoresMoa == null || vendedoresMoa.vendedores == null || vendedoresMoa.vendedores.Count == 0)
+                throw new WSCustomException("No existe un proveedor con ese codigo.");
+            var cuit = vendedoresMoa.vendedores.First().cuit;
+
+            var usuarioDb = repositorio.Obtener<Usuario>(a => a.Mail == proveedorMoa.MAIL);
+            if (usuarioDb == null)
+            {
+                var proveedor = new ProveedorDto
+                {
+                    Mail = proveedorMoa.MAIL,
+                    CUIT = cuit,
+                    RazonSocial = proveedorMoa.NAME
+                };
+
+                var resultado = GrabarProveedor(proveedor, EstadoAprobacion.Aprobado);
+                return new ProveedorComprasDto
+                {
+                    RazonSocial = proveedorMoa.NAME,
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = cuit,
+                    Usuario_Id = resultado.ProveedorDto.Id,
+                    Mail = resultado.ProveedorDto.Mail
+                };
+            }
+            else
+            {
+                if (usuarioDb.CUITRegistro != cuit)
+                    throw new WSCustomException("El mail está registrado con otro CUIT.");
+                if (usuarioDb.TipoUsuario.Id != (int)TipoUsuarioEnum.NoGranos)
+                    throw new WSCustomException("El mail no está registrado con el tipo de usuario ''No Granos''.");
+
+                var proveedor = usuarioDb.ObtenerProveedorAsignado();
+
+                return new ProveedorComprasDto
+                {
+                    RazonSocial = proveedor.RazonSocial,
+                    CodigoProveedor = codigoProveedor,
+                    CUIT = cuit,
+                    Usuario_Id = usuarioDb.Id,
+                    Proveedor_Id = proveedor.Id,
+                    Mail = proveedor.Mail
+                };
+            }
+        }
+
+        public ObtenerProveedorWSMOAResponse ObtenerProveedorSap(string codigoProveedor)
+        {
+            return obtenerProveedorConsumerMOA.ObtenerProveedor(codigoProveedor);
+        }
+
+        public VendedoresWSMOAResponse ObtenerVendedorSap(string codigoProveedor, List<Models.FechaWS> fechas)
+        {
+            return vendedoresConsumerMOA.Request(codigoProveedor, fechas);
+        }
+
+        public List<UsuarioComprasDto> ListarUsuarioCompras()
+        {
+            var usuariosCompras = repositorio.Listar<UsuarioCompras>()
+                .Select(x => new UsuarioComprasDto(x));
+
+            return usuariosCompras.ToList();
         }
     }
 }

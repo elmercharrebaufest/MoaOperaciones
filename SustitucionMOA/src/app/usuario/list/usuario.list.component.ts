@@ -81,12 +81,16 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
     esExterno: boolean = false; 
     isCheckboxDisabled: boolean = true;
 
+    tienePermisoEditarSuplente: boolean = false;
+
 
     setTabs() {
         this.setMenuSeccionTab('usuario', 'Listado Usuarios');
     }
 
     ngOnInit() {
+        this.verificarPermisosEdicion();
+
         this.es = {
             firstDayOfWeek: 0,
             dayNames: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"],
@@ -103,7 +107,7 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             usuarioSap: new FormControl('', [
                 Validators.pattern(/^[A-Za-z]+(?:\s[A-Za-z]+)*$/)
             ]),
-            suplente: new FormControl('', [
+            suplente: new FormControl({ value: '', disabled: !this.tienePermisoEditarSuplente }, [
                 Validators.pattern(/^\S+$/)
             ]),
             fechaReasignar1: new FormControl('', Validators.required)
@@ -122,14 +126,22 @@ export class UsuarioListComponent extends BaseComponent implements OnInit {
             fechaReasignar1: [{ value: null, disabled: true }, [Validators.required]]
           });
       
-          this.formularioUsuario.get('suplente').valueChanges.subscribe(value => {
-            if (value) {
-              this.formularioUsuario.get('fechaReasignar1').enable();
+        this.formularioUsuario.get('suplente').valueChanges.subscribe(value => {
+            if (this.tienePermisoEditarSuplente) {
+                if (value) {
+                    this.formularioUsuario.get('fechaReasignar1').enable();
+                } else {
+                    this.formularioUsuario.get('fechaReasignar1').disable();
+                    this.formularioUsuario.get('fechaReasignar1').reset();
+                }
             } else {
-              this.formularioUsuario.get('fechaReasignar1').disable();
-              this.formularioUsuario.get('fechaReasignar1').reset();
+                this.formularioUsuario.get('fechaReasignar1').disable();
             }
-          });
+        });
+    }
+
+    verificarPermisosEdicion() {
+        this.tienePermisoEditarSuplente = this.securityService.tienePermiso("EDITAR SUPLENTE");
     }
 
 

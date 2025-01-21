@@ -14,7 +14,7 @@ import { SessionDataService } from '../../../common/services/SessionDataService'
 import { ComprasService } from '../../compras.service';
 import { Location } from '@angular/common';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, Message, MessageService, SortEvent } from 'primeng/api';
 import { DropdownOption } from '../../../common/view-child/dropdown/dropdown.component';
 import * as XLSX from 'xlsx';
 
@@ -28,6 +28,7 @@ export interface autoCompleteObject {
   CodigoProveedor: string;
 };
 import { certificacionES } from '../components/modal-aprobacion/modalAprobacion.interface';
+import { TableCustomSort } from '../tableCustomSort.helper';
 
 @Component({
   selector: 'app-listado-estado-certificaciones',
@@ -121,8 +122,8 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
       name: 'Certificaciones',
       columns: [
         { id: 'cID_ES', header: 'ID_ES', field: 'ID_ES', type: 'string', sortable: false, required: false, visible: true },
-        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'string', sortable: true, required: false, visible: false },
-        { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'string', sortable: true, required: false, visible: false },
+        { id: 'cFechaAprobacion', header: 'Fecha Aprobada', field: 'FechaAprobacion', type: 'date', sortable: true, required: false, visible: false },
+        { id: 'cFechaRechazo', header: 'Fecha Rechazo', field: 'FechaRechazo', type: 'date', sortable: true, required: false, visible: false },
         { id: 'cFecha', header: 'Fecha Creación', field: 'FechaCreacion', type: 'date', sortable: true, required: false, visible: false },
         { id: 'cOrdenCompra', header: 'Número OC', field: 'OrdenCompra', type: 'string', sortable: true, required: true, visible: true },
         { id: 'cCuit', header: 'CUIT', field: 'CUIT', type: 'string', sortable: false, required: false, visible: true },
@@ -185,6 +186,10 @@ export class ListadoEstadoCertificacionesComponent extends ListBaseComponent imp
     fechaActual.setDate(fechaActual.getDate() - 2)
     this.fechaInicio = fechaActual.toISOString().slice(0, 10);
   }
+
+    sortFunction(event: SortEvent, tableName: string): void {
+        TableCustomSort.sortFunction(event, tableName, this.defaultTablesConfig);
+    }
 
   public ngOnDestroy(): void {
     this.subscripciones.forEach(sub => sub.unsubscribe());

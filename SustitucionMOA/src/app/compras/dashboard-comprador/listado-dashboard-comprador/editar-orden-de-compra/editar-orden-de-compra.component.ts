@@ -18,7 +18,7 @@ import { SelectItem } from 'ng2-select';
     templateUrl: './editar-orden-de-compra.component.html',
     styleUrls: ['./editar-orden-de-compra.component.css']
 })
-export class EditarOrdenDeCompraComponent extends ListBaseComponent implements OnInit, OnChanges {
+export class EditarOrdenDeCompraComponent extends ListBaseComponent implements OnInit {
 
     @Input()
     displayEditarOc: boolean;
@@ -44,10 +44,6 @@ export class EditarOrdenDeCompraComponent extends ListBaseComponent implements O
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
         protected route: ActivatedRoute, protected router: Router, private confirmationService: ConfirmationService, private formBuilder: FormBuilder) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.getCombos();
     }
 
     ngOnInit() {

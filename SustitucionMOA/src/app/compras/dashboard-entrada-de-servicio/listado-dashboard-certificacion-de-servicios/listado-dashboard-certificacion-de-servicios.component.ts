@@ -16,13 +16,14 @@ import { Seccion } from '../../../common/models/seccion';
 import { Location } from '@angular/common';
 import { ModalAltaEntradaDeServicioComponent } from '../modal-alta-entrada-de-servicio/modal-alta-entrada-de-servicio.component';
 import { FiltroFechaComponent } from './../../../common/view-child/filtro-fecha/filtro-fecha.component';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, SortEvent } from 'primeng/api';
 import { MensajeComponent } from '../../../common/view-child/mensaje/mensaje.component';
 import { ProveedorModel } from '../../../modelos/proveedor-model';
 import { Formatter } from '../../../common/formatter/Formatter';
 import { MultiSelect } from 'primeng/multiselect';
 import { FileModalComponent } from '../file-modal/file-modal.component';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { TableCustomSort } from '../tableCustomSort.helper';
 
 
 @Component({
@@ -209,6 +210,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             ]
         }
     ];
+
+
+    sortFunction(event: SortEvent, tableName: string): void {
+        TableCustomSort.sortFunction(event, tableName, this.userTablesConfig);
+    }
 
     formularioResumenCertificacion: FormGroup = this.formBuilder.group({
         descriptions: this.formBuilder.array([])

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using SustitucionMOAModel.Dto;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SustitucionMOA.Jobs
 {
@@ -16,11 +15,18 @@ namespace SustitucionMOA.Jobs
     public class ActualizarBaseDeDatosSolpSapJob : IActualizarBaseDeDatosSolpSapJob
     {
         private readonly IComprasService _comprasService;
+        private readonly IComprasSapService _comprasSapService;
+        private readonly IMaterialService _materialService;
         private readonly IRepositorio repositorio;
 
-        public ActualizarBaseDeDatosSolpSapJob(IComprasService comprasService, IRepositorio repositorio)
+        public ActualizarBaseDeDatosSolpSapJob(IComprasService comprasService,
+                                               IComprasSapService comprasSapService,
+                                               IMaterialService materialService,
+                                               IRepositorio repositorio)
         {
             _comprasService = comprasService;
+            _comprasSapService = comprasSapService;
+            _materialService = materialService;
             this.repositorio = repositorio;
         }
 
@@ -32,16 +38,16 @@ namespace SustitucionMOA.Jobs
                     return;
                 Log.Info("Inicio ActualizarBaseDeDatosSolpSapJob");
 
-                this.ActualizarTablaSap(_comprasService.ObtenerCecoSap(), TablasSap.CecoSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerCentrosDeCostoSap(), TablasSap.CecoSolpSap);
 
-                this.ActualizarTablaSap(_comprasService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerCuentasSap(), TablasSap.CuentasSolpSap);
 
-                this._comprasService.ActualizarMaterialesSolp();
+                this._materialService.ActualizarMaterialesSolp();
                 Log.Info("Fin Actualizar ActualizarMaterialesSolp");
                 this._comprasService.ActualizarServiciosSolp();
                 Log.Info("Fin Actualizar ActualizarServiciosSolp");
 
-                this.ActualizarTablaSap(_comprasService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
+                this.ActualizarTablaSap(_comprasSapService.ObtenerOrdenesSap(), TablasSap.OrdenSolpSap);
                 Log.Info("Fin Actualizar OrdenSolpSap");
 
                 Log.Info("Fin ActualizarBaseDeDatosSolpSapJob");

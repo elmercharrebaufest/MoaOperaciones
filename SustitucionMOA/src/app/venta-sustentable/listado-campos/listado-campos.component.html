@@ -288,7 +288,7 @@
                                     <div class="col-sm-2" style="padding-left: 0px; padding-right: 14px;">
 
                                         <span>
-                                            <button type="button" class="btn-sin-fondo btn-descargar fa fa-download"
+                                            <button type="button" class="btn-sin-fondo btn-descargar"
                                                 title="Descargar KMZ"
                                                 (click)="descargarKMZ(campo.CampoCosechaId, campo.Proveedor.Id)">
                                             </button>
@@ -323,7 +323,7 @@
 
                                         <button
                                             *ngIf="borrarCampos && (campo.ToneladasAprobadas == 0 || campo.ToneladasAprobadas == -1)"
-                                            type="button" class="btn-sin-fondo btn-descargar fa fa-trash" title="Borrar"
+                                            type="button" class="btn-sin-fondo btn-borrar fa fa-trash" title="Borrar"
                                             (click)="eliminarCampo(campo.CampoCosechaId, campo.Proveedor.Id)">
                                         </button>
 

@@ -1,0 +1,24 @@
+.btn-borrar {
+    background-color: var(--brand-color-green);
+}
+
+.btn-sin-fondo {
+    background: none;
+    border: none;
+}
+
+.btn-descargar,
+.btn-borrar {
+    font-size: 22px;
+    color: var(--brand-color-green);
+    margin-right: 5px;
+    height: 15px;
+}
+
+.btn-descargar {
+    background-color: var(--brand-color-green);
+    -webkit-mask: url('content/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    mask: url('content/Kmz_file_format_symbol.svg') no-repeat 100% 100%;
+    width: 25px;
+    height: 30px;
+}

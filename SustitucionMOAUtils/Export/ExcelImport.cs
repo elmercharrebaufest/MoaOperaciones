@@ -1,6 +1,5 @@
 ﻿using Excel;
 using System;
-using System.Configuration;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -81,7 +80,7 @@ namespace SustitucionMOAUtils.Export
                     return new DataTable();
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
 
                 throw;

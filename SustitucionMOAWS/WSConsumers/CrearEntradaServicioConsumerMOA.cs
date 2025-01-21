@@ -75,6 +75,9 @@ namespace SustitucionMOAWS.WSConsumers
                         </soapenv:Body>
                         </soapenv:Envelope>", Encoding.UTF8, "text/xml"
                     );
+                    string contentAsString = await content.ReadAsStringAsync();
+
+                    SustitucionMOAWS.Logger.Log.Info("CrearEntradaDeServicioConsumerMOA content: " + contentAsString);
 
                     content.Headers.ContentType = new MediaTypeHeaderValue("text/xml")
                     {
@@ -98,8 +101,8 @@ namespace SustitucionMOAWS.WSConsumers
             }
             catch (Exception e)
             {
-                SustitucionMOAWS.Logger.Log.Error("CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + e.Message);
-                throw e;
+                SustitucionMOAWS.Logger.Log.Error(e, "CrearEntradaDeServicioConsumerMOA.CrearEntradaServicioAsync: " + e.Message);
+                throw;
             }
         }
 

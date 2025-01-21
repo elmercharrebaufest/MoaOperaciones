@@ -1,6 +1,5 @@
-﻿using System.Web;
+﻿using SustitucionMOA.Filter;
 using System.Web.Mvc;
-using SustitucionMOA.Filter;
 namespace SustitucionMOA
 {
     public class FilterConfig
@@ -10,6 +9,7 @@ namespace SustitucionMOA
             filters.Add(new HandleErrorAttribute());
             filters.Add(new GZipOrDeflateAttribute());
             filters.Add(new CustomExceptionFilterAttribute());
+            filters.Add(new LoggingActionFilterAttribute());
         }
     }
 }

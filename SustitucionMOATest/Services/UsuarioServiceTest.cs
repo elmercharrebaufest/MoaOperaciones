@@ -1,15 +1,15 @@
 ﻿using Moq;
 using NUnit.Framework;
-using SustitucionMOA.Jobs;
 using SustitucionMOAAssets;
+using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOARepositorio;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Services;
 using SustitucionMOAWS.Interfaces;
+using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,8 @@ namespace SustitucionMOATest.Services
         private Mock<IVendedorService> vendedorServiceMock;
         private Mock<IAzureADConsumer> azureADConsumerMock;
         private Mock<IDerivacionesAprobacionesService> derivacionesAprobacionesServiceMock;
+        private Mock<IObtenerProveedorConsumerMOA> obtenerProveedorConsumerMock;
+        private Mock<IVendedoresConsumerMOA> vendedoresConsumerMock;
 
 
         [SetUp]
@@ -34,7 +36,14 @@ namespace SustitucionMOATest.Services
             vendedorServiceMock = new Mock<IVendedorService>();
             azureADConsumerMock = new Mock<IAzureADConsumer>();
             derivacionesAprobacionesServiceMock = new Mock<IDerivacionesAprobacionesService>();
-            target = new UsuarioService(repositorioUsuarioMock.Object, vendedorServiceMock.Object, azureADConsumerMock.Object, derivacionesAprobacionesServiceMock.Object);
+            obtenerProveedorConsumerMock = new Mock<IObtenerProveedorConsumerMOA>();
+            vendedoresConsumerMock = new Mock<IVendedoresConsumerMOA>();
+            target = new UsuarioService(repositorioUsuarioMock.Object,
+                                        vendedorServiceMock.Object,
+                                        azureADConsumerMock.Object,
+                                        derivacionesAprobacionesServiceMock.Object,
+                                        obtenerProveedorConsumerMock.Object,
+                                        vendedoresConsumerMock.Object);
         }
 
         [Test]
@@ -230,7 +239,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -260,7 +269,7 @@ namespace SustitucionMOATest.Services
                       {
                         new Proveedor
                         {
-                            Id = 1, 
+                            Id = 1,
                             EstadoAprobacion = EstadoAprobacion.DeshabilitadoEnDataAgro,
                             CUIT = "23333333333",
                             Mail = mailUsuario,
@@ -311,7 +320,7 @@ namespace SustitucionMOATest.Services
 
             int IdUsuario = 1;
 
-            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap,"","","", false);
+            var result = target.GuardarRoles(idRoles, IdUsuario, usuarioSap, "", "", "", false, true);
 
             repositorioUsuarioMock.Verify(x => x.Obtener(It.IsAny<Expression<Func<Usuario, bool>>>()), Times.Once);
 
@@ -365,6 +374,25 @@ namespace SustitucionMOATest.Services
             var resultUser = repositorioUsuarioMock.Object.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             Assert.AreEqual(expected, resultUser.SeccionesVisitadas);
+        }
+
+        [Test]
+        public void ListarUsuarioCompras_DebeRetornarListaDeUsuarioComprasDto()
+        {
+            // Arrange
+            var usuariosComprasMockData = new List<UsuarioCompras>
+            {
+                new UsuarioCompras { Id = 1, Mail = "bmelgarejo@prueba.com" },
+            };
+
+            repositorioUsuarioMock.Setup(y => y.Listar(It.IsAny<Expression<Func<UsuarioCompras, bool>>>(), It.IsAny<int>(), It.IsAny<string>(), DirOrden.Asc, null)).Returns(usuariosComprasMockData);
+
+            // Act
+            var resultado = target.ListarUsuarioCompras();
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.AreEqual(usuariosComprasMockData.Count, resultado.Count);
         }
     }
 }

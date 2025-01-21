@@ -36,3 +36,9 @@ export interface CampoProveedorDetalle extends DetallesCampo {
     CosechaId: number;
     CodigoProveedor: string;
 }
+
+export interface SugerenciaCampo extends CampoProveedorDetalle {
+    CampoYaPresentado: boolean;
+    Seleccionado: boolean;
+    NombreNuevoKmz: string;
+}

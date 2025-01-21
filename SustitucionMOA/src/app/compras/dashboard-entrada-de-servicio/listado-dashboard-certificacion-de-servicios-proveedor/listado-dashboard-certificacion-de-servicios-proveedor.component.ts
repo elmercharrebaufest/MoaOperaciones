@@ -5,7 +5,7 @@ import { ListBaseComponent } from '../../../common/base-components/list-base-com
 import { SpinnerComponent } from '../../../common/view-child/spinner/spinner.component';
 import { Paginator } from 'primeng/paginator';
 import { Subscription } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, Params } from '@angular/router';
 import { FloatMsgService } from '../../../common/services/FloatMsgService';
 import { ModalService } from '../../../common/services/ModalService';
 import { NavService } from '../../../common/services/NavService';
@@ -194,12 +194,12 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         this.navService.setSeccionList([]);
         this.navService.setSeccionActive('');
 
-        if (this.location.path() === '/compras/dashboardCertificacionDeServiciosProveedores') {
-            this.navService.navegarSeccion("/compras/dashboardCertificacionDeServiciosProveedores");
-        }
-        else {
-            this.validarLoginAzure();
-        }
+        //if (this.location.path().includes('/compras/dashboardCertificacionDeServiciosProveedores')) {
+        //    this.navService.navegarSeccion("/compras/dashboardCertificacionDeServiciosProveedores");
+        //}
+        //else {
+        //    this.validarLoginAzure();
+        //}
 
         this.navService.setSeccionList(
             [
@@ -208,9 +208,17 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
             ]
         );
         this.navService.setSeccionActive('Ingresar certificación');
-        this.navService.navegarSeccion("compras/dashboardCertificacionDeServiciosProveedores");
+        //this.navService.navegarSeccion("compras/dashboardCertificacionDeServiciosProveedores");
         this.filtroFechaComponent.setPeriodoInitial('3');
         this.saveConfigurationFilterDates();
+        if (this.route.params) {
+            this.route.params.forEach((params: Params) => {
+                if (params["ordenCompraId"]) {
+                    this.filtroFechaComponent.setPeriodoInitial('5');
+                    this.ordenCompraId = params["ordenCompraId"];
+                }
+            })
+        };
         this.getListarPO(this.proveedor, this.ordenCompraId, this.fechaInicioConfigurado, this.fechaFinConfigurado);
     }
 
@@ -475,7 +483,7 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2
             });
-    
+
             if (currency === 'ARP') {
                 return '$ ' + formattedAmount;
             } else {
@@ -490,8 +498,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         if (columna === 'iImporte' && rowData.Moneda === 'ARP') {
             importeString = "$ " + importeString;
         }
-        else if(columna === 'iImporte' && rowData.Moneda !== 'ARP'){
-            importeString =  rowData.Moneda +" " + importeString;
+        else if (columna === 'iImporte' && rowData.Moneda !== 'ARP') {
+            importeString = rowData.Moneda + " " + importeString;
         }
 
         return importeString;
@@ -501,8 +509,8 @@ export class ListadoDashboardCertificacionDeServiciosProveedoresComponent extend
         let formattedValue = rowData[columnField];
 
         if (columnField === "MontoTotalString" || columnField === "PrecioUnidadString") {
-                formattedValue = rowData.MonedaDescripcion === 'ARP' ?  '$ '+formattedValue : rowData.MonedaDescripcion+ ' ' +formattedValue;
-            }
+            formattedValue = rowData.MonedaDescripcion === 'ARP' ? '$ ' + formattedValue : rowData.MonedaDescripcion + ' ' + formattedValue;
+        }
 
         return formattedValue;
     }

@@ -1,16 +1,12 @@
-﻿using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.DataAgro;
-using SustitucionMOAModel.Models.ViewModel.AltaEmpresa;
+﻿using SustitucionMOAModel.Models;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Interfaces
 {
     public interface IFacturaService
     {
-        string SubirPDF(HttpPostedFileBase file, string folderPath);
+        void EliminarFacturasAntiguas();
+        List<ValidationResult> SubirPDF(List<HttpPostedFileBase> files, string cuit, string codigo, string mail);
     }
 }
