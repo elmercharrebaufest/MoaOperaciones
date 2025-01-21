@@ -425,7 +425,8 @@
                       [(dasboardComprador)]="dasboardComprador">
     </app-chat-interno>
 
-    <app-editar-orden-de-compra [(displayEditarOc)]="displayEditarOc"
+    <app-editar-orden-de-compra *ngIf="displayEditarOc"
+                                [(displayEditarOc)]="displayEditarOc"
                                 (cerrarEditarOcEmitter)="cerrarEditarOc()"
                                 (guardarEditarOcEmitter)="guardarEditarOc($event)"
                                 [(ordenDeCompra)]="ordenDeCompra"

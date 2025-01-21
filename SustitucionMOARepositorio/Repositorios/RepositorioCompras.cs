@@ -16,18 +16,20 @@ namespace SustitucionMOARepositorio.Repositorios
 
         public List<MaterialSolpDto> BuscarMaterialesCatalogadosPorCodigoSap(string codigoSapMatch, int centroId)
         {
-            //return ListarProyeccion<MaterialSolp, MaterialSolpDto>(
-            //    m => new MaterialSolpDto(m),
-            //    m =>
-            //        m.Centro_Id == centroId &&
-            //        m.CodigoSap.Contains(codigoSapMatch) &&
-            //        m.Estado);
             var materiales = Listar<MaterialSolp>(
                 m =>
                     m.Centro_Id == centroId &&
                     m.CodigoSap.Contains(codigoSapMatch) &&
                     m.Estado);
+
             return materiales.ConvertAll(m => new MaterialSolpDto(m));
+        }
+
+        public List<ServicioSolpDto> BuscarServiciosCatalogadosPorCodigoSap(string codigoSapMatch)
+        {
+            var servicios = Listar<ServicioSolp>(s => s.CodigoSap.ToString().Contains(codigoSapMatch));
+
+            return servicios.ConvertAll(s => new ServicioSolpDto(s));
         }
     }
 }

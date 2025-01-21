@@ -29,6 +29,7 @@ import { POPosicionDto } from '../modelos/po-posicionDto';
 import { SubPosicionCrearPoMultipleDto } from '../modelos/SubPosicion-CrearPoMultipleDto.model';
 import { ProcesarPrecargaSolpResponse } from '../modelos/compras/PrecargaSolp/procesarPrecargaSolpResponse';
 import { MaterialSolp } from '../modelos/compras/materialSolp';
+import { ServicioSolp } from '../modelos/compras/servicioSolp';
 
 @Injectable({
     providedIn: 'root'
@@ -559,12 +560,12 @@ export class ComprasService extends BaseService {
             .get<any[]>("/api/compras/AutocompleteServicioSolp", { params: params })
     }
 
-    autocompleteCodigoServicioSolp(valor: string) {
+    autocompleteCodigoServicioSolp(valor: string): Observable<ServicioSolp[]> {
         let params: HttpParams = new HttpParams()
             .append('valor', valor)
 
         return this.http
-            .get<any[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
+            .get<ServicioSolp[]>("/api/compras/AutocompleteCodigoServicioSolp", { params: params })
     }
 
     autocompleteProveedor(valor: string) {
