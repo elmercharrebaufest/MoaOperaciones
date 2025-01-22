@@ -1207,16 +1207,23 @@ namespace SustitucionMOAUtils.Services
 
             solpCount = pliego.Solps.Count;
 
-            IEnumerator<Solp> enumerator = pliego.Solps.GetEnumerator();
+            IEnumerator<Solp> enumerator = pliego.Solps.OrderBy(solp => solp.NroSolp).GetEnumerator();
+            StringBuilder numeroSolpBuilder = new StringBuilder();
 
             enumerator.MoveNext(); // primer elemento
 
             SolpDto data = TraerSolp(enumerator.Current);
+            numeroSolpBuilder.Append(enumerator.Current.NroSolp);
 
             while (enumerator.MoveNext())
             {
                 data.Posiciones.AddRange(TraerSolp(enumerator.Current).Posiciones);
+                numeroSolpBuilder
+                    .Append(", ")
+                    .Append(enumerator.Current.NroSolp);
             }
+
+            data.NroSolp = numeroSolpBuilder.ToString();
 
             return data;
         }
