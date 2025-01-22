@@ -188,7 +188,7 @@ namespace SustitucionMOAUtils.Services
         {
             Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException("Invalid Pliego ID");
             string middleFileName = pliego.NombreObra ?? "xxxx";
-            string pdfFilename = $"Pliego-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.pdf";
+            string pdfFilename = $"Pliego-{middleFileName}-{DateTime.Now:yyyyMMdd}.pdf";
             string pdfFilePath = $"{pathBase}/{pdfFilename}";
             bool pdfPliegoDisponible = false;
 
