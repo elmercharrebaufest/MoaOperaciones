@@ -1516,9 +1516,17 @@ namespace SustitucionMOAUtils.Services
             return estados.ToList();
         }
 
-        public byte[] GenerarSolpPdf(int idSolp)
+        public byte[] GenerarSolpPdf(int id, bool esPliego = false)
         {
-            var solp = TraerSolpId(idSolp);
+            SolpDto solp;
+            if (esPliego)
+            {
+                solp = TraerSolpPliego(id, out _);
+            }
+            else
+            {
+                solp = TraerSolpId(id);
+            }
             var usuarioCompras = usuarioService.ListarUsuarioCompras();
             var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
@@ -1777,34 +1785,43 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.Pliego.Archivos?.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) == true)
             {
-                var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
-                var filePath = $"{pathBase}/{zipFilename}";
-
-                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
-                {
-                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
-                    {
-                        foreach (var archivoSubido in solp.Pliego.Archivos)
-                        {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
-                            {
-                                string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
-                            }
-                        }
-
-                        if (pdfPliegoDisponible)
-                        {
-                            archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
-                        }
-                    }
-                }
+                string filePath = AgregarArchivosAlZipPliego(solp.Pliego.Archivos, middleFileName, pathBase, pdfPliegoDisponible, pdfFilePath, pdfFilename);
                 mimeType = CustomMediaTypeNames.Application.Zip;
                 return filePath;
             }
 
             mimeType = CustomMediaTypeNames.Application.Pdf;
             return pdfFilePath;
+        }
+
+        public string AgregarArchivosAlZipPliego(IEnumerable<Archivo> archivos, string middleFileName, string pathBase, bool pdfPliegoDisponible, string pdfFilePath = null, string pdfFilename = null)
+        {
+            var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    foreach (var archivoSubido in archivos)
+                    {
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                        {
+                            string fileName = Path.GetFileName(archivoSubido.Ruta);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                        }
+                    }
+
+                    if (pdfPliegoDisponible)
+                    {
+                        if (string.IsNullOrWhiteSpace(pdfFilename)) { throw new ArgumentNullException(nameof(pdfFilename)); }
+                        if (string.IsNullOrWhiteSpace(pdfFilePath)) { throw new ArgumentNullException(nameof(pdfFilePath)); }
+                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+                    }
+                }
+            }
+
+            return filePath;
         }
 
         private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
