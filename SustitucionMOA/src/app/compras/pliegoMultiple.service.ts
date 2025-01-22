@@ -103,4 +103,15 @@ export class PliegoMultipleService extends BaseService {
         return this.http
             .delete<any>('/api/PliegoMultiple/EliminarPliegoMultiple', { params: params, headers: this.headers });
     }
+
+    public descargarZipPliego(idPliego: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("pliegoId", idPliego.toString());
+
+        return this.http
+            .get("/api/PliegoMultiple/DescargarZipPliego", {
+                params: params,
+                headers: this.headers,
+            });
+    }
 }
