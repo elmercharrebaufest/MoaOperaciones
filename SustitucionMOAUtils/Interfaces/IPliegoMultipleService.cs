@@ -21,5 +21,7 @@ namespace SustitucionMOAUtils.Interfaces
         void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar);
 
         void EliminarPliegoMultiple(int idPliego);
+
+        string GenerarZipPliego(int idPliego, string pathBase, out string mimeType);
     }
 }
