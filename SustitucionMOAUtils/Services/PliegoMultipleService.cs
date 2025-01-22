@@ -4,9 +4,11 @@ using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using ComprasDto = SustitucionMOAModel.Dto;
@@ -180,6 +182,28 @@ namespace SustitucionMOAUtils.Services
             repositorio.Remover(pliego);
 
             repositorio.GuardarCambios();
+        }
+
+        public string GenerarZipPliego(int idPliego, string pathBase, out string mimeType)
+        {
+            Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException("Invalid Pliego ID");
+            string middleFileName = pliego.NombreObra ?? "xxxx";
+            string pdfFilename = $"Pliego-{middleFileName}-{DateTime.Now:yyyyMMdd}.pdf";
+            string pdfFilePath = $"{pathBase}/{pdfFilename}";
+            bool pdfPliegoDisponible = false;
+
+            File.WriteAllBytes(pdfFilePath, comprasService.GenerarSolpPdf(idPliego, esPliego: true));
+            pdfPliegoDisponible = true;
+
+            if (pliego.Archivos?.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) == true)
+            {
+                string filePath = comprasService.AgregarArchivosAlZipPliego(pliego.Archivos, middleFileName, pathBase, pdfPliegoDisponible, pdfFilePath, pdfFilename);
+                mimeType = CustomMediaTypeNames.Application.Zip;
+                return filePath;
+            }
+
+            mimeType = CustomMediaTypeNames.Application.Pdf;
+            return pdfFilePath;
         }
     }
 }

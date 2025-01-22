@@ -35,12 +35,14 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerUnidades();
         List<CentroDireccionDto> ObtenerCentrosDireccion();
         string BorrarSolp(int idSolp);
+        SolpDto TraerSolpPliego(int idPliego, out int solpCount);
         SolpDto TraerSolpId(int idSolp);
         SolpESDto TraerSolpPorNumero(string nroSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
-        byte[] GenerarSolpPdf(int idSolp);
+        byte[] GenerarSolpPdf(int id, bool esPliego = false);
         Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
-        string GenerarZipPliego(int idSolp, string pathBase);
+        string GenerarZipPliego(int idSolp, string pathBase, out string mimeType);
+        string AgregarArchivosAlZipPliego(IEnumerable<Archivo> archivos, string middleFileName, string pathBase, bool pdfPliegoDisponible, string pdfFilePath = null, string pdfFilename = null);
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();

@@ -1186,6 +1186,48 @@ namespace SustitucionMOAUtils.Services
             return peticiones;
         }
 
+        public SolpDto TraerSolpPliego(int idPliego, out int solpCount)
+        {
+            var includes = new List<Expression<Func<Pliego, object>>>
+            {
+                u => u.Solps,
+                u => u.Solps.Select(y => y.Pliego.VisitasMasivas),
+                u => u.Solps.Select(y => y.Pliego.Archivos),
+                u => u.Solps.Select(y => y.Posiciones),
+                u => u.Solps.Select(y => y.Posiciones.Select(z => z.Subposiciones)),
+                u => u.Solps.Select(y => y.UsuarioCreacion),
+                u => u.Solps.Select(y => y.UsuarioModificacion),
+            };
+
+            Pliego pliego = repositorio.Obtener<Pliego>(includes, x => x.Id == idPliego);
+
+            if (pliego is null) { throw new InvalidOperationException("Pliego no encontrado"); }
+            if (!pliego.Multiple) { throw new InvalidOperationException("Esta funcionalidad sólo está disponible para pliegos múltiples"); }
+            if (pliego.Solps.Count == 0) { throw new InvalidOperationException("No se encontraron SOLPs para el pliego"); }
+
+            solpCount = pliego.Solps.Count;
+
+            IEnumerator<Solp> enumerator = pliego.Solps.OrderBy(solp => solp.NroSolp).GetEnumerator();
+            StringBuilder numeroSolpBuilder = new StringBuilder();
+
+            enumerator.MoveNext(); // primer elemento
+
+            SolpDto data = TraerSolp(enumerator.Current);
+            numeroSolpBuilder.Append(enumerator.Current.NroSolp);
+
+            while (enumerator.MoveNext())
+            {
+                data.Posiciones.AddRange(TraerSolp(enumerator.Current).Posiciones);
+                numeroSolpBuilder
+                    .Append(", ")
+                    .Append(enumerator.Current.NroSolp);
+            }
+
+            data.NroSolp = numeroSolpBuilder.ToString();
+
+            return data;
+        }
+
         public SolpDto TraerSolpId(int idSolp)
         {
             var includes = new List<Expression<Func<Solp, object>>>();
@@ -1198,6 +1240,12 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioModificacion);
 
             var solp = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+
+            return TraerSolp(solp);
+        }
+
+        private SolpDto TraerSolp(Solp solp)
+        {
             if (solp == null)
             {
                 throw new InfoCustomException("No se encontró la SOLP.");
@@ -1475,9 +1523,17 @@ namespace SustitucionMOAUtils.Services
             return estados.ToList();
         }
 
-        public byte[] GenerarSolpPdf(int idSolp)
+        public byte[] GenerarSolpPdf(int id, bool esPliego = false)
         {
-            var solp = TraerSolpId(idSolp);
+            SolpDto solp;
+            if (esPliego)
+            {
+                solp = TraerSolpPliego(id, out _);
+            }
+            else
+            {
+                solp = TraerSolpId(id);
+            }
             var usuarioCompras = usuarioService.ListarUsuarioCompras();
             var templateFilePath = httpContextService.GetDirectory("Templates/NewPliegoSolpSinCondicionesTemplate.html");
             var templateString = System.IO.File.ReadAllText(templateFilePath);
@@ -1717,7 +1773,7 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string GenerarZipPliego(int idSolp, string pathBase)
+        public string GenerarZipPliego(int idSolp, string pathBase, out string mimeType)
         {
             Solp solp = repositorio.Obtener<Solp>(idSolp) ?? throw new ArgumentException("Invalid Solp ID");
             string middleFileName = solp.NroSolp ?? (solp.Pliego.NombreObra ?? "xxxx");
@@ -1736,31 +1792,43 @@ namespace SustitucionMOAUtils.Services
 
             if (solp.Pliego.Archivos?.Any<Archivo>(x => x.FileKey == FileKeys.AdjuntoSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolp || x.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp) == true)
             {
-                var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
-                var filePath = $"{pathBase}/{zipFilename}";
-
-                using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
-                {
-                    using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
-                    {
-                        foreach (var archivoSubido in solp.Pliego.Archivos)
-                        {
-                            if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
-                            {
-                                string fileName = Path.GetFileName(archivoSubido.Ruta);
-                                archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
-                            }
-                        }
-
-                        if (pdfPliegoDisponible)
-                        {
-                            archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
-                        }
-                    }
-                }
+                string filePath = AgregarArchivosAlZipPliego(solp.Pliego.Archivos, middleFileName, pathBase, pdfPliegoDisponible, pdfFilePath, pdfFilename);
+                mimeType = CustomMediaTypeNames.Application.Zip;
                 return filePath;
             }
+
+            mimeType = CustomMediaTypeNames.Application.Pdf;
             return pdfFilePath;
+        }
+
+        public string AgregarArchivosAlZipPliego(IEnumerable<Archivo> archivos, string middleFileName, string pathBase, bool pdfPliegoDisponible, string pdfFilePath = null, string pdfFilename = null)
+        {
+            var zipFilename = $"Solp-{middleFileName}-pliego-{DateTime.Now:yyyyMMdd}.zip";
+            var filePath = $"{pathBase}/{zipFilename}";
+
+            using (FileStream zipToOpen = new FileStream(filePath, FileMode.OpenOrCreate))
+            {
+                using (ZipArchive archivo = new ZipArchive(zipToOpen, ZipArchiveMode.Update))
+                {
+                    foreach (var archivoSubido in archivos)
+                    {
+                        if (File.Exists(archivoSubido.Ruta) && (archivoSubido.FileKey == FileKeys.AdjuntoSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolp || archivoSubido.FileKey == FileKeys.AdjuntoCotizacionesSolpCondEsp))
+                        {
+                            string fileName = Path.GetFileName(archivoSubido.Ruta);
+                            archivo.CreateEntryFromFile(archivoSubido.Ruta, fileName);
+                        }
+                    }
+
+                    if (pdfPliegoDisponible)
+                    {
+                        if (string.IsNullOrWhiteSpace(pdfFilename)) { throw new ArgumentNullException(nameof(pdfFilename)); }
+                        if (string.IsNullOrWhiteSpace(pdfFilePath)) { throw new ArgumentNullException(nameof(pdfFilePath)); }
+                        archivo.CreateEntryFromFile(pdfFilePath, pdfFilename);
+                    }
+                }
+            }
+
+            return filePath;
         }
 
         private string CombineTemplateValues(string templateStr, Dictionary<string, string> values, string token = "||")
