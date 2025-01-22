@@ -1186,6 +1186,41 @@ namespace SustitucionMOAUtils.Services
             return peticiones;
         }
 
+        public SolpDto TraerSolpPliego(int idPliego, out int solpCount)
+        {
+            var includes = new List<Expression<Func<Pliego, object>>>
+            {
+                u => u.Solps,
+                u => u.Solps.Select(y => y.Pliego.VisitasMasivas),
+                u => u.Solps.Select(y => y.Pliego.Archivos),
+                u => u.Solps.Select(y => y.Posiciones),
+                u => u.Solps.Select(y => y.Posiciones.Select(z => z.Subposiciones)),
+                u => u.Solps.Select(y => y.UsuarioCreacion),
+                u => u.Solps.Select(y => y.UsuarioModificacion),
+            };
+
+            Pliego pliego = repositorio.Obtener<Pliego>(includes, x => x.Id == idPliego);
+
+            if (pliego is null) { throw new InvalidOperationException("Pliego no encontrado"); }
+            if (!pliego.Multiple) { throw new InvalidOperationException("Esta funcionalidad sólo está disponible para pliegos múltiples"); }
+            if (pliego.Solps.Count == 0) { throw new InvalidOperationException("No se encontraron SOLPs para el pliego"); }
+
+            solpCount = pliego.Solps.Count;
+
+            IEnumerator<Solp> enumerator = pliego.Solps.GetEnumerator();
+
+            enumerator.MoveNext(); // primer elemento
+
+            SolpDto data = TraerSolp(enumerator.Current);
+
+            while (enumerator.MoveNext())
+            {
+                data.Posiciones.AddRange(TraerSolp(enumerator.Current).Posiciones);
+            }
+
+            return data;
+        }
+
         public SolpDto TraerSolpId(int idSolp)
         {
             var includes = new List<Expression<Func<Solp, object>>>();
@@ -1198,6 +1233,12 @@ namespace SustitucionMOAUtils.Services
             includes.Add(u => u.UsuarioModificacion);
 
             var solp = repositorio.Obtener<Solp>(includes, s => s.Id == idSolp);
+
+            return TraerSolp(solp);
+        }
+
+        private SolpDto TraerSolp(Solp solp)
+        {
             if (solp == null)
             {
                 throw new InfoCustomException("No se encontró la SOLP.");

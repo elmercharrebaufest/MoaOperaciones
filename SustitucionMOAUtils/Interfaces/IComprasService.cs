@@ -35,6 +35,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerUnidades();
         List<CentroDireccionDto> ObtenerCentrosDireccion();
         string BorrarSolp(int idSolp);
+        SolpDto TraerSolpPliego(int idPliego, out int solpCount);
         SolpDto TraerSolpId(int idSolp);
         SolpESDto TraerSolpPorNumero(string nroSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
