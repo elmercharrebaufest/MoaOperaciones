@@ -267,14 +267,14 @@ namespace SustitucionMOA.Controllers
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
-            string rutaZip = service.GenerarZipPliego(solpId, path);
+            string rutaZip = service.GenerarZipPliego(solpId, path, out string mimeType);
             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
             string fileName = Path.GetFileName(rutaZip);
 
             //Para evitar sobrecargar el server con zips, una vez cargado lo borro
             Directory.Delete(path, true);
 
-            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            return JsonCustom(File(fileBytes, mimeType, fileName));
         }
 
         [AllowAnonymous]
@@ -301,14 +301,13 @@ namespace SustitucionMOA.Controllers
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
-            string rutaZip = service.GenerarZipPliego(solpId, path);
+            string rutaZip = service.GenerarZipPliego(solpId, path, out string mimeType);
             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
             string fileName = Path.GetFileName(rutaZip);
             string fileExt = Path.GetExtension(fileName);
 
             //Para evitar sobrecargar el server con zips, una vez cargado lo borro
             Directory.Delete(path, true);
-            string mimeType = fileExt.ToLower() == ".pdf" ? System.Net.Mime.MediaTypeNames.Application.Pdf : System.Net.Mime.MediaTypeNames.Application.Zip;
 
             return File(fileBytes, mimeType, fileName);
         }
