@@ -5,6 +5,8 @@ using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using ComprasDto = SustitucionMOAModel.Dto;
@@ -70,6 +72,22 @@ namespace SustitucionMOA.Controllers
         {
             pliegoMultipleService.EliminarPliegoMultiple(idPliego);
             return JsonCustom(new { });
+        }
+
+        [HttpGet]
+        public ActionResult DescargarZipPliego(int pliegoId)
+        {
+            var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
+            Directory.CreateDirectory(path);
+
+            string rutaZip = pliegoMultipleService.GenerarZipPliego(pliegoId, path, out string mimeType);
+            byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
+            string fileName = Path.GetFileName(rutaZip);
+
+            //Para evitar sobrecargar el server con zips, una vez cargado lo borro
+            Directory.Delete(path, true);
+
+            return JsonCustom(File(fileBytes, mimeType, fileName));
         }
 
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()
