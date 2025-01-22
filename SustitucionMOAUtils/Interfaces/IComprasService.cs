@@ -40,7 +40,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
         byte[] GenerarSolpPdf(int idSolp);
         Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
-        string GenerarZipPliego(int idSolp, string pathBase);
+        string GenerarZipPliego(int idSolp, string pathBase, out string mimeType);
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();
