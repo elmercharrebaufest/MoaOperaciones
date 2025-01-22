@@ -44,7 +44,7 @@
                         <span class="rowButtons fa fa-copy" pTooltip="Copiar Pliego"></span>
                         <span class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego" (click)="eliminarPliego(pliego.Id)"></span>
                         <span class="rowButtons fa fa-edit" pTooltip="Modificar Pliego"></span>
-                        <span class="rowButtons fa fa-download" pTooltip="Descargar Pliego"></span>
+                        <span class="rowButtons fa fa-download" pTooltip="Descargar Pliego" (click)="generarZipPliego(pliego.Id)"></span>
                     </td>
                     <td>{{ pliego.NombreObra }}</td>
                     <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>

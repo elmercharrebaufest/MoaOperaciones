@@ -9,6 +9,7 @@ import { FloatMsgService } from '../../common/services/FloatMsgService';
 import { ModalService } from '../../common/services/ModalService';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
 
 @Component({
     selector: 'app-dashboard-pliego-multiple',
@@ -25,6 +26,8 @@ export class DashboardPliegoMultipleComponent
 
     private debouncer: Subject<void> = new Subject<void>();
     private debouncerSubscription?: Subscription;
+
+    @BlockUI() blockUI: NgBlockUI;
 
     constructor(protected service: PliegoMultipleService, protected navService: NavService, protected sessionDataService: SessionDataService,
         protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
@@ -70,5 +73,44 @@ export class DashboardPliegoMultipleComponent
                 this.getPliegos();
             }
         });
+    }
+
+
+
+    public generarZipPliego(idSolp) {
+        this.blockUI.start('Generando...')
+        this.service.descargarZipPliego(idSolp)
+            .subscribe(
+                (result) => {
+                    var byteArray = new Uint8Array(result.FileContents);
+                    var blob = new Blob([byteArray], {
+                        type: result.ContentType,
+                    });
+
+                    if (window.navigator.msSaveOrOpenBlob) {
+                        // IE11
+                        window.navigator.msSaveOrOpenBlob(
+                            blob,
+                            result.FileDownloadName
+                        );
+                    } else {
+                        var url = window.URL.createObjectURL(blob);
+                        var link = document.createElement("a");
+                        document.body.appendChild(link);
+                        link.href = url;
+                        link.download = result.FileDownloadName;
+                        link.click();
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(url);
+                        }, 0);
+                        this.blockUI.stop();
+                        return false;
+                    }
+                    this.blockUI.stop();
+
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                })
     }
 }
