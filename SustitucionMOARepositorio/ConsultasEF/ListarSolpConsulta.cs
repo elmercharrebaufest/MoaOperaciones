@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Sustitucion Automatica paginacion solps repo Imputacion
+﻿// Ignore Spelling: Sustitucion Automatica paginacion solps repo Imputacion Roslynator
 
 using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
@@ -83,6 +83,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
             NombrePedido = nombrePedido;
             TipoPliego = tipoPliego;
         }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
             try
