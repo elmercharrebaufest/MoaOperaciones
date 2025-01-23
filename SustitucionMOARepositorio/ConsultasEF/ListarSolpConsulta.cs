@@ -83,9 +83,6 @@ namespace SustitucionMOARepositorio.ConsultasEF
         }
         public ListaPaginada<SolpDto> Ejecutar(DbContext contexto)
         {
-            var hoy = DateTime.Now;
-            var ayer = hoy.AddDays(-1);
-
             try
             {
                 ((IObjectContextAdapter)contexto).ObjectContext.CommandTimeout = 180;
