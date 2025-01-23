@@ -370,6 +370,7 @@
     <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
     <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
     <Compile Include="Enums\PermisoEnum.cs" />
+    <Compile Include="Enums\TipoPliego.cs" />
     <Compile Include="Enums\TipoRol.cs" />
     <Compile Include="ModelAttributes\ExcelColumnHiddenAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnWidthAttribute.cs" />

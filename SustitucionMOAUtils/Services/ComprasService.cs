@@ -3192,7 +3192,8 @@ namespace SustitucionMOAUtils.Services
                                                           List<int> grupoDeCompras = null,
                                                           List<int> claseDocumento = null,
                                                           List<string> tipoImputacion = null,
-                                                          List<int> valorTipoImputacion = null)
+                                                          List<int> valorTipoImputacion = null,
+                                                          TipoPliego tipoPliego = TipoPliego.All)
         {
             if (listarPendiente == EstadoListarTratamientoSolp.None)
             {
@@ -3224,7 +3225,7 @@ namespace SustitucionMOAUtils.Services
 
             string[] pedido = nombrePedido.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, solpPendientesSap, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion));
+            var todasLasSolp = repositorio.ListarConsultaPaginada(new ListarSolpConsulta(paginacion, solps, solpPendientesSap, pedido, desde, hasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, usuarios, estados, centros, grupoDeCompras, usuario_Id, claseDocumento, tipoImputacion, valorTipoImputacion, tipoPliego));
 
             if (todasLasSolp?.Any() == true)
             {

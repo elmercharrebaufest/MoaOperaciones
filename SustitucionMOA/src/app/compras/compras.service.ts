@@ -64,7 +64,8 @@ export class ComprasService extends BaseService {
         claseDocumento: "",
         tipoImputacion: "",
         valorTipoImputacion: "",
-        tratada: null
+        tratada: null,
+        tipoPliego: "",
     }
     listaSolp: any;
     observableListaSolp = new Subject<any[]>();
@@ -676,7 +677,8 @@ export class ComprasService extends BaseService {
         contratoMarco: boolean = this.filtros.contratoMarco,
         claseDocumento: any = this.filtros.claseDocumento,
         tipoImputacion: any = this.filtros.tipoImputacion,
-        valorTipoImputacion: any = this.filtros.valorTipoImputacion) {
+        valorTipoImputacion: any = this.filtros.valorTipoImputacion,
+        tipoPliego: string = this.filtros.tipoPliego) {
         let params: HttpParams = new HttpParams()
         pagina = pagina != null ? pagina : this.filtros.pagina;
         itemsPorPagina = itemsPorPagina != null ? itemsPorPagina : this.filtros.itemsPorPagina;
@@ -702,6 +704,7 @@ export class ComprasService extends BaseService {
         params = params.set('claseDocumento', claseDocumento);
         params = params.set('tipoImputacion', tipoImputacion);
         params = params.set('valorTipoImputacion', valorTipoImputacion);
+        params = params.set('tipoPliego', tipoPliego);
         return this.http
             .get<any[]>('/api/compras/ListarSolpComprador', { params: params, headers: this.headers }).subscribe(
                 (data: any[]) => {

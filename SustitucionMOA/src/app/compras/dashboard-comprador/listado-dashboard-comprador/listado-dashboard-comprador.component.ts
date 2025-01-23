@@ -21,6 +21,7 @@ import { ChatComprasDto, ChatProveedorDto, ChatsDto } from '../../chat-interno/c
 import { EnumTipoImputacion } from '../../enum-tipo-imputacion';
 import { LegajoDto } from '../../../modelos/compras/legajoDto';
 import { ApiResponse } from '../../../common/models/response';
+import { FiltrosComprador } from './filtrosComprador.interface';
 
 declare var $: any;
 
@@ -74,6 +75,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     selectUsuario: string[] = [];
     estadoSolpItem: SelectItem[];
     selectEstadoSolp: string[] = [];
+    tipoPliegoItem: SelectItem[];
+    selectTipoPliego: string[] = [];
     grupoComprasFiltro: SelectItem[];
     selectGrupoCompras: string[] = [];
     centroFiltro: SelectItem[];
@@ -91,47 +94,28 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     fechaDesde: string = null;
     fechaHasta: string = null;
     rangeDates: Date[];
-    filtrosComprador: {
-        nroSolp: string;
-        nombrePedido: string;
-        sap: boolean;
-        mantenimiento: boolean;
-        web: boolean;
-        repoAutomatica: boolean;
-        listarPendiente: SelectItem;
-        contratoMarco: boolean;
-        usuarios: string[];
-        estadoSolp: string[];
-        gruposCompras: string[];
-        centros: string[];
-        claseDocumento: string[];
-        tipoImputacion: string[];
-        valorTipoImputacion: string[];
-        subtipoImputacionCombo: SelectItem[];
-        fechaDesde: string;
-        fechaHasta: string;
-        pageIndex: number;
-    } = {
-            nroSolp: "",
-            nombrePedido: "",
-            sap: false,
-            mantenimiento: false,
-            web: false,
-            repoAutomatica: false,
-            listarPendiente: undefined,
-            contratoMarco: false,
-            usuarios: [],
-            estadoSolp: [],
-            gruposCompras: [],
-            centros: [],
-            claseDocumento: [],
-            tipoImputacion: [],
-            valorTipoImputacion: [],
-            subtipoImputacionCombo: [],
-            fechaDesde: null,
-            fechaHasta: null,
-            pageIndex: 1
-        };
+    filtrosComprador: FiltrosComprador = {
+        nroSolp: "",
+        nombrePedido: "",
+        sap: false,
+        mantenimiento: false,
+        web: false,
+        repoAutomatica: false,
+        listarPendiente: undefined,
+        contratoMarco: false,
+        usuarios: [],
+        estadoSolp: [],
+        gruposCompras: [],
+        centros: [],
+        claseDocumento: [],
+        tipoImputacion: [],
+        valorTipoImputacion: [],
+        subtipoImputacionCombo: [],
+        fechaDesde: null,
+        fechaHasta: null,
+        pageIndex: 1,
+        selectTipoPliego: null,
+    };
 
     tablaSolp: any[];
     tablaSolpCopy: any[];
@@ -233,7 +217,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
-            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
+            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","),
+            this.selectTipoPliego.join(",")        );
     }
 
     private listarPendienteOrDefault(): number {
@@ -654,7 +639,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                         if (chatsDto) {
                             this.chat = chatsDto;
                             this.chatCompras = chatsDto.ChatCompras;
-                            this.chatProveedores = chatsDto.ChatProveedores;  
+                            this.chatProveedores = chatsDto.ChatProveedores;
                             this.displayChatInterno = true;
                         }
                     },
@@ -693,6 +678,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     } else {
                         this.usuariosResult = result.Usuarios;
                         this.estadoSolpItem = [];
+                        this.tipoPliegoItem = [];
                         this.usuarioFiltro = [];
                         this.centroFiltro = [];
                         this.grupoComprasFiltro = [];
@@ -723,6 +709,16 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                             };
                             this.estadoSolpTratamiento.push(lplSelectItem);
                         });
+
+
+                        result.TipoPliego.forEach((e: { Descripcion: string; Id: string; }) => {
+                            this.tipoPliegoItem.push({
+                                label: e.Descripcion, value: e.Id
+                            });
+                            if (!this.filtrosComprador.selectTipoPliego)
+                                this.selectTipoPliego.push(e.Id);
+                        });
+
                     }
                 },
                 error => {
@@ -802,6 +798,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
         this.filtrosComprador.subtipoImputacionCombo = this.valorTipoImputacionFiltro;
         this.filtrosComprador.fechaDesde = this.fechaDesde;
         this.filtrosComprador.fechaHasta = this.fechaHasta;
+        this.filtrosComprador.selectTipoPliego = this.selectTipoPliego;
         this.paginator.changePage(0);
         this.listarSolp();
         sessionStorage.setItem('filtrosComprador', JSON.stringify(this.filtrosComprador));
@@ -827,7 +824,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     }
 
     recuperarFiltros() {
-        const filtrosGuardados = JSON.parse(sessionStorage.getItem('filtrosComprador'));
+        const filtrosGuardados: FiltrosComprador = JSON.parse(sessionStorage.getItem('filtrosComprador'));
         if (filtrosGuardados) {
             this.nroSolp = filtrosGuardados.nroSolp;
             this.nombrePedido = filtrosGuardados.nombrePedido;
@@ -848,6 +845,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
             this.fechaDesde = filtrosGuardados.fechaDesde;
             this.fechaHasta = filtrosGuardados.fechaHasta;
             this.pageIndex = filtrosGuardados.pageIndex;
+            this.selectTipoPliego = filtrosGuardados.selectTipoPliego;
             if (this.fechaDesde != undefined && this.fechaDesde.length > 0) {
                 const [year, month, day] = this.fechaDesde.split('-').map(Number); //se maneja el cambio de día incorrecto por la zona horaria local
                 if (this.fechaHasta != undefined && this.fechaHasta.length > 0) {
@@ -857,6 +855,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                     this.rangeDates = [new Date(year, month - 1, day)];
                 }
             }
+
+            this.filtrosComprador = { ...filtrosGuardados };
         }
         if (!this.listarPendiente) {
             this.listarPendiente = { label: 'Ver Todas', value: 3 } as SelectItem;
