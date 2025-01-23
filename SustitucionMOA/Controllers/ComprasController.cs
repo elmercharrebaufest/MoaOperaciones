@@ -125,8 +125,8 @@ namespace SustitucionMOA.Controllers
 
                 TipoPliego = new List<object>
                 {
-                    new {Id = 0, Descripcion = "Pliego única SOLP"},
-                    new {Id = 1, Descripcion = "Pliego múltiple SOLP"},
+                    new {Id = (int)TipoPliego.PliegoUnico, Descripcion = "Pliego única SOLP"},
+                    new {Id = (int)TipoPliego.PliegoMultiple, Descripcion = "Pliego múltiple SOLP"},
                 },
             });
         }
@@ -172,18 +172,27 @@ namespace SustitucionMOA.Controllers
                                                 bool contratoMarco = false,
                                                 string claseDocumento = null,
                                                 string tipoImputacion = null,
-                                                string valorTipoImputacion = null)
+                                                string valorTipoImputacion = null,
+                                                string tipoPliego = null)
         {
 
             var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
             var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
             var usuario_Id = ObtenerUsuarioActual().Id;
 
+            TipoPliego tipoPliegoEnum = TipoPliego.All;
+            if (!string.IsNullOrWhiteSpace(tipoPliego))
+            {
+                IEnumerable<int> tipoPliegoList = tipoPliego.Split(',').Select(x => int.Parse(x));
+                tipoPliegoEnum = (TipoPliego)tipoPliegoList.Aggregate((x, y) => x | y);
+            }
+
             return JsonCustom(new
             {
                 data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                tipoPliegoEnum)
             });
         }
         [HttpGet]
