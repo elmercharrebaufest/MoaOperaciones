@@ -217,7 +217,8 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
     listarSolp() {
         this.spinnerComponent.showIt();
         this.service.getListarSolpCompras(this.pageIndex, this.pageSize, this.orden, this.columnaOrden, this.nroSolp, this.nombrePedido, this.selectEstadoSolp.join(","), this.selectUsuario.join(","), this.selectCentro.join(","), this.selectGrupoCompras.join(","),
-            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","));
+            this.fechaDesde, this.fechaHasta, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.listarPendienteOrDefault(), this.contratoMarco, this.selectClaseDocumento.join(","), this.selectTipoImputacion.join(","), this.selectValorTipoImputacion.join(","),
+            this.selectTipoPliego.join(",")        );
     }
 
     private listarPendienteOrDefault(): number {
