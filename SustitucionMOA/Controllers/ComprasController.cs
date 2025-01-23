@@ -122,6 +122,12 @@ namespace SustitucionMOA.Controllers
                     .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
                     .Select(x => x.Codigo),
                 // ----- FIN crear PO Múltiple -----
+
+                TipoPliego = new List<object>
+                {
+                    new {Id = 0, Descripcion = "Pliego única SOLP"},
+                    new {Id = 1, Descripcion = "Pliego múltiple SOLP"},
+                },
             });
         }
 
