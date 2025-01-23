@@ -1,4 +1,6 @@
-﻿using Molinos.Scato.Repositorio;
+﻿// Ignore Spelling: Sustitucion Automatica paginacion solps repo Imputacion
+
+using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
