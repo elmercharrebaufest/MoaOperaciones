@@ -424,6 +424,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.css" />
+    <Content Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.html" />
+    <Content Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.css" />
+    <Content Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.html" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
@@ -432,6 +436,10 @@
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.css" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.html" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey-routing.module.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey.module.ts" />
     <TypeScriptCompile Include="src\app\common\models\adjuntos.ts" />
