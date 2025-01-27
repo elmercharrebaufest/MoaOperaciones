@@ -220,7 +220,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                 let s = this.obtenerUsuarioSolicitante().subscribe(() => {
                     // lo hago así porque lo de adentro necesita que exista la lista de usuarios
-                    debugger;
                     if (this.solpId > 0) {
                         if (componentMode) {
                             this.setComponentMode(componentMode);
@@ -228,7 +227,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.setComponentMode(ComponentMode.Edition);
                         }
 
-                        debugger;
                         if (this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE') {
                             this.traerPliegoMultipleId(this.solpId);
                         } else {
@@ -442,7 +440,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        debugger;
                         const pliego = result.Pliego;
                         const solps: number[] = result.Solps;
                         const tipo = this.solpActual.tipoSolp;

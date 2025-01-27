@@ -79,6 +79,10 @@ export class DashboardPliegoMultipleComponent
         this.goToSeccion(`/compras/solp/${id}/PLIEGO_MULTIPLE/copy`);
     }
 
+    public editarPliego(id: number): void {
+        this.goToSeccion(`/compras/solp/${id}/PLIEGO_MULTIPLE/edit`);
+    }
+
 
 
     public generarZipPliego(idSolp) {
