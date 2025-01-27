@@ -90,6 +90,13 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(File(fileBytes, mimeType, fileName));
         }
 
+        public ActionResult TraerPliegoId(int idPliego)
+        {
+            if (idPliego <= 0) { throw new ArgumentException("El id del pliego no puede ser menor o igual a 0"); }
+
+            return JsonCustom(pliegoMultipleService.TraerPliegoId(idPliego));
+        }
+
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()
         {
             string userMail = SessionPersister.getUsername();
