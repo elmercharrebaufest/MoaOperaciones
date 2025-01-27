@@ -114,4 +114,11 @@ export class PliegoMultipleService extends BaseService {
                 headers: this.headers,
             });
     }
+
+    public traerPliegoId(idPliego: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idPliego', idPliego.toString());
+        return this.http
+            .get('/api/PliegoMultiple/TraerPliegoId', { params: params, headers: this.headers });
+    }
 }
