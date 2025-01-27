@@ -1,4 +1,5 @@
-﻿using SustitucionMOAUtils.Helpers;
+﻿using SustitucionMOASecurity;
+using SustitucionMOAUtils.Helpers;
 using System;
 using System.Diagnostics;
 using System.Web.Mvc;
@@ -14,9 +15,7 @@ namespace SustitucionMOA.Filter
             {
                 Method = filterContext.ActionDescriptor.ActionName,
                 Controller = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                User = filterContext.HttpContext.User.Identity.IsAuthenticated
-                    ? filterContext.HttpContext.User.Identity.Name
-                    : "Anonymous",
+                User = SessionPersister.getUsername(),
                 StartTime = DateTime.UtcNow,
                 Stopwatch = Stopwatch.StartNew()
             };
