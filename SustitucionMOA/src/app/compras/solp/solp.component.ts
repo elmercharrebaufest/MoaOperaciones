@@ -185,11 +185,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.getCombos();
             this.es = setupDaysAndMonths();
 
+            let componentMode: ComponentMode;
+
             if (this.route.params) {
                 this.route.params.forEach((params: Params) => {
                     let numeroSolp = "";
                     // if (params["id"] > 0) this.solpId = params["id"];
-
                     if (params["tipoSolp"]) {
                         if (params["tipoSolp"] === "PLIEGO_MULTIPLE") {
                             //circuito de pliego múltiple
@@ -198,6 +199,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         }
                         this.solpActual.tipoSolp = params["tipoSolp"];
                     }
+
+                    if (params['action'] && params['action'] === 'copy') {
+                        componentMode = ComponentMode.Copy;
+                    }
+
                     this.pasos[0].Activo = true;
                     this.pasos[0].Iniciado = true;
                     this.pasoActual = this.pasos[0];
@@ -214,9 +220,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
                 let s = this.obtenerUsuarioSolicitante().subscribe(() => {
                     // lo hago así porque lo de adentro necesita que exista la lista de usuarios
+                    debugger;
                     if (this.solpId > 0) {
-                        this.setComponentMode(ComponentMode.Edition);
-                        this.traerSolpId(this.solpId);
+                        if (componentMode) {
+                            this.setComponentMode(componentMode);
+                        } else {
+                            this.setComponentMode(ComponentMode.Edition);
+                        }
+
+                        if (this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE') {
+                            this.traierPliegoMultipleId(this.solpId);
+                        } else {
+                            this.traerSolpId(this.solpId);
+                        }
                     } else {
                         this.setComponentMode(ComponentMode.Creation);
                         this.setearPasos();
@@ -267,6 +283,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     public get esEdicionPliegoMultiple() {
         return this.getComponentMode() === ComponentMode.Edition
+            && this.solpActual.EsPliegoMultiple
+            && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
+    }
+
+    public get esCopiaPliegoMultiple() {
+        return this.getComponentMode() === ComponentMode.Copy
             && this.solpActual.EsPliegoMultiple
             && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
     }
@@ -424,6 +446,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
+    }
+
+    private traierPliegoMultipleId(id: number): void {
+
     }
 
     private getSelectedTipoPosicion(posiciones: any) {

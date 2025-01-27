@@ -75,6 +75,10 @@ export class DashboardPliegoMultipleComponent
         });
     }
 
+    public copiarPliego(id: number): void {
+        this.goToSeccion(`/compras/solp/${id}/PLIEGO_MULTIPLE/copy`);
+    }
+
 
 
     public generarZipPliego(idSolp) {
