@@ -205,5 +205,16 @@ namespace SustitucionMOAUtils.Services
             mimeType = CustomMediaTypeNames.Application.Pdf;
             return pdfFilePath;
         }
+
+        public TraerPliegoDto TraerPliegoId(int idPliego)
+        {
+            Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException($"Pliego con id {idPliego} no encontrado");
+
+            return new TraerPliegoDto
+            {
+                Pliego = comprasService.TraerSolpId(pliego.Solps.First().Id),
+                Solps = pliego.Solps.Select(x => x.Id),
+            };
+        }
     }
 }

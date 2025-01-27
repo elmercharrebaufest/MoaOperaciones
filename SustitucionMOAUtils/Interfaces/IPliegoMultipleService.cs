@@ -23,5 +23,7 @@ namespace SustitucionMOAUtils.Interfaces
         void EliminarPliegoMultiple(int idPliego);
 
         string GenerarZipPliego(int idPliego, string pathBase, out string mimeType);
+
+        TraerPliegoDto TraerPliegoId(int idPliego);
     }
 }
