@@ -136,7 +136,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     pasosMaster: { solp: Paso[], pliegoMultiple: Paso[] };
 
     get steppeerSaveButtonAvailable(): boolean {
-        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) { return false; }
+        if (this.esOperacionPliegoMultiple) { return false; }
 
         return this.solpActual.nroSolp == null || this.solpActual.nroSolp == 0 || this.solpActual.tipoSolpSap == 2
     }
@@ -292,6 +292,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
             && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
     }
 
+    public get esOperacionPliegoMultiple() {
+        return this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple;
+    }
+
     public get pliegoIdWhenEditing() {
         if (!this.esEdicionPliegoMultiple) {
             return null;
@@ -379,7 +383,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
         // una vez configurados los pasos posibles, se aplican las restricciones para "pliego múltiple"
         if (this.solpActual.EsPliegoMultiple
-            && !(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)) {
+            && !this.esOperacionPliegoMultiple) {
             this.pasos[0].Deshabilitado = true;
             this.pasos[1].Deshabilitado = true;
             this.pasos[2].Deshabilitado = true;
@@ -594,7 +598,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }): boolean {
-        if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)) {
+        if (!this.esOperacionPliegoMultiple) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
             if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
                 this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
@@ -623,8 +627,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
                     }
 
-                    if ((this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)
-                        && validatePasos.primerPasoIncompleto == 5) {
+                    if (this.esOperacionPliegoMultiple && validatePasos.primerPasoIncompleto == 5) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta seleccionar SOLPs en el paso #${validatePasos.primerPasoIncompleto}` });
                     }
 
@@ -646,7 +649,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 }
 
 
-                if (!(this.esCreacionPliegoMultiple || this.esCopiaPliegoMultiple || this.esEdicionPliegoMultiple)) {
+                if (!this.esOperacionPliegoMultiple) {
                     if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
@@ -704,7 +707,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.solpActual.especificacionesViewModel.observaciones = "";
 
 
-            if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
+            if (this.esOperacionPliegoMultiple) {
                 // no hacer nada entre pasos.
                 // al finalizar, llamar desde el método finalizar la grabación de pliego múltiple.
                 this.disabledSave = false;
@@ -1296,7 +1299,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     salir() {
-        if (this.esEdicionPliegoMultiple || this.esCreacionPliegoMultiple) {
+        if (this.esOperacionPliegoMultiple) {
             this.navService.navegarSeccion('/compras/dashboardPliegoMultiple');
         } else {
             this.navService.navegarSeccion('/compras');
@@ -1350,7 +1353,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
-        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
+        if (this.esOperacionPliegoMultiple) {
             if (this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false })) { //TODO: change
                 this.guardarPliegoMultiple();
             }
