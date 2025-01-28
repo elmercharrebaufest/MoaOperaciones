@@ -695,7 +695,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                 this.solpActual.especificacionesViewModel.observaciones = "";
 
 
-            if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) {
+            if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
                 // no hacer nada entre pasos.
                 // al finalizar, llamar desde el método finalizar la grabación de pliego múltiple.
                 this.disabledSave = false;
