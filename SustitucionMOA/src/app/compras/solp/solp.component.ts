@@ -292,6 +292,13 @@ export class SolpComponent extends BaseComponent implements OnInit {
             && this.solpActual.tipoSolp === 'PLIEGO_MULTIPLE';
     }
 
+    public get pliegoIdWhenEditing() {
+        if (!this.esEdicionPliegoMultiple) {
+            return null;
+        }
+        return this.solpId;
+    }
+
     private setupCentroPorDefecto(): void {
         let centroPorDefecto = this.combos.Centro.find(x => x.Codigo == "1029");
         if (centroPorDefecto != null) {
