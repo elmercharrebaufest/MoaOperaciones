@@ -388,7 +388,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.pasos[1].Completo = true;
             this.pasos[2].Completo = true;
             this.pasos[3].Completo = true;
-            this.pasoActual = this.pasos[4];
+            this.cambioPaso(this.pasos[4]);
         }
 
         if (this.esCopiaPliegoMultiple) {
@@ -496,7 +496,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
         });
 
         this._pasoActual = this.pasos.find(x => x.Numero == 1) as Paso;
-        this.cambioPaso(this.pasos[0]);
+        if (this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
+            this.cambioPaso(this.pasos[4]);
+        } else {
+            this.cambioPaso(this.pasos[0]);
+        }
         this.setearPasos();
         this.blockUI.stop();
         this.spinnerComponent.hideIt();
