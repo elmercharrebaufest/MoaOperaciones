@@ -156,10 +156,19 @@ namespace SustitucionMOAUtils.Services
         public void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar)
         {
             bool condEsp = comprasService.TieneCondicionEspecial(pliegoData);
+            bool esEdicion = pliegoData.Pliego_Id != null;
 
-            Pliego pliego = comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, esPliegoMultiple: true);
+            Pliego pliego = null;
+            if (esEdicion)
+            {
+                pliego = repositorio.Obtener<Pliego>(pliegoData.Pliego_Id);
+            }
+
+            pliego = comprasService.GuardarPliego(pliegoData, adjuntos, condEsp, pliegoEntity: pliego, esPliegoMultiple: true);
 
             List<Solp> solps = repositorio.Listar<Solp>(solp => solpsAsociar.Contains(solp.Id));
+
+            if (esEdicion) { DesvincularSolps(solps); }
 
             foreach (Solp solp in solps)
             {
@@ -190,7 +199,25 @@ namespace SustitucionMOAUtils.Services
             Pliego pliego = repositorio.Obtener<Pliego>(idPliego)
                 ?? throw new InvalidOperationException($"No se encuentra Pliego con id = {idPliego}");
 
-            foreach (Solp solp in pliego.Solps)
+            DesvincularSolps(pliego.Solps);
+
+            repositorio.RemoverTodos(pliego.Archivos.ToList());
+            repositorio.Remover(pliego);
+
+            repositorio.GuardarCambios();
+        }
+
+        /// <summary>
+        /// desvincula Solp del pliego.
+        /// </summary>
+        /// <remarks>
+        /// No se guardan los cambios en la base de datos. Esa responsabilidad recae en el método que llama a este.
+        /// </remarks>
+        /// <param name="solps"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        private void DesvincularSolps(ICollection<Solp> solps)
+        {
+            foreach (Solp solp in solps)
             {
                 SolpDatosPreviosPliegoMultiple backUp = repositorio.Obtener<SolpDatosPreviosPliegoMultiple>(x => x.Solp_Id == solp.Id)
                     ?? throw new NotImplementedException("En caso de no encontrar el back-up...");
@@ -201,11 +228,6 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.Remover(backUp);
             }
-
-            repositorio.RemoverTodos(pliego.Archivos.ToList());
-            repositorio.Remover(pliego);
-
-            repositorio.GuardarCambios();
         }
 
         public string GenerarZipPliego(int idPliego, string pathBase, out string mimeType)
@@ -234,9 +256,14 @@ namespace SustitucionMOAUtils.Services
         {
             Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException($"Pliego con id {idPliego} no encontrado");
 
+            ComprasDto.SolpDto pliegoReturn = comprasService.TraerSolpId(pliego.Solps.First().Id);
+            pliegoReturn.Id = null;
+            pliegoReturn.Pliego_Id = pliego.Id;
+
+
             return new TraerPliegoDto
             {
-                Pliego = comprasService.TraerSolpId(pliego.Solps.First().Id),
+                Pliego = pliegoReturn,
                 Solps = pliego.Solps.Select(x => x.Id),
             };
         }
