@@ -12,7 +12,6 @@ using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -125,8 +124,6 @@ namespace SustitucionMOA.Controllers
             }
 
             var corredor = usuario.ObtenerCorredor();
-
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
             cartaPresentacionJson = cartaPresentacionJson.Replace("nia", "ña");
             var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);
