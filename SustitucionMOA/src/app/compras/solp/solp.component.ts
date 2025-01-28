@@ -1338,7 +1338,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual = solpActual;
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
-        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple) {
+        if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
             this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false }); //TODO: change
             this.guardarPliegoMultiple();
         } else {
