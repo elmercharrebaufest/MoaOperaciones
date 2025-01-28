@@ -833,6 +833,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private guardarPliegoMultiple(): void {
+        this.blockUI.start('Guardando...');
+
         this.pliegoMultipleService
             .vincularSolpPliegoMultiple(this.solpActual, this.pliegoMultipleIdSolpsSeleccionadas)
             .subscribe((result: any) => {
