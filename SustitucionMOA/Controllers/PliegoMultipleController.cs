@@ -39,7 +39,8 @@ namespace SustitucionMOA.Controllers
                                                             string creador,
                                                             string fiscal,
                                                             bool sap = false,
-                                                            bool mantenimiento = false)
+                                                            bool mantenimiento = false,
+                                                            int? pliegoId = null)
         {
             IEnumerable<int> creadorList = string.IsNullOrWhiteSpace(creador)
                 ? Enumerable.Empty<int>()
@@ -49,7 +50,7 @@ namespace SustitucionMOA.Controllers
                 ? Enumerable.Empty<string>()
                 : fiscal.Split(',');
 
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento));
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento, pliegoId));
         }
 
         [ValidateInput(false)]
