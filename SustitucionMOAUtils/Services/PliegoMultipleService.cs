@@ -208,13 +208,14 @@ namespace SustitucionMOAUtils.Services
         }
 
         /// <summary>
-        /// desvincula Solp del pliego.
+        /// Desvincula Solp del pliego.
         /// </summary>
         /// <remarks>
         /// No se guardan los cambios en la base de datos. Esa responsabilidad recae en el método que llama a este.
         /// </remarks>
         /// <param name="solps"></param>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <exception cref="NotImplementedException">Este método depende de la existencia de un back-up de datos
+        /// para asignar el pliego original a la solp. Se lanza esta excepción en caso de no encontrar dicho back-up</exception>
         private void DesvincularSolps(ICollection<Solp> solps)
         {
             foreach (Solp solp in solps)
