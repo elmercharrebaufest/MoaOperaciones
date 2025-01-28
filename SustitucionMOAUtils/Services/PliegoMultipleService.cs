@@ -218,7 +218,7 @@ namespace SustitucionMOAUtils.Services
         /// para asignar el pliego original a la solp. Se lanza esta excepción en caso de no encontrar dicho back-up</exception>
         private void DesvincularSolps(ICollection<Solp> solps)
         {
-            foreach (Solp solp in solps)
+            foreach (Solp solp in solps.ToList())
             {
                 SolpDatosPreviosPliegoMultiple backUp = repositorio.Obtener<SolpDatosPreviosPliegoMultiple>(x => x.Solp_Id == solp.Id)
                     ?? throw new NotImplementedException("En caso de no encontrar el back-up...");
