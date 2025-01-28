@@ -1600,7 +1600,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.setCurrentUseAsResponsableTrabajoIfNeeded();
         }
 
-        if (this.esEdicionSolp) {
+        if (this.esEdicionSolp || this.esCopiaPliegoMultiple) {
             const elementoEncontradoSolicitante = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
             if (elementoEncontradoSolicitante) {
                 this.solpActual.selectResponsableTrabajo = elementoEncontradoSolicitante;
