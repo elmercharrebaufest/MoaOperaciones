@@ -833,6 +833,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     private guardarPliegoMultiple(): void {
+
+        debugger;
         this.blockUI.start('Guardando...');
 
         this.pliegoMultipleService
