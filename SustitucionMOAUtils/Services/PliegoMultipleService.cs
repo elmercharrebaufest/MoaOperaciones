@@ -4,6 +4,7 @@ using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
+using SustitucionMOAUtils.Extensions;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -53,7 +54,8 @@ namespace SustitucionMOAUtils.Services
                                                                IEnumerable<int> creador,
                                                                IEnumerable<string> fiscal,
                                                                bool sap,
-                                                               bool mantenimiento)
+                                                               bool mantenimiento,
+                                                               int? pliegoId = null)
         {
             IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
@@ -61,14 +63,20 @@ namespace SustitucionMOAUtils.Services
 
             IQueryable<Solp> consultaSolp = repositorio
                 .ListarConsultable<Solp>(solpQuery =>
-                    codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
-                    && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
-                    && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
-                    && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true)
-                    && !solpQuery.Pliego.Multiple
-                    && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
+                        codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
+                        && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
+                        && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
+                        && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true)
+                        && !solpQuery.Pliego.Multiple
+                        && !solpQuery.Posiciones.Any(posicion => posicion.AdjudicacionPosiciones.Any())
                     )
                 ;
+
+            List<Solp> solpsPrevias = new List<Solp>();
+            if (pliegoId != null)
+            {
+                solpsPrevias = repositorio.Listar<Solp>(x => x.Pliego_Id == pliegoId);
+            }
 
             if (!string.IsNullOrWhiteSpace(numeroSolp))
             {
@@ -122,10 +130,26 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            return consultaSolp
-                .OrderByDescending(solp => solp.FechaCreacion)
+            List<SolpDto> result = consultaSolp
                 .ToList()
                 .ConvertAll(solp => (SolpDto)solp);
+
+            if (pliegoId != null)
+            {
+                List<SolpDto> dtoPrevias = solpsPrevias.ConvertAll(solp =>
+                {
+                    SolpDto dto = (SolpDto)solp;
+                    dto.Selected = true;
+                    return dto;
+                });
+                result.AddRange(dtoPrevias);
+            }
+
+            return result
+                .DistinctBy(solp => solp.Id)
+                .OrderByDescending(solp => solp.Selected)
+                .ThenByDescending(solp => solp.FechaCreacion)
+                .ToList();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "EF does not support StringComparison")]
