@@ -3,7 +3,6 @@ using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Logger;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -61,13 +60,37 @@ namespace SustitucionMOA.Filter
             else
             {
                 var errorId = Guid.NewGuid();
-                Log.Error($"Error id {errorId}", exception);
+                var requestData = string.Empty;
+
+                try
+                {
+                    var request = HttpContext.Current.Request;
+                    var method = request.HttpMethod;
+
+                    if (method == "GET")
+                    {
+                        requestData = string.Join("&", request.QueryString.AllKeys
+                            .Select(key => $"{key}={SanitizeHtml(request.QueryString[key])}"));
+                    }
+                    else if (method == "POST")
+                    {
+                        requestData = string.Join("&", request.Unvalidated.Form.AllKeys
+                            .Where(key => !request.Files.AllKeys.Contains(key))
+                            .Select(key => $"{key}={SanitizeHtml(request.Unvalidated.Form[key])}"));
+                    }
+                }
+                catch (Exception)
+                {
+                    //Se agrega para prevenir un error por no tener data o error al obtenerla.
+                }
+
+
+                Log.Debug($"ID Error: {errorId}, Data: {requestData}");
                 Log.Error(HttpContext.Current.Request.UserHostAddress,
                           SessionPersister.getUsername(),
                           filterContext.Controller.GetType().Name,
                           filterContext.RouteData.Values["action"].ToString(),
                           exception);
-
                 // Para excepciones generales
                 filterContext.Result = new JsonResult
                 {
@@ -77,6 +100,21 @@ namespace SustitucionMOA.Filter
             }
 
             filterContext.ExceptionHandled = true;
+        }
+
+        /// <summary>
+        /// Limpia el contenido HTML para evitar errores de validación de solicitudes peligrosas.
+        /// </summary>
+        /// <param name="input">El texto que necesita ser sanitizado.</param>
+        /// <returns>Texto sanitizado.</returns>
+        private static string SanitizeHtml(string input)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+
+            // Escapar caracteres especiales para evitar problemas
+            var data = HttpUtility.HtmlEncode(input);
+            data = data.Replace("&quot;", "\"");
+            return data;
         }
     }
 }
