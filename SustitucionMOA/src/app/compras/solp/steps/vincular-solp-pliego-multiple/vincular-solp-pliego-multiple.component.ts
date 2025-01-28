@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter, Input } from '@angular/core';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
@@ -18,6 +18,9 @@ export class VincularSolpPliegoMultipleComponent
 
     @Output()
     public solpSeleccionadaListChanged = new EventEmitter<number[]>();
+
+    @Input()
+    public pliegoId: number | null;
 
     public numeroSolp: string;
 
@@ -94,7 +97,7 @@ export class VincularSolpPliegoMultipleComponent
     public getSolps() {
         this.blockUI.start("Cargando");
 
-        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento)
+        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.pliegoId)
             .subscribe(
                 (solps: SolpDto[]) => {
                     this.solps = solps;
