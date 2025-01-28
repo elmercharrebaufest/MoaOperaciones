@@ -593,7 +593,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return (camposVacios != null && vacio == 0);
     }
 
-    guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
+    guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }): boolean {
         if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
             if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
@@ -623,6 +623,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campos en el paso #${validatePasos.primerPasoIncompleto}` });
                     }
 
+                    if ((this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)
+                        && validatePasos.primerPasoIncompleto == 5) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta seleccionar SOLPs en el paso #${validatePasos.primerPasoIncompleto}` });
+                    }
+
                     if (guardarPorPaso == false) {
                         this.blockUI.stop();
                     }
@@ -640,15 +645,19 @@ export class SolpComponent extends BaseComponent implements OnInit {
                     return;
                 }
 
-                if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
-                    this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
 
-                    if (guardarPorPaso == false) {
-                        this.blockUI.stop();
+                if (!(this.esCreacionPliegoMultiple || this.esCopiaPliegoMultiple || this.esEdicionPliegoMultiple)) {
+                    if (this.solpActual.posicionActual.esTipoPosicionServicio && this.solpActual.selectUsuarioCompras.Id == null) {
+                        this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `Falta completar campo Usuario compras` });
+
+                        if (guardarPorPaso == false) {
+                            this.blockUI.stop();
+                        }
+                        this.disabledSave = false;
+                        return;
                     }
-                    this.disabledSave = false;
-                    return;
                 }
+
                 if (this.solpActual.trabajoHecho != true && this.solpActual.urgencia != true) {
                     if (this.validarFechaVisitaDeObra()) {
                         this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: "La fecha de visita de obra no puede ser mayor a la fecha tentativa de ofertas ni a la fecha de límite de consulta" });
@@ -703,6 +712,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             } else {
                 this.guardarSolp(guardarPorPaso, mostrarPreview, enviarSap);
             }
+            return true;
 
         } catch (e) {
             this.disabledSave = false;
@@ -834,7 +844,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     private guardarPliegoMultiple(): void {
 
-        debugger;
         this.blockUI.start('Guardando...');
 
         this.pliegoMultipleService
@@ -960,6 +969,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             }
                         });
                     }
+                    break;
+                case EnumPasoSolp.PliegoMultipleVincularSolp:
+                    paso.Completo = this.pliegoMultipleIdSolpsSeleccionadas.length > 0;
                     break;
             }
         }
@@ -1339,8 +1351,9 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
         if (this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple) {
-            this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false }); //TODO: change
-            this.guardarPliegoMultiple();
+            if (this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false })) { //TODO: change
+                this.guardarPliegoMultiple();
+            }
         } else {
             this.cabecera.validarTabCompleto();
             this.guardarCambios({ mostrarPreview: false, enviarSap: true, guardarPorPaso: false });
