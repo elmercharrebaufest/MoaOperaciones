@@ -594,7 +594,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     guardarCambios({ mostrarPreview = false, enviarSap = false, guardarPorPaso = false }) {
-        if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple)) {
+        if (!(this.esCreacionPliegoMultiple || this.esEdicionPliegoMultiple || this.esCopiaPliegoMultiple)) {
             //no hacer comprobación si no se cargan materiales / servicios por ser agrupación de solp ya creadas.
             if (this.solpActual.valorTotalPorMoneda.some(x => x.valorTotal > 999999999.99)) {
                 this.messageService.add({ severity: 'error', summary: 'No se puede guardar la SOLP', detail: 'El valor total es demasiado grande' });
