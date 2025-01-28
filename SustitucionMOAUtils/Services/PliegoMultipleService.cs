@@ -64,6 +64,7 @@ namespace SustitucionMOAUtils.Services
             IQueryable<Solp> consultaSolp = repositorio
                 .ListarConsultable<Solp>(solpQuery =>
                         codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
+                        && solpQuery.Posiciones.Any() && solpQuery.Posiciones.FirstOrDefault().TipoPosicion != null && solpQuery.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO"
                         && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
                         && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
                         && !(solpQuery.TrabajoYaHecho == true || solpQuery.Adicional == true || solpQuery.Urgencia == true || solpQuery.CondEspProveedorAsignado == true)
