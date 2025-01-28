@@ -28,7 +28,14 @@ export class PliegoMultipleService extends BaseService {
             .get<PliegoDto[]>('/api/PliegoMultiple/GetPliegosMultiples', { params: params, headers: this.headers });
     }
 
-    public getSolpDisponiblesPliegosMultiple(numeroSolp: string, fechaInicio: string, fechaFin: string, creador: string, fiscal: string, sap: boolean, mantenimiento: boolean): Observable<SolpDto[]> {
+    public getSolpDisponiblesPliegosMultiple(numeroSolp: string,
+        fechaInicio: string,
+        fechaFin: string,
+        creador: string,
+        fiscal: string,
+        sap: boolean,
+        mantenimiento: boolean,
+        pliegoId:number | null    ): Observable<SolpDto[]> {
         let params: HttpParams = new HttpParams();
         if (numeroSolp) {
             params = params.set('numeroSolp', numeroSolp);
@@ -56,6 +63,10 @@ export class PliegoMultipleService extends BaseService {
 
         if (mantenimiento) {
             params = params.set('mantenimiento', mantenimiento.toString());
+        }
+
+        if (pliegoId) {
+            params = params.set('pliegoId', pliegoId.toString());
         }
 
         return this.http
@@ -113,5 +124,12 @@ export class PliegoMultipleService extends BaseService {
                 params: params,
                 headers: this.headers,
             });
+    }
+
+    public traerPliegoId(idPliego: number): Observable<any> {
+        let params: HttpParams = new HttpParams();
+        params = params.set('idPliego', idPliego.toString());
+        return this.http
+            .get('/api/PliegoMultiple/TraerPliegoId', { params: params, headers: this.headers });
     }
 }

@@ -39,7 +39,8 @@ namespace SustitucionMOA.Controllers
                                                             string creador,
                                                             string fiscal,
                                                             bool sap = false,
-                                                            bool mantenimiento = false)
+                                                            bool mantenimiento = false,
+                                                            int? pliegoId = null)
         {
             IEnumerable<int> creadorList = string.IsNullOrWhiteSpace(creador)
                 ? Enumerable.Empty<int>()
@@ -49,7 +50,7 @@ namespace SustitucionMOA.Controllers
                 ? Enumerable.Empty<string>()
                 : fiscal.Split(',');
 
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento));
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento, pliegoId));
         }
 
         [ValidateInput(false)]
@@ -88,6 +89,13 @@ namespace SustitucionMOA.Controllers
             Directory.Delete(path, true);
 
             return JsonCustom(File(fileBytes, mimeType, fileName));
+        }
+
+        public ActionResult TraerPliegoId(int idPliego)
+        {
+            if (idPliego <= 0) { throw new ArgumentException("El id del pliego no puede ser menor o igual a 0"); }
+
+            return JsonCustom(pliegoMultipleService.TraerPliegoId(idPliego));
         }
 
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()

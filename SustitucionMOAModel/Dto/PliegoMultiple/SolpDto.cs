@@ -7,6 +7,8 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
     {
         public int Id { get; set; }
 
+        public bool Selected { get; set; }
+
         public int TipoSolpSap { get; set; }
 
         public string NumeroSolp { get; set; }

@@ -7,7 +7,8 @@ export enum ComponentMode {
     Edition = 1,
     Loading = 2,
     View = 3,
-    Creation = 4
+    Creation = 4,
+    Copy = 5,
 }
 
 export function setupSolpPasos(): { solp: Paso[], pliegoMultiple: Paso[] } {

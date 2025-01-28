@@ -16,12 +16,15 @@ namespace SustitucionMOAUtils.Interfaces
                                                         IEnumerable<int> creador,
                                                         IEnumerable<string> fiscal,
                                                         bool sap,
-                                                        bool mantenimiento);
+                                                        bool mantenimiento,
+                                                        int? pliegoId = null);
 
         void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar);
 
         void EliminarPliegoMultiple(int idPliego);
 
         string GenerarZipPliego(int idPliego, string pathBase, out string mimeType);
+
+        TraerPliegoDto TraerPliegoId(int idPliego);
     }
 }

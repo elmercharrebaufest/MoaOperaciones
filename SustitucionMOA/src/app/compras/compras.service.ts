@@ -323,6 +323,7 @@ export class ComprasService extends BaseService {
         let solpObject =
         {
             Id: solp.id,
+            Pliego_Id: solp.Pliego_Id,
             TipoSolp: this.getObjetoCodigo(solp.tipoSolp),
             TipoSolpSap: solp.tipoSolpSap,
             NombreDeObra: solp.nombreDePedido,

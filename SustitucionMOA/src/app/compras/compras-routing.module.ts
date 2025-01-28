@@ -24,6 +24,7 @@ const routes: Routes = [
     { path: "solp", component: SolpComponent },
     { path: "solp/:id", component: SolpComponent },
     { path: "solp/:id/:tipoSolp", component: SolpComponent },
+    { path: "solp/:id/:tipoSolp/:action", component: SolpComponent },
     { path: "dashboard", component: DashboardComponent },
     { path: "dashboardComprador", component: ListadoDashboardCompradorComponent },
     { path: "dashboardProveedor", component: ListadoDashboardProveedorComponent },
