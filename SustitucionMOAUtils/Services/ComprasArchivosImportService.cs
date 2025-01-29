@@ -1,6 +1,5 @@
 ﻿using Excel;
 using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
@@ -9,8 +8,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace SustitucionMOAUtils.Services
@@ -126,7 +123,8 @@ namespace SustitucionMOAUtils.Services
                             UnidadId = unidad?.Id,
                             Unidad = unidad,
                             CuentaMayor = cuentaMayor,
-                            ServicioCatalogado = servicioCatalogado
+                            Imputacion = imputacion,
+                            ServicioCatalogado = servicioCatalogado,
                         };
                         posicion.Subposiciones.Add(subposicion);
                     }
