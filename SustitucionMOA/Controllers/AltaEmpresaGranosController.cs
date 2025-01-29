@@ -12,7 +12,6 @@ using SustitucionMOAModel.Models.WSMapMOA.PDF;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -115,8 +114,9 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, string mailUsuario, int proveedorId)
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
         {
+            string mailUsuario = SessionPersister.getUsername();
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             if (proveedorId == 0)
@@ -125,8 +125,6 @@ namespace SustitucionMOA.Controllers
             }
 
             var corredor = usuario.ObtenerCorredor();
-
-            var proveedor = usuario.ObtenerProveedorPorId(proveedorId);
 
             cartaPresentacionJson = cartaPresentacionJson.Replace("nia", "ña");
             var cartaPresentacion = JsonConvert.DeserializeObject<RptCartaDePresentacionInfo>(cartaPresentacionJson);

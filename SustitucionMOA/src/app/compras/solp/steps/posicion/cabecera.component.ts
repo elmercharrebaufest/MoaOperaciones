@@ -1364,7 +1364,12 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
         for (let i = 0; i < posicionesPrecargadas.length; i++) {
             let posArchivo = posicionesPrecargadas[i];
-            let newPos = new SolpPosicion();
+            //let newPos = new SolpPosicion();
+
+            this.model.agregarNuevaPosicion(null as SolpPosicion);
+
+            let newPos = this.model.posicionActual;
+
             newPos.listadoSubPosiciones = new Array<SubPosicionViewModel>();
 
             this.model.posicionActual = newPos;
@@ -1372,6 +1377,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
             let centroEnt = (this.centroEntrega as any[]).find(x => x.Codigo == (posArchivo.Centro ? posArchivo.Centro.Codigo : ''));
             let moneda = this.combos.Moneda.find(x => x.Id == posArchivo.MonedaId);
             let grupoCompras = this.combos.GrupoCompras.find(x => x.Id == posArchivo.GrupoComprasId);
+            let grupoArticulo = this.combos.GrupoArticulo.find(x => x.Id == posArchivo.GrupoArticuloId);
             let tipoImputacion = this.tipoImputacion.find(x => x.Id == posArchivo.TipoImputacionId);
 
             newPos.numeroPosicion = i + 1;
@@ -1385,7 +1391,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             newPos.monedaSeleccionada = moneda;
             newPos.GrupoCompras = grupoCompras;
-            
+            newPos.selectGrupoCompras = grupoCompras;
+            newPos.selectArticuloCompras = grupoArticulo;
+
+
             let servicioMaterialObj = {
                 Codigo: posArchivo.Codigo,
                 CodigoSap: posArchivo.Codigo,
@@ -1399,7 +1408,22 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
 
             newPos.tipoPosicion = posArchivo.TipoPosicion;
             newPos.indice = posArchivo.Indice;
-            newPos.fechaEntregaServicio = posArchivo.FechaEntregaServicio;
+            newPos.fechaEntregaServicio = new Date(posArchivo.FechaEntregaServicio);
+            let today = new Date();    
+
+            if (newPos.fechaEntregaServicio > today) {
+                // resta de fecha seleccionada menos la fecha minima parseada en dias
+                let plazoNuevo = Math.ceil((newPos.fechaEntregaServicio.getTime() - this.model.fechaEntrega.getTime()) / (1000 * 60 * 60 * 24));
+                if (plazoNuevo >= 0) {
+                    newPos.plazoDeEntrega = plazoNuevo;
+                } else {
+                    newPos.fechaEntregaServicio = new Date(this.model.fechaEntrega);
+                    newPos.plazoDeEntrega = 0;
+                }
+            } else {
+                newPos.plazoDeEntrega = 0;
+            }
+
             newPos.Cantidad = posArchivo.Cantidad;
             newPos.cuentaMayor = posArchivo.CuentaMayor;
             newPos.valorImputacion = posArchivo.Imputacion;
@@ -1420,8 +1444,10 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 newSubpos.codigoServicio = { ...codigoServicioObj };
                 newSubpos.tareaSubcontratar = subposArch.Tarea;
                 newSubpos.tareaSubcontratarObj = { ...codigoServicioObj };
+                newSubpos.cuentaMayor = subposArch.CuentaMayor;
+                newSubpos.tipoImputacion = subposArch.Imputacion;
 
-                var unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == (subposArch.Unidad ? subposArch.Unidad.Descripcion : ''));
+                let unidadSeleccionadaObj = this.combos.Unidades.find(x => x.Descripcion == (subposArch.Unidad ? subposArch.Unidad.Descripcion : ''));
                 if (unidadSeleccionadaObj) {
                     newSubpos.unidadSeleccionada = unidadSeleccionadaObj;
                     newSubpos.unidadMedida = unidadSeleccionadaObj.Descripcion;

@@ -8,6 +8,7 @@ export interface SolpSubposicionPrecargada {
     Cantidad: number;
     UnidadId: number;
     CuentaMayor: TablaSap;
+    Imputacion: TablaSap;
     Unidad: TablaSap;
     ServicioCatalogado: ServicioSolp;
 }
