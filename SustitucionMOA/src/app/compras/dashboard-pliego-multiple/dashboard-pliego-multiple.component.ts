@@ -76,8 +76,11 @@ export class DashboardPliegoMultipleComponent
     }
 
     private eliminarPliegoHacer(id: number) {
+        this.blockUI.start("Eliminando");
+
         this.service.eliminarPliegoMultiple(id).subscribe((result: any) => {
-            console.log(result);
+            this.blockUI.stop();
+
             if (result.logout == true) {
                 this.sessionDataService.logout();
             } else if (result.error != undefined && result.error != "") {
