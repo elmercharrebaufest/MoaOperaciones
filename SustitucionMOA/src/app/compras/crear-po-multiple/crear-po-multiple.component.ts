@@ -98,6 +98,15 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         return this.showNombrePliegoConditionList.includes(this.selectTipoSolp);
     }
 
+    showTipoPliegoMultipleConditionList: string[] = [];
+    get showTipoPliegoMultiple() {
+        return this.showTipoPliegoMultipleConditionList.includes(this.selectTipoSolp);
+    }
+
+
+    tipoPliegoItem: SelectItem[];
+    selectTipoPliego: string[] = [];
+
     nombrePliego?: string;
 
     lastSearch?: string;
@@ -122,6 +131,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         numeroPo: null,
         selectTipoSolp: null,
         nombrePliego: null,
+        selectTipoPliego: [],
     };
 
     ngOnInit() {
@@ -151,6 +161,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         this.claseDocumentoFiltro = [];
                         this.tipoImputacionFiltro = [];
                         this.tiposSolp = [];
+                        this.tipoPliegoItem = [];
 
                         result.Centro.forEach(c => this.centroFiltro.push({
                             label: c.Codigo + " - " + c.Descripcion, value: c.Id
@@ -172,6 +183,16 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         this.filtrosPOMultipleDefault.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple;
                         if (!this.selectTipoSolp) { this.selectTipoSolp = result.DefaultTipoPosicionSolpCrearPoMultiple; }
                         this.showNombrePliegoConditionList = result.showNombrePliegoConditionList;
+                        this.showTipoPliegoMultipleConditionList = result.showTipoPliegoMultipleConditionList;
+
+                        result.TipoPliego.forEach((e: { Descripcion: string; Id: string; }) => {
+                            this.tipoPliegoItem.push({
+                                label: e.Descripcion, value: e.Id
+                            });
+                            if (!this.filtrosPOMultiple.selectTipoPliego || !this.filtrosPOMultiple.selectTipoPliego.length) {
+                                this.selectTipoPliego.push(e.Id);
+                            }
+                        });
                     }
                 },
                 error => {
@@ -495,6 +516,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
         this.filtrosPOMultiple.numeroPo = this.numeroPo;
         this.filtrosPOMultiple.selectTipoSolp = this.selectTipoSolp;
         this.filtrosPOMultiple.nombrePliego = this.nombrePliego;
+        this.filtrosPOMultiple.selectTipoPliego = _.cloneDeep(this.selectTipoPliego);
         sessionStorage.setItem('filtrosPOMultiple', JSON.stringify(this.filtrosPOMultiple));
     }
 
@@ -539,6 +561,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
             }
             this.selectTipoSolp = this.filtrosPOMultiple.selectTipoSolp;
             this.nombrePliego = this.filtrosPOMultiple.nombrePliego;
+            this.selectTipoPliego = _.cloneDeep(this.filtrosPOMultiple.selectTipoPliego);
         }
     }
 
@@ -653,4 +676,5 @@ interface iFiltrosPoMultiple {
     numeroPo?: number;
     selectTipoSolp?: string;
     nombrePliego?: string;
+    selectTipoPliego: string[];
 }
