@@ -77,7 +77,6 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
         }, 1000);
 
         this.cartaPresentacion.vendedorMailContacto = this.proveedorMail == undefined ? sessionStorage.getItem("username") : this.proveedorMail;
-        this.proveedorMail = this.cartaPresentacion.vendedorMailContacto;
     }
 
 
@@ -214,7 +213,7 @@ export class CartaPresentacionComponent extends BaseComponent implements OnInit 
 
         this.mensajeError = "";
         this.subscription = this.service
-            .generarCartaPresentacion(this.cartaPresentacion, this.proveedorMail, this.proveedorId)
+            .generarCartaPresentacion(this.cartaPresentacion, this.proveedorId)
             .subscribe(
                 (result) => {
                     this.spinnerCartaPresentacion.hideIt();

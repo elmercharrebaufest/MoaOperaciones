@@ -114,8 +114,9 @@ namespace SustitucionMOA.Controllers
         }
 
 
-        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, string mailUsuario, int proveedorId)
+        public ActionResult GenerarCartaPresentacion(string cartaPresentacionJson, int proveedorId)
         {
+            string mailUsuario = SessionPersister.getUsername();
             var usuario = repositorio.Obtener<Usuario>(u => u.Mail == mailUsuario);
 
             if (proveedorId == 0)
