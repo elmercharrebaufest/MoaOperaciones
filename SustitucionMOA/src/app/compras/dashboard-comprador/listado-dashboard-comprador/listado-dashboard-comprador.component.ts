@@ -715,8 +715,9 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                             this.tipoPliegoItem.push({
                                 label: e.Descripcion, value: e.Id
                             });
-                            if (!this.filtrosComprador.selectTipoPliego)
+                            if (!this.filtrosComprador.selectTipoPliego) {
                                 this.selectTipoPliego.push(e.Id);
+                            }
                         });
 
                     }
