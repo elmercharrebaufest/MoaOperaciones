@@ -1,11 +1,11 @@
-﻿import { BaseService } from "../common/services/BaseService";
+﻿import { HttpClient, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { PliegoDto } from "./dashboard-pliego-multiple/pliegoDto.interface";
-import { HttpParams, HttpClient } from "@angular/common/http";
-import { SolpDto } from "./solp/steps/vincular-solp-pliego-multiple/solpDto.interface";
-import { Solp } from "./solp/solp";
+import { BaseService } from "../common/services/BaseService";
 import { ComprasService } from "./compras.service";
+import { PliegoDto } from "./dashboard-pliego-multiple/pliegoDto.interface";
+import { Solp } from "./solp/solp";
+import { SolpDto } from "./solp/steps/vincular-solp-pliego-multiple/solpDto.interface";
 
 
 @Injectable({

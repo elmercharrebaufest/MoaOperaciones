@@ -1,16 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PliegoDto } from './pliegoDto.interface';
-import { ListBaseComponent } from '../../common/base-components/list-base-component';
-import { PliegoMultipleService } from '../pliegoMultiple.service';
-import { NavService } from '../../common/services/NavService';
-import { SessionDataService } from '../../common/services/SessionDataService';
-import { SecurityService } from '../../common/services/SecurityService';
-import { FloatMsgService } from '../../common/services/FloatMsgService';
-import { ModalService } from '../../common/services/ModalService';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
 import { ConfirmationService } from 'primeng/api';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { ListBaseComponent } from '../../common/base-components/list-base-component';
+import { FloatMsgService } from '../../common/services/FloatMsgService';
+import { ModalService } from '../../common/services/ModalService';
+import { NavService } from '../../common/services/NavService';
+import { SecurityService } from '../../common/services/SecurityService';
+import { SessionDataService } from '../../common/services/SessionDataService';
+import { PliegoMultipleService } from '../pliegoMultiple.service';
+import { PliegoDto } from './pliegoDto.interface';
 
 @Component({
     selector: 'app-dashboard-pliego-multiple',

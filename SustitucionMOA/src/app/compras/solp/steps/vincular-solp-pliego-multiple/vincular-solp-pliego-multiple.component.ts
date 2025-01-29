@@ -1,12 +1,12 @@
-import { Component, OnInit, OnDestroy, ViewChild, Output, EventEmitter, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { SelectItem } from 'primeng/api';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { FiltroFechaComponent } from '../../../../common/view-child/filtro-fecha/filtro-fecha.component';
+import { ComprasService } from '../../../compras.service';
 import { PliegoMultipleService } from '../../../pliegoMultiple.service';
 import { SolpDto } from './solpDto.interface';
-import { BlockUI, NgBlockUI } from 'ng-block-ui';
-import { ComprasService } from '../../../compras.service';
-import { SelectItem } from 'primeng/api';
 
 @Component({
     selector: 'vincular-solp-pliego-multiple',
