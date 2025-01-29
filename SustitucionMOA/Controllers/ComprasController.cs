@@ -123,6 +123,11 @@ namespace SustitucionMOA.Controllers
                     .Select(x => x.Codigo),
                 // ----- FIN crear PO Múltiple -----
 
+                showTipoPliegoMultipleConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                    // a la fecha, igual a showNombrePliegoConditionList
+                    .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(x => x.Codigo),
+
                 TipoPliego = new List<object>
                 {
                     new {Id = (int)TipoPliego.PliegoUnico, Descripcion = "Pliego única SOLP"},
