@@ -26,7 +26,9 @@
     </div>
 </div>
 
-<div class="content-wraper rounded shadow">
+<spinner></spinner>
+
+<div class="content-wraper rounded shadow" *ngIf="cargaCompleta">
     <section class="container-fluid clearfix">
         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
             <ng-template pTemplate="header" let-columns>
