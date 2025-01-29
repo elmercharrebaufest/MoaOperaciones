@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
+﻿namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
 {
     public class SolpSubposicionPrecargadaDto
     {
@@ -14,6 +8,7 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public decimal? Cantidad { get; set; }
         public int? UnidadId { get; set; }
         public TablaSapDto CuentaMayor { get; set; }
+        public TablaSapDto Imputacion { get; set; }
         public TablaSapDto Unidad { get; set; }
 
         public ServicioSolpDto ServicioCatalogado { get; set; }

@@ -16,7 +16,7 @@ export interface SolpPosicionPrecargada {
     Tarea: string;
     MonedaId: number;
     Moneda: TablaSap;
-    FechaEntregaServicio: Date;
+    FechaEntregaServicio: string;
     GrupoComprasId: number;
     GrupoCompras: TablaSap;
     GrupoArticuloId: number;
