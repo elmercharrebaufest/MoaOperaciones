@@ -2,10 +2,7 @@
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Interfaces
@@ -14,7 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
     {
         Task SendNotifyRejectionEmail(EmailDetailCertificateDto emailDetailCertificateDto);
 
-        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov,int userId, string destinatario, List<ReporteDto> reporte);
+        Task EnviarMailAprobacion(List<Aprobaciones> apList, Proveedor prov, int userId, string destinatario, List<ReporteDto> reports, IEnumerable<AdjuntosEntradasDeServicio> adjuntosMetadata);
 
         Task SendAprobalProviderEmail(EmailDetailCertificateDto emailDetailCertificateDto, string reference);
 

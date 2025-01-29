@@ -1,6 +1,8 @@
 ﻿using SustitucionMOAAssets;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
@@ -16,18 +18,19 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
-        public ActionResult subirPDF(string factura, HttpPostedFileBase file)
+        public ActionResult subirPDF(string factura, List<HttpPostedFileBase> files)
         {
-            string extension = System.IO.Path.GetExtension(file.FileName);
-            if (extension.ToUpper() == ".PDF")
+            if (files.Any())
             {
-                string folderPath = Server.MapPath("/") + "Facturas\\";
-
-                return JsonCustom(new { data = facturaService.SubirPDF(file, folderPath) });
+                var cuit = SessionPersister.CUIT;
+                var codigo = SessionPersister.Proveedor;
+                var mail = SessionPersister.getUsername();
+                var data = facturaService.SubirPDF(files, cuit, codigo, mail);
+                return JsonCustom(new { data = data });
             }
             else
             {
-                return Json(new { error = ErrorMsg.ErrorArchivoFormato }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = string.Format(ErrorMsg.ErrorArchivoRequerido, "Factura") }, JsonRequestBehavior.AllowGet);
             }
         }
     }

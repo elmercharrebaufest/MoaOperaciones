@@ -1,5 +1,4 @@
 ﻿using SustitucionMOAModel.Entities;
-using SustitucionMOAModel.Models.WSMapMOA.CartaPorte.Formulario;
 using SustitucionMOAUtils.Helpers;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
@@ -7,9 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Mail;
-using System.ServiceModel.Channels;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAUtils.Services.Email
 {
@@ -26,25 +22,33 @@ namespace SustitucionMOAUtils.Services.Email
 
         public void EnviarMailCotizacionCreada(Cotizacion cotizacion)
         {
-            var cotizadorRazonSocial = cotizacion.UsuarioCreador.ObtenerProveedor().RazonSocial;
-            var peticion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta;
-            var enviarA = new List<string> { peticion.Usuario.Mail };
+            try
+            {
+                var cotizadorRazonSocial = cotizacion.UsuarioCreador.ObtenerProveedor().RazonSocial;
+                var peticion = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta;
+                var enviarA = new List<string> { peticion.Usuario.Mail };
 
-            var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
-            var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
-            mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
-            var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
+                var solps = peticion.Posiciones.Select(x => x.SolpPosicion.Solp);
+                var mailPliego = solps.Where(x => !string.IsNullOrEmpty(x.Pliego.Email)).Select(x => x.Pliego.Email).ToList();
+                mailPliego.AddRange(solps.Where(x => !string.IsNullOrEmpty(x.Pliego.SupervisorTrabajo)).Select(x => x.Pliego.SupervisorTrabajo).ToList());
+                var mailCreador = solps.Where(x => !string.IsNullOrEmpty(x.UsuarioCreacion?.Mail)).Select(x => x.UsuarioCreacion.Mail).ToList();
 
-            enviarA.AddRange(mailPliego);
-            enviarA.AddRange(mailCreador);
+                enviarA.AddRange(mailPliego);
+                enviarA.AddRange(mailCreador);
 
-            Log.Info($"Copia mail solicitante paso 1: {mailPliego.ToJson()}");
-            Log.Info($"Copia mail solicitante: {mailCreador.ToJson()}");
+                Log.Info($"Copia mail solicitante paso 1: {mailPliego.ToJson()}");
+                Log.Info($"Copia mail solicitante: {mailCreador.ToJson()}");
 
-            var asunto = $"NUEVA cotización creada por {cotizadorRazonSocial} - SOLPs " +
-                string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct());
+                var asunto = $"NUEVA cotización creada por {cotizadorRazonSocial} - SOLPs " +
+                    string.Join(", ", peticion.Posiciones.Select(x => x.SolpPosicion.Solp).Select(x => x.NroSolp).Distinct());
 
-            emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", null, ObtenerCuerpoCotizacionCreada(cotizacion), null, null, null, null);
+                emailService.EnviarMail(enviarA.Distinct().ToList(), asunto, "", null, ObtenerCuerpoCotizacionCreada(cotizacion), null, null, null, null);
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Error al enviar mail GrabarCotizacion en cotizacion: " + cotizacion.Id, e);
+            }
+
         }
 
         public void EnviarMailSolpLiberada(Solp solp)

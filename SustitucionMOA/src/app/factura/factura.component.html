@@ -9,28 +9,49 @@
         <!--End Title-->
         <!--Search-->
         <div class="row myRow firstSection mySearch cargaDeDatos">
+            <div *ngFor="let resultado of resultados">
+                <div class="alert"
+                     [ngClass]="{'alert-success': resultado.IsValid, 'alert-danger': !resultado.IsValid}"
+                     role="alert">
+                    <div *ngIf="mensajeIrAOC(resultado); else mensajeSimple">
+                        <b>{{ resultado.FileName }}</b> - <b>{{ resultado.Message }} Si desea certificar hace click 
+                                                              <a (click)="irACertificaciones(resultado.Value)" href="#">
+                                                                  acá
+                                                              </a>
+                        </b>
+                    </div>
+                    <ng-template #mensajeSimple>
+                        <b>{{ resultado.FileName }}</b> - <b>{{ resultado.Message }}</b>
+                    </ng-template>
+                </div>
+            </div>
+
             <div class="col-xs-12 col-md-12 rounded shadow animate">
                 <div class="col-xs-12 col-md-12 search-header">
                     <title-caps>Subida de PDF</title-caps>
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     Archivo:
                     <div class="styled-select">
-                        <input #fileInput type="file" (change)="cargarArchivo($event)" placeholder="Cargar Archivo">
+                        <p-fileUpload #fileUpload [styles]="{'margin-left':'-13px; cursor: pointer;'}"  maxFileSize="10000000" 
+                                      name="fileUploadPeticionDeOferta" auto="true" multiple="multiple"
+                                      chooseLabel="Elegir archivos" [showUploadButton]=false [showCancelButton]=false
+                                      [customUpload]="true" (uploadHandler)="uploadHandler($event)" >
+                        </p-fileUpload>
                     </div>
                     <br />
                 </div>
                 <div class="row myRow">
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <re-captcha #recaptchaComponent (captchaResponse)="handleCorrectCaptcha($event)"
-                            site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
+                                    site_key="6LcuYm4UAAAAAIoEEAYe5mrkPUNemcT4blHgjide"></re-captcha>
                     </div>
                 </div>
                 <div class="row myRow cargaDeDatosBtn">
                     <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
                         <spinner-small></spinner-small>
                         <a (click)="subirPDF()" href="#" style="text-decoration:none!important"
-                            *ngIf="!this.spinnerSmallComponent.visible">
+                           *ngIf="!this.spinnerSmallComponent.visible">
                             <div class="btnSection animate">Guardar <span class="fa  fa-play "></span></div>
                         </a>
                     </div>

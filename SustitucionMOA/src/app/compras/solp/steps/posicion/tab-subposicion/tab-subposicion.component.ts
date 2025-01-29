@@ -15,6 +15,7 @@ import { Solp } from '../../../solp';
 import { SolpPosicion } from '../../../solp-posicion';
 import * as uuid from 'uuid';
 import _ from 'lodash'
+import { ServicioSolp } from '../../../../../modelos/compras/servicioSolp';
 
 @Component({
     selector: 'app-tab-subposicion',
@@ -54,7 +55,8 @@ export class TabSubposicionComponent extends ListBaseComponent {
 
     tablaAFiltrar: any;
     autocomplete: any[];
-    autocompleteServiciosSolp: any[];
+    // autocompleteServiciosSolp: any[];
+    autocompleteServiciosSolp: ServicioSolp[];
     autocompletePaste: { Tabla: string, CodigoSap: string }[] = [];
     autocompleteServiciosSolpPaste: string[] = [];
     arraryErrores: any = new Array<{ id: number, text: string }>();
@@ -532,14 +534,9 @@ export class TabSubposicionComponent extends ListBaseComponent {
     autocompleteCodigoServicioSolp(event) {
         try {
             this.subscription = this.service.autocompleteCodigoServicioSolp(event.query.toLowerCase()).subscribe(
-                (result: any) => {
-                    if (result.logout == true) {
-                        this.sessionDataService.logout();
-                    } else if (result.error != undefined && result.error != "") {
-                        this.floatMsgService.setErrorMsg(result.error);
-                    } else if (result.info != undefined) {
-                        this.floatMsgService.setInfoMsg(result.info);
-                    } else {
+                (result) => {
+                    let servicios = this.manejarErroresApiResponse(result);
+                    if (servicios) {
                         this.autocompleteServiciosSolp = result;
                     }
                 },
@@ -556,6 +553,11 @@ export class TabSubposicionComponent extends ListBaseComponent {
     }
 
     onSelectServicio(posicion: SubPosicionViewModel, dt) {
+        this.servicioSeleccionado(posicion);
+        this.endEditCell(dt);
+    }
+
+    servicioSeleccionado(posicion: SubPosicionViewModel) {
         posicion.tareaSubcontratar = posicion.codigoServicio.Descripcion;
         posicion.tareaSubcontratarObj = { ...posicion.codigoServicio };
 
@@ -565,8 +567,6 @@ export class TabSubposicionComponent extends ListBaseComponent {
             posicion.unidadSeleccionada = unidadSeleccionadaAux;
             posicion.unidadMedida = unidadSeleccionadaAux.Descripcion;
         }
-
-        this.endEditCell(dt);
     }
 
     onSelectTarea(posicion: SubPosicionViewModel, dt) {
@@ -655,4 +655,19 @@ export class TabSubposicionComponent extends ListBaseComponent {
         }
     }
 
+    manejarErroresApiResponse<T>(response: T): T | undefined {
+        let resObj = response as any;
+        if (resObj.logout == true) {
+            this.sessionDataService.logout();
+            return undefined;
+        }
+        if (resObj.error) {
+            this.floatMsgService.setErrorMsg(resObj.error);
+            return undefined;
+        }
+        if (resObj.info) {
+            this.floatMsgService.setInfoMsg(resObj.info);
+        }
+        return response;
+    }
 }

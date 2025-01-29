@@ -1,8 +1,11 @@
 ﻿using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
+using SustitucionMOAModel.Models.WSMapMOA.Compras;
+using SustitucionMOAModel.Models.WSMapMOA.Vendedor;
 using System.Collections.Generic;
 using System.Linq;
+using Models = SustitucionMOAModel.Models;
 
 namespace SustitucionMOAUtils.Interfaces
 {
@@ -15,7 +18,7 @@ namespace SustitucionMOAUtils.Interfaces
         Rol ObtenerRolPorCodigo(string codigo);
         List<RolDropdownDto> GetRoles();
         byte[] getDocumento(string nombre);
-        string GuardarRoles(List<int> idRol, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno);
+        string GuardarRoles(List<int> idRoles, int idUsuario, string usuarioSap, string suplente, string fDesde, string fHasta, bool esExterno, bool puedeEditarSuplente);
         List<ProveedorDto> GetVendedoresUsuario(string usuarioMail);
         List<RolDropdownDto> GetRolesUsuario(int idUsuario);
         List<Rol> GetRolesUsuario(string email);
@@ -44,5 +47,11 @@ namespace SustitucionMOAUtils.Interfaces
         List<string> GetMailUsuarios(string mail);
         string ObtenerConfiguracion(string mailUsuario, TipoConfiguracionUsuario tipo);
         void GuardarConfiguracionUsuario(string mailUsuario, string valor, TipoConfiguracionUsuario tipo);
+
+        ProveedorComprasDto ObtenerYCrearProveedorCompras(string codigoProveedor);
+        ObtenerProveedorWSMOAResponse ObtenerProveedorSap(string codigoProveedor);
+        VendedoresWSMOAResponse ObtenerVendedorSap(string codigoProveedor, List<Models.FechaWS> fechas);
+
+        List<UsuarioComprasDto> ListarUsuarioCompras();
     }
 }

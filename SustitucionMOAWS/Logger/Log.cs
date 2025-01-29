@@ -9,6 +9,7 @@ namespace SustitucionMOAWS.Logger
         private static readonly NLog.Logger AzureLogger = NLog.LogManager.GetLogger("azureLogger");
         private static readonly NLog.Logger ExternalAPILogger = NLog.LogManager.GetLogger("externalApiLogger");
         private static readonly NLog.Logger ComprasRegistroInfoLogger = NLog.LogManager.GetLogger("comprasRegistroInfoLogger");
+        private static readonly NLog.Logger RequestLogger = NLog.LogManager.GetLogger("requestLogger");
 
         public static void Error(string ip, string usuario, string controller, string method, string error)
         {
@@ -76,7 +77,7 @@ namespace SustitucionMOAWS.Logger
         {
             try
             {
-                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores );
+                DefaultLogger.Debug("Controller: " + controller + " Metodo: " + method + " Valores: " + valores);
             }
             catch (Exception e)
             {
@@ -107,7 +108,7 @@ namespace SustitucionMOAWS.Logger
                 Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
-        public static void AzureError (Exception exception)
+        public static void AzureError(Exception exception)
         {
             try
             {
@@ -150,6 +151,18 @@ namespace SustitucionMOAWS.Logger
             {
                 Log.Error("", "", "", "", e.Message);
                 Console.WriteLine("ERROR en ComprasRegistroInfo:" + e.Message);
+            }
+        }
+
+        public static void LogRequest(string mensaje)
+        {
+            try
+            {
+                RequestLogger.Info(mensaje);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("ERROR en LogService:" + e.Message);
             }
         }
     }

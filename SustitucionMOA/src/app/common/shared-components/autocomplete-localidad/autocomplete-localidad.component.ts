@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
 import { BaseComponent } from '../../base-components/base-component';
 import { FloatMsgService } from '../../services/FloatMsgService';
 import { ModalService } from '../../services/ModalService';
@@ -14,22 +14,28 @@ import { AutocompleteLocalidadService } from './autocomplete-localidad.service';
   providers: [AutocompleteLocalidadService],
 })
 
-
 export class AutocompleteLocalidadComponent extends BaseComponent implements OnInit {
+  
+  @Input() localidad_Id: number;
+  @Input() localidadNombre: string;
+
+  @Input() localidadPreseleccionada: { IdLocalidad: number, NombreLocalidad: string };
+  
+  @Output() onLocalidadSeleccionada = new EventEmitter<any>();
+  @Output() nombreLocalidadSeleccionada = new EventEmitter<string>();
 
   constructor(protected service: AutocompleteLocalidadService, protected navService: NavService,
     protected sessionDataService: SessionDataService, protected securytiService: SecurityService,
     protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
     super(navService, securytiService, floatMsgService, modalService);
   }
+
   dataLocalidades = [];
   localidadIdSeleccionada: number;
   keyword = "Nombre";
   localidad: string;
   autocompleteNotFoundText = "No encontrado";
-
-  @Output() onLocalidadSeleccionada = new EventEmitter<any>();
-
+  
   ngOnInit() {
 
     setTimeout(() => {
@@ -45,20 +51,20 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
     }
   }
 
-  @Input() localidad_Id: number;
-  @Input() localidadNombre: string;
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.localidadPreseleccionada) {
+      this.preseleccionarLocalidad(changes.localidadPreseleccionada.currentValue);
+    }
+  }
   
   onChangeSearch(query: string) {
-    console.log("query:", query)
     if (query.length > 2) {
       this.unsubscribe();
       this.subscription = this.service.searchLocalidad(query).subscribe(
         (result) => {
           this.dataLocalidades = result;
         },
-        (error) => {
-
-        }
+        (error) => { console.error(error); }
       );
     }
   }
@@ -69,14 +75,20 @@ export class AutocompleteLocalidadComponent extends BaseComponent implements OnI
         (result:{Nombre:string, Provincia:{Nombre:string}}) => {
           this.localidad = result.Nombre + " (" + result.Provincia.Nombre + ")";
         },
-        (error) => {
-        }
+        (error) => { console.error(error); }
       );
   }
 
-
-  selectEvent(item: { LocalidadId: number; }) {
+  selectEvent(item: { LocalidadId: number, Nombre: string }) {
     this.localidadIdSeleccionada = item.LocalidadId;
     this.onLocalidadSeleccionada.emit(this.localidadIdSeleccionada)
+    this.nombreLocalidadSeleccionada.emit(item.Nombre);
+  }
+
+  preseleccionarLocalidad(localidadPreseleccionada: { IdLocalidad: number, NombreLocalidad: string }) {
+    if (localidadPreseleccionada) {
+      this.localidad = localidadPreseleccionada.NombreLocalidad;
+      this.localidad_Id = localidadPreseleccionada.IdLocalidad;
+    }
   }
 }

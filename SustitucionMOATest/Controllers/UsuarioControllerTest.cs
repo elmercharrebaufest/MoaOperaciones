@@ -87,12 +87,13 @@ namespace SustitucionMOATest.Controllers
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
                                 It.IsAny<string>(),
+                                It.IsAny<bool>(),
                                 It.IsAny<bool>()
                                 )
                     )
-                .Returns(successMessage); ;
+                .Returns(successMessage);
 
-            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "","","","", false);
+            var resultado = (JsonResult)target.GuardarRoles("1,2,3", 1, "", "", "", "", false);
 
             resultJson = JsonConvert.SerializeObject(resultado.Data);
 

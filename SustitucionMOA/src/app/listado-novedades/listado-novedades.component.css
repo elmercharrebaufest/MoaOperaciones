@@ -44,11 +44,11 @@
 
 
 .thead-novedad {
-    background: #434242;
-    width:979px;
+    background: #696969;
+    width: 979px;
     /* height:60px; */
-    top:229px;
-    left:397px;
+    top: 229px;
+    left: 397px;
     height: 54px;
 }
 
@@ -81,11 +81,8 @@
     line-height: 53px;
     letter-spacing: 0em;
     text-align: left;
-    
     width: 862px;
     height: 53px
-
-
 }
 
 /*background: #21272A;*/

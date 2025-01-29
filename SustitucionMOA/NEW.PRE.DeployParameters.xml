@@ -213,4 +213,5 @@
 	<setParameter name="MailsDisconformidadCalidades Config" value="carina.scasso@molinosagro.com.ar;marcelo.valoni@molinosagro.com.ar;carlos.cortina@molinosagro.com.ar" />
 
 	<setParameter name="EmailRegexFormato Config" value="^[a-zA-Z0-9._%+-]+@(baufest\.com|huenei\.com|molinosagro\.com\.ar)$" />
+  <setParameter name="EmailFacturasES Config" value="moaoperaciones@baufest.com" />
 </parameters>

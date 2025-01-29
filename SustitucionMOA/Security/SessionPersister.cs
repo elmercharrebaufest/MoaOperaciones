@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SustitucionMOA.Utils;
+using SustitucionMOAModel.Models;
 using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
-using SustitucionMOA.Utils;
-using SustitucionMOAModel.Models;
-using SustitucionMOAModel.Models.WSMapMOA.Noticia;
 
 namespace SustitucionMOASecurity
 {
@@ -43,6 +37,23 @@ namespace SustitucionMOASecurity
                 if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType) != null)
                 {
                     return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsProveedorType).Value;
+                }
+                return null;
+            }
+            set
+            {
+                //TODO: Ver como cambiar el valor del proveedor en el claim. Esto es para cuando un corredor cambia de vendedor
+                //HttpContext.Current.Session[proveedorSessionvar] = value;
+            }
+        }
+
+        public static string CUIT
+        {
+            get
+            {
+                if (ClaimsPrincipal.Current.FindFirst(Globals.ClaimsCuit) != null)
+                {
+                    return ClaimsPrincipal.Current.FindFirst(Globals.ClaimsCuit).Value;
                 }
                 return null;
             }

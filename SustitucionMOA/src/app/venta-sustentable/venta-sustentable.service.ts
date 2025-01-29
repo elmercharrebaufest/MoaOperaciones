@@ -1,8 +1,11 @@
-import { Observable } from 'rxjs';
+import { Observable, throwError as observableThrowError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { BaseService } from './../common/services/BaseService';
-import { CampoProveedor, CampoProveedorDetalle } from './sustentable';
+import { CampoProveedor, CampoProveedorDetalle, SugerenciaCampo } from './sustentable';
 import { HttpHeaders, HttpParams } from '@angular/common/http';
+import { RenspaExiste } from './renspa-existe.interface';
+import { ApiResponse } from '../common/models/response';
+import { timeoutWith } from 'rxjs/operators';
 
 @Injectable()
 export class VentaSustentableService extends BaseService {
@@ -142,8 +145,6 @@ export class VentaSustentableService extends BaseService {
     }
 
     descargarArchivoKMZ(campoCosechaId: number, proveedorId: number): Observable<any> {
-
-
         let params: HttpParams = new HttpParams();
         params = params.set("campoCosechaId", campoCosechaId.toString());
         params = params.set("proveedorId", proveedorId.toString());
@@ -151,6 +152,54 @@ export class VentaSustentableService extends BaseService {
         return this.http
             .get('/api/CampoSustentable/DescargarArchivoKMZ', { params: params, headers: this.headers })
         // .pipe(map(this.extractData));
+    }
+
+    renspaExiste(renspa: string, cuit: string, CosechaId): Observable<RenspaExiste> {
+        let params: HttpParams = new HttpParams();
+        params = params.set("renspa", renspa);
+        params = params.set("cuit", cuit);
+        params = params.set("cosechaId", CosechaId);
+        return this.http
+            .get<RenspaExiste>('/api/CampoSustentable/RenspaExiste', { params: params, headers: this.headers });
+    }
+
+    obtenerSugerenciaCamposNuevaCosecha(proveedorId: number, cosechaId: number, cuitTitularCP: string): Observable<ApiResponse<Array<SugerenciaCampo>>> {
+        let params: HttpParams = new HttpParams()
+            .append('proveedorId', proveedorId.toString())
+            .append('cosechaId', cosechaId.toString())
+            .append('cuitTitularCP', cuitTitularCP);
+
+        return this.http
+            .get<ApiResponse<Array<SugerenciaCampo>>>(
+                '/api/CampoSustentable/ObtenerSugerenciaCamposNuevaCosecha',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    exportarSugerenciaCamposNuevaCosecha(proveedorId: number, cosechaId: number, cuitTitularCP: string): Observable<ApiResponse<string>> {
+        let params: HttpParams = new HttpParams()
+            .append('proveedorId', proveedorId.toString())
+            .append('cosechaId', cosechaId.toString())
+            .append('cuitTitularCP', cuitTitularCP);
+
+        return this.http
+            .get<ApiResponse<string>>(
+                '/api/CampoSustentable/ExportarCamposSugeridos',
+                { params: params, headers: this.headers })
+            .pipe(timeoutWith(360000, observableThrowError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
+    guardarSugerenciasCamposNuevaCosecha(campos: SugerenciaCampo[], archivosKmz: File[]): Observable<ApiResponse<string>> {
+        let camposJson = JSON.stringify(campos);
+        let payload = new FormData();
+        payload.append('camposJson', camposJson);
+
+        archivosKmz.forEach((file, index) => {
+            payload.append('archivosKmz', file);
+        });
+
+        return this.http
+            .post<ApiResponse<string>>('/api/CampoSustentable/GuardarSugerenciasCamposNuevaCosecha', payload, { headers: this.headersPost });
     }
 
     private getCosechas(incluirInactivas: boolean) {

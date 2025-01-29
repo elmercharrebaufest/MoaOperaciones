@@ -12,8 +12,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.UI;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Dto.Compras;
+using Excel;
+using System.Data;
 
 namespace SustitucionMOAUtils.Services
 {

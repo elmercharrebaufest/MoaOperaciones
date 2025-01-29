@@ -8,13 +8,36 @@
     <div class="message-container" *ngIf="isApprover === false">
         <h3 class="headerTitle">La certificaci&oacute;n {{ nroESLocal.split('&')[0] }}, ha sido reasignada, por lo cual no puede ser aprobada o rechazada.</h3>
     </div>
-    
+
     <div class="message-container" *ngIf="isApprover === true && oldES === true">
         <h3 class="headerTitle">Este enlace de entrada de servicio corresponde a una versi&oacute;n anterior, consulte su estado en el portal,en la pantalla "Estado Certificaci&oacute;n".</h3>
     </div>
-    
+
     <div *ngIf="action === 'approve' && isApprover === true && oldES === false" class="resumen-container">
         <h3 class="headerTitle">Aprobaci&oacute;n de entrada de servicio temporal</h3>
+
+        <spinner></spinner>
+        <div *ngIf="approvalSuccess === true" class="center-container">
+            <p class="center-text alert alert-success"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
+            <br />
+        </div>
+        <div *ngIf="approvalError === true" class="center-container">
+            <p class="center-text alert alert-danger"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
+            <br />
+        </div>
+        <div *ngIf="approvalErrorInfo === true" class="center-container">
+            <p class="center-text alert alert-danger"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}</strong></p>
+            <br />
+        </div>
+        <div *ngIf="approvalErrorClosePeriod === true" class="center-container">
+            <p class="center-text alert alert-danger"> <strong>"La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}"</strong></p>
+            <br />
+        </div>
+
+        <div class="center-container">
+            <div *ngIf="estado.includes('Pendiente'); else elseState">
+            </div>
+        </div>
 
         <div class="container">
             <div class="flex-container">
@@ -73,39 +96,16 @@
         </div>
 
         <br />
+    </div>
 
-        <spinner></spinner>
-        <div *ngIf="approvalSuccess === true" class="center-container">
-            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido aprobada.</strong> Su nuevo número de certificación es <strong>{{certSap}}</strong>.</p>
-            <br />
-        </div>
-        <div *ngIf="approvalError === true" class="center-container">
-            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, intente nuevamente</strong></p>
-            <br />
-        </div>
-        <div *ngIf="approvalErrorInfo === true" class="center-container">
-            <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}</strong></p>
-            <br />
-        </div>
-        <div *ngIf="approvalErrorClosePeriod === true" class="center-container">
-            <p class="center-text status-message"> <strong>"La entrada de servicio {{ cert }} no ha sido aprobada, por el siguiente motivo: {{ errorMessage }}"</strong></p>
-            <br />
-        </div>
+    <div *ngIf="action === 'reject' && isApprover === true && oldES === false" class="resumen-container">
+
+        <h3 class="headerTitle">Rechazo de entrada de servicio temporal</h3>
 
         <div class="center-container">
             <div *ngIf="estado.includes('Pendiente'); else elseState">
-
             </div>
-            <ng-template #elseState>
-                <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
-            </ng-template>
         </div>
-        <br />
-    </div>
-    
-    <div *ngIf="action === 'reject' && isApprover === true && oldES === false" class="resumen-container">
-    
-        <h3 class="headerTitle">Rechazo de entrada de servicio temporal</h3>
 
         <div class="container">
             <div class="flex-container">
@@ -162,7 +162,17 @@
             </table>
         </div>
 
-        <div *ngIf="estado.includes('Pendiente'); else elseState2">
+        <spinner></spinner>
+        <div *ngIf="rejectionSuccess === true" class="center-container">
+            <p class="center-text alert alert-success"> <strong>La entrada de servicio {{ cert }} ha sido rechazada</strong></p>
+            <br />
+        </div>
+        <div *ngIf="rejectionError === true" class="center-container">
+            <p class="center-text alert alert-danger"> <strong>La entrada de servicio {{ cert }} no ha sido rechazada, intente nuevamente</strong></p>
+            <br />
+        </div>
+
+        <div *ngIf="estado.includes('Pendiente')">
             <h3 class="center-text">Causas de rechazo: </h3>
             <br />
             <div class="center-container-radios">
@@ -202,17 +212,6 @@
 
             <br />
 
-            <spinner></spinner>
-            <div *ngIf="rejectionSuccess === true" class="center-container">
-                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} ha sido rechazada</strong></p>
-                <br />
-            </div>
-            <div *ngIf="rejectionError === true" class="center-container">
-                <p class="center-text status-message"> <strong>La entrada de servicio {{ cert }} no ha sido rechazada, intente nuevamente</strong></p>
-                <br />
-            </div>
-
-
             <div class="center-container">
 
                 <div *ngIf="rejectionCause !== ''; else elseBlock">
@@ -226,9 +225,9 @@
 
             </div>
         </div>
-
-        <ng-template #elseState2>
-            <p class="center-text status-message"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
-        </ng-template>
     </div>
 </ng-container>
+
+<ng-template #elseState>
+    <p class="center-text alert alert-danger"><strong>La entrada de servicio {{ cert }} no se encuentra en estado Pendiente Aprobaci&oacute;n, su estado actual es: {{ estado }}</strong></p>
+</ng-template>

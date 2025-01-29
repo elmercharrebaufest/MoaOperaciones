@@ -5,18 +5,25 @@ using Ninject.Web.Common;
 using Ninject.Web.Common.WebHost;
 using SustitucionMOA.Jobs;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
+using SustitucionMOAUtils.DesignPattern.Classes;
+using SustitucionMOAUtils.DesignPattern.Interfaces;
+using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Helpers;
-using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Interfaces.Helpers;
 using SustitucionMOAUtils.Interfaces.Validadores;
 using SustitucionMOAUtils.Interfaces.Wrappers;
-using SustitucionMOAUtils.DesignPattern.Classes;
 using SustitucionMOAUtils.Validadores;
 using SustitucionMOAUtils.Wrappers;
 using SustitucionMOAWS.AzureAD;
+using SustitucionMOAWS.GoogleDrive;
+using SustitucionMOAWS.GoogleDrive.Interfaces;
 using SustitucionMOAWS.Interfaces;
 using SustitucionMOAWS.ScatoWebService;
 using SustitucionMOAWS.WebApi;
+using SustitucionMOAWS.WebApi.OpenStreetMap;
+using SustitucionMOAWS.WebApi.OSRM;
 using SustitucionMOAWS.WSConsumers;
 using System;
 using System.Data.Entity;
@@ -24,14 +31,6 @@ using System.Linq;
 using System.Reflection;
 using System.ServiceModel;
 using System.Web;
-using SustitucionMOAUtils.DesignPattern.Interfaces;
-using SustitucionMOARepositorio.Repositorios.Interfaces;
-using SustitucionMOARepositorio.Repositorios;
-using SustitucionMOAWS.GoogleDrive.Interfaces;
-using SustitucionMOAWS.GoogleDrive;
-using SustitucionMOAUtils.Export.CampoSustentable;
-using SustitucionMOAWS.WebApi.OSRM;
-using SustitucionMOAWS.WebApi.OpenStreetMap;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(SustitucionMOA.App_Start.NinjectWebCommon), "Stop")]
@@ -112,7 +111,8 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<INotificarAprobacionesPendientesJob>().To(typeof(NotificarAprobacionesPendientesJob)).InScope(ctx => OperationContext.Current);
 
             kernel.Bind<INotificacionErroresJob>().To(typeof(NotificacionErroresJob)).InScope(ctx => OperationContext.Current);
-            
+            kernel.Bind<IEliminarFacturasAntiguasJob>().To(typeof(EliminarFacturasAntiguasJob)).InScope(ctx => OperationContext.Current);
+
 
             #region Registro
 
@@ -206,6 +206,7 @@ namespace SustitucionMOA.App_Start
             kernel.Bind<IRepositorio>().To<RepositorioEF>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioUsuario>().To<RepositorioUsuario>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioCampoSustentable>().To<RepositorioCampoSustentable>().InScope(ctx => HttpContext.Current);
+            kernel.Bind<IRepositorioCompras>().To<RepositorioCompras>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCarga>().To<RepositorioOrdenDeCarga>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenDeCargaFason>().To<RepositorioOrdenDeCargaFason>().InScope(ctx => HttpContext.Current);
             kernel.Bind<IRepositorioOrdenResiduos>().To<RepositorioOrdenResiduos>().InScope(ctx => HttpContext.Current);

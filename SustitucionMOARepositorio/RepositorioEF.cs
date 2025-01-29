@@ -1,5 +1,6 @@
 ﻿using Molinos.Scato.Repositorio;
 using SustitucionMOAModel.Consultas;
+using SustitucionMOARepositorio.Extensiones;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -393,6 +394,16 @@ namespace SustitucionMOARepositorio
         public List<TEntidad> ListarConsulta<TEntidad>(IConsulta<TEntidad> consulta) where TEntidad : class
         {
             return consulta.Ejecutar(context);
+        }
+
+        public virtual void AgregarTodos<TEntidad>(IEnumerable<TEntidad> items, List<KeyValuePair<string, string>> properties = null) where TEntidad : class
+        {
+            var enumerable = items as IList<TEntidad> ?? items.ToList();
+            if (enumerable.Any())
+            {
+                var dataTable = enumerable.ToDataTable(true, properties);
+                context.SqlBulkInsert(dataTable, dataTable.TableName);
+            }
         }
     }
 }

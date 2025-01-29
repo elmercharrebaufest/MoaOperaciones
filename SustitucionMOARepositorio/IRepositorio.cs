@@ -106,7 +106,7 @@ namespace SustitucionMOARepositorio
         /// </summary>
         /// <returns>Cantidad de entidades agregadas o actualizadas</returns>
         int GuardarCambios();
-        
+
         /// <summary>
         /// Obtener las consultas realizadas por EF
         /// </summary>
@@ -130,7 +130,7 @@ namespace SustitucionMOARepositorio
         /// <param name="navProperties">Expresiones de propiedades de navegación a incluir.</param>
         /// <returns>Entidad TEntidad que cumple con la condición.</returns>
         TEntidad Obtener<TEntidad>(Expression<Func<TEntidad, bool>> condition, params Expression<Func<TEntidad, object>>[] navProperties) where TEntidad : class;
-        
+
         /// <summary>
         /// Lista todas las entidades de tipo TEntidad.
         /// </summary>
@@ -153,7 +153,7 @@ namespace SustitucionMOARepositorio
         /// <param name="condition">Condición para seleccionar las entidades.</param>
         /// <returns>Consulta IQueryable de entidades TEntidad que cumplen con la condición.</returns>
         IQueryable<TEntidad> ListarConsultable<TEntidad>(Expression<Func<TEntidad, bool>> condition) where TEntidad : class;
-        
+
         /// <summary>
         /// Lista todas las entidades de tipo TEntidad que cumplen con una condición especificada e incluye propiedades de navegación especificadas.
         /// </summary>
@@ -195,7 +195,10 @@ namespace SustitucionMOARepositorio
         DbRawSqlQuery<TEntidad> ExecuteQuery<TEntidad>(string query, SqlParameter parameters = null);
 
         List<TEntidad> ListarConsulta<TEntidad>(IConsulta<TEntidad> consulta) where TEntidad : class;
-        
+
+        void AgregarTodos<TEntidad>(IEnumerable<TEntidad> entidades, List<KeyValuePair<string, string>> properties = null) where TEntidad : class;
+
+
     }
 
 }

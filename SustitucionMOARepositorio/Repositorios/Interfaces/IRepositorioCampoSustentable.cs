@@ -1,5 +1,7 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
+using System.Collections.Generic;
 
 namespace SustitucionMOARepositorio.Repositorios.Interfaces
 {
@@ -12,5 +14,7 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
         DeclaracionCampoSustentable ObtenerDeclaracionDeProveedor(string cuitProveedor, int idCosecha);
 
         Archivo ObtenerArchivo(int idArchivo);
+
+        List<SugerenciaCampoDto> ObtenerSugerenciaCamposNuevaCosecha(int proveedorId, int nuevaCosechaId, string cuitTitularCP);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Quartz.Util;
+﻿// Ignore Spelling: reasignaciones
+
+using Quartz.Util;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
@@ -15,6 +17,7 @@ using System.Data.Entity;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static SustitucionMOAWS.WSConsumers.ModificarOrdenDeCompraConsumerMOA;
@@ -714,7 +717,7 @@ namespace SustitucionMOAUtils.Services
                         userId = user.Id;
                     }
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
                     //MMSN-1010
@@ -728,6 +731,25 @@ namespace SustitucionMOAUtils.Services
                     }
 
                 }
+            }
+            catch (AggregateException ae)
+            {
+                result.Type = "E";
+                StringBuilder messageBuilder = new StringBuilder();
+
+                messageBuilder
+                    .Append(ae.Message)
+                    .AppendLine(":");
+
+                Logger.Log.Error(ae);
+
+                foreach (Exception e in ae.InnerExceptions)
+                {
+                    messageBuilder.AppendLine(e.Message);
+                    Logger.Log.Error(e);
+                }
+
+                result.Message = messageBuilder.ToString();
             }
             catch (Exception e)
             {
@@ -773,18 +795,19 @@ namespace SustitucionMOAUtils.Services
 
         }
 
-        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario, List<ReporteDto> reporte)
+        private async Task<bool> NotifyCreation(List<Aprobaciones> completeAp, Proveedor prov, int userId, string destinatario)
         {
-
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            ObtenerOrdenDeCompraConsumerMOA obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
             DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(completeAp[0].NRO_OC, centros, almacenes, true);
 
-            reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
+            List<ReporteDto> reporte = await NuevoReporteReasignacion(completeAp, detalleOrdendeCompra, detalleOrdendeCompra.Posiciones[0].MonedaDescripcion);
 
+            IEnumerable<string> aprobaciones = completeAp.Select(aprobacion => aprobacion.NRO_ES_LOCAL);
+            IEnumerable<AdjuntosEntradasDeServicio> adjuntos = repositorio.Listar<AdjuntosEntradasDeServicio>(adjunto => aprobaciones.Contains(adjunto.NroESTemporal));
 
-            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte);
+            await emailCertificationService.EnviarMailAprobacion(completeAp, prov, userId, destinatario, reporte, adjuntos);
 
             return true;
         }
@@ -793,33 +816,33 @@ namespace SustitucionMOAUtils.Services
         /// MMSN-1151: A llamar desde el servicio de LogicaDerivacion, para notificar las reasignaciones a un usuario
         /// </summary>
         /// <param name="ListaAp"></param>
-        public async Task NotificarReasignaciones(List<string> ListaAp, RepositorioEF Repositorio)
+        public async Task NotificarReasignaciones(IEnumerable<string> ListaAp)
         {
             //Todos los registros con mismo NRO_ES_LOCAL
             foreach (string esLocal in ListaAp)
             {
                 //Todos los registros con mismo NRO_ES_LOCAL
-                List<Aprobaciones> completeAp = Repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
+                List<Aprobaciones> completeAp = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == esLocal);
                 //Buscar Proveedor
-                OrderParamsDto orderParams = new OrderParamsDto();
-                orderParams.OrdenCompraId = completeAp[0].NRO_OC;
-                Proveedor prov = new Proveedor();
-                prov = orderService.BuscarProveedor(orderParams);
+                OrderParamsDto orderParams = new OrderParamsDto
+                {
+                    OrdenCompraId = completeAp[0].NRO_OC
+                };
+                Proveedor prov = orderService.BuscarProveedor(orderParams);
 
                 //MMSN-1030: Fix
                 string aprobador = completeAp[0].Aprobador_CDS;
-                var user = Repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
+                var user = repositorio.Listar<Usuario>(x => x.Mail == aprobador).FirstOrDefault();
                 int userId = 0;
                 if (user != null)
                 {
                     userId = user.Id;
                 }
-                List<ReporteDto> reporte = new List<ReporteDto>();
 
-                await NotifyCreation(completeAp, prov, userId, aprobador, reporte);
+                await NotifyCreation(completeAp, prov, userId, aprobador);
             }
-
         }
+
         private async Task<List<ReporteDto>> NuevoReporteReasignacion(List<Aprobaciones> esTemp, DetalleOrdenDeCompraDto detalleOrdendeCompra, string moneda)
         {
             const string pendienteAprobacion = "Pendiente Aprobación";
@@ -1671,7 +1694,7 @@ namespace SustitucionMOAUtils.Services
 
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nroEsLocal);
                 List<ReporteDto> reporte = new List<ReporteDto>();
-                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS, reporte);
+                _ = NotifyCreation(aprobaciones, prov, user.Id, esTemporalPendienteAprobacionList[0].Aprobador_CDS);
 
                 repositorio.GuardarCambios();
 
