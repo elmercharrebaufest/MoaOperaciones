@@ -77,7 +77,6 @@ export class EmpresaGranosService extends BaseService {
 
     generarCartaPresentacion(
         cartaPresentacion: CartaPresentacion,
-        mailUsuario: string,
         proveedorId?: number,
     ): Observable<any> {
         let payload = new FormData();
@@ -86,7 +85,6 @@ export class EmpresaGranosService extends BaseService {
             JSON.stringify(cartaPresentacion)
         );
         payload.append("proveedorId", proveedorId.toString());
-        payload.append("mailUsuario", mailUsuario);
 
         return this.http
             .post("/api/AltaEmpresaGranos/GenerarCartaPresentacion", payload)
