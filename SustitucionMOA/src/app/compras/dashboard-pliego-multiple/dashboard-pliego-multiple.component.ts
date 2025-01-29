@@ -10,6 +10,7 @@ import { ModalService } from '../../common/services/ModalService';
 import { Subject, Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { BlockUI, NgBlockUI } from 'ng-block-ui';
+import { ConfirmationService } from 'primeng/api';
 
 @Component({
     selector: 'app-dashboard-pliego-multiple',
@@ -30,7 +31,8 @@ export class DashboardPliegoMultipleComponent
     @BlockUI() blockUI: NgBlockUI;
 
     constructor(protected service: PliegoMultipleService, protected navService: NavService, protected sessionDataService: SessionDataService,
-        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService) {
+        protected securityService: SecurityService, protected floatMsgService: FloatMsgService, protected modalService: ModalService,
+        private confirmationService: ConfirmationService) {
         super(service, navService, sessionDataService, securityService, floatMsgService, modalService);
     }
 
@@ -61,6 +63,19 @@ export class DashboardPliegoMultipleComponent
     }
 
     public eliminarPliego(id: number) {
+        this.confirmationService.confirm({
+            key: 'eliminarPliego',
+            header: 'Eliminar Pliego',
+            message: '¿Está seguro de que desea eliminar el Pliego?',
+            accept: () => {
+                this.eliminarPliegoHacer(id)
+            },
+            reject: () => {
+            }
+        });
+    }
+
+    private eliminarPliegoHacer(id: number) {
         this.service.eliminarPliegoMultiple(id).subscribe((result: any) => {
             console.log(result);
             if (result.logout == true) {
