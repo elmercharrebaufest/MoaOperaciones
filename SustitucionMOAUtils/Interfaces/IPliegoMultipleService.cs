@@ -17,6 +17,9 @@ namespace SustitucionMOAUtils.Interfaces
                                                         IEnumerable<string> fiscal,
                                                         bool sap,
                                                         bool mantenimiento,
+                                                        bool web = false,
+                                                        bool repoAutomatica = false,
+                                                        bool contratoMarco = false,
                                                         int? pliegoId = null);
 
         void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar);
