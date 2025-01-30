@@ -891,8 +891,17 @@ namespace SustitucionMOA.Controllers
                                                        string tipoImputacion = null,
                                                        string valorTipoImputacion = null,
                                                        int? numeroPo = null,
-                                                       string nombrePliego = null)
+                                                       string nombrePliego = null,
+                                                       string tipoPliego = null)
         {
+
+            TipoPliego tipoPliegoEnum = TipoPliego.All;
+            if (!string.IsNullOrWhiteSpace(tipoPliego))
+            {
+                IEnumerable<int> tipoPliegoList = tipoPliego.Split(',').Select(x => int.Parse(x));
+                tipoPliegoEnum = (TipoPliego)tipoPliegoList.Aggregate((x, y) => x | y);
+            }
+
             return JsonCustom(new
             {
                 data = service.ListarPosicionesPOMultipleServicio(fechaDesde,
@@ -909,7 +918,8 @@ namespace SustitucionMOA.Controllers
                                                           !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
                                                           !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                                                           numeroPo,
-                                                          nombrePliego)
+                                                          nombrePliego,
+                                                          tipoPliegoEnum)
             });
         }
 
