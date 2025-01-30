@@ -34,8 +34,10 @@ export class VincularSolpPliegoMultipleComponent
     public fiscales: SelectItem[] = [];
 
     public sap: boolean;
-
     public mantenimiento: boolean;
+    public web: boolean;
+    public repoAutomatica: boolean;
+    public contratoMarco: boolean;
 
     private debouncer: Subject<void> = new Subject<void>();
     private debouncerSubscription?: Subscription;
@@ -97,7 +99,7 @@ export class VincularSolpPliegoMultipleComponent
     public getSolps() {
         this.blockUI.start("Cargando");
 
-        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.pliegoId)
+        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId)
             .subscribe(
                 (solps: SolpDto[]) => {
                     this.solps = solps;

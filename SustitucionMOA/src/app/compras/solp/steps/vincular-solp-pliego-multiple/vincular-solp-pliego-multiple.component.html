@@ -26,12 +26,27 @@
                        (onChange)="searchParametersChanged()"></p-multiSelect>
     </div>
 
-    <div class="col-xs-4 col-sm-2 col-md-1 mb-5">
-        <p-checkbox binary="true" label="Sap" [(ngModel)]="sap" (onChange)="searchParametersChanged()"></p-checkbox>
-    </div>
-
-    <div class="col-xs-8 col-sm-4 col-md-2 mb-5">
-        <p-checkbox binary="true" label="Mantenimiento" [(ngModel)]="mantenimiento" (onChange)="searchParametersChanged()"></p-checkbox>
+    <div class="col-md-4 col-lg-3">
+        <div class="col-md-4" style="padding:0 !important;">
+            <p-checkbox class="checkboxFechas" binary="true" label="SAP" pTooltip="SAP"
+                        [(ngModel)]="sap" (onChange)="searchParametersChanged()"></p-checkbox>
+        </div>
+        <div class="col-md-4" style="padding:0 !important;">
+            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                        [(ngModel)]="mantenimiento" (onChange)="searchParametersChanged()"></p-checkbox>
+        </div>
+        <div class="col-md-4" style="padding:0 !important;">
+            <p-checkbox class="checkboxFechas" binary="true" label="Web" pTooltip="WEB"
+                        [(ngModel)]="web" (onChange)="searchParametersChanged()"></p-checkbox>
+        </div>
+        <div class="col-md-4" style="padding:0 !important;">
+            <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
+                        [(ngModel)]="repoAutomatica" (onChange)="searchParametersChanged()"></p-checkbox>
+        </div>
+        <div class="col-md-4" style="padding:0 !important;">
+            <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
+                        [(ngModel)]="contratoMarco" (onChange)="searchParametersChanged()"></p-checkbox>
+        </div>
     </div>
 </div>
 

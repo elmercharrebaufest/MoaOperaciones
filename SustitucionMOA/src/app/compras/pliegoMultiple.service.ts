@@ -35,7 +35,10 @@ export class PliegoMultipleService extends BaseService {
         fiscal: string,
         sap: boolean,
         mantenimiento: boolean,
-        pliegoId:number | null    ): Observable<SolpDto[]> {
+        web: boolean,
+        repoAutomatica: boolean,
+        contratoMarco: boolean,
+        pliegoId: number | null): Observable<SolpDto[]> {
         let params: HttpParams = new HttpParams();
         if (numeroSolp) {
             params = params.set('numeroSolp', numeroSolp);
@@ -63,6 +66,18 @@ export class PliegoMultipleService extends BaseService {
 
         if (mantenimiento) {
             params = params.set('mantenimiento', mantenimiento.toString());
+        }
+
+        if (web) {
+            params = params.set('web', web.toString());
+        }
+
+        if (repoAutomatica) {
+            params = params.set('repoAutomatica', repoAutomatica.toString());
+        }
+
+        if (contratoMarco) {
+            params = params.set('contratoMarco', contratoMarco.toString());
         }
 
         if (pliegoId) {

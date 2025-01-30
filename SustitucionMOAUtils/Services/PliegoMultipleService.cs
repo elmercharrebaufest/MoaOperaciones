@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: solps Roslynator
+﻿// Ignore Spelling: solps Roslynator Automatica repo
 
 using SustitucionMOAModel.Dto.PliegoMultiple;
 using SustitucionMOAModel.Entities;
@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Web;
 using ComprasDto = SustitucionMOAModel.Dto;
 
@@ -55,11 +56,17 @@ namespace SustitucionMOAUtils.Services
                                                                IEnumerable<string> fiscal,
                                                                bool sap,
                                                                bool mantenimiento,
+                                                               bool web = false,
+                                                               bool repoAutomatica = false,
+                                                               bool contratoMarco = false,
                                                                int? pliegoId = null)
         {
             IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
             IEnumerable<string> tiposPosicionSolpValidos = new HashSet<string> { "SERVICIO", "MATERIALES" };
+
+            bool traerTodosLosTipos = (sap && mantenimiento && web && repoAutomatica && contratoMarco)
+                || (!sap && !mantenimiento && !web && !repoAutomatica && !contratoMarco);
 
             IQueryable<Solp> consultaSolp = repositorio
                 .ListarConsultable<Solp>(solpQuery =>
@@ -111,24 +118,14 @@ namespace SustitucionMOAUtils.Services
                     .Where(solp => solp.Pliego != null && solp.Pliego.Email != null && fiscal.Contains(solp.Pliego.Email));
             }
 
-            if (sap && mantenimiento)
+            if (!traerTodosLosTipos)
             {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Sap || solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento);
-            }
-            else
-            {
-                if (sap)
-                {
-                    consultaSolp = consultaSolp
-                        .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Sap);
-                }
-
-                if (mantenimiento)
-                {
-                    consultaSolp = consultaSolp
-                        .Where(solp => solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento);
-                }
+                consultaSolp = consultaSolp.Where(solp => (sap && solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                                        || (mantenimiento && solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                                        || (web && solp.TipoSolpSap == (int)TipoSolpSap.Web)
+                                        || (repoAutomatica && solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica)
+                                        || (contratoMarco && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)))
+                                  );
             }
 
             List<SolpDto> result = consultaSolp

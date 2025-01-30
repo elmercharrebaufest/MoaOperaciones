@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Sustitucion solps
+﻿// Ignore Spelling: Sustitucion solps repo Automatica
 
 using Newtonsoft.Json;
 using SustitucionMOASecurity;
@@ -40,6 +40,9 @@ namespace SustitucionMOA.Controllers
                                                             string fiscal,
                                                             bool sap = false,
                                                             bool mantenimiento = false,
+                                                            bool web = false,
+                                                            bool repoAutomatica = false,
+                                                            bool contratoMarco = false,
                                                             int? pliegoId = null)
         {
             IEnumerable<int> creadorList = string.IsNullOrWhiteSpace(creador)
@@ -50,7 +53,17 @@ namespace SustitucionMOA.Controllers
                 ? Enumerable.Empty<string>()
                 : fiscal.Split(',');
 
-            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp, fechaInicio, fechaFin, creadorList, fiscalList, sap, mantenimiento, pliegoId));
+            return JsonCustom(pliegoMultipleService.GetSolpDisponiblesPliegosMultiple(numeroSolp,
+                                                                                      fechaInicio,
+                                                                                      fechaFin,
+                                                                                      creadorList,
+                                                                                      fiscalList,
+                                                                                      sap,
+                                                                                      mantenimiento,
+                                                                                      web,
+                                                                                      repoAutomatica,
+                                                                                      contratoMarco,
+                                                                                      pliegoId));
         }
 
         [ValidateInput(false)]
