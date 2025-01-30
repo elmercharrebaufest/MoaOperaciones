@@ -1352,6 +1352,7 @@ export class ComprasService extends BaseService {
         numeroPo?: number,
         tipoSolp?: string,
         nombrePliego?: string,
+        tipoPliego?: string
     ): Observable<ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>> {
         let params: HttpParams = new HttpParams();
         params = params.set('fechaDesde', (fechaDesde != null ? fechaDesde : ""));
@@ -1371,6 +1372,7 @@ export class ComprasService extends BaseService {
 
         if (tipoSolp === "SERVICIO") {
             params = params.set('nombrePliego', nombrePliego != null ? nombrePliego : "");
+            params = params.set('tipoPliego', tipoPliego);
             return this.http.get<ActionResult<SolpCrearPoMultipleDto[]>>('/api/compras/ListarPosicionesPOMultipleServicio', { params: params, headers: this.headers });
         } else {
             return this.http.get<ActionResult<POPosicionDto[]>>('/api/compras/ListarPosicionesPOMultiple', { params: params, headers: this.headers });

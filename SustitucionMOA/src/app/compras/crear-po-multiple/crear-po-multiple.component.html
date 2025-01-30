@@ -15,6 +15,11 @@
                    placeholder="Nombre del Pliego"
                    style="-webkit-appearance: textfield; -moz-appearance: textfield; width:100%" />
         </div>
+
+        <div class="col-md-3 col-lg-3" *ngIf="showTipoPliegoMultiple">
+            <p-multiSelect [options]="tipoPliegoItem" [(ngModel)]="selectTipoPliego" defaultLabel="Tipo de Pliego"
+                           selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
+        </div>
     </div>
 
     <div class="row myRow">
