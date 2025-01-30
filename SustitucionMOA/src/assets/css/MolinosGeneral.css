@@ -9,6 +9,7 @@
     --availableSpaceAfterHeader: calc(100vh - 178px);
     --availableSpaceAfterHeaderAndTitle: calc(var(--availableSpaceAfterHeader) - 150px);
     --brand-color-green: #009688;
+    --brand-color-blue: #1C7CD5;
 }
 
 

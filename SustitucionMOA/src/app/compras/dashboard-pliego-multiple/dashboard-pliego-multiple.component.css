@@ -9,3 +9,9 @@ div.row {
     .rowButtons + .rowButtons {
         margin-left: 10px;
     }
+
+.btn-nuevoPliego {
+    color: white !important;
+    background-color: var(--brand-color-blue) !important;
+    border-color: var(--brand-color-blue) !important;
+}
