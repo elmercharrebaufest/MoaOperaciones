@@ -4,7 +4,8 @@
         <!--Title-->
         <div class="row titleSection">
             <div class="col-xs-12 col-sm-10 ">
-                <strong *ngIf="!titulo">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <strong *ngIf="!titulo && !esCreacionPliegoMultiple">¿Qu&eacute; tipo de SOLP quiere iniciar?</strong>
+                <strong *ngIf="!titulo && esCreacionPliegoMultiple">¿Qu&eacute; tipo de Pliego quiere iniciar?</strong>
                 <p><strong *ngIf="titulo">{{titulo}}</strong> {{tituloNroSolp}}</p>
             </div>
         </div>

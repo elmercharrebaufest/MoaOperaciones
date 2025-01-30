@@ -353,12 +353,20 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     tituloSolpEditar(nroSolp) {
-        if (nroSolp != null && nroSolp !== 0 && nroSolp != "" && nroSolp !== "0" && nroSolp != undefined) {
-            this.titulo = `Edición de SOLP - # ${nroSolp}`;
-        } else {
-            this.titulo = 'Edición de SOLP';
-        }
+        const pliegoStr: string = 'Pliego';
+        const solpStr: string = 'SOLP';
 
+        if (nroSolp != null && nroSolp !== 0 && nroSolp != "" && nroSolp !== "0" && nroSolp != undefined) {
+            if (this.esEdicionPliegoMultiple) {
+                this.titulo = `Edición de ${pliegoStr} - "${this.solpActual.nombreDePedido}"`;
+            } else if (this.esCopiaPliegoMultiple) {
+                this.titulo = `Copia de ${pliegoStr} - "${this.solpActual.nombreDePedido}"`;
+            } else {
+                this.titulo = `Edición de ${solpStr} - # ${nroSolp}`;
+            }
+        } else {
+            this.titulo = `Edición de ${this.esOperacionPliegoMultiple ? pliegoStr : solpStr}`;
+        }
     }
 
     setearPasos() {
