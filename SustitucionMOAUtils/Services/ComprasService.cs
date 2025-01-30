@@ -8003,7 +8003,8 @@ namespace SustitucionMOAUtils.Services
                                                                                List<string> tipoImputacion = null,
                                                                                List<int> valorTipoImputacion = null,
                                                                                int? numeroPo = null,
-                                                                               string nombrePliego = null)
+                                                                               string nombrePliego = null,
+                                                                               TipoPliego tipoPliego = TipoPliego.All)
         {
             try
             {
@@ -8027,6 +8028,11 @@ namespace SustitucionMOAUtils.Services
                             && (string.IsNullOrEmpty(nombrePliego)
                                 || string.IsNullOrEmpty(nombrePliego.Trim())
                                 || pos.Solp.Pliego.NombreObra.Trim().ToLower().Contains(nombrePliego.Trim().ToLower())
+                                )
+                            && (
+                                tipoPliego == TipoPliego.All
+                                || (tipoPliego == TipoPliego.PliegoUnico && !pos.Solp.Pliego.Multiple)
+                                || (tipoPliego == TipoPliego.PliegoMultiple && pos.Solp.Pliego.Multiple)
                                 );
 #pragma warning restore RCS1155 // Use StringComparison when comparing strings
                 List<Expression<Func<SolpPosicion, bool>>> filtros = new List<Expression<Func<SolpPosicion, bool>>>()

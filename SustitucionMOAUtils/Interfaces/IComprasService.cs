@@ -131,7 +131,8 @@ namespace SustitucionMOAUtils.Interfaces
                                                                         List<string> tipoImputacion = null,
                                                                         List<int> valorTipoImputacion = null,
                                                                         int? numeroPo = null,
-                                                                        string nombrePliego = null);
+                                                                        string nombrePliego = null,
+                                                                        TipoPliego tipoPliego = TipoPliego.All);
 
         IEnumerable<PosicionCrearPoMultipleDto> ListarPosicionesPOMultipleSolpId(int idSolp);
         IEnumerable<SubPosicionCrearPoMultipleDto> ListarSubPosicionesPOMultipleSolpId(int idPosicion);
