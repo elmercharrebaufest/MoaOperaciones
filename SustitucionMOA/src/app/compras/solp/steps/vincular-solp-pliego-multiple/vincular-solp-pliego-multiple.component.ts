@@ -34,8 +34,10 @@ export class VincularSolpPliegoMultipleComponent
     public fiscales: SelectItem[] = [];
 
     public sap: boolean;
-
     public mantenimiento: boolean;
+    public web: boolean;
+    public repoAutomatica: boolean;
+    public contratoMarco: boolean;
 
     private debouncer: Subject<void> = new Subject<void>();
     private debouncerSubscription?: Subscription;
