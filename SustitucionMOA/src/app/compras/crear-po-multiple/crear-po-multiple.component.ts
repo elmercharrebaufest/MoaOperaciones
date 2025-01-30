@@ -289,7 +289,8 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                 this.selectTratada,
                 this.numeroPo,
                 this.selectTipoSolp,
-                this.nombrePliego
+                this.nombrePliego,
+                this.selectTipoPliego.join(",")
             ).subscribe(
                 (result: ActionResult<POPosicionDto[]> | ActionResult<SolpCrearPoMultipleDto[]>) => {
                     if (result.logout == true) {
