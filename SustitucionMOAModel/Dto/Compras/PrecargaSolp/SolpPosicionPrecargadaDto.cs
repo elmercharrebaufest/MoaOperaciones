@@ -1,9 +1,5 @@
-﻿using SustitucionMOAModel.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
 {
@@ -13,10 +9,10 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
 
         public int TipoPosicionId { get; set; }
         public TablaGeneralDto TipoPosicion { get; set; }
-        
+
         public int? TipoImputacionId { get; set; }
         public TablaGeneralDto TipoImputacion { get; set; }
-        
+
         public int? CentroId { get; set; }
         public TablaSapDto Centro { get; set; }
 
@@ -25,6 +21,8 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public MaterialSolpDto MaterialCatalogado { get; set; }
 
         public string Tarea { get; set; }
+        public string Motivo { get; set; }
+        public string Modelo { get; set; }
 
         public int? MonedaId { get; set; }
         public TablaSapDto Moneda { get; set; }
@@ -41,7 +39,7 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public TablaSapDto Almacen { get; set; }
 
         public decimal? Cantidad { get; set; }
-
+        public decimal? Precio { get; set; }
         public int? UnidadId { get; set; }
         public TablaSapDto Unidad { get; set; }
 
