@@ -166,7 +166,7 @@ namespace SustitucionMOAUtils.Services
 
             List<Solp> solps = repositorio.Listar<Solp>(solp => solpsAsociar.Contains(solp.Id));
 
-            if (esEdicion) { DesvincularSolps(solps); }
+            if (esEdicion) { DesvincularSolps(pliego.Solps); }
 
             foreach (Solp solp in solps)
             {
