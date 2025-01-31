@@ -470,6 +470,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.pliegoMultipleIdSolpsSeleccionadas = solps;
                         }
 
+                        if (this.esCopiaPliegoMultiple) {
+                            this.solpActual.id = undefined;
+                            this.solpActual.nroSolp = undefined;
+                            this.solpActual.Pliego_Id = undefined;
+                        }
+
                         this.traerCommon();
                     }
                 },
