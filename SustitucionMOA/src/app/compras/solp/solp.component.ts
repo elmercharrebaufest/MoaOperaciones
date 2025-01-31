@@ -1263,7 +1263,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         if (this.solpActual != undefined && this.solpActual.usuarioSolicitanteList != undefined) {
             this.solpActual.selectUsuarioFiscal = this.solpActual.usuarioSolicitanteList.
                 find(x => x.CodigoDescripcion == this.solpActual.mail);
-            if (this.solpActual.tipoSolp == "CON_PLIEGO") {
+            if (this.solpActual.tipoSolp == "CON_PLIEGO" || this.solpActual.tipoSolp == "PLIEGO_MULTIPLE") {
                 this.solpActual.supervisorTrabajo = this.solpActual.mail;
                 this.solpActual.selectResponsableTrabajo = this.solpActual.usuarioSolicitanteList.
                     find(x => x.CodigoDescripcion == this.solpActual.mail);
@@ -1511,7 +1511,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             if (this.solpActual.tipoSolp === "SIN_PLIEGO") {
                 toEmails.push(this.solpActual.selectResponsableTrabajo.CodigoDescripcion);
             }
-            if (this.solpActual.tipoSolp === "CON_PLIEGO") {
+            if (this.solpActual.tipoSolp === "CON_PLIEGO" || this.solpActual.tipoSolp === "PLIEGO_MULTIPLE") {
                 toEmails.push(this.solpActual.selectUsuarioFiscal.CodigoDescripcion);
             }
         }
@@ -1609,9 +1609,10 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     public completarUsuarioSolicitante() {
+        debugger;
         if (!this.solpActual) { return; }
 
-        if (this.esCreacionSolp) {
+        if (this.esCreacionSolp || this.esCreacionPliegoMultiple) {
             let selectUsuarioFiscalVacio: boolean = this.solpActual.selectUsuarioFiscal == undefined || this.solpActual.selectUsuarioFiscal == null;
             let selectResponsableTrabajoVacio: boolean = this.solpActual.selectResponsableTrabajo == undefined || this.solpActual.selectResponsableTrabajo == null;
 
@@ -1630,7 +1631,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
             this.setCurrentUseAsResponsableTrabajoIfNeeded();
         }
 
-        if (this.esEdicionSolp || this.esCopiaPliegoMultiple) {
+        if (this.esEdicionSolp || this.esCopiaPliegoMultiple || this.esEdicionPliegoMultiple) {
             const elementoEncontradoSolicitante = this.solpActual.usuarioSolicitanteList.find(x => x.CodigoDescripcion === this.solpActual.supervisorTrabajo);
             if (elementoEncontradoSolicitante) {
                 this.solpActual.selectResponsableTrabajo = elementoEncontradoSolicitante;
@@ -1650,7 +1651,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
 
     private setCurrentUseAsResponsableTrabajoIfNeeded(): void {
         if (this.solpActual == null || this.solpActual == undefined) { return; }
-        if (!this.esCreacionSolp) { return; }
+        if (!(this.esCreacionSolp || this.esCreacionPliegoMultiple)) { return; }
         if (this.solpActual.tipoSolp !== 'SIN_PLIEGO') { return; }
 
         const username: string = sessionStorage.getItem("username");
