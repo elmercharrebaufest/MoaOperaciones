@@ -6,6 +6,7 @@
         public string Tarea { get; set; }
         public string Codigo { get; set; }
         public decimal? Cantidad { get; set; }
+        public decimal? Precio { get; set; }
         public int? UnidadId { get; set; }
         public TablaSapDto CuentaMayor { get; set; }
         public TablaSapDto Imputacion { get; set; }

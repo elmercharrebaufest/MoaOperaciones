@@ -68,6 +68,11 @@ namespace SustitucionMOAUtils.Services
                     var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
                     var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
                     var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion);
+                    decimal? precio = null;
+                    if (decimal.TryParse(reg.Precio, out decimal resultado))
+                    {
+                        precio = resultado;
+                    }
 
                     if (esMateriales || !posiciones.Any(x => x.Indice == indice))
                     {
@@ -92,6 +97,8 @@ namespace SustitucionMOAUtils.Services
                             Codigo = esMateriales ? reg.CodigoMaterial : string.Empty,
                             MaterialCatalogado = materialCatalogado,
                             Tarea = reg.DescripcionItem,
+                            Motivo = reg.Motivo ?? "",
+                            Modelo = reg.Modelo ?? "",
                             MonedaId = moneda?.Id,
                             Moneda = moneda,
                             FechaEntregaServicio = DateTime.Parse(reg.FechaEntrega),
@@ -102,6 +109,7 @@ namespace SustitucionMOAUtils.Services
                             AlmacenId = almacen?.Id,
                             Almacen = almacen,
                             Cantidad = decimal.Parse(reg.Cantidad),
+                            Precio = string.IsNullOrWhiteSpace(reg.CodigoMaterial) ? precio : null,
                             UnidadId = unidad?.Id,
                             Unidad = unidad,
                             CuentaMayor = cuentaMayor,
@@ -120,6 +128,7 @@ namespace SustitucionMOAUtils.Services
                             Tarea = reg.NombreServicio,
                             Codigo = reg.CodigoServicio,
                             Cantidad = decimal.Parse(reg.Cantidad),
+                            Precio = precio,
                             UnidadId = unidad?.Id,
                             Unidad = unidad,
                             CuentaMayor = cuentaMayor,
@@ -205,9 +214,12 @@ namespace SustitucionMOAUtils.Services
                 CodigoServicio = (fila[IndicePrecargaSolp.CodigoServicio] is DBNull || fila[IndicePrecargaSolp.CodigoServicio] == null) ? null : fila[IndicePrecargaSolp.CodigoServicio].ToString(),
                 NombreServicio = (fila[IndicePrecargaSolp.NombreServicio] is DBNull || fila[IndicePrecargaSolp.NombreServicio] == null) ? null : fila[IndicePrecargaSolp.NombreServicio].ToString(),
                 Cantidad = (fila[IndicePrecargaSolp.Cantidad] is DBNull || fila[IndicePrecargaSolp.Cantidad] == null) ? null : fila[IndicePrecargaSolp.Cantidad].ToString(),
+                Precio = (fila[IndicePrecargaSolp.Precio] is DBNull || fila[IndicePrecargaSolp.Precio] == null) ? null : fila[IndicePrecargaSolp.Precio].ToString(),
                 Unidad = (fila[IndicePrecargaSolp.Unidad] is DBNull || fila[IndicePrecargaSolp.Unidad] == null) ? null : fila[IndicePrecargaSolp.Unidad].ToString(),
                 CuentaMayor = (fila[IndicePrecargaSolp.CuentaMayor] is DBNull || fila[IndicePrecargaSolp.CuentaMayor] == null) ? null : fila[IndicePrecargaSolp.CuentaMayor].ToString(),
-                Imputacion = (fila[IndicePrecargaSolp.Imputacion] is DBNull || fila[IndicePrecargaSolp.Imputacion] == null) ? null : fila[IndicePrecargaSolp.Imputacion].ToString()
+                Imputacion = (fila[IndicePrecargaSolp.Imputacion] is DBNull || fila[IndicePrecargaSolp.Imputacion] == null) ? null : fila[IndicePrecargaSolp.Imputacion].ToString(),
+                Motivo = (fila[IndicePrecargaSolp.Motivo] is DBNull || fila[IndicePrecargaSolp.Motivo] == null) ? null : fila[IndicePrecargaSolp.Motivo].ToString(),
+                Modelo = (fila[IndicePrecargaSolp.Modelo] is DBNull || fila[IndicePrecargaSolp.Modelo] == null) ? null : fila[IndicePrecargaSolp.Modelo].ToString(),
             };
             return registroPrecargaSolp;
         }
@@ -264,6 +276,10 @@ namespace SustitucionMOAUtils.Services
                 if (!decimal.TryParse(reg.Cantidad, out decimal _))
                 {
                     errores.Add($"Orden: {ordenFila}. La cantidad no es válida");
+                }
+                if (!string.IsNullOrWhiteSpace(reg.Precio) && !decimal.TryParse(reg.Precio, out decimal _))
+                {
+                    errores.Add($"Orden: {ordenFila}. El precio no es válida");
                 }
                 if (!unidades.Any(x => x.Codigo == reg.Unidad))
                 {
@@ -331,6 +347,8 @@ namespace SustitucionMOAUtils.Services
         public string TipoImputacion { get; set; }
         public string CodigoMaterial { get; set; }
         public string DescripcionItem { get; set; }
+        public string Motivo { get; set; }
+        public string Modelo { get; set; }
         public string Moneda { get; set; }
         public string FechaEntrega { get; set; }
         public string GrupoCompras { get; set; }
@@ -341,6 +359,7 @@ namespace SustitucionMOAUtils.Services
         public string CodigoServicio { get; set; }
         public string NombreServicio { get; set; }
         public string Cantidad { get; set; }
+        public string Precio { get; set; }
         public string Unidad { get; set; }
         public string CuentaMayor { get; set; }
         public string Imputacion { get; set; }
@@ -362,9 +381,12 @@ namespace SustitucionMOAUtils.Services
         internal const int CodigoServicio = 11;
         internal const int NombreServicio = 12;
         internal const int Cantidad = 13;
-        internal const int Unidad = 14;
-        internal const int CuentaMayor = 15;
-        internal const int Imputacion = 16;
+        internal const int Precio = 14;
+        internal const int Unidad = 15;
+        internal const int CuentaMayor = 16;
+        internal const int Imputacion = 17;
+        internal const int Motivo = 18;
+        internal const int Modelo = 19;
 
         internal const int LeyendaAmbos = 11;
         internal const int LeyendaMaterial = 12;
