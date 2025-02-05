@@ -141,7 +141,15 @@ namespace SustitucionMOAUtils.Services
             if (pliegoId != null)
             {
                 filtros.Add(x => x.Pliego_Id == pliegoId);
-
+                if (incluirGuardadas)
+                {
+                    filtros = new List<Expression<Func<Solp, bool>>>();
+                    filtros.Add(x => x.Pliego_Id == pliegoId);
+                }
+                else
+                {
+                    filtros.Add(x => x.Pliego_Id == pliegoId);
+                }
                 List<SolpDto> solpsPreviasDto = repositorio.ListarIntersecar<Solp, SolpDto>(solp => new SolpDto
                 {
                     Id = solp.Id,
@@ -276,6 +284,8 @@ namespace SustitucionMOAUtils.Services
             if (pliego.Solps.Any())
             {
                 pliegoReturn = comprasService.TraerSolpId(pliego.Solps.First().Id);
+                pliegoReturn.EspecificacionesTecnicas = System.IO.File.ReadAllText(pliegoReturn.EspecificacionesTecnicas);
+
             }
             pliegoReturn.Id = null;
             pliegoReturn.Pliego_Id = pliego.Id;
