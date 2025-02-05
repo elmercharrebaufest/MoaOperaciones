@@ -32,25 +32,25 @@ namespace SustitucionMOAUtils.Services
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
-        public List<PliegoDto> GetPliegosMultiples(string nombrePliego)
+        public List<PliegoPMDto> GetPliegosMultiples(string nombrePliego)
         {
             IQueryable<Pliego> pliegos = repositorio.ListarConsultable<Pliego>(pliego => pliego.Multiple);
             if (string.IsNullOrWhiteSpace(nombrePliego))
             {
                 return pliegos
                     .ToList()
-                    .ConvertAll(pliego => (PliegoDto)pliego);
+                    .ConvertAll(pliego => (PliegoPMDto)pliego);
             }
             else
             {
                 return pliegos
                     .Where(p => p.NombreObra.ToLower().Contains(nombrePliego.ToLower()))
                     .ToList()
-                    .ConvertAll(pliego => (PliegoDto)pliego);
+                    .ConvertAll(pliego => (PliegoPMDto)pliego);
             }
         }
 
-        public List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+        public List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
                                                                DateTime? fechaInicio,
                                                                DateTime? fechaFin,
                                                                IEnumerable<int> creador,
@@ -126,7 +126,7 @@ namespace SustitucionMOAUtils.Services
             }
 
 
-            List<SolpDto> result = consultaSolp.Select(solp => new SolpDto
+            List<SolpPMDto> result = consultaSolp.Select(solp => new SolpPMDto
             {
                 Id = solp.Id,
                 TipoSolpSap = solp.TipoSolpSap ?? 0,
@@ -150,7 +150,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     filtros.Add(x => x.Pliego_Id == pliegoId);
                 }
-                List<SolpDto> solpsPreviasDto = repositorio.ListarIntersecar<Solp, SolpDto>(solp => new SolpDto
+                List<SolpPMDto> solpsPreviasDto = repositorio.ListarIntersecar<Solp, SolpPMDto>(solp => new SolpPMDto
                 {
                     Id = solp.Id,
                     TipoSolpSap = solp.TipoSolpSap ?? 0,
@@ -277,7 +277,7 @@ namespace SustitucionMOAUtils.Services
             return pdfFilePath;
         }
 
-        public TraerPliegoDto TraerPliegoId(int idPliego)
+        public TraerPliegoPMDto TraerPliegoId(int idPliego)
         {
             Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException($"Pliego con id {idPliego} no encontrado");
             ComprasDto.SolpDto pliegoReturn = new ComprasDto.SolpDto();
@@ -291,7 +291,7 @@ namespace SustitucionMOAUtils.Services
             pliegoReturn.Pliego_Id = pliego.Id;
 
 
-            return new TraerPliegoDto
+            return new TraerPliegoPMDto
             {
                 Pliego = pliegoReturn,
                 Solps = pliego.Solps.Select(x => x.Id),

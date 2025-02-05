@@ -8,9 +8,9 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IPliegoMultipleService
     {
-        List<PliegoDto> GetPliegosMultiples(string nombrePliego);
+        List<PliegoPMDto> GetPliegosMultiples(string nombrePliego);
 
-        List<SolpDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+        List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
                                                         DateTime? fechaInicio,
                                                         DateTime? fechaFin,
                                                         IEnumerable<int> creador,
@@ -29,6 +29,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         string GenerarZipPliego(int idPliego, string pathBase, out string mimeType);
 
-        TraerPliegoDto TraerPliegoId(int idPliego);
+        TraerPliegoPMDto TraerPliegoId(int idPliego);
     }
 }

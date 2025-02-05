@@ -3,7 +3,7 @@ using System;
 
 namespace SustitucionMOAModel.Dto.PliegoMultiple
 {
-    public class SolpDto
+    public class SolpPMDto
     {
         public int Id { get; set; }
 
@@ -23,9 +23,9 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
 
         public string Estado { get; set; }
 
-        public static SolpDto FromPliego(Solp solp)
+        public static SolpPMDto FromPliego(Solp solp)
         {
-            return new SolpDto
+            return new SolpPMDto
             {
                 Id = solp.Id,
                 TipoSolpSap = solp.TipoSolpSap ?? 0,
@@ -38,7 +38,7 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
             };
         }
 
-        public static explicit operator SolpDto(Solp v)
+        public static explicit operator SolpPMDto(Solp v)
         {
             return FromPliego(v);
         }

@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SustitucionMOAModel.Dto.PliegoMultiple
 {
-    public class PliegoDto
+    public class PliegoPMDto
     {
         public int Id { get; set; }
 
@@ -17,9 +17,9 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
 
         public IEnumerable<string> Solps { get; set; }
 
-        public static PliegoDto FromPliego(Pliego pliego)
+        public static PliegoPMDto FromPliego(Pliego pliego)
         {
-            return new PliegoDto
+            return new PliegoPMDto
             {
                 Id = pliego.Id,
                 NombreObra = pliego.NombreObra,
@@ -29,7 +29,7 @@ namespace SustitucionMOAModel.Dto.PliegoMultiple
             };
         }
 
-        public static explicit operator PliegoDto(Pliego v)
+        public static explicit operator PliegoPMDto(Pliego v)
         {
             return FromPliego(v);
         }

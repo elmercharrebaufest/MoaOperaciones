@@ -3,7 +3,7 @@ using comprasDto = SustitucionMOAModel.Dto;
 
 namespace SustitucionMOAModel.Dto.PliegoMultiple
 {
-    public class TraerPliegoDto
+    public class TraerPliegoPMDto
     {
         public comprasDto.SolpDto Pliego { get; set; }
 
