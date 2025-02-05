@@ -3,5 +3,6 @@
     display: grid;
     justify-content: end;
     grid-gap: 4px;
-    grid-auto-flow: column;
+    display: flex;
+    flex-direction: row;
 }

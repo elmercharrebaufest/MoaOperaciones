@@ -33,6 +33,7 @@ export class VincularSolpPliegoMultipleComponent
     public fiscal: string;
     public fiscales: SelectItem[] = [];
 
+    public incluirGuardadas: boolean = true;
     public sap: boolean;
     public mantenimiento: boolean;
     public web: boolean;
@@ -97,18 +98,46 @@ export class VincularSolpPliegoMultipleComponent
     }
 
     public getSolps() {
-        this.blockUI.start("Cargando");
+        try {
+            this.blockUI.start("Cargando");
 
-        this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId)
-            .subscribe(
-                (solps: SolpDto[]) => {
-                    this.solps = solps;
-                    this.blockUI.stop();
-                },
-                () => {
-                    this.blockUI.stop();
-                }
-            );
+            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
+                .subscribe(
+                    (result: any) => {
+                        if (result.logout == true) {
+                            //this.sessionDataService.logout();
+                        } else if (result.error != undefined && result.error != "") {
+                            //this.floatMsgService.setErrorMsg(result.error);
+                            alert(result.error);
+                        } else if (result.info != undefined) {
+                            //this.floatMsgService.setInfoMsg(result.info);
+                            alert(result.info);
+                        } else {
+                            let solps = result as SolpDto[] | null;
+                            if (solps) {
+                                const existingCheckedSolps = (this.solps || []).filter(x => x.Selected);
+                                const newSolps = solps.filter(newSolp => !(existingCheckedSolps || []).some(existingSolp => existingSolp.Id === newSolp.Id));
+                                this.solps = [...existingCheckedSolps, ...newSolps];
+
+                            } else {
+                                this.solps = this.solps || [];
+                            }
+                            this.incluirGuardadas = false;
+                            this.blockUI.stop();
+                        }
+                    },
+                    () => {
+                        this.incluirGuardadas = false;
+                        this.blockUI.stop();
+                    }
+                );
+        } catch (e) {
+            //this.floatMsgService.setErrorMsg(e);
+            alert(e);
+            this.blockUI.stop();
+
+            return false; //<-- Prevent Refresh
+        }
+        return false; //<-- Prevent Refresh
     }
-
 }

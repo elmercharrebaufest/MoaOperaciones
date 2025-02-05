@@ -38,7 +38,9 @@ export class PliegoMultipleService extends BaseService {
         web: boolean,
         repoAutomatica: boolean,
         contratoMarco: boolean,
-        pliegoId: number | null): Observable<SolpDto[]> {
+        pliegoId: number | null,
+        incluirGuardadas: boolean,
+    ): Observable<SolpDto[]> {
         let params: HttpParams = new HttpParams();
         if (numeroSolp) {
             params = params.set('numeroSolp', numeroSolp);
@@ -83,6 +85,8 @@ export class PliegoMultipleService extends BaseService {
         if (pliegoId) {
             params = params.set('pliegoId', pliegoId.toString());
         }
+
+        params = params.set('incluirGuardadas', incluirGuardadas.toString());
 
         return this.http
             .get<SolpDto[]>('/api/PliegoMultiple/GetSolpDisponiblesPliegosMultiple', { params: params, headers: this.headers });

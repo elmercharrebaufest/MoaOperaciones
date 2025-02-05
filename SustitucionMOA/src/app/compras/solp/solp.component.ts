@@ -445,6 +445,11 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return false; //<-- Prevent Refresh
     }
 
+    public editarPliegoMultiple(): void {
+        let pliegoId = this.solpActual.Pliego_Id;
+        this.goToSeccion(`/compras/solp/${pliegoId}/PLIEGO_MULTIPLE/edit`);
+    }
+
     private traerPliegoMultipleId(id: number): boolean {
         try {
             this.blockUI.start('Cargando...');
@@ -487,6 +492,8 @@ export class SolpComponent extends BaseComponent implements OnInit {
         } catch (e) {
             this.floatMsgService.setErrorMsg(e);
             this.spinnerComponent.hideIt();
+            this.blockUI.stop();
+
             return false; //<-- Prevent Refresh
         }
         return false; //<-- Prevent Refresh
@@ -1609,7 +1616,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     public completarUsuarioSolicitante() {
-        debugger;
         if (!this.solpActual) { return; }
 
         if (this.esCreacionSolp || this.esCreacionPliegoMultiple) {

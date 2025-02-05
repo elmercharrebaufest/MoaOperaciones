@@ -1256,6 +1256,7 @@ namespace SustitucionMOAUtils.Services
             {
                 UsuarioActual = solp.UsuarioCreacion != null ? new UsuarioDto(solp.UsuarioCreacion) : new UsuarioDto(),
                 Id = solp.Id,
+                Pliego_Id = solp.Pliego_Id,
                 NroSolp = solp.NroSolp,
                 FechaCreacion = solp.FechaCreacion,
                 EstadoDocumento = new TablaEstadoDto(solp.EstadoDocumento),

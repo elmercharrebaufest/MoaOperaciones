@@ -43,6 +43,7 @@ namespace SustitucionMOA.Controllers
                                                             bool web = false,
                                                             bool repoAutomatica = false,
                                                             bool contratoMarco = false,
+                                                            bool incluirGuardadas = false,
                                                             int? pliegoId = null)
         {
             IEnumerable<int> creadorList = string.IsNullOrWhiteSpace(creador)
@@ -63,6 +64,7 @@ namespace SustitucionMOA.Controllers
                                                                                       web,
                                                                                       repoAutomatica,
                                                                                       contratoMarco,
+                                                                                      incluirGuardadas,
                                                                                       pliegoId));
         }
 

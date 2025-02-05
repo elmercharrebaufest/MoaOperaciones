@@ -29,7 +29,7 @@
 
 <spinner></spinner>
 
-<div class="content-wraper rounded shadow" *ngIf="cargaCompleta">
+<div class="" *ngIf="cargaCompleta">
     <section class="container-fluid clearfix">
         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="pliegos" dataKey="Id" [autoLayout]="true">
             <ng-template pTemplate="header" let-columns>
@@ -44,10 +44,10 @@
             <ng-template pTemplate="body" let-pliego>
                 <tr>
                     <td>
-                        <span class="rowButtons fa fa-copy" pTooltip="Copiar Pliego" (click)="copiarPliego(pliego.Id)"></span>
-                        <span class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego" (click)="eliminarPliego(pliego.Id)"></span>
-                        <span class="rowButtons fa fa-edit" pTooltip="Modificar Pliego" (click)="editarPliego(pliego.Id)"></span>
-                        <span class="rowButtons fa fa-download" pTooltip="Descargar Pliego" (click)="generarZipPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-copy" pTooltip="Copiar Pliego" (click)="copiarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-trash" pTooltip="Eliminar Pliego" (click)="eliminarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-edit" pTooltip="Modificar Pliego" (click)="editarPliego(pliego.Id)"></span>
+                        <span style="cursor:pointer !important;" class="rowButtons fa fa-download" pTooltip="Descargar Pliego" (click)="generarZipPliego(pliego.Id)"></span>
                     </td>
                     <td>{{ pliego.NombreObra }}</td>
                     <td>{{ pliego.FechaAlta | customDateFormat | date :'d/M/yyyy' }}</td>

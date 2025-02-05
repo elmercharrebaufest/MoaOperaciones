@@ -19,7 +19,9 @@
 
         <div class="alert alert-warning mt-0 mb-0" *ngIf="mostrarAdvertenciaPliegoMultiple">
             <strong>Advertencia</strong> La solp está asociada a un pliego múltiple.
-            Para editar el pliego, puede hacerlo desde la <a (click)="goToSeccion('/compras/dashboardPliegoMultiple')" href="#">edición de pliegos múltiples</a>
+            Para editar el pliego, puede hacerlo desde la 
+            <a style="cursor:pointer !important;" (click)="editarPliegoMultiple()">edición de pliegos múltiples</a>
+
         </div>
 
         <spinner></spinner>

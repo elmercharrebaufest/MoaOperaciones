@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Linq.Dynamic;
+using System.Linq.Expressions;
 using System.Web;
 using ComprasDto = SustitucionMOAModel.Dto;
 
@@ -59,6 +60,7 @@ namespace SustitucionMOAUtils.Services
                                                                bool web = false,
                                                                bool repoAutomatica = false,
                                                                bool contratoMarco = false,
+                                                               bool incluirGuardadas = false,
                                                                int? pliegoId = null)
         {
             IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
@@ -80,67 +82,83 @@ namespace SustitucionMOAUtils.Services
                     )
                 ;
 
-            List<Solp> solpsPrevias = new List<Solp>();
-            if (pliegoId != null)
-            {
-                solpsPrevias = repositorio.Listar<Solp>(x => x.Pliego_Id == pliegoId);
-            }
+            var filtros = new List<Expression<Func<Solp, bool>>>();
 
             if (!string.IsNullOrWhiteSpace(numeroSolp))
             {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.NroSolp.Contains(numeroSolp));
+                filtros.Add(solp => solp.NroSolp.Contains(numeroSolp));
             }
 
-            if (!(fechaInicio is null))
+            if (fechaInicio.HasValue)
             {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.FechaCreacion >= fechaInicio);
+                filtros.Add(solp => solp.FechaCreacion >= fechaInicio);
             }
 
-            if (!(fechaFin is null))
+            if (fechaFin.HasValue)
             {
                 DateTime ff = new DateTime(fechaFin.Value.Year, fechaFin.Value.Month, fechaFin.Value.Day, 23, 59, 59, 999, fechaFin.Value.Kind);
-
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.FechaCreacion <= ff);
+                filtros.Add(solp => solp.FechaCreacion <= ff);
             }
 
             if (creador?.Any() == true)
             {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.UsuarioCreacion_Id != null && creador.Contains(solp.UsuarioCreacion_Id.Value));
+                filtros.Add(solp => solp.UsuarioCreacion_Id != null && creador.Contains(solp.UsuarioCreacion_Id.Value));
             }
 
             if (fiscal.Any())
             {
-                consultaSolp = consultaSolp
-                    .Where(solp => solp.Pliego != null && solp.Pliego.Email != null && fiscal.Contains(solp.Pliego.Email));
+                filtros.Add(solp => solp.Pliego != null && solp.Pliego.Email != null && fiscal.Contains(solp.Pliego.Email));
             }
 
             if (!traerTodosLosTipos)
             {
-                consultaSolp = consultaSolp.Where(solp => (sap && solp.TipoSolpSap == (int)TipoSolpSap.Sap)
-                                        || (mantenimiento && solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
-                                        || (web && solp.TipoSolpSap == (int)TipoSolpSap.Web)
-                                        || (repoAutomatica && solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica)
-                                        || (contratoMarco && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior)))
-                                  );
+                filtros.Add(solp => (sap && solp.TipoSolpSap == (int)TipoSolpSap.Sap)
+                                 || (mantenimiento && solp.TipoSolpSap == (int)TipoSolpSap.Mantenimiento)
+                                 || (web && solp.TipoSolpSap == (int)TipoSolpSap.Web)
+                                 || (repoAutomatica && solp.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica)
+                                 || (contratoMarco && solp.Posiciones.Any(p => !string.IsNullOrEmpty(p.NumeroContratoSuperior))));
             }
 
-            List<SolpDto> result = consultaSolp
-                .ToList()
-                .ConvertAll(solp => (SolpDto)solp);
+            // Aplicar todos los filtros a la consulta
+            foreach (var filtro in filtros)
+            {
+                consultaSolp = consultaSolp.Where(filtro);
+            }
+
+
+            List<SolpDto> result = consultaSolp.Select(solp => new SolpDto
+            {
+                Id = solp.Id,
+                TipoSolpSap = solp.TipoSolpSap ?? 0,
+                NumeroSolp = solp.NroSolp,
+                NombreSolp = solp.Pliego == null ? "" : solp.Pliego.NombreObra,
+                FechaCreacion = solp.FechaCreacion,
+                Creador = solp.UsuarioCreacion.Mail,
+                Fiscal = solp.Pliego == null ? "" : solp.Pliego.Email,
+                Estado = solp.EstadoSolpSap == null ? "" : solp.EstadoSolpSap.Descripcion,
+            }).ToList();
 
             if (pliegoId != null)
             {
-                List<SolpDto> dtoPrevias = solpsPrevias.ConvertAll(solp =>
+                filtros.Add(x => x.Pliego_Id == pliegoId);
+
+                List<SolpDto> solpsPreviasDto = repositorio.ListarIntersecar<Solp, SolpDto>(solp => new SolpDto
                 {
-                    SolpDto dto = (SolpDto)solp;
-                    dto.Selected = true;
-                    return dto;
-                });
-                result.AddRange(dtoPrevias);
+                    Id = solp.Id,
+                    TipoSolpSap = solp.TipoSolpSap ?? 0,
+                    NumeroSolp = solp.NroSolp,
+                    NombreSolp = solp.Pliego == null ? "" : solp.Pliego.NombreObra,
+                    FechaCreacion = solp.FechaCreacion,
+                    Creador = solp.UsuarioCreacion.Mail,
+                    Fiscal = solp.Pliego == null ? "" : solp.Pliego.Email,
+                    Estado = solp.EstadoSolpSap == null ? "" : solp.EstadoSolpSap.Descripcion,
+                },
+                    filtros
+                );
+
+                solpsPreviasDto.ForEach(a => a.Selected = incluirGuardadas);
+                result.AddRange(solpsPreviasDto);
+
             }
 
             return result
@@ -254,8 +272,11 @@ namespace SustitucionMOAUtils.Services
         public TraerPliegoDto TraerPliegoId(int idPliego)
         {
             Pliego pliego = repositorio.Obtener<Pliego>(idPliego) ?? throw new ArgumentException($"Pliego con id {idPliego} no encontrado");
-
-            ComprasDto.SolpDto pliegoReturn = comprasService.TraerSolpId(pliego.Solps.First().Id);
+            ComprasDto.SolpDto pliegoReturn = new ComprasDto.SolpDto();
+            if (pliego.Solps.Any())
+            {
+                pliegoReturn = comprasService.TraerSolpId(pliego.Solps.First().Id);
+            }
             pliegoReturn.Id = null;
             pliegoReturn.Pliego_Id = pliego.Id;
 

@@ -20,6 +20,7 @@ namespace SustitucionMOAUtils.Interfaces
                                                         bool web = false,
                                                         bool repoAutomatica = false,
                                                         bool contratoMarco = false,
+                                                        bool incluirGuardadas = false,
                                                         int? pliegoId = null);
 
         void CrearPliegoMultiple(ComprasDto.SolpDto pliegoData, HttpFileCollectionBase adjuntos, IEnumerable<int> solpsAsociar);
