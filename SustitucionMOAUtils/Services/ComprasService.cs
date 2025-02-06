@@ -4338,7 +4338,7 @@ namespace SustitucionMOAUtils.Services
 
         public Resultado GuardarAdjuntosPeticionDeOferta(int idPeticion, HttpFileCollectionBase files, UsuarioDto usuarioDto)
         {
-            var ruta = "C:\\adjuntospliego";//ObtenerRutaArchivosPeticionDeOferta(idPeticion);
+            var ruta = ObtenerRutaArchivos(idPeticion, FileKeys.PeticionDeOferta);
             var peticion = repositorio.Obtener<PeticionDeOferta>(idPeticion);
 
             for (int i = 0; i < files.Count; i++)
