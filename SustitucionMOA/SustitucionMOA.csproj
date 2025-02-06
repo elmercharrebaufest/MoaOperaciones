@@ -424,6 +424,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.css" />
+    <Content Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.html" />
+    <Content Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.css" />
+    <Content Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.html" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.css" />
     <Content Include="src\app\aplicacion-ccpp\carga-manual\carga-manual.component.html" />
     <Content Include="src\app\aplicacion-ccpp\listado\listado.component.css" />
@@ -432,6 +436,10 @@
     <Content Include="src\app\aplicacion-ccpp\masiva\masiva.component.html" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.css" />
     <Content Include="src\app\aprobacion-externa\aprobacion-externa.component.html" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\carta-presentacion\carta-presentacion.component.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.spec.ts" />
+    <TypeScriptCompile Include="src\app\alta-proveedores\informe-comercial\informe-comercial.component.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey-routing.module.ts" />
     <TypeScriptCompile Include="src\app\apikey\apikey.module.ts" />
     <TypeScriptCompile Include="src\app\common\models\adjuntos.ts" />
@@ -495,6 +503,8 @@
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio-proveedor\modal-alta-entrada-de-servicio-proveedor.component.html" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.css" />
     <Content Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.html" />
+    <Content Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.css" />
+    <Content Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.css" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.html" />
     <Content Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.css" />
@@ -541,6 +551,8 @@
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-proveedores\tab-proveedores.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.html" />
+    <Content Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\vincular-solp-pliego-multiple.component.css" />
+    <Content Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\vincular-solp-pliego-multiple.component.html" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.css" />
     <Content Include="src\app\comunicaciones\comunicaciones.component.html" />
     <Content Include="src\app\consulta\crear-consulta-interna\crear-consulta-interna.component.css" />
@@ -1259,6 +1271,7 @@
     <Compile Include="App_Start\Startup.Hangfire.cs" />
     <Compile Include="Controllers\AdjuntosCertificacionesController.cs" />
     <Compile Include="Controllers\AplicacionCartaPorteController.cs" />
+    <Compile Include="Controllers\PliegoMultipleController.cs" />
     <Compile Include="Controllers\DerivacionController.cs" />
     <Compile Include="Controllers\AprobacionExternaController.cs" />
     <Compile Include="Controllers\ArchivoBoletoController.cs" />
@@ -1404,6 +1417,7 @@
     <TypeScriptCompile Include="src\app\common\models\SeleccionarVendedorResponse.ts" />
     <TypeScriptCompile Include="src\app\common\models\ticket-pesada\consulta-ticket-pesada.ts" />
     <TypeScriptCompile Include="src\app\common\pipes\customFilterBoolean.ts" />
+    <TypeScriptCompile Include="src\app\common\pipes\join.pipe.ts" />
     <TypeScriptCompile Include="src\app\common\services\FileStorageService.ts" />
     <TypeScriptCompile Include="src\app\common\services\UpdateComunicacionService.ts" />
     <TypeScriptCompile Include="src\app\common\shared-components\buscador\buscador-small\buscadorSmall.component.ts" />
@@ -1432,6 +1446,7 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\cerrar-cotizacion\cerrar-cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\circular\circular.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\filtrosComprador.interface.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\listado-dashboard-comprador\listado-dashboard-comprador.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\orden-de-compra-detalle\ordenDeCompraDetalle.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-comprador\proveedor-peticion\proveedor-peticion.component.ts" />
@@ -1461,6 +1476,8 @@
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\modal-alta-entrada-de-servicio\modal-alta-entrada-de-servicio.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-entrada-de-servicio\tableCustomSort.helper.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-pliego-multiple\dashboard-pliego-multiple.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\dashboard-pliego-multiple\pliegoDto.interface.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\cotizacion-material.component.ts" />
     <TypeScriptCompile Include="src\app\compras\dashboard-proveedor\cotizacion-formulario\cotizacion-material\plazo-de-oferta\plazo-de-oferta.component.ts" />
@@ -1480,6 +1497,7 @@
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\peticion-de-oferta-formulario.component.ts" />
     <TypeScriptCompile Include="src\app\compras\peticion-de-oferta-formulario\registro-info\registro-info\registro-info.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\pliegoMultiple.service.ts" />
     <TypeScriptCompile Include="src\app\compras\preview\pliego.preview.component.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\reporte-oc\reporte-oc.component.ts" />
@@ -1514,6 +1532,8 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\sub-posicion-view-model.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-subposicion\tab-subposicion.component.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\solpDto.interface.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\vincular-solp-pliego-multiple\vincular-solp-pliego-multiple.component.ts" />
     <TypeScriptCompile Include="src\app\compras\validadorPasoSolpService.ts" />
     <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.spec.ts" />
     <TypeScriptCompile Include="src\app\comunicaciones\comunicaciones-routing.module.ts" />

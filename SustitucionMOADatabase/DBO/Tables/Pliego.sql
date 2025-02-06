@@ -4,7 +4,7 @@
 	[Codigo] [nvarchar](max) NULL,
 	[NombreObra] [nvarchar](max) NULL,
 	[FiscalContrato] [nvarchar](max) NULL,
-	[Email] [nvarchar](max) NULL,
+	[Email] [nvarchar](400) NULL,
 	[Telefono] [nvarchar](max) NULL,
 	[FechaHoraEntrega] [datetime2] NULL,
 	[SupervisorSector] [nvarchar](max) NULL,
@@ -38,3 +38,9 @@
 	[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+
+GO
+
+CREATE NONCLUSTERED INDEX [IX_Pliego_Email] ON [dbo].[Pliego]([Email])
+
+GO

@@ -64,27 +64,34 @@
                                     placeholder="...cargando..."></p-dropdown>
                     </div>
                 </div>
-                    <div class="col-md-3 col-lg-3">
-                        <div class="col-md-6" style="padding:0 !important;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
-                        </div>
-                        <div class="col-md-6" style="padding:0 !important;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
-                                        [(ngModel)]="mantenimiento"></p-checkbox>
-                        </div>
-                        <div class="col-md-6" style="padding:0 !important;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
-                        </div>
-                        <div class="col-md-6" style="padding:0 !important;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
-                                        [(ngModel)]="repoAutomatica"></p-checkbox>
-                        </div>
-                        <div class="col-md-6" style="padding:0 !important;">
-                            <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
-                                        [(ngModel)]="contratoMarco"></p-checkbox>
-                        </div>
+                <div class="col-md-3 col-lg-3">
+                    <div class="col-md-6" style="padding:0 !important;">
+                        <p-checkbox class="checkboxFechas" binary="true" label="SAP" [(ngModel)]="sap"></p-checkbox>
                     </div>
-
+                    <div class="col-md-6" style="padding:0 !important;">
+                        <p-checkbox class="checkboxFechas" binary="true" label="OT" pTooltip="Mantenimiento"
+                                    [(ngModel)]="mantenimiento"></p-checkbox>
+                    </div>
+                    <div class="col-md-6" style="padding:0 !important;">
+                        <p-checkbox class="checkboxFechas" binary="true" label="Web" [(ngModel)]="web"></p-checkbox>
+                    </div>
+                    <div class="col-md-6" style="padding:0 !important;">
+                        <p-checkbox class="checkboxFechas" binary="true" label="RA" pTooltip="Reposición Automática"
+                                    [(ngModel)]="repoAutomatica"></p-checkbox>
+                    </div>
+                    <div class="col-md-6" style="padding:0 !important;">
+                        <p-checkbox class="checkboxFechas" binary="true" label="CM" pTooltip="Contrato Marco"
+                                    [(ngModel)]="contratoMarco"></p-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-3" style="padding-right: 30px;">
+                <p-multiSelect [options]="tipoPliegoItem" [(ngModel)]="selectTipoPliego" defaultLabel="Tipo de Pliego"
+                               selectedItemsLabel="{0} estados elegidos"></p-multiSelect>
+            </div>
+        </div>
+        <div class="row myRow">
+            <div class="col-md-9 col-lg-9" style="padding:0 !important">
             </div>
             <div class="col-md-3 col-lg-3" style="padding:0 !important">
                 <div class="col-md-12" style="text-align: center; padding-right: 30px;">

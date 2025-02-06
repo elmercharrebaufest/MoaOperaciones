@@ -1,0 +1,46 @@
+﻿using SustitucionMOAModel.Entities;
+using System;
+
+namespace SustitucionMOAModel.Dto.PliegoMultiple
+{
+    public class SolpPMDto
+    {
+        public int Id { get; set; }
+
+        public bool Selected { get; set; }
+
+        public int TipoSolpSap { get; set; }
+
+        public string NumeroSolp { get; set; }
+
+        public string NombreSolp { get; set; }
+
+        public DateTime FechaCreacion { get; set; }
+
+        public string Creador { get; set; }
+
+        public string Fiscal { get; set; }
+
+        public string Estado { get; set; }
+
+        public static SolpPMDto FromPliego(Solp solp)
+        {
+            return new SolpPMDto
+            {
+                Id = solp.Id,
+                TipoSolpSap = solp.TipoSolpSap ?? 0,
+                NumeroSolp = solp.NroSolp,
+                NombreSolp = solp.Pliego?.NombreObra,
+                FechaCreacion = solp.FechaCreacion,
+                Creador = solp.UsuarioCreacion.Mail,
+                Fiscal = solp.Pliego?.Email,
+                Estado = solp.EstadoSolpSap?.Descripcion,
+            };
+        }
+
+        public static explicit operator SolpPMDto(Solp v)
+        {
+            return FromPliego(v);
+        }
+    }
+}

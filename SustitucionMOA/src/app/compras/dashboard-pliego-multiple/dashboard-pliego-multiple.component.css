@@ -1,0 +1,17 @@
+div.row {
+    margin-bottom: 0.5rem;
+}
+
+.rowButtons {
+    font-size: 2rem;
+}
+
+    .rowButtons + .rowButtons {
+        margin-left: 10px;
+    }
+
+.btn-nuevoPliego {
+    color: white !important;
+    background-color: var(--brand-color-blue) !important;
+    border-color: var(--brand-color-blue) !important;
+}

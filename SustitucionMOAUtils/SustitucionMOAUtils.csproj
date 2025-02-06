@@ -230,6 +230,7 @@
     <Compile Include="Interfaces\IAdjudicacionesService.cs" />
     <Compile Include="Interfaces\ICentroDireccionService.cs" />
     <Compile Include="Interfaces\IComprasSolicitanteService.cs" />
+    <Compile Include="Interfaces\IPliegoMultipleService.cs" />
     <Compile Include="Interfaces\IRegistroInfoService.cs" />
     <Compile Include="Interfaces\ISolpService.cs" />
     <Compile Include="Interfaces\ITablaSapService.cs" />
@@ -391,6 +392,7 @@
     <Compile Include="Services\PagoService.cs" />
     <Compile Include="Services\PDFService.cs" />
     <Compile Include="Services\PesificacionService.cs" />
+    <Compile Include="Services\PliegoMultipleService.cs" />
     <Compile Include="Services\RegistroInfoService.cs" />
     <Compile Include="Services\ReporteContratoService.cs" />
     <Compile Include="Services\ReporteESService.cs" />

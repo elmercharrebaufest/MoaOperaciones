@@ -16,6 +16,13 @@ namespace SustitucionMOAUtils.Interfaces
 {
     public interface IComprasService
     {
+        Pliego GuardarPliego(SolpDto solp,
+                           HttpFileCollectionBase adjuntos,
+                           bool condEsp,
+                           string rutaArchivos = null,
+                           Pliego pliegoEntity = null,
+                           bool esPliegoMultiple = false);
+
         RespuestaGuardarSOLP GuardarSolp(SolpDto solp, HttpFileCollectionBase adjuntos);
         string ObtenerRutaArchivo(int archivoId);
         List<TablaGeneralDto> ObtenerTablaGeneral(string tabla);
@@ -28,12 +35,14 @@ namespace SustitucionMOAUtils.Interfaces
         List<TablaSapDto> ObtenerUnidades();
         List<CentroDireccionDto> ObtenerCentrosDireccion();
         string BorrarSolp(int idSolp);
+        SolpDto TraerSolpPliego(int idPliego, out int solpCount);
         SolpDto TraerSolpId(int idSolp);
         SolpESDto TraerSolpPorNumero(string nroSolp);
         List<TablaEstadoDto> ObtenerTablaEstado(string tabla);
-        byte[] GenerarSolpPdf(int idSolp);
+        byte[] GenerarSolpPdf(int id, bool esPliego = false);
         Pdf GenerarPeticionDeOfertaUsuarioPdf(int idPeticionDeOfertaUsuario);
-        string GenerarZipPliego(int idSolp, string pathBase);
+        string GenerarZipPliego(int idSolp, string pathBase, out string mimeType);
+        string AgregarArchivosAlZipPliego(IEnumerable<Archivo> archivos, string middleFileName, string pathBase, bool pdfPliegoDisponible, string pdfFilePath = null, string pdfFilename = null);
         List<TablaSapDto> ObtenerDatosPorCodigosSap(List<TablaSapDto> codigos);
         void ActualizarFechaLiberacion(string nrosolp, DateTime fechaLiberacion);
         void ActualizarServiciosSolp();
@@ -48,7 +57,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<ProvinciaDto> ListarProvincia();
         void EnviarEmailSolp(EmailComposeDto emailCompose);
         SolpDescargaZipPorLink PuedeDescargarPliegoDesdeLink(int solpId, Guid? token);
-        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, EstadoListarTratamientoSolp listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null);
+        ListaPaginada<SolpDto> ListarSolpComprador(int usuario_Id, Paginacion paginacion, string nroSolp, string nombrePedido, DateTime? desde, DateTime? hasta, bool sap, bool mantenimiento, bool web, bool repoAutomatica, EstadoListarTratamientoSolp listarPendiente, bool contratoMarco, List<int> usuarios = null, List<int> estados = null, List<int> centros = null, List<int> grupoDeCompras = null, List<int> claseDocumento = null, List<string> tipoImputacion = null, List<int> valorTipoImputacion = null, TipoPliego tipoPliego = TipoPliego.All);
         SolpCompraDto ObtenerSolpCompras(int id);
         RespuestaGuardarSOLP GrabarPeticionDeOferta(GuardarPeticionDeOfertaDto peticionDeOferta, HttpFileCollectionBase adjuntos, bool enviarMail, List<RegistroInfoDto> registroInfo);
         ObtenerLegajoResponse ObtenerLegajo(int peticionDeOfertaId, int? idPeticionDeOfertaUsuario, bool esProveedor, string mailUsuario, bool esSolicitante);
@@ -82,6 +91,12 @@ namespace SustitucionMOAUtils.Interfaces
         bool ValidarSolpTratada(string nroSolp);
         List<LiberadorSapDto> ListarLiberadorSap();
         List<TablaGeneralDto> ObtenerTiposImputaciones();
+
+        bool TieneCondicionEspecial(Solp solp);
+        bool TieneCondicionEspecial(SolpDto solp);
+
+        string ObtenerRutaArchivos(int id, string path);
+
         void ObtenerDatosReporteSolp();
 
         List<PeticionDeOfertaDto> ListarPeticionesDeOferta(int solpId);
@@ -116,7 +131,8 @@ namespace SustitucionMOAUtils.Interfaces
                                                                         List<string> tipoImputacion = null,
                                                                         List<int> valorTipoImputacion = null,
                                                                         int? numeroPo = null,
-                                                                        string nombrePliego = null);
+                                                                        string nombrePliego = null,
+                                                                        TipoPliego tipoPliego = TipoPliego.All);
 
         IEnumerable<PosicionCrearPoMultipleDto> ListarPosicionesPOMultipleSolpId(int idSolp);
         IEnumerable<SubPosicionCrearPoMultipleDto> ListarSubPosicionesPOMultipleSolpId(int idPosicion);

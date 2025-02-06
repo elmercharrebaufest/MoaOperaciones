@@ -122,6 +122,17 @@ namespace SustitucionMOA.Controllers
                     .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
                     .Select(x => x.Codigo),
                 // ----- FIN crear PO Múltiple -----
+
+                showTipoPliegoMultipleConditionList = service.ObtenerTablaGeneral(TablasGenerales.TipoPosicionSolp)
+                    // a la fecha, igual a showNombrePliegoConditionList
+                    .Where(x => x.Codigo.StartsWith("servicio", StringComparison.InvariantCultureIgnoreCase))
+                    .Select(x => x.Codigo),
+
+                TipoPliego = new List<object>
+                {
+                    new {Id = (int)TipoPliego.PliegoUnico, Descripcion = "Pliego única SOLP"},
+                    new {Id = (int)TipoPliego.PliegoMultiple, Descripcion = "Pliego múltiple SOLP"},
+                },
             });
         }
 
@@ -166,18 +177,27 @@ namespace SustitucionMOA.Controllers
                                                 bool contratoMarco = false,
                                                 string claseDocumento = null,
                                                 string tipoImputacion = null,
-                                                string valorTipoImputacion = null)
+                                                string valorTipoImputacion = null,
+                                                string tipoPliego = null)
         {
 
             var ordenar = orden == "ASC" ? DirOrden.Asc : DirOrden.Desc;
             var paginacion = new Paginacion((!string.IsNullOrEmpty(columna) ? columna : "Id"), ordenar, (pagina == null) ? 0 : pagina.Value, (itemsPorPagina == 0 || !itemsPorPagina.HasValue) ? 10 : itemsPorPagina.Value);
             var usuario_Id = ObtenerUsuarioActual().Id;
 
+            TipoPliego tipoPliegoEnum = TipoPliego.All;
+            if (!string.IsNullOrWhiteSpace(tipoPliego))
+            {
+                IEnumerable<int> tipoPliegoList = tipoPliego.Split(',').Select(x => int.Parse(x));
+                tipoPliegoEnum = (TipoPliego)tipoPliegoList.Aggregate((x, y) => x | y);
+            }
+
             return JsonCustom(new
             {
                 data = service.ListarSolpComprador(usuario_Id, paginacion, nroSolp, nombrePedido, fechaDesde, fechaHasta, sap, mantenimiento, web, repoAutomatica, listarPendiente, contratoMarco, !string.IsNullOrEmpty(usuarios) ? usuarios.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                 !string.IsNullOrEmpty(estados) ? estados.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(centros) ? centros.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(grupoDeCompras) ? grupoDeCompras.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
-                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>())
+                !string.IsNullOrEmpty(claseDocumento) ? claseDocumento.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(), !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(), !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
+                tipoPliegoEnum)
             });
         }
         [HttpGet]
@@ -267,14 +287,14 @@ namespace SustitucionMOA.Controllers
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
-            string rutaZip = service.GenerarZipPliego(solpId, path);
+            string rutaZip = service.GenerarZipPliego(solpId, path, out string mimeType);
             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
             string fileName = Path.GetFileName(rutaZip);
 
             //Para evitar sobrecargar el server con zips, una vez cargado lo borro
             Directory.Delete(path, true);
 
-            return JsonCustom(File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName));
+            return JsonCustom(File(fileBytes, mimeType, fileName));
         }
 
         [AllowAnonymous]
@@ -301,14 +321,13 @@ namespace SustitucionMOA.Controllers
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
-            string rutaZip = service.GenerarZipPliego(solpId, path);
+            string rutaZip = service.GenerarZipPliego(solpId, path, out string mimeType);
             byte[] fileBytes = System.IO.File.ReadAllBytes(rutaZip);
             string fileName = Path.GetFileName(rutaZip);
             string fileExt = Path.GetExtension(fileName);
 
             //Para evitar sobrecargar el server con zips, una vez cargado lo borro
             Directory.Delete(path, true);
-            string mimeType = fileExt.ToLower() == ".pdf" ? System.Net.Mime.MediaTypeNames.Application.Pdf : System.Net.Mime.MediaTypeNames.Application.Zip;
 
             return File(fileBytes, mimeType, fileName);
         }
@@ -767,6 +786,12 @@ namespace SustitucionMOA.Controllers
             return JsonCustom(new { data = usuarioService.ListarUsuarioCreadorSolp() });
         }
 
+        [HttpGet]
+        public ActionResult ListarFiscalesSolp()
+        {
+            return JsonCustom(new { data = usuarioService.ListarFiscalesSolp() });
+        }
+
         [HttpPost]
         public ActionResult ListarVisitasDeObra(List<VisitaObraDto> visitas)
         {
@@ -866,8 +891,17 @@ namespace SustitucionMOA.Controllers
                                                        string tipoImputacion = null,
                                                        string valorTipoImputacion = null,
                                                        int? numeroPo = null,
-                                                       string nombrePliego = null)
+                                                       string nombrePliego = null,
+                                                       string tipoPliego = null)
         {
+
+            TipoPliego tipoPliegoEnum = TipoPliego.All;
+            if (!string.IsNullOrWhiteSpace(tipoPliego))
+            {
+                IEnumerable<int> tipoPliegoList = tipoPliego.Split(',').Select(x => int.Parse(x));
+                tipoPliegoEnum = (TipoPliego)tipoPliegoList.Aggregate((x, y) => x | y);
+            }
+
             return JsonCustom(new
             {
                 data = service.ListarPosicionesPOMultipleServicio(fechaDesde,
@@ -884,7 +918,8 @@ namespace SustitucionMOA.Controllers
                                                           !string.IsNullOrEmpty(tipoImputacion) ? tipoImputacion.Split(',').ToList() : new List<string>(),
                                                           !string.IsNullOrEmpty(valorTipoImputacion) ? valorTipoImputacion.Split(',').Select(x => int.Parse(x)).ToList() : new List<int>(),
                                                           numeroPo,
-                                                          nombrePliego)
+                                                          nombrePliego,
+                                                          tipoPliegoEnum)
             });
         }
 

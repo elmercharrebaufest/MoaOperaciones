@@ -58,6 +58,7 @@ import { CustomNumberFormatterPipe } from './pipes/customNumberFormatter.pipe';
 import { DefaultNumberParser } from './pipes/defaultNumber';
 import { HoverLeftBorderDirective } from './directive/hover-left-border.directive';
 import { MouseLeaveDirective } from './directive/on-mouse-leave.directive';
+import { JoinPipe } from './pipes/join.pipe';
 
 const declaredAndExported = [
     FiltroFechaComponent,
@@ -76,6 +77,7 @@ const declaredAndExported = [
     BaseComponent,
     ListBaseComponent,
     ArchivoPipe,
+    JoinPipe,
     AutocompleteLocalidadComponent,
     SeleccionarProveedorComponent,
     InformeComercialComponent,

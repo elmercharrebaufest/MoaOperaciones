@@ -9,6 +9,7 @@
     --availableSpaceAfterHeader: calc(100vh - 178px);
     --availableSpaceAfterHeaderAndTitle: calc(var(--availableSpaceAfterHeader) - 150px);
     --brand-color-green: #009688;
+    --brand-color-blue: #1C7CD5;
 }
 
 
@@ -5012,4 +5013,52 @@ input[type=number]::-webkit-inner-spin-button {
 
 html {
     zoom: 90%;
+}
+
+.mb-0 {
+    margin-bottom: 0 !important;
+}
+
+.mt-0 {
+    margin-top: 0 !important;
+}
+
+.mb-1 {
+    margin-bottom: 0.25rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
+}
+
+.mb-5 {
+    margin-bottom: 3rem;
+}
+
+.mt-5 {
+    margin-top: 3rem;
 }

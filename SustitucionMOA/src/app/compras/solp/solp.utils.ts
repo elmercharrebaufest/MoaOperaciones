@@ -1,15 +1,18 @@
 import { WeekDay } from '@angular/common';
+import _ from 'lodash';
+import { Paso } from '../../common/models/paso';
 import { EnumPasoSolp } from '../enum-paso-solp';
 
 export enum ComponentMode {
     Edition = 1,
     Loading = 2,
     View = 3,
-    Creation = 4
+    Creation = 4,
+    Copy = 5,
 }
 
-export function setupSolpPasos() {
-    return [{
+export function setupSolpPasos(): { solp: Paso[], pliegoMultiple: Paso[] } {
+    const solpregular = [{
         Codigo: EnumPasoSolp.PliegoGeneracion1,
         Nombre: 'Generación',
         Activo: false,
@@ -71,6 +74,14 @@ export function setupSolpPasos() {
         //     Deshabilitado: false
         // }
     ];
+
+    // para pliego múltiple, el paso 5 tiene otro nombre. El resto es igual.
+    const pliegoMultiple = _.cloneDeep(solpregular);
+    pliegoMultiple[4].Nombre = 'Vincular Solp';
+    pliegoMultiple[4].Codigo = EnumPasoSolp.PliegoMultipleVincularSolp;
+    pliegoMultiple.forEach((step: { Preview: boolean; }) => step.Preview = false);
+
+    return { solp: solpregular, pliegoMultiple: pliegoMultiple };
 }
 
 export function setupJornadaLaboralDias() {
@@ -107,7 +118,7 @@ export function setupJornadaLaboralDias() {
 }
 
 export function setupDaysAndMonths() {
-    return  {
+    return {
         firstDayOfWeek: 0,
         dayNames: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
         dayNamesShort: ["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"],

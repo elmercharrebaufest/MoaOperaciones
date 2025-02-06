@@ -137,6 +137,9 @@
     <Compile Include="Dto\OrdenCompraItemDto.cs" />
     <Compile Include="Dto\OrdenCompraPosicionDto.cs" />
     <Compile Include="Dto\PartidoDto.cs" />
+    <Compile Include="Dto\PliegoMultiple\SolpPMDto.cs" />
+    <Compile Include="Dto\PliegoMultiple\PliegoPMDto.cs" />
+    <Compile Include="Dto\PliegoMultiple\TraerPliegoPMDto.cs" />
     <Compile Include="Dto\ReporteProcesoUcropit.cs" />
     <Compile Include="Dto\sap\NumeroSubPosicion.cs" />
     <Compile Include="Dto\sap\NumeroPosicion.cs" />
@@ -166,6 +169,7 @@
     <Compile Include="Entities\RegionSap.cs" />
     <Compile Include="Entities\ResultadoAnalisisOcr.cs" />
     <Compile Include="Entities\ResultadoOCR.cs" />
+    <Compile Include="Entities\SolpDatosPreviosPliegoMultiple.cs" />
     <Compile Include="Entities\UsuarioReasignacion.cs" />
     <Compile Include="Entities\VerificarActividadUsuario.cs" />
     <Compile Include="Enums\ComunicacionTipoEnum.cs" />
@@ -367,6 +371,7 @@
     <Compile Include="Enums\MoaWS\OrdenCargaWS\CrearOrdenResEnum.cs" />
     <Compile Include="Enums\MoaWS\OrdenCargaWS\ResponseConverter.cs" />
     <Compile Include="Enums\PermisoEnum.cs" />
+    <Compile Include="Enums\TipoPliego.cs" />
     <Compile Include="Enums\TipoRol.cs" />
     <Compile Include="ModelAttributes\ExcelColumnHiddenAttribute.cs" />
     <Compile Include="ModelAttributes\ExcelColumnWidthAttribute.cs" />

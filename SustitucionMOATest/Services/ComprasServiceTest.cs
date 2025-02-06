@@ -1499,7 +1499,7 @@ namespace SustitucionMOATest.Services
               .Returns(new TablaGeneral { Codigo = "23234" });
 
             target.GuardarSolp(solpDtoLocal, adjuntosMock.Object);
-            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(4));
+            repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }
 
         [Test]

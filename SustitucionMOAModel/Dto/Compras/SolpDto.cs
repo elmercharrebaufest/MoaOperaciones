@@ -126,6 +126,7 @@ namespace SustitucionMOAModel.Dto
         public EnviarCircularEnum? EnvioCircularA { get; set; }
         public bool PliegoVinculado { get; set; }
 
+        public bool EsPliegoMultiple { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)

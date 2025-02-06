@@ -12,6 +12,9 @@ export class StepperActionsComponent implements OnInit {
     disabledSave: boolean;
 
     @Input()
+    saveButtonAvailable: boolean;
+
+    @Input()
     esAuditor: boolean;
 
     @Input()
@@ -22,12 +25,6 @@ export class StepperActionsComponent implements OnInit {
 
     @Input()
     tipoSolp: string;
-
-    @Input()
-    nroSolp: string;
-
-    @Input()
-    tipoSolpSap: string;
 
     @Output() cancelarSolpEmitter = new EventEmitter();
 
@@ -93,9 +90,9 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
-        }    
+        }
     }
 
     onPasoSiguiente() {
@@ -105,7 +102,7 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: true
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
         }
     }
@@ -116,13 +113,13 @@ export class StepperActionsComponent implements OnInit {
             enviarSap: false,
             guardarPorPaso: false
         };
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
-        }    
+        }
     }
 
     onShowFinalizarDialog() {
-        if(!this.esAuditor){
+        if (!this.esAuditor) {
             this.showFinalizarDialogEmitter.next();
         }
     }
