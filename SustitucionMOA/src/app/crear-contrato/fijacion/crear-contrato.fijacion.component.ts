@@ -353,6 +353,11 @@ export class CrearContratoFijacionComponent extends CrearContratoBaseComponent {
         }
     }
 
+    changePizarra() {
+        this.contrato.Precio = 0;
+        this.contrato.MonedaId = null;
+    }
+
     disablePrecio(): boolean {
         return this.contrato.Pizarra == true;
     }
