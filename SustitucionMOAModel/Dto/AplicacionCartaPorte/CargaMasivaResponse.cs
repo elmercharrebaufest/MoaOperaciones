@@ -22,6 +22,7 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
         public string CartaDePorte { get; set; }
         public string Kilos { get; set; }
         public EstadoAplicacionCartaPorte Estado { get; set; }
+        public int Proveedor_Id { get; set; }
     }
 
     public class ErrorValidacionCargaMasivaCCPP : AplicacionGuardadaCargaMasivaCCPP
