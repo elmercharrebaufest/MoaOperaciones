@@ -284,7 +284,7 @@
                 </div>
                 <div class="form-group col-md-2" *ngIf="isVisiblePizarra()">
                     <label class=""> Pizarra</label><label class="switch">
-                        <input type="checkbox" [(ngModel)]="contrato.Pizarra" (change)="changePizarra($event)">
+                        <input type="checkbox" [(ngModel)]="contrato.Pizarra" (change)="changePizarra($event)" [disabled]="isVisiblePizarra()">
                         <span class="slider round"></span>
 
                     </label>
