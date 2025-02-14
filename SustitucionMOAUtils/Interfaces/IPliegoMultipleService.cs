@@ -11,6 +11,7 @@ namespace SustitucionMOAUtils.Interfaces
         List<PliegoPMDto> GetPliegosMultiples(string nombrePliego);
 
         List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                        string nombrePliego,
                                                         DateTime? fechaInicio,
                                                         DateTime? fechaFin,
                                                         IEnumerable<int> creador,

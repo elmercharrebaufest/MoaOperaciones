@@ -29,6 +29,7 @@ export class PliegoMultipleService extends BaseService {
     }
 
     public getSolpDisponiblesPliegosMultiple(numeroSolp: string,
+        nombrePliego:string,
         fechaInicio: string,
         fechaFin: string,
         creador: string,
@@ -44,6 +45,10 @@ export class PliegoMultipleService extends BaseService {
         let params: HttpParams = new HttpParams();
         if (numeroSolp) {
             params = params.set('numeroSolp', numeroSolp);
+        }
+
+        if (nombrePliego) {
+            params = params.set('nombrePliego', nombrePliego);
         }
 
         if (fechaInicio) {
