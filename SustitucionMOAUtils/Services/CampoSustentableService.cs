@@ -8,7 +8,6 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
-using SustitucionMOAModel.Models.WebApiMap.CNRT;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Export.CampoSustentable;
 using SustitucionMOAUtils.Extensions;
@@ -549,26 +548,42 @@ namespace SustitucionMOAUtils.Services
             }
             var campoProveedor = repositorio.Obtener<CampoProveedor>(cp => cp.CampoCosecha_Id == archivoSinDescargar.CampoCosechaId);
             var cuit = campoProveedor.CUIT;
-            //Hay un punto ('.') extra porque el archivo que devuelve Ucropit lo toma del kmz
-            //Al parecer cuando se sube usando la extension, esta ya tiene el '.' 
-            var nombreArchivo = $"{ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha)}..json";
-            var rutaCarpeta = string.Concat(ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"], "/", cuit);
-            var rutaGuardado = string.Concat(rutaCarpeta, "/", nombreArchivo);
+
+            var nombreArchivoBase = ObtenerNombreArchivoDrive(cuit, archivoSinDescargar.CampoCosecha);
+            var rutaCarpeta = $"{ConfigurationManager.AppSettings["RutaArchivosCampoSustentable"]}/{cuit}";
+
+            async Task<ReporteProcesoUcropit> IntentarDescarga(string nombreArchivo)
+            {
+                return await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
+                           new GoogleDriveFileDownloadRequest()
+                               .WithFilePath($"{rutaCarpeta}/{nombreArchivo}")
+                               .WithFileName(nombreArchivo)
+                       );
+            }
 
             ReporteProcesoUcropit resultadoProcesadoUcropit = null;
+            string rutaGuardado = $"{rutaCarpeta}/{nombreArchivoBase}.json";
+
             try
             {
-                resultadoProcesadoUcropit = await campoSustentableGoogleDrive.DownloadFileAs<ReporteProcesoUcropit>(
-                               new GoogleDriveFileDownloadRequest()
-                                   .WithFilePath(rutaGuardado)
-                                   .WithFileName(nombreArchivo)
-                               );
+                resultadoProcesadoUcropit = await IntentarDescarga($"{nombreArchivoBase}.json");
             }
             catch (FileNotFoundException)
             {
-                return;
+                try
+                {
+                    rutaGuardado = $"{rutaCarpeta}/{nombreArchivoBase}..json";
+                    resultadoProcesadoUcropit = await IntentarDescarga($"{nombreArchivoBase}..json");
+                }
+                catch (FileNotFoundException)
+                {
+                    return;
+                }
             }
-            var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado, };
+
+            var nuevoArchivo = new Archivo { FileKey = FileKeys.CampoSustentableAnalisisUcrop, Ruta = rutaGuardado };
+
+
 
             repositorio.Agregar(nuevoArchivo);
 
@@ -590,7 +605,7 @@ namespace SustitucionMOAUtils.Services
             campoCosecha = repositorio.Obtener<CampoCosecha>(
                 new List<Expression<Func<CampoCosecha, object>>> { c => c.CamposProveedor },
                 c => c.Campo.Renspa == renspa && c.Cosecha_Id == cosechaId);
-            
+
             if (campoCosecha == null || campoCosecha.CamposProveedor == null) { return result; }
 
             result.RenspaExiste = campoCosecha.CamposProveedor.Any(cp => !cp.Borrado);
@@ -678,12 +693,12 @@ namespace SustitucionMOAUtils.Services
                 else
                 {
                     Log.Info($"Se guarda para la cosecha id {campoProveedor.CampoCosecha.Cosecha_Id} el campo sugerido con renspa {campoProveedor.CampoCosecha.Campo.Renspa}");
-                    
+
                     var archivoNuevoKmz = !string.IsNullOrEmpty(campoSugeridoDto.NombreNuevoKmz) ? archivosKmz.FirstOrDefault(x => x.FileName == campoSugeridoDto.NombreNuevoKmz) : null;
                     ValidarCampo(campoProveedor, archivoNuevoKmz);
 
                     var declaracion = repositorio.ObtenerDeclaracionDeProveedor(campoProveedor.CUIT, campoProveedor.CampoCosecha.Cosecha_Id);
-                    
+
                     campoProveedor.RazonSocial = declaracion.RazonSocial;
                     campoProveedor.CampoCosecha.Campo.IdScato = ObtenerIdScato(campoProveedor);
 
@@ -906,7 +921,7 @@ namespace SustitucionMOAUtils.Services
             var nombreArchivo = ObtenerNombreArchivoDrive(campoProveedor);
 
             var uploadFileKMZ = new GoogleDriveFileUploadRequest()
-                .WithFileUploadName($"{nombreArchivo}.{extension}")
+                .WithFileUploadName($"{nombreArchivo}{extension}")
                 .WithFilePath(rutaArchivo);
 
             campoSustentableGoogleDrive.UploadFile(uploadFileKMZ);
