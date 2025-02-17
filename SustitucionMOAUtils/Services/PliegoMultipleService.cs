@@ -92,10 +92,7 @@ namespace SustitucionMOAUtils.Services
 
             if (!string.IsNullOrWhiteSpace(nombrePliego))
             {
-                var pliegoIds = repositorio.ListarConsultable<Pliego>(p => p.NombreObra.ToLower().Contains(nombrePliego.ToLower()))
-                                          .Select(p => p.Id)
-                                          .ToList();
-                filtros.Add(solp => pliegoIds.Contains(solp.Pliego_Id ?? 0));
+                filtros.Add(solp => solp.Pliego.NombreObra.ToLower().Contains(nombrePliego));
             }
 
             if (fechaInicio.HasValue)
