@@ -44,6 +44,7 @@ namespace SustitucionMOAUtils.Services
 
                 decimal generalAmount = 0;
 
+                groupedReportsForPosition = groupedReportsForPosition.OrderBy(g => g.First().NroPosicion);
                 foreach (var group in groupedReportsForPosition)
                 {
                     var data = BuildHtmlTable(group.ToList());
