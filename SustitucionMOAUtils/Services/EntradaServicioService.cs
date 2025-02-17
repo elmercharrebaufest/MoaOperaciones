@@ -1124,7 +1124,7 @@ namespace SustitucionMOAUtils.Services
             }
             #endregion
 
-            if (user != null && user.Id != 0 && user.Externo == true)
+            if (user != null && user.Id != 0 && user.Externo == true && !string.IsNullOrEmpty(user.Suplente))
             {
                 var usuarioSuplente = repositorio.Obtener<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == user.Suplente);
                 temp.Aprobador_CDS = user.Suplente;
