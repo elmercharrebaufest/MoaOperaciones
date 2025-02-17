@@ -47,10 +47,10 @@ namespace SustitucionMOATest.Controllers
         {
             // Arrange
             var solps = new List<SolpPMDto>();
-            mockPliegoMultipleService.Setup(service => service.GetSolpDisponiblesPliegosMultiple(It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<int?>())).Returns(solps);
+            mockPliegoMultipleService.Setup(service => service.GetSolpDisponiblesPliegosMultiple(It.IsAny<string>(),It.IsAny<string>(), It.IsAny<DateTime?>(), It.IsAny<DateTime?>(), It.IsAny<IEnumerable<int>>(), It.IsAny<IEnumerable<string>>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<int?>())).Returns(solps);
 
             // Act
-            var result = controller.GetSolpDisponiblesPliegosMultiple("test", null, null, "1,2", "fiscal", false, false, false, false, false, false, null);
+            var result = controller.GetSolpDisponiblesPliegosMultiple("test","testNombrePliego", null, null, "1,2", "fiscal", false, false, false, false, false, false, null);
 
             // Assert
             Assert.IsNotNull(result);
