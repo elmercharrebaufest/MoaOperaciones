@@ -677,64 +677,46 @@ namespace SustitucionMOAUtils.Services
 
             }
 
-
             return result;
         }
 
         public EntradaServicioCreateRespuestaDto CrearEntradaServicioTemporal(EntradaServicioCreateParamsDto posiciones,
-            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedor = null)
+            string userMail, List<ReporteDto> reporte, List<string> idAdjuntos, string solpedNumber = null, string proveedorCodigo = null)
         {
-
-
-            EntradaServicioCreateRespuestaDto result = new EntradaServicioCreateRespuestaDto();
+            var respuestaCrearES = new EntradaServicioCreateRespuestaDto();
             try
             {
-                Aprobaciones ap = GuardarDatosES(posiciones, userMail, 0, false, reporte, solpedNumber, proveedor);
+                var nuevaAprobacion = GuardarDatosES(posiciones, userMail, 0, false, reporte, solpedNumber, proveedorCodigo);
 
-                ActualizarAdjuntosConES(idAdjuntos, ap.NRO_ES_LOCAL);
+                ActualizarAdjuntosConES(idAdjuntos, nuevaAprobacion.NRO_ES_LOCAL);
 
-                result.Type = "S";
+                respuestaCrearES.Type = "S";
+                respuestaCrearES.Message = $"Se generó la entrada de servicio {nuevaAprobacion.NRO_ES_LOCAL} en estado {nuevaAprobacion.Estado_certificacion}, a verificar por Contratante o Solicitante.";
 
-                result.Message = $"Se generó la entrada de servicio {ap.NRO_ES_LOCAL} en estado {ap.Estado_certificacion}, a verificar por Contratante o Solicitante.";
-
-                //MMSN - 605
-                if (ap != null)
+                if (nuevaAprobacion != null)
                 {
-                    //Todos los registros con mismo NRO_ES_LOCAL
-                    List<Aprobaciones> completeAp = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == ap.NRO_ES_LOCAL);
-                    //Buscar Proveedor
-                    OrderParamsDto orderParams = new OrderParamsDto();
-                    orderParams.OrdenCompraId = ap.NRO_OC;
-                    Proveedor prov = new Proveedor();
-                    prov = orderService.BuscarProveedor(orderParams);
+                    var aprobacionesES = repositorio.Listar<Aprobaciones>(x => x.NRO_ES_LOCAL == nuevaAprobacion.NRO_ES_LOCAL);
+                    
+                    var orderParams = new OrderParamsDto { OrdenCompraId = nuevaAprobacion.NRO_OC };
+                    var proveedor = orderService.BuscarProveedor(orderParams);
 
-                    //MMSN-1030: Fix
-                    string aprobador = completeAp[0].Aprobador_CDS;
-                    var user = repositorio.Listar<SustitucionMOAModel.Entities.Usuario>(x => x.Mail == aprobador).ToList().FirstOrDefault();
-                    int userId = 0;
-                    if (user != null)
-                    {
-                        userId = user.Id;
-                    }
+                    var aprobadorMail = aprobacionesES[0].Aprobador_CDS;
+                    var user = repositorio.Listar<Usuario>(x => x.Mail == aprobadorMail).ToList().FirstOrDefault();
+                    var userId = (user != null ? user.Id : 0);
 
-                    _ = NotifyCreation(completeAp, prov, userId, aprobador);
+                    _ = NotifyCreation(aprobacionesES, proveedor, userId, aprobadorMail);
                     //emailCertificationService.EnviarMailAprobacion(completeAp, prov);
 
-                    //MMSN-1010
-                    if (completeAp.Count > 0)
+                    if (aprobacionesES.Count > 0)
                     {
-                        foreach (Aprobaciones aprobacion in completeAp)
-                        {
-                            aprobacion.Notificaciones_enviadas = true;
-                        }
+                        aprobacionesES.ForEach(x => x.Notificaciones_enviadas = true);
                         repositorio.GuardarCambios();
                     }
-
                 }
             }
             catch (AggregateException ae)
             {
-                result.Type = "E";
+                respuestaCrearES.Type = "E";
                 StringBuilder messageBuilder = new StringBuilder();
 
                 messageBuilder
@@ -749,16 +731,15 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(e);
                 }
 
-                result.Message = messageBuilder.ToString();
+                respuestaCrearES.Message = messageBuilder.ToString();
             }
             catch (Exception e)
             {
-                result.Type = "E";
-                result.Message = e.Message;
+                Logger.Log.Error(e);
+                respuestaCrearES.Type = "E";
+                respuestaCrearES.Message = e.Message;
             }
-
-
-            return result;
+            return respuestaCrearES;
         }
 
         private void ActualizarAdjuntosConES(List<string> idAdjuntos, string nroESTemporal)
