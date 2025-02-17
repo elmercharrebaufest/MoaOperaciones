@@ -171,7 +171,7 @@ namespace SustitucionMOATest.Services
             Assert.That(
                 () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
                 Throws.TypeOf<InfoCustomException>());
-        }        
+        }
         [Test]
         public void GuardarAplicacion_MaterialesDiferentesEnCartaPorteContrato_ThrowErrorInfoValidacion()
         {
@@ -207,8 +207,8 @@ namespace SustitucionMOATest.Services
                 () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
                 Throws.TypeOf<InfoCustomException>());
         }
-        
-        
+
+
         private void SetContratoListado(string codigoProveedor, string material)
         {
             contratoListado = new ZMPES7070 { CONTRATO = "1", PROVEEDOR = codigoProveedor, MATERIAL = material };
@@ -217,7 +217,7 @@ namespace SustitucionMOATest.Services
         {
             cartaPorteListada = new ZMPES7070 { CCPP = "123142", CANTIDAD = kgMaximo, MATERIAL = material };
         }
-      
+
         private void SetupGuardarAplicacion(string mailUsuario, string codigoProveedor, ZMPES7070[] aplicacionesRespuestaSAP, List<AplicacionCartaPorte> aplicacionesCargadas = null)
         {
             repositorio.Setup(r => r.Obtener<Usuario>(u => u.Mail == mailUsuario)).Returns(
@@ -232,6 +232,12 @@ namespace SustitucionMOATest.Services
                             }
                         }
                     },
+                    CUITRegistro = "1",
+                    TipoUsuario = new TipoUsuario { Id = 4 },
+                    Proveedores = new List<Proveedor>
+                    {
+                        new Proveedor{TipoProveedor=new TipoUsuario{Id=4 },CUIT="1" }
+                    }
                 }
             );
             consumer.Setup(c => c.ObtenerAplicacionesPendientes(It.IsAny<AppCartasPortePendienteRequest>())).Returns(aplicacionesRespuestaSAP);

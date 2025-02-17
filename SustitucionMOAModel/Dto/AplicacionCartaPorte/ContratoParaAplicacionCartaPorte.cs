@@ -11,6 +11,7 @@ namespace SustitucionMOAModel.Dto.AplicacionCartaPorte
         [Required]
         public string CodigoProveedor { get; set; }
         public bool TieneAnticipo { get; set; }
+        public string Centro { get; set; }
 
         public ContratoParaAplicacionCartaPorte() { }
 

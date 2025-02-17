@@ -20,6 +20,7 @@ namespace SustitucionMOAWS.WSRequests.AplicacionCartaPorte
         public decimal Cantidad { get; set; }
 
         public string Material { get; set; }
+        public string Centro { get; internal set; }
     }
 
     public class AplicacionPendienteContrato
@@ -31,5 +32,6 @@ namespace SustitucionMOAWS.WSRequests.AplicacionCartaPorte
         public string CodigoProveedor { get; set; }
         
         public bool TieneAnticipo { get; set; }
+        public string Centro { get; internal set; }
     }
 }

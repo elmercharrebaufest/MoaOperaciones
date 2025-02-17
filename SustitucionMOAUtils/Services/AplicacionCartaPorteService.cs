@@ -122,7 +122,7 @@ namespace SustitucionMOAUtils.Services
 
             var estadoAplicacion = ObtenerEstadoNuevaAplicacion(aplicacionACrear.ContratoSeleccionado, contratosValidos);
 
-            var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario, proveedor, estadoAplicacion);
+            var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario, proveedor, estadoAplicacion, usuario.ObtenerCorredor()?.CodigoProveedor ?? "", aplicacionACrear.ContratoSeleccionado.Material, aplicacionACrear.ContratoSeleccionado.Centro);
             repositorio.Agregar(aplicacion);
 
             repositorio.GuardarCambios();
@@ -206,7 +206,10 @@ namespace SustitucionMOAUtils.Services
                             CartaDePorte = regItem.CartaDePorte,
                             Estado = estadoAplicacion,
                             Kilos = regItem.Kilos,
-                            Proveedor_Id = proveedorId
+                            Proveedor_Id = proveedorId,
+                            CodigoCentro = contrato.Centro,
+                            CodigoCorredor = esCodigoCorredor ? proveedorCodigo : "",
+                            CodigoMaterial = contrato.Material
                         });
                     }
                     else
@@ -313,7 +316,8 @@ namespace SustitucionMOAUtils.Services
                 CodigoProveedor = x.CodigoProveedor,
                 Material = x.Material,
                 NumeroContrato = x.NumeroContrato,
-                TieneAnticipo = x.TieneAnticipo
+                TieneAnticipo = x.TieneAnticipo,
+                Centro = x.Centro
             }).ToList();
         }
 
@@ -478,7 +482,11 @@ namespace SustitucionMOAUtils.Services
                         CartaPorte = aplNueva.CartaDePorte,
                         Kilogramos = int.Parse(aplNueva.Kilos),
                         Estado = aplNueva.Estado,
-                        FechaAlta = DateTime.Now
+                        FechaAlta = DateTime.Now,
+                        CodigoCorredor = aplNueva.CodigoCorredor,
+                        CodigoCentro = aplNueva.CodigoCentro,
+                        CodigoMaterial = aplNueva.CodigoMaterial
+
                     });
                 }
                 repositorio.GuardarCambios();
