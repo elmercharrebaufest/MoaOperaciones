@@ -23,6 +23,7 @@ export class VincularSolpPliegoMultipleComponent
     public pliegoId: number | null;
 
     public numeroSolp: string;
+    public nombrePliego: string;
 
     @ViewChild(FiltroFechaComponent)
     protected filtroFechaComponent: FiltroFechaComponent;
@@ -101,7 +102,7 @@ export class VincularSolpPliegoMultipleComponent
         try {
             this.blockUI.start("Cargando");
 
-            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
+            this.service.getSolpDisponiblesPliegosMultiple(this.numeroSolp,this.nombrePliego, this.filtroFechaComponent.fecha_inicio, this.filtroFechaComponent.fecha_fin, this.creador, this.fiscal, this.sap, this.mantenimiento, this.web, this.repoAutomatica, this.contratoMarco, this.pliegoId, this.incluirGuardadas)
                 .subscribe(
                     (result: any) => {
                         if (result.logout == true) {

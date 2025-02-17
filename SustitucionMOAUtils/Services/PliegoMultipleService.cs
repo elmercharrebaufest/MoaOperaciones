@@ -51,6 +51,7 @@ namespace SustitucionMOAUtils.Services
         }
 
         public List<SolpPMDto> GetSolpDisponiblesPliegosMultiple(string numeroSolp,
+                                                               string nombrePliego,
                                                                DateTime? fechaInicio,
                                                                DateTime? fechaFin,
                                                                IEnumerable<int> creador,
@@ -63,7 +64,6 @@ namespace SustitucionMOAUtils.Services
                                                                bool incluirGuardadas = false,
                                                                int? pliegoId = null)
         {
-            IEnumerable<string> codigosSapEstadosSolpValidos = new HashSet<string> { "02", "05" };
             IEnumerable<string> tiposSolpValidos = new HashSet<string> { "CON_PLIEGO", "SIN_PLIEGO" };
             IEnumerable<string> tiposPosicionSolpValidos = new HashSet<string> { "SERVICIO", "MATERIALES" };
 
@@ -72,7 +72,8 @@ namespace SustitucionMOAUtils.Services
 
             IQueryable<Solp> consultaSolp = repositorio
                 .ListarConsultable<Solp>(solpQuery =>
-                        codigosSapEstadosSolpValidos.Contains(solpQuery.EstadoSolpSap.CodigoSap)
+                        solpQuery.NroSolp != null
+                        && solpQuery.NroSolp != ""
                         && solpQuery.Posiciones.Any() && solpQuery.Posiciones.FirstOrDefault().TipoPosicion != null && solpQuery.Posiciones.FirstOrDefault().TipoPosicion.Codigo == "SERVICIO"
                         && tiposSolpValidos.Contains(solpQuery.TipoSolp.Codigo)
                         && solpQuery.Posiciones.Any(posicion => tiposPosicionSolpValidos.Contains(posicion.TipoPosicion.Codigo))
@@ -87,6 +88,11 @@ namespace SustitucionMOAUtils.Services
             if (!string.IsNullOrWhiteSpace(numeroSolp))
             {
                 filtros.Add(solp => solp.NroSolp.Contains(numeroSolp));
+            }
+
+            if (!string.IsNullOrWhiteSpace(nombrePliego))
+            {
+                filtros.Add(solp => solp.Pliego.NombreObra.ToLower().Contains(nombrePliego));
             }
 
             if (fechaInicio.HasValue)

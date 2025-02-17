@@ -8,6 +8,14 @@
     </div>
 
     <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
+        <p> &nbsp; <!-- dummy spacer --> </p>
+        <span class="ui-float-label">
+            <input id="buscarNombrePliego" type="text" pInputText style="width:100%" [(ngModel)]="nombrePliego" (keyup)="searchParametersChanged()">
+            <label for="buscarNombrePliego" class="fa fa-search">Buscar nombre pliego</label>
+        </span>
+    </div>
+
+    <div class="col-xs-12 col-sm-6 col-md-3 mb-5">
         <p>Ver:</p>
         <filtro-fecha key="periodo-certificaciones" (ClickEvent)="searchParametersChanged()"></filtro-fecha>
     </div>
