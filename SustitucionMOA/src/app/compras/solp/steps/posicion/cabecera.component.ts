@@ -1433,6 +1433,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 this.model.posicionActual.plazoDeEntrega = 0;
             }
 
+            this.model.posicionActual.selectSolicitanteCompras = posArchivo.Solicitante;
             this.model.posicionActual.cuentaTd = posArchivo.Cantidad;
             this.model.posicionActual.cuentaMayor = posArchivo.CuentaMayor;
             this.model.posicionActual.valorImputacion = posArchivo.Imputacion;
@@ -1443,7 +1444,7 @@ export class CabeceraComponent extends ListBaseComponent implements OnDestroy {
                 let newSubpos = new SubPosicionViewModel(subposArch.Numero);
 
                 let codigoServicioObj = {
-                    Codigo: subposArch.Numero,
+                    Codigo: subposArch.Codigo,
                     Descripcion: subposArch.Tarea,
                     UnidadMedidaBase: subposArch.Unidad
                 };

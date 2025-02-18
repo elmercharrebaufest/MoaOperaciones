@@ -48,5 +48,6 @@ namespace SustitucionMOAModel.Dto.Compras.PrecargaSolp
         public TablaSapDto Imputacion { get; set; }
 
         public List<SolpSubposicionPrecargadaDto> Subposiciones { get; set; }
+        public string Solicitante { get; set; }
     }
 }

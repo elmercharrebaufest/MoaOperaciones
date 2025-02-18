@@ -544,6 +544,7 @@
     <Content Include="src\app\compras\solp\steps\posicion\contrato-marco\contrato-marco.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.css" />
     <Content Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.html" />
+    <Content Include="src\app\compras\solp\steps\posicion\precarga-solp-archivo\precarga-solp-archivo.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.html" />
     <Content Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.html" />
@@ -1524,6 +1525,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\obtener-contrato-marco\obtener-contrato-marco.service.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\precarga-solp-archivo\precarga-solp-archivo.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-datos-posicion\tab-datos-posicion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-direccion-entrega\tab-direccion-entrega.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\posicion\tab-fechas\tab-fechas.component.ts" />
