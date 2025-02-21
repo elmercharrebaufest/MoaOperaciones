@@ -146,6 +146,7 @@ namespace SustitucionMOAUtils.Services
             pliegoEntity.ObservacionesCotizacionCondEsp = solp.ObservacionesCotizacionCondEsp;
             pliegoEntity.TieneCondicionesGenerales = solp.TieneCondicionesGenerales ?? true;
             pliegoEntity.RevisadoPor = solp.RevisadoPor;
+            pliegoEntity.MultipleFinalizado = solp.MultipleFinalizado;
 
             if (solp.TieneVisitaObraMasiva && solp.VisitasObraMasiva != null)
             {
@@ -1328,6 +1329,7 @@ namespace SustitucionMOAUtils.Services
                 TieneRevisionTecnicaFinalizada = solp.Posiciones.Any(p => p.Peticiones != null && p.Peticiones.Any(po => po.PeticionDeOferta.RevisionTecnica != null && po.PeticionDeOferta.RevisionTecnica.Finalizada)),
                 EnvioCircularA = solp.EnvioCircularA,
                 EsPliegoMultiple = solp.Pliego.Multiple,
+                MultipleFinalizado = solp.Pliego.MultipleFinalizado,
             };
 
             if (solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Mantenimiento || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.ReposicionAutomatica || solpDevuelta.TipoSolpSap == (int)TipoSolpSap.Sap)
@@ -8047,7 +8049,7 @@ namespace SustitucionMOAUtils.Services
                 var posicionMaterial
                     = repositorio
                         .Listar<Solp, SolpCrearPoMultipleDto>(solp => new SolpCrearPoMultipleDto
-                        {
+                        { 
                             Id = solp.Id,
                             NroSolp = solp.NroSolp,
                             Nombre = solp.Pliego.NombreObra,
@@ -8057,8 +8059,9 @@ namespace SustitucionMOAUtils.Services
                             GrupoDeCompras = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().GrupoCompras.Descripcion : null,
                             Centro = solp.Posiciones.FirstOrDefault() != null ? solp.Posiciones.FirstOrDefault().Centro.Descripcion : null,
                             Tipo = solp.TipoSolp.Descripcion,
+                            MultipleFinalizado = solp.Pliego.MultipleFinalizado,
                         },
-                    solp => solpIds.Contains(solp.Id)
+                    solp => solpIds.Contains(solp.Id) && (solp.Pliego.MultipleFinalizado == true || solp.Pliego.Multiple == false)
                 );
 
                 return posicionMaterial;

@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Paso } from '../../../common/models/paso';
+import { Solp } from '../solp';
 
 @Component({
     selector: 'stepper-actions',
@@ -13,6 +14,12 @@ export class StepperActionsComponent implements OnInit {
 
     @Input()
     saveButtonAvailable: boolean;
+
+    @Input()
+    saveButtonPliegoMultipleAvailable: boolean;
+
+    @Input()
+    solpActual: Solp;
 
     @Input()
     esAuditor: boolean;
@@ -35,6 +42,9 @@ export class StepperActionsComponent implements OnInit {
     @Output() showFinalizarDialogEmitter = new EventEmitter();
 
     @Output() previewEmitter = new EventEmitter();
+
+    @Output() finalizarEmitter = new EventEmitter<{ selectUsuarioCompras: any, solpActual: Solp }>();
+
 
     constructor() { }
 
@@ -116,6 +126,15 @@ export class StepperActionsComponent implements OnInit {
         if (!this.esAuditor) {
             this.guardarCambiosEmitter.next(params);
         }
+    }
+
+    onGuardarPliegoMultiple(){
+        this.solpActual.revisadoPor="-";
+        const updatedInfo = {
+            selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
+            solpActual: this.solpActual
+        };
+        this.finalizarEmitter.next(updatedInfo);
     }
 
     onShowFinalizarDialog() {

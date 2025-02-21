@@ -141,6 +141,12 @@ export class SolpComponent extends BaseComponent implements OnInit {
         return this.solpActual.nroSolp == null || this.solpActual.nroSolp == 0 || this.solpActual.tipoSolpSap == 2
     }
 
+    get steppeerSaveButtonPliegoMultipleAvailable(): boolean {
+        if (this.esOperacionPliegoMultiple && !this.solpActual.MultipleFinalizado) { return true; }
+        return false;
+
+    }
+
 
     titulo: string = "";
     tituloNroSolp: string = "";
@@ -196,6 +202,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             //circuito de pliego múltiple
                             this.solpActual.EsPliegoMultiple = true;
                             this.pasos = this.pasosMaster.pliegoMultiple;
+                            this.solpActual.MultipleFinalizado = true;
                         }
                         this.solpActual.tipoSolp = params["tipoSolp"];
                     }

@@ -65,6 +65,8 @@
 
         <stepper-actions [(disabledSave)]="disabledSave"
                          [saveButtonAvailable]="steppeerSaveButtonAvailable"
+                         [saveButtonPliegoMultipleAvailable]="steppeerSaveButtonPliegoMultipleAvailable"
+                         [(solpActual)]="solpActual"
                          [(pasos)]="pasos"
                          [(pasoActual)]="pasoActual"
                          [(tipoSolp)]="solpActual.tipoSolp"
@@ -73,7 +75,8 @@
                          (guardarCambiosEmitter)="guardarCambios($event)"
                          (showFinalizarDialogEmitter)="showFinalizarDialog()"
                          (previewEmitter)="preview()"
-                         [(esAuditor)]="esAuditor">
+                         [(esAuditor)]="esAuditor"
+                         (finalizarEmitter)="finalizar($event)">
         </stepper-actions>
 
         <!-- END form-->

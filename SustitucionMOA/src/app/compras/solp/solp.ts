@@ -22,6 +22,7 @@ export class Solp extends CommonResponse {
     public Adjuntos?: { Id: number, Nombre: string }[];
     public EsPliegoMultiple: boolean = false;
     public Pliego_Id?: number;
+    public MultipleFinalizado :boolean;
 
     //paso 1
     public nombreDePedido: string;
@@ -190,6 +191,7 @@ export class Solp extends CommonResponse {
             this.fiscalContrato = solp.FiscalContrato || '';
             this.telefono = solp.Telefono || '';
             this.mail = solp.Email || sessionStorage.getItem("username");
+            this.MultipleFinalizado = solp.MultipleFinalizado;
 
             if (solp.FechaHoraEntrega != null) {
                 this.fechaEntrega = new Date(this.getDateFromAspNetFormat(solp.FechaHoraEntrega));
