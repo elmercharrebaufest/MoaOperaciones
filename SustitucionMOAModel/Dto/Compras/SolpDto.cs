@@ -127,6 +127,7 @@ namespace SustitucionMOAModel.Dto
         public bool PliegoVinculado { get; set; }
 
         public bool EsPliegoMultiple { get; set; }
+        public bool MultipleFinalizado { get; set; }
 
         public SolpDto() { }
         public SolpDto(Solp entity)
@@ -177,6 +178,7 @@ namespace SustitucionMOAModel.Dto
             ProveedorAsignado_Id = entity.ProveedorAsignado_Id;
             TrabajoYaHecho = entity.TrabajoYaHecho;
             LiberadoresSapSolp = new List<LiberadorSapSolpDto>();
+            MultipleFinalizado = entity.Pliego.MultipleFinalizado;
         }
     }
 

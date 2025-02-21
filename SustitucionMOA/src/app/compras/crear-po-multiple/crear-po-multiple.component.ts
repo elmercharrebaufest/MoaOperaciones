@@ -303,6 +303,7 @@ export class CrearPoMultipleComponent extends ListBaseComponent implements OnIni
                         if (this.selectTipoSolp === "SERVICIO") {
                             this.posiciones = [];
                             this.solps = result.data as SolpCrearPoMultipleDto[];
+                            console.log("Estas son las Solps:", this.solps);
                         } else {
                             this.posiciones = result.data as POPosicionDto[];
                             this.solps = [];

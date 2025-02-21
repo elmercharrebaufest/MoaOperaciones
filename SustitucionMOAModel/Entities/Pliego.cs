@@ -43,6 +43,9 @@ namespace SustitucionMOAModel.Entities
         public DateTime? FechaModificacion { get; set; }
 
         public int? Usuario_Id { get; set; }
+
+        public bool MultipleFinalizado { get; set; }
+
         [ForeignKey(nameof(Usuario_Id))]
         public virtual Usuario Usuario { get; set; }
 

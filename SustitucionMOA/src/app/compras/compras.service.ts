@@ -379,6 +379,7 @@ export class ComprasService extends BaseService {
             EnvioCircularA: solp.envioCircularA,
             CodigoProveedorSap: solp.codigoProveedorSap,
             Posiciones: null,
+            MultipleFinalizado: solp.MultipleFinalizado,
         };
 
         if (incluirPosiciones) {

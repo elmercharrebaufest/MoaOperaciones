@@ -35,6 +35,7 @@ namespace SustitucionMOAUtils.Services
         public List<PliegoPMDto> GetPliegosMultiples(string nombrePliego)
         {
             IQueryable<Pliego> pliegos = repositorio.ListarConsultable<Pliego>(pliego => pliego.Multiple);
+            Console.WriteLine(pliegos.ToString());
             if (string.IsNullOrWhiteSpace(nombrePliego))
             {
                 return pliegos

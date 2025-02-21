@@ -40,6 +40,7 @@ export class FinalizarSolpComponent implements OnInit {
     }
 
     onFinalizar() {
+        this.solpActual.MultipleFinalizado=true;
         const updatedInfo = {
             selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
             solpActual: this.solpActual

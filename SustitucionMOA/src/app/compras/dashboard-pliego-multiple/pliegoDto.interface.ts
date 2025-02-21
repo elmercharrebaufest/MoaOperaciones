@@ -4,4 +4,5 @@ export interface PliegoDto {
     FechaAlta: Date;
     FechaModificacion: Date;
     Solps: string[];
+    MultipleFinalizado:boolean;
 }

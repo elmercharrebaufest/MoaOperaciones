@@ -198,7 +198,7 @@
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-solp let-columns="columns">
-                                <tr>
+                                <tr *ngIf="solp.MultipleFinalizado">
                                     <td>
                                         <p-checkbox name="selectedCotizacion" binary="false" [(ngModel)]="solp.Selected"></p-checkbox>
                                         <a href="#" [pRowToggler]="rowData" (click)="solpExpandToggle(solp)">
@@ -213,8 +213,9 @@
                                     <td class="columna">{{solp.GrupoDeCompras}}</td>
                                     <td class="columna">{{solp.Centro}}</td>
                                     <td class="columna">{{solp.Tipo}}</td>
+                                    <td class="columna">{{solp.MultipleFinalizado}}</td>
                                 </tr>
-                                <tr *ngIf="solp.Expanded">
+                                <tr *ngIf="solp.Expanded && solp.MultipleFinalizado">
                                     <td [attr.colspan]="9">
                                         <p-table class="table-responsive" styleClass="font-size: 10px" #tabla [value]="solp.Posiciones" dataKey="Id" [autoLayout]="true">
                                             <ng-template pTemplate="header" let-columns>

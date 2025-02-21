@@ -56,5 +56,8 @@ namespace SustitucionMOAModel.Dto
         [ExcelColumnOrder(7)]
         [ExcelColumnWidth(28)]
         public string Tipo { get; set; }
+
+        [ExcelIgnore]
+        public bool MultipleFinalizado { get; set; }
     }
 }

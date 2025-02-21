@@ -11,6 +11,8 @@ export interface SolpCrearPoMultipleDto {
     Centro: string;
     Tipo: string;
 
+    MultipleFinalizado:boolean;
+
     Posiciones: PosicionCrearPoMultipleDto[];
 
     Selected: boolean;
