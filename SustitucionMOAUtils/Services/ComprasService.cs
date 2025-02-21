@@ -8061,7 +8061,7 @@ namespace SustitucionMOAUtils.Services
                             Tipo = solp.TipoSolp.Descripcion,
                             MultipleFinalizado = solp.Pliego.MultipleFinalizado,
                         },
-                    solp => solpIds.Contains(solp.Id)
+                    solp => solpIds.Contains(solp.Id) && (solp.Pliego.MultipleFinalizado == true)
                 );
 
                 return posicionMaterial;
