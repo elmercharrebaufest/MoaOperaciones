@@ -134,7 +134,6 @@ export class StepperActionsComponent implements OnInit {
             selectUsuarioCompras: this.solpActual.selectUsuarioCompras,
             solpActual: this.solpActual
         };
-        console.log("Solpe Actual:", this.solpActual);
         this.finalizarEmitter.next(updatedInfo);
     }
 

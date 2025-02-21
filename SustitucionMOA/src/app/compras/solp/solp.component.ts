@@ -142,7 +142,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     }
 
     get steppeerSaveButtonPliegoMultipleAvailable(): boolean {
-        console.log("Solp Actual llamado desde stepper: ", this.solpActual);
         if (this.esOperacionPliegoMultiple && !this.solpActual.MultipleFinalizado) { return true; }
         return false;
 
@@ -473,7 +472,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
                         const pliego = result.Pliego;
-                        console.log("Pliego traido por id: ", pliego);
                         const solps: number[] = result.Solps;
                         const tipo = this.solpActual.tipoSolp;
 
@@ -1381,7 +1379,6 @@ export class SolpComponent extends BaseComponent implements OnInit {
     // Todos los Modal
     finalizar({ selectUsuarioCompras, solpActual }) {
         this.solpActual = solpActual;
-        console.log("Solp actual:",solpActual);
         this.solpActual.selectUsuarioCompras = selectUsuarioCompras;
 
         if (this.esOperacionPliegoMultiple) {
