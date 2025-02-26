@@ -202,7 +202,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             //circuito de pliego múltiple
                             this.solpActual.EsPliegoMultiple = true;
                             this.pasos = this.pasosMaster.pliegoMultiple;
-                            this.solpActual.MultipleFinalizado = true;
+                            this.solpActual.MultipleFinalizado = false;
                         }
                         this.solpActual.tipoSolp = params["tipoSolp"];
                     }
