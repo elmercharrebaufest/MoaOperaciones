@@ -24,11 +24,15 @@ namespace SustitucionMOAUtils.Services
 
         private readonly IComprasService comprasService;
 
+        private readonly IEmailComprasService emailComprasService;
+
         public PliegoMultipleService(IRepositorio repositorio,
-                                     IComprasService comprasService)
+                                     IComprasService comprasService,
+                                     IEmailComprasService emailComprasService)
         {
             this.repositorio = repositorio;
             this.comprasService = comprasService;
+            this.emailComprasService = emailComprasService;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1155:Use StringComparison when comparing strings", Justification = "Not supported by EF")]
@@ -220,6 +224,11 @@ namespace SustitucionMOAUtils.Services
                 }
                 solp.TipoSolp = repositorio
                     .Obtener<TablaGeneral>(x => x.Tabla.ToLower() == "TipoSolp".ToLower() && x.Codigo.ToLower() == "CON_PLIEGO".ToLower());
+            }
+
+            // Send email when MultipleFinalizado is true
+            if (pliego.MultipleFinalizado == true) {
+                emailComprasService.EnviarMailFinalizacionPliegoMultiple(pliego,solps);
             }
 
             repositorio.GuardarCambios();
