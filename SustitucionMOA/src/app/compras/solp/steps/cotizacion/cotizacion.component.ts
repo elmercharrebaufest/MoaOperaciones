@@ -113,6 +113,7 @@ export class CotizacionComponent extends ListBaseComponent {
             terminoJornadaLaboral: new FormControl('', Validators.required),
             dias: new FormControl(this.model.jornadaLaboralDias, [Validators.required, this.validatorDias]),
             trabajoHecho: new FormControl('', Validators.required),
+            certificacionAutomatica: new FormControl('', Validators.required),
             proveedorSeleccionado: new FormControl('', Validators.required),
             adicional: new FormControl('', Validators.required),
             ordenDeCompra: new FormControl({ value: '', disabled: this.model.deshabilitarAdicional }, Validators.required),
@@ -386,6 +387,9 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.thProveedorDirecto = false;
             this.model.thServicioPermanente = true;
         }
+        if (!this.model.trabajoHecho) {
+            this.model.certificacionAutomatica = false;
+        }
     }
 
     limpiarCheckProveedorAsignado() {
@@ -566,6 +570,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['urgencia'].enable();
             this.formularioCotizacion.controls['adicional'].enable();
             this.formularioCotizacion.controls['trabajoHecho'].enable();
+            this.formularioCotizacion.controls['certificacionAutomatica'].enable();
             this.formularioCotizacion.controls['condEspProveedorAsignado'].enable();
             this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
         }
@@ -587,17 +592,20 @@ export class CotizacionComponent extends ListBaseComponent {
             this.formularioCotizacion.controls['urgencia'].disable();
             this.formularioCotizacion.controls['adicional'].disable();
             this.formularioCotizacion.controls['trabajoHecho'].disable();
+            this.formularioCotizacion.controls['certificacionAutomatica'].disable();
             this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
             this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
             
             if(this.condEspOriginales.trabajoHecho || (this.condEspOriginales.trabajoHecho && this.condEspOriginales.adicional)){
                 this.formularioCotizacion.controls['trabajoHecho'].disable();
+                this.formularioCotizacion.controls['certificacionAutomatica'].disable();
                 this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
                 this.formularioCotizacion.controls['adicional'].enable();
                 this.formularioCotizacion.controls['urgencia'].enable();
                 this.verificarMismoProveedor();
             } else if(this.condEspOriginales.proveedorAsignado || this.condEspOriginales.adicional){
                 this.formularioCotizacion.controls['trabajoHecho'].disable();
+                this.formularioCotizacion.controls['certificacionAutomatica'].disable();
                 this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
 
                 if(this.model.condEspProveedorAsignado == true){
@@ -623,6 +631,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.formularioCotizacion.controls['adicional'].disable();
                 this.formularioCotizacion.controls['condEspProveedorAsignado'].disable();
                 this.formularioCotizacion.controls['trabajoHecho'].disable();
+                this.formularioCotizacion.controls['certificacionAutomatica'].disable();
                 this.formularioCotizacion.controls['proveedorSeleccionado'].disable();
             }
 
@@ -647,9 +656,11 @@ export class CotizacionComponent extends ListBaseComponent {
 
         if (this.model.condEspProveedorAsignado == true) {
             this.formularioCotizacion.controls['trabajoHecho'].disable();
+            this.formularioCotizacion.controls['certificacionAutomatica'].disable();
             this.formularioCotizacion.controls['adicional'].disable();
         } else {
             this.formularioCotizacion.controls['trabajoHecho'].enable();
+            this.formularioCotizacion.controls['certificacionAutomatica'].enable();
             this.formularioCotizacion.controls['proveedorSeleccionado'].enable();
             this.formularioCotizacion.controls['adicional'].enable();
         }

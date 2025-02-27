@@ -32,6 +32,7 @@
     [TieneModificaciones] BIT NULL DEFAULT 0, 
     [EnvioCircularA] INT NULL, 
     [FechaLimiteReenvioDocumentacionPorCambioCondiciones] datetime2(0) NULL,
+    [CertificacionAutomatica] BIT NOT NULL DEFAULT 0, 
     CONSTRAINT [PK_dbo.Solp] PRIMARY KEY CLUSTERED ([Id] ASC),
     CONSTRAINT [FK_dbo.Solp_dbo.UsuarioCompras_Id] FOREIGN KEY ([UsuarioCompras_Id]) REFERENCES [dbo].[UsuarioCompras] ([Id]) ON DELETE CASCADE,
     CONSTRAINT [FK_Solp_Pliego] FOREIGN KEY ([Pliego_Id]) REFERENCES [dbo].[Pliego] ([Id]),

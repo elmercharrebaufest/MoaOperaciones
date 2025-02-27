@@ -21,17 +21,12 @@ namespace SustitucionMOAUtils.Services
     public class OrderService : IOrderService
     {
         protected readonly IRepositorio repositorio;
-        private readonly IConsultaService consultaService;
-        //private readonly ILiquidacionService _liquidacionService;
-        //private OrderParamsDto parametros;
 
-        private string dateTimeFormat = "dd/MM/yyyy";
+        private const string dateTimeFormat = "dd/MM/yyyy";
 
-        public OrderService(IConsultaService consultaService, IRepositorio repositorio)
+        public OrderService(IRepositorio repositorio)
         {
             this.repositorio = repositorio;
-            this.consultaService = consultaService;
-            //_liquidacionService = liquidacionService;
         }
 
         public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros, string userMail)
@@ -135,30 +130,20 @@ namespace SustitucionMOAUtils.Services
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
         {
             List<DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
-            List<OrdenCompraDto> ordenesCompra = new List<OrdenCompraDto>();
             var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
 
             if (parametros.vendedor == "-")
                 return result;
 
-            bool usuarioSolp = false;
+            var esUsuarioSolp = userMail != null && repositorio.Obtener<Usuario>(x => x.Mail == userMail).Roles.Any(rol => rol.Nombre == "SOLP");
 
-            if (userMail != null)
-            {
-                Usuario usuario = repositorio.Obtener<Usuario>(x => x.Mail == userMail);
-
-                usuarioSolp = usuario.Roles.Any(rol => rol.Nombre == "SOLP");
-            }
-
-            ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, usuarioSolp);
+            var ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, esUsuarioSolp);
 
             //Se filtran por las OC tomando las que empiezan con 412
             ordenesCompra = ordenesCompra.Where(x => x.Id.ToString().StartsWith("412")).ToList();
 
             List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
             List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
-            //List<TablaSap> centros = new List<TablaSap>();
-            //List<TablaSap> almacenes = new List<TablaSap>();
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
 
@@ -166,7 +151,6 @@ namespace SustitucionMOAUtils.Services
             DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
             DateTime fechaInicio = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
 
-            //MMSN-574 - Fecha Hasta
             if (!String.IsNullOrEmpty(parametros.fechaHasta) || !String.IsNullOrEmpty(parametros.fechaInicio))
             {
                 //Desde FE viene como yyyy-MM-dd -> formatear a como devuelve el servicio(dd-MM-yyyy).
@@ -193,7 +177,6 @@ namespace SustitucionMOAUtils.Services
                     .ToList();
             }
 
-            //MMSN-574
             List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
             foreach (var oc in ordenesCompra)
             {
@@ -209,7 +192,7 @@ namespace SustitucionMOAUtils.Services
                 string nroOC = ordenCompra.Id.ToString();
 
                 // Obtengo detalle de una OC //
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, usuarioSolp);
+                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, esUsuarioSolp);
 
                 detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
                 detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
@@ -233,7 +216,6 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                //MMSN-602
                 List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
                 if (aprobaciones != null && aprobaciones.Count > 0)
                 {
