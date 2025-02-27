@@ -30,5 +30,6 @@
 	<setParameter name="ServicioSAPEntradasServicioCrear Config" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn%3AOPERACIONES" />
 	<setParameter name="SOAPAction Config" value="http://sap.com/xi/WebService/soap1.1" />
 	<setParameter name="Authorization Config" value="Basic R1dFQlNSVl9HT0w6R09MJTIwMTY=" />
+	<setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_GETLIST Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_GETLIST&amp;interfaceNamespace=urn:OPERACIONES" />
 	<setParameter name="SI_MMRFC_BAPI_ENTRYSHEET_CREATE Service Endpoint Address" value="http://gslopiprd00.molinosagro.ad:50000/XISOAPAdapter/MessageServlet?senderParty=&amp;senderService=BC_MOA_Operaciones&amp;receiverParty=&amp;receiverService=&amp;interface=SI_MMRFC_BAPI_ENTRYSHEET_CREATE&amp;interfaceNamespace=urn:OPERACIONES" />
 </parameters>
