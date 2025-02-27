@@ -59,5 +59,8 @@ namespace SustitucionMOAModel.Dto.OrdenesCompra
 
         public string NoMoreGR { get; set; }
         public bool Bloqueada { get; set; }
+
+
+        public bool EsConEntregaFinal { get { return NoMoreGR == "X"; } }
     }
 }

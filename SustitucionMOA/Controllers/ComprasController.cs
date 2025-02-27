@@ -50,7 +50,6 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorize(Roles = Permiso.ABM_SOLP)]
         public ActionResult GuardarSolp(string solpJson)
         {
-
             var solp = JsonConvert.DeserializeObject<SolpDto>(solpJson);
             solp.UsuarioActual = ObtenerUsuarioActual();
             var result = service.GuardarSolp(solp, Request.Files);
@@ -65,7 +64,6 @@ namespace SustitucionMOA.Controllers
             }
 
             return JsonCustom(result);
-
         }
 
         public ActionResult DescargarArchivo(int archivoId)

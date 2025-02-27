@@ -365,6 +365,7 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
+            CertificacionAutomatica: solp.certificacionAutomatica,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,
             CondEspProveedorAsignado: solp.condEspProveedorAsignado,
@@ -470,7 +471,6 @@ export class ComprasService extends BaseService {
             for (let i = 0; i < archivos.length; i++) {
                 let fileToUpload = archivos[i];
                 payload.append("fileEspecificaciones", fileToUpload, fileToUpload.name);
-
             }
         }
 

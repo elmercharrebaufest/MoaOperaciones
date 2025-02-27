@@ -99,6 +99,16 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" *ngIf="model.trabajoHecho">
+                                <div class="col-xs-12 col-sm-10">
+                                    <p-checkbox
+                                        [ngModelOptions]="{standalone:true}"
+                                        name="certificacionAutomatica"
+                                        [(ngModel)]="model.certificacionAutomatica"
+                                        label="Certificación automática"
+                                        formControlName="certificacionAutomatica"
+                                        binary="true">
+                                    </p-checkbox>
+                                </div>
                                 <div class="row col-xs-12 col-sm-12 col-md-5 col-lg-5" *ngIf="model.trabajoHecho && !model.adicional; else ocultar">
                                     <div class="col-xs-12 col-sm-10" style="font-size: 14px;">
                                         <strong>Selección de proveedores *</strong>

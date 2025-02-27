@@ -103,6 +103,7 @@
     <Compile Include="Repositorios\Interfaces\IRepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioCompras.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioConsultas.cs" />
+    <Compile Include="Repositorios\Interfaces\IRepositorioEntradaServicio.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenDeCargaFason.cs" />
     <Compile Include="Repositorios\Interfaces\IRepositorioOrdenResiduos.cs" />
@@ -111,6 +112,7 @@
     <Compile Include="Repositorios\RepositorioCampoSustentable.cs" />
     <Compile Include="Repositorios\RepositorioCompras.cs" />
     <Compile Include="Repositorios\RepositorioConsultas.cs" />
+    <Compile Include="Repositorios\RepositorioEntradaServicio.cs" />
     <Compile Include="Repositorios\RepositorioOrdenDeCarga.cs" />
     <Compile Include="Repositorios\RepositorioOrdenDeCargaFason.cs" />
     <Compile Include="Repositorios\RepositorioOrdenResiduos.cs" />

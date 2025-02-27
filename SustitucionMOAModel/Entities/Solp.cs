@@ -75,5 +75,7 @@ namespace SustitucionMOAModel.Entities
         public virtual ICollection<ChatInternoCompras> ChatInternoCompras { get; set; } = new List<ChatInternoCompras>();
 
         public bool DebeGenerarPoAutomatica => (TrabajoYaHecho ?? false) || (Adicional ?? false) || (CondEspProveedorAsignado ?? false);
+
+        public bool CertificacionAutomatica { get; set; }
     }
 }
