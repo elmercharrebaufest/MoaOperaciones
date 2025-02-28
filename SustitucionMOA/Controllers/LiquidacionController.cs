@@ -10,6 +10,7 @@ using System.Web.Mvc;
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class LiquidacionController : BaseController
     {
         private readonly ILiquidacionService _liquidacionService;

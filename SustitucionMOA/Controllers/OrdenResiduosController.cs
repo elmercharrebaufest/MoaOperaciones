@@ -16,6 +16,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class OrdenResiduosController : BaseController
     {
         private readonly IOrdenResiduosService ordenResiduosService;

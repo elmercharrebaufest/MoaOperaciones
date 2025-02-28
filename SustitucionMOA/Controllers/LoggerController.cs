@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class LoggerController : BaseController
     {
         private readonly ILogTableService logTableService;

@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class GestionImpuestosController : BaseController
     {
         private readonly IGestionImpuestosService gestionImpuestosService;

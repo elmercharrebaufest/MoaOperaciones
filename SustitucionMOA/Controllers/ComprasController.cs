@@ -22,6 +22,7 @@ using HttpHelper = System.Web.Http;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ComprasController : BaseController
     {
         private readonly IComprasService service;

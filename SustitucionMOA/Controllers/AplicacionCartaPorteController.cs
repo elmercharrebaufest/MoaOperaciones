@@ -1,19 +1,16 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.CustomExceptions;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.AplicacionCartaPorte;
-using SustitucionMOAModel.Entities;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AplicacionCartaPorteController : BaseController
     {
         readonly IAplicacionCartaPorteService aplicacionCCPPService;

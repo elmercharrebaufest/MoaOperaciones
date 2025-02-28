@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class EcheqController : BaseController
     {
         private readonly IEcheqService service;

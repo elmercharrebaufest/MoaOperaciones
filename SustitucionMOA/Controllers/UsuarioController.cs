@@ -24,6 +24,7 @@ using HttpGetAttribute = System.Web.Http.HttpGetAttribute;
 namespace SustitucionMOA.Controllers
 {
     [System.Web.Mvc.SessionState(System.Web.SessionState.SessionStateBehavior.ReadOnly)]
+    [Authorize]
     public class UsuarioController : BaseController
     {
         //LoginService _loginService = new LoginService();

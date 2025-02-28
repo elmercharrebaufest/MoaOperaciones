@@ -1,21 +1,11 @@
-﻿using Newtonsoft.Json;
-using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOAModel.Dto;
-using SustitucionMOAModel.Entities;
+﻿using SustitucionMOAModel.Dto;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ComunicacionController : BaseController
     {
         readonly IComunicacionService comunicacionService;

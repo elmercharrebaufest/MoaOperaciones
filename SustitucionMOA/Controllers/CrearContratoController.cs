@@ -26,6 +26,7 @@ using SustitucionMOAModel.Enums;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class CrearContratoController : BaseController
     {
         protected readonly IRepositorio repositorio;

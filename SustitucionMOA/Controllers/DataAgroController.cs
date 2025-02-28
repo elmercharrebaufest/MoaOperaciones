@@ -1,14 +1,10 @@
-﻿using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
-using SustitucionMOASecurity;
+﻿using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using SustitucionMOAUtils.Services;
-using System;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class DataAgroController : BaseController
     {
         readonly IDataAgroService dataAgroService;

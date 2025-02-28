@@ -16,6 +16,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class CampoSustentableController : BaseController
     {
         readonly ICampoSustentableService campoSustentableService;

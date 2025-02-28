@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class PesificacionController : BaseController
     {
         private readonly IPesificacionService pesificacionService;

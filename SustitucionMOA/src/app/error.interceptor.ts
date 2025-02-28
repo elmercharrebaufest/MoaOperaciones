@@ -20,6 +20,7 @@ export class ErrorInterceptor implements HttpInterceptor {
     ): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(
             catchError((error: HttpErrorResponse) => {
+                console.log("erro2",error);
                 let errorMsg =
                     "Ocurrió un error inesperado, por favor inténtelo más tarde";
                 if (error.status === 500) {
@@ -27,6 +28,8 @@ export class ErrorInterceptor implements HttpInterceptor {
                         "Error del servidor, por favor inténtelo más tarde.";
                 } else if (error.status === 404) {
                     errorMsg = "El recurso solicitado no fue encontrado.";
+                }  else if (error.status === 401) {
+                    errorMsg = "Su sesión ha expirado. Por favor, ingrese nuevamente.";
                 }
 
                 const customError = new Error(errorMsg);

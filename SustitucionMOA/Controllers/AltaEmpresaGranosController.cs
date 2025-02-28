@@ -23,6 +23,7 @@ using HttpPostAttribute = System.Web.Mvc.HttpPostAttribute;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AltaEmpresaGranosController : BaseController
     {
         protected readonly IRepositorio repositorio;

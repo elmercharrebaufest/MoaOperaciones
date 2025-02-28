@@ -119,6 +119,8 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult VerificarEstadoSesion()
         {
+            return Json(new { tieneSesion = true }, JsonRequestBehavior.AllowGet);
+
             try
             {
                 if (!Request.IsAuthenticated)

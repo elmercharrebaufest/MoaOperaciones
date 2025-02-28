@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class FacturaController : BaseController
     {
         private readonly IFacturaService facturaService;

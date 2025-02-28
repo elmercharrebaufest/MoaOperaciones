@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Newtonsoft.Json;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
+﻿using Newtonsoft.Json;
 using SustitucionMOAModel.Models.WSMapMOA.ContactoMail;
 using SustitucionMOASecurity;
-using SustitucionMOAUtils.Logger;
 using SustitucionMOAUtils.Services;
+using System.Web;
+using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class ContactoMailController : BaseController
     {
         ContactoMailService _contactoMailService = new ContactoMailService();

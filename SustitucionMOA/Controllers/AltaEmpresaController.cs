@@ -1,20 +1,14 @@
-﻿using Microsoft.Ajax.Utilities;
-using SustitucionMOA.Utils;
-using SustitucionMOAAssets;
-using SustitucionMOAModel.CustomExceptions;
+﻿using SustitucionMOA.Utils;
 using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
-using SustitucionMOAUtils.Logger;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Text;
 using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class AltaEmpresaController : BaseController
     {
         protected readonly IRepositorio repositorio;

@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace SustitucionMOA.Controllers
 {
+    [Authorize]
     public class CursoController : BaseController
     {
         readonly ICursoService cursoService;
