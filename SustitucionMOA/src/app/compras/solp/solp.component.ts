@@ -510,6 +510,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
         this.solpActual.usuarioSolicitanteList = this.usuarioSolicitanteListCache;
         this.condEspOriginales = {
             trabajoHecho: this.solpActual.trabajoHecho,
+            certificacionAutomatica: this.solpActual.certificacionAutomatica,
             adicional: this.solpActual.adicional,
             proveedorAsignado: this.solpActual.condEspProveedorAsignado,
             urgencia: this.solpActual.urgencia,

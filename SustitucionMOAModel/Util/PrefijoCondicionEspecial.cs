@@ -6,28 +6,100 @@ namespace SustitucionMOAModel.Util
 {
     public static class PrefijoCondicionEspecial
     {
-        public const string none = "";
-        public const string TR = "TR-";
-        public const string PA = "PA-";
-        public const string UR = "UR-";
-        public const string AD = "AD-";
-        public const string AOR = "AOR-";
-        public const string TUR = "TUR-";
-        public const string SP = "SP-";
-        public const string AJ = "AJ-";
-        public const string PD = "PD-";
+        private const string none = "";
 
-        public readonly static IReadOnlyCollection<string> PrefijosValidos = new List<string>
+        /// <summary>
+        /// Trabajo ya hecho. Sin certificación automática
+        /// </summary>
+        private const string TR = "TR-";
+
+        /// <summary>
+        /// Trabajo ya hecho. Con certificación automática
+        /// </summary>
+        private const string TRC = "TRC-";
+
+        /// <summary>
+        /// Proveedor asignado
+        /// </summary>
+        private const string PA = "PA-";
+
+        /// <summary>
+        /// Urgencia
+        /// </summary>
+        private const string UR = "UR-";
+
+        /// <summary>
+        /// Adicional
+        /// </summary>
+        private const string AD = "AD-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Adicional
+        /// </summary>
+        private const string AOR = "AOR-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Adicional. Con Certificación automática
+        /// </summary>
+        private const string AORC = "AORC-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Urgencia
+        /// </summary>
+        private const string TUR = "TUR-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Urgencia. Con Certificación automática
+        /// </summary>
+        private const string TURC = "TURC-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Servicio permanente. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string SP = "SP-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Servicio permanente. Sin Adicional ni Urgencia. Con Certificación automática
+        /// </summary>
+        private const string SPC = "SPC-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Ajuste polinómica. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string AJ = "AJ-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Ajuste polinómica. Sin Adicional ni Urgencia. Con Certificación automática
+        /// </summary>
+        private const string AJC = "AJC-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Proveedor directo. Sin Adicional ni Urgencia
+        /// </summary>
+        private const string PD = "PD-";
+
+        /// <summary>
+        /// Trabajo ya hecho y Proveedor directo. Sin Adicional ni Urgencia. Con Certificación automática
+        /// </summary>
+        private const string PDC = "PDC-";
+
+        private readonly static IReadOnlyCollection<string> PrefijosValidos = new List<string>
         {
             TR,
+            TRC,
             PA,
             UR,
             AD,
             AOR,
+            AORC,
             TUR,
+            TURC,
             SP,
+            SPC,
             AJ,
+            AJC,
             PD,
+            PDC
         }
         .AsReadOnly();
 
@@ -53,7 +125,7 @@ namespace SustitucionMOAModel.Util
 
             if (solp.TrabajoYaHecho == true)
             {
-                prefijo = TR;
+                prefijo = solp.CertificacionAutomatica ? TRC : TR;
             }
 
             if (solp.CondEspProveedorAsignado == true)
@@ -71,33 +143,35 @@ namespace SustitucionMOAModel.Util
                 prefijo = AD;
             }
 
-            if (solp.TrabajoYaHecho == true && solp.Adicional == true)
+            if (solp.TrabajoYaHecho == true)
             {
-                prefijo = AOR;
-            }
+                if (solp.Adicional == true)
+                {
+                    prefijo = solp.CertificacionAutomatica ? AORC : AOR;
+                }
 
-            if ((solp.TrabajoYaHecho == true && solp.Urgencia == true) || (solp.TrabajoYaHecho == true && solp.Urgencia == true && solp.Adicional == true))
-            {
-                prefijo = TUR;
-            }
+                if (solp.Urgencia == true || (solp.Urgencia == true && solp.Adicional == true))
+                {
+                    prefijo = solp.CertificacionAutomatica ? TURC : TUR;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = SP;
-            }
+                if (solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = solp.CertificacionAutomatica ? SPC : SP;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = AJ;
-            }
+                if (solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = solp.CertificacionAutomatica ? AJC : AJ;
+                }
 
-            if (solp.TrabajoYaHecho == true && solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
-            {
-                prefijo = PD;
+                if (solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
+                {
+                    prefijo = solp.CertificacionAutomatica ? PDC : PD;
+                }
             }
 
             return prefijo;
-
         }
     }
 }

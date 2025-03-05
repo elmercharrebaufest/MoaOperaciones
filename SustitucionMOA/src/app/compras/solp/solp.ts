@@ -281,7 +281,7 @@ export class Solp extends CommonResponse {
             this.proveedorAsignado = solp.ProveedorAsignado;
             this.codigoProveedorSap = solp.CodigoProveedorSap;
             this.trabajoHecho = solp.TrabajoYaHecho;
-            this.certificacionAutomatica = solp.certificacionAutomatica;
+            this.certificacionAutomatica = solp.CertificacionAutomatica;
             this.adicional = solp.Adicional;
             this.urgencia = solp.Urgencia;
             this.condEspProveedorAsignado = solp.CondEspProveedorAsignado;

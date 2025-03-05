@@ -1304,6 +1304,7 @@ namespace SustitucionMOAUtils.Services
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
                 ProveedorAsignado_Id = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
+                CertificacionAutomatica = solp.CertificacionAutomatica,
                 CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                 Adicional = solp.Adicional,
                 Urgencia = solp.Urgencia,
@@ -3015,6 +3016,10 @@ namespace SustitucionMOAUtils.Services
                     case "D":
                         solp.TrabajoYaHecho = true;
                         solp.THProveedorDirecto = true;
+                        break;
+                    case "C":
+                        solp.TrabajoYaHecho = true;
+                        solp.CertificacionAutomatica = true;
                         break;
                     case "U":
                         solp.Urgencia = true;
