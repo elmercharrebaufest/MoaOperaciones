@@ -32,4 +32,5 @@ export interface SolpPosicionPrecargada {
     CuentaMayor: TablaSap;
     Imputacion: TablaSap;
     Subposiciones: SolpSubposicionPrecargada[];
+    Solicitante: string;
 }

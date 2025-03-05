@@ -1,6 +1,7 @@
 ﻿using Excel;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras.PrecargaSolp;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -67,7 +68,21 @@ namespace SustitucionMOAUtils.Services
                     var indice = int.Parse(reg.NroPosicion);
                     var unidad = unidades.FirstOrDefault(x => x.Codigo == reg.Unidad);
                     var cuentaMayor = cuentasMayor.FirstOrDefault(x => x.CodigoSap == reg.CuentaMayor);
-                    var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion);
+                    var tipoImputacion = tiposImputaciones.FirstOrDefault(x => x.Descripcion == reg.TipoImputacion);
+                    var imputacionTabla = TablasSap.CecoSolpSap;
+
+                    if (tipoImputacion != null)
+                    {
+                        if (tipoImputacion.Descripcion == "F")
+                        {
+                            imputacionTabla = TablasSap.OrdenSolpSap;
+                        }
+                        else if (tipoImputacion.Descripcion == "Y")
+                        {
+                            imputacionTabla = TablasSap.CentroBeneficio;
+                        }
+                    }
+                    var imputacion = imputaciones.FirstOrDefault(x => x.CodigoSap == reg.Imputacion && x.Tabla == imputacionTabla);
                     decimal? precio = null;
                     if (decimal.TryParse(reg.Precio, out decimal resultado))
                     {
@@ -76,7 +91,6 @@ namespace SustitucionMOAUtils.Services
 
                     if (esMateriales || !posiciones.Any(x => x.Indice == indice))
                     {
-                        var tipoImputacion = tiposImputaciones.FirstOrDefault(x => x.Descripcion == reg.TipoImputacion);
                         var moneda = monedas.FirstOrDefault(x => x.Codigo == reg.Moneda);
                         var grupoCompras = gruposCompras.FirstOrDefault(x => x.Codigo == reg.GrupoCompras);
                         var grupoArticulo = gruposArticulos.FirstOrDefault(x => x.Codigo == reg.GrupoArticulo);
@@ -114,7 +128,8 @@ namespace SustitucionMOAUtils.Services
                             Unidad = unidad,
                             CuentaMayor = cuentaMayor,
                             Imputacion = imputacion,
-                            Subposiciones = new List<SolpSubposicionPrecargadaDto>()
+                            Subposiciones = new List<SolpSubposicionPrecargadaDto>(),
+                            Solicitante = reg.Solicitante
                         };
                         posiciones.Add(posicion);
                     }
@@ -220,6 +235,7 @@ namespace SustitucionMOAUtils.Services
                 Imputacion = (fila[IndicePrecargaSolp.Imputacion] is DBNull || fila[IndicePrecargaSolp.Imputacion] == null) ? null : fila[IndicePrecargaSolp.Imputacion].ToString(),
                 Motivo = (fila[IndicePrecargaSolp.Motivo] is DBNull || fila[IndicePrecargaSolp.Motivo] == null) ? null : fila[IndicePrecargaSolp.Motivo].ToString(),
                 Modelo = (fila[IndicePrecargaSolp.Modelo] is DBNull || fila[IndicePrecargaSolp.Modelo] == null) ? null : fila[IndicePrecargaSolp.Modelo].ToString(),
+                Solicitante = (fila[IndicePrecargaSolp.Solicitante] is DBNull || fila[IndicePrecargaSolp.Solicitante] == null) ? null : fila[IndicePrecargaSolp.Solicitante].ToString(),
             };
             return registroPrecargaSolp;
         }
@@ -363,6 +379,7 @@ namespace SustitucionMOAUtils.Services
         public string Unidad { get; set; }
         public string CuentaMayor { get; set; }
         public string Imputacion { get; set; }
+        public string Solicitante { get; set; }
     }
 
     internal static class IndicePrecargaSolp
@@ -387,6 +404,7 @@ namespace SustitucionMOAUtils.Services
         internal const int Imputacion = 17;
         internal const int Motivo = 18;
         internal const int Modelo = 19;
+        internal const int Solicitante = 20;
 
         internal const int LeyendaAmbos = 11;
         internal const int LeyendaMaterial = 12;
