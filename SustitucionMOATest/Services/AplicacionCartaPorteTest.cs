@@ -102,7 +102,7 @@ namespace SustitucionMOATest.Services
                 CartaPorteSeleccionada = cartaPorteSeleccionada,
                 Kilogramos = kgMaximo
             };
-            aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario);
+            aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario, "", false);
 
             repositorio.Verify(r => r.Agregar(It.IsAny<AplicacionCartaPorte>()), Times.Once);
             repositorio.Verify(r => r.GuardarCambios(), Times.Once);
@@ -135,7 +135,7 @@ namespace SustitucionMOATest.Services
             };
 
             Assert.That(
-                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario, "", false),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
@@ -169,7 +169,7 @@ namespace SustitucionMOATest.Services
             };
 
             Assert.That(
-                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario, "", false),
                 Throws.TypeOf<InfoCustomException>());
         }
         [Test]
@@ -204,7 +204,7 @@ namespace SustitucionMOATest.Services
             };
 
             Assert.That(
-                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario),
+                () => aplicacionCCPPService.GuardarAplicacion(aplicacionAGuardar, mailUsuario, "", false),
                 Throws.TypeOf<InfoCustomException>());
         }
 

@@ -70,7 +70,9 @@ namespace SustitucionMOA.Controllers
 
             var aplicacionACrear = JsonConvert.DeserializeObject<CrearAplicacionCartaPorte>(aplicacionCCPPJSON);
             var mailUsuario = SessionPersister.getUsername();
-            aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario);
+            var codigoProveedor = SessionPersister.Proveedor;
+            var esCodigoCorredor = SessionPersister.EsCodigoDeCorredor;
+            aplicacionCCPPService.GuardarAplicacion(aplicacionACrear, mailUsuario, codigoProveedor, esCodigoCorredor);
             response.Data = true;
 
             return ContentCustom(response);

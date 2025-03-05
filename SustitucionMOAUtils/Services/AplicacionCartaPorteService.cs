@@ -97,7 +97,7 @@ namespace SustitucionMOAUtils.Services
             return new ComboAplicacionesContratosCcppResponse { CartasPorte = cartasPorte, Contratos = contratos };
         }
 
-        public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario)
+        public void GuardarAplicacion(CrearAplicacionCartaPorte aplicacionACrear, string mailUsuario, string proveedorCodigo, bool esCodigoCorredor)
         {
             Log.Info($"Aplicaciones CCPP: GuardarAplicacion datos:{aplicacionACrear.ToJson()}");
             ValidarSchema(aplicacionACrear, "AplicacionCartaPorte", "GuardarAplicacion");
@@ -105,6 +105,7 @@ namespace SustitucionMOAUtils.Services
                 throw new InfoCustomException("Revisar valor de KG.");
 
             var aplicacionesDisponiblesSap = ObtenerAplicacionesDisponiblesSap(aplicacionACrear.ContratoSeleccionado.CodigoProveedor);
+
             var contratosValidos = ObtenerContratosDisponibles(aplicacionesDisponiblesSap.Contratos);
 
             if (!aplicacionACrear.ValidarContrato(contratosValidos))
@@ -122,7 +123,7 @@ namespace SustitucionMOAUtils.Services
 
             var estadoAplicacion = ObtenerEstadoNuevaAplicacion(aplicacionACrear.ContratoSeleccionado, contratosValidos);
 
-            var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario, proveedor, estadoAplicacion, usuario.ObtenerCorredor()?.CodigoProveedor ?? "", aplicacionACrear.ContratoSeleccionado.Material, aplicacionACrear.ContratoSeleccionado.Centro);
+            var aplicacion = new AplicacionCartaPorte(aplicacionACrear, usuario, proveedor, estadoAplicacion, esCodigoCorredor ? proveedorCodigo : "", aplicacionACrear.ContratoSeleccionado.Material, aplicacionACrear.ContratoSeleccionado.Centro);
             repositorio.Agregar(aplicacion);
 
             repositorio.GuardarCambios();
