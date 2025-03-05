@@ -652,16 +652,16 @@
                                     <div class="form-group grey "
                                         *ngIf="puedeAltaInterna; else habilitarEditarDocFisica">
                                         Presento documentación física:
-                                        <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
-                                            [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica" disabled>
+                                        <input type="checkbox" style="margin-right: 5px;" id="AltaFisica"
+                                               placeholder=""
+                                               [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
+                                               (ngModelChange)="onChangeDocumentacionFisica()">
                                     </div>
                                     <ng-template #habilitarEditarDocFisica>
                                         <div class="form-group grey">
                                             Presento documentación física:
-                                            <input type="checkbox" style="margin-right: 5px;" id="AltaFisica"
-                                                placeholder=""
-                                                [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica"
-                                                (ngModelChange)="onChangeDocumentacionFisica()">
+                                            <input type="checkbox" style="margin-right: 5px;" id="AltaFisica" placeholder=""
+                                                   [(ngModel)]="empresaSeleccionada.ContieneDocumentacionFisica" disabled>
                                         </div>
                                     </ng-template>
                                 </mdb-step>
