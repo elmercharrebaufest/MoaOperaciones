@@ -715,7 +715,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
     habilitarTodosCampoDeValorACertificar(): void {
         if (this.expandedPositionRow) { // Verifica si hay una posición expandida
           const posicionExpandida = this.tablaPosiciones.value.find(pos => pos.Id === Number(this.expandedPositionRow)); 
-          if (posicionExpandida) { 
+          if (posicionExpandida && posicionExpandida.AdmiteCertificacionesParciales) { 
             posicionExpandida.Items.forEach(item => {
               const rowIndex = this.tablaItems.value.indexOf(item);
               if (rowIndex !== -1 && (item.CantidadACertificar > 0 || item.PorcentajeACertificar > 0)) {

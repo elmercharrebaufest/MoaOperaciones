@@ -320,7 +320,8 @@
                                                                     type="button"
                                                                     pButton icon="fa fa-refresh"
                                                                     (click)="habilitarCampoDeValorACertificar(i)"
-                                                                    [disabled]="rowItem.CantidadACertificar === 0 || rowItem.PorcentajeACertificar === 0">
+                                                                    [disabled]="rowItem.CantidadACertificar === 0 || rowItem.PorcentajeACertificar === 0 || !rowData.AdmiteCertificacionesParciales"
+                                                                    [pTooltip]="!rowData.AdmiteCertificacionesParciales ? 'No admite certificación parcial' : ''">
                                                             </button>
                                                         </td>
                                                     </ng-container>
