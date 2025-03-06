@@ -125,7 +125,10 @@ namespace SustitucionMOAUtils.Services.Email
                         Log.Info($"Copia mail responsable de trabajo paso 2 {solp.Pliego.SupervisorTrabajo}");
                     }
 
-                    enviarA.Add(solp.UsuarioCompras.Mail);
+                    if (solp.UsuarioCompras != null && !string.IsNullOrEmpty(solp.UsuarioCompras.Mail))
+                    {
+                        enviarA.Add(solp.UsuarioCompras.Mail);
+                    }
                 }
 
                 var asunto = $"En el presente mail se informa la finalizacion de un Nuevo Pliego Multiple {pliego.NombreObra}";
