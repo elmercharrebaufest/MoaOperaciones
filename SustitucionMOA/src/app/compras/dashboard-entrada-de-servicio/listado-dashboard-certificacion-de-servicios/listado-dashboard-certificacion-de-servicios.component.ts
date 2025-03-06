@@ -451,7 +451,6 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
         try {
             this.spinnerComponent.showIt();
             this.unsubscribe();
-            // this.subscripcionPO = this.service.getByProveedor("2023-01-28", proveedor, "4123001336", this.columnaOrden , this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
             this.subscripcionPO = this.service.getByProveedor(fecha_inicio, fecha_fin, proveedor, ordenCompraId, this.columnaOrden, this.ordenAscendente, this.pageIndex, this.pageSize).subscribe(
                 (result: any) => {
 
@@ -462,6 +461,7 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
+                        result.data.forEach(x => { x.Posiciones.forEach(p => p.AdmiteCertificacionesParciales = x.AdmiteCertificacionesParciales) });
                         this.tablaPO = result.data;
                         this.obtenerSolicitantes(result.data);
                         this.cargarArrayProcesosSpinners(this.tablaPO);
@@ -1429,7 +1429,11 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
 
     }
 
-      descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
+    noPuedeEditarCantidadItem(rowItem: any, rowData: any) {
+        return rowItem.Porcentaje==100 || !rowData.AdmiteCertificacionesParciales;
+    }
+    
+    descargarArchivo(archivo: ArrayBuffer, nombreArchivo: string, extension: string) {
         const typeExtension = this.fileTypes[extension.toLowerCase()] || "application/octet-stream";
         var byteArray = new Uint8Array(archivo);
         var blob = new Blob([byteArray], { type: typeExtension });
@@ -1448,6 +1452,5 @@ export class ListadoDashboardCertificacionDeServiciosComponent extends ListBaseC
             setTimeout(function () { window.URL.revokeObjectURL(url); }, 0);
             
         }
-      }
-
+    }
 }

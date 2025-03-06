@@ -5,6 +5,7 @@ using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.OrdenesCompra;
 using SustitucionMOAModel.Entities;
 using SustitucionMOARepositorio;
+using SustitucionMOARepositorio.Repositorios.Interfaces;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAWS.WSConsumers;
 using System;
@@ -20,13 +21,13 @@ namespace SustitucionMOAUtils.Services
 {
     public class OrderService : IOrderService
     {
-        protected readonly IRepositorio repositorio;
+        protected readonly IRepositorioEntradaServicio repositorioEntradaServicio;
 
         private const string dateTimeFormat = "dd/MM/yyyy";
 
-        public OrderService(IRepositorio repositorio)
+        public OrderService(IRepositorioEntradaServicio repositorioEntradaServicio)
         {
-            this.repositorio = repositorio;
+            this.repositorioEntradaServicio = repositorioEntradaServicio;
         }
 
         public ListaPaginada<DetalleOrdenDeCompraDto> ObtenerOrdenesCompraConDetalle(OrderParamsDto parametros, string userMail)
@@ -103,7 +104,7 @@ namespace SustitucionMOAUtils.Services
             {
                 string razonSocial = ordenesCompra[0].ProveedorNombre.Trim();
 
-                _proveedor = repositorio.Listar<Proveedor>(p =>
+                _proveedor = repositorioEntradaServicio.Listar<Proveedor>(p =>
                    p.RazonSocial.Trim() == razonSocial
                 ).FirstOrDefault();
 
@@ -111,7 +112,7 @@ namespace SustitucionMOAUtils.Services
                 {
                     string codigoProveedor = ordenesCompra[0].ProveedorNumero.TrimEnd();
 
-                    _proveedor = repositorio.Listar<Proveedor>(p =>
+                    _proveedor = repositorioEntradaServicio.Listar<Proveedor>(p =>
                         p.CodigoProveedor.Trim() == codigoProveedor
                     ).FirstOrDefault();
                 }
@@ -130,35 +131,35 @@ namespace SustitucionMOAUtils.Services
         public List<DetalleOrdenDeCompraDto> ServicioSAP_OrdenesCompraCabeceras(OrderParamsDto parametros, string userMail)
         {
             List<DetalleOrdenDeCompraDto> result = new List<DetalleOrdenDeCompraDto>();
-            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorio);
+            var obtenerOrdenConsumer = new ObtenerOrdenDeCompraConsumerMOA(repositorioEntradaServicio);
 
             if (parametros.vendedor == "-")
                 return result;
 
-            var esUsuarioSolp = userMail != null && repositorio.Obtener<Usuario>(x => x.Mail == userMail).Roles.Any(rol => rol.Nombre == "SOLP");
+            var esUsuarioSolp = userMail != null && repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == userMail).Roles.Any(rol => rol.Nombre == "SOLP");
 
             var ordenesCompra = new ObtenerOrdenesDeCompraConsumerMOA().Request(parametros, esUsuarioSolp);
 
             //Se filtran por las OC tomando las que empiezan con 412
             ordenesCompra = ordenesCompra.Where(x => x.Id.ToString().StartsWith("412")).ToList();
 
-            List<TablaSap> centros = repositorio.Listar<TablaSap>(a => a.Tabla == "Centro");
-            List<TablaSap> almacenes = repositorio.Listar<TablaSap>(a => a.Tabla == "Almacen");
+            List<TablaSap> centros = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Centro");
+            List<TablaSap> almacenes = repositorioEntradaServicio.Listar<TablaSap>(a => a.Tabla == "Almacen");
 
             //Recorro las ordenes de compra y obtengo el detalle de cada una
 
             string today = DateTime.Now.ToString(dateTimeFormat);
-            DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
-            DateTime fechaInicio = DateTime.ParseExact(today, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+            DateTime fechaHasta = DateTime.ParseExact(today, dateTimeFormat, CultureInfo.InvariantCulture);
+            DateTime fechaInicio = DateTime.ParseExact(today, dateTimeFormat, CultureInfo.InvariantCulture);
 
             if (!String.IsNullOrEmpty(parametros.fechaHasta) || !String.IsNullOrEmpty(parametros.fechaInicio))
             {
                 //Desde FE viene como yyyy-MM-dd -> formatear a como devuelve el servicio(dd-MM-yyyy).
                 parametros.fechaHasta = Convert.ToDateTime(parametros.fechaHasta).ToString(dateTimeFormat);
-                fechaHasta = DateTime.ParseExact(parametros.fechaHasta, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+                fechaHasta = DateTime.ParseExact(parametros.fechaHasta, dateTimeFormat, CultureInfo.InvariantCulture);
 
                 parametros.fechaInicio = Convert.ToDateTime(parametros.fechaInicio).ToString(dateTimeFormat);
-                fechaInicio = DateTime.ParseExact(parametros.fechaInicio, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+                fechaInicio = DateTime.ParseExact(parametros.fechaInicio, dateTimeFormat, CultureInfo.InvariantCulture);
             }
 
 
@@ -180,7 +181,7 @@ namespace SustitucionMOAUtils.Services
             List<OrdenCompraDto> ocFiltradas = new List<OrdenCompraDto>();
             foreach (var oc in ordenesCompra)
             {
-                DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, System.Globalization.CultureInfo.InvariantCulture);
+                DateTime fechaOC = DateTime.ParseExact(oc.Fecha, dateTimeFormat, CultureInfo.InvariantCulture);
                 if (DateTime.Compare(fechaOC, fechaHasta) != 1)
                 {
                     ocFiltradas.Add(oc);
@@ -191,15 +192,14 @@ namespace SustitucionMOAUtils.Services
             {
                 string nroOC = ordenCompra.Id.ToString();
 
-                // Obtengo detalle de una OC //
-                DetalleOrdenDeCompraDto detalleOrdendeCompra = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, esUsuarioSolp);
+                var detalleOrdenDeCompraDto = obtenerOrdenConsumer.ObtenerDetalleDeOrdenDeCompra(nroOC, centros, almacenes, esUsuarioSolp);
 
-                detalleOrdendeCompra.NombreProveedor = ordenCompra.ProveedorNombre;
-                detalleOrdendeCompra.MonedaDescripcion = ordenCompra.MonedaDescripcion;
-                detalleOrdendeCompra.SubjToR = ordenCompra.SUBJ_TO_R;
+                detalleOrdenDeCompraDto.NombreProveedor = ordenCompra.ProveedorNombre;
+                detalleOrdenDeCompraDto.MonedaDescripcion = ordenCompra.MonedaDescripcion;
+                detalleOrdenDeCompraDto.SubjToR = ordenCompra.SUBJ_TO_R;
 
 
-                var numeroSolpList = detalleOrdendeCompra.Posiciones
+                var numeroSolpList = detalleOrdenDeCompraDto.Posiciones
                 .Select(p => p.NumeroSolp)
                 .Distinct()
                 .ToList();
@@ -208,7 +208,7 @@ namespace SustitucionMOAUtils.Services
 
                 var solicitanteDiccionario = solicitantes.ToDictionary(s => s.NumeroSolp);
 
-                foreach (var posicion in detalleOrdendeCompra.Posiciones)
+                foreach (var posicion in detalleOrdenDeCompraDto.Posiciones)
                 {
                     if (solicitanteDiccionario.TryGetValue(posicion.NumeroSolp, out var solicitante))
                     {
@@ -216,92 +216,67 @@ namespace SustitucionMOAUtils.Services
                     }
                 }
 
-                List<Aprobaciones> aprobaciones = repositorio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
-                if (aprobaciones != null && aprobaciones.Count > 0)
+                var adjudicacion = repositorioEntradaServicio.ObtenerUltimaAdjudicacionOC(nroOC);
+                detalleOrdenDeCompraDto.AdmiteCertificacionesParciales = adjudicacion?.AdmiteCertificacionesParciales ?? true;
+
+                var aprobaciones = repositorioEntradaServicio.Listar<Aprobaciones>(x => x.NRO_OC == nroOC && (x.Estado_certificacion == "Pendiente Aprobación" || x.Estado_certificacion == "Aprobada"));
+                foreach (var aprobacion in aprobaciones)
                 {
-                    foreach (Aprobaciones ap in aprobaciones)
+                    int nroLinea = int.Parse(aprobacion.Nro_linea);
+                    long nroPosicion = long.Parse(aprobacion.NRO_POS);
+
+                    var entradaServicioDto = MapAprobacionesToESDTO(aprobacion, ordenCompra.MonedaDescripcion);
+
+                    //Buscar posición correspondiente a ES Temporal
+                    var position = detalleOrdenDeCompraDto.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
+
+                    if (aprobacion.Estado_certificacion == "Aprobada")
                     {
-                        int nroLinea = int.Parse(ap.Nro_linea);
-                        long nroPosicion = long.Parse(ap.NRO_POS);
+                        var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
 
-                        //Mapear aprobacion a ES
-                        EntradaServicioDto es = MapAprobacionesToESDTO(ap, ordenCompra.MonedaDescripcion);
+                        var entradaServicioItem = itemPosicion.EntradasServicio.FirstOrDefault(x => x.Id == aprobacion.NRO_ES_SAP);
 
-                        //Buscar posición correspondiente a ES Temporal
-                        var position = detalleOrdendeCompra.Posiciones.First(x => x.NumeroPosicion == nroPosicion);
-
-                        if (ap.Estado_certificacion == "Aprobada")
+                        if (entradaServicioItem != null)
                         {
-                            var itemPosicion = position.Items.First(x => x.NumeroLinea == nroLinea);
-
-                            var Es = itemPosicion.EntradasServicio.FirstOrDefault(x => x.Id == ap.NRO_ES_SAP);
-
-
-                            if (Es != null)
-                            {
-                                Es.TextoBreve =
-                                    string.IsNullOrEmpty(ap.Texto_breve_servicio) || ap.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
-                                    // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
-                                    // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
-                                    ? ""
-                                    : ap.Texto_breve_servicio.Trim();
-                            }
-
+                            entradaServicioItem.TextoBreve =
+                                string.IsNullOrEmpty(aprobacion.Texto_breve_servicio) || aprobacion.Texto_breve_servicio == "Este campo es ignorado por el servicio SAP, pero debe enviarsele algo"
+                                // Por algún motivo se decidió enviar a sap ese texto cuando falta la descripción (en realidad, antes se enviaba siempre...).
+                                // Por lo que ahora estamos atrapados consultando por ese texto para evitar mostrarlo... ¬¬
+                                ? ""
+                                : aprobacion.Texto_breve_servicio.Trim();
                         }
+                    }
 
-                        if (ap.Estado_certificacion == "Pendiente Aprobación")
+                    if (aprobacion.Estado_certificacion == "Pendiente Aprobación" && position != null)
+                    {
+                        List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
+
+                        position.Solicitante = solicitante[0].Solicitante.Aprobador;
+                        //Encontrar item correspondiente a ES Temporal
+
+                        var item = position.Items.First(x => x.NumeroLinea == nroLinea);
+
+                        if (item != null)
                         {
-                            if (position != null)
+                            item.EntradasServicio = item.EntradasServicio ?? new List<EntradaServicioDto>();
+                            item.EntradasServicio.Add(entradaServicioDto);
+
+                            //Recalcular Porcentaje y C. Real
+                            item.CantidadReal += entradaServicioDto.Cantidad;
+                            
+                            double porcentaje = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
+                            item.Porcentaje = porcentaje.ToString("0.##", CultureInfo.InvariantCulture);
+
+                            if (item.Porcentaje.EndsWith(".00"))
                             {
-
-                                List<SolicitantesSolpedDto> solicitante = GetSolicitantes(new List<string> { position.NumeroSolp }).GetAwaiter().GetResult();
-
-
-                                position.Solicitante = solicitante[0].Solicitante.Aprobador;
-                                //Encontrar item correspondiente a ES Temporal
-
-                                var item = position.Items.First(x => x.NumeroLinea == nroLinea);
-
-                                if (item != null)
-                                {
-                                    if (item.EntradasServicio == null)
-                                    {
-                                        item.EntradasServicio = new List<EntradaServicioDto>();
-                                        item.EntradasServicio.Add(es);
-                                        //Recalcular Porcentaje y C. Real
-                                        item.CantidadReal = item.CantidadReal + es.Cantidad;
-
-                                        double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
-                                        item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
-
-                                        if (item.Porcentaje.EndsWith(".00"))
-                                        {
-                                            var redondeo = Math.Round(res);
-                                            item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        item.EntradasServicio.Add(es);
-                                        //Recalcular Porcentaje y C. Real
-                                        item.CantidadReal = item.CantidadReal + es.Cantidad;
-
-                                        double res = Convert.ToDouble((item.CantidadReal * 100) / item.Cantidad);
-                                        item.Porcentaje = res.ToString("0.##", CultureInfo.InvariantCulture);
-
-                                        if (item.Porcentaje.EndsWith(".00"))
-                                        {
-                                            var redondeo = Math.Round(res);
-                                            item.Porcentaje = res.ToString(CultureInfo.InvariantCulture);
-                                        }
-                                    }
-                                }
+                                var redondeo = Math.Round(porcentaje);
+                                item.Porcentaje = porcentaje.ToString(CultureInfo.InvariantCulture);
                             }
                         }
                     }
                 }
 
-                result.Add(detalleOrdendeCompra);
+                result.Add(detalleOrdenDeCompraDto);
 
             }
 
@@ -317,23 +292,23 @@ namespace SustitucionMOAUtils.Services
 
             foreach (var nroSolped in nroSolpedList)
             {
-                var solp = repositorio.Obtener<Solp>(x => x.NroSolp == nroSolped);
+                var solp = repositorioEntradaServicio.Obtener<Solp>(x => x.NroSolp == nroSolped);
 
                 if (solp != null)
                 {
-                    var pliego = repositorio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
+                    var pliego = repositorioEntradaServicio.Obtener<Pliego>(x => x.Id == solp.Pliego_Id);
 
                     solicitante = !string.IsNullOrEmpty(pliego?.Email) ? pliego?.Email : pliego?.SupervisorTrabajo;
 
                     if (string.IsNullOrEmpty(solicitante))
                     {
-                        var solpPosicion = repositorio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
+                        var solpPosicion = repositorioEntradaServicio.Obtener<SolpPosicion>(x => x.Solp_Id == solp.Id);
 
                         if (solpPosicion != null)
-                            solicitante = repositorio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
+                            solicitante = repositorioEntradaServicio.Obtener<Usuario>(x => x.UsuarioSap == solpPosicion.Solicitante)?.Mail;
                     }
 
-                    suplente = !string.IsNullOrEmpty(solicitante) ? repositorio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty;
+                    suplente = !string.IsNullOrEmpty(solicitante) ? repositorioEntradaServicio.Obtener<Usuario>(x => x.Mail == solicitante)?.Suplente : string.Empty;
 
                     if (string.IsNullOrEmpty(solicitante))
                     {

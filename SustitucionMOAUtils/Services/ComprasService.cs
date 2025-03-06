@@ -6380,7 +6380,7 @@ namespace SustitucionMOAUtils.Services
                 var respuestaGuardarSOLP = new RespuestaCrearOrdenDeCompra();
                 var usuario = repositorio.Obtener<Usuario>(usuarioActualId);
                 var cotizacion = repositorio.Obtener<Cotizacion>(adjudicacionDto.Cotizacion_Id);
-                var tablasap = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
+                var tablasapMoneda = repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda || x.Tabla == TablasSap.Unidad);
                 var numerosDePedido = new List<string>();
                 var esMateriales = cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Posiciones.FirstOrDefault().SolpPosicion.TipoPosicion.Codigo == "MATERIALES";
 
@@ -6389,7 +6389,7 @@ namespace SustitucionMOAUtils.Services
                     var monedaProv = DevolverMonedaProveedor(adjudicacionDto.Proveedor).Moneda;
                     if (!string.IsNullOrEmpty(monedaProv))
                     {
-                        adjudicacionDto.Moneda_Id = tablasap.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv).Id;
+                        adjudicacionDto.Moneda_Id = tablasapMoneda.FirstOrDefault(moneda => moneda.CodigoSap == monedaProv).Id;
                         adjudicacionDto.AdjudicacionPosiciones.ForEach(x => x.MonedaId = adjudicacionDto.Moneda_Id);
                     }
                     else
@@ -6454,7 +6454,7 @@ namespace SustitucionMOAUtils.Services
 
                             if (!esMateriales)
                             {
-                                monto = DevolverMontoServicio(ap.CotizacionPosicion.CotizacionSubPosiciones.ToList(), tablasap.FirstOrDefault(moneda => moneda.Id == monedaKey)?.Codigo);
+                                monto = DevolverMontoServicio(ap.CotizacionPosicion.CotizacionSubPosiciones.ToList(), tablasapMoneda.FirstOrDefault(moneda => moneda.Id == monedaKey)?.Codigo);
                             }
                             else
                             {
@@ -6470,12 +6470,12 @@ namespace SustitucionMOAUtils.Services
                         {
                             Cotizacion_Id = adjudicacionDto.Cotizacion_Id,
                             Moneda_Id = monedaKey.Value,
-                            Moneda = tablasap.FirstOrDefault(moneda => moneda.Id == monedaKey.Value),
+                            Moneda = tablasapMoneda.FirstOrDefault(moneda => moneda.Id == monedaKey.Value),
                             Cotizacion = cotizacion,
                             FechaCreacion = DateTime.Now,
                             Usuario = usuario,
                             UsuarioCreador_Id = usuario.Id,
-                            MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, tablasap),
+                            MontoTotal = CalcularMontoTotal(adjudicacionDto, cotizacion, tablasapMoneda),
                             CondicionesDeEntrega = adjudicacionDto.CondicionesDeEntrega,
                             CondicionesDePago = adjudicacionDto.CondicionesDePago,
                             Garantias = adjudicacionDto.Garantias,
@@ -6484,7 +6484,8 @@ namespace SustitucionMOAUtils.Services
                             //Token = Guid.NewGuid().ToString(),
                             RegionSap = regiones.FirstOrDefault(c => c.Id == adjudicacionDto.RegionSap),
                             RegionSap_Id = adjudicacionDto.RegionSap,
-                            NumeroOrdenDeCompra = ""
+                            NumeroOrdenDeCompra = "",
+                            AdmiteCertificacionesParciales = esMateriales ? true : adjudicacionDto.AdmiteCertificacionesParciales
                         };
 
                         repositorio.Agregar(adjudicacion);
@@ -6512,7 +6513,7 @@ namespace SustitucionMOAUtils.Services
                         }
                         catch (Exception)
                         {
-                            Logger.Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotizacion");
+                            Log.Info($"Error al enviar mail {cotizacion.PeticionDeOfertaUsuario.PeticionDeOferta.Id} para el cierre de la cotización");
                         }
                     }
                 }

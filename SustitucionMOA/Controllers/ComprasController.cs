@@ -560,7 +560,6 @@ namespace SustitucionMOA.Controllers
             var adjudicacion = JsonConvert.DeserializeObject<AdjudicacionDto>(json);
             var result = service.GrabarAdjudicacion(adjudicacion, ObtenerUsuarioActual().Id, "");
             return JsonCustom(result);
-
         }
 
         [HttpGet]

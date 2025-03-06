@@ -588,7 +588,7 @@ export class ListadoDashboardCompradorComponent extends ListBaseComponent {
                 PrecioFinal: item.PrecioFinal || 0,
                 PrecioBruto: item.PrecioBruto || 0,
                 EstadoLiberacionDetalle: item.EstadoLiberacionDetalle || '',
-
+                AdmiteCertificacionesParciales: true
             };
             this.ordenesDeCompra.push(adjudicacion);
         });

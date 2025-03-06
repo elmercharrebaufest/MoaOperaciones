@@ -66,8 +66,8 @@
                 <tr>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; "><p-checkbox name="posiciones" [binary]="true" [(ngModel)]="TodasPosicionesSeleccionadas" (click)="seleccionarTodo(tablaOfertas.PeticionDeOfertaPosicion)"></p-checkbox></th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 40px !important; ">Pos.</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Codigo</th>
-                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripcion </th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 100px !important;">Código</th>
+                    <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 150px !important;">Descripción </th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 90px !important; ">Texto de <br />suministro</th>
                     <th class="headerth" rowspan="3" style="background-color: #4760ac !important; width: 80px !important; ">Ctd. Pendiente</th>
                     <th class="headerth" rowspan="3" style="width: 96px; background-color: #4a1884 !important; width: 60px !important;">Ctd. <br />a Adj</th>
@@ -334,7 +334,7 @@
                 </tr>
                 <tr *ngIf="peticionPosicion.expanded == true">
                     <td class="headerth" style="width: 40px !important;">Sub <br>Pos</td>
-                    <td class="headerth" style="width: 80px !important;" colspan="2">Codigo</td>
+                    <td class="headerth" style="width: 80px !important;" colspan="2">Código</td>
                     <td class="headerth" style="width: 350px !important;">Tarea a subcontratar</td>
                     <td class="headerth" style="width: 40px !important;">Ctd.</td>
                     <td class="headerth border2-right" style="width: 40px !important;">UM.</td>
@@ -691,6 +691,20 @@
     <p-footer>
         <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="noContinuarAdjudicacion()">No</button>
         <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="continuarAdjudicacion()">Sí</button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="displayAdmiteCertificacionesParciales" [width]="500" modal="modal" appendTo="body" [draggable]="false" [contentStyle]="{'max-height':'500px', 'min-height':'100px'}" [closable]="false">
+    <p-header class="headerModal" style="color: #067935;">
+        <b>Certificaciones parciales</b>
+    </p-header>
+    <br />
+    <div>¿La OC admite certificaciones parciales?</div>
+    <br />
+    <p-footer>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="configurarAdmiteCertificacionesParciales(true)">SI</button>
+        <button type="button" class="btn btn-primary botonesComprasColor botonModal" (click)="configurarAdmiteCertificacionesParciales(false)">NO</button>
+        <button type="button" class="btn btn-danger botonesComprasColor botonModal" (click)="cancelarAdmiteCertificacionesParciales()">Cancelar</button>
     </p-footer>
 </p-dialog>
 

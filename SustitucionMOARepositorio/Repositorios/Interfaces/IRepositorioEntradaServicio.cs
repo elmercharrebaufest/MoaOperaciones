@@ -10,5 +10,6 @@ namespace SustitucionMOARepositorio.Repositorios.Interfaces
     public interface IRepositorioEntradaServicio : IRepositorio
     {
         List<Solp> ObtenerSolpsAutocertificablesDeOC(string nroOC);
+        Adjudicacion ObtenerUltimaAdjudicacionOC(string nroOC);
     }
 }

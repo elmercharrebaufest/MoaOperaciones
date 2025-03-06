@@ -30,5 +30,16 @@ namespace SustitucionMOARepositorio.Repositorios
 
             return solpsQry.ToList();
         }
+
+        public Adjudicacion ObtenerUltimaAdjudicacionOC(string nroOC)
+        {
+            var adjudicacionQry =
+                from adjudicacion in Set<Adjudicacion>()
+                where adjudicacion.NumeroOrdenDeCompra == nroOC
+                orderby adjudicacion.FechaCreacion descending
+                select adjudicacion;
+
+            return adjudicacionQry.FirstOrDefault();
+        }
     }
 }
