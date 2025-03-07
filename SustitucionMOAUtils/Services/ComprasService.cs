@@ -257,6 +257,7 @@ namespace SustitucionMOAUtils.Services
             pliegoEntity = GuardarEspecificacionesTecnicasPliego(solp, rutaArchivos, pliegoEntity);
             if (!esPliegoMultiple)
             {
+                pliegoEntity.NombreObra = solp.NombreDeObra;
                 solp = GuardarAdjuntosSolp(solp, adjuntos, pliegoEntity);
             }
 
