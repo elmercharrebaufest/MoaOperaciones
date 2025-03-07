@@ -1713,7 +1713,6 @@ namespace SustitucionMOAUtils.Services
                 {
                     continue;
                 }
-                var mailUsuarioSolicitante = solpACertificar.UsuarioCreacion.Mail;
 
                 try
                 {
@@ -1721,7 +1720,7 @@ namespace SustitucionMOAUtils.Services
 
                     if (crearESParamsDto.EntrySheetServices.Items.Any())
                     {
-                        CrearEntradaServicioCertificacionAutomatica(crearESParamsDto, mailUsuarioSolicitante, solpNro, detalleOC.Proveedor);
+                        CrearEntradaServicioCertificacionAutomatica(crearESParamsDto, solpACertificar, detalleOC.Proveedor);
                     }
                 }
                 catch (Exception ex)
@@ -1729,7 +1728,7 @@ namespace SustitucionMOAUtils.Services
                     Logger.Log.Error(ex);
                     emailCertificationService.EnviarMailCertificacionAutomatica(nroOC, solpNro,
                         "No se pudo generar la certificación automática, deberá hacerlo manualmente. Error: " + ex.Message,
-                        new string[] { mailUsuarioSolicitante });
+                        new string[] { solpACertificar.UsuarioCreacion.Mail });
                 }
             }
         }
@@ -1855,21 +1854,33 @@ namespace SustitucionMOAUtils.Services
             return porcentajeACertificar ?? 0;
         }
 
-        private void CrearEntradaServicioCertificacionAutomatica(EntradaServicioCreateParamsDto crearESParamsDto,
-            string mailSolicitante, string nroSolp, string proveedorCodigo = null)
+        private void CrearEntradaServicioCertificacionAutomatica(EntradaServicioCreateParamsDto crearESParamsDto, Solp solpACertificar, string proveedorCodigo = null)
         {
             Logger.Log.Info("EntradaServicioService.CrearEntradaServicioCertificacionAutomatica");
 
-            var crearESResult = new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicio(crearESParamsDto);
+            var nroSolp = solpACertificar.NroSolp;
+            var mailUsuarioSolicitante = solpACertificar.UsuarioCreacion.Mail;
+            var mailResponsableTrabajo = solpACertificar.Pliego.Email;
 
-            if (crearESResult.Type == "I" && crearESResult.Id == "SE")
+            var crearCertificacionTemporal = !mailUsuarioSolicitante.Equals(mailResponsableTrabajo);
+
+            if (crearCertificacionTemporal)
             {
-                var nroES = GetESNumber(crearESResult.Message);
-                GuardarDatosES(crearESParamsDto, mailSolicitante, nroES, true, new List<ReporteDto>(), nroSolp, proveedorCodigo);
+                CrearEntradaServicioTemporal(crearESParamsDto, mailUsuarioSolicitante, new List<ReporteDto>(), new List<string>(), nroSolp, proveedorCodigo);
             }
             else
             {
-                throw new Exception(crearESResult.ToString());
+                var crearESResult = new CrearEntradaDeServicioConsumerMOA().CrearEntradaServicio(crearESParamsDto);
+
+                if (crearESResult.Type == "I" && crearESResult.Id == "SE")
+                {
+                    var nroES = GetESNumber(crearESResult.Message);
+                    GuardarDatosES(crearESParamsDto, mailUsuarioSolicitante, nroES, true, new List<ReporteDto>(), nroSolp, proveedorCodigo);
+                }
+                else
+                {
+                    throw new Exception(crearESResult.ToString());
+                }
             }
         }
     }
