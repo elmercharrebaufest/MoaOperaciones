@@ -451,7 +451,6 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
                         } else {
                             this.verificarCertificacionesParciales();
                         }
-
                     }
                 },
                 (error) => {
@@ -606,8 +605,10 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     guardarAdjudicacionTextos() {
+        const txtAdmiteCertifParc = this.adjudicacion.AdmiteCertificacionesParciales ? "Admite certificaciones parciales. " : "No admite certificaciones parciales. ";
+
         this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
-        this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+        this.adjudicacion.CondicionesDePago = txtAdmiteCertifParc + this.modalTexto.adjudicacion.CondicionesDePago;
         this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
         this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
