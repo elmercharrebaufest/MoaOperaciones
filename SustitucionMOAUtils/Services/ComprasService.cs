@@ -3321,7 +3321,6 @@ namespace SustitucionMOAUtils.Services
         {
             try
             {
-
                 var hoy = DateTime.Now;
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 Dictionary<int, decimal> tipodecambio = new Dictionary<int, decimal>();
@@ -3500,10 +3499,8 @@ namespace SustitucionMOAUtils.Services
                                                                 Moneda = grupo.Key,
                                                                 Total = grupo.Sum(sub => sub.PrecioTotalSubPos).ToString("N2")
                                                             }).ToList();
-
                         }
                     }
-
                 }
 
                 todasLasOfertas.VerBotonVerPrecio = noSolicitoVerPrecios && esAdmin && todasLasOfertas.Usuarios.Any(a => !a.VerImportes);
@@ -3516,8 +3513,7 @@ namespace SustitucionMOAUtils.Services
                         .Append(ObservacionesCotizacionSolp.NroSolp)
                         .Append(": ")
                         .Append(ObservacionesCotizacionSolp.ObservacionesCotizacionCondEsp)
-                        .Append("\n") // no usar AppendNewLine
-                        ;
+                        .Append("\n"); // no usar AppendNewLine
                 }
                 todasLasOfertas.SolpDto.ObservacionesCotizacionCondEsp = ObservacionesCotizacionCondEspBuilder.ToString();
 
@@ -3543,8 +3539,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"ListarOfertasComprador {e.Message}");
-                Log.Error(e);
+                Log.Error($"Error al listar ofertas comprador con PeticionOferta_Id={PeticionOferta_Id}", e);
                 throw;
             }
         }

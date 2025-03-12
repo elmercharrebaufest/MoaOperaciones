@@ -168,7 +168,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
             this.blockUI.start('Cargando...');
             this.subscription = this.service.getListarOfertasComprador(peticionOferta_Id).subscribe(
                 (result) => {
-                    let peticionDto: PeticionDeOfertaDto = this.manejarErroresApiResponse(result);
+                    let peticionDto = this.manejarErroresApiResponse(result);
                     if (peticionDto) {
                         this.tablaOfertas = peticionDto;
                         if (peticionDto.NrosSolp && peticionDto.NrosSolp.length > 1) {
@@ -947,7 +947,7 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     verificarCertificacionesParciales() {
-        if (this.esTipoSolpMateriales()) {
+        if (this.esTipoSolpMateriales() || this.tablaOfertas.TrabajoHecho === true) {
             this.confirmacionAdjudicar();
         }
         else {
