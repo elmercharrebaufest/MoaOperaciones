@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.Dto;
+using SustitucionMOASecurity;
 using SustitucionMOAUtils.Interfaces;
 using SustitucionMOAUtils.Logger;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Front(FrontLoggerRequestDto data)
         {
+            data.User = SessionPersister.getUsername();
             Log.FrontError(data);
             return JsonCustom(true);
         }
