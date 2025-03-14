@@ -81,7 +81,9 @@ namespace SustitucionMOAUtils.Services.Email
                 }
 
                 var descripcionSolp = !string.IsNullOrEmpty(solp.Pliego?.NombreObra) ? solp.Pliego.NombreObra : solp.Posiciones.First().Tarea;
-                var asunto = $"{(solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" : "Nueva SOLP liberada")}: {solp.NroSolp} - {descripcionSolp}" +
+                var tituloAsunto = solp.TrabajoYaHecho == true ? "Nueva SOLP de trabajo ya hecho liberada" :
+                    (solp.ConPresupuesto ? "Nueva SOLP con presupuesto liberada" : "Nueva SOLP liberada");
+                var asunto = $"{tituloAsunto}: {solp.NroSolp} - {descripcionSolp}" +
                     (solp.Adicional == true ? $" - con Adicional OC: {solp.NroOrdenDeCompraAdicional}" : "");
                 var enviarA = new List<string> { solp.UsuarioCompras.Mail };
 

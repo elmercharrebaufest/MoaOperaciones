@@ -19,6 +19,7 @@
     [TipoSolpSap] INT NULL, 
     [EmailLinkToken] UNIQUEIDENTIFIER NULL, 
     [TrabajoYaHecho] BIT NULL, 
+    [ConPresupuesto] BIT NOT NULL DEFAULT 0,
     [ProveedorAsignado_Id] INT NULL, 
     [Adicional] BIT NULL, 
     [NroOrdenDeCompraAdicional] VARCHAR(10) NULL, 

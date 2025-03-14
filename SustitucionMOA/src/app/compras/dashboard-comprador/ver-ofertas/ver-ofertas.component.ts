@@ -605,8 +605,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     guardarAdjudicacionTextos() {
+        const txtCondPago = (this.tablaOfertas.SolpDto.CertificacionAutomatica ?
+            "* Certificaciones automáticas\n* Forma de facturar: ver NOTA V condiciones predeterminadas\n " : "") + this.modalTexto.adjudicacion.CondicionesDePago;
+
         this.adjudicacion.CondicionesDeEntrega = this.modalTexto.adjudicacion.CondicionesDeEntrega;
-        this.adjudicacion.CondicionesDePago = this.modalTexto.adjudicacion.CondicionesDePago;
+        this.adjudicacion.CondicionesDePago = txtCondPago;
         this.adjudicacion.Garantias = this.modalTexto.adjudicacion.Garantias;
         this.adjudicacion.TextoDeCabecera = this.modalTexto.adjudicacion.TextoDeCabecera;
     }
@@ -766,7 +769,11 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
     }
 
     verificarCondicionEspecial(): boolean {
-        return this.tablaOfertas.SolpDto.Urgencia == true || this.tablaOfertas.SolpDto.Adicional == true || this.tablaOfertas.SolpDto.TrabajoYaHecho == true || this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true
+        return this.tablaOfertas.SolpDto.Urgencia == true ||
+            this.tablaOfertas.SolpDto.Adicional == true ||
+            this.tablaOfertas.SolpDto.TrabajoYaHecho == true ||
+            this.tablaOfertas.SolpDto.CondEspProveedorAsignado == true ||
+            this.tablaOfertas.SolpDto.ConPresupuesto == true
     }
 
     setTextoCondicionEspecial(): void {

@@ -350,7 +350,8 @@ namespace SustitucionMOAUtils.Services
                     Pliego = new Pliego(),
                     Posiciones = new List<SolpPosicion>(),
                     TrabajoYaHecho = solp.TrabajoYaHecho,
-                    CertificacionAutomatica = solp.TrabajoYaHecho == true && solp.CertificacionAutomatica,
+                    ConPresupuesto = solp.ConPresupuesto,
+                    CertificacionAutomatica = solp.CertificacionAutomatica,
                     CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                     Adicional = solp.Adicional,
                     Urgencia = solp.Urgencia,
@@ -382,7 +383,7 @@ namespace SustitucionMOAUtils.Services
                 solpEntity.EstadoPasos = solp.EstadoPasos;
                 solpEntity.TipoSolpSap = solp.TipoSolpSap;
                 solpEntity.TrabajoYaHecho = solp.TrabajoYaHecho;
-                solpEntity.CertificacionAutomatica = solp.TrabajoYaHecho == true && solp.CertificacionAutomatica;
+                solpEntity.CertificacionAutomatica = solp.CertificacionAutomatica;
                 solpEntity.CondEspProveedorAsignado = solp.CondEspProveedorAsignado;
                 solpEntity.Adicional = solp.Adicional;
                 solpEntity.Urgencia = solp.Urgencia;
@@ -410,7 +411,7 @@ namespace SustitucionMOAUtils.Services
 
             if (solpEntity.LiberadoresSapSolp.Any())
                 repositorio.RemoverTodos(solpEntity.LiberadoresSapSolp.ToList());
-            if (solp.TrabajoYaHecho != true && solp.LiberadoresSapSolp.Any())
+            if (solp.TrabajoYaHecho != true && !solp.ConPresupuesto && solp.LiberadoresSapSolp.Any())
             {
                 solpEntity.LiberadoresSapSolp = solp.LiberadoresSapSolp.ConvertAll(dto => new LiberadorSapSolp
                 {
@@ -962,7 +963,8 @@ namespace SustitucionMOAUtils.Services
                         pos.CantidadSubposicionesEnSAP = pos.Subposiciones.Count;
                         pos.EsConcluido = true;
                     }
-                    if (solpEntity.TrabajoYaHecho == true && (solpEntity.EstadoSolpSap?.CodigoSap == "05" || solpEntity.EstadoSolpSap?.CodigoSap == "02"))
+                    if ((solpEntity.TrabajoYaHecho == true || solpEntity.ConPresupuesto) &&
+                        (solpEntity.EstadoSolpSap?.CodigoSap == "05" || solpEntity.EstadoSolpSap?.CodigoSap == "02"))
                     {
                         ActualizarOfertasAlEditarSolpLiberada(solpEntity);
                     }
@@ -1005,7 +1007,7 @@ namespace SustitucionMOAUtils.Services
             var cotizacion = repositorio.Obtener<Cotizacion>(x => x.PeticionDeOfertaUsuario_Id == peticionUsuarioId);
             var cotizaciones = new List<Cotizacion> { cotizacion };
             ActualizarPosicionesDePeticionDeOferta(solpEntity, peticionDeOfertaSolpPosicion);
-            AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solpEntity);
+            AgregarPosicionACotizacionTrabajoYaHechoOPresupuestado(cotizaciones, solpEntity);
         }
 
         private void ActualizarPosicionesDePeticionDeOferta(Solp solpEntity, List<PeticionDeOfertaSolpPosicion> peticionPosiciones)
@@ -1027,7 +1029,7 @@ namespace SustitucionMOAUtils.Services
 
         private void ActualizarPeticionDeOfertaAlEditarSolp(Solp solpEntity, bool actualizarEstadoCotizacion = false)
         {
-            if (solpEntity.Posiciones.First().TipoPosicion.Codigo == "MATERIALES" && solpEntity.TrabajoYaHecho == false)
+            if (solpEntity.Posiciones.First().TipoPosicion.Codigo == "MATERIALES" && solpEntity.TrabajoYaHecho == false && !solpEntity.ConPresupuesto)
             {
                 return;
             }
@@ -1307,6 +1309,7 @@ namespace SustitucionMOAUtils.Services
                 ClaseDocumento = solp.ClaseDocumento != null ? new TablaSapDto(solp.ClaseDocumento) : new TablaSapDto(),
                 ProveedorAsignado_Id = solp.ProveedorAsignado_Id,
                 TrabajoYaHecho = solp.TrabajoYaHecho,
+                ConPresupuesto = solp.ConPresupuesto,
                 CertificacionAutomatica = solp.CertificacionAutomatica,
                 CondEspProveedorAsignado = solp.CondEspProveedorAsignado,
                 Adicional = solp.Adicional,
@@ -2004,12 +2007,12 @@ namespace SustitucionMOAUtils.Services
 
             if (!peticiones.Any())
             {
-                if (solp.TrabajoYaHecho == true)
+                if (solp.TrabajoYaHecho == true || solp.ConPresupuesto)
                 {
-                    CrearCotizacionConTrabajoYaHecho(solp);
+                    CrearCotizacionConTrabajoYaHechoOPresupuestado(solp);
                 }
 
-                if ((solp.TrabajoYaHecho != true && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
+                if ((solp.TrabajoYaHecho != true && !solp.ConPresupuesto && solp.Adicional == true) || solp.CondEspProveedorAsignado == true)
                 {
                     CrearPeticionAutomatica(solp, new List<int> { solp.ProveedorAsignado_Id.Value }, null, false);
                 }
@@ -2022,10 +2025,11 @@ namespace SustitucionMOAUtils.Services
 
             if (esServicio && solp.Posiciones.Any(x => x.Peticiones.Any()))
             {
-                ActualizarPeticionDeOfertaAlEditarSolp(solp, solp.TrabajoYaHecho != true);
+                var actualizarEstadoCotizacion = solp.TrabajoYaHecho != true && !solp.ConPresupuesto;
+                ActualizarPeticionDeOfertaAlEditarSolp(solp, actualizarEstadoCotizacion);
                 if (cotizaciones?.Count > 0 && solp.TieneModificaciones == true)
                 {
-                    if (solp.TrabajoYaHecho != true)
+                    if (solp.TrabajoYaHecho != true && !solp.ConPresupuesto)
                     {
                         solp.TieneModificaciones = false;
                         if (solp.EnvioCircularA != null && solp.EnvioCircularA != EnviarCircularEnum.NoEnviar)
@@ -2035,12 +2039,13 @@ namespace SustitucionMOAUtils.Services
                     }
                     else
                     {
-                        AgregarPosicionACotizacionTrabajoYaHecho(cotizaciones, solp);
+                        AgregarPosicionACotizacionTrabajoYaHechoOPresupuestado(cotizaciones, solp);
                     }
                 }
             }
 
-            if (solp.UsuarioCompras != null && esServicio && enviarMail && (solp.Urgencia != true || solp.Urgencia == true && solp.TrabajoYaHecho == true))
+            if (solp.UsuarioCompras != null && esServicio && enviarMail &&
+                (solp.Urgencia != true || solp.Urgencia == true && (solp.TrabajoYaHecho == true || solp.ConPresupuesto)))
             {
                 try
                 {
@@ -2517,7 +2522,6 @@ namespace SustitucionMOAUtils.Services
                                 CompletarTipoImputacion(ordenes, centrosDeCosto, centrosDeBeneficio, tipoImputacion, tipoImputacionPosicion, posicionEntity);
                             }
 
-
                             var material = materialesSap.Where(a => a.CodigoSap == posicion.Material && a.Centro_Id == posicionEntity.Centro_Id).FirstOrDefault();
                             posicionEntity.MaterialSolp_Id = material?.Id;
 
@@ -2531,9 +2535,7 @@ namespace SustitucionMOAUtils.Services
                         var numerosExistentes = subPosicionesDeLaPosicion.Select(a => Int32.Parse(a.SumeroSubPosicion) / 10).ToList();
 
                         var eliminadas = posicionEntity.Subposiciones.Where(a => !numerosExistentes.Contains(a.Numero)).Select(a => a.Numero);
-                        //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob numerosExistentes " + numerosExistentes.ToJson());
-                        //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob posicionEntity.Subposiciones " + posicionEntity.Subposiciones.Select(a => a.Numero).ToJson());
-                        //Logger.Log.Info($"ObtenerSolpesDesdeSAPJob eliminadas " + eliminadas.Count());
+
                         foreach (var nro in eliminadas)
                         {
                             var item = posicionEntity.Subposiciones.Where(a => nro == a.Numero).Single();
@@ -2621,9 +2623,9 @@ namespace SustitucionMOAUtils.Services
                         solp.Posiciones.Add(posicionEntity);
 
                         if (solp.Id == 0)
+                        {
                             repositorio.Agregar(solp);
-
-
+                        }
                     }
                     catch (Exception e)
                     {
@@ -2632,7 +2634,6 @@ namespace SustitucionMOAUtils.Services
                         ErroToMail(e, asunto);
                     }
                 }
-
 
 
                 if (subPosicionesBorradas.Any())
@@ -2672,13 +2673,13 @@ namespace SustitucionMOAUtils.Services
 
                     if ((result.Archivos.Count == 0 || solp.Pliego.Archivos == null) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                        EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
                             $"Recuerde ingresar un adjunto para completar la SOLP.");
                     }
 
                     if (string.IsNullOrEmpty(result.ObservacionesGeneracion) && ValidarCondicionEspecialArchivosYObservaciones(solp))
                     {
-                        EnviarMailErrorCondicionEspecial(solp, $"Se genero la SOLP con condiciones especiales. " +
+                        EnviarMailErrorCondicionEspecial(solp, $"Se generó la SOLP con condiciones especiales. " +
                             $"Recuerde ingresar la justificacion para completar la SOLP.");
                     }
                 }
@@ -2689,7 +2690,7 @@ namespace SustitucionMOAUtils.Services
 
                 repositorio.GuardarCambios();
                 ValidarSolpAnulada(obtenerSolpRequest.NumeroSolp);
-                Logger.Log.Info($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
+                Log.Info($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
 
                 //actualizo el estado en la creacion/actualizacion del la solp
                 //foreach (var resultPosicion in result.Posiciones)
@@ -2704,12 +2705,11 @@ namespace SustitucionMOAUtils.Services
             catch (Exception e)
             {
                 var asunto = $"ObtenerSolpesDesdeSAPJob ERROR - NumeroSolp: {obtenerSolpRequest.NumeroSolp}";
-                Logger.Log.Error(asunto, e);
+                Log.Error(asunto, e);
                 ErroToMail(e, asunto);
                 throw;
             }
             Debug.WriteLine($"ObtenerSolpesDesdeSAPJob FIN - NumeroSolp: {obtenerSolpRequest.NumeroSolp}");
-
         }
 
         private void ErroToMail(Exception e, string asunto)
@@ -2870,7 +2870,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarCondicionEspecial(Solp solp)
         {
-            bool isOk = solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
+            bool isOk = solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.CondEspProveedorAsignado == true;
 
             if ((solp.TrabajoYaHecho == true) && (solp.Urgencia == true) && (solp.THAjustePolinomica == true))
             {
@@ -2882,7 +2882,7 @@ namespace SustitucionMOAUtils.Services
 
         private bool ValidarCondicionEspecialArchivosYObservaciones(Solp solp)
         {
-            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true;
+            return solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.CondEspProveedorAsignado == true || solp.Urgencia == true;
         }
 
         private void GrabarArchivosSapEnPliego(Solp solp, List<ArchivoSolpDto> archivos)
@@ -3010,19 +3010,21 @@ namespace SustitucionMOAUtils.Services
                         break;
                     case "S":
                         solp.TrabajoYaHecho = true;
+                        solp.CertificacionAutomatica = true;
                         solp.THServicioPermanente = true;
                         break;
                     case "L":
                         solp.TrabajoYaHecho = true;
+                        solp.CertificacionAutomatica = true;
                         solp.THAjustePolinomica = true;
                         break;
                     case "D":
                         solp.TrabajoYaHecho = true;
+                        solp.CertificacionAutomatica = true;
                         solp.THProveedorDirecto = true;
                         break;
                     case "C":
-                        solp.TrabajoYaHecho = true;
-                        solp.CertificacionAutomatica = true;
+                        solp.ConPresupuesto = true;
                         break;
                     case "U":
                         solp.Urgencia = true;
@@ -5967,11 +5969,11 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void AgregarPosicionACotizacionTrabajoYaHecho(List<Cotizacion> cotizaciones, Solp solp)
+        private void AgregarPosicionACotizacionTrabajoYaHechoOPresupuestado(List<Cotizacion> cotizaciones, Solp solp)
         {
             try
             {
-                if (solp.TrabajoYaHecho == true)
+                if (solp.TrabajoYaHecho == true || solp.ConPresupuesto)
                 {
                     var posiciones = solp.Posiciones.Where(x => x.Estado);
                     var posicionesId = posiciones.Select(x => x.Id);
@@ -6053,8 +6055,7 @@ namespace SustitucionMOAUtils.Services
             }
             catch (Exception e)
             {
-                Logger.Log.Info($"Error al AgregarPosicionACotizacionTrabajoYaHecho");
-                Logger.Log.Error(e);
+                Log.Error("Error al AgregarPosicionACotizacionTrabajoYaHechoOPresupuestado", e);
             }
         }
 
@@ -6685,7 +6686,7 @@ namespace SustitucionMOAUtils.Services
             return montoTotal;
         }
 
-        public PeticionDeOferta CrearCotizacionConTrabajoYaHecho(Solp solp)
+        public PeticionDeOferta CrearCotizacionConTrabajoYaHechoOPresupuestado(Solp solp)
         {
             //Crear Peticion 
             var usuariosIds = new List<int> { solp.ProveedorAsignado_Id.Value };
@@ -6698,7 +6699,7 @@ namespace SustitucionMOAUtils.Services
                 Usuario_Id = peticionEntidad.UsuarioCreador_Id,
                 Fecha = DateTime.Now,
                 RecotizacionEconomica = false,
-                ObservacionRecotizacion = "Trabajo ya hecho",
+                ObservacionRecotizacion = solp.ConPresupuesto ? "Con presupuesto" : "Trabajo ya hecho",
                 Finalizada = true,
                 FechaFinalizacion = DateTime.Now
             };
@@ -7607,12 +7608,12 @@ namespace SustitucionMOAUtils.Services
 
         public bool TieneCondicionEspecial(Solp solp)
         {
-            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
+            return solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
         }
 
         public bool TieneCondicionEspecial(SolpDto solp)
         {
-            return solp.TrabajoYaHecho == true || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
+            return solp.TrabajoYaHecho == true || solp.ConPresupuesto || solp.Adicional == true || solp.Urgencia == true || solp.CondEspProveedorAsignado == true;
         }
 
         public void ObtenerDatosReporteSolp()
@@ -8717,7 +8718,7 @@ namespace SustitucionMOAUtils.Services
                 var peticionDeOfertaSolpPosicion = repositorio.Listar<PeticionDeOfertaSolpPosicion>(x => x.PeticionDeOferta_Id.ToString() == po && posicionesIds.Contains(x.SolpPosicion_Id));
                 repositorio.RemoverTodos(peticionDeOfertaSolpPosicion);
                 repositorio.GuardarCambios();
-                var peticion = CrearCotizacionConTrabajoYaHecho(posiciones.FirstOrDefault().Solp);
+                var peticion = CrearCotizacionConTrabajoYaHechoOPresupuestado(posiciones.FirstOrDefault().Solp);
                 resultado.IdEntidad = peticion.Id;
                 return resultado;
             }

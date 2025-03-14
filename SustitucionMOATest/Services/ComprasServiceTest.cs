@@ -1466,7 +1466,7 @@ namespace SustitucionMOATest.Services
            .Returns(new ObtenerSolpSAPResponse { Posiciones = new List<PosicionSolpSAP> { new PosicionSolpSAP { NumeroPosicion = "1", Cantidad = 22, Ordered = 0, NumeroSolicitud = "1" } } });
 
 
-            var result = target.CrearCotizacionConTrabajoYaHecho(SolpToClone());
+            var result = target.CrearCotizacionConTrabajoYaHechoOPresupuestado(SolpToClone());
 
             repositorioMock.Verify(x => x.GuardarCambios(), Times.Exactly(6));
         }

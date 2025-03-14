@@ -365,6 +365,7 @@ export class ComprasService extends BaseService {
             ObservacionesCotizacionCondEsp: solp.observacionesCotizacionCondEsp,
             ProveedorAsignado_Id: solp.proveedorAsignado_Id,
             TrabajoYaHecho: solp.trabajoHecho,
+            ConPresupuesto: solp.conPresupuesto,
             CertificacionAutomatica: solp.certificacionAutomatica,
             Adicional: solp.adicional,
             Urgencia: solp.urgencia,

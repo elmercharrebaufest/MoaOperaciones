@@ -35,6 +35,8 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     {
                                         Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
                                         TrabajoYaHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                        ConPresupuesto = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto,
+                                        CertificacionAutomatica = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CertificacionAutomatica,
                                         Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                         CondEspProveedorAsignado = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.CondEspProveedorAsignado,
                                         ObservacionesCotizacionLista =

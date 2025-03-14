@@ -9,14 +9,9 @@ namespace SustitucionMOAModel.Util
         private const string none = "";
 
         /// <summary>
-        /// Trabajo ya hecho. Sin certificación automática
+        /// Trabajo ya hecho
         /// </summary>
         private const string TR = "TR-";
-
-        /// <summary>
-        /// Trabajo ya hecho. Con certificación automática
-        /// </summary>
-        private const string TRC = "TRC-";
 
         /// <summary>
         /// Proveedor asignado
@@ -39,19 +34,9 @@ namespace SustitucionMOAModel.Util
         private const string AOR = "AOR-";
 
         /// <summary>
-        /// Trabajo ya hecho y Adicional. Con Certificación automática
-        /// </summary>
-        private const string AORC = "AORC-";
-
-        /// <summary>
         /// Trabajo ya hecho y Urgencia
         /// </summary>
         private const string TUR = "TUR-";
-
-        /// <summary>
-        /// Trabajo ya hecho y Urgencia. Con Certificación automática
-        /// </summary>
-        private const string TURC = "TURC-";
 
         /// <summary>
         /// Trabajo ya hecho y Servicio permanente. Sin Adicional ni Urgencia
@@ -59,19 +44,9 @@ namespace SustitucionMOAModel.Util
         private const string SP = "SP-";
 
         /// <summary>
-        /// Trabajo ya hecho y Servicio permanente. Sin Adicional ni Urgencia. Con Certificación automática
-        /// </summary>
-        private const string SPC = "SPC-";
-
-        /// <summary>
         /// Trabajo ya hecho y Ajuste polinómica. Sin Adicional ni Urgencia
         /// </summary>
         private const string AJ = "AJ-";
-
-        /// <summary>
-        /// Trabajo ya hecho y Ajuste polinómica. Sin Adicional ni Urgencia. Con Certificación automática
-        /// </summary>
-        private const string AJC = "AJC-";
 
         /// <summary>
         /// Trabajo ya hecho y Proveedor directo. Sin Adicional ni Urgencia
@@ -79,27 +54,40 @@ namespace SustitucionMOAModel.Util
         private const string PD = "PD-";
 
         /// <summary>
-        /// Trabajo ya hecho y Proveedor directo. Sin Adicional ni Urgencia. Con Certificación automática
+        /// Con presupuesto
         /// </summary>
-        private const string PDC = "PDC-";
+        private const string CPD = "CPD-";
+
+        /// <summary>
+        /// Con presupuesto + adicional
+        /// </summary>
+        private const string CPOR = "CPOR-";
+
+        /// <summary>
+        /// Con presupuesto + urgencia
+        /// </summary>
+        private const string CPU = "CPU-";
+
+        /// <summary>
+        /// Con presupuesto + adicional + urgencia
+        /// </summary>
+        private const string CPAU = "CPAU-";
 
         private readonly static IReadOnlyCollection<string> PrefijosValidos = new List<string>
         {
             TR,
-            TRC,
             PA,
             UR,
             AD,
             AOR,
-            AORC,
             TUR,
-            TURC,
             SP,
-            SPC,
             AJ,
-            AJC,
             PD,
-            PDC
+            CPD,
+            CPOR,
+            CPU,
+            CPAU
         }
         .AsReadOnly();
 
@@ -125,7 +113,7 @@ namespace SustitucionMOAModel.Util
 
             if (solp.TrabajoYaHecho == true)
             {
-                prefijo = solp.CertificacionAutomatica ? TRC : TR;
+                prefijo = TR;
             }
 
             if (solp.CondEspProveedorAsignado == true)
@@ -147,27 +135,50 @@ namespace SustitucionMOAModel.Util
             {
                 if (solp.Adicional == true)
                 {
-                    prefijo = solp.CertificacionAutomatica ? AORC : AOR;
+                    prefijo = AOR;
                 }
 
                 if (solp.Urgencia == true || (solp.Urgencia == true && solp.Adicional == true))
                 {
-                    prefijo = solp.CertificacionAutomatica ? TURC : TUR;
+                    prefijo = TUR;
                 }
 
                 if (solp.THServicioPermanente == true && solp.Adicional != true && solp.Urgencia != true)
                 {
-                    prefijo = solp.CertificacionAutomatica ? SPC : SP;
+                    prefijo = SP;
                 }
 
                 if (solp.THAjustePolinomica == true && solp.Adicional != true && solp.Urgencia != true)
                 {
-                    prefijo = solp.CertificacionAutomatica ? AJC : AJ;
+                    prefijo = AJ;
                 }
 
                 if (solp.THProveedorDirecto == true && solp.Adicional != true && solp.Urgencia != true)
                 {
-                    prefijo = solp.CertificacionAutomatica ? PDC : PD;
+                    prefijo = PD;
+                }
+            }
+            else
+            {
+                if (solp.ConPresupuesto)
+                {
+                    prefijo = CPD;
+
+                    if (solp.Adicional == true && solp.Urgencia == true)
+                    {
+                        prefijo = CPAU;
+                    }
+                    else
+                    {
+                        if (solp.Adicional == true)
+                        {
+                            prefijo = CPOR;
+                        }
+                        if (solp.Urgencia == true)
+                        {
+                            prefijo = CPU;
+                        }
+                    }
                 }
             }
 
