@@ -32,13 +32,22 @@ namespace SustitucionMOA.Filter
                 logInfo.Stopwatch.Stop();
                 logInfo.EndTime = DateTime.UtcNow;
                 logInfo.DurationMilliseconds = logInfo.Stopwatch.ElapsedMilliseconds;
-                if (logInfo.Method != "VerificarEstadoSesion")
+                if (MetodosAceptados())
                 {
                     SustitucionMOAWS.Logger.Log.LogRequest(logInfo.ToJson());
                 }
             }
 
             base.OnActionExecuted(filterContext);
+
+            bool MetodosAceptados()
+            {
+                return logInfo.Method != "VerificarEstadoSesion"
+                    && !(logInfo.Method == "Index" && logInfo.Controller == "Home")
+                    && !(logInfo.Method == "Front" && logInfo.Controller == "Logger")
+                    && !(logInfo.Method == "ValidarLoginAzure" && logInfo.Controller == "Home")
+                    ;
+            }
         }
 
     }
