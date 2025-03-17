@@ -341,5 +341,11 @@ namespace SustitucionMOA.Controllers
         {
             return JsonCustom(new { data = _homeService.getBusqueda(PalabraABuscar, SessionPersister.getUsername(), SessionPersister.Proveedor) });
         }
+
+        [AllowAnonymous]
+        public ActionResult Ping()
+        {
+            return new HttpStatusCodeResult(200);
+        }
     }
 }

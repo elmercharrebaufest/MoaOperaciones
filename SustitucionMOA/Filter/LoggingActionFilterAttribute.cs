@@ -44,9 +44,11 @@ namespace SustitucionMOA.Filter
             {
                 return logInfo.Method != "VerificarEstadoSesion"
                     && !(logInfo.Method == "Index" && logInfo.Controller == "Home")
+                    && !(logInfo.Method == "Ping" && logInfo.Controller == "Home")
+                    && !(logInfo.Method == "getHomeInfo" && logInfo.Controller == "Home")
+                    && !(logInfo.Method == "getHomeNGInfo" && logInfo.Controller == "Home")
                     && !(logInfo.Method == "Front" && logInfo.Controller == "Logger")
-                    && !(logInfo.Method == "ValidarLoginAzure" && logInfo.Controller == "Home")
-                    ;
+                    && !(logInfo.Method == "ValidarLoginAzure" && logInfo.Controller == "Home");
             }
         }
 
