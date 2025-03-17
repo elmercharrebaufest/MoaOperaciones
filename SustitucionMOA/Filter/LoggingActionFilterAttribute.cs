@@ -48,6 +48,7 @@ namespace SustitucionMOA.Filter
                     && !(logInfo.Method == "getHomeInfo" && logInfo.Controller == "Home")
                     && !(logInfo.Method == "getHomeNGInfo" && logInfo.Controller == "Home")
                     && !(logInfo.Method == "Front" && logInfo.Controller == "Logger")
+                    && !(logInfo.Method == "SignOut" && logInfo.Controller == "Home")
                     && !(logInfo.Method == "ValidarLoginAzure" && logInfo.Controller == "Home");
             }
         }
