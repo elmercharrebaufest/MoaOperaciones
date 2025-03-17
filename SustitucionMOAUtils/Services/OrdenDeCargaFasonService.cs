@@ -67,12 +67,11 @@ namespace SustitucionMOAUtils.Services
 
 
                 var codigoProveedorClientesRelacionados = usuario.Proveedores.Select(c => c.CodigoProveedor);
-                var tipoUsuarioId = usuario.TipoUsuario.Id;
 
                 Expression<Func<OrdenDeCargaFason, bool>> filtro = x =>
                 (esInterno || codigoProveedorClientesRelacionados.Contains(x.Cliente.CodigoProveedor))
                 && x.FechaCreacion >= fechaIncioDateTime && x.FechaCreacion <= fechaFinDateTime
-                && (esInterno || (tipoUsuarioId == 5 ? x.CorredorId == null : x.CorredorId != null));
+                && (esInterno || (request.EsCorredor ? x.CorredorId != null : x.CorredorId == null));
 
                 var listadoConFiltro = repositorioFason.ListarConsultable(filtro);
 
@@ -94,10 +93,6 @@ namespace SustitucionMOAUtils.Services
                 var response = new ListarOrdenDeCargaFasonResponse { Response = listado };
 
                 return response;
-            }
-            catch (InfoCustomException icex)
-            {
-                throw icex;
             }
             catch (Exception error)
             {

@@ -37,7 +37,8 @@ namespace SustitucionMOA.Controllers
                 {
                     MailUsuario = mailUsuario,
                     FechaDesde = fechaInicio,
-                    FechaHasta = fechaFin
+                    FechaHasta = fechaFin,
+                    EsCorredor = SessionPersister.EsCodigoDeCorredor
                 };
                 response.Data = ordenDeCargaFasonService.Listar(request);
             }
