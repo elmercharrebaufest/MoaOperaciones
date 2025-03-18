@@ -656,7 +656,6 @@
     <Content Include="src\app\ordenes-residuos\detalle\ordenes-residuos.detalle.component.html" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.css" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.html" />
-    <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.js" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.css" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
@@ -1322,7 +1321,6 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
-    <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
