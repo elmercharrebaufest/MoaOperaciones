@@ -477,8 +477,6 @@
     <Content Include="src\app\archivo-boleto\listar-archivo-boleto\listar-archivo-boleto.component.html" />
     <Content Include="src\app\common\email-compose\email-compose.component.css" />
     <Content Include="src\app\common\email-compose\email-compose.component.html" />
-    <Content Include="src\app\common\email-compose\email-compose.component.js" />
-    <Content Include="src\app\common\email-compose\email-compose.component.spec.js" />
     <Content Include="src\app\common\message-spinner\message-spinner.component.css" />
     <Content Include="src\app\common\message-spinner\message-spinner.component.html" />
     <Content Include="src\app\common\shared-components\buscador\buscador.component.css" />
@@ -494,8 +492,6 @@
     <Content Include="src\app\common\view-child\weekday-select\weekday-select.component.html" />
     <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.css" />
     <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.html" />
-    <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.js" />
-    <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.spec.js" />
     <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.css" />
     <Content Include="src\app\compras\agrupar-po-th\agrupar-po-th.component.html" />
     <Content Include="src\app\compras\chat-interno\chat-interno.component.css" />
@@ -641,12 +637,7 @@
     <Content Include="src\app\listado-novedades\listado-novedades.component.css" />
     <Content Include="src\app\listado-novedades\listado-novedades.component.html" />
     <Content Include="src\app\log-pesificacion\listado-log-pesificacion\listado-log-pesificacion.component.html" />
-    <Content Include="src\app\log-pesificacion\listado-log-pesificacion\listado-log-pesificacion.component.js" />
     <Content Include="src\app\log-pesificacion\listado-masivo\listado-log-pesificacion-masivo.component.html" />
-    <Content Include="src\app\log-pesificacion\listado-masivo\listado-log-pesificacion-masivo.component.js" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion-routing.module.js" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion-tabs.component.js" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion.module.js" />
     <Content Include="src\app\log-viewer\log-viewer.component.css" />
     <Content Include="src\app\log-viewer\log-viewer.component.html" />
     <Content Include="src\app\notificaciones\modal-notificaciones\modal-notificaciones.component.css" />
@@ -661,15 +652,11 @@
     <Content Include="src\app\ordenes-de-carga\detalle\ordenes-de-carga.detalle.component.html" />
     <Content Include="src\app\ordenes-residuos\alta\ordenes-residuos.alta.component.css" />
     <Content Include="src\app\ordenes-residuos\alta\ordenes-residuos.alta.component.html" />
-    <Content Include="src\app\ordenes-residuos\alta\ordenes-residuos.alta.component.js" />
     <Content Include="src\app\ordenes-residuos\detalle\ordenes-residuos.detalle.component.css" />
     <Content Include="src\app\ordenes-residuos\detalle\ordenes-residuos.detalle.component.html" />
-    <Content Include="src\app\ordenes-residuos\detalle\ordenes-residuos.detalle.component.js" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.css" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.html" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.js" />
-    <Content Include="src\app\ordenes-residuos\ordenes-residuos-routing.module.js" />
-    <Content Include="src\app\ordenes-residuos\ordenes-residuos.module.js" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.css" />
     <Content Include="src\app\reporte-contrato\detalle\reporte-contrato.detalle.component.html" />
     <Content Include="src\app\reporte-contrato\listado\reporte-contrato.listado.component.css" />
@@ -1335,20 +1322,7 @@
     <Content Include="src\proxy.conf.json" />
     <Content Include="src\web.config" />
     <Content Include="Template\solp-email\solp-email.hbs" />
-    <Content Include="src\app\ordenes-residuos\alta\ordenes-residuos.alta.component.js.map" />
-    <Content Include="src\app\ordenes-residuos\detalle\ordenes-residuos.detalle.component.js.map" />
     <Content Include="src\app\ordenes-residuos\listado\ordenes-residuos.listado.component.js.map" />
-    <Content Include="src\app\ordenes-residuos\ordenes-residuos-routing.module.js.map" />
-    <Content Include="src\app\ordenes-residuos\ordenes-residuos.module.js.map" />
-    <Content Include="src\app\log-pesificacion\listado-log-pesificacion\listado-log-pesificacion.component.js.map" />
-    <Content Include="src\app\log-pesificacion\listado-masivo\listado-log-pesificacion-masivo.component.js.map" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion-routing.module.js.map" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion-tabs.component.js.map" />
-    <Content Include="src\app\log-pesificacion\log-pesificacion.module.js.map" />
-    <Content Include="src\app\common\email-compose\email-compose.component.js.map" />
-    <Content Include="src\app\common\email-compose\email-compose.component.spec.js.map" />
-    <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.js.map" />
-    <Content Include="src\app\compras\agrupar-po-th\adjuntos-solp\adjuntos-solp.component.spec.js.map" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1647,6 +1621,7 @@
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.spec.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\stepper-actions\stepper-actions.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\archivo.model.ts" />
+    <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\condiciones-especiales-originales.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\cotizacion\cotizacion.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificaciones.component.ts" />
     <TypeScriptCompile Include="src\app\compras\solp\steps\especificaciones\especificacionesViewModel.ts" />
