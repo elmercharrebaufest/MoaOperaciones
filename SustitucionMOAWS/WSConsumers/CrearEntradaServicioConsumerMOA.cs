@@ -182,7 +182,7 @@ namespace SustitucionMOAWS.WSConsumers
             <OUTL_IND>{item.OutlineIndicator}</OUTL_IND>
             <SUBPCKG_NO>{item.SubPackageNumber}</SUBPCKG_NO>
             <EXT_LINE>{item.ExternalLineNumber}</EXT_LINE>
-            <SERVICE>{item.Service}</SERVICE>
+            <SERVICE>{(item.Service.Trim() == "0" ? "" : item.Service)}</SERVICE>
             <QUANTITY>{qty}</QUANTITY>
             <GR_PRICE>{gp}</GR_PRICE>
             <SHORT_TEXT>{item.ShortText}</SHORT_TEXT>
