@@ -27,7 +27,6 @@ namespace SustitucionMOATest.Controllers
         private CampoSustentableController target;
         private Mock<ICampoSustentableService> campoSustentableServiceMock;
         private Mock<IFileWrapper> fileWrapperMock;
-        private Mock<IDataAgroService> dataAgroMock;
         private string expectedJson;
         private string resultJson;
         private string mailUsuario = "mail@mail.com";
@@ -38,7 +37,6 @@ namespace SustitucionMOATest.Controllers
         {
             campoSustentableServiceMock = new Mock<ICampoSustentableService>();
             fileWrapperMock = new Mock<IFileWrapper>();
-            dataAgroMock = new Mock<IDataAgroService>();
 
             var fakeIdentity = new GenericIdentity("User");
 
@@ -51,7 +49,7 @@ namespace SustitucionMOATest.Controllers
 
             Thread.CurrentPrincipal = principal;
 
-            target = new CampoSustentableController(campoSustentableServiceMock.Object, fileWrapperMock.Object, dataAgroMock.Object);
+            target = new CampoSustentableController(campoSustentableServiceMock.Object, fileWrapperMock.Object);
         }
 
         [Test()]
