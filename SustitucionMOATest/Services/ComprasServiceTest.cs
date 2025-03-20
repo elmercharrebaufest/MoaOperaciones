@@ -52,6 +52,7 @@ namespace SustitucionMOATest.Services
         private Mock<IObtenerPDFOrdenCompraConsumerMOA> obtenerPDFOrdenCompraConsumerMOAMock;
         private Mock<IListarSolpPendientesConsumerMOA> listarSolpPendientesConsumerMOAMock;
         private Mock<IObtenerAdjuntosSOLPEDConsumerMOA> obtenerAdjuntosSOLPEDConsumerMOAMock;
+        private Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA> mIObtenerOrdenesDeCompraParaSOLPConsumerMOA;
         private Mock<IEmailComprasService> mIEmailComprasService;
         private Mock<IComprasArchivosService> mIComprasArchivosService;
         private Mock<IComprasArchivosImportService> mIComprasArchivosImportService;
@@ -739,6 +740,7 @@ namespace SustitucionMOATest.Services
             listarSolpPendientesConsumerMOAMock = new Mock<IListarSolpPendientesConsumerMOA>();
             obtenerPDFOrdenCompraConsumerMOAMock = new Mock<IObtenerPDFOrdenCompraConsumerMOA>();
             obtenerAdjuntosSOLPEDConsumerMOAMock = new Mock<IObtenerAdjuntosSOLPEDConsumerMOA>();
+            mIObtenerOrdenesDeCompraParaSOLPConsumerMOA = new Mock<IObtenerOrdenesDeCompraParaSOLPConsumerMOA>();
             mIEmailComprasService = new Mock<IEmailComprasService>();
             mIComprasArchivosService = new Mock<IComprasArchivosService>();
             mIComprasArchivosImportService = new Mock<IComprasArchivosImportService>();
@@ -767,6 +769,7 @@ namespace SustitucionMOATest.Services
                 reporteOrdenDeCompraConsumerMOAMock.Object,
                 obtenerPDFOrdenCompraConsumerMOAMock.Object,
                 obtenerAdjuntosSOLPEDConsumerMOAMock.Object,
+                mIObtenerOrdenesDeCompraParaSOLPConsumerMOA.Object,
                 centroDireccionServiceMock.Object,
                 tablaSapServiceMock.Object,
                 unidadMedidaServiceMock.Object,
@@ -1733,9 +1736,9 @@ namespace SustitucionMOATest.Services
         [Test]
         public void GrabarRevisionTecnicaOk()
         {
-            var peticiones = new List<PeticionDeOfertaUsarioDto>
+            var peticiones = new List<PeticionDeOfertaUsuarioDto>
             {
-                new PeticionDeOfertaUsarioDto
+                new PeticionDeOfertaUsuarioDto
                  {
                    Id = 1
                  }
@@ -1763,9 +1766,9 @@ namespace SustitucionMOATest.Services
         [Test]
         public void GrabarRevisionTecnicaFinalizarTrueOk()
         {
-            var peticiones = new List<PeticionDeOfertaUsarioDto>
+            var peticiones = new List<PeticionDeOfertaUsuarioDto>
             {
-                new PeticionDeOfertaUsarioDto
+                new PeticionDeOfertaUsuarioDto
                  {
                    Id = 1,
                    PlazoDeOferta = DateTime.Now.AddDays(-5)
@@ -2657,7 +2660,7 @@ namespace SustitucionMOATest.Services
                 CotizacionId = 1,
                 Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
                 TipoPosicionCodigo = "MATERIALES",
-                Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
+                Usuarios = new List<PeticionDeOfertaUsuarioDto> { new PeticionDeOfertaUsuarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
                 Id = 1, PeticionDeOfertaSolpPosicion_Id = 1, Cantidad = 2, Precio = 500, UnidadMedida = new TablaSapDto { Descripcion = "UNI" }, TotalPesos = 1000 } } } } },
                 PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> {
                     new PeticionDeOfertaSolpPosicionDto { Id = 1,
@@ -2850,7 +2853,7 @@ namespace SustitucionMOATest.Services
                 .Returns(new List<PeticionDeOfertaDto> { new PeticionDeOfertaDto {  CotizacionId = 1,
                 Cotizacion = new CotizacionDto { ArchivosCotizacion = null },
                 TipoPosicionCodigo = "MATERIALES",
-                Usuarios = new List<PeticionDeOfertaUsarioDto> { new PeticionDeOfertaUsarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
+                Usuarios = new List<PeticionDeOfertaUsuarioDto> { new PeticionDeOfertaUsuarioDto { Cotizacion = new CotizacionDto { CotizacionPosiciones = new List<CotizacionPosicionDto> { new CotizacionPosicionDto {
                 Id = 1, PeticionDeOfertaSolpPosicion_Id = 1, Cantidad = 2, Precio = 500, UnidadMedida = new TablaSapDto { Descripcion = "UNI" }, TotalPesos = 1000 } } } } },
                 PeticionDeOfertaPosicion = new List<PeticionDeOfertaSolpPosicionDto> {
                     new PeticionDeOfertaSolpPosicionDto { Id = 1, Posicion = new SolpPosicionDto { Unidad = new TablaSapDto { Descripcion = "PAR" }, CodigoMaterialSap = new MaterialSolpDto { Codigo = "000000000050224373" } }, Posiciones = new SolpPosicionDto { Codigo = "000000000050224373" } }

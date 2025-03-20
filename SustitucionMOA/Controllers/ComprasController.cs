@@ -582,7 +582,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult GrabarRevisionTecnica(string json, bool finalizar, string jsonRevision)
         {
-            var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsarioDto>>(json);
+            var peticionDeOfertaUsuarioDto = JsonConvert.DeserializeObject<List<PeticionDeOfertaUsuarioDto>>(json);
             var revision = JsonConvert.DeserializeObject<PeticionDeOfertaRevisionTecnicaDto>(jsonRevision);
 
             var result = service.GrabarRevisionTecnica(peticionDeOfertaUsuarioDto, ObtenerUsuarioActual().Id, finalizar, revision);
@@ -616,10 +616,8 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerAdjudicacion(string nroOC)
         {
-
-            var result = comprasSapService.ObtenerAdjudicacion(nroOC);
+            var result = service.ObtenerAdjudicacion(nroOC);
             return JsonCustom(new { data = result });
-
         }
 
         [HttpGet]
@@ -1185,6 +1183,13 @@ namespace SustitucionMOA.Controllers
                 Data = service.ProcesarArchivoPrecargaSolp(archivo, tipoSolpId)
             };
             return ContentCustom(response);
+        }
+
+        [HttpPost]
+        public ActionResult GuardarCertificacionesParciales(List<AdjudicacionDto> adjudicaciones)
+        {
+            service.GuardarCertificacionesParciales(adjudicaciones);
+            return JsonCustom(new SustitucionMOAApiResponse());
         }
     }
 }

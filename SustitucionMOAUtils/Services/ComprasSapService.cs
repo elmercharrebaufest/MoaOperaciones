@@ -40,6 +40,7 @@ namespace SustitucionMOAUtils.Services
         private readonly IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA;
         private readonly IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA;
         private readonly IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA;
+        private readonly IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA;
 
         private readonly ICentroDireccionService centroDireccionService;
         private readonly ITablaSapService tablaSapService;
@@ -63,6 +64,7 @@ namespace SustitucionMOAUtils.Services
                                  IReporteOrdenDeCompraConsumerMOA reporteOrdenDeCompraConsumerMOA,
                                  IObtenerPDFOrdenCompraConsumerMOA obtenerPDFOrdenCompraConsumerMOA,
                                  IObtenerAdjuntosSOLPEDConsumerMOA obtenerAdjuntosSOLPEDConsumerMOA,
+                                 IObtenerOrdenesDeCompraParaSOLPConsumerMOA obtenerOrdenesDeCompraParaSOLPConsumerMOA,
                                  ICentroDireccionService centroDireccionService,
                                  ITablaSapService tablaSapService,
                                  IUnidadMedidaService unidadMedidaService,
@@ -90,6 +92,7 @@ namespace SustitucionMOAUtils.Services
             this.tipoCambioService = tipoCambioService;
             this.obtenerPDFOrdenCompraConsumerMOA = obtenerPDFOrdenCompraConsumerMOA;
             this.obtenerAdjuntosSOLPEDConsumerMOA = obtenerAdjuntosSOLPEDConsumerMOA;
+            this.obtenerOrdenesDeCompraParaSOLPConsumerMOA = obtenerOrdenesDeCompraParaSOLPConsumerMOA;
         }
 
         public SolpSAPDto ConvertirSOLPSAP(Solp solpActual)
@@ -1203,6 +1206,19 @@ namespace SustitucionMOAUtils.Services
             return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
         }
 
+        public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(int solpId, string solpNro, List<int> posicionesIds)
+        {
+            var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
+
+            foreach (var idPos in posicionesIds)
+            {
+                var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(solpNro, idPos.ToString());
+                ordenesDeCompraSap.AddRange(ordenesSapResp);
+            }
+
+            return ordenesDeCompraSap;
+        }
+
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)
         {
             return new AdjudicacionEditarDto
@@ -1343,7 +1359,5 @@ namespace SustitucionMOAUtils.Services
             }
             return false;
         }
-
-
     }
 }

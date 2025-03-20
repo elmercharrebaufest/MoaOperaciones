@@ -285,6 +285,35 @@ export class VerOfertasComponent extends ListBaseComponent implements OnInit {
         this.displayPanelHs = false;
     }
 
+    guardarCertificacionesParciales() {
+        let adjudicaciones: AdjudicacionDto[] = [];
+        if (this.tablaOfertas.Usuarios) {
+            this.tablaOfertas.Usuarios.forEach((poUsuario, i, arr) => {
+                if (poUsuario.Cotizacion && poUsuario.Cotizacion.Adjudicaciones) {
+                    adjudicaciones.push(...poUsuario.Cotizacion.Adjudicaciones);
+                }
+            });
+        }
+
+        try {
+            this.blockUI.start();
+            this.subscription = this.service.GuardarCertificacionesParciales(adjudicaciones).subscribe(
+                (result) => {
+                    this.manejarErroresApiResponse(result);
+                    this.blockUI.stop();
+                },
+                error => {
+                    this.floatMsgService.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            );
+        }
+        catch (err) {
+            this.floatMsgService.setErrorMsg(err);
+            this.blockUI.stop();
+        }
+    }
+
     crearAdjudicacion(usuario: PeticionDeOfertaUsarioDto) {
         this.lista = []
         this.usuario = usuario;
