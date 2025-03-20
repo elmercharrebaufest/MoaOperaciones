@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SustitucionMOAAssets;
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.CampoSustentable;
 using SustitucionMOAModel.Entities;
@@ -21,13 +20,11 @@ namespace SustitucionMOA.Controllers
     {
         readonly ICampoSustentableService campoSustentableService;
         private readonly IFileWrapper fileWrapper;
-        private readonly IDataAgroService dataAgroService;
 
-        public CampoSustentableController(ICampoSustentableService campoSustentableService, IFileWrapper fileWrapper, IDataAgroService dataAgroService)
+        public CampoSustentableController(ICampoSustentableService campoSustentableService, IFileWrapper fileWrapper)
         {
             this.campoSustentableService = campoSustentableService;
             this.fileWrapper = fileWrapper;
-            this.dataAgroService = dataAgroService;
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.ABM_CAMPOS_SUSTENTABLE)]
