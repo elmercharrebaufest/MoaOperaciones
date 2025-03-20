@@ -137,7 +137,7 @@ namespace SustitucionMOA.Controllers
 
         private UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
 
@@ -430,7 +430,7 @@ namespace SustitucionMOA.Controllers
 
             return JsonCustom(new
             {
-                data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.getUsername(), fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
+                data = service.ListarPOProveedor(paginacion, nroSolp, nroPo, nombrePedido, SessionPersister.Mail, fechaDesde, fechaHasta, estadoLicitacion, estadoCotizacion)
             });
 
         }
@@ -485,7 +485,7 @@ namespace SustitucionMOA.Controllers
         {
             var response = new SustitucionMOAApiResponse<ObtenerLegajoResponse>();
 
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             response.Data = service.ObtenerLegajo(peticionDeOfertaId, idPeticionDeOfertaUsuario, esProveedor, mailUsuario, esSolicitante);
 
             return ContentCustom(response);
@@ -503,7 +503,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult DescargarLegajo(int idPeticion, int? idPeticionDeOfertaUsuario, bool esProveedor, int? adjudicacionId, bool esSolicitante)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var path = $"{ConfigurationManager.AppSettings["RutaArchivosCompras"]}/{DateTime.Now.Ticks}";
             Directory.CreateDirectory(path);
 
@@ -685,7 +685,7 @@ namespace SustitucionMOA.Controllers
         [HttpGet]
         public ActionResult ObtenerLegajoParaExternos(int adjudicacionId, string token)
         {
-            var mailUsuario = SessionPersister.getUsername();
+            var mailUsuario = SessionPersister.Mail;
             var result = service.ObtenerLegajoParaExternos(adjudicacionId, token, mailUsuario);
             return JsonCustom(new { data = result });
         }

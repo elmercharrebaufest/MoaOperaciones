@@ -34,7 +34,7 @@ namespace SustitucionMOA.Filter
             else if (exception is ValidationCustomException)
             {
                 Log.Error(HttpContext.Current.Request.UserHostAddress,
-                          SessionPersister.getUsername(),
+                          SessionPersister.Mail,
                           filterContext.Controller.GetType().Name,
                           filterContext.RouteData.Values["action"].ToString(),
                           exception);
@@ -47,7 +47,7 @@ namespace SustitucionMOA.Filter
             else if (exception is WSCustomException)
             {
                 Log.Error(HttpContext.Current.Request.UserHostAddress,
-                          SessionPersister.getUsername(),
+                          SessionPersister.Mail,
                           filterContext.Controller.GetType().Name,
                           filterContext.RouteData.Values["action"].ToString(),
                           exception);
@@ -87,7 +87,7 @@ namespace SustitucionMOA.Filter
 
                 Log.Debug($"ID Error: {errorId}, Data: {requestData}");
                 Log.Error(HttpContext.Current.Request.UserHostAddress,
-                          SessionPersister.getUsername(),
+                          SessionPersister.Mail,
                           filterContext.Controller.GetType().Name,
                           filterContext.RouteData.Values["action"].ToString(),
                           exception);

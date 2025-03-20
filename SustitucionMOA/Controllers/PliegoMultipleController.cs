@@ -117,7 +117,7 @@ namespace SustitucionMOA.Controllers
 
         private ComprasDto.UsuarioDto ObtenerUsuarioActual()
         {
-            string userMail = SessionPersister.getUsername();
+            string userMail = SessionPersister.Mail;
             return usuarioService.GetUsuario(userMail);
         }
     }

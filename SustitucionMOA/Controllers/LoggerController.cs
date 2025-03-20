@@ -19,7 +19,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public ActionResult Front(FrontLoggerRequestDto data)
         {
-            data.User = SessionPersister.getUsername();
+            data.User = SessionPersister.Mail;
             Log.FrontError(data);
             return JsonCustom(true);
         }

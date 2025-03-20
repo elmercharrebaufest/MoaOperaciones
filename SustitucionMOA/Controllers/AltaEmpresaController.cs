@@ -156,7 +156,7 @@ namespace SustitucionMOA.Controllers
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.MODIFICAR_ESTADO_PROVEEDOR)]
         public JsonResult ModificarEstadoProveedor(int proveedorId, string nuevoEstado)
         {
-            var emailUsuario = SessionPersister.getUsername();
+            var emailUsuario = SessionPersister.Mail;
             var nuevoEstadoInt = altaEmpresaService.ModificarEstadoProveedor(proveedorId, nuevoEstado, emailUsuario);
             return JsonCustom(new { data = new { nuevoEstado = nuevoEstadoInt } });
 

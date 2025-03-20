@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
             {
                 var cuit = SessionPersister.CUIT;
                 var codigo = SessionPersister.Proveedor;
-                var mail = SessionPersister.getUsername();
+                var mail = SessionPersister.Mail;
                 var data = facturaService.SubirPDF(files, cuit, codigo, mail);
                 return JsonCustom(new { data = data });
             }

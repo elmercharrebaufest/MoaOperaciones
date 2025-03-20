@@ -48,7 +48,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public JsonResult AutorizarCabecera(int idCabecera)
         {
-            string mailUusario = SessionPersister.getUsername();
+            string mailUusario = SessionPersister.Mail;
             return JsonCustom(gestionImpuestosService.AutorizarCabecera(idCabecera, mailUusario));
         }
 
@@ -99,7 +99,7 @@ namespace SustitucionMOA.Controllers
         [HttpPost]
         public JsonResult CargarCM05()
         {
-            var username = SessionPersister.getUsername();
+            var username = SessionPersister.Mail;
             if (Request.Files.Count <= 0) return Json(new { info = "No se adjuntaron archivos" }, JsonRequestBehavior.AllowGet);
             return JsonCustom(new { Mensaje = consultaService.ProcesarCM05(Request.Files, username, null, true) });
         }

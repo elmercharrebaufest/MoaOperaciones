@@ -146,12 +146,12 @@ namespace SustitucionMOA.Controllers
             }
             catch (WSCustomException e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = e.Message }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
                 return Json(new { error = ErrorMsg.Error }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -223,7 +223,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception e)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, e);
             }
 
             string redirectURL = "";
@@ -339,7 +339,7 @@ namespace SustitucionMOA.Controllers
 
         public ActionResult BuscardorInteligente(string PalabraABuscar)
         {
-            return JsonCustom(new { data = _homeService.getBusqueda(PalabraABuscar, SessionPersister.getUsername(), SessionPersister.Proveedor) });
+            return JsonCustom(new { data = _homeService.getBusqueda(PalabraABuscar, SessionPersister.Mail, SessionPersister.Proveedor) });
         }
 
         [AllowAnonymous]

@@ -25,7 +25,7 @@ namespace SustitucionMOA.Controllers
         {
             var apiResponse = new SustitucionMOAApiResponse<ArchivoBoletoDto>();
             data.ProveedorId = SessionPersister.ProveedorId;
-            data.EmailUsuario = SessionPersister.getUsername();
+            data.EmailUsuario = SessionPersister.Mail;
             apiResponse.Data = await archivoBoletoService.CrearArchivoBoleto(data);
             return ContentCustom(apiResponse);
         }

@@ -15,7 +15,7 @@ namespace SustitucionMOA.Filter
             {
                 Method = filterContext.ActionDescriptor.ActionName,
                 Controller = filterContext.ActionDescriptor.ControllerDescriptor.ControllerName,
-                User = SessionPersister.getUsername(),
+                User = SessionPersister.Mail,
                 StartTime = DateTime.UtcNow,
                 Stopwatch = Stopwatch.StartNew()
             };

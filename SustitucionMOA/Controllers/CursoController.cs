@@ -28,7 +28,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ProgresoResDto>();
             try
             {
-                var emailUsuario = SessionPersister.getUsername();
+                var emailUsuario = SessionPersister.Mail;
                 response.Data = cursoService.ObtenerProgreso(cursoId, emailUsuario);
             }
             catch (InfoCustomException ice)
@@ -41,7 +41,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -53,7 +53,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<List<CursoUsuarioDto>>();
             try
             {
-                var emailUsuario = SessionPersister.getUsername();
+                var emailUsuario = SessionPersister.Mail;
                 response.Data = cursoService.AsignadosAUsuario(emailUsuario);
             }
             catch (InfoCustomException ice)
@@ -66,7 +66,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -90,7 +90,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -102,7 +102,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<bool>();
             try
             {
-                var emailUsuario = SessionPersister.getUsername();
+                var emailUsuario = SessionPersister.Mail;
                 actualizarCursoReq.EmailUsuario = emailUsuario;
                 cursoService.ActualizarProgreso(actualizarCursoReq);
                 response.Data = true;
@@ -117,7 +117,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -141,7 +141,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -165,7 +165,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
@@ -177,7 +177,7 @@ namespace SustitucionMOA.Controllers
             var response = new SustitucionMOAApiResponse<ProgresoAlumnoEnCursoDto>();
             try
             {
-                var emailUsuario = SessionPersister.getUsername();
+                var emailUsuario = SessionPersister.Mail;
                 response.Data = cursoService.ObtenerProgresoAlumno(cursoId, emailUsuario);
             }
             catch (InfoCustomException ice)
@@ -190,7 +190,7 @@ namespace SustitucionMOA.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.getUsername(), this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
+                Log.Error(System.Web.HttpContext.Current.Request.UserHostAddress, SessionPersister.Mail, this.GetType().Name, System.Reflection.MethodBase.GetCurrentMethod().Name, ex);
                 response.Error = ErrorMsg.Error;
             }
             return ContentCustom(response);
