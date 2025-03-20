@@ -1206,7 +1206,7 @@ namespace SustitucionMOAUtils.Services
             return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
         }
 
-        public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(int solpId, string solpNro, List<int> posicionesIds)
+        public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(string solpNro, List<int> posicionesIds)
         {
             var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
 

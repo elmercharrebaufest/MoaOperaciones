@@ -9333,18 +9333,16 @@ namespace SustitucionMOAUtils.Services
 
         private void AgregarOrdenesCompraDeSap(PeticionDeOfertaDto peticionOferta, List<int> posicionesIds)
         {
-            var solpId = peticionOferta.PeticionDeOfertaPosicion.First().SolpId;
             var solpNro = peticionOferta.NroSolp;
             List<TablaSap> tablaSapMoneda = null;
             RegionSap regionSapSantaFe = null;
 
-            var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSap(solpId, solpNro, posicionesIds);
+            var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSap(solpNro, posicionesIds);
 
             var adjudicacionesAGrabar = new List<Adjudicacion>();
 
             foreach (var poUsuario in peticionOferta.Usuarios.Where(pou => pou.Cotizacion != null))
             {
-                var usuarioProveedorId = poUsuario.UsuarioId;
                 var proveedorCodigo = poUsuario.CodigoProveedor;
                 var cotizacionId = poUsuario.Cotizacion.Id;
                 var regionSapId = poUsuario.Cotizacion.Adjudicaciones.FirstOrDefault()?.RegionSap;

@@ -62,6 +62,6 @@ namespace SustitucionMOAUtils.Interfaces
 
         byte[] TraerArchivosDeSAP(string docId);
 
-        List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(int solpId, string solpNro, List<int> posicionesIds);
+        List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(string solpNro, List<int> posicionesIds);
     }
 }

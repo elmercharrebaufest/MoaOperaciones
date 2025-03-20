@@ -168,7 +168,7 @@ namespace SustitucionMOATest.Controllers
         {
             var expected = new AdjudicacionDto();
 
-            comprasSapServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<string>())).Returns(expected);
+            comprasServiceMock.Setup(s => s.ObtenerAdjudicacion(It.IsAny<string>())).Returns(expected);
 
             var result = target.ObtenerAdjudicacion("");
 
