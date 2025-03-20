@@ -102,7 +102,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado || v.EstadoAprobacion == EstadoAprobacion.Deshabilitado)
+            var vendedoresAprobados = GetVendedoresInternal(usuariomail, v => v.EstadoAprobacion == EstadoAprobacion.Aprobado || v.EstadoAprobacion == EstadoAprobacion.Deshabilitado)
                 .Select(v => new Vendedor()
                 {
                     descVendedor = v.RazonSocial,
@@ -162,7 +162,7 @@ namespace SustitucionMOAUtils.Services
         {
             VendedoresWSMOAResponse response = new VendedoresWSMOAResponse();
 
-            if (tipoProveedorId != 4 && tipoProveedorId != 5 )
+            if (tipoProveedorId != 4 && tipoProveedorId != 5)
             {
                 if (fechaInicio == "")
                 {
@@ -196,7 +196,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            var vendedoresAprobados = GetVendedores(usuariomail,
+            var vendedoresAprobados = GetVendedoresInternal(usuariomail,
                 v => (v.EstadoAprobacion == EstadoAprobacion.Aprobado)
                     && v.TipoProveedor.Id == (tipoProveedorId > 0 ? tipoProveedorId : v.TipoProveedor.Id))
                 .Select(v => new Vendedor()
@@ -324,7 +324,7 @@ namespace SustitucionMOAUtils.Services
         }
         public List<ProveedorDto> GetVendedores(string mailUsuario)
         {
-            return GetVendedores(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
+            return GetVendedoresInternal(mailUsuario, x => x.EstadoAprobacion == EstadoAprobacion.Aprobado);
         }
         public List<ProveedorDto> GetVendedoresPendientes(string mailUsuario, string codigoProveedor)
         {
@@ -342,7 +342,7 @@ namespace SustitucionMOAUtils.Services
                 }
             }
 
-            List<ProveedorDto> proveedorDtos = GetVendedores(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
+            List<ProveedorDto> proveedorDtos = GetVendedoresInternal(mailUsuario, x => x.EstadoAprobacion != EstadoAprobacion.Aprobado);
 
             if (proveedorDtos.Count == 0)
             {
@@ -350,7 +350,7 @@ namespace SustitucionMOAUtils.Services
             }
             return proveedorDtos;
         }
-        private List<ProveedorDto> GetVendedores(string mailUsuario, Func<Proveedor, bool> filtro = null)
+        private List<ProveedorDto> GetVendedoresInternal(string mailUsuario, Func<Proveedor, bool> filtro = null)
         {
 
             var usuario = repositorio.Obtener<Entities.Usuario>(u => u.Mail == mailUsuario);
@@ -362,7 +362,7 @@ namespace SustitucionMOAUtils.Services
                 listadoProveedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
                         .Where(filtro)
-                        .Select(proveedor => new ProveedorDto(proveedor,false)).ToList();
+                        .Select(proveedor => new ProveedorDto(proveedor, false)).ToList();
             }
             else
             {
@@ -374,7 +374,7 @@ namespace SustitucionMOAUtils.Services
                     proveedores = proveedores.Where(filtro).ToList();
                 }
 
-                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor,false)).ToList());
+                listadoProveedores.AddRange(proveedores.Select(proveedor => new ProveedorDto(proveedor, false)).ToList());
             }
 
 
@@ -541,9 +541,9 @@ namespace SustitucionMOAUtils.Services
         {
             var vendedores = repositorio
                         .Listar<Proveedor>(p => p.EstadoAprobacion == EstadoAprobacion.Aprobado)
-                        .GroupBy(proveedor=>proveedor.CodigoProveedor)
+                        .GroupBy(proveedor => proveedor.CodigoProveedor)
                         .Select(grupo => new ProveedorRaw(grupo.First())).ToList();
-                        
+
 
             foreach (var item in vendedores.Where(a => a.CUIT == null || a.CUIT == ""))
             {
