@@ -135,7 +135,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                 join cotizacion in contexto.Set<Cotizacion>() on u.Id equals cotizacion.PeticionDeOfertaUsuario_Id into peticionCotizacion
                                                 from cotizacion in peticionCotizacion.DefaultIfEmpty()
                                                 where po.Id == u.PeticionDeOferta_Id
-                                                select new PeticionDeOfertaUsarioDto()
+                                                select new PeticionDeOfertaUsuarioDto()
                                                 {
                                                     Id = u.Id,
                                                     VisibleSolicitante = u.VisibleSolicitante == true,
@@ -257,9 +257,12 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                         TieneAdjuntos = cotizacion.Archivos.Any(),
                                                         Adjudicaciones = cotizacion.Adjudicaciones.Select(a => new AdjudicacionDto
                                                         {
+                                                            AdmiteCertificacionesParciales = a.AdmiteCertificacionesParciales,
                                                             CondicionesDeEntrega = a.CondicionesDeEntrega,
                                                             CondicionesDePago = a.CondicionesDePago,
                                                             Garantias = a.Garantias,
+                                                            NumeroOrdenDeCompra = a.NumeroOrdenDeCompra,
+                                                            RegionSap = a.RegionSap_Id,
                                                             TextoDeCabecera = a.TextoDeCabecera
                                                         }).ToList(),
                                                     } : null,

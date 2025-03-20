@@ -1074,6 +1074,12 @@ export class ComprasService extends BaseService {
             .post<any>('/api/compras/CrearOrdenDeCompra', payload, { headers: this.headers });
     }
 
+    public GuardarCertificacionesParciales(adjudicaciones: AdjudicacionDto[]): Observable<ApiResponse<any>> {
+        return this.http
+            .post<ApiResponse<any>>('/api/compras/GuardarCertificacionesParciales', adjudicaciones, { headers: this.headersPost })
+            .pipe(timeoutWith(360000, throwError(new Error("Se excedió el tiempo de espera, por favor inténtelo más tarde"))));
+    }
+
     public listarAdjudicaciones(id: number): Observable<any> {
         let params: HttpParams = new HttpParams();
         params = params.set("solpId", id.toString());

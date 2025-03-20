@@ -114,6 +114,9 @@
                     <td class="columna border2-right" colspan="8" style="width: 620px !important;">Propuesta técnica</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 43px !important;">Certificaciones</td>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="8" style="width: 620px !important; height: 60px !important;">
                         <button class="publicar btn " style="margin-right: 10px; font-size: 12px;" (click)="abrirModalTextos()">
                             Agregar racional de compra
@@ -272,11 +275,34 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <td colspan="7" style="width: 630px !important;" class="columna border2-left">
+                                <table>
+                                    <tr>
+                                        <td *ngFor="let adjudicacion of proveedor.Cotizacion.Adjudicaciones">
+                                            OC {{ adjudicacion.NumeroOrdenDeCompra }}
+                                            <br />
+                                            <p-checkbox
+                                                [(ngModel)]="adjudicacion.AdmiteCertificacionesParciales"
+                                                binary="true"></p-checkbox>
+                                            Certificaciones parciales
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <ng-container>
                             <!--*ngIf="proveedor.Cotizacion != null"-->
                             <td class="columna border2-left" colspan="7" style="width: 660px !important;">
                                 <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                     Adjudicar
+                                </button>
+                                <button class="publicar btn btn-success" style="font-size: 12px; margin-left: 5px;" (click)="guardarCertificacionesParciales()">
+                                    Guardar certificaciones parciales
                                 </button>
                                 <br />
                                 <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>
@@ -368,6 +394,9 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important;">Propuesta técnica</td>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 43px !important;">Certificaciones</td>
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <td class="columna border2-right" colspan="6" style="width: 550px !important; height: 60px !important;">
@@ -606,9 +635,32 @@
                 </tr>
                 <tr *ngIf="esUltimaPosicion(peticionPosicion)">
                     <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
+                        <ng-container *ngIf="proveedor.Cotizacion != null">
+                            <td colspan="9" class="columna border2-left" style="width: 540px !important; height: 43px !important;">
+                                <table>
+                                    <tr>
+                                        <td *ngFor="let adjudicacion of proveedor.Cotizacion.Adjudicaciones">
+                                            OC {{ adjudicacion.NumeroOrdenDeCompra }}
+                                            <br />
+                                            <p-checkbox
+                                                [(ngModel)]="adjudicacion.AdmiteCertificacionesParciales"
+                                                binary="true"></p-checkbox>
+                                            Certificaciones parciales
+                                        </td> 
+                                    </tr>
+                                </table>
+                            </td>
+                        </ng-container>
+                    </ng-container>
+                </tr>
+                <tr *ngIf="esUltimaPosicion(peticionPosicion)">
+                    <ng-container *ngFor="let proveedor of tablaOfertas.Usuarios">
                         <td colspan="9" style="width: 540px !important;" class="columna border2-left">
                             <button [disabled]="!proveedor.VerAdjudicar || esAuditor" class="publicar btn btn-success" style="font-size: 12px;" (click)="crearAdjudicacion(proveedor)">
                                 Adjudicar
+                            </button>
+                            <button class="publicar btn btn-success" style="font-size: 12px; margin-left: 5px;" (click)="guardarCertificacionesParciales()">
+                                Guardar certificaciones parciales
                             </button>
                             <br />
                             <label for="Mensaje" [ngStyle]="{'color': (proveedor.MensajeAdjudicar == 'Adjudicar') ? 'green' : 'red'}">{{proveedor.MensajeAdjudicar}}</label>

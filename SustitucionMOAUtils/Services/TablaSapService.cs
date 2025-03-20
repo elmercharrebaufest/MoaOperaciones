@@ -2,6 +2,7 @@
 
 using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Entities;
+using SustitucionMOAModel.Enums;
 using SustitucionMOARepositorio;
 using SustitucionMOAUtils.Interfaces;
 using System;
@@ -89,6 +90,11 @@ namespace SustitucionMOAUtils.Services
             {
                 return repositorio.Listar<TablaSap>(x => tablas.Contains(x.Tabla)).ConvertAll(x => new TablaSapDto(x));
             }
+        }
+
+        public List<TablaSap> ObtenerMonedas()
+        {
+            return repositorio.Listar<TablaSap>(x => x.Tabla == TablasSap.Moneda);
         }
     }
 }
