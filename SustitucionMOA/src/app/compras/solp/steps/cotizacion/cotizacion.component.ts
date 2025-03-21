@@ -554,7 +554,7 @@ export class CotizacionComponent extends ListBaseComponent {
     }
 
     verificarCondicionesEspeciales(): void {
-        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho) {
+        if (!this.model.condEspProveedorAsignado && !this.model.urgencia && !this.model.adicional && !this.model.trabajoHecho && !this.model.conPresupuesto) {
             this.borrarArchivosCargados();
         }
     }
@@ -587,7 +587,7 @@ export class CotizacionComponent extends ListBaseComponent {
             this.ajustePolinomicaDisabled = false;
         }
 
-        this.condicionEspecial = this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
+        this.condicionEspecial = this.model.trabajoHecho == true || this.model.conPresupuesto || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true;
         this.habilitarCondicionesEspeciales(this.condicionEspecial)
 
         if (this.model.editarCondicionesEspeciales == false) {

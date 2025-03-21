@@ -103,7 +103,8 @@
                                                 [(ngModel)]="model.conPresupuesto"
                                                 label="Con presupuesto"
                                                 formControlName="conPresupuesto"
-                                                binary="true">
+                                                binary="true"
+                                                (ngModelChange)="verificarCondicionesEspeciales(); onConditionChange();">
                                     </p-checkbox>
                                 </div>
                             </div>
