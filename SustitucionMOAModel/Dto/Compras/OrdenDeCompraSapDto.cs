@@ -8,6 +8,7 @@ namespace SustitucionMOAModel.Dto
     {
         public OrdenDeCompraSAPCabecera Cabecera { get; set; }
         public List<OrdenDeCompraSAPPosicion> Posiciones { get; set; } = new List<OrdenDeCompraSAPPosicion>();
+        public List<OrdenDeCompraSAPCertificacion> Certificaciones { get; set; } = new List<OrdenDeCompraSAPCertificacion>();
         public ErrorOC Error { get; set; }
         public string Mensaje { get; set; }
     }
@@ -61,6 +62,13 @@ namespace SustitucionMOAModel.Dto
         public string NroSolp { get; set; }
         public DateTime? PlazoDeOferta { get; set; }
         public string TipoPosicion { get; set; }
+    }
+
+    public class OrdenDeCompraSAPCertificacion
+    {
+        public string NroCertificacion { get; set; }
+        public decimal Saldo { get; set; }
+        public string Moneda { get; set; }
     }
 
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega

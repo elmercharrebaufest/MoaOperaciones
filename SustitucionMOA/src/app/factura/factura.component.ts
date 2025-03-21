@@ -54,6 +54,24 @@ export class FacturaComponent extends ListBaseComponent {
     modalServiceSusbcription: any;
     captchaOk: any = null;
     archivos = new Array<File>()
+    certificaciones:{
+        NombreDeArchivo: string,
+        NRO_OC: string,
+        NRO_Certificacion: string,
+        Importe:number,
+        Moneda: string,
+        isDisabled:boolean
+    }[] = [];
+    certificacionesAgregadas:{
+        NombreDeArchivo: string,
+        NRO_OC: string,
+        NRO_Certificacion: string,
+        Importe:number,
+        Moneda: string,
+    }[] = [];
+
+    certificacionesRegistradasExistentes = [];
+
 
     setTabs() {
         this.setMenuSeccionTab("factura", "Factura");
@@ -67,11 +85,9 @@ export class FacturaComponent extends ListBaseComponent {
         this.navService.setSeccionList(secciones);
     }
 
-    subirPDF() {
-        ;
+    obtenerCertificaciones() {
         this.floatMsgService.setMsgsEmpty();
         this.spinnerSmallComponent.showIt();
-
 
         if (this.archivos == null) {
             this.spinnerSmallComponent.hideIt();
@@ -82,8 +98,115 @@ export class FacturaComponent extends ListBaseComponent {
         this.unsubscribe();
         try {
             this.resultados = [];
+            this.certificaciones = [];
+            this.certificacionesAgregadas = [];
+            this.certificacionesRegistradasExistentes = [];
             this.blockUI.start('Analizando documentos...');
-            this.subscription = this.service.subirPDF(this.archivos).subscribe(
+            
+            this.subscription = this.service.subirPDF(this.archivos).subscribe({
+                next: (result: any) => {
+                    this.spinnerSmallComponent.hideIt();
+                    
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    } else if (result.error != undefined && result.error != "") {
+                        this.floatMsgService.setErrorMsg(result.error);
+                    } else if (result.info != undefined) {
+                        this.floatMsgService.setInfoMsg(result.info);
+                    } else {
+                        try {
+                            this.resultados = result.data as ValidationResult[];
+                            this.resultados.forEach(resultado => {
+                                const fileName = resultado.FileName;
+                                const nroOC = resultado.Value;
+                                console.log('Resultado:', resultado);
+                                resultado.Certificaciones.forEach(certificacion => {
+                                    this.service.verificarSiExisteRegistro(certificacion.NroCertificacion)
+                                        .subscribe({
+                                            next: (resp) => {
+                                                let data:any;
+                                                if(resp.data != undefined && resp.data!= ""){
+                                                    console.log('VerificarSiExisteRegistro response:', resp.data);
+                                                //Como saber el tipo de dato de resp.data
+                                                console.log('typeof resp.data',typeof resp.data);
+                                                data = JSON.parse(resp.data);
+                                                console.log(data);
+                                                console.log('resp.data.NRO_Certificacion',data.NRO_Certificacion);
+                                                console.log('resp.data.NRO_Certificacion?',data.NRO_Certificacion?true:false);
+                                                this.certificacionesRegistradasExistentes.push(data);
+                                                }
+                                                this.certificaciones.push({
+                                                    NombreDeArchivo: fileName,
+                                                    NRO_OC: nroOC,
+                                                    NRO_Certificacion: certificacion.NroCertificacion,
+                                                    Importe: certificacion.Saldo,
+                                                    Moneda: certificacion.Moneda,
+                                                    isDisabled: data.NRO_Certificacion? true : false
+                                                });
+                                                console.log('Certificaciones:', this.certificaciones);
+                                            },
+                                            error: (error) => {
+                                                console.error('Error verificando registro:', error);
+                                            }
+                                        });
+                                });
+                            });
+                        } catch (error) {
+                            console.log(error);
+                            this.certificaciones = [];
+                        }
+                    }
+                    this.blockUI.stop();
+                },
+                error: (error) => {
+                    let errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
+                    this.spinnerSmallComponent.hideIt();
+                    this.floatMsgService.setErrorMsg(errormsj);
+                    this.blockUI.stop();
+                }
+            });
+        } catch (e) {
+            this.spinnerSmallComponent.hideIt();
+            this.floatMsgService.setErrorMsg(e);
+            this.blockUI.stop();
+            return false;
+        }
+        return false;
+    }
+
+    onCheckCertificacion(NRO_Certificacion:string){
+        // Verificar si la certificacion ya fue agregada
+        console.log('Se ejecuta onCheckCertificacion', NRO_Certificacion);
+        let certificacion = this.certificaciones.find(certificacion => certificacion.NRO_Certificacion == NRO_Certificacion);
+        if (certificacion != undefined) {
+            let certificacionAgregada = this.certificacionesAgregadas.find(certificacionAgregada => certificacionAgregada.NRO_Certificacion == NRO_Certificacion);
+            if (certificacionAgregada == undefined) {
+                // Insertar certificacion pero sin el campo de "isDIsabled"
+                let certificacionDto = {
+                    NombreDeArchivo: certificacion.NombreDeArchivo,
+                    NRO_OC: certificacion.NRO_OC,
+                    NRO_Certificacion: certificacion.NRO_Certificacion,
+                    Importe: certificacion.Importe,
+                    Moneda: certificacion.Moneda,
+                }
+                this.certificacionesAgregadas.push(certificacionDto);
+            }
+            else {
+                let indice = this.certificacionesAgregadas.indexOf(certificacionAgregada);
+                this.certificacionesAgregadas.splice(indice, 1);
+            }
+        }
+    }
+
+    registrarCertificaciones() {
+        this.floatMsgService.setMsgsEmpty();
+        this.spinnerSmallComponent.showIt();
+        this.unsubscribe();
+        try {
+            this.blockUI.start('Registrando certificaciones...');
+            // Filtrar archivos por nombre de archivo que esten en el array de certificaciones agregadas
+            this.archivos = this.archivos.filter(archivo => this.certificacionesAgregadas.map(certificacion => certificacion.NombreDeArchivo).includes(archivo.name));
+            this.subscription = this.service.registrarCertificaciones(this.certificacionesAgregadas,this.archivos).subscribe(
                 (result: any) => {
                     this.spinnerSmallComponent.hideIt();
                     if (result.logout == true) {
@@ -93,21 +216,21 @@ export class FacturaComponent extends ListBaseComponent {
                     } else if (result.info != undefined) {
                         this.floatMsgService.setInfoMsg(result.info);
                     } else {
-                        this.vaciarCampos();
-                        this.resultados = result.data as ValidationResult[];
-                        console.log(this.resultados);
+                        this.floatMsgService.setMsgsEmpty();
+                        this.floatMsgService.setSuccessMsg("Certificaciones registradas correctamente");
+                        this.certificacionesAgregadas = [];
+                        this.certificaciones = [];
                     }
                     this.blockUI.stop();
+                    this.vaciarCampos();
                     return false;
                 },
                 error => {
                     let errormsj = "Ha ocurrido un error, por favor intentelo nuevamente";
-                    if (error._body.indexOf("length exceeded") >= 0) { errormsj = "El tamaño del archivo supera los 3 MBs permitidos"; }
                     this.spinnerSmallComponent.hideIt();
                     this.floatMsgService.setErrorMsg(errormsj);
                     this.blockUI.stop();
                 }
-
             );
         } catch (e) {
             this.spinnerSmallComponent.hideIt();
@@ -115,8 +238,51 @@ export class FacturaComponent extends ListBaseComponent {
             this.blockUI.stop();
             return false; //<-- Prevent Refresh
         }
-        return false; //<-- Prevent Refresh
     }
+
+    descargarDocumentoAdjunto(NRO_Certificacion:string) {
+        this.blockUI.start("Descargando...");
+        this.service.descargarDocumentoAdjunto(NRO_Certificacion)
+            .subscribe(
+                (result) => {
+                    if (result.logout == true) {
+                        this.sessionDataService.logout();
+                    }
+                    else {
+                        var byteArray = new Uint8Array(result.FileContents);
+                        var blob = new Blob([byteArray], {
+                            type: "application/octet-stream",
+                        });
+
+                        if (window.navigator.msSaveOrOpenBlob) {
+                            // IE11
+                            window.navigator.msSaveOrOpenBlob(
+                                blob,
+                                result.FileDownloadName
+                            );
+                        } else {
+                            var url = window.URL.createObjectURL(blob);
+                            var link = document.createElement("a");
+                            document.body.appendChild(link);
+                            link.href = url;
+                            link.download = result.FileDownloadName;
+                            link.click();
+                            setTimeout(function () {
+                                window.URL.revokeObjectURL(url);
+                            }, 0);
+                            this.blockUI.stop();
+                            return false;
+                        }
+                        this.blockUI.stop();
+                    }
+                },
+                (error) => {
+                    this.mensajeComponent.setErrorMsg(error.message);
+                    this.blockUI.stop();
+                }
+            )
+    }
+
     mensajeIrAOC(mensaje: ValidationResult) {
         return !mensaje.IsValid && mensaje.ValidataionType == "OrdenCompraValidationCommand" && mensaje.Value != "" && mensaje.Value.length > 0;        
     }
