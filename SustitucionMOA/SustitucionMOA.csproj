@@ -357,6 +357,8 @@
     <Content Include="Content\images\icons\trashWhite.svg" />
     <Content Include="Content\images\icons\worker.svg" />
     <Content Include="Content\images\LogoBaufest.png" />
+    <Content Include="Content\images\PesificacionIndividual1.jpg" />
+    <Content Include="Content\images\PesificacionIndividual2.jpg" />
     <Content Include="Content\js\jquery.migrate.js" />
     <Content Include="dist\Content\css\blockui.css" />
     <Content Include="dist\Content\css\bootstrap.min.css" />
