@@ -63,6 +63,7 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                     Adicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Adicional,
                                     Urgencia = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.Urgencia,
                                     TrabajoHecho = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho,
+                                    ConPresupuesto = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto,
                                     NroOrdenDeCompraAdicional = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.NroOrdenDeCompraAdicional,
                                     EstaLiberado = po.Posiciones.Select(x => x.SolpPosicion.Solp).All(solp => solp.EstadoSolpSap.CodigoSap == "05" || solp.EstadoSolpSap.CodigoSap == "02"),
                                     RevisionFinalizada = po.RevisionTecnica == null ? false : po.RevisionTecnica.Finalizada,

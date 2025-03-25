@@ -67,6 +67,7 @@ namespace SustitucionMOAModel.Dto
         public bool PideDocumentacionTecnica { get; set; }
         public int? RevisionTecnicaId { get; set; }
         public bool? TrabajoHecho { get; set; }
+        public bool ConPresupuesto { get; set; }
         public IEnumerable<string> NrosSolp { get; set; }
         public bool TienePosicionesEliminadas { get; set; }
         public bool VerCotizar { get; set; }

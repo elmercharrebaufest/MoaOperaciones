@@ -1194,6 +1194,7 @@ namespace SustitucionMOAUtils.Services
                 PlazoDeOfertaCierre = po.Cierres.Any() ? po.Cierres.OrderByDescending(x => x.Fecha).FirstOrDefault().Fecha : (DateTime?)null,
                 RevisionFinalizada = po.RevisionTecnica != null && po.RevisionTecnica.Finalizada,
                 TrabajoHecho = solps.TrabajoYaHecho == true,
+                ConPresupuesto = solps.ConPresupuesto,
             }, peti => peti.RegistroInfo != true && peti.Posiciones.Any(y => posicionesId.Contains(y.SolpPosicion_Id)));
             return peticiones;
         }
@@ -7725,6 +7726,7 @@ namespace SustitucionMOAUtils.Services
                     &&
                         (tratada == null || pos.Peticiones.Any() == tratada) &&
                             pos.Solp.TrabajoYaHecho != true &&
+                            !pos.Solp.ConPresupuesto &&
                             pos.Solp.Adicional != true &&
                             pos.Solp.CondEspProveedorAsignado != true &&
                             (pos.Solp.EstadoSolpSap.CodigoSap == "05" ||
