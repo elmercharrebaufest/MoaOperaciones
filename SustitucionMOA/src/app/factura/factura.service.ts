@@ -28,17 +28,10 @@ export class FacturaService extends BaseService {
         return this.http.post('/api/factura/RegistrarCertificacion', payload, {headers: this.headersPost});
     }
 
-    public verificarSiExisteRegistro(NRO_Certificacion:string): Observable<any>
+    public descargarDocumentoAdjunto(archivoId:string): Observable<any>
     {
         let payload = new FormData();
-        payload.append("NRO_Certificacion", NRO_Certificacion);
-        return this.http.post(`/api/factura/VerificarSiExisteRegistro`,payload ,{headers: this.headersPost});   
-    }
-
-    public descargarDocumentoAdjunto(NRO_Certificacion:string): Observable<any>
-    {
-        let payload = new FormData();
-        payload.append("NRO_Certificacion", NRO_Certificacion);
+        payload.append("archivoId", archivoId);
         return this.http.post(`/api/factura/DescargarDocumentoAdjunto`,payload,{headers: this.headersPost});
     }
 }

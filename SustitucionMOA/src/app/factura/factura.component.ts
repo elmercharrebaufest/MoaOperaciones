@@ -60,7 +60,7 @@ export class FacturaComponent extends ListBaseComponent {
         NRO_Certificacion: string,
         Importe:number,
         Moneda: string,
-        isDisabled:boolean
+        Archivo:any,
     }[] = [];
     certificacionesAgregadas:{
         NombreDeArchivo: string,
@@ -119,36 +119,15 @@ export class FacturaComponent extends ListBaseComponent {
                             this.resultados.forEach(resultado => {
                                 const fileName = resultado.FileName;
                                 const nroOC = resultado.Value;
-                                console.log('Resultado:', resultado);
                                 resultado.Certificaciones.forEach(certificacion => {
-                                    this.service.verificarSiExisteRegistro(certificacion.NroCertificacion)
-                                        .subscribe({
-                                            next: (resp) => {
-                                                let data:any;
-                                                if(resp.data != undefined && resp.data!= ""){
-                                                    console.log('VerificarSiExisteRegistro response:', resp.data);
-                                                //Como saber el tipo de dato de resp.data
-                                                console.log('typeof resp.data',typeof resp.data);
-                                                data = JSON.parse(resp.data);
-                                                console.log(data);
-                                                console.log('resp.data.NRO_Certificacion',data.NRO_Certificacion);
-                                                console.log('resp.data.NRO_Certificacion?',data.NRO_Certificacion?true:false);
-                                                this.certificacionesRegistradasExistentes.push(data);
-                                                }
-                                                this.certificaciones.push({
-                                                    NombreDeArchivo: fileName,
-                                                    NRO_OC: nroOC,
-                                                    NRO_Certificacion: certificacion.NroCertificacion,
-                                                    Importe: certificacion.Saldo,
-                                                    Moneda: certificacion.Moneda,
-                                                    isDisabled: data.NRO_Certificacion? true : false
-                                                });
-                                                console.log('Certificaciones:', this.certificaciones);
-                                            },
-                                            error: (error) => {
-                                                console.error('Error verificando registro:', error);
-                                            }
-                                        });
+                                    this.certificaciones.push({
+                                        NombreDeArchivo: fileName,
+                                        NRO_OC: nroOC,
+                                        NRO_Certificacion: certificacion.NroCertificacion,
+                                        Importe: certificacion.Saldo,
+                                        Moneda: certificacion.Moneda,
+                                        Archivo: certificacion.Archivo
+                                    });
                                 });
                             });
                         } catch (error) {
@@ -174,9 +153,19 @@ export class FacturaComponent extends ListBaseComponent {
         return false;
     }
 
+    obtenerNombreDeArchivo(ruta: string) {
+        // Replace all backslashes with forward slashes and then split
+        const normalizedPath = ruta.replace(/\\/g, '/');
+        const partes = normalizedPath.split('/');
+        return partes[partes.length - 1];
+    }
+
+    formatPrice(importe:number){
+        return importe.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
+    }
+
     onCheckCertificacion(NRO_Certificacion:string){
         // Verificar si la certificacion ya fue agregada
-        console.log('Se ejecuta onCheckCertificacion', NRO_Certificacion);
         let certificacion = this.certificaciones.find(certificacion => certificacion.NRO_Certificacion == NRO_Certificacion);
         if (certificacion != undefined) {
             let certificacionAgregada = this.certificacionesAgregadas.find(certificacionAgregada => certificacionAgregada.NRO_Certificacion == NRO_Certificacion);
@@ -240,9 +229,9 @@ export class FacturaComponent extends ListBaseComponent {
         }
     }
 
-    descargarDocumentoAdjunto(NRO_Certificacion:string) {
+    descargarDocumentoAdjunto(archivoId:number) {
         this.blockUI.start("Descargando...");
-        this.service.descargarDocumentoAdjunto(NRO_Certificacion)
+        this.service.descargarDocumentoAdjunto(archivoId.toString())
             .subscribe(
                 (result) => {
                     if (result.logout == true) {

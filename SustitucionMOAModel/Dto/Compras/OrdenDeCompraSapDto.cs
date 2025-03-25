@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SustitucionMOAModel.Entities;
 
 
 namespace SustitucionMOAModel.Dto
@@ -69,6 +70,7 @@ namespace SustitucionMOAModel.Dto
         public string NroCertificacion { get; set; }
         public decimal Saldo { get; set; }
         public string Moneda { get; set; }
+        public Archivo Archivo { get; set; }
     }
 
     public class OrdenDeCompraSAPPosicionDireccionDeEntrega

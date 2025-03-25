@@ -54,29 +54,15 @@ namespace SustitucionMOA.Controllers
         }
 
         [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
-        public ActionResult VerificarSiExisteRegistro(string NRO_Certificacion)
+        public ActionResult DescargarDocumentoAdjunto(int archivoId)
         {
-            var certificacion = facturaService.VerificarSiExisteRegistro(NRO_Certificacion);
-            if (certificacion != null)
+            var archivo = facturaService.ObtenerArchivo(archivoId);
+            if (archivo == null)
             {
-                return Json(new { data = certificacion }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { error = "No existe registro de certificacion" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        [CustomPermisoAuthorizeAttribute(Roles = Permiso.CARGAR_FACT_PROV)]
-        public ActionResult DescargarDocumentoAdjunto(string NRO_Certificacion)
-        {
-            var certificacion = facturaService.ObtenerCertificacion(NRO_Certificacion);
-            if (certificacion == null)
-            {
-                return Json(new { error = "No existe registro de certificacion" }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = "No existe archivo solicitado" }, JsonRequestBehavior.AllowGet);
             }
 
-            string ruta = certificacion.Archivo.Ruta;
+            string ruta = archivo.Ruta;
             byte[] fileBytes = System.IO.File.ReadAllBytes(ruta);
             string fileName = Path.GetFileName(ruta);
 

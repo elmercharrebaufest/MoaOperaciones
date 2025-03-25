@@ -1,4 +1,5 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
 using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
@@ -67,9 +68,52 @@ namespace SustitucionMOAUtils.Services
                 {
                     Log.Info("Procesando el documento " + file.FileName);
                     List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
-                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
+                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName); 
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
-                    resultado.ForEach(r => r.FileName = file.FileName);
+                    // Flujo nuevo
+                    if (resultado[0].IsValid == true && resultado[0].Certificaciones.Count > 0)
+                    {
+                        resultado.ForEach(r => r.FileName = file.FileName);
+                        // Iteramos por cada una de las certificaciones y verificamos si ya fueron registradas
+                        /*
+                        List<OrdenDeCompraSAPCertificacion> certificacionesNoRegistradas = new List<OrdenDeCompraSAPCertificacion>();
+                        resultado[0].Certificaciones.ForEach(certif =>
+                        {
+                            // Verificar si la certificacion ya fue registrada
+                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certif.NroCertificacion);
+                            if (certificacionRegistrada == null)
+                            {
+                                certificacionesNoRegistradas.Add(certif);
+                            }
+                        });
+                        resultado[0].Certificaciones = certificacionesNoRegistradas;
+                         
+                         */
+                        // Buscamos los archivos relacionados a ese nro de certificacion
+                        resultado[0].Certificaciones.ForEach((certificacion) => {
+                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion);
+                            if (certificacionRegistrada != null) {
+                                certificacion.Archivo = certificacionRegistrada.Archivo;
+                            }
+                        });
+                    }
+                    // Flujo anterior a registro de certificaciones
+                    else
+                    {
+                        string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                        file.SaveAs(ruta);
+                        Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
+                        repositorio.Agregar(archivo);
+                        repositorio.GuardarCambios();
+                        resultado.ForEach(r => r.FileName = file.FileName);
+                        resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
+                        if (resultado.Exists(r => r.IsValid))
+                        {
+                            EnviarMail(file);
+                        }
+
+                        GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+                    }
 
                     results.AddRange(resultado);
                 }
@@ -124,6 +168,7 @@ namespace SustitucionMOAUtils.Services
                 List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
                 // Upload the file
                 string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                file.SaveAs(ruta);
                 Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
                 repositorio.Agregar(archivo);
                 repositorio.GuardarCambios();
@@ -176,14 +221,17 @@ namespace SustitucionMOAUtils.Services
 
         private static string GenerarRutaArchivo(string folderBase, int usuarioId, string fileName)
         {
-            string directorioUsuario = Path.Combine(folderBase, usuarioId.ToString());
+            folderBase = folderBase.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string directorioUsuario = Path.Combine(folderBase, usuarioId.ToString().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+
 
             if (!Directory.Exists(directorioUsuario))
             {
                 Directory.CreateDirectory(directorioUsuario);
             }
 
-            string rutaArchivo = Path.Combine(directorioUsuario, fileName);
+            string rutaArchivo = Path.Combine(directorioUsuario, fileName.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+
 
             int contador = 1;
             string nombreArchivo = Path.GetFileNameWithoutExtension(fileName);
@@ -319,33 +367,9 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        public string VerificarSiExisteRegistro(string NRO_Certificacion)
+        public Archivo ObtenerArchivo(int archivoId)
         {
-            if (string.IsNullOrEmpty(NRO_Certificacion))
-            {
-                // Manejar el caso en que NRO_Certificacion sea null o vacío
-                return null;
-            }
-
-            // Obtener la certificacion registrada por Nro de certificacion
-            CertificacionRegistrada certificacion = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == NRO_Certificacion);
-            
-            if(certificacion == null)
-            {
-                // Manejar el caso en que no se encuentre la certificación
-                return null;
-            }
-            var datos = new
-            {
-                Id = certificacion.Id,
-                NRO_Certificacion= certificacion.NRO_Certificacion
-            };
-            return Newtonsoft.Json.JsonConvert.SerializeObject(datos);
-        }
-
-        public CertificacionRegistrada ObtenerCertificacion(string NRO_Certificacion)
-        {
-            return repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == NRO_Certificacion);
+            return repositorio.Obtener<Archivo>(a => a.Id == archivoId);
         }
     }
 }

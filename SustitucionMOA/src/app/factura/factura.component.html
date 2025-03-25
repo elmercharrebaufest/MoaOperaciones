@@ -66,26 +66,19 @@
                                     <input
                                     type="checkbox"
                                     (change)="onCheckCertificacion(certificacion.NRO_Certificacion)"
-                                    [disabled]="certificacion.isDisabled"
-                                    [checked]="certificacion.isDisabled">
+                                    >
                                 </td>
                                 <td>{{certificacion.NombreDeArchivo}}</td>
                                 <td>{{certificacion.NRO_OC}}</td>
                                 <td>{{certificacion.NRO_Certificacion}}</td>
-                                <td>{{certificacion.Importe}}</td>
+                                <td>{{formatPrice(certificacion.Importe)}}</td>
                                 <td>{{certificacion.Moneda}}</td>
-                                <td *ngIf="certificacion.isDisabled">
+                                <td *ngIf="certificacion.Archivo !== null">
                                     <div class="col-xs-12 col-sm-6 col-md-3">
-                                        <button pButton
-                                                class="btn-nuevoPliego"
-                                                type="button"
-                                                label="Descargar"
-                                                (click)="descargarDocumentoAdjunto(certificacion.NRO_Certificacion)"
-                                                >
-                                        </button>
+                                        <a (click)="descargarDocumentoAdjunto(certificacion.Archivo.Id)">{{obtenerNombreDeArchivo(certificacion.Archivo.Ruta)}}</a>
                                     </div>
                                 </td>
-                                <td *ngIf="!certificacion.isDisabled"></td>
+                                <td *ngIf="certificacion.Archivo == null"></td>
                             </tr>
                         </tbody>
                     </table>

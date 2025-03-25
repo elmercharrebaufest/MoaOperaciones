@@ -9,5 +9,6 @@
         NroCertificacion: string;
         Saldo:number;
         Moneda:string;
+        Archivo:any;
     }[];
 }
