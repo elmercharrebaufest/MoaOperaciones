@@ -9383,6 +9383,10 @@ namespace SustitucionMOAUtils.Services
                         UsuarioCreador_Id = nuevaAdjudicacion.UsuarioCreador_Id
                     });
                 }
+
+                poUsuario.Cotizacion.Adjudicaciones = poUsuario.Cotizacion.Adjudicaciones.Where(a =>
+                ordenesCompraSap.Select(b => b.Cabecera.OrdenDeCompra).Contains(a.NumeroOrdenDeCompra)
+                    ).ToList();
             }
 
             if (adjudicacionesAGrabar.Any())
