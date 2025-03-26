@@ -148,11 +148,48 @@ namespace SustitucionMOARepositorio.ConsultasEF
                                                     PropuestaTecnicaAprobada = u.PropuestaTecnicaAprobada,
                                                     RealizoVisita = u.RealizoVisita,
                                                     THCategoria = po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THProveedorDirecto == true ? "Proveedor directo" : (po.Posiciones.FirstOrDefault().SolpPosicion.Solp.THAjustePolinomica == true ? "Ajuste polinómica" : "Servicio permanente"),
-                                                    EstadoVisita = u.RealizoVisita == true ? "Realizada" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) ? "No requerida" : "Sin realizar",
-                                                    EstadoVisitaColor = u.RealizoVisita == true ? "Green" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true || po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true) ? "Green" : "Red",
-                                                    EstadoPropuestaTecnica = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Sin analizar" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Trabajo ya hecho" : (u.PropuestaTecnicaAprobada == true && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Aprobada" : "Rechazada"),
+                                                    EstadoVisita =
+                                                        u.RealizoVisita == true
+                                                            ? "Realizada"
+                                                            :
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                                po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true)
+                                                                    ? "No requerida"
+                                                                    : "Sin realizar",
+                                                    EstadoVisitaColor =
+                                                        u.RealizoVisita == true ||
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                        po.Posiciones.Select(posi => posi.SolpPosicion.Solp.Pliego).All(pliego => pliego.TieneVisitaObraMasiva != true)
+                                                            ? "Green"
+                                                            : "Red",
+                                                    EstadoPropuestaTecnica =
+                                                        u.PropuestaTecnicaAprobada == null &&
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                                        !po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                            ? "Sin analizar"
+                                                            : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true
+                                                                ? "Trabajo ya hecho"
+                                                                : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                                    ? "Con presupuesto"
+                                                                    :
+                                                                        (u.PropuestaTecnicaAprobada == true &&
+                                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true
+                                                                            ? "Aprobada"
+                                                                            : "Rechazada"),
                                                     ObservacionNoCumple = u.ObservacionNoCumple,
-                                                    EstadoPropuestaTecnicaColor = u.PropuestaTecnicaAprobada == null && po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true ? "Orange" : po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ? "Green" : (u.PropuestaTecnicaAprobada == true ? "Green" : "Red"),
+                                                    EstadoPropuestaTecnicaColor =
+                                                        u.PropuestaTecnicaAprobada == null &&
+                                                        po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho != true &&
+                                                        !po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto
+                                                            ? "Orange"
+                                                            :
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.TrabajoYaHecho == true ||
+                                                                po.Posiciones.FirstOrDefault().SolpPosicion.Solp.ConPresupuesto ||
+                                                                u.PropuestaTecnicaAprobada == true
+                                                                    ? "Green"
+                                                                    : "Red",
 
                                                     //PlazoDeOferta = u.Circulares.Any(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue) ?
                                                     //u.Circulares.Where(circu => circu.Circular.RequiereCambioDeFechas == true && circu.Circular.PlazoDeOferta.HasValue)
