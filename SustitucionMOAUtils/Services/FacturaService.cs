@@ -1,4 +1,6 @@
 ﻿using SustitucionMOAModel.CustomExceptions;
+using SustitucionMOAModel.Dto;
+using SustitucionMOAModel.Dto.Compras;
 using SustitucionMOAModel.Entities;
 using SustitucionMOAModel.Enums;
 using SustitucionMOAModel.Models;
@@ -66,21 +68,52 @@ namespace SustitucionMOAUtils.Services
                 {
                     Log.Info("Procesando el documento " + file.FileName);
                     List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
-                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
+                    List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName); 
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
-                    string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
-                    file.SaveAs(ruta);
-                    Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
-                    repositorio.Agregar(archivo);
-                    repositorio.GuardarCambios();
-                    resultado.ForEach(r => r.FileName = file.FileName);
-                    resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
-                    if (resultado.Exists(r => r.IsValid))
+                    // Flujo nuevo
+                    if (resultado[0].IsValid == true && resultado[0].Certificaciones.Count > 0)
                     {
-                        EnviarMail(file);
+                        resultado.ForEach(r => r.FileName = file.FileName);
+                        // Iteramos por cada una de las certificaciones y verificamos si ya fueron registradas
+                        /*
+                        List<OrdenDeCompraSAPCertificacion> certificacionesNoRegistradas = new List<OrdenDeCompraSAPCertificacion>();
+                        resultado[0].Certificaciones.ForEach(certif =>
+                        {
+                            // Verificar si la certificacion ya fue registrada
+                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certif.NroCertificacion);
+                            if (certificacionRegistrada == null)
+                            {
+                                certificacionesNoRegistradas.Add(certif);
+                            }
+                        });
+                        resultado[0].Certificaciones = certificacionesNoRegistradas;
+                         
+                         */
+                        // Buscamos los archivos relacionados a ese nro de certificacion
+                        resultado[0].Certificaciones.ForEach((certificacion) => {
+                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certificacion.NroCertificacion);
+                            if (certificacionRegistrada != null) {
+                                certificacion.Archivo = certificacionRegistrada.Archivo;
+                            }
+                        });
                     }
+                    // Flujo anterior a registro de certificaciones
+                    else
+                    {
+                        string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                        file.SaveAs(ruta);
+                        Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
+                        repositorio.Agregar(archivo);
+                        repositorio.GuardarCambios();
+                        resultado.ForEach(r => r.FileName = file.FileName);
+                        resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
+                        if (resultado.Exists(r => r.IsValid))
+                        {
+                            EnviarMail(file);
+                        }
 
-                    GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+                        GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+                    }
 
                     results.AddRange(resultado);
                 }
@@ -96,6 +129,61 @@ namespace SustitucionMOAUtils.Services
 
 
             return results;
+        }
+
+        public List<CertificacionRegistrada> RegistrarCertificacion(List<CertificacionDto> certificaciones, string mail, int proveedorId, List<HttpPostedFileBase> files, string cuit, string codigo)
+        {
+            List<ValidationResult> resultadoOcrs = new List<ValidationResult>();
+            foreach (var file in files)
+            {
+                Log.Info("AnalizarImagenAsync: " + file.FileName);
+                var operacionOCRId = Task.Run(async () => await azureService.AnalizarImagenAsync(file)).Result;
+                Thread.Sleep(2000);
+                Log.Info("ObtenerResultadoOCRAsync: " + file.FileName);
+                var elementosLeidos = Task.Run(async () => await azureService.ObtenerResultadoOCRAsync(operacionOCRId)).Result;
+                resultadoOcrs.AddRange(elementosLeidos.Select(a => new ValidationResult { Input = a, FileName = file.FileName }));
+                Log.Info("Fin ObtenerResultadoOCRAsync: " + file.FileName);
+            }
+
+            DateTime fechaRegistro = DateTime.Now;
+            //Get the user Id by mail
+            int usuarioId = repositorio.Obtener<Usuario>(u => u.Mail == mail).Id;
+            List<CertificacionRegistrada> certificacionRegistradas = certificaciones.Select(certificacion => new CertificacionRegistrada
+            {
+                NombreDeArchivo = certificacion.NombreDeArchivo,
+                NRO_OC = certificacion.NRO_OC,
+                NRO_Certificacion = certificacion.NRO_Certificacion,
+                Importe = certificacion.Importe,
+                Moneda = certificacion.Moneda,
+                FechaDeRegistro = fechaRegistro,
+                UsuarioId = usuarioId,
+                ProveedorId = proveedorId
+            }).ToList();
+            // Verify that the filename is present on the list of certificacionesRegistradas
+            foreach (var file in files)
+            {
+                Log.Info("Procesando el documento " + file.FileName);
+                List<string> elementosLeidos = resultadoOcrs.Where(a => a.FileName == file.FileName).Select(a => a.Input).ToList();
+                List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
+                List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
+                // Upload the file
+                string ruta = GenerarRutaArchivo(ConfigurationManager.AppSettings["FolderFacturasES"], usuarioId, file.FileName);
+                file.SaveAs(ruta);
+                Archivo archivo = new Archivo { Ruta = ruta, FileKey = FileKeys.FacturaEntradaDeServicios };
+                repositorio.Agregar(archivo);
+                repositorio.GuardarCambios();
+                // Add the ArchivoId to the CertificacionRegistrada element
+                certificacionRegistradas.Find(c => c.NombreDeArchivo == file.FileName).ArchivoId = archivo.Id;
+                resultadoAnalisis.ForEach(r => r.Archivo_Id = archivo.Id);
+                if (resultado.Exists(r => r.IsValid))
+                {
+                    EnviarMail(file);
+                }
+                GuardarResultadosYArchivo(elementosLeidos, resultadoAnalisis, ruta, usuarioId);
+            }
+            repositorio.AgregarTodos(certificacionRegistradas);
+            var resp = repositorio.GuardarCambios();
+            return certificacionRegistradas;
         }
 
         private void GuardarResultadosYArchivo(List<string> elementosLeidos, List<ValidationResult> resultadoAnalisis, string ruta, int usuarioId)
@@ -129,22 +217,21 @@ namespace SustitucionMOAUtils.Services
             {
                 Log.Error("Error al guardar los resultados para el documento " + ruta, e);
             }
-
-
-
-
         }
 
         private static string GenerarRutaArchivo(string folderBase, int usuarioId, string fileName)
         {
-            string directorioUsuario = Path.Combine(folderBase, usuarioId.ToString());
+            folderBase = folderBase.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            string directorioUsuario = Path.Combine(folderBase, usuarioId.ToString().TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+
 
             if (!Directory.Exists(directorioUsuario))
             {
                 Directory.CreateDirectory(directorioUsuario);
             }
 
-            string rutaArchivo = Path.Combine(directorioUsuario, fileName);
+            string rutaArchivo = Path.Combine(directorioUsuario, fileName.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar));
+
 
             int contador = 1;
             string nombreArchivo = Path.GetFileNameWithoutExtension(fileName);
@@ -204,6 +291,19 @@ namespace SustitucionMOAUtils.Services
             var OrdenDeCompraEncontrada = resultadoAnalisis.Find(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name);
             if (OrdenDeCompraEncontrada != null)
             {
+                //Verify that only one file must have one oc
+                if (resultadoAnalisis.Count(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name) > 1)
+                {
+                    // Get the list of OCs
+                    var ocs = resultadoAnalisis.Where(a => a.IsValid && a.ValidataionType == typeof(OrdenCompraValidationCommand).Name).Select(a => a.Value).ToList();
+                    string texto = "No se puede procesar el documento ya que tiene mas de una orden de compra: ";
+                    ocs.ForEach(oc => texto += oc + ", ");
+                    texto = texto.Substring(0, texto.Length - 2) + ".";
+
+                    result.Add(new ValidationResult(false, texto, typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    return result;
+                }
+
                 var ordenDeCompraSAP = obtenerOrdenDeCompraConsumerMOA.ObtenerOrdenDeCompra(OrdenDeCompraEncontrada.Value);
                 if (ordenDeCompraSAP.Cabecera.CodigoProveedor != codigoProveedor)
                 {
@@ -214,6 +314,19 @@ namespace SustitucionMOAUtils.Services
                 if (ordenDeCompraSAP.Cabecera.SaldoDisponible <= 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
                 {
                     result.Add(new ValidationResult(false, $"La orden de compra {OrdenDeCompraEncontrada.Value} no tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value));
+                    return result;
+                }
+                // Validar si tiene certificaciones
+                if (ordenDeCompraSAP.Certificaciones.Count == 0)
+                {
+
+                    result.Add(new ValidationResult(false, "La orden de compra no tiene certificaciones pendientes de facturar", typeof(OrdenCompraValidationCommand).Name, "", ""));
+                    return result;
+                }
+
+                if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIOS")
+                {
+                    result.Add(new ValidationResult(true, $"La orden de compra {OrdenDeCompraEncontrada.Value} si tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value, ordenDeCompraSAP.Certificaciones));
                     return result;
                 }
 
@@ -252,6 +365,11 @@ namespace SustitucionMOAUtils.Services
             {
                 Log.Error("Error al eliminar facturas antiguas", e);
             }
+        }
+
+        public Archivo ObtenerArchivo(int archivoId)
+        {
+            return repositorio.Obtener<Archivo>(a => a.Id == archivoId);
         }
     }
 }

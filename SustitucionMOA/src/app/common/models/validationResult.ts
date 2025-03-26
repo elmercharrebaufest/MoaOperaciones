@@ -4,5 +4,11 @@
     Message?: string; 
     ValidataionType?: string; 
     Value?: string; 
-    Input?: string; 
+    Input?: string;
+    Certificaciones:{
+        NroCertificacion: string;
+        Saldo:number;
+        Moneda:string;
+        Archivo:any;
+    }[];
 }

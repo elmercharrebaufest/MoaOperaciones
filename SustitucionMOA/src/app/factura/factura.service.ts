@@ -17,5 +17,21 @@ export class FacturaService extends BaseService {
         }
         return this.http
             .post('/api/factura/subirPDF', payload, {headers: this.headersPost});
-    }   
+    }
+
+    public registrarCertificaciones(certificaciones:any, archivos: Array<File>): Observable<any> {
+        let payload = new FormData();
+        payload.append("certificaciones", JSON.stringify(certificaciones));
+        for (const element of archivos) {
+            payload.append("files", element);
+        }
+        return this.http.post('/api/factura/RegistrarCertificacion', payload, {headers: this.headersPost});
+    }
+
+    public descargarDocumentoAdjunto(archivoId:string): Observable<any>
+    {
+        let payload = new FormData();
+        payload.append("archivoId", archivoId);
+        return this.http.post(`/api/factura/DescargarDocumentoAdjunto`,payload,{headers: this.headersPost});
+    }
 }
