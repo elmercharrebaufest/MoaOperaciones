@@ -146,7 +146,7 @@
             </div>
             <div class="row">
                 <div class="col-md-9">
-                    <p-checkbox
+                    <p-checkbox *ngIf="ordenDeCompra?.TipoPosicionCodigo != 'MATERIALES'"
                         [ngModel]="ordenDeCompra?.AdmiteCertificacionesParciales"
                         binary="true"
                         [disabled]="true"
