@@ -324,7 +324,7 @@ export class CotizacionComponent extends ListBaseComponent {
     validarChecks() {
         this.model.validacionCheck = true;
 
-        if (this.model.trabajoHecho == true || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
+        if (this.model.trabajoHecho == true || this.model.conPresupuesto || this.model.adicional == true || this.model.urgencia == true || this.model.condEspProveedorAsignado == true) {
 
             if ((this.model.archivosCotizacionesCondEsp == null || this.model.archivosCotizacionesCondEsp.length == 0) && (this.model.archivosCotizacionesNuevosCondEsp == null || this.model.archivosCotizacionesNuevosCondEsp.length == 0)) {
                 this.model.mensajeCotizacion = "Debe adjuntar un archivo en el paso #4";
@@ -338,7 +338,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 this.model.validacionCheck = false;
             }
 
-            if (this.model.trabajoHecho == true && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
+            if ((this.model.trabajoHecho == true || this.model.conPresupuesto) && this.model.adicional != true || this.model.condEspProveedorAsignado == true) {
                 if (!this.proveedorSeleccionado || this.proveedorSeleccionado == "" || typeof this.proveedorSeleccionado === "undefined") {
                     this.model.mensajeCotizacion = "Debe agregar un proveedor en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
@@ -362,7 +362,7 @@ export class CotizacionComponent extends ListBaseComponent {
                 }
             }
 
-            if (this.model.urgencia == true && this.model.trabajoHecho != true && this.selectJefes.length == 0) {
+            if (this.model.urgencia == true && this.model.trabajoHecho != true && !this.model.conPresupuesto && this.selectJefes.length == 0) {
                 this.model.mensajeCotizacion = "Debe elegir al menos un jefe en el paso #4 para enviarle la notificación de urgencia";
                 this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                 this.model.validacionCheck = false;
@@ -370,7 +370,7 @@ export class CotizacionComponent extends ListBaseComponent {
 
             if(this.model.trabajoHecho == true){
                 if(this.model.thAjustePolinomica != true && this.model.thProveedorDirecto != true && this.model.thServicioPermanente != true){
-                    this.model.mensajeCotizacion = "Debe elegir una categoria de trabajo ya hacho en el paso #4";
+                    this.model.mensajeCotizacion = "Debe elegir una categoría de trabajo ya hacho en el paso #4";
                     this.messageService.add({ severity: 'error', summary: 'No se pudo finalizar', detail: `${this.model.mensajeCotizacion}` });
                     this.model.validacionCheck = false;
                 }
@@ -388,14 +388,15 @@ export class CotizacionComponent extends ListBaseComponent {
             this.model.thProveedorDirecto = false;
             this.model.thServicioPermanente = true;
         }
-        // if (!this.model.trabajoHecho) {
-        //     this.model.certificacionAutomatica = false;
-        // }
         this.model.certificacionAutomatica = this.model.trabajoHecho;
     }
 
     limpiarCheckProveedorAsignado() {
-        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) && this.model.editarCondicionesEspeciales && this.model.trabajoHecho == false) {
+        if ((this.model.condEspProveedorAsignado == undefined || this.model.condEspProveedorAsignado == false) &&
+            this.model.editarCondicionesEspeciales &&
+            this.model.trabajoHecho == false &&
+            this.model.conPresupuesto
+            ) {
             this.model.proveedorAsignado = "";
             this.model.proveedorAsignado_Id = null;
             this.proveedorSeleccionado = null;
