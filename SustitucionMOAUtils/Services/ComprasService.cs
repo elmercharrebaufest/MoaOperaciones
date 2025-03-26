@@ -3327,7 +3327,7 @@ namespace SustitucionMOAUtils.Services
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 var posicionesId = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.SolpPosicion_Id).ToList();
 
-                if (todasLasOfertas.PeticionDeOfertaPosicion.First().Posicion.SolpTipo == "SERVICIOS")
+                if (todasLasOfertas.PeticionDeOfertaPosicion.First().Posicion.SolpTipo == "SERVICIO")
                 {
                     var solpPosiciones = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => new SolpPosicionDto { NroSolp = x.Posicion.NroSolp, Indice = x.Posicion.Indice }).ToList();
                     AgregarOrdenesCompraDeSap(todasLasOfertas, solpPosiciones);

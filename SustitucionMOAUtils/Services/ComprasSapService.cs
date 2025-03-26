@@ -1209,16 +1209,11 @@ namespace SustitucionMOAUtils.Services
         public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSapParaSolpPosicion(List<SolpPosicionDto> solpPosiciones)
         {
             var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
-            ConcurrentQueue<PosicionSolpSAP> result = new ConcurrentQueue<PosicionSolpSAP>();
-            solpPosiciones
-                .AsParallel()
-                .ForAll(pos =>
-                    obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString())
-                    .AsParallel()
-                    .ForAll(ordenesSapResp =>
-                        ordenesDeCompraSap.Add(ordenesSapResp)
-                    )
-                );
+            foreach (var pos in solpPosiciones)
+            {
+                var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString());
+                ordenesDeCompraSap.AddRange(ordenesSapResp);
+            }
 
             return ordenesDeCompraSap.Distinct().ToList();
         }
