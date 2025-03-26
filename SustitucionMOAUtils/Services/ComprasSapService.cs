@@ -1206,17 +1206,21 @@ namespace SustitucionMOAUtils.Services
             return obtenerAdjuntosSOLPEDConsumerMOA.ObtenerAdjuntosSolpConsumer(docId, "");
         }
 
-        public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSap(string solpNro, List<int> posicionesIds)
+        public List<OrdenDeCompraSAPDto> ObtenerOrdenesCompraSapParaSolpPosicion(List<SolpPosicionDto> solpPosiciones)
         {
             var ordenesDeCompraSap = new List<OrdenDeCompraSAPDto>();
+            ConcurrentQueue<PosicionSolpSAP> result = new ConcurrentQueue<PosicionSolpSAP>();
+            solpPosiciones
+                .AsParallel()
+                .ForAll(pos =>
+                    obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(pos.NroSolp, pos.Indice.ToString())
+                    .AsParallel()
+                    .ForAll(ordenesSapResp =>
+                        ordenesDeCompraSap.Add(ordenesSapResp)
+                    )
+                );
 
-            foreach (var idPos in posicionesIds)
-            {
-                var ordenesSapResp = obtenerOrdenesDeCompraParaSOLPConsumerMOA.Request(solpNro, idPos.ToString());
-                ordenesDeCompraSap.AddRange(ordenesSapResp);
-            }
-
-            return ordenesDeCompraSap;
+            return ordenesDeCompraSap.Distinct().ToList();
         }
 
         private AdjudicacionEditarDto ConvertirAjudicacionDtoEnAdjudicacionSAP(AdjudicacionDto adjudicacionDto)

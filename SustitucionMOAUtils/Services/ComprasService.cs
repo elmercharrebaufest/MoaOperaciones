@@ -3327,7 +3327,11 @@ namespace SustitucionMOAUtils.Services
                 var todasLasOfertas = repositorio.ObtenerConsultaEscalar(new ComparadorOfertasConsulta(PeticionOferta_Id));
                 var posicionesId = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => x.SolpPosicion_Id).ToList();
 
-                AgregarOrdenesCompraDeSap(todasLasOfertas, posicionesId);
+                if (todasLasOfertas.PeticionDeOfertaPosicion.First().Posicion.SolpTipo == "SERVICIOS")
+                {
+                    var solpPosiciones = todasLasOfertas.PeticionDeOfertaPosicion.Select(x => new SolpPosicionDto { NroSolp = x.Posicion.NroSolp, Indice = x.Posicion.Indice }).ToList();
+                    AgregarOrdenesCompraDeSap(todasLasOfertas, solpPosiciones);
+                }
 
                 var posicionesSap =
                     comprasServiceSap.ObtenerPosiciones(todasLasOfertas.NrosSolp);
@@ -6314,7 +6318,12 @@ namespace SustitucionMOAUtils.Services
                             NumeroOrdenDeCompra = "",
                             AdmiteCertificacionesParciales = esMateriales ? true : adjudicacionDto.AdmiteCertificacionesParciales
                         };
-
+                        if (!esMateriales && adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.Adicional == true)
+                        {
+                            var NroOrdenDeCompraAdicional = adjudicacion.Posiciones.FirstOrDefault().Posicion.Solp.NroOrdenDeCompraAdicional;
+                            var ordenesDeCompraAnteriores = repositorio.Listar<Adjudicacion>(a => a.NumeroOrdenDeCompra == NroOrdenDeCompraAdicional);
+                            ordenesDeCompraAnteriores.ForEach(a => a.AdmiteCertificacionesParciales = adjudicacionDto.AdmiteCertificacionesParciales);
+                        }
                         repositorio.Agregar(adjudicacion);
                         repositorio.GuardarCambios();
                         respuestaGuardarSOLP = comprasServiceSap.CrearOrdenDeCompra(adjudicacion, adjudicacionDto.CreadoAutomatico);
@@ -9323,13 +9332,12 @@ namespace SustitucionMOAUtils.Services
             }
         }
 
-        private void AgregarOrdenesCompraDeSap(PeticionDeOfertaDto peticionOferta, List<int> posicionesIds)
+        private void AgregarOrdenesCompraDeSap(PeticionDeOfertaDto peticionOferta, List<SolpPosicionDto> solpPosiciones)
         {
-            var solpNro = peticionOferta.NroSolp;
             List<TablaSap> tablaSapMoneda = null;
             RegionSap regionSapSantaFe = null;
 
-            var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSap(solpNro, posicionesIds);
+            var ordenesCompraSap = comprasServiceSap.ObtenerOrdenesCompraSapParaSolpPosicion(solpPosiciones);
 
             var adjudicacionesAGrabar = new List<Adjudicacion>();
 
