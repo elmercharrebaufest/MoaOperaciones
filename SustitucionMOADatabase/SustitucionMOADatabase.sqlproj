@@ -264,6 +264,7 @@
     <Build Include="DBO\Tables\ResultadoOcr.sql" />
     <Build Include="DBO\Tables\CampoCosechaProveedor.sql" />
     <Build Include="DBO\Tables\SolpDatosPreviosPliegoMultiple.sql" />
+    <Build Include="DBO\Tables\CertificacionRegistrada.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DatabasePublishQA.xml" />

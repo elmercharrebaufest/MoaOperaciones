@@ -70,24 +70,9 @@ namespace SustitucionMOAUtils.Services
                     List<ValidationResult> resultadoAnalisis = analisisDocumentoService.AnalizarFacturaCertificacionServicios(elementosLeidos, cuit, file.FileName);
                     List<ValidationResult> resultado = AnalizarResultados(resultadoAnalisis, codigo);
                     // Flujo nuevo
-                    if (resultado[0].IsValid == true && resultado[0].Certificaciones.Count > 0)
+                    if (resultado[0].IsValid && resultado[0].Certificaciones?.Count > 0)
                     {
                         resultado.ForEach(r => r.FileName = file.FileName);
-                        // Iteramos por cada una de las certificaciones y verificamos si ya fueron registradas
-                        /*
-                        List<OrdenDeCompraSAPCertificacion> certificacionesNoRegistradas = new List<OrdenDeCompraSAPCertificacion>();
-                        resultado[0].Certificaciones.ForEach(certif =>
-                        {
-                            // Verificar si la certificacion ya fue registrada
-                            CertificacionRegistrada certificacionRegistrada = repositorio.Obtener<CertificacionRegistrada>(c => c.NRO_Certificacion == certif.NroCertificacion);
-                            if (certificacionRegistrada == null)
-                            {
-                                certificacionesNoRegistradas.Add(certif);
-                            }
-                        });
-                        resultado[0].Certificaciones = certificacionesNoRegistradas;
-                         
-                         */
                         // Buscamos los archivos relacionados a ese nro de certificacion
                         resultado[0].Certificaciones.ForEach((certificacion) =>
                         {
@@ -327,7 +312,7 @@ namespace SustitucionMOAUtils.Services
 
                 if (ordenDeCompraSAP.Cabecera.SaldoDisponible > 0 && ordenDeCompraSAP.Posiciones[0].TipoPosicion == "SERVICIO")
                 {
-                    result.Add(new ValidationResult(true, $"La orden de compra {OrdenDeCompraEncontrada.Value} si tiene saldo disponible.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value, ordenDeCompraSAP.Certificaciones));
+                    result.Add(new ValidationResult(true, $"Seleccione las certificaciones para la orden de compra {OrdenDeCompraEncontrada.Value}.", typeof(OrdenCompraValidationCommand).Name, "", OrdenDeCompraEncontrada.Value, ordenDeCompraSAP.Certificaciones));
                     return result;
                 }
 
