@@ -1812,8 +1812,8 @@ namespace SustitucionMOAUtils.Services
                 {
                     ExternalLineNumber = itemPosicion.NumeroLinea.ToString().PadLeft(10, '0'),
                     Service = itemPosicion.ServicioNumero?.ToString() ?? "0",
-                    Quantity = ((itemPosicion.Cantidad ?? 0) - (itemPosicion.CantidadReal ?? 0)).ToString(),
-                    ItemQuantity = (itemPosicion.Cantidad ?? 0).ToString(),
+                    Quantity = ((itemPosicion.Cantidad ?? 0) - (itemPosicion.CantidadReal ?? 0)).ToString(CultureInfo.InvariantCulture),
+                    ItemQuantity = (itemPosicion.Cantidad ?? 0).ToString(CultureInfo.InvariantCulture),
                     GrossPrice = itemPosicion.PrecioBruto ?? 0,
                     ItemGrossPrice = itemPosicion.ImporteString,
                     PlannedPackage = itemPosicion.Id,
@@ -1821,7 +1821,7 @@ namespace SustitucionMOAUtils.Services
                     Descripcion = itemPosicion.Descripcion,
                     ShortText = itemPosicion.Descripcion ?? posicionOC.Descripcion,
                     UM = itemPosicion.UM,
-                    Percentage = CalcularPorcentajeACertificar(itemPosicion).ToString()
+                    Percentage = CalcularPorcentajeACertificar(itemPosicion).ToString(CultureInfo.InvariantCulture)
                 };
                 crearESParamsDto.EntrySheetServices.Items.Add(itemACertificar);
             }
