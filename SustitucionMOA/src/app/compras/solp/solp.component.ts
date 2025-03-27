@@ -486,6 +486,7 @@ export class SolpComponent extends BaseComponent implements OnInit {
                             this.solpActual.id = undefined;
                             this.solpActual.nroSolp = undefined;
                             this.solpActual.Pliego_Id = undefined;
+                            this.solpActual.MultipleFinalizado = false;
                         }
 
                         this.traerCommon();
