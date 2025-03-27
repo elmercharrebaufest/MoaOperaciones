@@ -116,9 +116,9 @@ namespace SustitucionMOATest.Services
             target.SubirPDF(files, cuit, codigo, mail);
 
             // Assert
-            repositorioMock.Verify(r => r.Agregar(It.IsAny<Archivo>()), Times.Never);
-            repositorioMock.Verify(r => r.GuardarCambios(), Times.Never);
-            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<SustitucionMOAUtils.Email.EmailSenderData>()), Times.Never);
+            repositorioMock.Verify(r => r.Agregar(It.IsAny<Archivo>()), Times.Once);
+            repositorioMock.Verify(r => r.GuardarCambios(), Times.Once);
+            emailServiceMock.Verify(e => e.EnviarMail(It.IsAny<SustitucionMOAUtils.Email.EmailSenderData>()), Times.Once);
         }
         [Test]
         public void EliminarFacturasAntiguasTest()
