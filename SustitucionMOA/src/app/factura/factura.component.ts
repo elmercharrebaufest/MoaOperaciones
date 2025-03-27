@@ -106,7 +106,6 @@ export class FacturaComponent extends ListBaseComponent {
             this.subscription = this.service.subirPDF(this.archivos).subscribe({
                 next: (result: any) => {
                     this.spinnerSmallComponent.hideIt();
-                    
                     if (result.logout == true) {
                         this.sessionDataService.logout();
                     } else if (result.error != undefined && result.error != "") {
@@ -119,16 +118,19 @@ export class FacturaComponent extends ListBaseComponent {
                             this.resultados.forEach(resultado => {
                                 const fileName = resultado.FileName;
                                 const nroOC = resultado.Value;
-                                resultado.Certificaciones.forEach(certificacion => {
-                                    this.certificaciones.push({
-                                        NombreDeArchivo: fileName,
-                                        NRO_OC: nroOC,
-                                        NRO_Certificacion: certificacion.NroCertificacion,
-                                        Importe: certificacion.Saldo,
-                                        Moneda: certificacion.Moneda,
-                                        Archivo: certificacion.Archivo
+                                if(resultado.Certificaciones != null && resultado.Certificaciones.length > 0){
+                                    resultado.Certificaciones.forEach(certificacion => {
+                                        this.certificaciones.push({
+                                            NombreDeArchivo: fileName,
+                                            NRO_OC: nroOC,
+                                            NRO_Certificacion: certificacion.NroCertificacion,
+                                            Importe: certificacion.Saldo,
+                                            Moneda: certificacion.Moneda,
+                                            Archivo: certificacion.Archivo
+                                        });
                                     });
-                                });
+                                }
+
                             });
                         } catch (error) {
                             console.log(error);
@@ -288,6 +290,10 @@ export class FacturaComponent extends ListBaseComponent {
     vaciarCampos() {
         this.fileUpload.clear();
         this.archivos = new Array<File>();
+        this.certificaciones = [];
+        this.certificacionesAgregadas = [];
+        this.certificacionesRegistradasExistentes = [];
+        this.resultados = [];
     }
 
     public ngOnDestroy() {
@@ -328,5 +334,12 @@ export class FacturaComponent extends ListBaseComponent {
     eliminarAdjuntoNuevo(archivo): void {
         let indice = this.archivos.indexOf(archivo)
         this.archivos.splice(indice, 1)
+    }
+
+    removeFile(event:any){
+        this.certificaciones = [];
+        this.certificacionesAgregadas = [];
+        this.certificacionesRegistradasExistentes = [];
+        this.resultados = [];
     }
 }
